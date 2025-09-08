@@ -12,7 +12,13 @@
     "type-check": "tsc --noEmit",
     "test": "jest",
     "test:watch": "jest --watch",
-    "test:coverage": "jest --coverage"
+    "test:coverage": "jest --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:all": "npm run type-check && npm run lint && npm run test && npm run build",
+    "clean": "rm -rf .next out dist coverage",
+    "analyze": "cross-env ANALYZE=true next build",
+    "postinstall": "playwright install"
   },
   "dependencies": {
     "react": "19.1.0",
@@ -34,6 +40,9 @@
     "jest-environment-jsdom": "^29.7.0",
     "@testing-library/react": "^16.1.0",
     "@testing-library/jest-dom": "^6.6.3",
-    "@testing-library/user-event": "^14.5.2"
+    "@testing-library/user-event": "^14.5.2",
+    "@playwright/test": "^1.48.0",
+    "@svgr/webpack": "^8.1.0",
+    "cross-env": "^7.0.3"
   }
 }

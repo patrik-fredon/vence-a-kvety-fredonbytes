@@ -1,36 +1,163 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Pohřební věnce | Ketingmar s.r.o
 
-## Getting Started
+A premium e-commerce platform for funeral wreaths and floral arrangements, built with modern web technologies and focused on providing a dignified experience during difficult times.
 
-First, run the development server:
+## 🌹 Features
+
+- **Multilingual Support**: Czech and English language support
+- **Product Customization**: Size, flowers, ribbons, and personal messages
+- **Secure Payments**: Stripe and GoPay integration
+- **Responsive Design**: Optimized for all devices
+- **Performance Focused**: Next.js 15 with advanced optimizations
+- **Accessibility**: WCAG compliant design
+- **SEO Optimized**: Structured data and meta tags
+
+## 🚀 Tech Stack
+
+- **Framework**: Next.js 15 with App Router
+- **Language**: TypeScript
+- **Styling**: TailwindCSS 4 with custom design system
+- **Database**: Supabase (PostgreSQL)
+- **Authentication**: NextAuth.js v5
+- **Payments**: Stripe + GoPay
+- **Caching**: Redis
+- **Testing**: Jest, React Testing Library, Playwright
+- **Linting**: Biome
+- **Deployment**: Vercel
+
+## 🛠️ Development Setup
+
+### Prerequisites
+
+- Node.js 18+
+- npm or yarn
+- Git
+
+### Installation
+
+1. Clone the repository:
+
+```bash
+git clone <repository-url>
+cd pohrebni-vence
+```
+
+2. Install dependencies:
+
+```bash
+npm install
+```
+
+3. Copy environment variables:
+
+```bash
+cp .env.local.example .env.local
+```
+
+4. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+5. Open [http://localhost:3000](http://localhost:3000) in your browser.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 📝 Available Scripts
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `npm run dev` - Start development server
+- `npm run build` - Build for production
+- `npm run start` - Start production server
+- `npm run lint` - Run linting
+- `npm run lint:fix` - Fix linting issues
+- `npm run format` - Format code
+- `npm run type-check` - Check TypeScript types
+- `npm run test` - Run unit tests
+- `npm run test:watch` - Run tests in watch mode
+- `npm run test:coverage` - Run tests with coverage
+- `npm run test:e2e` - Run E2E tests
+- `npm run test:all` - Run all tests and checks
+- `npm run clean` - Clean build artifacts
 
-## Learn More
+## 🏗️ Project Structure
 
-To learn more about Next.js, take a look at the following resources:
+```
+src/
+├── app/                 # Next.js App Router pages
+├── components/          # Reusable UI components
+├── lib/                # Utility functions and configurations
+├── types/              # TypeScript type definitions
+└── styles/             # Global styles and themes
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+.kiro/
+└── specs/              # Feature specifications and tasks
+    └── wreaths-ecommerce/
+        ├── requirements.md
+        ├── design.md
+        └── tasks.md
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+e2e/                    # End-to-end tests
+```
 
-## Deploy on Vercel
+## 🎨 Design System
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The project uses a custom design system tailored for funeral wreaths:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- **Primary Colors**: Warm, earthy tones (browns, beiges)
+- **Secondary Colors**: Muted, respectful palette
+- **Accent Colors**: Floral colors (rose, lily, sage)
+- **Typography**: Inter (sans-serif) + Playfair Display (serif)
+- **Spacing**: Consistent 8px grid system
+
+## 🧪 Testing
+
+### Unit Tests
+
+```bash
+npm run test
+```
+
+### E2E Tests
+
+```bash
+npm run test:e2e
+```
+
+### Coverage Report
+
+```bash
+npm run test:coverage
+```
+
+## 🚀 Deployment
+
+The application is optimized for deployment on Vercel:
+
+1. Connect your repository to Vercel
+2. Configure environment variables
+3. Deploy automatically on push to main branch
+
+## 📋 Implementation Progress
+
+Track implementation progress in `.kiro/specs/wreaths-ecommerce/tasks.md`:
+
+- [x] 1. Project Setup and Core Infrastructure
+- [ ] 2. Database Schema and Supabase Configuration
+- [ ] 3. Authentication System Implementation
+- [ ] ... (see tasks.md for full list)
+
+## 🤝 Contributing
+
+1. Follow the existing code style (Biome configuration)
+2. Write tests for new features
+3. Update documentation as needed
+4. Ensure accessibility compliance
+
+## 📄 License
+
+© 2024 Ketingmar s.r.o. All rights reserved.
+
+## 📞 Contact
+
+- **Email**: <info@ketingmar.cz>
+- **Phone**: +420 123 456 789
+- **Address**: Hlavní 123, Praha, 110 00, Česká republika
