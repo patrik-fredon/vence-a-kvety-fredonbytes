@@ -15,8 +15,9 @@ export const config: AppConfig = {
  * Environment variables validation
  */
 export function validateEnv() {
-  const requiredEnvVars = [
+  const requiredEnvVars: string[] = [
     // Add required environment variables here as they are needed
+    // Example: 'NEXT_PUBLIC_SUPABASE_URL'
   ];
 
   const missingVars = requiredEnvVars.filter(

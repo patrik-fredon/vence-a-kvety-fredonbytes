@@ -1,12 +1,12 @@
 # Implementation Plan
 
-- [-] 1. Project Setup and Core Infrastructure
+- [x] 1. Project Setup and Core Infrastructure
   - Initialize Next.js 15 project with TypeScript and configure essential dependencies
   - Set up TailwindCSS 4 with custom design system for funeral wreaths theme
   - Configure ESLint, Prettier, and development tooling
   - _Requirements: 8.1, 8.2, 8.3_
 
-- [ ] 2. Database Schema and Supabase Configuration
+- [-] 2. Database Schema and Supabase Configuration
   - Create Supabase project and configure database connection
   - Implement database schema with tables for products, categories, orders, cart_items, and users
   - Set up Row Level Security (RLS) policies for data protection
