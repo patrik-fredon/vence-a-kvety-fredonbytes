@@ -1,26 +1,140 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:wght@400;500;600;700&display=swap');
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Primary color palette for funeral wreaths */
+  --color-primary-50: #f8f7f4;
+  --color-primary-100: #f0ede6;
+  --color-primary-200: #e1dbc9;
+  --color-primary-300: #cfc4a4;
+  --color-primary-400: #bba87f;
+  --color-primary-500: #a89165;
+  --color-primary-600: #9a7f58;
+  --color-primary-700: #80694b;
+  --color-primary-800: #695642;
+  --color-primary-900: #564738;
+  --color-primary-950: #2f251d;
+
+  /* Neutral colors */
+  --color-neutral-50: #fafaf9;
+  --color-neutral-100: #f4f4f3;
+  --color-neutral-200: #e5e5e4;
+  --color-neutral-300: #d1d1cf;
+  --color-neutral-400: #b2b2b0;
+  --color-neutral-500: #9a9a97;
+  --color-neutral-600: #82827f;
+  --color-neutral-700: #6b6b68;
+  --color-neutral-800: #585856;
+  --color-neutral-900: #4a4a48;
+  --color-neutral-950: #262625;
+
+  /* Background and foreground */
+  --background: var(--color-neutral-50);
+  --foreground: var(--color-neutral-900);
+  --muted: var(--color-neutral-100);
+  --muted-foreground: var(--color-neutral-600);
+  --border: var(--color-neutral-200);
+  --input: var(--color-neutral-100);
+  --ring: var(--color-primary-500);
+
+  /* Semantic colors */
+  --success: #22c55e;
+  --warning: #f59e0b;
+  --error: #ef4444;
+  --info: #3b82f6;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+html {
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', system-ui, sans-serif;
+  font-feature-settings: 'cv11', 'ss01';
+  font-variation-settings: 'opsz' 32;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Headings with elegant serif font */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-weight: 500;
+  line-height: 1.2;
+  color: var(--color-primary-800);
+}
+
+/* Focus styles for accessibility */
+*:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 2px;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--color-neutral-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-neutral-300);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-neutral-400);
+}
+
+/* Selection styles */
+::selection {
+  background: var(--color-primary-200);
+  color: var(--color-primary-900);
+}
+
+/* Utility classes for the funeral wreaths theme */
+.text-elegant {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.shadow-memorial {
+  box-shadow: 0 8px 40px -12px rgba(0, 0, 0, 0.15);
+}
+
+.gradient-memorial {
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
+}
+
+/* Animation utilities */
+.animate-fade-in {
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(10px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
 }
