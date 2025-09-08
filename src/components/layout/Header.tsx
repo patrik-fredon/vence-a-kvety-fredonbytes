@@ -1,13 +1,11 @@
 'use client';
 
-import { useState } from 'react';
-import Link from 'next/link';
 import { useTranslations } from 'next-intl';
-import { useSession } from 'next-auth/react';
+import { usePathname, useRouter } from 'next/navigation';
+import Link from 'next/link';
+import { AuthStatus } from '@/components/auth/AuthStatus';
 import { LanguageToggle } from './LanguageToggle';
-import { AuthStatus } from '../auth/AuthStatus';
-import { Navigation } from './Navigation';
-import { ShoppingCartIcon, Bars3Icon, XMarkIcon } from '@heroicons/react/24/outline';
+import { locales, localeNames } from '@/i18n/config';
 
 interface HeaderProps {
   locale: string;
@@ -15,102 +13,71 @@ interface HeaderProps {
 
 export function Header({ locale }: HeaderProps) {
   const t = useTranslations('navigation');
-  const { data: session } = useSession();
-  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-
-  const toggleMobileMenu = () => {
-    setIsMobileMenuOpen(!isMobileMenuOpen);
-  };
 
   return (
-    <header className="bg-white shadow-soft sticky top-0 z-50">
+    <header className="bg-white shadow-sm border-b border-neutral-200">
       <div className="container mx-auto px-4">
-        {/* Top bar with language toggle and auth status */}
-        <div className="flex justify-between items-center py-2 border-b border-neutral-100">
-          <div className="flex items-center space-x-4">
-            <LanguageToggle currentLocale={locale} />
-          </div>
-          <div className="flex items-center space-x-4">
-            <AuthStatus />
-          </div>
-        </div>
-
-        {/* Main header */}
-        <div className="flex justify-between items-center py-4">
+        <div className="flex items-center justify-between h-16">
           {/* Logo */}
           <Link
             href={`/${locale}`}
-            className="flex items-center space-x-3 group"
+            className="text-elegant text-2xl font-semibold text-primary-800 hover:text-primary-700 transition-colors"
           >
-            <div className="w-12 h-12 bg-primary-100 rounded-full flex items-center justify-center group-hover:bg-primary-200 transition-colors">
-              <span className="text-2xl">🌹</span>
-            </div>
-            <div>
-              <h1 className="text-elegant text-xl font-semibold text-primary-800 group-hover:text-primary-700 transition-colors">
-                Pohřební věnce
-              </h1>
-              <p className="text-xs text-neutral-600">Ketingmar s.r.o.</p>
-            </div>
+            Pohřební věnce
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:block">
-            <Navigation locale={locale} />
-          </div>
+          {/* Navigation */}
+          <nav className="hidden md:flex items-center space-x-8">
+            <Link
+              href={`/${locale}`}
+              className="text-neutral-700 hover:text-primary-700 transition-colors"
+            >
+              {t('home')}
+            </Link>
+            <Link
+              href={`/${locale}/products`}
+              className="text-neutral-700 hover:text-primary-700 transition-colors"
+            >
+              {t('products')}
+            </Link>
+            <Link
+              href={`/${locale}/categories`}
+              className="text-neutral-700 hover:text-primary-700 transition-colors"
+            >
+              {t('categories')}
+            </Link>
+            <Link
+              href={`/${locale}/about`}
+              className="text-neutral-700 hover:text-primary-700 transition-colors"
+            >
+              {t('about')}
+            </Link>
+            <Link
+              href={`/${locale}/contact`}
+              className="text-neutral-700 hover:text-primary-700 transition-colors"
+            >
+              {t('contact')}
+            </Link>
+          </nav>
 
-          {/* Desktop Actions */}
-          <div className="hidden lg:flex items-center space-x-4">
+          {/* Right side actions */}
+          <div className="flex items-center space-x-4">
+            <LanguageToggle currentLocale={locale} />
+            <AuthStatus locale={locale} />
+
+            {/* Cart icon */}
             <Link
               href={`/${locale}/cart`}
-              className="relative p-2 text-neutral-700 hover:text-primary-700 transition-colors"
-              aria-label={t('cart')}
+              className="text-neutral-700 hover:text-primary-700 transition-colors"
             >
-              <ShoppingCartIcon className="w-6 h-6" />
-              {/* Cart badge - will be implemented with cart state */}
-              <span className="absolute -top-1 -right-1 bg-primary-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                0
-              </span>
+              <span className="sr-only">{t('cart')}</span>
+              <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 002 2h6a2 2 0 002-2v-8m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v4.01" />
+              </svg>
             </Link>
           </div>
-
-          {/* Mobile menu button */}
-          <button
-            onClick={toggleMobileMenu}
-            className="lg:hidden p-2 text-neutral-700 hover:text-primary-700 transition-colors"
-            aria-label="Toggle menu"
-          >
-            {isMobileMenuOpen ? (
-              <XMarkIcon className="w-6 h-6" />
-            ) : (
-              <Bars3Icon className="w-6 h-6" />
-            )}
-          </button>
         </div>
       </div>
-
-      {/* Mobile Navigation */}
-      {isMobileMenuOpen && (
-        <div className="lg:hidden bg-white border-t border-neutral-100 animate-slide-down">
-          <div className="container mx-auto px-4 py-4">
-            <Navigation locale={locale} mobile onItemClick={() => setIsMobileMenuOpen(false)} />
-
-            {/* Mobile cart link */}
-            <div className="mt-4 pt-4 border-t border-neutral-100">
-              <Link
-                href={`/${locale}/cart`}
-                className="flex items-center space-x-3 p-3 text-neutral-700 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors"
-                onClick={() => setIsMobileMenuOpen(false)}
-              >
-                <ShoppingCartIcon className="w-5 h-5" />
-                <span>{t('cart')}</span>
-                <span className="ml-auto bg-primary-600 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">
-                  0
-                </span>
-              </Link>
-            </div>
-          </div>
-        </div>
-      )}
     </header>
   );
 }

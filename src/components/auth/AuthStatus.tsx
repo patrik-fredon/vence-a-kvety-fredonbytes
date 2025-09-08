@@ -1,10 +1,16 @@
 'use client'
 
 import Link from 'next/link'
+import { useTranslations } from 'next-intl'
 import { Button } from '@/components/ui/Button'
 import { useAuth, useSignOut } from '@/lib/auth/hooks'
 
-export function AuthStatus() {
+interface AuthStatusProps {
+  locale: string;
+}
+
+export function AuthStatus({ locale }: AuthStatusProps) {
+  const t = useTranslations('auth')
   const { user, loading, isAuthenticated } = useAuth()
   const { signOut, loading: signOutLoading } = useSignOut()
 
@@ -25,14 +31,14 @@ export function AuthStatus() {
       <div className="flex items-center space-x-4">
         <div className="hidden sm:block">
           <span className="text-sm text-gray-700">
-            Vítejte, {user.name || user.email}
+            {locale === 'cs' ? 'Vítejte' : 'Welcome'}, {user.name || user.email}
           </span>
         </div>
 
         <div className="flex items-center space-x-2">
-          <Link href="/profile">
+          <Link href={`/${locale}/profile`}>
             <Button variant="outline" size="sm">
-              Profil
+              {t('profile')}
             </Button>
           </Link>
 
@@ -42,7 +48,7 @@ export function AuthStatus() {
             onClick={handleSignOut}
             disabled={signOutLoading}
           >
-            {signOutLoading ? 'Odhlašování...' : 'Odhlásit'}
+            {signOutLoading ? (locale === 'cs' ? 'Odhlašování...' : 'Signing out...') : t('logout')}
           </Button>
         </div>
       </div>
@@ -51,15 +57,15 @@ export function AuthStatus() {
 
   return (
     <div className="flex items-center space-x-2">
-      <Link href="/auth/signin">
+      <Link href={`/${locale}/auth/signin`}>
         <Button variant="outline" size="sm">
-          Přihlášení
+          {t('login')}
         </Button>
       </Link>
 
-      <Link href="/auth/signup">
+      <Link href={`/${locale}/auth/signup`}>
         <Button size="sm">
-          Registrace
+          {t('register')}
         </Button>
       </Link>
     </div>
