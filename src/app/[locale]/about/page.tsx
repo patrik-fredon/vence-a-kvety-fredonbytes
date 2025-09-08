@@ -1,10 +1,11 @@
 import { useTranslations } from 'next-intl';
 
 interface AboutPageProps {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default function AboutPage({ params: { locale } }: AboutPageProps) {
+export default async function AboutPage({ params }: AboutPageProps) {
+  const { locale } = await params;
   const tNav = useTranslations('navigation');
 
   return (

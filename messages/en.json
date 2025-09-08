@@ -124,5 +124,47 @@
     "today": "Today",
     "tomorrow": "Tomorrow",
     "dayAfterTomorrow": "Day After Tomorrow"
+  },
+  "home": {
+    "title": "Funeral Wreaths",
+    "subtitle": "Premium funeral wreaths and floral arrangements for dignified farewell",
+    "description": "Handcrafted, careful flower selection and fast delivery. We help you express respect and love in difficult times.",
+    "browseWreaths": "Browse Wreaths",
+    "contactUs": "Contact Us",
+    "features": {
+      "handcrafted": {
+        "title": "Handcrafted",
+        "description": "Each wreath is carefully crafted by our experienced florists with attention to detail and quality."
+      },
+      "fastDelivery": {
+        "title": "Fast Delivery",
+        "description": "Next-day delivery available. We understand urgency and ensure timely delivery."
+      },
+      "personalApproach": {
+        "title": "Personal Approach",
+        "description": "We help you select or customize a wreath according to your ideas and requirements."
+      }
+    }
+  },
+  "home": {
+    "title": "Funeral Wreaths",
+    "subtitle": "Premium funeral wreaths and floral arrangements for dignified farewell",
+    "description": "Handcrafted, careful flower selection and fast delivery. We help you express respect and love in difficult times.",
+    "browseWreaths": "Browse Wreaths",
+    "contactUs": "Contact Us",
+    "features": {
+      "handcrafted": {
+        "title": "Handcrafted",
+        "description": "Each wreath is carefully crafted by our experienced florists with attention to detail and quality."
+      },
+      "fastDelivery": {
+        "title": "Fast Delivery",
+        "description": "Next-day delivery available. We understand urgency and ensure timely delivery."
+      },
+      "personalApproach": {
+        "title": "Personal Approach",
+        "description": "We help you select or customize a wreath according to your ideas and requirements."
+      }
+    }
   }
 }

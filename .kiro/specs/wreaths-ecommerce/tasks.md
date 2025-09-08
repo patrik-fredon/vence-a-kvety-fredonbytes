@@ -20,14 +20,14 @@
   - Build user profile and account management components
   - _Requirements: 6.1, 6.2, 6.3, 6.5_
 
-- [-] 4. Internationalization (i18n) Setup
+- [x] 4. Internationalization (i18n) Setup
   - Configure next-intl for Czech and English language support
   - Create translation files and implement language switching functionality
   - Set up locale-based routing and URL structure
   - Implement currency formatting and locale-specific content rendering
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 5. Core Layout and Navigation Components
+- [-] 5. Core Layout and Navigation Components
   - Build responsive header with language toggle and user authentication status
   - Create main navigation with category-based menu structure
   - Implement footer with contact information and legal links

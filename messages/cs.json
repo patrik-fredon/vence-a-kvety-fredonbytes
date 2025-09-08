@@ -124,5 +124,47 @@
     "today": "Dnes",
     "tomorrow": "Zítra",
     "dayAfterTomorrow": "Pozítří"
+  },
+  "home": {
+    "title": "Pohřební věnce",
+    "subtitle": "Prémiové pohřební věnce a květinové aranžmá pro důstojné rozloučení",
+    "description": "Ruční výroba, pečlivý výběr květin a rychlé dodání. Pomáháme vám vyjádřit úctu a lásku v těžkých chvílích.",
+    "browseWreaths": "Prohlédnout věnce",
+    "contactUs": "Kontaktovat nás",
+    "features": {
+      "handcrafted": {
+        "title": "Ruční výroba",
+        "description": "Každý věnec je pečlivě vytvořen našimi zkušenými floristy s důrazem na detail a kvalitu."
+      },
+      "fastDelivery": {
+        "title": "Rychlé dodání",
+        "description": "Dodání již následující den. Rozumíme naléhavosti a zajistíme včasné doručení."
+      },
+      "personalApproach": {
+        "title": "Osobní přístup",
+        "description": "Pomůžeme vám vybrat nebo přizpůsobit věnec podle vašich představ a požadavků."
+      }
+    }
+  },
+  "home": {
+    "title": "Pohřební věnce",
+    "subtitle": "Prémiové pohřební věnce a květinové aranžmá pro důstojné rozloučení",
+    "description": "Ruční výroba, pečlivý výběr květin a rychlé dodání. Pomáháme vám vyjádřit úctu a lásku v těžkých chvílích.",
+    "browseWreaths": "Prohlédnout věnce",
+    "contactUs": "Kontaktovat nás",
+    "features": {
+      "handcrafted": {
+        "title": "Ruční výroba",
+        "description": "Každý věnec je pečlivě vytvořen našimi zkušenými floristy s důrazem na detail a kvalitu."
+      },
+      "fastDelivery": {
+        "title": "Rychlé dodání",
+        "description": "Dodání již následující den. Rozumíme naléhavosti a zajistíme včasné doručení."
+      },
+      "personalApproach": {
+        "title": "Osobní přístup",
+        "description": "Pomůžeme vám vybrat nebo přizpůsobit věnec podle vašich představ a požadavků."
+      }
+    }
   }
 }

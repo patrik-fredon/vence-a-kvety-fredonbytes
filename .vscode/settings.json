@@ -1,3 +1,18 @@
 {
-  "typescript.autoClosingTags": false
+  "typescript.autoClosingTags": false,
+  "cSpell.words": [
+    "Cena",
+    "Customizer",
+    "Domů",
+    "Dostupnost",
+    "gopay",
+    "Kontakt",
+    "košíku",
+    "Pohřební",
+    "Přidat",
+    "Přizpůsobit",
+    "Produkty",
+    "Supabase",
+    "věnce"
+  ]
 }

@@ -2,10 +2,11 @@ import { useTranslations } from 'next-intl';
 import { ComponentLoadingState } from '@/components/ui/LoadingSpinner';
 
 interface ProductsPageProps {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default function ProductsPage({ params: { locale } }: ProductsPageProps) {
+export default async function ProductsPage({ params }: ProductsPageProps) {
+  const { locale } = await params;
   const t = useTranslations('product');
 
   return (

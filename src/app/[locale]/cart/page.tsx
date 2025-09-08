@@ -2,10 +2,11 @@ import { useTranslations } from 'next-intl';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 
 interface CartPageProps {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default function CartPage({ params: { locale } }: CartPageProps) {
+export default async function CartPage({ params }: CartPageProps) {
+  const { locale } = await params;
   const t = useTranslations('cart');
 
   return (

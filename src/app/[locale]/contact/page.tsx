@@ -7,10 +7,11 @@ import {
 } from '@heroicons/react/24/outline';
 
 interface ContactPageProps {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default function ContactPage({ params: { locale } }: ContactPageProps) {
+export default async function ContactPage({ params }: ContactPageProps) {
+  const { locale } = await params;
   const tNav = useTranslations('navigation');
   const tFooter = useTranslations('footer');
 

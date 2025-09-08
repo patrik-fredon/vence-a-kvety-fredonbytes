@@ -15,13 +15,24 @@ const playfairDisplay = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "Pohřební věnce | Ketingmar s.r.o.",
+  title: {
+    template: '%s | Pohřební věnce',
+    default: 'Pohřební věnce | Ketingmar s.r.o.',
+  },
   description: "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení.",
   keywords: ["pohřební věnce", "květinové aranžmá", "pohřeb", "rozloučení", "věnce"],
   authors: [{ name: "Ketingmar s.r.o." }],
   creator: "Ketingmar s.r.o.",
   publisher: "Ketingmar s.r.o.",
   robots: "index, follow",
+  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || 'https://pohrebni-vence.cz'),
+  alternates: {
+    canonical: '/',
+    languages: {
+      'cs': '/cs',
+      'en': '/en',
+    },
+  },
   openGraph: {
     type: "website",
     locale: "cs_CZ",

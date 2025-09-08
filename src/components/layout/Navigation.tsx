@@ -21,7 +21,7 @@ const mockCategories = [
     subcategories: [
       { id: '1-1', name: { cs: 'Růžové věnce', en: 'Rose Wreaths' }, slug: 'rose-wreaths' },
       { id: '1-2', name: { cs: 'Bílé věnce', en: 'White Wreaths' }, slug: 'white-wreaths' },
-      { id: '1-3'e: { cs: 'Smíšené věnce', en: 'Mixed Wreaths' }, slug: 'mixed-wreaths' },
+      { id: '1-3', name: { cs: 'Smíšené věnce', en: 'Mixed Wreaths' }, slug: 'mixed-wreaths' },
     ]
   },
   {
@@ -66,6 +66,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
         document.removeEventListener('mousedown', handleClickOutside);
       };
     }
+
+    return undefined;
   }, [mobile]);
 
   const isActiveLink = (href: string) => {

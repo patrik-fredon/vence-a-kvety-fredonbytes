@@ -1,19 +1,26 @@
 import { NextIntlClientProvider } from 'next-intl';
 import { getMessages } from 'next-intl/server';
 import { notFound } from 'next/navigation';
-import { locales } from '@/i18n/config';
+import { locales, type Locale } from '@/i18n/config';
 import { MainLayout } from '@/components/layout/MainLayout';
 import { AuthProvider } from '@/components/auth/AuthProvider';
+import { generateLocalizedMetadata } from '@/lib/i18n/metadata';
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
+}
+
+export async function generateMetadata({ params }: LocaleLayoutProps) {
+  const { locale } = await params;
+  return generateLocalizedMetadata({ locale: locale as Locale });
 }
 
 export default async function LocaleLayout({
   children,
-  params: { locale }
+  params
 }: LocaleLayoutProps) {
+  const { locale } = await params;
   // Validate that the incoming `locale` parameter is valid
   if (!locales.includes(locale as any)) {
     notFound();

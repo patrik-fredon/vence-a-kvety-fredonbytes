@@ -1,27 +1,25 @@
 import Link from 'next/link';
+import { useTranslations } from 'next-intl';
 
 interface HomeProps {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default function Home({ params: { locale } }: HomeProps) {
+export default async function Home({ params }: HomeProps) {
+  const { locale } = await params;
+  const t = useTranslations('home');
+
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="text-center max-w-4xl mx-auto">
         <h1 className="text-elegant text-5xl md:text-6xl font-semibold text-primary-800 mb-6">
-          {locale === 'cs' ? 'Pohřební věnce' : 'Funeral Wreaths'}
+          {t('title')}
         </h1>
         <p className="text-xl md:text-2xl text-neutral-700 mb-8 leading-relaxed">
-          {locale === 'cs'
-            ? 'Prémiové pohřební věnce a květinové aranžmá pro důstojné rozloučení'
-            : 'Premium funeral wreaths and floral arrangements for dignified farewell'
-          }
+          {t('subtitle')}
         </p>
         <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto">
-          {locale === 'cs'
-            ? 'Ruční výroba, pečlivý výběr květin a rychlé dodání. Pomáháme vám vyjádřit úctu a lásku v těžkých chvílích.'
-            : 'Handcrafted, careful flower selection and fast delivery. We help you express respect and love in difficult times.'
-          }
+          {t('description')}
         </p>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
@@ -29,13 +27,13 @@ export default function Home({ params: { locale } }: HomeProps) {
             href={`/${locale}/products`}
             className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-medium text-lg transition-colors shadow-elegant"
           >
-            {locale === 'cs' ? 'Prohlédnout věnce' : 'Browse Wreaths'}
+            {t('browseWreaths')}
           </Link>
           <Link
             href={`/${locale}/contact`}
             className="border-2 border-primary-600 text-primary-700 hover:bg-primary-50 px-8 py-4 rounded-lg font-medium text-lg transition-colors"
           >
-            {locale === 'cs' ? 'Kontaktovat nás' : 'Contact Us'}
+            {t('contactUs')}
           </Link>
         </div>
       </div>
@@ -46,13 +44,10 @@ export default function Home({ params: { locale } }: HomeProps) {
             <span className="text-2xl">🌹</span>
           </div>
           <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
-            {locale === 'cs' ? 'Ruční výroba' : 'Handcrafted'}
+            {t('features.handcrafted.title')}
           </h3>
           <p className="text-neutral-600">
-            {locale === 'cs'
-              ? 'Každý věnec je pečlivě vytvořen našimi zkušenými floristy s důrazem na detail a kvalitu.'
-              : 'Each wreath is carefully crafted by our experienced florists with attention to detail and quality.'
-            }
+            {t('features.handcrafted.description')}
           </p>
         </div>
 
@@ -61,13 +56,10 @@ export default function Home({ params: { locale } }: HomeProps) {
             <span className="text-2xl">🚚</span>
           </div>
           <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
-            {locale === 'cs' ? 'Rychlé dodání' : 'Fast Delivery'}
+            {t('features.fastDelivery.title')}
           </h3>
           <p className="text-neutral-600">
-            {locale === 'cs'
-              ? 'Dodání již následující den. Rozumíme naléhavosti a zajistíme včasné doručení.'
-              : 'Next-day delivery available. We understand urgency and ensure timely delivery.'
-            }
+            {t('features.fastDelivery.description')}
           </p>
         </div>
 
@@ -76,13 +68,10 @@ export default function Home({ params: { locale } }: HomeProps) {
             <span className="text-2xl">💝</span>
           </div>
           <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
-            {locale === 'cs' ? 'Osobní přístup' : 'Personal Approach'}
+            {t('features.personalApproach.title')}
           </h3>
           <p className="text-neutral-600">
-            {locale === 'cs'
-              ? 'Pomůžeme vám vybrat nebo přizpůsobit věnec podle vašich představ a požadavků.'
-              : 'We help you select or customize a wreath according to your ideas and requirements.'
-            }
+            {t('features.personalApproach.description')}
           </p>
         </div>
       </div>
