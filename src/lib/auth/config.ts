@@ -2,18 +2,25 @@ import NextAuth from "next-auth"
 import { SupabaseAdapter } from "@auth/supabase-adapter"
 import type { NextAuthConfig } from "next-auth"
 
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY!
+function getSupabaseConfig() {
+  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY
 
-if (!supabaseUrl || !supabaseServiceKey) {
-  throw new Error('Missing Supabase environment variables for auth')
-}
+  if (!supabaseUrl || !supabaseServiceKey) {
+    console.warn('Supabase environment variables not found, auth will not work properly')
+    return null
+  }
 
-export const config = {
-  adapter: SupabaseAdapter({
+  return {
     url: supabaseUrl,
     secret: supabaseServiceKey,
-  }),
+  }
+}
+
+const supabaseConfig = getSupabaseConfig()
+
+export const config = {
+  adapter: supabaseConfig ? SupabaseAdapter(supabaseConfig) : undefined,
   providers: [
     {
       id: "credentials",
@@ -29,11 +36,15 @@ export const config = {
         }
 
         try {
+          const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
+          const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY
+
+          if (!supabaseUrl || !supabaseAnonKey) {
+            return null
+          }
+
           const { createClient } = await import('@supabase/supabase-js')
-          const supabaseClient = createClient(
-            process.env.NEXT_PUBLIC_SUPABASE_URL!,
-            process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-          )
+          const supabaseClient = createClient(supabaseUrl, supabaseAnonKey)
 
           const { data, error } = await supabaseClient.auth.signInWithPassword({
             email: credentials.email as string,

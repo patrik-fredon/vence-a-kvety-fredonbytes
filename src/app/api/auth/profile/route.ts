@@ -1,6 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { auth } from '@/lib/auth/config'
-import { supabase } from '@/lib/supabase/client'
 
 export async function GET() {
   try {
@@ -12,6 +11,9 @@ export async function GET() {
         { status: 401 }
       )
     }
+
+    // Dynamically import supabase to avoid build-time issues
+    const { supabase } = await import('@/lib/supabase/client')
 
     const { data: profile, error } = await supabase
       .from('user_profiles')
@@ -50,6 +52,9 @@ export async function PUT(request: NextRequest) {
 
     const body = await request.json()
     const { name, phone, addresses, preferences } = body
+
+    // Dynamically import supabase to avoid build-time issues
+    const { supabase } = await import('@/lib/supabase/client')
 
     // Update user profile
     const { error } = await supabase

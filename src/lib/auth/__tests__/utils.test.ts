@@ -1,29 +1,25 @@
 // Mock Supabase client
-const mockAuth = {
-  signUp: jest.fn(),
-  signInWithPassword: jest.fn(),
-  signOut: jest.fn(),
-  resetPasswordForEmail: jest.fn(),
-  updateUser: jest.fn(),
-  getUser: jest.fn(),
-  getSession: jest.fn(),
-  onAuthStateChange: jest.fn(),
-}
-
-const mockFrom = jest.fn(() => ({
-  insert: jest.fn(),
-  update: jest.fn(),
-  select: jest.fn(() => ({
-    eq: jest.fn(() => ({
-      single: jest.fn(),
-    })),
-  })),
-}))
-
 jest.mock('@/lib/supabase/client', () => ({
   supabase: {
-    auth: mockAuth,
-    from: mockFrom,
+    auth: {
+      signUp: jest.fn(),
+      signInWithPassword: jest.fn(),
+      signOut: jest.fn(),
+      resetPasswordForEmail: jest.fn(),
+      updateUser: jest.fn(),
+      getUser: jest.fn(),
+      getSession: jest.fn(),
+      onAuthStateChange: jest.fn(),
+    },
+    from: jest.fn(() => ({
+      insert: jest.fn(),
+      update: jest.fn(),
+      select: jest.fn(() => ({
+        eq: jest.fn(() => ({
+          single: jest.fn(),
+        })),
+      })),
+    })),
   },
 }))
 
@@ -34,6 +30,10 @@ Object.defineProperty(window, 'location', {
 })
 
 import { authUtils } from '../utils'
+import { supabase } from '@/lib/supabase/client'
+
+// Type the mocked supabase
+const mockSupabase = jest.mocked(supabase)
 
 describe('authUtils', () => {
   beforeEach(() => {
@@ -44,12 +44,12 @@ describe('authUtils', () => {
     it('should successfully sign up a user', async () => {
       const mockUser = { id: '123', email: 'test@example.com' }
 
-      mockAuth.signUp.mockResolvedValue({
+      mockSupabase.auth.signUp.mockResolvedValue({
         data: { user: mockUser },
         error: null,
       } as any)
 
-      mockFrom.mockReturnValue({
+      mockSupabase.from.mockReturnValue({
         insert: jest.fn().mockResolvedValue({ error: null }),
       } as any)
 
@@ -61,7 +61,7 @@ describe('authUtils', () => {
 
       expect(result.user).toEqual(mockUser)
       expect(result.error).toBeNull()
-      expect(mockAuth.signUp).toHaveBeenCalledWith({
+      expect(mockSupabase.auth.signUp).toHaveBeenCalledWith({
         email: 'test@example.com',
         password: 'password123',
         options: {
@@ -74,7 +74,7 @@ describe('authUtils', () => {
     })
 
     it('should handle sign up errors', async () => {
-      mockAuth.signUp.mockResolvedValue({
+      mockSupabase.auth.signUp.mockResolvedValue({
         data: { user: null },
         error: { message: 'Email already exists' },
       } as any)
@@ -93,7 +93,7 @@ describe('authUtils', () => {
     it('should successfully sign in a user', async () => {
       const mockUser = { id: '123', email: 'test@example.com' }
 
-      mockAuth.signInWithPassword.mockResolvedValue({
+      mockSupabase.auth.signInWithPassword.mockResolvedValue({
         data: { user: mockUser },
         error: null,
       } as any)
@@ -108,7 +108,7 @@ describe('authUtils', () => {
     })
 
     it('should handle sign in errors', async () => {
-      mockAuth.signInWithPassword.mockResolvedValue({
+      mockSupabase.auth.signInWithPassword.mockResolvedValue({
         data: { user: null },
         error: { message: 'Invalid credentials' },
       } as any)
@@ -125,7 +125,7 @@ describe('authUtils', () => {
 
   describe('signOut', () => {
     it('should successfully sign out', async () => {
-      mockAuth.signOut.mockResolvedValue({ error: null } as any)
+      mockSupabase.auth.signOut.mockResolvedValue({ error: null } as any)
 
       const result = await authUtils.signOut()
 
@@ -135,14 +135,14 @@ describe('authUtils', () => {
 
   describe('resetPassword', () => {
     it('should successfully send reset password email', async () => {
-      mockAuth.resetPasswordForEmail.mockResolvedValue({ error: null } as any)
+      mockSupabase.auth.resetPasswordForEmail.mockResolvedValue({ error: null } as any)
 
       const result = await authUtils.resetPassword({
         email: 'test@example.com',
       })
 
       expect(result.error).toBeNull()
-      expect(mockAuth.resetPasswordForEmail).toHaveBeenCalledWith(
+      expect(mockSupabase.auth.resetPasswordForEmail).toHaveBeenCalledWith(
         'test@example.com',
         { redirectTo: 'http://localhost:3000/auth/reset-password' }
       )
@@ -151,7 +151,7 @@ describe('authUtils', () => {
 
   describe('updatePassword', () => {
     it('should successfully update password', async () => {
-      mockAuth.updateUser.mockResolvedValue({ error: null } as any)
+      mockSupabase.auth.updateUser.mockResolvedValue({ error: null } as any)
 
       const result = await authUtils.updatePassword({
         password: 'newpassword123',

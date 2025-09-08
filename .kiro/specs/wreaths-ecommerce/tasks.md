@@ -13,7 +13,7 @@
   - Create database functions and triggers for automated operations
   - _Requirements: 10.1, 10.3, 6.2_
 
-- [-] 3. Authentication System Implementation
+- [x] 3. Authentication System Implementation
   - Configure NextAuth.js v5 with Supabase adapter
   - Implement user registration, login, and password reset functionality
   - Create protected route middleware and session management
@@ -27,7 +27,7 @@
   - Implement currency formatting and locale-specific content rendering
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [ ] 5. Core Layout and Navigation Components
+- [-] 5. Core Layout and Navigation Components
   - Build responsive header with language toggle and user authentication status
   - Create main navigation with category-based menu structure
   - Implement footer with contact information and legal links

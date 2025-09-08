@@ -128,7 +128,7 @@ export const cartUtils = {
 
     if (userId) {
       query = query.eq('user_id', userId);
-    } else {
+    } else if (sessionId) {
       query = query.eq('session_id', sessionId);
     }
 
@@ -154,7 +154,7 @@ export const cartUtils = {
 
     if (userId) {
       existingQuery = existingQuery.eq('user_id', userId);
-    } else {
+    } else if (sessionId) {
       existingQuery = existingQuery.eq('session_id', sessionId);
     }
 
@@ -214,7 +214,7 @@ export const cartUtils = {
 
     if (userId) {
       query = query.eq('user_id', userId);
-    } else {
+    } else if (sessionId) {
       query = query.eq('session_id', sessionId);
     }
 
@@ -286,7 +286,7 @@ export const userUtils = {
       .eq('id', userId)
       .single();
 
-    return data?.preferences?.role === 'admin';
+    return (data?.preferences as any)?.role === 'admin';
   }
 };
 
