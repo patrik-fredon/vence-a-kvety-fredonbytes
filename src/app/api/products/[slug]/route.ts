@@ -160,7 +160,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     // Generate new slug if name changed
     let newSlug = slug;
     if (body.nameCs || body.nameEn) {
-      newSlug = body.slug || createSlug(body.nameCs || body.nameEn);
+      const nameForSlug = body.nameCs || body.nameEn || '';
+      newSlug = body.slug || createSlug(nameForSlug);
 
       // Check if new slug conflicts with existing products (excluding current)
       if (newSlug !== slug) {

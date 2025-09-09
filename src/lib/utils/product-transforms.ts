@@ -2,8 +2,8 @@
  * Utility functions for transforming between database rows and TypeScript interfaces
  */
 
-import { Product, Category, ProductRow, CategoryRow, LocalizedContent } from '@/types/product';
-import { Locale } from '@/types';
+import { Product, Category, ProductRow, CategoryRow } from '@/types/product';
+import { Locale, LocalizedContent } from '@/types';
 
 /**
  * Transform a database category row to Category interface
@@ -26,10 +26,10 @@ export function transformCategoryRow(row: CategoryRow): Category {
     nameCs: row.name_cs,
     nameEn: row.name_en,
     slug: row.slug,
-    descriptionCs: row.description_cs,
-    descriptionEn: row.description_en,
-    imageUrl: row.image_url,
-    parentId: row.parent_id,
+    descriptionCs: row.description_cs || undefined,
+    descriptionEn: row.description_en || undefined,
+    imageUrl: row.image_url || undefined,
+    parentId: row.parent_id || undefined,
     sortOrder: row.sort_order,
     active: row.active,
     createdAt: new Date(row.created_at),
@@ -60,10 +60,10 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     nameCs: row.name_cs,
     nameEn: row.name_en,
     slug: row.slug,
-    descriptionCs: row.description_cs,
-    descriptionEn: row.description_en,
+    descriptionCs: row.description_cs || undefined,
+    descriptionEn: row.description_en || undefined,
     basePrice: Number(row.base_price),
-    categoryId: row.category_id,
+    categoryId: row.category_id || undefined,
     images: Array.isArray(row.images) ? row.images : [],
     customizationOptions: Array.isArray(row.customization_options) ? row.customization_options : [],
     availability: typeof row.availability === 'object' ? row.availability : { inStock: true },
@@ -86,10 +86,10 @@ export function categoryToRow(category: Omit<Category, 'id' | 'createdAt' | 'upd
     name_cs: category.nameCs,
     name_en: category.nameEn,
     slug: category.slug,
-    description_cs: category.descriptionCs,
-    description_en: category.descriptionEn,
-    image_url: category.imageUrl,
-    parent_id: category.parentId,
+    description_cs: category.descriptionCs || null,
+    description_en: category.descriptionEn || null,
+    image_url: category.imageUrl || null,
+    parent_id: category.parentId || null,
     sort_order: category.sortOrder,
     active: category.active,
   };
@@ -103,10 +103,10 @@ export function productToRow(product: Omit<Product, 'id' | 'createdAt' | 'update
     name_cs: product.nameCs,
     name_en: product.nameEn,
     slug: product.slug,
-    description_cs: product.descriptionCs,
-    description_en: product.descriptionEn,
+    description_cs: product.descriptionCs || null,
+    description_en: product.descriptionEn || null,
     base_price: product.basePrice,
-    category_id: product.categoryId,
+    category_id: product.categoryId || null,
     images: product.images,
     customization_options: product.customizationOptions,
     availability: product.availability,

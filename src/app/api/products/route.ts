@@ -132,7 +132,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform the data
-    const products: Product[] = (productsData || []).map((row: ProductRow & { categories?: CategoryRow }) => {
+    const products: Product[] = (productsData || []).map((row: ProductRow & { categories?: CategoryRow | null }) => {
       const category = row.categories ? transformCategoryRow(row.categories) : undefined;
       return transformProductRow(row, category);
     });
@@ -224,6 +224,20 @@ export async function POST(request: NextRequest) {
     }
 
     // Prepare the data for insertion
+    const imagesWithIds = (body.images || []).map((img, index) => ({
+      ...img,
+      id: `img_${Date.now()}_${index}`,
+    }));
+
+    const customizationOptionsWithIds = (body.customizationOptions || []).map((option, index) => ({
+      ...option,
+      id: `opt_${Date.now()}_${index}`,
+      choices: option.choices.map((choice, choiceIndex) => ({
+        ...choice,
+        id: `choice_${Date.now()}_${index}_${choiceIndex}`,
+      })),
+    }));
+
     const productData = productToRow({
       nameCs: body.nameCs,
       nameEn: body.nameEn,
@@ -232,8 +246,8 @@ export async function POST(request: NextRequest) {
       descriptionEn: body.descriptionEn,
       basePrice: body.basePrice,
       categoryId: body.categoryId,
-      images: body.images || [],
-      customizationOptions: body.customizationOptions || [],
+      images: imagesWithIds,
+      customizationOptions: customizationOptionsWithIds,
       availability: body.availability || { inStock: true },
       seoMetadata: body.seoMetadata || {
         title: { cs: body.nameCs, en: body.nameEn },

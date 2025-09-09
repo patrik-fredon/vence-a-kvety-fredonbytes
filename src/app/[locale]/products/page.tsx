@@ -49,7 +49,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
 
   // Transform the data
   const categories: Category[] = (categoriesData || []).map(transformCategoryRow);
-  const products: Product[] = (productsData || []).map((row: ProductRow & { categories?: CategoryRow }) => {
+  const products: Product[] = (productsData || []).map((row: ProductRow & { categories?: CategoryRow | null }) => {
     const category = row.categories ? transformCategoryRow(row.categories) : undefined;
     return transformProductRow(row, category);
   });
