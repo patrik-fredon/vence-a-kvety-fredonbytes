@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 interface HomeProps {
   params: Promise<{ locale: string }>;
@@ -7,7 +7,7 @@ interface HomeProps {
 
 export default async function Home({ params }: HomeProps) {
   const { locale } = await params;
-  const t = useTranslations('home');
+  const t = await getTranslations('home');
 
   return (
     <div className="container mx-auto px-4 py-16">

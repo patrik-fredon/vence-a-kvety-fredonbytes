@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>;
@@ -6,7 +6,7 @@ interface AboutPageProps {
 
 export default async function AboutPage({ params }: AboutPageProps) {
   const { locale } = await params;
-  const tNav = useTranslations('navigation');
+  const tNav = await getTranslations('navigation');
 
   return (
     <div className="container mx-auto px-4 py-8">

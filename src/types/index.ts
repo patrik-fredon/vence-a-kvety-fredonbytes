@@ -117,4 +117,7 @@ export interface ContactInfo {
   name: string;
 }
 
+// Re-export product types for convenience
+export * from './product';
+
 export default {};

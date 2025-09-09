@@ -1,12 +1,13 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { CurrencyExample } from '@/components/examples/CurrencyExample';
 
 interface TestI18nProps {
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }
 
-export default function TestI18n({ params: { locale } }: TestI18nProps) {
-  const t = useTranslations();
+export default async function TestI18n({ params }: TestI18nProps) {
+  const { locale } = await params;
+  const t = await getTranslations();
 
   return (
     <div className="container mx-auto px-4 py-8">

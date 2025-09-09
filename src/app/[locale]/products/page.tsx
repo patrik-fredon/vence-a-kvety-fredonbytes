@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { ComponentLoadingState } from '@/components/ui/LoadingSpinner';
 
 interface ProductsPageProps {
@@ -7,7 +7,7 @@ interface ProductsPageProps {
 
 export default async function ProductsPage({ params }: ProductsPageProps) {
   const { locale } = await params;
-  const t = useTranslations('product');
+  const t = await getTranslations('product');
 
   return (
     <div className="container mx-auto px-4 py-8">

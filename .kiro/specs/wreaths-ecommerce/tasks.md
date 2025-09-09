@@ -27,14 +27,14 @@
   - Implement currency formatting and locale-specific content rendering
   - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-- [-] 5. Core Layout and Navigation Components
+- [x] 5. Core Layout and Navigation Components
   - Build responsive header with language toggle and user authentication status
   - Create main navigation with category-based menu structure
   - Implement footer with contact information and legal links
   - Design and code loading states and error boundaries
   - _Requirements: 9.1, 9.2, 9.4_
 
-- [ ] 6. Product Data Models and API Routes
+- [x] 6. Product Data Models and API Routes
   - Create TypeScript interfaces for Product, Category, and related entities
   - Implement API routes for product CRUD operations (/api/products)
   - Build category management API endpoints (/api/categories)

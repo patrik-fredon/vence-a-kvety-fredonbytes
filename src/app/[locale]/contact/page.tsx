@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import {
   MapPinIcon,
   PhoneIcon,
@@ -12,8 +12,8 @@ interface ContactPageProps {
 
 export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
-  const tNav = useTranslations('navigation');
-  const tFooter = useTranslations('footer');
+  const tNav = await getTranslations('navigation');
+  const tFooter = await getTranslations('footer');
 
   const contactInfo = {
     address: {

@@ -1,4 +1,4 @@
-import { useTranslations } from 'next-intl';
+import { getTranslations } from 'next-intl/server';
 import { ShoppingCartIcon } from '@heroicons/react/24/outline';
 
 interface CartPageProps {
@@ -7,7 +7,7 @@ interface CartPageProps {
 
 export default async function CartPage({ params }: CartPageProps) {
   const { locale } = await params;
-  const t = useTranslations('cart');
+  const t = await getTranslations('cart');
 
   return (
     <div className="container mx-auto px-4 py-8">
