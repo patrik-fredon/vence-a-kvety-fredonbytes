@@ -167,11 +167,11 @@ export interface ProductRow {
   id: string;
   name_cs: string;
   name_en: string;
-  description_cs?: string;
-  description_en?: string;
+  description_cs: string | null;
+  description_en: string | null;
   slug: string;
   base_price: number;
-  category_id?: string;
+  category_id: string | null;
   images: any; // JSONB
   customization_options: any; // JSONB
   availability: any; // JSONB
@@ -186,11 +186,11 @@ export interface CategoryRow {
   id: string;
   name_cs: string;
   name_en: string;
-  description_cs?: string;
-  description_en?: string;
+  description_cs: string | null;
+  description_en: string | null;
   slug: string;
-  image_url?: string;
-  parent_id?: string;
+  image_url: string | null;
+  parent_id: string | null;
   sort_order: number;
   active: boolean;
   created_at: string;

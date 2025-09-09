@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import {
   Category,
   CreateCategoryRequest,
@@ -24,7 +24,7 @@ import {
  */
 export async function GET(request: NextRequest) {
   try {
-    const supabase = createClient();
+    const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
 
     const includeInactive = searchParams.get('includeInactive') === 'true';
@@ -113,7 +113,7 @@ export async function GET(request: NextRequest) {
  */
 export async function POST(request: NextRequest) {
   try {
-    const supabase = createClient();
+    const supabase = createServerClient();
     const body: CreateCategoryRequest = await request.json();
 
     // Validate the data

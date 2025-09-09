@@ -4,7 +4,7 @@
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 import {
   Product,
   UpdateProductRequest,
@@ -20,20 +20,20 @@ import {
   createSlug
 } from '@/lib/utils/product-transforms';
 
-interface RouteParams {
-  params: {
+interface RouteContext {
+  params: Promise<{
     slug: string;
-  };
+  }>;
 }
 
 /**
  * GET /api/products/[slug]
  * Retrieve a single product by slug
  */
-export async function GET(request: NextRequest, { params }: RouteParams) {
+export async function GET(request: NextRequest, { params }: RouteContext) {
   try {
-    const supabase = createClient();
-    const { slug } = params;
+    const supabase = createServerClient();
+    const { slug } = await params;
 
     const { data, error } = await supabase
       .from('products')
@@ -115,10 +115,10 @@ export async function GET(request: NextRequest, { params }: RouteParams) {
  * PUT /api/products/[slug]
  * Update an existing product
  */
-export async function PUT(request: NextRequest, { params }: RouteParams) {
+export async function PUT(request: NextRequest, { params }: RouteContext) {
   try {
-    const supabase = createClient();
-    const { slug } = params;
+    const supabase = createServerClient();
+    const { slug } = await params;
     const body: UpdateProductRequest = await request.json();
 
     // First, get the existing product
@@ -270,10 +270,10 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
  * DELETE /api/products/[slug]
  * Soft delete a product (set active = false)
  */
-export async function DELETE(request: NextRequest, { params }: RouteParams) {
+export async function DELETE(request: NextRequest, { params }: RouteContext) {
   try {
-    const supabase = createClient();
-    const { slug } = params;
+    const supabase = createServerClient();
+    const { slug } = await params;
 
     // Check if product exists
     const { data: existingProduct, error: fetchError } = await supabase
