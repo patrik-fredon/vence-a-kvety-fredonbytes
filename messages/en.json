@@ -174,6 +174,42 @@
     "faq": "Frequently Asked Questions",
     "delivery": "Shipping & Delivery"
   },
+  "delivery": {
+    "calendar": {
+      "title": "Select Delivery Date",
+      "previousMonth": "Previous month",
+      "nextMonth": "Next month",
+      "available": "Available",
+      "unavailable": "Unavailable",
+      "holiday": "Holiday",
+      "weekend": "Weekend",
+      "timeSlot": "Delivery Time",
+      "morning": "Morning (8-12)",
+      "afternoon": "Afternoon (12-18)",
+      "evening": "Evening (18-20)",
+      "anytime": "Anytime"
+    },
+    "options": {
+      "title": "Delivery Method",
+      "standard": "Standard Delivery",
+      "express": "Express Delivery",
+      "sameDay": "Same-day Delivery",
+      "standardDesc": "Next business day delivery",
+      "expressDesc": "Delivery within 12 hours",
+      "sameDayDesc": "Delivery within 4 hours"
+    },
+    "cost": {
+      "title": "Delivery Cost",
+      "baseCost": "Base cost",
+      "distanceCost": "Distance surcharge",
+      "urgencyCost": "Speed surcharge",
+      "timeSlotCost": "Time slot surcharge",
+      "total": "Total",
+      "estimatedDelivery": "Estimated delivery",
+      "calculating": "Calculating delivery cost...",
+      "enterAddress": "Enter address to calculate delivery cost"
+    }
+  },
   "meta": {
     "title": "Funeral Wreaths | Ketingmar s.r.o.",
     "description": "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",

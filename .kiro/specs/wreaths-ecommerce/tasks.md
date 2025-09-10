@@ -62,7 +62,7 @@
   - Add cart persistence across user sessions and devices
   - _Requirements: 4.1, 4.2_
 
-- [ ] 10. Delivery Calendar and Scheduling
+- [-] 10. Delivery Calendar and Scheduling
   - Build DeliveryCalendar component with date selection functionality
   - Implement delivery date calculation logic (next-day onwards, excluding weekends/holidays)
   - Create Redis caching for delivery availability and pricing
