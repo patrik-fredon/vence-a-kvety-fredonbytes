@@ -6,6 +6,8 @@ export interface AuthUser {
   email: string
   name?: string | null
   phone?: string | null
+  addresses?: Address[]
+  preferences?: UserPreferences
 }
 
 export interface SignUpData {
@@ -29,11 +31,13 @@ export interface UpdatePasswordData {
   confirmPassword: string
 }
 
+import { Address, UserPreferences } from '@/types/user'
+
 export interface UpdateProfileData {
   name?: string
   phone?: string
-  addresses?: any[]
-  preferences?: any
+  addresses?: Address[]
+  preferences?: UserPreferences
 }
 
 export class AuthError extends Error {
@@ -220,6 +224,8 @@ export const authUtils = {
         email: user.email!,
         name: profile?.name || user.user_metadata?.name || null,
         phone: profile?.phone || user.user_metadata?.phone || null,
+        addresses: profile?.addresses || [],
+        preferences: profile?.preferences || {},
       }
 
       return { user: authUser, error: null }

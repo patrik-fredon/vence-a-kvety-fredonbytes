@@ -5,17 +5,10 @@ import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useAuth, useUpdateProfile, useSignOut } from '@/lib/auth/hooks'
 import { OrderHistory } from '@/components/order/OrderHistory'
+import { UserPreferencesComponent } from './UserPreferences'
+import { AddressBook } from './AddressBook'
 import { useParams } from 'next/navigation'
-
-interface Address {
-  id: string
-  name: string
-  street: string
-  city: string
-  postalCode: string
-  country: string
-  isDefault: boolean
-}
+import { Address, UserPreferences, defaultUserPreferences } from '@/types/user'
 
 export function UserProfile() {
   const { user } = useAuth()
@@ -30,9 +23,10 @@ export function UserProfile() {
   })
 
   const [addresses, setAddresses] = useState<Address[]>([])
+  const [preferences, setPreferences] = useState<UserPreferences>(defaultUserPreferences)
   const [isEditing, setIsEditing] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
-  const [activeTab, setActiveTab] = useState<'profile' | 'orders'>('profile')
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders' | 'addresses' | 'preferences'>('profile')
 
   useEffect(() => {
     if (user) {
@@ -40,6 +34,8 @@ export function UserProfile() {
         name: user.name || '',
         phone: user.phone || '',
       })
+      setAddresses(user.addresses || [])
+      setPreferences(user.preferences || defaultUserPreferences)
     }
   }, [user])
 
@@ -50,11 +46,42 @@ export function UserProfile() {
       name: formData.name,
       phone: formData.phone,
       addresses,
+      preferences,
     })
 
     if (result.success) {
       setIsEditing(false)
-      setSuccessMessage('Profil byl úspěšně aktualizován')
+      setSuccessMessage(locale === 'cs' ? 'Profil byl úspěšně aktualizován' : 'Profile updated successfully')
+      setTimeout(() => setSuccessMessage(''), 3000)
+    }
+  }
+
+  const handleSaveAddresses = async (newAddresses: Address[]) => {
+    const result = await updateProfile({
+      name: formData.name,
+      phone: formData.phone,
+      addresses: newAddresses,
+      preferences,
+    })
+
+    if (result.success) {
+      setAddresses(newAddresses)
+      setSuccessMessage(locale === 'cs' ? 'Adresy byly úspěšně uloženy' : 'Addresses saved successfully')
+      setTimeout(() => setSuccessMessage(''), 3000)
+    }
+  }
+
+  const handleSavePreferences = async (newPreferences: UserPreferences) => {
+    const result = await updateProfile({
+      name: formData.name,
+      phone: formData.phone,
+      addresses,
+      preferences: newPreferences,
+    })
+
+    if (result.success) {
+      setPreferences(newPreferences)
+      setSuccessMessage(locale === 'cs' ? 'Nastavení bylo úspěšně uloženo' : 'Preferences saved successfully')
       setTimeout(() => setSuccessMessage(''), 3000)
     }
   }
@@ -70,35 +97,7 @@ export function UserProfile() {
     await signOut()
   }
 
-  const addAddress = () => {
-    const newAddress: Address = {
-      id: Date.now().toString(),
-      name: '',
-      street: '',
-      city: '',
-      postalCode: '',
-      country: 'Česká republika',
-      isDefault: addresses.length === 0,
-    }
-    setAddresses(prev => [...prev, newAddress])
-  }
 
-  const updateAddress = (id: string, field: keyof Address, value: string | boolean) => {
-    setAddresses(prev => prev.map(addr =>
-      addr.id === id ? { ...addr, [field]: value } : addr
-    ))
-  }
-
-  const removeAddress = (id: string) => {
-    setAddresses(prev => prev.filter(addr => addr.id !== id))
-  }
-
-  const setDefaultAddress = (id: string) => {
-    setAddresses(prev => prev.map(addr => ({
-      ...addr,
-      isDefault: addr.id === id
-    })))
-  }
 
   if (!user) {
     return (
@@ -113,36 +112,56 @@ export function UserProfile() {
       {/* Tab Navigation */}
       <div className="bg-white shadow rounded-lg mb-6">
         <div className="border-b border-gray-200">
-          <nav className="-mb-px flex space-x-8 px-6">
+          <nav className="-mb-px flex space-x-8 px-6 overflow-x-auto">
             <button
               onClick={() => setActiveTab('profile')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                 activeTab === 'profile'
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {locale === 'cs' ? 'Můj profil' : 'My Profile'}
+              {locale === 'cs' ? 'Základní údaje' : 'Basic Info'}
+            </button>
+            <button
+              onClick={() => setActiveTab('addresses')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                activeTab === 'addresses'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              {locale === 'cs' ? 'Adresy' : 'Addresses'}
+            </button>
+            <button
+              onClick={() => setActiveTab('preferences')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
+                activeTab === 'preferences'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              {locale === 'cs' ? 'Nastavení' : 'Preferences'}
             </button>
             <button
               onClick={() => setActiveTab('orders')}
-              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+              className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
                 activeTab === 'orders'
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
               }`}
             >
-              {locale === 'cs' ? 'Moje objednávky' : 'My Orders'}
+              {locale === 'cs' ? 'Objednávky' : 'Orders'}
             </button>
           </nav>
         </div>
         <div className="px-6 py-4">
           <div className="flex justify-between items-center">
             <h1 className="text-2xl font-bold text-gray-900">
-              {activeTab === 'profile'
-                ? (locale === 'cs' ? 'Můj profil' : 'My Profile')
-                : (locale === 'cs' ? 'Moje objednávky' : 'My Orders')
-              }
+              {activeTab === 'profile' && (locale === 'cs' ? 'Základní údaje' : 'Basic Information')}
+              {activeTab === 'addresses' && (locale === 'cs' ? 'Adresář' : 'Address Book')}
+              {activeTab === 'preferences' && (locale === 'cs' ? 'Nastavení účtu' : 'Account Settings')}
+              {activeTab === 'orders' && (locale === 'cs' ? 'Historie objednávek' : 'Order History')}
             </h1>
             <Button
               variant="outline"
@@ -159,16 +178,14 @@ export function UserProfile() {
       </div>
 
       {/* Tab Content */}
-      {activeTab === 'profile' ? (
-        <div className="bg-white shadow rounded-lg">
+      {successMessage && (
+        <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
+          <p className="text-sm text-green-600">{successMessage}</p>
+        </div>
+      )}
 
-        <div className="p-6">
-          {successMessage && (
-            <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
-              <p className="text-sm text-green-600">{successMessage}</p>
-            </div>
-          )}
-
+      {activeTab === 'profile' && (
+        <div className="bg-white shadow rounded-lg p-6">
           <form onSubmit={handleSubmit} className="space-y-6">
             <div className="grid grid-cols-1 gap-4">
               <Input
@@ -178,14 +195,14 @@ export function UserProfile() {
                 label="E-mail"
                 value={user.email}
                 disabled
-                helperText="E-mail nelze změnit"
+                helperText={locale === 'cs' ? 'E-mail nelze změnit' : 'Email cannot be changed'}
               />
 
               <Input
                 id="name"
                 name="name"
                 type="text"
-                label="Jméno a příjmení"
+                label={locale === 'cs' ? 'Jméno a příjmení' : 'Full Name'}
                 value={formData.name}
                 onChange={handleChange}
                 disabled={!isEditing || updateLoading}
@@ -196,99 +213,11 @@ export function UserProfile() {
                 id="phone"
                 name="phone"
                 type="tel"
-                label="Telefon"
+                label={locale === 'cs' ? 'Telefon' : 'Phone'}
                 value={formData.phone}
                 onChange={handleChange}
                 disabled={!isEditing || updateLoading}
               />
-            </div>
-
-            {/* Addresses Section */}
-            <div className="border-t pt-6">
-              <div className="flex justify-between items-center mb-4">
-                <h3 className="text-lg font-medium text-gray-900">
-                  Dodací adresy
-                </h3>
-                {isEditing && (
-                  <Button
-                    type="button"
-                    variant="outline"
-                    onClick={addAddress}
-                    disabled={updateLoading}
-                  >
-                    Přidat adresu
-                  </Button>
-                )}
-              </div>
-
-              <div className="space-y-4">
-                {addresses.map((address) => (
-                  <div key={address.id} className="border rounded-lg p-4">
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <Input
-                        label="Název adresy"
-                        value={address.name}
-                        onChange={(e) => updateAddress(address.id, 'name', e.target.value)}
-                        disabled={!isEditing || updateLoading}
-                        placeholder="Domů, Práce, atd."
-                      />
-
-                      <Input
-                        label="Ulice a číslo popisné"
-                        value={address.street}
-                        onChange={(e) => updateAddress(address.id, 'street', e.target.value)}
-                        disabled={!isEditing || updateLoading}
-                      />
-
-                      <Input
-                        label="Město"
-                        value={address.city}
-                        onChange={(e) => updateAddress(address.id, 'city', e.target.value)}
-                        disabled={!isEditing || updateLoading}
-                      />
-
-                      <Input
-                        label="PSČ"
-                        value={address.postalCode}
-                        onChange={(e) => updateAddress(address.id, 'postalCode', e.target.value)}
-                        disabled={!isEditing || updateLoading}
-                      />
-                    </div>
-
-                    {isEditing && (
-                      <div className="mt-4 flex justify-between items-center">
-                        <label className="flex items-center">
-                          <input
-                            type="checkbox"
-                            checked={address.isDefault}
-                            onChange={(e) => setDefaultAddress(address.id)}
-                            className="mr-2"
-                          />
-                          <span className="text-sm text-gray-700">
-                            Výchozí adresa
-                          </span>
-                        </label>
-
-                        <Button
-                          type="button"
-                          variant="outline"
-                          onClick={() => removeAddress(address.id)}
-                          disabled={updateLoading}
-                          className="text-red-600 hover:text-red-700"
-                        >
-                          Odstranit
-                        </Button>
-                      </div>
-                    )}
-                  </div>
-                ))}
-
-                {addresses.length === 0 && (
-                  <p className="text-gray-500 text-center py-4">
-                    Žádné adresy nejsou uloženy
-                  </p>
-                )}
-              </div>
             </div>
 
             {updateError && (
@@ -306,13 +235,16 @@ export function UserProfile() {
                     onClick={() => setIsEditing(false)}
                     disabled={updateLoading}
                   >
-                    Zrušit
+                    {locale === 'cs' ? 'Zrušit' : 'Cancel'}
                   </Button>
                   <Button
                     type="submit"
                     disabled={updateLoading}
                   >
-                    {updateLoading ? 'Ukládání...' : 'Uložit změny'}
+                    {updateLoading 
+                      ? (locale === 'cs' ? 'Ukládání...' : 'Saving...') 
+                      : (locale === 'cs' ? 'Uložit změny' : 'Save Changes')
+                    }
                   </Button>
                 </>
               ) : (
@@ -320,13 +252,37 @@ export function UserProfile() {
                   type="button"
                   onClick={() => setIsEditing(true)}
                 >
-                  Upravit profil
+                  {locale === 'cs' ? 'Upravit profil' : 'Edit Profile'}
                 </Button>
               )}
             </div>
           </form>
         </div>
-      ) : (
+      )}
+
+      {activeTab === 'addresses' && (
+        <div className="bg-white shadow rounded-lg p-6">
+          <AddressBook
+            addresses={addresses}
+            onSave={handleSaveAddresses}
+            loading={updateLoading}
+            locale={locale}
+          />
+        </div>
+      )}
+
+      {activeTab === 'preferences' && (
+        <div className="bg-white shadow rounded-lg p-6">
+          <UserPreferencesComponent
+            preferences={preferences}
+            onSave={handleSavePreferences}
+            loading={updateLoading}
+            locale={locale}
+          />
+        </div>
+      )}
+
+      {activeTab === 'orders' && (
         <div className="bg-white shadow rounded-lg p-6">
           <OrderHistory locale={locale} />
         </div>
