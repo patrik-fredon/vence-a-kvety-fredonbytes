@@ -74,10 +74,6 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
         initialProducts={products}
         initialCategories={categories}
         locale={locale}
-        onAddToCart={(product) => {
-          // TODO: Implement cart functionality in later tasks
-          console.log('Added to cart:', product.name);
-        }}
       />
     </div>
   );

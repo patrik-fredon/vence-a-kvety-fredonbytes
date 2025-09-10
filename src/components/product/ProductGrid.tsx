@@ -110,6 +110,9 @@ export function ProductGrid({
   useEffect(() => {
     if (initialProducts.length === 0) {
       fetchProducts(1, true);
+    } else {
+      // Use initial products if API fails
+      setTotalProducts(initialProducts.length);
     }
   }, [fetchProducts, initialProducts.length]);
 
@@ -139,8 +142,9 @@ export function ProductGrid({
     if (onAddToCart) {
       onAddToCart(product);
     } else {
-      // Default behavior - could show a toast or redirect
-      console.log('Added to cart:', product.name);
+      // Default behavior - TODO: Implement cart functionality in later tasks
+      console.log('Added to cart:', product.name[locale as keyof typeof product.name]);
+      // Could show a toast notification here
     }
   };
 

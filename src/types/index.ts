@@ -119,5 +119,6 @@ export interface ContactInfo {
 
 // Re-export product types for convenience
 export * from './product';
+export * from './cart';
 
 export default {};

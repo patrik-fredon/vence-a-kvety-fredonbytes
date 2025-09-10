@@ -1,5 +1,5 @@
 import { getTranslations } from 'next-intl/server';
-import { ShoppingCartIcon } from '@heroicons/react/24/outline';
+import { ShoppingCart } from '@/components/cart/ShoppingCart';
 
 interface CartPageProps {
   params: Promise<{ locale: string }>;
@@ -16,27 +16,7 @@ export default async function CartPage({ params }: CartPageProps) {
           {t('title')}
         </h1>
 
-        {/* Empty cart placeholder */}
-        <div className="bg-white rounded-lg shadow-soft p-12 text-center">
-          <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <ShoppingCartIcon className="w-8 h-8 text-primary-600" />
-          </div>
-
-          <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">
-            {t('empty')}
-          </h2>
-
-          <p className="text-neutral-600 mb-8">
-            Přidejte si produkty do košíku a pokračujte v nákupu.
-          </p>
-
-          <a
-            href={`/${locale}/products`}
-            className="inline-flex items-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
-          >
-            {t('continueShopping')}
-          </a>
-        </div>
+        <ShoppingCart locale={locale} showHeader={false} />
       </div>
     </div>
   );
