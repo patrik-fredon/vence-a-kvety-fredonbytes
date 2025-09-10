@@ -18,6 +18,14 @@ interface OrderSummary {
   itemCount: number;
   createdAt: string;
   deliveryAddress: string;
+  customerName: string;
+  deliveryDate?: string;
+  paymentMethod?: string;
+  items: Array<{
+    productName: string;
+    quantity: number;
+    unitPrice: number;
+  }>;
 }
 
 interface OrderHistoryResponse {

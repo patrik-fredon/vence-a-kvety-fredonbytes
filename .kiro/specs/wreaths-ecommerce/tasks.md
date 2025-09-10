@@ -90,7 +90,11 @@
   - Add order tracking for customers and status updates
   - _Requirements: 6.4, 4.6_
 
+<<<<<<< HEAD
 - [x] 14. User Account and Order History
+=======
+- [-] 14. User Account and Order History
+>>>>>>> db25158 (Enhance user profile with address book and preferences management)
   - Build user profile management interface
   - Create order history display with detailed order information
   - Implement address book functionality for delivery addresses
