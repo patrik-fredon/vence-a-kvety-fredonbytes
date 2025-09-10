@@ -69,14 +69,14 @@
   - Add delivery cost calculation based on location and urgency
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5, 5.6_
 
-- [-] 11. Checkout Process and Forms
+- [x] 11. Checkout Process and Forms
   - Create multi-step checkout form with customer and delivery information
   - Implement form validation and error handling
   - Build order summary component with itemized pricing
   - Add delivery option selection and cost calculation
   - _Requirements: 4.2, 4.3_
 
-- [ ] 12. Payment Integration (Stripe + GoPay)
+- [-] 12. Payment Integration (Stripe + GoPay)
   - Configure Stripe payment processing with secure tokenization
   - Implement GoPay integration for Czech market payment methods
   - Create payment selection component and secure payment forms

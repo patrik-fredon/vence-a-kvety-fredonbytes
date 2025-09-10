@@ -137,7 +137,23 @@
     "deliveryTime": "Delivery Time",
     "paymentMethod": "Payment Method",
     "placeOrder": "Place Order",
-    "orderConfirmation": "Order Confirmation"
+    "orderConfirmation": "Order Confirmation",
+    "free": "Free",
+    "step": "Step",
+    "of": "of",
+    "backToCart": "Back to Cart",
+    "processing": "Processing...",
+    "orderTotal": "Order Total",
+    "estimatedDelivery": "Estimated Delivery",
+    "required": "Required field",
+    "optional": "Optional",
+    "validation": {
+      "required": "This field is required",
+      "email": "Invalid email format",
+      "phone": "Invalid phone format",
+      "postalCode": "Invalid postal code format",
+      "agreeToTerms": "You must agree to the terms and conditions"
+    }
   },
   "auth": {
     "login": "Login",

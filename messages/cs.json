@@ -137,7 +137,23 @@
     "deliveryTime": "Čas doručení",
     "paymentMethod": "Způsob platby",
     "placeOrder": "Dokončit objednávku",
-    "orderConfirmation": "Potvrzení objednávky"
+    "orderConfirmation": "Potvrzení objednávky",
+    "free": "Zdarma",
+    "step": "Krok",
+    "of": "z",
+    "backToCart": "Zpět do košíku",
+    "processing": "Zpracovávání...",
+    "orderTotal": "Celkem k úhradě",
+    "estimatedDelivery": "Odhadované doručení",
+    "required": "Povinné pole",
+    "optional": "Volitelné",
+    "validation": {
+      "required": "Toto pole je povinné",
+      "email": "Neplatný formát e-mailu",
+      "phone": "Neplatný formát telefonu",
+      "postalCode": "Neplatný formát PSČ",
+      "agreeToTerms": "Musíte souhlasit s obchodními podmínkami"
+    }
   },
   "auth": {
     "login": "Přihlášení",

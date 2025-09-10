@@ -121,5 +121,6 @@ export interface ContactInfo {
 export * from './product';
 export * from './cart';
 export * from './delivery';
+export * from './order';
 
 export default {};
