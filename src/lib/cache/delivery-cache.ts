@@ -165,7 +165,7 @@ export async function cacheDeliveryAvailability(
 ): Promise<void> {
   try {
     const client = getCacheClient();
-    const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+    const dateStr = date.toISOString().split('T')[0]!; // YYYY-MM-DD
     const key = getAvailabilityCacheKey(dateStr, postalCode);
     const data = JSON.stringify(availability);
 
@@ -184,7 +184,7 @@ export async function getCachedDeliveryAvailability(
 ): Promise<DeliveryAvailability | null> {
   try {
     const client = getCacheClient();
-    const dateStr = date.toISOString().split('T')[0]; // YYYY-MM-DD
+    const dateStr = date.toISOString().split('T')[0]!; // YYYY-MM-DD
     const key = getAvailabilityCacheKey(dateStr, postalCode);
     const cached = await client.get(key);
 

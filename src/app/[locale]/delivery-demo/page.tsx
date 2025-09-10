@@ -15,9 +15,9 @@ import {
 import {
   DeliveryUrgency,
   DeliveryTimeSlot,
-  DeliveryCostCalculation,
-  Address
+  DeliveryCostCalculation
 } from '@/types/delivery';
+import type { Address } from '@/types';
 
 export default function DeliveryDemoPage() {
   const t = useTranslations('delivery');
@@ -56,7 +56,7 @@ export default function DeliveryDemoPage() {
 
   // Handle address change
   const handleAddressChange = (field: keyof Address, value: string) => {
-    setDeliveryAddress(prev => ({
+    setDeliveryAddress((prev: Address) => ({
       ...prev,
       [field]: value
     }));

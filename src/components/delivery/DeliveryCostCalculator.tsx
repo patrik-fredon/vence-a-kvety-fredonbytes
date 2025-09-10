@@ -11,9 +11,9 @@ import { clsx } from 'clsx';
 import {
   DeliveryUrgency,
   DeliveryTimeSlot,
-  DeliveryCostCalculation,
-  Address
+  DeliveryCostCalculation
 } from '@/types/delivery';
+import type { Address } from '@/types';
 import {
   calculateDeliveryCost,
   findDeliveryZone,

@@ -11,9 +11,9 @@ import { clsx } from 'clsx';
 import { ClockIcon, TruckIcon } from '@heroicons/react/24/outline';
 import {
   DeliveryOption,
-  DeliveryUrgency,
-  Address
+  DeliveryUrgency
 } from '@/types/delivery';
+import type { Address } from '@/types';
 
 interface DeliveryOptionsSelectorProps {
   address?: Address;

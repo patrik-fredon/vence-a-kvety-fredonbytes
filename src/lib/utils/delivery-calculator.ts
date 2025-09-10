@@ -11,9 +11,9 @@ import {
   DeliveryTimeSlot,
   Holiday,
   DeliveryZone,
-  DeliverySettings,
-  Address
+  DeliverySettings
 } from '@/types/delivery';
+import type { Address } from '@/types';
 
 // Czech public holidays (fixed dates and calculated dates)
 export const CZECH_HOLIDAYS_2024: Holiday[] = [
@@ -171,7 +171,7 @@ export function calculateEarliestDeliveryDate(
 
   // For same-day delivery, check if it's still possible today
   if (urgency === 'same-day') {
-    const endOfWorkingHours = parseInt(settings.workingHours.end.split(':')[0]);
+    const endOfWorkingHours = parseInt(settings.workingHours.end.split(':')[0] || '18');
     if (currentHour >= endOfWorkingHours - settings.sameDayDeliveryHours) {
       // Too late for same-day, move to next working day
       return getNextWorkingDay(now, settings);
@@ -313,7 +313,7 @@ export function findDeliveryZone(postalCode: string): DeliveryZone {
   const zone = zones.find(z =>
     z.postalCodes.some(pc => postalCode.startsWith(pc))
   );
-  return zone || zones[zones.length - 1]; // Default to 'other' zone
+  return zone || zones[zones.length - 1]!; // Default to 'other' zone
 }
 
 /**

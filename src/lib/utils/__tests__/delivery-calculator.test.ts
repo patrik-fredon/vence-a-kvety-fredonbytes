@@ -14,7 +14,8 @@ import {
   validateDeliveryRequest,
   DEFAULT_DELIVERY_SETTINGS
 } from '../delivery-calculator';
-import { Address, DeliveryUrgency } from '@/types/delivery';
+import { DeliveryUrgency } from '@/types/delivery';
+import type { Address } from '@/types';
 
 describe('Delivery Calculator', () => {
   describe('isCzechHoliday', () => {
@@ -117,13 +118,21 @@ describe('Delivery Calculator', () => {
 
   describe('generateAvailableDeliveryDates', () => {
     it('should generate correct availability for a future month', () => {
-      // Use a future date to ensure we get results
-      const futureDate = new Date();
-      futureDate.setMonth(futureDate.getMonth() + 2); // 2 months from now
+      // Use next month to ensure we get results
+      const now = new Date();
+      const nextMonth = now.getMonth() === 11 ? 0 : now.getMonth() + 1;
+      const nextYear = now.getMonth() === 11 ? now.getFullYear() + 1 : now.getFullYear();
 
-      const dates = generateAvailableDeliveryDates(futureDate.getMonth(), futureDate.getFullYear());
+      const dates = generateAvailableDeliveryDates(nextMonth, nextYear);
 
       expect(dates.length).toBeGreaterThan(0);
+
+      // Check that all dates are in the future
+      dates.forEach(dateInfo => {
+        expect(dateInfo.date.getTime()).toBeGreaterThanOrEqual(
+          new Date(now.getFullYear(), now.getMonth(), now.getDate()).getTime()
+        );
+      });
 
       // Check that weekends are marked as unavailable
       const weekend = dates.find(d => d.date.getDay() === 0 || d.date.getDay() === 6);
