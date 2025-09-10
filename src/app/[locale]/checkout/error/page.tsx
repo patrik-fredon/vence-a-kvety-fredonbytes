@@ -199,30 +199,29 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
           {orderId ? (
-            <Button
-              href={`/${locale}/checkout?orderId=${orderId}`}
-              className="flex items-center justify-center"
-            >
-              <ArrowPathIcon className="w-4 h-4 mr-2" />
-              Zkusit znovu
-            </Button>
+            <a href={`/${locale}/checkout?orderId=${orderId}`}>
+              <Button className="flex items-center justify-center">
+                <ArrowPathIcon className="w-4 h-4 mr-2" />
+                Zkusit znovu
+              </Button>
+            </a>
           ) : (
-            <Button
-              href={`/${locale}/cart`}
-              className="flex items-center justify-center"
-            >
-              <ShoppingCartIcon className="w-4 h-4 mr-2" />
-              Zobrazit košík
-            </Button>
+            <a href={`/${locale}/cart`}>
+              <Button className="flex items-center justify-center">
+                <ShoppingCartIcon className="w-4 h-4 mr-2" />
+                Zobrazit košík
+              </Button>
+            </a>
           )}
 
-          <Button
-            href={`/${locale}/products`}
-            variant="outline"
-            className="flex items-center justify-center"
-          >
-            Pokračovat v nákupu
-          </Button>
+          <a href={`/${locale}/products`}>
+            <Button
+              variant="outline"
+              className="flex items-center justify-center"
+            >
+              Pokračovat v nákupu
+            </Button>
+          </a>
         </div>
 
         {/* Emergency Contact */}

@@ -86,6 +86,11 @@ CREATE TABLE IF NOT EXISTS orders (
   status order_status DEFAULT 'pending',
   total_amount DECIMAL(10,2) NOT NULL CHECK (total_amount >= 0),
   notes TEXT,
+  internal_notes TEXT,
+  confirmed_at TIMESTAMP WITH TIME ZONE,
+  shipped_at TIMESTAMP WITH TIME ZONE,
+  delivered_at TIMESTAMP WITH TIME ZONE,
+  cancelled_at TIMESTAMP WITH TIME ZONE,
   created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW(),
   updated_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
 );

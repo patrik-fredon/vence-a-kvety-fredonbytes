@@ -1,0 +1,103 @@
+import { NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from '@/lib/supabase/server';
+import { orderUtils, userUtils } from '@/lib/supabase/utils';
+import { OrderStatus } from '@/types/order';
+
+/**
+ * Get all orders (Admin only)
+ */
+export async function GET(request: NextRequest) {
+  try {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+
+    if (!user) {
+      return NextResponse.json({
+        success: false,
+        error: 'Unauthorized'
+      }, { status: 401 });
+    }
+
+    // Check if user is admin
+    const isAdmin = await userUtils.isAdmin(user.id);
+    if (!isAdmin) {
+      return NextResponse.json({
+        success: false,
+        error: 'Insufficient permissions'
+      }, { status: 403 });
+    }
+
+    // Parse query parameters
+    const { searchParams } = new URL(request.url);
+    const status = searchParams.get('status') as OrderStatus | null;
+    const dateFrom = searchParams.get('dateFrom');
+    const dateTo = searchParams.get('dateTo');
+    const limit = parseInt(searchParams.get('limit') || '20');
+    const offset = parseInt(searchParams.get('offset') || '0');
+
+    // Get orders with filters
+    const { data: orders, error } = await orderUtils.getAllOrders({
+      status: status || undefined,
+      dateFrom: dateFrom || undefined,
+      dateTo: dateTo || undefined,
+      limit,
+      offset
+    });
+
+    if (error) {
+      console.error('Error fetching orders:', error);
+      return NextResponse.json({
+        success: false,
+        error: 'Chyba při načítání objednávek'
+      }, { status: 500 });
+    }
+
+    // Transform orders for admin view
+    const transformedOrders = orders.map(order => {
+      const customerInfo = order.customer_info as any;
+      const deliveryInfo = order.delivery_info as any;
+      const paymentInfo = order.payment_info as any;
+      const itemsData = order.items as any;
+
+      return {
+        id: order.id,
+        orderNumber: customerInfo.orderNumber || order.id.slice(-8).toUpperCase(),
+        customerName: `${customerInfo.firstName} ${customerInfo.lastName}`,
+        customerEmail: customerInfo.email,
+        customerPhone: customerInfo.phone,
+        status: order.status,
+        totalAmount: order.total_amount,
+        itemCount: itemsData.itemCount || 0,
+        paymentMethod: paymentInfo.method,
+        paymentStatus: paymentInfo.status,
+        deliveryAddress: `${deliveryInfo.address.city}, ${deliveryInfo.address.postalCode}`,
+        preferredDate: deliveryInfo.preferredDate,
+        createdAt: order.created_at,
+        updatedAt: order.updated_at,
+        confirmedAt: order.confirmed_at,
+        shippedAt: order.shipped_at,
+        deliveredAt: order.delivered_at,
+        cancelledAt: order.cancelled_at,
+        notes: order.notes,
+        internalNotes: order.internal_notes
+      };
+    });
+
+    return NextResponse.json({
+      success: true,
+      orders: transformedOrders,
+      pagination: {
+        limit,
+        offset,
+        total: transformedOrders.length
+      }
+    });
+
+  } catch (error) {
+    console.error('Error in GET /api/admin/orders:', error);
+    return NextResponse.json({
+      success: false,
+      error: 'Interní chyba serveru'
+    }, { status: 500 });
+  }
+}

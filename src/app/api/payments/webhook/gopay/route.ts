@@ -5,7 +5,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { headers } from 'next/headers';
 import { PaymentService } from '@/lib/payments';
-import { createClient } from '@/lib/supabase/server';
+import { createServerClient } from '@/lib/supabase/server';
 
 export async function POST(request: NextRequest) {
   try {
@@ -99,7 +99,7 @@ export async function GET(request: NextRequest) {
  */
 async function updateOrderPaymentStatus(orderId: string, paymentResult: any) {
   try {
-    const supabase = await createClient();
+    const supabase = createServerClient();
 
     const paymentInfo = {
       method: paymentResult.paymentMethod,

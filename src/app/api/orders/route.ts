@@ -175,6 +175,15 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date(order.updated_at)
     };
 
+    // Send order confirmation email
+    try {
+      const { sendOrderConfirmationEmail } = await import('@/lib/email/service');
+      await sendOrderConfirmationEmail(createdOrder, 'cs');
+    } catch (emailError) {
+      console.error('Error sending confirmation email:', emailError);
+      // Don't fail the order creation if email fails
+    }
+
     const response: CreateOrderResponse = {
       success: true,
       order: createdOrder,
@@ -283,9 +292,37 @@ async function createStripePaymentSession(
   amount: number,
   customerEmail: string
 ): Promise<string> {
-  // This would integrate with Stripe API
-  // For now, return a placeholder URL
-  return `/api/payments/stripe/checkout?order_id=${orderId}`;
+  try {
+    // Initialize payment through our payment API
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/payments/initialize`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        orderId,
+        amount,
+        currency: 'czk',
+        customerEmail,
+        customerName: customerEmail, // Will be updated with actual name
+        paymentMethod: 'stripe',
+        locale: 'cs',
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.data.clientSecret) {
+      // Return checkout URL with client secret
+      return `/cs/checkout/payment?orderId=${orderId}&clientSecret=${data.data.clientSecret}&method=stripe`;
+    } else {
+      throw new Error(data.error || 'Failed to create Stripe payment session');
+    }
+  } catch (error) {
+    console.error('Error creating Stripe payment session:', error);
+    return `/cs/checkout/error?orderId=${orderId}&error=stripe_init_failed`;
+  }
 }
 
 async function createGopayPayment(
@@ -293,7 +330,35 @@ async function createGopayPayment(
   amount: number,
   customerInfo: any
 ): Promise<string> {
-  // This would integrate with GoPay API
-  // For now, return a placeholder URL
-  return `/api/payments/gopay/checkout?order_id=${orderId}`;
+  try {
+    // Initialize payment through our payment API
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const response = await fetch(`${baseUrl}/api/payments/initialize`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        orderId,
+        amount,
+        currency: 'czk',
+        customerEmail: customerInfo.email,
+        customerName: `${customerInfo.firstName} ${customerInfo.lastName}`,
+        paymentMethod: 'gopay',
+        locale: 'cs',
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.success && data.data.redirectUrl) {
+      // Return GoPay redirect URL
+      return data.data.redirectUrl;
+    } else {
+      throw new Error(data.error || 'Failed to create GoPay payment');
+    }
+  } catch (error) {
+    console.error('Error creating GoPay payment:', error);
+    return `/cs/checkout/error?orderId=${orderId}&error=gopay_init_failed`;
+  }
 }

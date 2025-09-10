@@ -224,15 +224,18 @@ export class GopayClient {
  * Create GoPay client instance
  */
 export function createGopayClient(): GopayClient {
-  const config: GopayConfig = {
-    clientId: process.env.GOPAY_CLIENT_ID!,
-    clientSecret: process.env.GOPAY_CLIENT_SECRET!,
-    environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox',
-  };
+  const clientId = process.env.GOPAY_CLIENT_ID;
+  const clientSecret = process.env.GOPAY_CLIENT_SECRET;
 
-  if (!config.clientId || !config.clientSecret) {
+  if (!clientId || !clientSecret) {
     throw new Error('GoPay configuration is missing. Please set GOPAY_CLIENT_ID and GOPAY_CLIENT_SECRET environment variables.');
   }
+
+  const config: GopayConfig = {
+    clientId,
+    clientSecret,
+    environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox',
+  };
 
   return new GopayClient(config);
 }

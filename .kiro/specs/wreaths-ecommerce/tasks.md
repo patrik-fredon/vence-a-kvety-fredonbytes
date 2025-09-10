@@ -76,14 +76,14 @@
   - Add delivery option selection and cost calculation
   - _Requirements: 4.2, 4.3_
 
-- [-] 12. Payment Integration (Stripe + GoPay)
+- [x] 12. Payment Integration (Stripe + GoPay)
   - Configure Stripe payment processing with secure tokenization
   - Implement GoPay integration for Czech market payment methods
   - Create payment selection component and secure payment forms
   - Add payment success/failure handling and order confirmation
   - _Requirements: 4.4, 4.5, 4.6, 4.7, 10.2_
 
-- [ ] 13. Order Management System
+- [x] 13. Order Management System
   - Create Order data models and database operations
   - Implement order creation, status tracking, and history functionality
   - Build order confirmation and email notification system

@@ -219,14 +219,17 @@ export function StripePaymentForm({
 
   // Configure Elements options with locale
   const elementsOptions = {
-    ...stripeElementsOptions,
     clientSecret,
-    locale: locale === 'cs' ? 'cs' : 'en',
     appearance: {
-      ...stripeElementsOptions.appearance,
+      theme: 'stripe' as const,
       variables: {
-        ...stripeElementsOptions.appearance?.variables,
         colorPrimary: '#059669',
+        colorBackground: '#ffffff',
+        colorText: '#1f2937',
+        colorDanger: '#dc2626',
+        fontFamily: 'Inter, system-ui, sans-serif',
+        spacingUnit: '4px',
+        borderRadius: '8px',
       },
     },
   };

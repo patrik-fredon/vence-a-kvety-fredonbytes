@@ -6,10 +6,12 @@ import Stripe from 'stripe';
 import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
 
 // Server-side Stripe instance
-export const stripe = new Stripe(process.env.STRIPE_SECRET_KEY!, {
-  apiVersion: '2024-12-18.acacia',
-  typescript: true,
-});
+export const stripe = process.env.STRIPE_SECRET_KEY
+  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+    apiVersion: '2025-08-27.basil',
+    typescript: true,
+  })
+  : null;
 
 // Client-side Stripe promise
 let stripePromise: Promise<any> | null = null;
@@ -67,6 +69,10 @@ export interface CreatePaymentIntentOptions {
  * Create a Stripe Payment Intent
  */
 export async function createPaymentIntent(options: CreatePaymentIntentOptions): Promise<Stripe.PaymentIntent> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
+
   const {
     amount,
     currency = 'czk',
@@ -104,6 +110,10 @@ export async function createPaymentIntent(options: CreatePaymentIntentOptions): 
  * Retrieve a Payment Intent by ID
  */
 export async function retrievePaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
+
   try {
     return await stripe.paymentIntents.retrieve(paymentIntentId);
   } catch (error) {
@@ -119,6 +129,10 @@ export async function confirmPaymentIntent(
   paymentIntentId: string,
   paymentMethodId: string
 ): Promise<Stripe.PaymentIntent> {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
+
   try {
     return await stripe.paymentIntents.confirm(paymentIntentId, {
       payment_method: paymentMethodId,
@@ -137,6 +151,10 @@ export function verifyWebhookSignature(
   signature: string,
   secret: string
 ): Stripe.Event {
+  if (!stripe) {
+    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+  }
+
   try {
     return stripe.webhooks.constructEvent(payload, signature, secret);
   } catch (error) {

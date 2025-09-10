@@ -4,6 +4,8 @@ import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/Button'
 import { Input } from '@/components/ui/Input'
 import { useAuth, useUpdateProfile, useSignOut } from '@/lib/auth/hooks'
+import { OrderHistory } from '@/components/order/OrderHistory'
+import { useParams } from 'next/navigation'
 
 interface Address {
   id: string
@@ -19,6 +21,8 @@ export function UserProfile() {
   const { user } = useAuth()
   const { updateProfile, loading: updateLoading, error: updateError } = useUpdateProfile()
   const { signOut, loading: signOutLoading } = useSignOut()
+  const params = useParams()
+  const locale = params?.locale as string || 'cs'
 
   const [formData, setFormData] = useState({
     name: '',
@@ -28,6 +32,7 @@ export function UserProfile() {
   const [addresses, setAddresses] = useState<Address[]>([])
   const [isEditing, setIsEditing] = useState(false)
   const [successMessage, setSuccessMessage] = useState('')
+  const [activeTab, setActiveTab] = useState<'profile' | 'orders'>('profile')
 
   useEffect(() => {
     if (user) {
@@ -104,22 +109,58 @@ export function UserProfile() {
   }
 
   return (
-    <div className="max-w-2xl mx-auto">
-      <div className="bg-white shadow rounded-lg">
-        <div className="px-6 py-4 border-b border-gray-200">
+    <div className="max-w-4xl mx-auto">
+      {/* Tab Navigation */}
+      <div className="bg-white shadow rounded-lg mb-6">
+        <div className="border-b border-gray-200">
+          <nav className="-mb-px flex space-x-8 px-6">
+            <button
+              onClick={() => setActiveTab('profile')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'profile'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              {locale === 'cs' ? 'Můj profil' : 'My Profile'}
+            </button>
+            <button
+              onClick={() => setActiveTab('orders')}
+              className={`py-4 px-1 border-b-2 font-medium text-sm ${
+                activeTab === 'orders'
+                  ? 'border-indigo-500 text-indigo-600'
+                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+              }`}
+            >
+              {locale === 'cs' ? 'Moje objednávky' : 'My Orders'}
+            </button>
+          </nav>
+        </div>
+        <div className="px-6 py-4">
           <div className="flex justify-between items-center">
-            <h2 className="text-xl font-semibold text-gray-900">
-              Můj profil
-            </h2>
+            <h1 className="text-2xl font-bold text-gray-900">
+              {activeTab === 'profile'
+                ? (locale === 'cs' ? 'Můj profil' : 'My Profile')
+                : (locale === 'cs' ? 'Moje objednávky' : 'My Orders')
+              }
+            </h1>
             <Button
               variant="outline"
               onClick={handleSignOut}
               disabled={signOutLoading}
             >
-              {signOutLoading ? 'Odhlašování...' : 'Odhlásit se'}
+              {signOutLoading
+                ? (locale === 'cs' ? 'Odhlašování...' : 'Signing out...')
+                : (locale === 'cs' ? 'Odhlásit se' : 'Sign Out')
+              }
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* Tab Content */}
+      {activeTab === 'profile' ? (
+        <div className="bg-white shadow rounded-lg">
 
         <div className="p-6">
           {successMessage && (
@@ -285,7 +326,11 @@ export function UserProfile() {
             </div>
           </form>
         </div>
-      </div>
+      ) : (
+        <div className="bg-white shadow rounded-lg p-6">
+          <OrderHistory locale={locale} />
+        </div>
+      )}
     </div>
   )
 }

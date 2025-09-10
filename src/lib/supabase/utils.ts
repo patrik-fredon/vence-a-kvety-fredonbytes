@@ -254,11 +254,157 @@ export const orderUtils = {
       .range(offset, offset + limit - 1);
   },
 
-  async updateOrderStatus(orderId: string, status: Database['public']['Enums']['order_status']) {
+  async updateOrderStatus(orderId: string, status: Database['public']['Enums']['order_status'], internalNotes?: string) {
+    const updateData: any = {
+      status,
+      updated_at: new Date().toISOString()
+    };
+
+    // Add timestamp fields based on status
+    switch (status) {
+      case 'confirmed':
+        updateData.confirmed_at = new Date().toISOString();
+        break;
+      case 'shipped':
+        updateData.shipped_at = new Date().toISOString();
+        break;
+      case 'delivered':
+        updateData.delivered_at = new Date().toISOString();
+        break;
+      case 'cancelled':
+        updateData.cancelled_at = new Date().toISOString();
+        break;
+    }
+
+    if (internalNotes) {
+      updateData.internal_notes = internalNotes;
+    }
+
     return supabaseAdmin
       .from('orders')
-      .update({ status })
-      .eq('id', orderId);
+      .update(updateData)
+      .eq('id', orderId)
+      .select()
+      .single();
+  },
+
+  async getOrderHistory(orderId: string) {
+    // Get order with all status change timestamps
+    const { data: order, error } = await supabase
+      .from('orders')
+      .select('*')
+      .eq('id', orderId)
+      .single();
+
+    if (error || !order) {
+      return { data: null, error };
+    }
+
+    // Build status history from timestamps
+    const statusHistory = [];
+
+    if (order.created_at) {
+      statusHistory.push({
+        status: 'pending',
+        timestamp: order.created_at,
+        description: 'Objednávka byla vytvořena'
+      });
+    }
+
+    if (order.confirmed_at) {
+      statusHistory.push({
+        status: 'confirmed',
+        timestamp: order.confirmed_at,
+        description: 'Objednávka byla potvrzena'
+      });
+    }
+
+    if (order.shipped_at) {
+      statusHistory.push({
+        status: 'shipped',
+        timestamp: order.shipped_at,
+        description: 'Objednávka byla odeslána'
+      });
+    }
+
+    if (order.delivered_at) {
+      statusHistory.push({
+        status: 'delivered',
+        timestamp: order.delivered_at,
+        description: 'Objednávka byla doručena'
+      });
+    }
+
+    if (order.cancelled_at) {
+      statusHistory.push({
+        status: 'cancelled',
+        timestamp: order.cancelled_at,
+        description: 'Objednávka byla zrušena'
+      });
+    }
+
+    return { data: { order, statusHistory }, error: null };
+  },
+
+  async getAllOrders(filters?: {
+    status?: Database['public']['Enums']['order_status'];
+    dateFrom?: string;
+    dateTo?: string;
+    limit?: number;
+    offset?: number;
+  }) {
+    let query = supabaseAdmin
+      .from('orders')
+      .select('*')
+      .order('created_at', { ascending: false });
+
+    if (filters?.status) {
+      query = query.eq('status', filters.status);
+    }
+
+    if (filters?.dateFrom) {
+      query = query.gte('created_at', filters.dateFrom);
+    }
+
+    if (filters?.dateTo) {
+      query = query.lte('created_at', filters.dateTo);
+    }
+
+    if (filters?.limit) {
+      const offset = filters.offset || 0;
+      query = query.range(offset, offset + filters.limit - 1);
+    }
+
+    return query;
+  },
+
+  async getOrderStats() {
+    const { data: orders, error } = await supabaseAdmin
+      .from('orders')
+      .select('status, total_amount, created_at');
+
+    if (error) {
+      return { data: null, error };
+    }
+
+    const stats = {
+      total: orders.length,
+      pending: orders.filter(o => o.status === 'pending').length,
+      confirmed: orders.filter(o => o.status === 'confirmed').length,
+      processing: orders.filter(o => o.status === 'processing').length,
+      shipped: orders.filter(o => o.status === 'shipped').length,
+      delivered: orders.filter(o => o.status === 'delivered').length,
+      cancelled: orders.filter(o => o.status === 'cancelled').length,
+      totalRevenue: orders
+        .filter(o => ['delivered', 'shipped'].includes(o.status))
+        .reduce((sum, o) => sum + Number(o.total_amount), 0),
+      todayOrders: orders.filter(o => {
+        const today = new Date().toISOString().split('T')[0];
+        return o.created_at.startsWith(today);
+      }).length
+    };
+
+    return { data: stats, error: null };
   }
 };
 
