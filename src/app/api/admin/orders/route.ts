@@ -29,7 +29,9 @@ export async function GET(request: NextRequest) {
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status') as OrderStatus | null;
+    const statusParam = searchParams.get('status');
+    const validStatuses: OrderStatus[] = ['pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'];
+    const status = statusParam && validStatuses.includes(statusParam as OrderStatus) ? statusParam as OrderStatus : null;
     const dateFrom = searchParams.get('dateFrom');
     const dateTo = searchParams.get('dateTo');
     const limit = parseInt(searchParams.get('limit') || '20');

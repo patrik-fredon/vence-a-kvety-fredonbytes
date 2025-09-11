@@ -78,11 +78,26 @@ export async function middleware(request: NextRequest) {
     return NextResponse.redirect(new URL(`/${locale}`, request.url))
   }
 
-  // Admin route protection (basic check - can be enhanced with role-based access)
-  if (isAdminRoute && !isAuthenticated) {
-    const signInUrl = new URL(`/${locale}/auth/signin`, request.url)
-    signInUrl.searchParams.set('callbackUrl', pathname)
-    return NextResponse.redirect(signInUrl)
+  // Admin route protection with role-based access
+  if (isAdminRoute) {
+    if (!isAuthenticated) {
+      const signInUrl = new URL(`/${locale}/auth/signin`, request.url)
+      signInUrl.searchParams.set('callbackUrl', pathname)
+      return NextResponse.redirect(signInUrl)
+    }
+
+    // Check admin role for admin routes
+    try {
+      const { userUtils } = await import('@/lib/supabase/utils')
+      const isAdmin = await userUtils.isAdmin(session.user?.id || '')
+
+      if (!isAdmin) {
+        return NextResponse.redirect(new URL(`/${locale}`, request.url))
+      }
+    } catch (error) {
+      console.error('Error checking admin role:', error)
+      return NextResponse.redirect(new URL(`/${locale}`, request.url))
+    }
   }
 
   return intlResponse
