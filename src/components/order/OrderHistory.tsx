@@ -26,15 +26,26 @@ interface OrderHistoryResponse {
   error?: string;
 }
 
+type OrderFilter = 'all' | 'pending' | 'confirmed' | 'processing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+type OrderSort = 'newest' | 'oldest' | 'amount-high' | 'amount-low';
+
 export function OrderHistory({ locale }: OrderHistoryProps) {
   const t = useTranslations('order');
-  const [orders, setOrders] = useState<OrderSummary[]>([]);
+  const [allOrders, setAllOrders] = useState<OrderSummary[]>([]);
+  const [filteredOrders, setFilteredOrders] = useState<OrderSummary[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [filter, setFilter] = useState<OrderFilter>('all');
+  const [sort, setSort] = useState<OrderSort>('newest');
+  const [searchTerm, setSearchTerm] = useState('');
 
   useEffect(() => {
     fetchOrderHistory();
   }, []);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [allOrders, filter, sort, searchTerm]);
 
   const fetchOrderHistory = async () => {
     try {
@@ -55,7 +66,7 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
           createdAt: order.created_at,
           deliveryAddress: `${order.delivery_info?.address?.city || ''}, ${order.delivery_info?.address?.postalCode || ''}`
         }));
-        setOrders(transformedOrders);
+        setAllOrders(transformedOrders);
       } else {
         setError(data.error || 'Nepodařilo se načíst historii objednávek');
       }
@@ -75,25 +86,31 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'processing':
         return 'bg-purple-100 text-purple-800 border-purple-200';
+      case 'ready':
+        return 'bg-cyan-100 text-cyan-800 border-cyan-200';
       case 'shipped':
         return 'bg-indigo-100 text-indigo-800 border-indigo-200';
       case 'delivered':
         return 'bg-green-100 text-green-800 border-green-200';
       case 'cancelled':
         return 'bg-red-100 text-red-800 border-red-200';
+      case 'refunded':
+        return 'bg-orange-100 text-orange-800 border-orange-200';
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
   };
 
   const getStatusLabel = (status: OrderStatus): string => {
-    const labels = {
+    const labels: Record<OrderStatus, string> = {
       pending: locale === 'cs' ? 'Čeká na zpracování' : 'Pending',
       confirmed: locale === 'cs' ? 'Potvrzeno' : 'Confirmed',
       processing: locale === 'cs' ? 'Zpracovává se' : 'Processing',
+      ready: locale === 'cs' ? 'Připraveno' : 'Ready',
       shipped: locale === 'cs' ? 'Odesláno' : 'Shipped',
       delivered: locale === 'cs' ? 'Doručeno' : 'Delivered',
-      cancelled: locale === 'cs' ? 'Zrušeno' : 'Cancelled'
+      cancelled: locale === 'cs' ? 'Zrušeno' : 'Cancelled',
+      refunded: locale === 'cs' ? 'Vráceno' : 'Refunded'
     };
     return labels[status] || status;
   };
@@ -105,6 +122,67 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
       month: 'short',
       day: 'numeric'
     });
+  };
+
+  const applyFiltersAndSort = () => {
+    let filtered = [...allOrders];
+
+    // Apply status filter
+    if (filter !== 'all') {
+      filtered = filtered.filter(order => order.status === filter);
+    }
+
+    // Apply search filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(order =>
+        order.orderNumber.toLowerCase().includes(term) ||
+        order.deliveryAddress.toLowerCase().includes(term)
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sort) {
+        case 'newest':
+          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
+        case 'oldest':
+          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
+        case 'amount-high':
+          return b.totalAmount - a.totalAmount;
+        case 'amount-low':
+          return a.totalAmount - b.totalAmount;
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredOrders(filtered);
+  };
+
+  const getFilterLabel = (filterValue: OrderFilter): string => {
+    const labels: Record<OrderFilter, string> = {
+      all: locale === 'cs' ? 'Všechny' : 'All',
+      pending: locale === 'cs' ? 'Čeká na zpracování' : 'Pending',
+      confirmed: locale === 'cs' ? 'Potvrzeno' : 'Confirmed',
+      processing: locale === 'cs' ? 'Zpracovává se' : 'Processing',
+      ready: locale === 'cs' ? 'Připraveno' : 'Ready',
+      shipped: locale === 'cs' ? 'Odesláno' : 'Shipped',
+      delivered: locale === 'cs' ? 'Doručeno' : 'Delivered',
+      cancelled: locale === 'cs' ? 'Zrušeno' : 'Cancelled',
+      refunded: locale === 'cs' ? 'Vráceno' : 'Refunded'
+    };
+    return labels[filterValue];
+  };
+
+  const getSortLabel = (sortValue: OrderSort): string => {
+    const labels = {
+      newest: locale === 'cs' ? 'Nejnovější' : 'Newest First',
+      oldest: locale === 'cs' ? 'Nejstarší' : 'Oldest First',
+      'amount-high': locale === 'cs' ? 'Nejvyšší částka' : 'Highest Amount',
+      'amount-low': locale === 'cs' ? 'Nejnižší částka' : 'Lowest Amount'
+    };
+    return labels[sortValue];
   };
 
   if (loading) {
@@ -137,7 +215,7 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
     );
   }
 
-  if (orders.length === 0) {
+  if (allOrders.length === 0) {
     return (
       <div className="text-center py-12">
         <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -166,25 +244,106 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
 
   return (
     <div className="space-y-6">
-      <div className="flex items-center justify-between">
-        <h2 className="text-lg font-medium text-gray-900">
-          {locale === 'cs' ? 'Historie objednávek' : 'Order History'}
-        </h2>
-        <button
-          onClick={fetchOrderHistory}
-          disabled={loading}
-          className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
-        >
-          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-          </svg>
-          {locale === 'cs' ? 'Aktualizovat' : 'Refresh'}
-        </button>
+      {/* Header with Search and Filters */}
+      <div className="space-y-4">
+        <div className="flex items-center justify-between">
+          <h2 className="text-lg font-medium text-gray-900">
+            {locale === 'cs' ? 'Historie objednávek' : 'Order History'}
+          </h2>
+          <button
+            onClick={fetchOrderHistory}
+            disabled={loading}
+            className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
+          >
+            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
+            </svg>
+            {locale === 'cs' ? 'Aktualizovat' : 'Refresh'}
+          </button>
+        </div>
+
+        {/* Search and Filters */}
+        <div className="flex flex-col sm:flex-row gap-4">
+          {/* Search */}
+          <div className="flex-1">
+            <div className="relative">
+              <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                <svg className="h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                </svg>
+              </div>
+              <input
+                type="text"
+                placeholder={locale === 'cs' ? 'Hledat podle čísla objednávky nebo adresy...' : 'Search by order number or address...'}
+                value={searchTerm}
+                onChange={(e) => setSearchTerm(e.target.value)}
+                className="block w-full pl-10 pr-3 py-2 border border-gray-300 rounded-md leading-5 bg-white placeholder-gray-500 focus:outline-none focus:placeholder-gray-400 focus:ring-1 focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+              />
+            </div>
+          </div>
+
+          {/* Status Filter */}
+          <div className="sm:w-48">
+            <select
+              value={filter}
+              onChange={(e) => setFilter(e.target.value as OrderFilter)}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              {(['all', 'pending', 'confirmed', 'processing', 'ready', 'shipped', 'delivered', 'cancelled'] as OrderFilter[]).map((filterOption) => (
+                <option key={filterOption} value={filterOption}>
+                  {getFilterLabel(filterOption)}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* Sort */}
+          <div className="sm:w-48">
+            <select
+              value={sort}
+              onChange={(e) => setSort(e.target.value as OrderSort)}
+              className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+            >
+              {(['newest', 'oldest', 'amount-high', 'amount-low'] as OrderSort[]).map((sortOption) => (
+                <option key={sortOption} value={sortOption}>
+                  {getSortLabel(sortOption)}
+                </option>
+              ))}
+            </select>
+          </div>
+        </div>
+
+        {/* Results Summary */}
+        {allOrders.length > 0 && (
+          <div className="text-sm text-gray-600">
+            {locale === 'cs'
+              ? `Zobrazeno ${filteredOrders.length} z ${allOrders.length} objednávek`
+              : `Showing ${filteredOrders.length} of ${allOrders.length} orders`
+            }
+          </div>
+        )}
       </div>
 
-      <div className="bg-white shadow overflow-hidden sm:rounded-md">
-        <ul className="divide-y divide-gray-200">
-          {orders.map((order) => (
+      {/* Orders List */}
+      {filteredOrders.length === 0 && allOrders.length > 0 ? (
+        <div className="text-center py-8">
+          <svg className="mx-auto h-12 w-12 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+          </svg>
+          <h3 className="mt-2 text-sm font-medium text-gray-900">
+            {locale === 'cs' ? 'Žádné objednávky nenalezeny' : 'No orders found'}
+          </h3>
+          <p className="mt-1 text-sm text-gray-500">
+            {locale === 'cs'
+              ? 'Zkuste změnit filtry nebo vyhledávací kritéria.'
+              : 'Try adjusting your filters or search criteria.'
+            }
+          </p>
+        </div>
+      ) : (
+        <div className="bg-white shadow overflow-hidden sm:rounded-md">
+          <ul className="divide-y divide-gray-200">
+            {filteredOrders.map((order) => (
             <li key={order.id}>
               <Link
                 href={`/${locale}/orders/${order.id}`}
@@ -245,6 +404,7 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
           ))}
         </ul>
       </div>
+      )}
     </div>
   );
 }

@@ -90,7 +90,7 @@
   - Add order tracking for customers and status updates
   - _Requirements: 6.4, 4.6_
 
-- [ ] 14. User Account and Order History
+- [x] 14. User Account and Order History
   - Build user profile management interface
   - Create order history display with detailed order information
   - Implement address book functionality for delivery addresses

@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback } from 'react';
 import { CartState, CartSummary, AddToCartRequest } from '@/types/cart';
-import { useSession } from 'next-auth/react';
+import { useAuthContext } from '@/components/auth/AuthProvider';
 
 // Cart actions
 type CartAction =
@@ -64,7 +64,7 @@ interface CartProviderProps {
 
 export function CartProvider({ children }: CartProviderProps) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
-  const { data: session, status } = useSession();
+  const { user, loading } = useAuthContext();
 
   // Fetch cart data from API
   const fetchCart = useCallback(async () => {
@@ -192,12 +192,12 @@ export function CartProvider({ children }: CartProviderProps) {
     await fetchCart();
   }, [fetchCart]);
 
-  // Load cart on mount and when session changes
+  // Load cart on mount and when auth state changes
   useEffect(() => {
-    if (status !== 'loading') {
+    if (!loading) {
       fetchCart();
     }
-  }, [status, fetchCart]);
+  }, [loading, user, fetchCart]);
 
   const contextValue: CartContextType = {
     state,
