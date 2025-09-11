@@ -20,12 +20,14 @@ import {
   validateProductData,
   createSlug
 } from '@/lib/utils/product-transforms';
+import { withCache, setCacheHeaders, invalidateApiCache } from '@/lib/cache/api-cache';
+import { CACHE_TTL } from '@/lib/cache/redis';
 
 /**
  * GET /api/products
  * Retrieve products with optional filtering, searching, and pagination
  */
-export async function GET(request: NextRequest) {
+async function getProducts(request: NextRequest) {
   try {
     const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
@@ -157,7 +159,13 @@ export async function GET(request: NextRequest) {
       },
     };
 
-    return NextResponse.json(response);
+    const jsonResponse = NextResponse.json(response);
+
+    // Set cache headers for better performance
+    return setCacheHeaders(jsonResponse, {
+      maxAge: CACHE_TTL.PRODUCTS,
+      staleWhileRevalidate: CACHE_TTL.DAY,
+    });
   } catch (error) {
     console.error('Unexpected error in GET /api/products:', error);
     return NextResponse.json(
@@ -172,6 +180,13 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// Export cached GET handler
+export const GET = withCache(getProducts, {
+  ttl: CACHE_TTL.PRODUCTS,
+  keyPrefix: 'products',
+  varyBy: ['accept-language'],
+});
 
 /**
  * POST /api/products
@@ -297,6 +312,9 @@ export async function POST(request: NextRequest) {
     // Transform the response
     const category = data.categories ? transformCategoryRow(data.categories) : undefined;
     const product = transformProductRow(data, category);
+
+    // Invalidate products cache after creating new product
+    await invalidateApiCache('products*');
 
     const response: ApiResponse<Product> = {
       success: true,

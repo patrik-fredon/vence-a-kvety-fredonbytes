@@ -4,6 +4,7 @@ import { createServerClient } from '@/lib/supabase/server';
 import { transformProductRow, transformCategoryRow } from '@/lib/utils/product-transforms';
 import { Product, ProductRow, CategoryRow } from '@/types/product';
 import { ProductDetail } from '@/components/product/ProductDetail';
+import { getCachedProductBySlug, cacheProductBySlug } from '@/lib/cache/product-cache';
 
 interface ProductDetailPageProps {
   params: Promise<{
@@ -12,41 +13,79 @@ interface ProductDetailPageProps {
   }>;
 }
 
-export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
-  const { locale, slug } = await params;
+// Enable ISR with 1 hour revalidation
+export const revalidate = 3600;
+
+// Generate static params for popular products
+export async function generateStaticParams() {
   const supabase = createServerClient();
 
-  // Fetch product by slug
-  const { data, error } = await supabase
+  // Get popular/featured products for static generation
+  const { data: products } = await supabase
     .from('products')
-    .select(`
-      *,
-      categories (
-        id,
-        name_cs,
-        name_en,
-        slug,
-        description_cs,
-        description_en,
-        image_url,
-        parent_id,
-        sort_order,
-        active,
-        created_at,
-        updated_at
-      )
-    `)
-    .eq('slug', slug)
+    .select('slug')
     .eq('active', true)
-    .single();
+    .or('featured.eq.true,created_at.gte.2024-01-01') // Featured or recent products
+    .limit(50); // Limit to avoid too many static pages
 
-  if (error || !data) {
-    notFound();
+  if (!products) return [];
+
+  // Generate params for both locales
+  const params = [];
+  for (const product of products) {
+    params.push(
+      { locale: 'cs', slug: product.slug },
+      { locale: 'en', slug: product.slug }
+    );
   }
 
-  // Transform the data
-  const category = data.categories ? transformCategoryRow(data.categories) : undefined;
-  const product = transformProductRow(data, category);
+  return params;
+}
+
+export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
+  const { locale, slug } = await params;
+
+  // Try to get product from cache first
+  let product = await getCachedProductBySlug(slug);
+
+  if (!product) {
+    // If not in cache, fetch from database
+    const supabase = createServerClient();
+
+    const { data, error } = await supabase
+      .from('products')
+      .select(`
+        *,
+        categories (
+          id,
+          name_cs,
+          name_en,
+          slug,
+          description_cs,
+          description_en,
+          image_url,
+          parent_id,
+          sort_order,
+          active,
+          created_at,
+          updated_at
+        )
+      `)
+      .eq('slug', slug)
+      .eq('active', true)
+      .single();
+
+    if (error || !data) {
+      notFound();
+    }
+
+    // Transform the data
+    const category = data.categories ? transformCategoryRow(data.categories) : undefined;
+    product = transformProductRow(data, category);
+
+    // Cache the product for future requests
+    await cacheProductBySlug(slug, product);
+  }
 
   return (
     <div className="container mx-auto px-4 py-8">

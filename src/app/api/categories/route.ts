@@ -17,12 +17,14 @@ import {
   validateCategoryData,
   createSlug
 } from '@/lib/utils/product-transforms';
+import { withCache, setCacheHeaders, invalidateApiCache } from '@/lib/cache/api-cache';
+import { CACHE_TTL } from '@/lib/cache/redis';
 
 /**
  * GET /api/categories
  * Retrieve all categories with optional hierarchy
  */
-export async function GET(request: NextRequest) {
+async function getCategories(request: NextRequest) {
   try {
     const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
@@ -91,7 +93,13 @@ export async function GET(request: NextRequest) {
       data: categories,
     };
 
-    return NextResponse.json(response);
+    const jsonResponse = NextResponse.json(response);
+
+    // Set cache headers for better performance
+    return setCacheHeaders(jsonResponse, {
+      maxAge: CACHE_TTL.CATEGORIES,
+      staleWhileRevalidate: CACHE_TTL.DAY,
+    });
   } catch (error) {
     console.error('Unexpected error in GET /api/categories:', error);
     return NextResponse.json(
@@ -106,6 +114,13 @@ export async function GET(request: NextRequest) {
     );
   }
 }
+
+// Export cached GET handler
+export const GET = withCache(getCategories, {
+  ttl: CACHE_TTL.CATEGORIES,
+  keyPrefix: 'categories',
+  varyBy: ['accept-language'],
+});
 
 /**
  * POST /api/categories
@@ -216,6 +231,9 @@ export async function POST(request: NextRequest) {
 
     // Transform the response
     const category = transformCategoryRow(data);
+
+    // Invalidate categories cache after creating new category
+    await invalidateApiCache('categories*');
 
     const response: ApiResponse<Category> = {
       success: true,

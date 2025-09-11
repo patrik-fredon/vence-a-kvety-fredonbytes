@@ -5,7 +5,7 @@ import { useTranslations } from 'next-intl';
 import { Product, Customization } from '@/types/product';
 import { calculateFinalPrice, validateCustomizations as validateCustomizationsUtil } from '@/lib/utils/price-calculator';
 import { ProductImageGallery } from './ProductImageGallery';
-import { ProductCustomizer } from './ProductCustomizer';
+import { LazyProductCustomizer } from '@/components/dynamic';
 import { ProductInfo } from './ProductInfo';
 import { Button } from '@/components/ui/Button';
 import { cn } from '@/lib/utils';
@@ -138,7 +138,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             <h3 className="text-lg font-semibold text-primary-800 mb-4">
               {t('customize')}
             </h3>
-            <ProductCustomizer
+            <LazyProductCustomizer
               product={product}
               locale={locale}
               customizations={customizations}
