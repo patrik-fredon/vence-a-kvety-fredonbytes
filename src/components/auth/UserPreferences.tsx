@@ -31,7 +31,7 @@ export function UserPreferencesComponent({
     setPreferences(prev => ({
       ...prev,
       [section]: {
-        ...prev[section],
+        ...(prev[section] as any),
         [key]: value
       }
     }));

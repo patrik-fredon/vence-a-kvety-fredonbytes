@@ -1,5 +1,6 @@
 import { supabase } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
+import { Address, UserPreferences } from '@/types/user'
 
 export interface AuthUser {
   id: string
@@ -30,8 +31,6 @@ export interface UpdatePasswordData {
   password: string
   confirmPassword: string
 }
-
-import { Address, UserPreferences } from '@/types/user'
 
 export interface UpdateProfileData {
   name?: string
@@ -180,8 +179,8 @@ export const authUtils = {
         .update({
           name: data.name,
           phone: data.phone,
-          addresses: data.addresses,
-          preferences: data.preferences,
+          addresses: data.addresses as any,
+          preferences: data.preferences as any,
           updated_at: new Date().toISOString(),
         })
         .eq('id', user.id)
@@ -224,8 +223,8 @@ export const authUtils = {
         email: user.email!,
         name: profile?.name || user.user_metadata?.name || null,
         phone: profile?.phone || user.user_metadata?.phone || null,
-        addresses: profile?.addresses || [],
-        preferences: profile?.preferences || {},
+        addresses: (profile?.addresses as Address[]) || [],
+        preferences: (profile?.preferences as UserPreferences) || {},
       }
 
       return { user: authUser, error: null }

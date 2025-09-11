@@ -260,24 +260,8 @@ export const orderUtils = {
       updated_at: new Date().toISOString()
     };
 
-    // Add timestamp fields based on status
-    switch (status) {
-      case 'confirmed':
-        updateData.confirmed_at = new Date().toISOString();
-        break;
-      case 'shipped':
-        updateData.shipped_at = new Date().toISOString();
-        break;
-      case 'delivered':
-        updateData.delivered_at = new Date().toISOString();
-        break;
-      case 'cancelled':
-        updateData.cancelled_at = new Date().toISOString();
-        break;
-    }
-
     if (internalNotes) {
-      updateData.internal_notes = internalNotes;
+      updateData.notes = internalNotes; // Use notes field instead of internal_notes
     }
 
     return supabaseAdmin
@@ -311,34 +295,43 @@ export const orderUtils = {
       });
     }
 
-    if (order.confirmed_at) {
+    // Generate status history based on current status
+    if (order.status !== 'pending') {
       statusHistory.push({
         status: 'confirmed',
-        timestamp: order.confirmed_at,
+        timestamp: order.updated_at,
         description: 'Objednávka byla potvrzena'
       });
     }
 
-    if (order.shipped_at) {
+    if (['processing', 'ready', 'shipped', 'delivered'].includes(order.status)) {
+      statusHistory.push({
+        status: 'processing',
+        timestamp: order.updated_at,
+        description: 'Objednávka se zpracovává'
+      });
+    }
+
+    if (['shipped', 'delivered'].includes(order.status)) {
       statusHistory.push({
         status: 'shipped',
-        timestamp: order.shipped_at,
+        timestamp: order.updated_at,
         description: 'Objednávka byla odeslána'
       });
     }
 
-    if (order.delivered_at) {
+    if (order.status === 'delivered') {
       statusHistory.push({
         status: 'delivered',
-        timestamp: order.delivered_at,
+        timestamp: order.updated_at,
         description: 'Objednávka byla doručena'
       });
     }
 
-    if (order.cancelled_at) {
+    if (order.status === 'cancelled') {
       statusHistory.push({
         status: 'cancelled',
-        timestamp: order.cancelled_at,
+        timestamp: order.updated_at,
         description: 'Objednávka byla zrušena'
       });
     }
@@ -400,7 +393,7 @@ export const orderUtils = {
         .reduce((sum, o) => sum + Number(o.total_amount), 0),
       todayOrders: orders.filter(o => {
         const today = new Date().toISOString().split('T')[0];
-        return o.created_at.startsWith(today);
+        return o.created_at?.startsWith(today);
       }).length
     };
 

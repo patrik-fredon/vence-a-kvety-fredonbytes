@@ -3,14 +3,14 @@ import { notFound } from 'next/navigation';
 import { OrderTracking } from '@/components/order/OrderTracking';
 
 interface OrderTrackingPageProps {
-  params: {
+  params: Promise<{
     locale: string;
     id: string;
-  };
+  }>;
 }
 
 export async function generateMetadata({ params }: OrderTrackingPageProps): Promise<Metadata> {
-  const { locale, id } = params;
+  const { locale, id } = await params;
 
   return {
     title: locale === 'cs'
@@ -22,8 +22,8 @@ export async function generateMetadata({ params }: OrderTrackingPageProps): Prom
   };
 }
 
-export default function OrderTrackingPage({ params }: OrderTrackingPageProps) {
-  const { locale, id } = params;
+export default async function OrderTrackingPage({ params }: OrderTrackingPageProps) {
+  const { locale, id } = await params;
 
   // Validate order ID format (UUID)
   const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;

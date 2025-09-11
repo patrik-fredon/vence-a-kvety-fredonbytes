@@ -74,12 +74,12 @@ export async function GET(request: NextRequest) {
         preferredDate: deliveryInfo.preferredDate,
         createdAt: order.created_at,
         updatedAt: order.updated_at,
-        confirmedAt: order.confirmed_at,
-        shippedAt: order.shipped_at,
-        deliveredAt: order.delivered_at,
-        cancelledAt: order.cancelled_at,
+        confirmedAt: undefined,
+        shippedAt: undefined,
+        deliveredAt: undefined,
+        cancelledAt: undefined,
         notes: order.notes,
-        internalNotes: order.internal_notes
+        internalNotes: order.notes
       };
     });
 
