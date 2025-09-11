@@ -285,6 +285,7 @@ Email: ${this.config.fromEmail}
 
     const statusMessages = {
       cs: {
+        pending: 'Vaše objednávka čeká na zpracování.',
         confirmed: 'Vaše objednávka byla potvrzena a je připravována k odeslání.',
         processing: 'Vaše objednávka se zpracovává.',
         shipped: 'Vaše objednávka byla odeslána a je na cestě.',
@@ -292,6 +293,7 @@ Email: ${this.config.fromEmail}
         cancelled: 'Vaše objednávka byla zrušena.'
       },
       en: {
+        pending: 'Your order is pending processing.',
         confirmed: 'Your order has been confirmed and is being prepared for shipment.',
         processing: 'Your order is being processed.',
         shipped: 'Your order has been shipped and is on its way.',
@@ -356,6 +358,7 @@ Email: ${this.config.fromEmail}
 
     const statusMessages = {
       cs: {
+        pending: 'Vaše objednávka čeká na zpracování.',
         confirmed: 'Vaše objednávka byla potvrzena a je připravována k odeslání.',
         processing: 'Vaše objednávka se zpracovává.',
         shipped: 'Vaše objednávka byla odeslána a je na cestě.',
@@ -363,6 +366,7 @@ Email: ${this.config.fromEmail}
         cancelled: 'Vaše objednávka byla zrušena.'
       },
       en: {
+        pending: 'Your order is pending processing.',
         confirmed: 'Your order has been confirmed and is being prepared for shipment.',
         processing: 'Your order is being processed.',
         shipped: 'Your order has been shipped and is on its way.',

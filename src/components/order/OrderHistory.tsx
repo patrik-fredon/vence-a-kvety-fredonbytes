@@ -26,7 +26,7 @@ interface OrderHistoryResponse {
   error?: string;
 }
 
-type OrderFilter = 'all' | 'pending' | 'confirmed' | 'processing' | 'ready' | 'shipped' | 'delivered' | 'cancelled' | 'refunded';
+type OrderFilter = 'all' | OrderStatus;
 type OrderSort = 'newest' | 'oldest' | 'amount-high' | 'amount-low';
 
 export function OrderHistory({ locale }: OrderHistoryProps) {
@@ -86,16 +86,14 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
         return 'bg-blue-100 text-blue-800 border-blue-200';
       case 'processing':
         return 'bg-purple-100 text-purple-800 border-purple-200';
-      case 'ready':
-        return 'bg-cyan-100 text-cyan-800 border-cyan-200';
+
       case 'shipped':
         return 'bg-indigo-100 text-indigo-800 border-indigo-200';
       case 'delivered':
         return 'bg-green-100 text-green-800 border-green-200';
       case 'cancelled':
         return 'bg-red-100 text-red-800 border-red-200';
-      case 'refunded':
-        return 'bg-orange-100 text-orange-800 border-orange-200';
+
       default:
         return 'bg-gray-100 text-gray-800 border-gray-200';
     }
@@ -106,11 +104,9 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
       pending: locale === 'cs' ? 'Čeká na zpracování' : 'Pending',
       confirmed: locale === 'cs' ? 'Potvrzeno' : 'Confirmed',
       processing: locale === 'cs' ? 'Zpracovává se' : 'Processing',
-      ready: locale === 'cs' ? 'Připraveno' : 'Ready',
       shipped: locale === 'cs' ? 'Odesláno' : 'Shipped',
       delivered: locale === 'cs' ? 'Doručeno' : 'Delivered',
-      cancelled: locale === 'cs' ? 'Zrušeno' : 'Cancelled',
-      refunded: locale === 'cs' ? 'Vráceno' : 'Refunded'
+      cancelled: locale === 'cs' ? 'Zrušeno' : 'Cancelled'
     };
     return labels[status] || status;
   };
@@ -166,11 +162,9 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
       pending: locale === 'cs' ? 'Čeká na zpracování' : 'Pending',
       confirmed: locale === 'cs' ? 'Potvrzeno' : 'Confirmed',
       processing: locale === 'cs' ? 'Zpracovává se' : 'Processing',
-      ready: locale === 'cs' ? 'Připraveno' : 'Ready',
       shipped: locale === 'cs' ? 'Odesláno' : 'Shipped',
       delivered: locale === 'cs' ? 'Doručeno' : 'Delivered',
-      cancelled: locale === 'cs' ? 'Zrušeno' : 'Cancelled',
-      refunded: locale === 'cs' ? 'Vráceno' : 'Refunded'
+      cancelled: locale === 'cs' ? 'Zrušeno' : 'Cancelled'
     };
     return labels[filterValue];
   };
@@ -289,7 +283,7 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
               onChange={(e) => setFilter(e.target.value as OrderFilter)}
               className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
-              {(['all', 'pending', 'confirmed', 'processing', 'ready', 'shipped', 'delivered', 'cancelled'] as OrderFilter[]).map((filterOption) => (
+              {(['all', 'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'] as OrderFilter[]).map((filterOption) => (
                 <option key={filterOption} value={filterOption}>
                   {getFilterLabel(filterOption)}
                 </option>

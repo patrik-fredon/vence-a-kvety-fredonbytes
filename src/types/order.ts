@@ -11,11 +11,9 @@ export type OrderStatus =
   | 'pending'
   | 'confirmed'
   | 'processing'
-  | 'ready'
   | 'shipped'
   | 'delivered'
-  | 'cancelled'
-  | 'refunded';
+  | 'cancelled';
 
 export type PaymentStatus =
   | 'pending'

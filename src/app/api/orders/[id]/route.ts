@@ -9,12 +9,12 @@ import { sendOrderStatusUpdateEmail } from '@/lib/email/service';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
-    const orderId = params.id;
+    const { id: orderId } = await params;
 
     // Get order with user validation for non-admin users
     const { data: order, error } = await orderUtils.getOrderById(
@@ -103,12 +103,12 @@ export async function GET(
  */
 export async function PATCH(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
-    const orderId = params.id;
+    const { id: orderId } = await params;
 
     if (!user) {
       return NextResponse.json({

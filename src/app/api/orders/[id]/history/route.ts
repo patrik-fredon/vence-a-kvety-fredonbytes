@@ -7,12 +7,12 @@ import { orderUtils } from '@/lib/supabase/utils';
  */
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
   try {
     const supabase = createServerClient();
     const { data: { user } } = await supabase.auth.getUser();
-    const orderId = params.id;
+    const { id: orderId } = await params;
 
     // Get order history
     const { data: historyData, error } = await orderUtils.getOrderHistory(orderId);

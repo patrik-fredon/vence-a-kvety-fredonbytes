@@ -399,8 +399,8 @@ export const orderUtils = {
         .filter(o => ['delivered', 'shipped'].includes(o.status))
         .reduce((sum, o) => sum + Number(o.total_amount), 0),
       todayOrders: orders.filter(o => {
-        const today = new Date().toISOString().split('T')[0];
-        return o.created_at.startsWith(today);
+        const today = new Date().toISOString().split('T')[0]!;
+        return o.created_at ? o.created_at.startsWith(today) : false;
       }).length
     };
 
@@ -428,11 +428,28 @@ export const userUtils = {
   async isAdmin(userId: string): Promise<boolean> {
     const { data } = await supabase
       .from('user_profiles')
-      .select('preferences')
+      .select('role')
       .eq('id', userId)
       .single();
 
-    return (data?.preferences as any)?.role === 'admin';
+    return data?.role === 'admin' || data?.role === 'super_admin';
+  },
+
+  async getUserRole(userId: string): Promise<'customer' | 'admin' | 'super_admin' | null> {
+    const { data } = await supabase
+      .from('user_profiles')
+      .select('role')
+      .eq('id', userId)
+      .single();
+
+    return data?.role || null;
+  },
+
+  async setUserRole(userId: string, role: 'customer' | 'admin' | 'super_admin') {
+    return supabaseAdmin
+      .from('user_profiles')
+      .update({ role })
+      .eq('id', userId);
   }
 };
 
@@ -478,6 +495,159 @@ export const handleSupabaseError = (error: any) => {
     message: error?.message || 'An unexpected error occurred',
     code: error?.code || 'UNKNOWN_ERROR'
   };
+};
+
+// Admin utilities
+export const adminUtils = {
+  async getDashboardStats() {
+    return supabaseAdmin.rpc('get_admin_dashboard_stats');
+  },
+
+  async getActivityLog(limit = 50, offset = 0) {
+    return supabaseAdmin
+      .from('admin_activity_log')
+      .select(`
+        *,
+        admin:user_profiles!admin_id(name, email)
+      `)
+      .order('created_at', { ascending: false })
+      .range(offset, offset + limit - 1);
+  },
+
+  async getInventoryAlerts(acknowledged = false) {
+    return supabaseAdmin
+      .from('inventory_alerts')
+      .select(`
+        *,
+        product:products(name_cs, name_en, slug)
+      `)
+      .eq('acknowledged', acknowledged)
+      .order('created_at', { ascending: false });
+  },
+
+  async acknowledgeAlert(alertId: string, adminId: string) {
+    return supabaseAdmin
+      .from('inventory_alerts')
+      .update({
+        acknowledged: true,
+        acknowledged_by: adminId,
+        acknowledged_at: new Date().toISOString()
+      })
+      .eq('id', alertId);
+  },
+
+  async updateProductInventory(productId: string, stockQuantity: number, trackInventory = true) {
+    return supabaseAdmin
+      .from('products')
+      .update({
+        stock_quantity: stockQuantity,
+        track_inventory: trackInventory,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', productId);
+  },
+
+  async createProduct(productData: Omit<Tables['products']['Insert'], 'id' | 'created_at' | 'updated_at'>) {
+    return supabaseAdmin
+      .from('products')
+      .insert(productData)
+      .select()
+      .single();
+  },
+
+  async updateProduct(productId: string, updates: Partial<Tables['products']['Update']>) {
+    return supabaseAdmin
+      .from('products')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', productId)
+      .select()
+      .single();
+  },
+
+  async deleteProduct(productId: string) {
+    return supabaseAdmin
+      .from('products')
+      .delete()
+      .eq('id', productId);
+  },
+
+  async getAllProducts(filters?: {
+    category?: string;
+    active?: boolean;
+    featured?: boolean;
+    lowStock?: boolean;
+    limit?: number;
+    offset?: number;
+  }) {
+    let query = supabaseAdmin
+      .from('products')
+      .select(`
+        *,
+        category:categories(*)
+      `)
+      .order('created_at', { ascending: false });
+
+    if (filters?.category) {
+      query = query.eq('category_id', filters.category);
+    }
+
+    if (filters?.active !== undefined) {
+      query = query.eq('active', filters.active);
+    }
+
+    if (filters?.featured !== undefined) {
+      query = query.eq('featured', filters.featured);
+    }
+
+    if (filters?.lowStock) {
+      query = query.eq('track_inventory', true)
+        .lte('stock_quantity', 'low_stock_threshold');
+    }
+
+    if (filters?.limit) {
+      const offset = filters.offset || 0;
+      query = query.range(offset, offset + filters.limit - 1);
+    }
+
+    return query;
+  },
+
+  async createCategory(categoryData: Omit<Tables['categories']['Insert'], 'id' | 'created_at' | 'updated_at'>) {
+    return supabaseAdmin
+      .from('categories')
+      .insert(categoryData)
+      .select()
+      .single();
+  },
+
+  async updateCategory(categoryId: string, updates: Partial<Tables['categories']['Update']>) {
+    return supabaseAdmin
+      .from('categories')
+      .update({
+        ...updates,
+        updated_at: new Date().toISOString()
+      })
+      .eq('id', categoryId)
+      .select()
+      .single();
+  },
+
+  async deleteCategory(categoryId: string) {
+    return supabaseAdmin
+      .from('categories')
+      .delete()
+      .eq('id', categoryId);
+  },
+
+  async getAllCategories() {
+    return supabaseAdmin
+      .from('categories')
+      .select('*')
+      .order('sort_order', { ascending: true });
+  }
 };
 
 // Type exports for convenience

@@ -77,6 +77,9 @@ export interface Database {
           seo_metadata: Json
           active: boolean
           featured: boolean
+          stock_quantity: number
+          low_stock_threshold: number
+          track_inventory: boolean
           created_at: string
           updated_at: string
         }
@@ -95,6 +98,9 @@ export interface Database {
           seo_metadata?: Json
           active?: boolean
           featured?: boolean
+          stock_quantity?: number
+          low_stock_threshold?: number
+          track_inventory?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -113,6 +119,9 @@ export interface Database {
           seo_metadata?: Json
           active?: boolean
           featured?: boolean
+          stock_quantity?: number
+          low_stock_threshold?: number
+          track_inventory?: boolean
           created_at?: string
           updated_at?: string
         }
@@ -136,6 +145,11 @@ export interface Database {
           status: string
           total_amount: number
           notes: string | null
+          internal_notes: string | null
+          confirmed_at: string | null
+          shipped_at: string | null
+          delivered_at: string | null
+          cancelled_at: string | null
           created_at: string
           updated_at: string
         }
@@ -149,6 +163,11 @@ export interface Database {
           status?: string
           total_amount: number
           notes?: string | null
+          internal_notes?: string | null
+          confirmed_at?: string | null
+          shipped_at?: string | null
+          delivered_at?: string | null
+          cancelled_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -162,6 +181,11 @@ export interface Database {
           status?: string
           total_amount?: number
           notes?: string | null
+          internal_notes?: string | null
+          confirmed_at?: string | null
+          shipped_at?: string | null
+          delivered_at?: string | null
+          cancelled_at?: string | null
           created_at?: string
           updated_at?: string
         }
@@ -228,6 +252,7 @@ export interface Database {
           phone: string | null
           addresses: Json
           preferences: Json
+          role: 'customer' | 'admin' | 'super_admin'
           created_at: string
           updated_at: string
         }
@@ -238,6 +263,7 @@ export interface Database {
           phone?: string | null
           addresses?: Json
           preferences?: Json
+          role?: 'customer' | 'admin' | 'super_admin'
           created_at?: string
           updated_at?: string
         }
@@ -248,6 +274,7 @@ export interface Database {
           phone?: string | null
           addresses?: Json
           preferences?: Json
+          role?: 'customer' | 'admin' | 'super_admin'
           created_at?: string
           updated_at?: string
         }
@@ -255,6 +282,101 @@ export interface Database {
           {
             foreignKeyName: "user_profiles_id_fkey"
             columns: ["id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      admin_activity_log: {
+        Row: {
+          id: string
+          admin_id: string | null
+          action: string
+          resource_type: string
+          resource_id: string | null
+          old_values: Json | null
+          new_values: Json | null
+          ip_address: string | null
+          user_agent: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          admin_id?: string | null
+          action: string
+          resource_type: string
+          resource_id?: string | null
+          old_values?: Json | null
+          new_values?: Json | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          admin_id?: string | null
+          action?: string
+          resource_type?: string
+          resource_id?: string | null
+          old_values?: Json | null
+          new_values?: Json | null
+          ip_address?: string | null
+          user_agent?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "admin_activity_log_admin_id_fkey"
+            columns: ["admin_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          }
+        ]
+      }
+      inventory_alerts: {
+        Row: {
+          id: string
+          product_id: string | null
+          alert_type: string
+          current_stock: number
+          threshold: number
+          acknowledged: boolean
+          acknowledged_by: string | null
+          acknowledged_at: string | null
+          created_at: string
+        }
+        Insert: {
+          id?: string
+          product_id?: string | null
+          alert_type: string
+          current_stock: number
+          threshold: number
+          acknowledged?: boolean
+          acknowledged_by?: string | null
+          acknowledged_at?: string | null
+          created_at?: string
+        }
+        Update: {
+          id?: string
+          product_id?: string | null
+          alert_type?: string
+          current_stock?: number
+          threshold?: number
+          acknowledged?: boolean
+          acknowledged_by?: string | null
+          acknowledged_at?: string | null
+          created_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "inventory_alerts_product_id_fkey"
+            columns: ["product_id"]
+            referencedRelation: "products"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "inventory_alerts_acknowledged_by_fkey"
+            columns: ["acknowledged_by"]
             referencedRelation: "users"
             referencedColumns: ["id"]
           }
@@ -291,9 +413,14 @@ export interface Database {
         }
         Returns: boolean
       }
+      get_admin_dashboard_stats: {
+        Args: {}
+        Returns: Json
+      }
     }
     Enums: {
       order_status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled'
+      user_role: 'customer' | 'admin' | 'super_admin'
     }
   }
 }
