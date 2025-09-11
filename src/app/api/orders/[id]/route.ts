@@ -7,12 +7,22 @@ import { sendOrderStatusUpdateEmail } from "@/lib/email/service";
 /**
  * Get order by ID
  */
+<<<<<<< HEAD
 export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
+=======
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+>>>>>>> 2de4c3c (Api routing problem, non functional state)
     const { id: orderId } = await params;
 
     // Get order with user validation for non-admin users
@@ -79,13 +89,20 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       },
       status: order.status as OrderStatus,
       notes: order.notes || undefined,
-      internalNotes: order.internal_notes || undefined,
+      internalNotes: order.notes || undefined,
       createdAt: new Date(order.created_at),
       updatedAt: new Date(order.updated_at),
+<<<<<<< HEAD
       confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : undefined,
       shippedAt: order.shipped_at ? new Date(order.shipped_at) : undefined,
       deliveredAt: order.delivered_at ? new Date(order.delivered_at) : undefined,
       cancelledAt: order.cancelled_at ? new Date(order.cancelled_at) : undefined,
+=======
+      confirmedAt: undefined,
+      shippedAt: undefined,
+      deliveredAt: undefined,
+      cancelledAt: undefined
+>>>>>>> 2de4c3c (Api routing problem, non functional state)
     };
 
     return NextResponse.json({
@@ -107,12 +124,22 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 /**
  * Update order status (Admin only)
  */
+<<<<<<< HEAD
 export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
     const {
       data: { user },
     } = await supabase.auth.getUser();
+=======
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
+) {
+  try {
+    const supabase = createServerClient();
+    const { data: { user } } = await supabase.auth.getUser();
+>>>>>>> 2de4c3c (Api routing problem, non functional state)
     const { id: orderId } = await params;
 
     if (!user) {
@@ -243,13 +270,20 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           },
           status: updatedOrder.status as OrderStatus,
           notes: updatedOrder.notes || undefined,
-          internalNotes: updatedOrder.internal_notes || undefined,
+          internalNotes: updatedOrder.notes || undefined,
           createdAt: new Date(updatedOrder.created_at),
           updatedAt: new Date(updatedOrder.updated_at),
+<<<<<<< HEAD
           confirmedAt: updatedOrder.confirmed_at ? new Date(updatedOrder.confirmed_at) : undefined,
           shippedAt: updatedOrder.shipped_at ? new Date(updatedOrder.shipped_at) : undefined,
           deliveredAt: updatedOrder.delivered_at ? new Date(updatedOrder.delivered_at) : undefined,
           cancelledAt: updatedOrder.cancelled_at ? new Date(updatedOrder.cancelled_at) : undefined,
+=======
+          confirmedAt: undefined,
+          shippedAt: undefined,
+          deliveredAt: undefined,
+          cancelledAt: undefined
+>>>>>>> 2de4c3c (Api routing problem, non functional state)
         };
 
         // Send status update email

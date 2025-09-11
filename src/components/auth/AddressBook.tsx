@@ -231,7 +231,7 @@ export function AddressBook({ addresses, onSave, loading = false, locale }: Addr
 
     // If we're removing the default address and there are other addresses, make the first one default
     if (addressToRemove?.isDefault && updatedAddresses.length > 0) {
-      updatedAddresses[0].isDefault = true;
+      updatedAddresses[0]!.isDefault = true;
     }
 
     setLocalAddresses(updatedAddresses);

@@ -97,12 +97,16 @@ export async function GET(request: NextRequest) {
         preferredDate: deliveryInfo.preferredDate,
         createdAt: order.created_at,
         updatedAt: order.updated_at,
-        confirmedAt: order.confirmed_at,
-        shippedAt: order.shipped_at,
-        deliveredAt: order.delivered_at,
-        cancelledAt: order.cancelled_at,
+        confirmedAt: undefined,
+        shippedAt: undefined,
+        deliveredAt: undefined,
+        cancelledAt: undefined,
         notes: order.notes,
+<<<<<<< HEAD
         internalNotes: order.internal_notes,
+=======
+        internalNotes: order.notes
+>>>>>>> 2de4c3c (Api routing problem, non functional state)
       };
     });
 

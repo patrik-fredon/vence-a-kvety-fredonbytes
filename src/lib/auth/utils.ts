@@ -1,5 +1,11 @@
+<<<<<<< HEAD
 import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
+=======
+import { supabase } from '@/lib/supabase/client'
+import type { User } from '@supabase/supabase-js'
+import { Address, UserPreferences } from '@/types/user'
+>>>>>>> 2de4c3c (Api routing problem, non functional state)
 
 export interface AuthUser {
 <<<<<<< HEAD
@@ -37,8 +43,6 @@ export interface UpdatePasswordData {
   password: string;
   confirmPassword: string;
 }
-
-import { Address, UserPreferences } from '@/types/user'
 
 export interface UpdateProfileData {
 <<<<<<< HEAD
@@ -197,8 +201,8 @@ export const authUtils = {
         .update({
           name: data.name,
           phone: data.phone,
-          addresses: data.addresses,
-          preferences: data.preferences,
+          addresses: data.addresses as any,
+          preferences: data.preferences as any,
           updated_at: new Date().toISOString(),
         })
         .eq("id", user.id);
@@ -245,10 +249,15 @@ export const authUtils = {
         name: profile?.name || user.user_metadata?.name || null,
         phone: profile?.phone || user.user_metadata?.phone || null,
 <<<<<<< HEAD
+<<<<<<< HEAD
       };
 =======
         addresses: profile?.addresses || [],
         preferences: profile?.preferences || {},
+=======
+        addresses: (profile?.addresses as Address[]) || [],
+        preferences: (profile?.preferences as UserPreferences) || {},
+>>>>>>> 2de4c3c (Api routing problem, non functional state)
       }
 >>>>>>> db25158 (Enhance user profile with address book and preferences management)
 
