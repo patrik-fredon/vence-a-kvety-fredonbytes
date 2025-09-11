@@ -59,11 +59,13 @@ export function LazyWrapper({
       const timer = setTimeout(() => setIsLoaded(true), 100);
       return () => clearTimeout(timer);
     }
+    // Return undefined when isVisible is false to satisfy TypeScript
+    return undefined;
   }, [isVisible]);
 
   const defaultFallback = (
     <div className="flex items-center justify-center" style={{ minHeight }}>
-      <LoadingSpinner size="medium" />
+      <LoadingSpinner size="md" />
     </div>
   );
 

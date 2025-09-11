@@ -9,17 +9,72 @@ import {
   getCachedProductsList,
   cacheProductsList,
 } from "@/lib/cache/product-cache";
+import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
+import {
+  StructuredData,
+  generateBreadcrumbStructuredData,
+  generateWebsiteStructuredData
+} from "@/components/seo/StructuredData";
 
 interface ProductsPageProps {
   params: Promise<{ locale: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }
 
 // Enable ISR with 30 minutes revalidation for product listings
 export const revalidate = 1800;
 
-export default async function ProductsPage({ params }: ProductsPageProps) {
+// Generate metadata for products page
+export async function generateMetadata({ params, searchParams }: ProductsPageProps) {
   const { locale } = await params;
+  const { category } = await searchParams;
+
+  let title = locale === "cs" ? "Produkty" : "Products";
+  let description = locale === "cs"
+    ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá. Ruční výroba, rychlé dodání."
+    : "Browse our collection of funeral wreaths and floral arrangements. Handcrafted, fast delivery.";
+
+  // If filtering by category, get category info for better metadata
+  if (category && typeof category === "string") {
+    const supabase = createServerClient();
+    const { data: categoryData } = await supabase
+      .from("categories")
+      .select("name_cs, name_en, description_cs, description_en")
+      .eq("slug", category)
+      .eq("active", true)
+      .single();
+
+    if (categoryData) {
+      const categoryName = locale === "cs" ? categoryData.name_cs : categoryData.name_en;
+      const categoryDesc = locale === "cs" ? categoryData.description_cs : categoryData.description_en;
+
+      title = `${categoryName} | ${title}`;
+      description = categoryDesc || description;
+    }
+  }
+
+  return generateLocalizedMetadata({
+    locale: locale as "cs" | "en",
+    title,
+    description,
+    path: "/products",
+    keywords: [
+      "pohřební věnce",
+      "květinové aranžmá",
+      "pohřeb",
+      "rozloučení",
+      "věnce",
+      "funeral wreaths",
+      "floral arrangements"
+    ],
+  });
+}
+
+export default async function ProductsPage({ params, searchParams }: ProductsPageProps) {
+  const { locale } = await params;
+  const { category } = await searchParams;
   const t = await getTranslations("product");
+  const tNav = await getTranslations("navigation");
 
   // Try to get categories from cache first
   let categories = await getCachedCategories();
@@ -82,20 +137,45 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
     await cacheProductsList(initialFilters, products);
   }
 
-  return (
-    <div className="container mx-auto px-4 py-8">
-      {/* Page Header */}
-      <div className="mb-8">
-        <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-4">{t("title")}</h1>
-        <p className="text-lg text-neutral-600">
-          {locale === "cs"
-            ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá."
-            : "Browse our collection of funeral wreaths and floral arrangements."}
-        </p>
-      </div>
+  // Generate structured data
+  const breadcrumbs = [
+    { name: tNav("home"), url: "/" },
+    { name: tNav("products"), url: "/products" },
+  ];
 
-      {/* Product Grid with Filters */}
-      <ProductGrid initialProducts={products} initialCategories={categories} locale={locale} />
-    </div>
+  // Add category to breadcrumbs if filtering by category
+  if (category && typeof category === "string") {
+    const categoryData = categories.find(cat => cat.slug === category);
+    if (categoryData) {
+      const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
+      breadcrumbs.push({
+        name: categoryName,
+        url: `/products?category=${category}`,
+      });
+    }
+  }
+
+  const breadcrumbStructuredData = generateBreadcrumbStructuredData(breadcrumbs, locale);
+  const websiteStructuredData = generateWebsiteStructuredData(locale);
+
+  return (
+    <>
+      <StructuredData data={breadcrumbStructuredData} />
+      <StructuredData data={websiteStructuredData} />
+      <div className="container mx-auto px-4 py-8">
+        {/* Page Header */}
+        <div className="mb-8">
+          <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-4">{t("title")}</h1>
+          <p className="text-lg text-neutral-600">
+            {locale === "cs"
+              ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá."
+              : "Browse our collection of funeral wreaths and floral arrangements."}
+          </p>
+        </div>
+
+        {/* Product Grid with Filters */}
+        <ProductGrid initialProducts={products} initialCategories={categories} locale={locale} />
+      </div>
+    </>
   );
 }

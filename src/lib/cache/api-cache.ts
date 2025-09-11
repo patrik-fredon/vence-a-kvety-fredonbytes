@@ -42,7 +42,7 @@ export function withCache<T = any>(
 
       // Generate cache key based on URL, query params, and vary headers
       const url = new URL(request.url);
-      const cacheKeyParts = [keyPrefix, url.pathname, url.search];
+      const cacheKeyParts: (string | number)[] = [url.pathname, url.search];
 
       // Add vary headers to cache key
       for (const header of varyBy) {
@@ -52,7 +52,7 @@ export function withCache<T = any>(
         }
       }
 
-      const cacheKey = generateCacheKey(...cacheKeyParts);
+      const cacheKey = generateCacheKey(keyPrefix, ...cacheKeyParts);
 
       // Try to get cached response
       const cached = await client.get(cacheKey);

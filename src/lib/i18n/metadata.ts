@@ -62,13 +62,13 @@ export async function generateLocalizedMetadata({
       url: fullUrl,
       images: image
         ? [
-            {
-              url: image,
-              width: 1200,
-              height: 630,
-              alt: finalTitle,
-            },
-          ]
+          {
+            url: image,
+            width: 1200,
+            height: 630,
+            alt: finalTitle,
+          },
+        ]
         : undefined,
     },
     twitter: {
@@ -81,7 +81,59 @@ export async function generateLocalizedMetadata({
 }
 
 /**
- * Generate structured data for products
+ * Generate enhanced metadata with SEO optimizations
+ */
+export async function generateEnhancedMetadata({
+  locale,
+  title,
+  description,
+  keywords,
+  path = "",
+  image,
+  type = "website",
+  publishedTime,
+  modifiedTime,
+  author,
+}: MetadataParams & {
+  type?: "website" | "article" | "product";
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
+}): Promise<Metadata> {
+  const baseMetadata = await generateLocalizedMetadata({
+    locale,
+    title,
+    description,
+    keywords,
+    path,
+    image,
+  });
+
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const fullUrl = `${baseUrl}/${locale}${path}`;
+
+  // Enhanced metadata with additional SEO properties
+  return {
+    ...baseMetadata,
+    category: "e-commerce",
+    classification: "funeral services, floral arrangements",
+    other: {
+      "og:type": type,
+      "og:site_name": "Pohřební věnce | Ketingmar s.r.o.",
+      "og:locale": locale === "cs" ? "cs_CZ" : "en_US",
+      "og:locale:alternate": locale === "cs" ? "en_US" : "cs_CZ",
+      ...(publishedTime && { "article:published_time": publishedTime }),
+      ...(modifiedTime && { "article:modified_time": modifiedTime }),
+      ...(author && { "article:author": author }),
+      "twitter:site": "@ketingmar", // Add when Twitter account is available
+      "twitter:creator": "@ketingmar",
+      "fb:app_id": "your-facebook-app-id", // Add when Facebook app is available
+    },
+  };
+}
+
+/**
+ * Generate structured data for products (legacy - moved to StructuredData component)
  */
 export function generateProductStructuredData(
   product: {
