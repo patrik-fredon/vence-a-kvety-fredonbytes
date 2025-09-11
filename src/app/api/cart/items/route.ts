@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { auth } from '@/lib/auth/config';
-import { AddToCartRequest } from '@/types/cart';
-import { randomUUID } from 'crypto';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { auth } from "@/lib/auth/config";
+import { AddToCartRequest } from "@/types/cart";
+import { randomUUID } from "crypto";
 
 /**
  * POST /api/cart/items - Add item to cart
@@ -15,55 +15,61 @@ export async function POST(request: NextRequest) {
 
     // Validate request body
     if (!body.productId || !body.quantity || body.quantity <= 0) {
-      return NextResponse.json({
-        success: false,
-        error: 'Invalid product ID or quantity'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid product ID or quantity",
+        },
+        { status: 400 }
+      );
     }
 
     // Get or create session ID for guest users
-    let sessionId = request.cookies.get('cart-session')?.value;
+    let sessionId = request.cookies.get("cart-session")?.value;
     if (!session?.user?.id && !sessionId) {
       sessionId = randomUUID();
     }
 
     // Check if product exists
     const { data: product, error: productError } = await supabase
-      .from('products')
-      .select('id, active, availability')
-      .eq('id', body.productId)
+      .from("products")
+      .select("id, active, availability")
+      .eq("id", body.productId)
       .single();
 
     if (productError || !product) {
-      return NextResponse.json({
-        success: false,
-        error: 'Product not found'
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Product not found",
+        },
+        { status: 404 }
+      );
     }
 
     if (!product.active) {
-      return NextResponse.json({
-        success: false,
-        error: 'Product is not available'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Product is not available",
+        },
+        { status: 400 }
+      );
     }
 
     // Check if item already exists in cart
-    let query = supabase
-      .from('cart_items')
-      .select('*')
-      .eq('product_id', body.productId);
+    let query = supabase.from("cart_items").select("*").eq("product_id", body.productId);
 
     if (session?.user?.id) {
-      query = query.eq('user_id', session.user.id);
+      query = query.eq("user_id", session.user.id);
     } else if (sessionId) {
-      query = query.eq('session_id', sessionId);
+      query = query.eq("session_id", sessionId);
     }
 
     const { data: existingItems } = await query;
 
     // Check if same product with same customizations exists
-    const existingItem = existingItems?.find(item => {
+    const existingItem = existingItems?.find((item) => {
       const itemCustomizations = item.customizations || [];
       return JSON.stringify(itemCustomizations) === JSON.stringify(body.customizations);
     });
@@ -75,21 +81,24 @@ export async function POST(request: NextRequest) {
       const newQuantity = existingItem.quantity + body.quantity;
 
       const { data, error } = await supabase
-        .from('cart_items')
+        .from("cart_items")
         .update({
           quantity: newQuantity,
-          updated_at: new Date().toISOString()
+          updated_at: new Date().toISOString(),
         })
-        .eq('id', existingItem.id)
+        .eq("id", existingItem.id)
         .select()
         .single();
 
       if (error) {
-        console.error('Error updating cart item:', error);
-        return NextResponse.json({
-          success: false,
-          error: 'Failed to update cart item'
-        }, { status: 500 });
+        console.error("Error updating cart item:", error);
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Failed to update cart item",
+          },
+          { status: 500 }
+        );
       }
 
       result = data;
@@ -100,21 +109,24 @@ export async function POST(request: NextRequest) {
         session_id: session?.user?.id ? null : sessionId,
         product_id: body.productId,
         quantity: body.quantity,
-        customizations: body.customizations as any
+        customizations: body.customizations as any,
       };
 
       const { data, error } = await supabase
-        .from('cart_items')
+        .from("cart_items")
         .insert(cartItemData)
         .select()
         .single();
 
       if (error) {
-        console.error('Error adding cart item:', error);
-        return NextResponse.json({
-          success: false,
-          error: 'Failed to add item to cart'
-        }, { status: 500 });
+        console.error("Error adding cart item:", error);
+        return NextResponse.json(
+          {
+            success: false,
+            error: "Failed to add item to cart",
+          },
+          { status: 500 }
+        );
       }
 
       result = data;
@@ -131,26 +143,28 @@ export async function POST(request: NextRequest) {
         quantity: result.quantity,
         customizations: result.customizations,
         createdAt: new Date(result.created_at),
-        updatedAt: new Date(result.updated_at)
-      }
+        updatedAt: new Date(result.updated_at),
+      },
     });
 
     if (!session?.user?.id && sessionId) {
-      response.cookies.set('cart-session', sessionId, {
+      response.cookies.set("cart-session", sessionId, {
         httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        maxAge: 60 * 60 * 24 * 30 // 30 days
+        secure: process.env.NODE_ENV === "production",
+        sameSite: "lax",
+        maxAge: 60 * 60 * 24 * 30, // 30 days
       });
     }
 
     return response;
-
   } catch (error) {
-    console.error('Add to cart API error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 });
+    console.error("Add to cart API error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }

@@ -1,45 +1,48 @@
-import { supabase } from '@/lib/supabase/client'
-import type { User } from '@supabase/supabase-js'
+import { supabase } from "@/lib/supabase/client";
+import type { User } from "@supabase/supabase-js";
 
 export interface AuthUser {
-  id: string
-  email: string
-  name?: string | null
-  phone?: string | null
+  id: string;
+  email: string;
+  name?: string | null;
+  phone?: string | null;
 }
 
 export interface SignUpData {
-  email: string
-  password: string
-  name?: string
-  phone?: string
+  email: string;
+  password: string;
+  name?: string;
+  phone?: string;
 }
 
 export interface SignInData {
-  email: string
-  password: string
+  email: string;
+  password: string;
 }
 
 export interface ResetPasswordData {
-  email: string
+  email: string;
 }
 
 export interface UpdatePasswordData {
-  password: string
-  confirmPassword: string
+  password: string;
+  confirmPassword: string;
 }
 
 export interface UpdateProfileData {
-  name?: string
-  phone?: string
-  addresses?: any[]
-  preferences?: any
+  name?: string;
+  phone?: string;
+  addresses?: any[];
+  preferences?: any;
 }
 
 export class AuthError extends Error {
-  constructor(message: string, public code?: string) {
-    super(message)
-    this.name = 'AuthError'
+  constructor(
+    message: string,
+    public code?: string
+  ) {
+    super(message);
+    this.name = "AuthError";
   }
 }
 
@@ -53,35 +56,33 @@ export const authUtils = {
           data: {
             name: data.name,
             phone: data.phone,
-          }
-        }
-      })
+          },
+        },
+      });
 
       if (error) {
-        return { user: null, error: error.message }
+        return { user: null, error: error.message };
       }
 
       // Create user profile
       if (authData.user) {
-        const { error: profileError } = await supabase
-          .from('user_profiles')
-          .insert({
-            id: authData.user.id,
-            email: authData.user.email!,
-            name: data.name || null,
-            phone: data.phone || null,
-            addresses: [],
-            preferences: {}
-          })
+        const { error: profileError } = await supabase.from("user_profiles").insert({
+          id: authData.user.id,
+          email: authData.user.email!,
+          name: data.name || null,
+          phone: data.phone || null,
+          addresses: [],
+          preferences: {},
+        });
 
         if (profileError) {
-          console.error('Profile creation error:', profileError)
+          console.error("Profile creation error:", profileError);
         }
       }
 
-      return { user: authData.user, error: null }
+      return { user: authData.user, error: null };
     } catch (error) {
-      return { user: null, error: 'An unexpected error occurred' }
+      return { user: null, error: "An unexpected error occurred" };
     }
   },
 
@@ -90,27 +91,27 @@ export const authUtils = {
       const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
         password: data.password,
-      })
+      });
 
       if (error) {
-        return { user: null, error: error.message }
+        return { user: null, error: error.message };
       }
 
-      return { user: authData.user, error: null }
+      return { user: authData.user, error: null };
     } catch (error) {
-      return { user: null, error: 'An unexpected error occurred' }
+      return { user: null, error: "An unexpected error occurred" };
     }
   },
 
   async signOut(): Promise<{ error: string | null }> {
     try {
-      const { error } = await supabase.auth.signOut()
+      const { error } = await supabase.auth.signOut();
       if (error) {
-        return { error: error.message }
+        return { error: error.message };
       }
-      return { error: null }
+      return { error: null };
     } catch (error) {
-      return { error: 'An unexpected error occurred' }
+      return { error: "An unexpected error occurred" };
     }
   },
 
@@ -118,44 +119,46 @@ export const authUtils = {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
-      })
+      });
 
       if (error) {
-        return { error: error.message }
+        return { error: error.message };
       }
 
-      return { error: null }
+      return { error: null };
     } catch (error) {
-      return { error: 'An unexpected error occurred' }
+      return { error: "An unexpected error occurred" };
     }
   },
 
   async updatePassword(data: UpdatePasswordData): Promise<{ error: string | null }> {
     try {
       if (data.password !== data.confirmPassword) {
-        return { error: 'Passwords do not match' }
+        return { error: "Passwords do not match" };
       }
 
       const { error } = await supabase.auth.updateUser({
-        password: data.password
-      })
+        password: data.password,
+      });
 
       if (error) {
-        return { error: error.message }
+        return { error: error.message };
       }
 
-      return { error: null }
+      return { error: null };
     } catch (error) {
-      return { error: 'An unexpected error occurred' }
+      return { error: "An unexpected error occurred" };
     }
   },
 
   async updateProfile(data: UpdateProfileData): Promise<{ error: string | null }> {
     try {
-      const { data: { user } } = await supabase.auth.getUser()
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
 
       if (!user) {
-        return { error: 'User not authenticated' }
+        return { error: "User not authenticated" };
       }
 
       // Update auth user metadata
@@ -163,16 +166,16 @@ export const authUtils = {
         data: {
           name: data.name,
           phone: data.phone,
-        }
-      })
+        },
+      });
 
       if (authError) {
-        return { error: authError.message }
+        return { error: authError.message };
       }
 
       // Update user profile
       const { error: profileError } = await supabase
-        .from('user_profiles')
+        .from("user_profiles")
         .update({
           name: data.name,
           phone: data.phone,
@@ -180,39 +183,42 @@ export const authUtils = {
           preferences: data.preferences,
           updated_at: new Date().toISOString(),
         })
-        .eq('id', user.id)
+        .eq("id", user.id);
 
       if (profileError) {
-        return { error: profileError.message }
+        return { error: profileError.message };
       }
 
-      return { error: null }
+      return { error: null };
     } catch (error) {
-      return { error: 'An unexpected error occurred' }
+      return { error: "An unexpected error occurred" };
     }
   },
 
   async getCurrentUser(): Promise<{ user: AuthUser | null; error: string | null }> {
     try {
-      const { data: { user }, error } = await supabase.auth.getUser()
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
 
       if (error) {
-        return { user: null, error: error.message }
+        return { user: null, error: error.message };
       }
 
       if (!user) {
-        return { user: null, error: null }
+        return { user: null, error: null };
       }
 
       // Get user profile
       const { data: profile, error: profileError } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('id', user.id)
-        .single()
+        .from("user_profiles")
+        .select("*")
+        .eq("id", user.id)
+        .single();
 
       if (profileError) {
-        console.error('Profile fetch error:', profileError)
+        console.error("Profile fetch error:", profileError);
       }
 
       const authUser: AuthUser = {
@@ -220,29 +226,29 @@ export const authUtils = {
         email: user.email!,
         name: profile?.name || user.user_metadata?.name || null,
         phone: profile?.phone || user.user_metadata?.phone || null,
-      }
+      };
 
-      return { user: authUser, error: null }
+      return { user: authUser, error: null };
     } catch (error) {
-      return { user: null, error: 'An unexpected error occurred' }
+      return { user: null, error: "An unexpected error occurred" };
     }
   },
 
   async getUserProfile(userId: string) {
     try {
       const { data: profile, error } = await supabase
-        .from('user_profiles')
-        .select('*')
-        .eq('id', userId)
-        .single()
+        .from("user_profiles")
+        .select("*")
+        .eq("id", userId)
+        .single();
 
       if (error) {
-        return { profile: null, error: error.message }
+        return { profile: null, error: error.message };
       }
 
-      return { profile, error: null }
+      return { profile, error: null };
     } catch (error) {
-      return { profile: null, error: 'An unexpected error occurred' }
+      return { profile: null, error: "An unexpected error occurred" };
     }
-  }
-}
+  },
+};

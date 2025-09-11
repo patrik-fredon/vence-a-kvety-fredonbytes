@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import { ArrowLeftIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from "react";
+import { ArrowLeftIcon } from "@heroicons/react/24/outline";
 
 interface Product {
   id: string;
@@ -35,18 +35,18 @@ interface ProductFormProps {
 
 export default function ProductForm({ product, categories, onSubmit, onCancel }: ProductFormProps) {
   const [formData, setFormData] = useState({
-    name_cs: '',
-    name_en: '',
-    description_cs: '',
-    description_en: '',
-    slug: '',
+    name_cs: "",
+    name_en: "",
+    description_cs: "",
+    description_en: "",
+    slug: "",
     base_price: 0,
-    category_id: '',
+    category_id: "",
     active: true,
     featured: false,
     stock_quantity: 0,
     low_stock_threshold: 5,
-    track_inventory: false
+    track_inventory: false,
   });
 
   const [errors, setErrors] = useState<Record<string, string>>({});
@@ -55,18 +55,18 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
   useEffect(() => {
     if (product) {
       setFormData({
-        name_cs: product.name_cs || '',
-        name_en: product.name_en || '',
-        description_cs: product.description_cs || '',
-        description_en: product.description_en || '',
-        slug: product.slug || '',
+        name_cs: product.name_cs || "",
+        name_en: product.name_en || "",
+        description_cs: product.description_cs || "",
+        description_en: product.description_en || "",
+        slug: product.slug || "",
         base_price: product.base_price || 0,
-        category_id: product.category_id || '',
+        category_id: product.category_id || "",
         active: product.active ?? true,
         featured: product.featured ?? false,
         stock_quantity: product.stock_quantity || 0,
         low_stock_threshold: product.low_stock_threshold || 5,
-        track_inventory: product.track_inventory ?? false
+        track_inventory: product.track_inventory ?? false,
       });
     }
   }, [product]);
@@ -74,46 +74,46 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
   const generateSlug = (name: string) => {
     return name
       .toLowerCase()
-      .replace(/[áàäâ]/g, 'a')
-      .replace(/[éèëê]/g, 'e')
-      .replace(/[íìïî]/g, 'i')
-      .replace(/[óòöô]/g, 'o')
-      .replace(/[úùüû]/g, 'u')
-      .replace(/[ýÿ]/g, 'y')
-      .replace(/[ñ]/g, 'n')
-      .replace(/[ç]/g, 'c')
-      .replace(/[š]/g, 's')
-      .replace(/[č]/g, 'c')
-      .replace(/[ř]/g, 'r')
-      .replace(/[ž]/g, 'z')
-      .replace(/[ť]/g, 't')
-      .replace(/[ď]/g, 'd')
-      .replace(/[ň]/g, 'n')
-      .replace(/[ů]/g, 'u')
-      .replace(/[^a-z0-9]/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+      .replace(/[áàäâ]/g, "a")
+      .replace(/[éèëê]/g, "e")
+      .replace(/[íìïî]/g, "i")
+      .replace(/[óòöô]/g, "o")
+      .replace(/[úùüû]/g, "u")
+      .replace(/[ýÿ]/g, "y")
+      .replace(/[ñ]/g, "n")
+      .replace(/[ç]/g, "c")
+      .replace(/[š]/g, "s")
+      .replace(/[č]/g, "c")
+      .replace(/[ř]/g, "r")
+      .replace(/[ž]/g, "z")
+      .replace(/[ť]/g, "t")
+      .replace(/[ď]/g, "d")
+      .replace(/[ň]/g, "n")
+      .replace(/[ů]/g, "u")
+      .replace(/[^a-z0-9]/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-|-$/g, "");
   };
 
   const handleInputChange = (field: string, value: any) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [field]: value
+      [field]: value,
     }));
 
     // Auto-generate slug from Czech name
-    if (field === 'name_cs' && !product) {
-      setFormData(prev => ({
+    if (field === "name_cs" && !product) {
+      setFormData((prev) => ({
         ...prev,
-        slug: generateSlug(value)
+        slug: generateSlug(value),
       }));
     }
 
     // Clear error when user starts typing
     if (errors[field]) {
-      setErrors(prev => ({
+      setErrors((prev) => ({
         ...prev,
-        [field]: ''
+        [field]: "",
       }));
     }
   };
@@ -122,31 +122,31 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
     const newErrors: Record<string, string> = {};
 
     if (!formData.name_cs.trim()) {
-      newErrors.name_cs = 'Český název je povinný';
+      newErrors.name_cs = "Český název je povinný";
     }
 
     if (!formData.name_en.trim()) {
-      newErrors.name_en = 'Anglický název je povinný';
+      newErrors.name_en = "Anglický název je povinný";
     }
 
     if (!formData.slug.trim()) {
-      newErrors.slug = 'URL slug je povinný';
+      newErrors.slug = "URL slug je povinný";
     }
 
     if (formData.base_price <= 0) {
-      newErrors.base_price = 'Cena musí být větší než 0';
+      newErrors.base_price = "Cena musí být větší než 0";
     }
 
     if (!formData.category_id) {
-      newErrors.category_id = 'Kategorie je povinná';
+      newErrors.category_id = "Kategorie je povinná";
     }
 
     if (formData.track_inventory && formData.stock_quantity < 0) {
-      newErrors.stock_quantity = 'Počet kusů nemůže být záporný';
+      newErrors.stock_quantity = "Počet kusů nemůže být záporný";
     }
 
     if (formData.track_inventory && formData.low_stock_threshold < 0) {
-      newErrors.low_stock_threshold = 'Práh pro upozornění nemůže být záporný';
+      newErrors.low_stock_threshold = "Práh pro upozornění nemůže být záporný";
     }
 
     setErrors(newErrors);
@@ -164,7 +164,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
     try {
       await onSubmit(formData);
     } catch (error) {
-      console.error('Error submitting form:', error);
+      console.error("Error submitting form:", error);
     } finally {
       setLoading(false);
     }
@@ -181,7 +181,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
           <ArrowLeftIcon className="h-6 w-6" />
         </button>
         <h2 className="text-2xl font-bold text-gray-900">
-          {product ? 'Upravit produkt' : 'Přidat nový produkt'}
+          {product ? "Upravit produkt" : "Přidat nový produkt"}
         </h2>
       </div>
 
@@ -199,15 +199,13 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <input
                 type="text"
                 value={formData.name_cs}
-                onChange={(e) => handleInputChange('name_cs', e.target.value)}
+                onChange={(e) => handleInputChange("name_cs", e.target.value)}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.name_cs ? 'border-red-300' : 'border-gray-300'
+                  errors.name_cs ? "border-red-300" : "border-gray-300"
                 }`}
                 placeholder="Název produktu v češtině"
               />
-              {errors.name_cs && (
-                <p className="mt-1 text-sm text-red-600">{errors.name_cs}</p>
-              )}
+              {errors.name_cs && <p className="mt-1 text-sm text-red-600">{errors.name_cs}</p>}
             </div>
 
             {/* English name */}
@@ -218,50 +216,42 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <input
                 type="text"
                 value={formData.name_en}
-                onChange={(e) => handleInputChange('name_en', e.target.value)}
+                onChange={(e) => handleInputChange("name_en", e.target.value)}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.name_en ? 'border-red-300' : 'border-gray-300'
+                  errors.name_en ? "border-red-300" : "border-gray-300"
                 }`}
                 placeholder="Product name in English"
               />
-              {errors.name_en && (
-                <p className="mt-1 text-sm text-red-600">{errors.name_en}</p>
-              )}
+              {errors.name_en && <p className="mt-1 text-sm text-red-600">{errors.name_en}</p>}
             </div>
 
             {/* Slug */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                URL slug *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">URL slug *</label>
               <input
                 type="text"
                 value={formData.slug}
-                onChange={(e) => handleInputChange('slug', e.target.value)}
+                onChange={(e) => handleInputChange("slug", e.target.value)}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.slug ? 'border-red-300' : 'border-gray-300'
+                  errors.slug ? "border-red-300" : "border-gray-300"
                 }`}
                 placeholder="url-slug-produktu"
               />
-              {errors.slug && (
-                <p className="mt-1 text-sm text-red-600">{errors.slug}</p>
-              )}
+              {errors.slug && <p className="mt-1 text-sm text-red-600">{errors.slug}</p>}
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
-                Kategorie *
-              </label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">Kategorie *</label>
               <select
                 value={formData.category_id}
-                onChange={(e) => handleInputChange('category_id', e.target.value)}
+                onChange={(e) => handleInputChange("category_id", e.target.value)}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.category_id ? 'border-red-300' : 'border-gray-300'
+                  errors.category_id ? "border-red-300" : "border-gray-300"
                 }`}
               >
                 <option value="">Vyberte kategorii</option>
-                {categories.map(category => (
+                {categories.map((category) => (
                   <option key={category.id} value={category.id}>
                     {category.name_cs}
                   </option>
@@ -282,9 +272,9 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                 min="0"
                 step="0.01"
                 value={formData.base_price}
-                onChange={(e) => handleInputChange('base_price', parseFloat(e.target.value) || 0)}
+                onChange={(e) => handleInputChange("base_price", parseFloat(e.target.value) || 0)}
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                  errors.base_price ? 'border-red-300' : 'border-gray-300'
+                  errors.base_price ? "border-red-300" : "border-gray-300"
                 }`}
                 placeholder="0.00"
               />
@@ -303,7 +293,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <textarea
                 rows={4}
                 value={formData.description_cs}
-                onChange={(e) => handleInputChange('description_cs', e.target.value)}
+                onChange={(e) => handleInputChange("description_cs", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Detailní popis produktu v češtině"
               />
@@ -316,7 +306,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <textarea
                 rows={4}
                 value={formData.description_en}
-                onChange={(e) => handleInputChange('description_en', e.target.value)}
+                onChange={(e) => handleInputChange("description_en", e.target.value)}
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Detailed product description in English"
               />
@@ -333,7 +323,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <input
                 type="checkbox"
                 checked={formData.track_inventory}
-                onChange={(e) => handleInputChange('track_inventory', e.target.checked)}
+                onChange={(e) => handleInputChange("track_inventory", e.target.checked)}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <span className="ml-2 text-sm text-gray-700">Sledovat skladové zásoby</span>
@@ -349,9 +339,11 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                     type="number"
                     min="0"
                     value={formData.stock_quantity}
-                    onChange={(e) => handleInputChange('stock_quantity', parseInt(e.target.value) || 0)}
+                    onChange={(e) =>
+                      handleInputChange("stock_quantity", parseInt(e.target.value) || 0)
+                    }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.stock_quantity ? 'border-red-300' : 'border-gray-300'
+                      errors.stock_quantity ? "border-red-300" : "border-gray-300"
                     }`}
                   />
                   {errors.stock_quantity && (
@@ -367,9 +359,11 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                     type="number"
                     min="0"
                     value={formData.low_stock_threshold}
-                    onChange={(e) => handleInputChange('low_stock_threshold', parseInt(e.target.value) || 0)}
+                    onChange={(e) =>
+                      handleInputChange("low_stock_threshold", parseInt(e.target.value) || 0)
+                    }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.low_stock_threshold ? 'border-red-300' : 'border-gray-300'
+                      errors.low_stock_threshold ? "border-red-300" : "border-gray-300"
                     }`}
                   />
                   {errors.low_stock_threshold && (
@@ -390,7 +384,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <input
                 type="checkbox"
                 checked={formData.active}
-                onChange={(e) => handleInputChange('active', e.target.checked)}
+                onChange={(e) => handleInputChange("active", e.target.checked)}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <span className="ml-2 text-sm text-gray-700">Aktivní (zobrazit na webu)</span>
@@ -400,7 +394,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <input
                 type="checkbox"
                 checked={formData.featured}
-                onChange={(e) => handleInputChange('featured', e.target.checked)}
+                onChange={(e) => handleInputChange("featured", e.target.checked)}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
               <span className="ml-2 text-sm text-gray-700">Doporučený produkt</span>
@@ -422,7 +416,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
             disabled={loading}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
-            {loading ? 'Ukládám...' : (product ? 'Uložit změny' : 'Vytvořit produkt')}
+            {loading ? "Ukládám..." : product ? "Uložit změny" : "Vytvořit produkt"}
           </button>
         </div>
       </form>

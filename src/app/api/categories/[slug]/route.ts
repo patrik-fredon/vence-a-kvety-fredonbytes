@@ -3,19 +3,15 @@
  * Handles GET, PUT, DELETE for specific categories by slug
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import {
-  Category,
-  UpdateCategoryRequest,
-  CategoryRow
-} from '@/types/product';
-import { ApiResponse } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { Category, UpdateCategoryRequest, CategoryRow } from "@/types/product";
+import { ApiResponse } from "@/types";
 import {
   transformCategoryRow,
   validateCategoryData,
-  createSlug
-} from '@/lib/utils/product-transforms';
+  createSlug,
+} from "@/lib/utils/product-transforms";
 
 interface RouteContext {
   params: Promise<{
@@ -33,37 +29,37 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     const { slug } = await params;
     const { searchParams } = new URL(request.url);
 
-    const includeChildren = searchParams.get('includeChildren') === 'true';
-    const includeProducts = searchParams.get('includeProducts') === 'true';
+    const includeChildren = searchParams.get("includeChildren") === "true";
+    const includeProducts = searchParams.get("includeProducts") === "true";
 
     const { data, error } = await supabase
-      .from('categories')
-      .select('*')
-      .eq('slug', slug)
-      .eq('active', true)
+      .from("categories")
+      .select("*")
+      .eq("slug", slug)
+      .eq("active", true)
       .single();
 
     if (error) {
-      if (error.code === 'PGRST116') {
+      if (error.code === "PGRST116") {
         return NextResponse.json(
           {
             success: false,
             error: {
-              code: 'CATEGORY_NOT_FOUND',
-              message: 'Category not found',
+              code: "CATEGORY_NOT_FOUND",
+              message: "Category not found",
             },
           } as ApiResponse,
           { status: 404 }
         );
       }
 
-      console.error('Error fetching category:', error);
+      console.error("Error fetching category:", error);
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'FETCH_ERROR',
-            message: 'Failed to fetch category',
+            code: "FETCH_ERROR",
+            message: "Failed to fetch category",
             details: error.message,
           },
         } as ApiResponse,
@@ -77,12 +73,12 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     // Include children if requested
     if (includeChildren) {
       const { data: childrenData } = await supabase
-        .from('categories')
-        .select('*')
-        .eq('parent_id', category.id)
-        .eq('active', true)
-        .order('sort_order', { ascending: true })
-        .order('name_cs', { ascending: true });
+        .from("categories")
+        .select("*")
+        .eq("parent_id", category.id)
+        .eq("active", true)
+        .order("sort_order", { ascending: true })
+        .order("name_cs", { ascending: true });
 
       if (childrenData) {
         category.children = childrenData.map(transformCategoryRow);
@@ -91,10 +87,10 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 
     // Include product count
     const { count } = await supabase
-      .from('products')
-      .select('*', { count: 'exact', head: true })
-      .eq('category_id', category.id)
-      .eq('active', true);
+      .from("products")
+      .select("*", { count: "exact", head: true })
+      .eq("category_id", category.id)
+      .eq("active", true);
 
     category.productCount = count || 0;
 
@@ -105,13 +101,13 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Unexpected error in GET /api/categories/[slug]:', error);
+    console.error("Unexpected error in GET /api/categories/[slug]:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Internal server error',
+          code: "INTERNAL_ERROR",
+          message: "Internal server error",
         },
       } as ApiResponse,
       { status: 500 }
@@ -131,9 +127,9 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
 
     // First, get the existing category
     const { data: existingCategory, error: fetchError } = await supabase
-      .from('categories')
-      .select('id, slug')
-      .eq('slug', slug)
+      .from("categories")
+      .select("id, slug")
+      .eq("slug", slug)
       .single();
 
     if (fetchError || !existingCategory) {
@@ -141,8 +137,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
         {
           success: false,
           error: {
-            code: 'CATEGORY_NOT_FOUND',
-            message: 'Category not found',
+            code: "CATEGORY_NOT_FOUND",
+            message: "Category not found",
           },
         } as ApiResponse,
         { status: 404 }
@@ -150,14 +146,18 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     }
 
     // Validate the update data
-    const validation = validateCategoryData({ ...body, nameCs: body.nameCs || 'temp', nameEn: body.nameEn || 'temp' });
+    const validation = validateCategoryData({
+      ...body,
+      nameCs: body.nameCs || "temp",
+      nameEn: body.nameEn || "temp",
+    });
     if (!validation.isValid) {
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
-            message: 'Invalid category data',
+            code: "VALIDATION_ERROR",
+            message: "Invalid category data",
             details: validation.errors,
           },
         } as ApiResponse,
@@ -168,16 +168,16 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     // Generate new slug if name changed
     let newSlug = slug;
     if (body.nameCs || body.nameEn) {
-      const nameForSlug = body.nameCs || body.nameEn || '';
+      const nameForSlug = body.nameCs || body.nameEn || "";
       newSlug = body.slug || createSlug(nameForSlug);
 
       // Check if new slug conflicts with existing categories (excluding current)
       if (newSlug !== slug) {
         const { data: conflictingCategory } = await supabase
-          .from('categories')
-          .select('id')
-          .eq('slug', newSlug)
-          .neq('id', existingCategory.id)
+          .from("categories")
+          .select("id")
+          .eq("slug", newSlug)
+          .neq("id", existingCategory.id)
           .single();
 
         if (conflictingCategory) {
@@ -185,8 +185,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
             {
               success: false,
               error: {
-                code: 'SLUG_EXISTS',
-                message: 'A category with this slug already exists',
+                code: "SLUG_EXISTS",
+                message: "A category with this slug already exists",
               },
             } as ApiResponse,
             { status: 409 }
@@ -199,10 +199,10 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     if (body.parentId) {
       // Check if parent exists
       const { data: parentCategory } = await supabase
-        .from('categories')
-        .select('id')
-        .eq('id', body.parentId)
-        .eq('active', true)
+        .from("categories")
+        .select("id")
+        .eq("id", body.parentId)
+        .eq("active", true)
         .single();
 
       if (!parentCategory) {
@@ -210,8 +210,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
           {
             success: false,
             error: {
-              code: 'PARENT_NOT_FOUND',
-              message: 'Parent category not found',
+              code: "PARENT_NOT_FOUND",
+              message: "Parent category not found",
             },
           } as ApiResponse,
           { status: 400 }
@@ -224,8 +224,8 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
           {
             success: false,
             error: {
-              code: 'CIRCULAR_REFERENCE',
-              message: 'Category cannot be its own parent',
+              code: "CIRCULAR_REFERENCE",
+              message: "Category cannot be its own parent",
             },
           } as ApiResponse,
           { status: 400 }
@@ -234,7 +234,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     }
 
     // Prepare update data (only include provided fields)
-    const updateData: Partial<Omit<CategoryRow, 'id' | 'created_at' | 'updated_at'>> = {};
+    const updateData: Partial<Omit<CategoryRow, "id" | "created_at" | "updated_at">> = {};
 
     if (body.nameCs !== undefined) updateData.name_cs = body.nameCs;
     if (body.nameEn !== undefined) updateData.name_en = body.nameEn;
@@ -247,20 +247,20 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     if (body.active !== undefined) updateData.active = body.active;
 
     const { data, error } = await supabase
-      .from('categories')
+      .from("categories")
       .update(updateData)
-      .eq('id', existingCategory.id)
-      .select('*')
+      .eq("id", existingCategory.id)
+      .select("*")
       .single();
 
     if (error) {
-      console.error('Error updating category:', error);
+      console.error("Error updating category:", error);
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'UPDATE_ERROR',
-            message: 'Failed to update category',
+            code: "UPDATE_ERROR",
+            message: "Failed to update category",
             details: error.message,
           },
         } as ApiResponse,
@@ -278,13 +278,13 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Unexpected error in PUT /api/categories/[slug]:', error);
+    console.error("Unexpected error in PUT /api/categories/[slug]:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Internal server error',
+          code: "INTERNAL_ERROR",
+          message: "Internal server error",
         },
       } as ApiResponse,
       { status: 500 }
@@ -303,9 +303,9 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
 
     // Check if category exists
     const { data: existingCategory, error: fetchError } = await supabase
-      .from('categories')
-      .select('id')
-      .eq('slug', slug)
+      .from("categories")
+      .select("id")
+      .eq("slug", slug)
       .single();
 
     if (fetchError || !existingCategory) {
@@ -313,8 +313,8 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
         {
           success: false,
           error: {
-            code: 'CATEGORY_NOT_FOUND',
-            message: 'Category not found',
+            code: "CATEGORY_NOT_FOUND",
+            message: "Category not found",
           },
         } as ApiResponse,
         { status: 404 }
@@ -323,18 +323,18 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
 
     // Check if category has products
     const { count: productCount } = await supabase
-      .from('products')
-      .select('*', { count: 'exact', head: true })
-      .eq('category_id', existingCategory.id)
-      .eq('active', true);
+      .from("products")
+      .select("*", { count: "exact", head: true })
+      .eq("category_id", existingCategory.id)
+      .eq("active", true);
 
     if (productCount && productCount > 0) {
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'CATEGORY_HAS_PRODUCTS',
-            message: 'Cannot delete category that contains products',
+            code: "CATEGORY_HAS_PRODUCTS",
+            message: "Cannot delete category that contains products",
             details: { productCount },
           },
         } as ApiResponse,
@@ -344,18 +344,18 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
 
     // Check if category has child categories
     const { count: childCount } = await supabase
-      .from('categories')
-      .select('*', { count: 'exact', head: true })
-      .eq('parent_id', existingCategory.id)
-      .eq('active', true);
+      .from("categories")
+      .select("*", { count: "exact", head: true })
+      .eq("parent_id", existingCategory.id)
+      .eq("active", true);
 
     if (childCount && childCount > 0) {
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'CATEGORY_HAS_CHILDREN',
-            message: 'Cannot delete category that has child categories',
+            code: "CATEGORY_HAS_CHILDREN",
+            message: "Cannot delete category that has child categories",
             details: { childCount },
           },
         } as ApiResponse,
@@ -365,18 +365,18 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
 
     // Soft delete by setting active = false
     const { error } = await supabase
-      .from('categories')
+      .from("categories")
       .update({ active: false })
-      .eq('id', existingCategory.id);
+      .eq("id", existingCategory.id);
 
     if (error) {
-      console.error('Error deleting category:', error);
+      console.error("Error deleting category:", error);
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'DELETE_ERROR',
-            message: 'Failed to delete category',
+            code: "DELETE_ERROR",
+            message: "Failed to delete category",
             details: error.message,
           },
         } as ApiResponse,
@@ -390,13 +390,13 @@ export async function DELETE(request: NextRequest, { params }: RouteContext) {
 
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Unexpected error in DELETE /api/categories/[slug]:', error);
+    console.error("Unexpected error in DELETE /api/categories/[slug]:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Internal server error',
+          code: "INTERNAL_ERROR",
+          message: "Internal server error",
         },
       } as ApiResponse,
       { status: 500 }

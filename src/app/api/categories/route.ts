@@ -3,22 +3,18 @@
  * Handles CRUD operations for categories
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import {
-  Category,
-  CreateCategoryRequest,
-  CategoryRow
-} from '@/types/product';
-import { ApiResponse } from '@/types';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { Category, CreateCategoryRequest, CategoryRow } from "@/types/product";
+import { ApiResponse } from "@/types";
 import {
   transformCategoryRow,
   categoryToRow,
   validateCategoryData,
-  createSlug
-} from '@/lib/utils/product-transforms';
-import { withCache, setCacheHeaders, invalidateApiCache } from '@/lib/cache/api-cache';
-import { CACHE_TTL } from '@/lib/cache/redis';
+  createSlug,
+} from "@/lib/utils/product-transforms";
+import { withCache, setCacheHeaders, invalidateApiCache } from "@/lib/cache/api-cache";
+import { CACHE_TTL } from "@/lib/cache/redis";
 
 /**
  * GET /api/categories
@@ -29,39 +25,39 @@ async function getCategories(request: NextRequest) {
     const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
 
-    const includeInactive = searchParams.get('includeInactive') === 'true';
-    const hierarchical = searchParams.get('hierarchical') === 'true';
-    const parentId = searchParams.get('parentId');
+    const includeInactive = searchParams.get("includeInactive") === "true";
+    const hierarchical = searchParams.get("hierarchical") === "true";
+    const parentId = searchParams.get("parentId");
 
     let query = supabase
-      .from('categories')
-      .select('*')
-      .order('sort_order', { ascending: true })
-      .order('name_cs', { ascending: true });
+      .from("categories")
+      .select("*")
+      .order("sort_order", { ascending: true })
+      .order("name_cs", { ascending: true });
 
     // Filter by active status
     if (!includeInactive) {
-      query = query.eq('active', true);
+      query = query.eq("active", true);
     }
 
     // Filter by parent ID
     if (parentId) {
-      query = query.eq('parent_id', parentId);
+      query = query.eq("parent_id", parentId);
     } else if (hierarchical) {
       // Only get root categories for hierarchical view
-      query = query.is('parent_id', null);
+      query = query.is("parent_id", null);
     }
 
     const { data: categoriesData, error } = await query;
 
     if (error) {
-      console.error('Error fetching categories:', error);
+      console.error("Error fetching categories:", error);
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'FETCH_ERROR',
-            message: 'Failed to fetch categories',
+            code: "FETCH_ERROR",
+            message: "Failed to fetch categories",
             details: error.message,
           },
         } as ApiResponse,
@@ -80,10 +76,10 @@ async function getCategories(request: NextRequest) {
     // Add product counts
     for (const category of categories) {
       const { count } = await supabase
-        .from('products')
-        .select('*', { count: 'exact', head: true })
-        .eq('category_id', category.id)
-        .eq('active', true);
+        .from("products")
+        .select("*", { count: "exact", head: true })
+        .eq("category_id", category.id)
+        .eq("active", true);
 
       category.productCount = count || 0;
     }
@@ -101,13 +97,13 @@ async function getCategories(request: NextRequest) {
       staleWhileRevalidate: CACHE_TTL.DAY,
     });
   } catch (error) {
-    console.error('Unexpected error in GET /api/categories:', error);
+    console.error("Unexpected error in GET /api/categories:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Internal server error',
+          code: "INTERNAL_ERROR",
+          message: "Internal server error",
         },
       } as ApiResponse,
       { status: 500 }
@@ -118,8 +114,8 @@ async function getCategories(request: NextRequest) {
 // Export cached GET handler
 export const GET = withCache(getCategories, {
   ttl: CACHE_TTL.CATEGORIES,
-  keyPrefix: 'categories',
-  varyBy: ['accept-language'],
+  keyPrefix: "categories",
+  varyBy: ["accept-language"],
 });
 
 /**
@@ -138,8 +134,8 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
-            message: 'Invalid category data',
+            code: "VALIDATION_ERROR",
+            message: "Invalid category data",
             details: validation.errors,
           },
         } as ApiResponse,
@@ -154,9 +150,9 @@ export async function POST(request: NextRequest) {
 
     // Check if slug already exists
     const { data: existingCategory } = await supabase
-      .from('categories')
-      .select('id')
-      .eq('slug', body.slug)
+      .from("categories")
+      .select("id")
+      .eq("slug", body.slug)
       .single();
 
     if (existingCategory) {
@@ -164,8 +160,8 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: {
-            code: 'SLUG_EXISTS',
-            message: 'A category with this slug already exists',
+            code: "SLUG_EXISTS",
+            message: "A category with this slug already exists",
           },
         } as ApiResponse,
         { status: 409 }
@@ -175,10 +171,10 @@ export async function POST(request: NextRequest) {
     // Validate parent category if provided
     if (body.parentId) {
       const { data: parentCategory } = await supabase
-        .from('categories')
-        .select('id')
-        .eq('id', body.parentId)
-        .eq('active', true)
+        .from("categories")
+        .select("id")
+        .eq("id", body.parentId)
+        .eq("active", true)
         .single();
 
       if (!parentCategory) {
@@ -186,8 +182,8 @@ export async function POST(request: NextRequest) {
           {
             success: false,
             error: {
-              code: 'PARENT_NOT_FOUND',
-              message: 'Parent category not found',
+              code: "PARENT_NOT_FOUND",
+              message: "Parent category not found",
             },
           } as ApiResponse,
           { status: 400 }
@@ -209,19 +205,19 @@ export async function POST(request: NextRequest) {
     });
 
     const { data, error } = await supabase
-      .from('categories')
+      .from("categories")
       .insert(categoryData)
-      .select('*')
+      .select("*")
       .single();
 
     if (error) {
-      console.error('Error creating category:', error);
+      console.error("Error creating category:", error);
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'CREATE_ERROR',
-            message: 'Failed to create category',
+            code: "CREATE_ERROR",
+            message: "Failed to create category",
             details: error.message,
           },
         } as ApiResponse,
@@ -233,7 +229,7 @@ export async function POST(request: NextRequest) {
     const category = transformCategoryRow(data);
 
     // Invalidate categories cache after creating new category
-    await invalidateApiCache('categories*');
+    await invalidateApiCache("categories*");
 
     const response: ApiResponse<Category> = {
       success: true,
@@ -242,13 +238,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
-    console.error('Unexpected error in POST /api/categories:', error);
+    console.error("Unexpected error in POST /api/categories:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Internal server error',
+          code: "INTERNAL_ERROR",
+          message: "Internal server error",
         },
       } as ApiResponse,
       { status: 500 }
@@ -268,14 +264,14 @@ async function buildCategoryHierarchy(
 
   for (const category of categoriesWithChildren) {
     let childQuery = supabase
-      .from('categories')
-      .select('*')
-      .eq('parent_id', category.id)
-      .order('sort_order', { ascending: true })
-      .order('name_cs', { ascending: true });
+      .from("categories")
+      .select("*")
+      .eq("parent_id", category.id)
+      .order("sort_order", { ascending: true })
+      .order("name_cs", { ascending: true });
 
     if (!includeInactive) {
-      childQuery = childQuery.eq('active', true);
+      childQuery = childQuery.eq("active", true);
     }
 
     const { data: childrenData } = await childQuery;

@@ -2,9 +2,9 @@
  * Optimized Image component with lazy loading, proper sizing, and performance optimizations
  */
 
-import Image from 'next/image';
-import { useState } from 'react';
-import { clsx } from 'clsx';
+import Image from "next/image";
+import { useState } from "react";
+import { clsx } from "clsx";
 
 interface OptimizedImageProps {
   src: string;
@@ -16,10 +16,10 @@ interface OptimizedImageProps {
   fill?: boolean;
   sizes?: string;
   quality?: number;
-  placeholder?: 'blur' | 'empty';
+  placeholder?: "blur" | "empty";
   blurDataURL?: string;
-  objectFit?: 'contain' | 'cover' | 'fill' | 'none' | 'scale-down';
-  loading?: 'lazy' | 'eager';
+  objectFit?: "contain" | "cover" | "fill" | "none" | "scale-down";
+  loading?: "lazy" | "eager";
   onLoad?: () => void;
   onError?: () => void;
 }
@@ -32,7 +32,7 @@ function generateBlurDataURL(width = 10, height = 10): string {
     `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <rect width="100%" height="100%" fill="#f3f4f6"/>
     </svg>`
-  ).toString('base64')}`;
+  ).toString("base64")}`;
 }
 
 export function OptimizedImage({
@@ -45,10 +45,10 @@ export function OptimizedImage({
   fill = false,
   sizes,
   quality = 85,
-  placeholder = 'blur',
+  placeholder = "blur",
   blurDataURL,
-  objectFit = 'cover',
-  loading = 'lazy',
+  objectFit = "cover",
+  loading = "lazy",
   onLoad,
   onError,
 }: OptimizedImageProps) {
@@ -70,23 +70,18 @@ export function OptimizedImage({
   const defaultBlurDataURL = blurDataURL || generateBlurDataURL(width, height);
 
   // Default sizes for responsive images
-  const defaultSizes = sizes || '(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw';
+  const defaultSizes = sizes || "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw";
 
   if (hasError) {
     return (
       <div
         className={clsx(
-          'flex items-center justify-center bg-neutral-100 text-neutral-400',
+          "flex items-center justify-center bg-neutral-100 text-neutral-400",
           className
         )}
         style={{ width, height }}
       >
-        <svg
-          className="w-8 h-8"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+        <svg className="w-8 h-8" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -99,13 +94,10 @@ export function OptimizedImage({
   }
 
   return (
-    <div className={clsx('relative overflow-hidden', className)}>
+    <div className={clsx("relative overflow-hidden", className)}>
       {/* Loading skeleton */}
       {isLoading && (
-        <div
-          className="absolute inset-0 bg-neutral-200 animate-pulse"
-          style={{ width, height }}
-        />
+        <div className="absolute inset-0 bg-neutral-200 animate-pulse" style={{ width, height }} />
       )}
 
       <Image
@@ -117,17 +109,17 @@ export function OptimizedImage({
         priority={priority}
         quality={quality}
         placeholder={placeholder}
-        blurDataURL={placeholder === 'blur' ? defaultBlurDataURL : undefined}
+        blurDataURL={placeholder === "blur" ? defaultBlurDataURL : undefined}
         sizes={fill ? defaultSizes : undefined}
-        loading={priority ? 'eager' : loading}
+        loading={priority ? "eager" : loading}
         className={clsx(
-          'transition-opacity duration-300',
-          isLoading ? 'opacity-0' : 'opacity-100',
-          objectFit === 'cover' && 'object-cover',
-          objectFit === 'contain' && 'object-contain',
-          objectFit === 'fill' && 'object-fill',
-          objectFit === 'none' && 'object-none',
-          objectFit === 'scale-down' && 'object-scale-down'
+          "transition-opacity duration-300",
+          isLoading ? "opacity-0" : "opacity-100",
+          objectFit === "cover" && "object-cover",
+          objectFit === "contain" && "object-contain",
+          objectFit === "fill" && "object-fill",
+          objectFit === "none" && "object-none",
+          objectFit === "scale-down" && "object-scale-down"
         )}
         onLoad={handleLoad}
         onError={handleError}
@@ -144,7 +136,7 @@ interface ProductImageProps {
   alt: string;
   className?: string;
   priority?: boolean;
-  size?: 'small' | 'medium' | 'large' | 'xl';
+  size?: "small" | "medium" | "large" | "xl";
 }
 
 export function ProductImage({
@@ -152,7 +144,7 @@ export function ProductImage({
   alt,
   className,
   priority = false,
-  size = 'medium'
+  size = "medium",
 }: ProductImageProps) {
   const dimensions = {
     small: { width: 200, height: 200 },
@@ -220,7 +212,7 @@ export function AvatarImage({ src, alt, size = 40, className }: AvatarImageProps
       alt={alt}
       width={size}
       height={size}
-      className={clsx('rounded-full', className)}
+      className={clsx("rounded-full", className)}
       quality={80}
       objectFit="cover"
     />

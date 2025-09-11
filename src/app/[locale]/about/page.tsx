@@ -1,4 +1,4 @@
-import { getTranslations } from 'next-intl/server';
+import { getTranslations } from "next-intl/server";
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>;
@@ -6,13 +6,13 @@ interface AboutPageProps {
 
 export default async function AboutPage({ params }: AboutPageProps) {
   const { locale } = await params;
-  const tNav = await getTranslations('navigation');
+  const tNav = await getTranslations("navigation");
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
         <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-8">
-          {tNav('about')}
+          {tNav("about")}
         </h1>
 
         <div className="bg-white rounded-lg shadow-soft p-8 space-y-6">
@@ -21,9 +21,9 @@ export default async function AboutPage({ params }: AboutPageProps) {
               Ketingmar s.r.o.
             </h2>
             <p className="text-neutral-700 leading-relaxed">
-              Jsme rodinná firma s dlouholetou tradicí v oblasti pohřebních služeb a květinových aranžmá.
-              Specializujeme se na výrobu prémiových pohřebních věnců, které vytváříme s úctou, pečlivostí
-              a důrazem na kvalitu.
+              Jsme rodinná firma s dlouholetou tradicí v oblasti pohřebních služeb a květinových
+              aranžmá. Specializujeme se na výrobu prémiových pohřebních věnců, které vytváříme s
+              úctou, pečlivostí a důrazem na kvalitu.
             </p>
           </div>
 
@@ -57,7 +57,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </h3>
             <p className="text-neutral-700 leading-relaxed">
               Nabízíme široký výběr pohřebních věnců a květinových aranžmá, které můžete přizpůsobit
-              podle svých představ. Každý věnec je vytvořen s láskou a úctou k památce vašich blízkých.
+              podle svých představ. Každý věnec je vytvořen s láskou a úctou k památce vašich
+              blízkých.
             </p>
           </div>
         </div>

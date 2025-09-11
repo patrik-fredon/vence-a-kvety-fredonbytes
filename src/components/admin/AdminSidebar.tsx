@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 import {
   HomeIcon,
   ShoppingBagIcon,
@@ -8,10 +8,10 @@ import {
   CubeIcon,
   ClockIcon,
   ExclamationTriangleIcon,
-  XMarkIcon
-} from '@heroicons/react/24/outline';
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 
-type AdminView = 'overview' | 'products' | 'orders' | 'inventory' | 'activity';
+type AdminView = "overview" | "products" | "orders" | "inventory" | "activity";
 
 interface AdminSidebarProps {
   currentView: AdminView;
@@ -30,47 +30,47 @@ export default function AdminSidebar({
   onViewChange,
   isOpen,
   onToggle,
-  stats
+  stats,
 }: AdminSidebarProps) {
-  const t = useTranslations('admin');
+  const t = useTranslations("admin");
 
   const navigation = [
     {
-      id: 'overview' as AdminView,
-      name: 'Přehled',
+      id: "overview" as AdminView,
+      name: "Přehled",
       icon: HomeIcon,
-      badge: null
+      badge: null,
     },
     {
-      id: 'products' as AdminView,
-      name: 'Produkty',
+      id: "products" as AdminView,
+      name: "Produkty",
       icon: ShoppingBagIcon,
-      badge: null
+      badge: null,
     },
     {
-      id: 'orders' as AdminView,
-      name: 'Objednávky',
+      id: "orders" as AdminView,
+      name: "Objednávky",
       icon: ClipboardDocumentListIcon,
-      badge: stats?.orders.pending || 0
+      badge: stats?.orders.pending || 0,
     },
     {
-      id: 'inventory' as AdminView,
-      name: 'Skladové zásoby',
+      id: "inventory" as AdminView,
+      name: "Skladové zásoby",
       icon: CubeIcon,
-      badge: (stats?.products.low_stock || 0) + (stats?.products.out_of_stock || 0)
+      badge: (stats?.products.low_stock || 0) + (stats?.products.out_of_stock || 0),
     },
     {
-      id: 'activity' as AdminView,
-      name: 'Aktivita',
+      id: "activity" as AdminView,
+      name: "Aktivita",
       icon: ClockIcon,
-      badge: null
-    }
+      badge: null,
+    },
   ];
 
   const sidebarClasses = `
     fixed inset-y-0 left-0 z-50 w-64 bg-white shadow-lg transform transition-transform duration-300 ease-in-out
     lg:translate-x-0 lg:static lg:inset-0
-    ${isOpen ? 'translate-x-0' : '-translate-x-full'}
+    ${isOpen ? "translate-x-0" : "-translate-x-full"}
   `;
 
   return (
@@ -88,9 +88,7 @@ export default function AdminSidebar({
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h1 className="text-xl font-semibold text-gray-900">
-              Admin Panel
-            </h1>
+            <h1 className="text-xl font-semibold text-gray-900">Admin Panel</h1>
             <button
               onClick={onToggle}
               className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
@@ -114,9 +112,10 @@ export default function AdminSidebar({
                   }}
                   className={`
                     w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                    ${isActive
-                      ? 'bg-blue-100 text-blue-700 border border-blue-200'
-                      : 'text-gray-700 hover:bg-gray-100'
+                    ${
+                      isActive
+                        ? "bg-blue-100 text-blue-700 border border-blue-200"
+                        : "text-gray-700 hover:bg-gray-100"
                     }
                   `}
                 >
@@ -126,13 +125,16 @@ export default function AdminSidebar({
                   </div>
 
                   {item.badge !== null && item.badge > 0 && (
-                    <span className={`
+                    <span
+                      className={`
                       inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full
-                      ${item.id === 'inventory'
-                        ? 'bg-red-100 text-red-800'
-                        : 'bg-blue-100 text-blue-800'
+                      ${
+                        item.id === "inventory"
+                          ? "bg-red-100 text-red-800"
+                          : "bg-blue-100 text-blue-800"
                       }
-                    `}>
+                    `}
+                    >
                       {item.badge}
                     </span>
                   )}
@@ -151,9 +153,7 @@ export default function AdminSidebar({
                     <p className="font-medium text-yellow-800">
                       {stats.alerts.unacknowledged} nepotvrzených upozornění
                     </p>
-                    <p className="text-yellow-700">
-                      Zkontrolujte skladové zásoby
-                    </p>
+                    <p className="text-yellow-700">Zkontrolujte skladové zásoby</p>
                   </div>
                 </div>
               </div>
@@ -162,9 +162,7 @@ export default function AdminSidebar({
 
           {/* Footer */}
           <div className="p-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center">
-              Pohřební věnce Admin
-            </p>
+            <p className="text-xs text-gray-500 text-center">Pohřební věnce Admin</p>
           </div>
         </div>
       </div>

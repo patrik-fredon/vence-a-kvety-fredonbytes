@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   BanknotesIcon,
   CreditCardIcon,
   DevicePhoneMobileIcon,
   ExclamationTriangleIcon,
-  ArrowTopRightOnSquareIcon
-} from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/Button';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+  ArrowTopRightOnSquareIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface GopayPaymentFormProps {
   redirectUrl: string;
@@ -27,9 +27,9 @@ export function GopayPaymentForm({
   amount,
   currency,
   onError,
-  locale
+  locale,
 }: GopayPaymentFormProps) {
-  const t = useTranslations('checkout');
+  const t = useTranslations("checkout");
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handlePayment = async () => {
@@ -39,8 +39,8 @@ export function GopayPaymentForm({
       // Redirect to GoPay payment gateway
       window.location.href = redirectUrl;
     } catch (error) {
-      console.error('Error redirecting to GoPay:', error);
-      onError('Chyba při přesměrování na platební bránu.');
+      console.error("Error redirecting to GoPay:", error);
+      onError("Chyba při přesměrování na platební bránu.");
       setIsRedirecting(false);
     }
   };
@@ -48,19 +48,19 @@ export function GopayPaymentForm({
   const paymentMethods = [
     {
       icon: <BanknotesIcon className="w-6 h-6" />,
-      name: 'Bankovní převod',
-      description: 'Přímý převod z vašeho bankovního účtu'
+      name: "Bankovní převod",
+      description: "Přímý převod z vašeho bankovního účtu",
     },
     {
       icon: <CreditCardIcon className="w-6 h-6" />,
-      name: 'Platební karta',
-      description: 'Visa, Mastercard, American Express'
+      name: "Platební karta",
+      description: "Visa, Mastercard, American Express",
     },
     {
       icon: <DevicePhoneMobileIcon className="w-6 h-6" />,
-      name: 'Rychlé platby',
-      description: 'Apple Pay, Google Pay, PayPal'
-    }
+      name: "Rychlé platby",
+      description: "Apple Pay, Google Pay, PayPal",
+    },
   ];
 
   return (
@@ -70,9 +70,7 @@ export function GopayPaymentForm({
         <div className="inline-flex items-center justify-center w-16 h-16 bg-orange-100 rounded-full mb-4">
           <BanknotesIcon className="w-8 h-8 text-orange-600" />
         </div>
-        <h3 className="text-xl font-semibold text-neutral-900 mb-2">
-          Platba přes GoPay
-        </h3>
+        <h3 className="text-xl font-semibold text-neutral-900 mb-2">Platba přes GoPay</h3>
         <p className="text-neutral-600">
           Vyberte si z různých způsobů platby na bezpečné platební bráně GoPay
         </p>
@@ -80,25 +78,17 @@ export function GopayPaymentForm({
 
       {/* Available Payment Methods */}
       <div className="space-y-3">
-        <h4 className="text-sm font-medium text-neutral-700 mb-3">
-          Dostupné způsoby platby:
-        </h4>
+        <h4 className="text-sm font-medium text-neutral-700 mb-3">Dostupné způsoby platby:</h4>
 
         {paymentMethods.map((method, index) => (
           <div
             key={index}
             className="flex items-center space-x-3 p-3 bg-neutral-50 border border-neutral-200 rounded-lg"
           >
-            <div className="flex-shrink-0 text-orange-600">
-              {method.icon}
-            </div>
+            <div className="flex-shrink-0 text-orange-600">{method.icon}</div>
             <div>
-              <div className="text-sm font-medium text-neutral-900">
-                {method.name}
-              </div>
-              <div className="text-xs text-neutral-600">
-                {method.description}
-              </div>
+              <div className="text-sm font-medium text-neutral-900">{method.name}</div>
+              <div className="text-xs text-neutral-600">{method.description}</div>
             </div>
           </div>
         ))}
@@ -113,8 +103,8 @@ export function GopayPaymentForm({
         <div className="flex justify-between items-center">
           <span className="text-sm text-orange-800">Celková částka:</span>
           <span className="text-lg font-semibold text-orange-900">
-            {new Intl.NumberFormat(locale === 'cs' ? 'cs-CZ' : 'en-US', {
-              style: 'currency',
+            {new Intl.NumberFormat(locale === "cs" ? "cs-CZ" : "en-US", {
+              style: "currency",
               currency: currency.toUpperCase(),
             }).format(amount)}
           </span>
@@ -127,14 +117,16 @@ export function GopayPaymentForm({
           <div className="flex-shrink-0">
             <div className="w-6 h-6 bg-green-500 rounded-full flex items-center justify-center">
               <svg className="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
-                <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
+                <path
+                  fillRule="evenodd"
+                  d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z"
+                  clipRule="evenodd"
+                />
               </svg>
             </div>
           </div>
           <div>
-            <h4 className="text-sm font-medium text-green-800 mb-1">
-              Bezpečná platba
-            </h4>
+            <h4 className="text-sm font-medium text-green-800 mb-1">Bezpečná platba</h4>
             <div className="text-xs text-green-700 space-y-1">
               <p>• SSL šifrování všech platebních údajů</p>
               <p>• Certifikovaný poskytovatel plateb (PCI DSS)</p>
@@ -166,25 +158,22 @@ export function GopayPaymentForm({
 
       {/* Information Notice */}
       <div className="text-xs text-neutral-500 text-center space-y-1">
-        <p>
-          Po kliknutí budete přesměrováni na bezpečnou platební bránu GoPay.
-        </p>
-        <p>
-          Po dokončení platby se automaticky vrátíte zpět na náš web.
-        </p>
+        <p>Po kliknutí budete přesměrováni na bezpečnou platební bránu GoPay.</p>
+        <p>Po dokončení platby se automaticky vrátíte zpět na náš web.</p>
       </div>
 
       {/* Terms Notice */}
       <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-3">
         <p className="text-xs text-neutral-600 text-center">
-          Pokračováním souhlasíte s{' '}
+          Pokračováním souhlasíte s{" "}
           <a href="/terms" className="text-primary-600 hover:text-primary-700 underline">
             obchodními podmínkami
-          </a>{' '}
-          GoPay a našimi{' '}
+          </a>{" "}
+          GoPay a našimi{" "}
           <a href="/privacy" className="text-primary-600 hover:text-primary-700 underline">
             zásadami ochrany osobních údajů
-          </a>.
+          </a>
+          .
         </p>
       </div>
     </div>

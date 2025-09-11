@@ -1,27 +1,29 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { orderUtils } from '@/lib/supabase/utils';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { orderUtils } from "@/lib/supabase/utils";
 
 /**
  * Get order status history
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { id: orderId } = await params;
 
     // Get order history
     const { data: historyData, error } = await orderUtils.getOrderHistory(orderId);
 
     if (error || !historyData) {
-      return NextResponse.json({
-        success: false,
-        error: 'Objednávka nebyla nalezena'
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Objednávka nebyla nalezena",
+        },
+        { status: 404 }
+      );
     }
 
     const { order, statusHistory } = historyData;
@@ -39,16 +41,18 @@ export async function GET(
         orderNumber: (order.customer_info as any).orderNumber || order.id.slice(-8).toUpperCase(),
         status: order.status,
         totalAmount: order.total_amount,
-        createdAt: order.created_at
+        createdAt: order.created_at,
       },
-      statusHistory
+      statusHistory,
     });
-
   } catch (error) {
-    console.error('Error in GET /api/orders/[id]/history:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in GET /api/orders/[id]/history:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }

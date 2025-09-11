@@ -1,9 +1,14 @@
-import { getTranslations } from 'next-intl/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { ProductGrid } from '@/components/product';
-import { transformProductRow, transformCategoryRow } from '@/lib/utils/product-transforms';
-import { Product, Category, ProductRow, CategoryRow } from '@/types/product';
-import { getCachedCategories, cacheCategories, getCachedProductsList, cacheProductsList } from '@/lib/cache/product-cache';
+import { getTranslations } from "next-intl/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { ProductGrid } from "@/components/product";
+import { transformProductRow, transformCategoryRow } from "@/lib/utils/product-transforms";
+import { Product, Category, ProductRow, CategoryRow } from "@/types/product";
+import {
+  getCachedCategories,
+  cacheCategories,
+  getCachedProductsList,
+  cacheProductsList,
+} from "@/lib/cache/product-cache";
 
 interface ProductsPageProps {
   params: Promise<{ locale: string }>;
@@ -14,7 +19,7 @@ export const revalidate = 1800;
 
 export default async function ProductsPage({ params }: ProductsPageProps) {
   const { locale } = await params;
-  const t = await getTranslations('product');
+  const t = await getTranslations("product");
 
   // Try to get categories from cache first
   let categories = await getCachedCategories();
@@ -23,10 +28,10 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
     // Fetch categories from database if not cached
     const supabase = createServerClient();
     const { data: categoriesData } = await supabase
-      .from('categories')
-      .select('*')
-      .eq('active', true)
-      .order('sort_order', { ascending: true });
+      .from("categories")
+      .select("*")
+      .eq("active", true)
+      .order("sort_order", { ascending: true });
 
     categories = (categoriesData || []).map(transformCategoryRow);
 
@@ -35,7 +40,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
   }
 
   // Try to get initial products from cache
-  const initialFilters = { active: true, limit: 12, order: 'created_at' };
+  const initialFilters = { active: true, limit: 12, order: "created_at" };
   let cachedProductsData = await getCachedProductsList(initialFilters);
   let products: Product[];
 
@@ -45,7 +50,7 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
     // Fetch initial products from database if not cached
     const supabase = createServerClient();
     const { data: productsData } = await supabase
-      .from('products')
+      .from("products")
       .select(`
         *,
         categories (
@@ -63,8 +68,8 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
           updated_at
         )
       `)
-      .eq('active', true)
-      .order('created_at', { ascending: false })
+      .eq("active", true)
+      .order("created_at", { ascending: false })
       .limit(12);
 
     // Transform the data
@@ -81,23 +86,16 @@ export default async function ProductsPage({ params }: ProductsPageProps) {
     <div className="container mx-auto px-4 py-8">
       {/* Page Header */}
       <div className="mb-8">
-        <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-4">
-          {t('title')}
-        </h1>
+        <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-4">{t("title")}</h1>
         <p className="text-lg text-neutral-600">
-          {locale === 'cs'
-            ? 'Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá.'
-            : 'Browse our collection of funeral wreaths and floral arrangements.'
-          }
+          {locale === "cs"
+            ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá."
+            : "Browse our collection of funeral wreaths and floral arrangements."}
         </p>
       </div>
 
       {/* Product Grid with Filters */}
-      <ProductGrid
-        initialProducts={products}
-        initialCategories={categories}
-        locale={locale}
-      />
+      <ProductGrid initialProducts={products} initialCategories={categories} locale={locale} />
     </div>
   );
 }

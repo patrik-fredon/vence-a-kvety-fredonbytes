@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useSession, signOut } from 'next-auth/react';
-import { useTranslations } from 'next-intl';
+import { useSession, signOut } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import {
   Bars3Icon,
   BellIcon,
   UserCircleIcon,
-  ArrowRightOnRectangleIcon
-} from '@heroicons/react/24/outline';
-import { Menu, Transition } from '@headlessui/react';
-import { Fragment } from 'react';
+  ArrowRightOnRectangleIcon,
+} from "@heroicons/react/24/outline";
+import { Menu, Transition } from "@headlessui/react";
+import { Fragment } from "react";
 
-type AdminView = 'overview' | 'products' | 'orders' | 'inventory' | 'activity';
+type AdminView = "overview" | "products" | "orders" | "inventory" | "activity";
 
 interface AdminHeaderProps {
   currentView: AdminView;
@@ -19,19 +19,19 @@ interface AdminHeaderProps {
 }
 
 const viewTitles: Record<AdminView, string> = {
-  overview: 'Přehled',
-  products: 'Správa produktů',
-  orders: 'Správa objednávek',
-  inventory: 'Skladové zásoby',
-  activity: 'Aktivita administrátorů'
+  overview: "Přehled",
+  products: "Správa produktů",
+  orders: "Správa objednávek",
+  inventory: "Skladové zásoby",
+  activity: "Aktivita administrátorů",
 };
 
 export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderProps) {
   const { data: session } = useSession();
-  const t = useTranslations('admin');
+  const t = useTranslations("admin");
 
   const handleSignOut = async () => {
-    await signOut({ callbackUrl: '/' });
+    await signOut({ callbackUrl: "/" });
   };
 
   return (
@@ -47,12 +47,8 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
           </button>
 
           <div className="ml-4 lg:ml-0">
-            <h1 className="text-2xl font-semibold text-gray-900">
-              {viewTitles[currentView]}
-            </h1>
-            <p className="text-sm text-gray-500 mt-1">
-              Správa e-shopu pohřebních věnců
-            </p>
+            <h1 className="text-2xl font-semibold text-gray-900">{viewTitles[currentView]}</h1>
+            <p className="text-sm text-gray-500 mt-1">Správa e-shopu pohřebních věnců</p>
           </div>
         </div>
 
@@ -91,7 +87,7 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                       <a
                         href="/"
                         className={`${
-                          active ? 'bg-gray-100' : ''
+                          active ? "bg-gray-100" : ""
                         } flex items-center px-4 py-2 text-sm text-gray-700`}
                       >
                         <UserCircleIcon className="h-4 w-4 mr-3" />
@@ -107,7 +103,7 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                       <button
                         onClick={handleSignOut}
                         className={`${
-                          active ? 'bg-gray-100' : ''
+                          active ? "bg-gray-100" : ""
                         } flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                       >
                         <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />

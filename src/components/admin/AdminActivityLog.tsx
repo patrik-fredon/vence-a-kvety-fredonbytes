@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   ClockIcon,
   UserIcon,
   EyeIcon,
   PencilIcon,
   TrashIcon,
-  PlusIcon
-} from '@heroicons/react/24/outline';
+  PlusIcon,
+} from "@heroicons/react/24/outline";
 
 interface ActivityLogEntry {
   id: string;
-  action: 'INSERT' | 'UPDATE' | 'DELETE';
+  action: "INSERT" | "UPDATE" | "DELETE";
   resource_type: string;
   resource_id: string;
   old_values?: any;
@@ -47,7 +47,7 @@ export default function AdminActivityLog() {
         setTotalPages(Math.ceil((data.total || 0) / 20));
       }
     } catch (error) {
-      console.error('Failed to fetch activities:', error);
+      console.error("Failed to fetch activities:", error);
     } finally {
       setLoading(false);
     }
@@ -55,11 +55,11 @@ export default function AdminActivityLog() {
 
   const getActionIcon = (action: string) => {
     switch (action) {
-      case 'INSERT':
+      case "INSERT":
         return PlusIcon;
-      case 'UPDATE':
+      case "UPDATE":
         return PencilIcon;
-      case 'DELETE':
+      case "DELETE":
         return TrashIcon;
       default:
         return ClockIcon;
@@ -68,25 +68,25 @@ export default function AdminActivityLog() {
 
   const getActionColor = (action: string) => {
     switch (action) {
-      case 'INSERT':
-        return 'text-green-600 bg-green-100';
-      case 'UPDATE':
-        return 'text-blue-600 bg-blue-100';
-      case 'DELETE':
-        return 'text-red-600 bg-red-100';
+      case "INSERT":
+        return "text-green-600 bg-green-100";
+      case "UPDATE":
+        return "text-blue-600 bg-blue-100";
+      case "DELETE":
+        return "text-red-600 bg-red-100";
       default:
-        return 'text-gray-600 bg-gray-100';
+        return "text-gray-600 bg-gray-100";
     }
   };
 
   const getActionLabel = (action: string) => {
     switch (action) {
-      case 'INSERT':
-        return 'Vytvořeno';
-      case 'UPDATE':
-        return 'Upraveno';
-      case 'DELETE':
-        return 'Smazáno';
+      case "INSERT":
+        return "Vytvořeno";
+      case "UPDATE":
+        return "Upraveno";
+      case "DELETE":
+        return "Smazáno";
       default:
         return action;
     }
@@ -94,53 +94,56 @@ export default function AdminActivityLog() {
 
   const getResourceLabel = (resourceType: string) => {
     switch (resourceType) {
-      case 'products':
-        return 'Produkt';
-      case 'categories':
-        return 'Kategorie';
-      case 'orders':
-        return 'Objednávka';
+      case "products":
+        return "Produkt";
+      case "categories":
+        return "Kategorie";
+      case "orders":
+        return "Objednávka";
       default:
         return resourceType;
     }
   };
 
-  const formatChanges = (oldValues: any, newValues: any): Array<{field: string, from: any, to: any}> | null => {
+  const formatChanges = (
+    oldValues: any,
+    newValues: any
+  ): Array<{ field: string; from: any; to: any }> | null => {
     if (!oldValues && !newValues) return null;
 
-    const changes: Array<{field: string, from: any, to: any}> = [];
+    const changes: Array<{ field: string; from: any; to: any }> = [];
 
     if (oldValues && newValues) {
       // Update - show what changed
       const keys = new Set([...Object.keys(oldValues), ...Object.keys(newValues)]);
-      keys.forEach(key => {
+      keys.forEach((key) => {
         if (oldValues[key] !== newValues[key]) {
           changes.push({
             field: key,
             from: oldValues[key],
-            to: newValues[key]
+            to: newValues[key],
           });
         }
       });
     } else if (newValues) {
       // Insert - show new values
       Object.entries(newValues).forEach(([key, value]) => {
-        if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
+        if (key !== "id" && key !== "created_at" && key !== "updated_at") {
           changes.push({
             field: key,
             from: null,
-            to: value
+            to: value,
           });
         }
       });
     } else if (oldValues) {
       // Delete - show deleted values
       Object.entries(oldValues).forEach(([key, value]) => {
-        if (key !== 'id' && key !== 'created_at' && key !== 'updated_at') {
+        if (key !== "id" && key !== "created_at" && key !== "updated_at") {
           changes.push({
             field: key,
             from: value,
-            to: null
+            to: null,
           });
         }
       });
@@ -169,9 +172,7 @@ export default function AdminActivityLog() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
           </div>
         ) : activities.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            Žádná aktivita k zobrazení
-          </div>
+          <div className="p-6 text-center text-gray-500">Žádná aktivita k zobrazení</div>
         ) : (
           <div className="divide-y divide-gray-200">
             {activities.map((activity) => {
@@ -189,7 +190,8 @@ export default function AdminActivityLog() {
                       <div className="flex items-center justify-between">
                         <div>
                           <p className="text-sm font-medium text-gray-900">
-                            {getActionLabel(activity.action)} - {getResourceLabel(activity.resource_type)}
+                            {getActionLabel(activity.action)} -{" "}
+                            {getResourceLabel(activity.resource_type)}
                           </p>
                           <p className="text-sm text-gray-500">
                             {activity.admin.name || activity.admin.email}
@@ -197,12 +199,10 @@ export default function AdminActivityLog() {
                         </div>
                         <div className="text-right">
                           <p className="text-sm text-gray-500">
-                            {new Date(activity.created_at).toLocaleString('cs-CZ')}
+                            {new Date(activity.created_at).toLocaleString("cs-CZ")}
                           </p>
                           {activity.ip_address && (
-                            <p className="text-xs text-gray-400">
-                              IP: {activity.ip_address}
-                            </p>
+                            <p className="text-xs text-gray-400">IP: {activity.ip_address}</p>
                           )}
                         </div>
                       </div>
@@ -215,18 +215,19 @@ export default function AdminActivityLog() {
                               {change.from !== null && (
                                 <span className="text-red-600 line-through ml-1">
                                   {String(change.from).substring(0, 50)}
-                                  {String(change.from).length > 50 ? '...' : ''}
+                                  {String(change.from).length > 50 ? "..." : ""}
                                 </span>
                               )}
                               {change.to !== null && (
                                 <span className="text-green-600 ml-1">
                                   {String(change.to).substring(0, 50)}
-                                  {String(change.to).length > 50 ? '...' : ''}
+                                  {String(change.to).length > 50 ? "..." : ""}
                                 </span>
                               )}
                             </div>
                           ))}
-                          {(formatChanges(activity.old_values, activity.new_values)?.length || 0) > 3 && (
+                          {(formatChanges(activity.old_values, activity.new_values)?.length || 0) >
+                            3 && (
                             <button
                               onClick={() => setSelectedActivity(activity)}
                               className="text-xs text-blue-600 hover:text-blue-800"
@@ -237,9 +238,7 @@ export default function AdminActivityLog() {
                         </div>
                       )}
 
-                      <div className="mt-2 text-xs text-gray-500">
-                        ID: {activity.resource_id}
-                      </div>
+                      <div className="mt-2 text-xs text-gray-500">ID: {activity.resource_id}</div>
                     </div>
                   </div>
                 </div>
@@ -295,8 +294,10 @@ export default function AdminActivityLog() {
                   <p>Akce: {getActionLabel(selectedActivity.action)}</p>
                   <p>Typ: {getResourceLabel(selectedActivity.resource_type)}</p>
                   <p>ID: {selectedActivity.resource_id}</p>
-                  <p>Administrátor: {selectedActivity.admin.name || selectedActivity.admin.email}</p>
-                  <p>Čas: {new Date(selectedActivity.created_at).toLocaleString('cs-CZ')}</p>
+                  <p>
+                    Administrátor: {selectedActivity.admin.name || selectedActivity.admin.email}
+                  </p>
+                  <p>Čas: {new Date(selectedActivity.created_at).toLocaleString("cs-CZ")}</p>
                 </div>
               </div>
 

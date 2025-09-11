@@ -1,4 +1,4 @@
-import { UserProfile } from '@/components/auth/UserProfile'
+import { UserProfile } from "@/components/auth/UserProfile";
 
 export default function ProfilePage() {
   return (
@@ -7,10 +7,10 @@ export default function ProfilePage() {
         <UserProfile />
       </div>
     </div>
-  )
+  );
 }
 
 export const metadata = {
-  title: 'Můj profil | Pohřební věnce',
-  description: 'Spravujte svůj účet a nastavení',
-}
+  title: "Můj profil | Pohřební věnce",
+  description: "Spravujte svůj účet a nastavení",
+};

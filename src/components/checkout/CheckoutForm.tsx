@@ -1,38 +1,38 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
-import { useRouter } from 'next/navigation';
+import React, { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import {
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
 import {
   CheckoutFormData,
   CheckoutStep,
   CheckoutState,
   CustomerInfo,
   DeliveryInfo,
-  PaymentMethod
-} from '@/types/order';
-import { CartItem } from '@/types/cart';
-import { DeliveryUrgency } from '@/types/delivery';
+  PaymentMethod,
+} from "@/types/order";
+import { CartItem } from "@/types/cart";
+import { DeliveryUrgency } from "@/types/delivery";
 import {
   validateCheckoutForm,
   hasValidationErrors,
   formatValidationErrors,
   sanitizeCustomerInfo,
-  sanitizeDeliveryInfo
-} from '@/lib/validation/checkout';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { CustomerInfoStep } from './steps/CustomerInfoStep';
-import { DeliveryInfoStep } from './steps/DeliveryInfoStep';
-import { PaymentStep } from './steps/PaymentStep';
-import { ReviewStep } from './steps/ReviewStep';
+  sanitizeDeliveryInfo,
+} from "@/lib/validation/checkout";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { CustomerInfoStep } from "./steps/CustomerInfoStep";
+import { DeliveryInfoStep } from "./steps/DeliveryInfoStep";
+import { PaymentStep } from "./steps/PaymentStep";
+import { ReviewStep } from "./steps/ReviewStep";
 
 interface CheckoutFormProps {
   items: CartItem[];
@@ -41,37 +41,37 @@ interface CheckoutFormProps {
   className?: string;
 }
 
-const STEPS: CheckoutStep[] = ['customer', 'delivery', 'payment', 'review'];
+const STEPS: CheckoutStep[] = ["customer", "delivery", "payment", "review"];
 
 const STEP_TITLES = {
-  customer: 'customerInfo',
-  delivery: 'deliveryInfo',
-  payment: 'paymentInfo',
-  review: 'orderSummary'
+  customer: "customerInfo",
+  delivery: "deliveryInfo",
+  payment: "paymentInfo",
+  review: "orderSummary",
 } as const;
 
 export function CheckoutForm({
   items,
   locale,
   onOrderComplete,
-  className = ''
+  className = "",
 }: CheckoutFormProps) {
-  const t = useTranslations('checkout');
-  const tCommon = useTranslations('common');
+  const t = useTranslations("checkout");
+  const tCommon = useTranslations("common");
   const router = useRouter();
 
   // Initialize checkout state
   const [state, setState] = useState<CheckoutState>({
-    currentStep: 'customer',
+    currentStep: "customer",
     formData: {
       customerInfo: {},
       deliveryInfo: {},
       agreeToTerms: false,
-      subscribeNewsletter: false
+      subscribeNewsletter: false,
     },
     isSubmitting: false,
     errors: {},
-    deliveryCost: 0
+    deliveryCost: 0,
   });
 
   // Calculate delivery cost when delivery info changes
@@ -79,29 +79,29 @@ export function CheckoutForm({
     const calculateDeliveryCost = async () => {
       if (state.formData.deliveryInfo.address && state.formData.deliveryInfo.urgency) {
         try {
-          const response = await fetch('/api/delivery/estimate', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          const response = await fetch("/api/delivery/estimate", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               address: state.formData.deliveryInfo.address,
               urgency: state.formData.deliveryInfo.urgency,
-              items: items.map(item => ({
+              items: items.map((item) => ({
                 productId: item.productId,
-                quantity: item.quantity
-              }))
-            })
+                quantity: item.quantity,
+              })),
+            }),
           });
 
           const data = await response.json();
           if (data.success && data.estimate) {
-            setState(prev => ({
+            setState((prev) => ({
               ...prev,
               deliveryCost: data.estimate.totalCost,
-              estimatedDeliveryDate: new Date(data.estimate.estimatedDeliveryDate)
+              estimatedDeliveryDate: new Date(data.estimate.estimatedDeliveryDate),
             }));
           }
         } catch (error) {
-          console.error('Error calculating delivery cost:', error);
+          console.error("Error calculating delivery cost:", error);
         }
       }
     };
@@ -111,7 +111,7 @@ export function CheckoutForm({
 
   // Handle step navigation
   const goToStep = (step: CheckoutStep) => {
-    setState(prev => ({ ...prev, currentStep: step, errors: {} }));
+    setState((prev) => ({ ...prev, currentStep: step, errors: {} }));
   };
 
   const goToNextStep = () => {
@@ -141,51 +141,51 @@ export function CheckoutForm({
     const { customerInfo, deliveryInfo, agreeToTerms } = state.formData;
 
     switch (state.currentStep) {
-      case 'customer':
+      case "customer":
         const customerErrors = validateCheckoutForm(customerInfo, {}, false);
         if (hasValidationErrors(customerErrors)) {
-          setState(prev => ({ ...prev, errors: customerErrors }));
+          setState((prev) => ({ ...prev, errors: customerErrors }));
           return false;
         }
         break;
 
-      case 'delivery':
+      case "delivery":
         const deliveryErrors = validateCheckoutForm({}, deliveryInfo, false);
         if (hasValidationErrors(deliveryErrors)) {
-          setState(prev => ({ ...prev, errors: deliveryErrors }));
+          setState((prev) => ({ ...prev, errors: deliveryErrors }));
           return false;
         }
         break;
 
-      case 'payment':
+      case "payment":
         if (!state.formData.paymentMethod) {
-          setState(prev => ({
+          setState((prev) => ({
             ...prev,
-            errors: { general: ['Vyberte způsob platby'] }
+            errors: { general: ["Vyberte způsob platby"] },
           }));
           return false;
         }
         break;
 
-      case 'review':
+      case "review":
         const allErrors = validateCheckoutForm(customerInfo, deliveryInfo, agreeToTerms);
         if (hasValidationErrors(allErrors)) {
-          setState(prev => ({ ...prev, errors: allErrors }));
+          setState((prev) => ({ ...prev, errors: allErrors }));
           return false;
         }
         break;
     }
 
-    setState(prev => ({ ...prev, errors: {} }));
+    setState((prev) => ({ ...prev, errors: {} }));
     return true;
   };
 
   // Update form data
   const updateFormData = (updates: Partial<CheckoutFormData>) => {
-    setState(prev => ({
+    setState((prev) => ({
       ...prev,
       formData: { ...prev.formData, ...updates },
-      errors: {}
+      errors: {},
     }));
   };
 
@@ -195,7 +195,7 @@ export function CheckoutForm({
       return;
     }
 
-    setState(prev => ({ ...prev, isSubmitting: true }));
+    setState((prev) => ({ ...prev, isSubmitting: true }));
 
     try {
       const sanitizedCustomerInfo = sanitizeCustomerInfo(state.formData.customerInfo);
@@ -206,35 +206,35 @@ export function CheckoutForm({
         customerInfo: sanitizedCustomerInfo as CustomerInfo,
         deliveryInfo: sanitizedDeliveryInfo as DeliveryInfo,
         paymentMethod: state.formData.paymentMethod!,
-        agreeToTerms: state.formData.agreeToTerms
+        agreeToTerms: state.formData.agreeToTerms,
       };
 
-      const response = await fetch('/api/orders', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(orderData)
+      const response = await fetch("/api/orders", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(orderData),
       });
 
       const data = await response.json();
 
       if (data.success) {
         // Clear cart and redirect to success page
-        await fetch('/api/cart', { method: 'DELETE' });
+        await fetch("/api/cart", { method: "DELETE" });
         onOrderComplete(data.order.id);
       } else {
-        setState(prev => ({
+        setState((prev) => ({
           ...prev,
-          errors: { general: [data.error || 'Chyba při vytváření objednávky'] }
+          errors: { general: [data.error || "Chyba při vytváření objednávky"] },
         }));
       }
     } catch (error) {
-      console.error('Error submitting order:', error);
-      setState(prev => ({
+      console.error("Error submitting order:", error);
+      setState((prev) => ({
         ...prev,
-        errors: { general: ['Chyba při odesílání objednávky. Zkuste to znovu.'] }
+        errors: { general: ["Chyba při odesílání objednávky. Zkuste to znovu."] },
       }));
     } finally {
-      setState(prev => ({ ...prev, isSubmitting: false }));
+      setState((prev) => ({ ...prev, isSubmitting: false }));
     }
   };
 
@@ -259,13 +259,14 @@ export function CheckoutForm({
                   disabled={!isClickable}
                   className={`
                     flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors
-                    ${isActive
-                      ? 'border-primary-600 bg-primary-600 text-white'
-                      : isCompleted
-                        ? 'border-green-500 bg-green-500 text-white'
-                        : 'border-neutral-300 bg-white text-neutral-400'
+                    ${
+                      isActive
+                        ? "border-primary-600 bg-primary-600 text-white"
+                        : isCompleted
+                          ? "border-green-500 bg-green-500 text-white"
+                          : "border-neutral-300 bg-white text-neutral-400"
                     }
-                    ${isClickable ? 'cursor-pointer hover:border-primary-500' : 'cursor-not-allowed'}
+                    ${isClickable ? "cursor-pointer hover:border-primary-500" : "cursor-not-allowed"}
                   `}
                 >
                   {isCompleted ? (
@@ -276,10 +277,12 @@ export function CheckoutForm({
                 </button>
 
                 {index < STEPS.length - 1 && (
-                  <div className={`
+                  <div
+                    className={`
                     flex-1 h-0.5 mx-4
-                    ${isCompleted ? 'bg-green-500' : 'bg-neutral-200'}
-                  `} />
+                    ${isCompleted ? "bg-green-500" : "bg-neutral-200"}
+                  `}
+                  />
                 )}
               </React.Fragment>
             );
@@ -289,9 +292,7 @@ export function CheckoutForm({
         <div className="flex justify-between mt-4">
           {STEPS.map((step) => (
             <div key={step} className="text-center">
-              <p className="text-sm font-medium text-neutral-700">
-                {t(STEP_TITLES[step])}
-              </p>
+              <p className="text-sm font-medium text-neutral-700">{t(STEP_TITLES[step])}</p>
             </div>
           ))}
         </div>
@@ -318,7 +319,7 @@ export function CheckoutForm({
 
       {/* Step Content */}
       <div className="mb-8">
-        {state.currentStep === 'customer' && (
+        {state.currentStep === "customer" && (
           <CustomerInfoStep
             customerInfo={state.formData.customerInfo}
             errors={state.errors.customerInfo}
@@ -327,7 +328,7 @@ export function CheckoutForm({
           />
         )}
 
-        {state.currentStep === 'delivery' && (
+        {state.currentStep === "delivery" && (
           <DeliveryInfoStep
             deliveryInfo={state.formData.deliveryInfo}
             errors={state.errors.deliveryInfo}
@@ -336,7 +337,7 @@ export function CheckoutForm({
           />
         )}
 
-        {state.currentStep === 'payment' && (
+        {state.currentStep === "payment" && (
           <PaymentStep
             paymentMethod={state.formData.paymentMethod}
             onChange={(paymentMethod) => updateFormData({ paymentMethod })}
@@ -344,7 +345,7 @@ export function CheckoutForm({
           />
         )}
 
-        {state.currentStep === 'review' && (
+        {state.currentStep === "review" && (
           <ReviewStep
             formData={state.formData}
             items={items}
@@ -355,7 +356,9 @@ export function CheckoutForm({
             agreeToTerms={state.formData.agreeToTerms}
             subscribeNewsletter={state.formData.subscribeNewsletter}
             onAgreeToTermsChange={(agreeToTerms) => updateFormData({ agreeToTerms })}
-            onSubscribeNewsletterChange={(subscribeNewsletter) => updateFormData({ subscribeNewsletter })}
+            onSubscribeNewsletterChange={(subscribeNewsletter) =>
+              updateFormData({ subscribeNewsletter })
+            }
             locale={locale}
           />
         )}
@@ -366,14 +369,14 @@ export function CheckoutForm({
         <Button
           variant="outline"
           onClick={goToPreviousStep}
-          disabled={state.currentStep === 'customer' || state.isSubmitting}
+          disabled={state.currentStep === "customer" || state.isSubmitting}
           className="flex items-center"
         >
           <ChevronLeftIcon className="w-4 h-4 mr-2" />
-          {tCommon('previous')}
+          {tCommon("previous")}
         </Button>
 
-        {state.currentStep === 'review' ? (
+        {state.currentStep === "review" ? (
           <Button
             onClick={handleSubmit}
             disabled={state.isSubmitting}
@@ -385,7 +388,7 @@ export function CheckoutForm({
                 Odesílání...
               </>
             ) : (
-              t('placeOrder')
+              t("placeOrder")
             )}
           </Button>
         ) : (
@@ -394,7 +397,7 @@ export function CheckoutForm({
             disabled={state.isSubmitting}
             className="flex items-center"
           >
-            {tCommon('next')}
+            {tCommon("next")}
             <ChevronRightIcon className="w-4 h-4 ml-2" />
           </Button>
         )}

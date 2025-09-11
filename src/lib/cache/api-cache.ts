@@ -3,8 +3,14 @@
  * Provides Redis-based caching for API responses
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { getCacheClient, CACHE_TTL, generateCacheKey, serializeForCache, deserializeFromCache } from './redis';
+import { NextRequest, NextResponse } from "next/server";
+import {
+  getCacheClient,
+  CACHE_TTL,
+  generateCacheKey,
+  serializeForCache,
+  deserializeFromCache,
+} from "./redis";
 
 interface CacheOptions {
   ttl?: number;
@@ -24,15 +30,10 @@ export function withCache<T = any>(
     request: NextRequest,
     context?: any
   ): Promise<NextResponse<T>> {
-    const {
-      ttl = CACHE_TTL.MEDIUM,
-      keyPrefix = 'api',
-      skipCache = false,
-      varyBy = []
-    } = options;
+    const { ttl = CACHE_TTL.MEDIUM, keyPrefix = "api", skipCache = false, varyBy = [] } = options;
 
     // Skip caching for non-GET requests or when explicitly disabled
-    if (request.method !== 'GET' || skipCache) {
+    if (request.method !== "GET" || skipCache) {
       return handler(request, context);
     }
 
@@ -41,11 +42,7 @@ export function withCache<T = any>(
 
       // Generate cache key based on URL, query params, and vary headers
       const url = new URL(request.url);
-      const cacheKeyParts = [
-        keyPrefix,
-        url.pathname,
-        url.search,
-      ];
+      const cacheKeyParts = [keyPrefix, url.pathname, url.search];
 
       // Add vary headers to cache key
       for (const header of varyBy) {
@@ -77,8 +74,8 @@ export function withCache<T = any>(
           });
 
           // Add cache hit header
-          response.headers.set('X-Cache', 'HIT');
-          response.headers.set('X-Cache-Key', cacheKey);
+          response.headers.set("X-Cache", "HIT");
+          response.headers.set("X-Cache-Key", cacheKey);
 
           return response;
         }
@@ -110,15 +107,15 @@ export function withCache<T = any>(
         });
 
         // Add cache miss header
-        newResponse.headers.set('X-Cache', 'MISS');
-        newResponse.headers.set('X-Cache-Key', cacheKey);
+        newResponse.headers.set("X-Cache", "MISS");
+        newResponse.headers.set("X-Cache-Key", cacheKey);
 
         return newResponse;
       }
 
       return response;
     } catch (error) {
-      console.error('Cache middleware error:', error);
+      console.error("Cache middleware error:", error);
       // Fallback to handler without caching
       return handler(request, context);
     }
@@ -133,7 +130,7 @@ export async function invalidateApiCache(pattern: string): Promise<void> {
     const client = getCacheClient();
     await client.flushPattern(`api:${pattern}`);
   } catch (error) {
-    console.error('Cache invalidation error:', error);
+    console.error("Cache invalidation error:", error);
   }
 }
 
@@ -171,11 +168,11 @@ export async function warmApiCache(
     headers?: Record<string, string>;
   }>
 ): Promise<void> {
-  console.log('Warming API cache...');
+  console.log("Warming API cache...");
 
   for (const endpoint of endpoints) {
     try {
-      const url = new URL(endpoint.path, process.env.NEXTAUTH_URL || 'http://localhost:3000');
+      const url = new URL(endpoint.path, process.env.NEXTAUTH_URL || "http://localhost:3000");
 
       if (endpoint.params) {
         Object.entries(endpoint.params).forEach(([key, value]) => {
@@ -187,7 +184,7 @@ export async function warmApiCache(
 
       // Make request to warm cache
       await fetch(url.toString(), {
-        method: 'GET',
+        method: "GET",
         headers,
       });
 
@@ -234,11 +231,7 @@ export function setCacheHeaders(
     mustRevalidate?: boolean;
   } = {}
 ): NextResponse {
-  const {
-    maxAge = 3600,
-    staleWhileRevalidate = 86400,
-    mustRevalidate = false,
-  } = options;
+  const { maxAge = 3600, staleWhileRevalidate = 86400, mustRevalidate = false } = options;
 
   const cacheControl = [
     `max-age=${maxAge}`,
@@ -247,11 +240,11 @@ export function setCacheHeaders(
   ];
 
   if (mustRevalidate) {
-    cacheControl.push('must-revalidate');
+    cacheControl.push("must-revalidate");
   }
 
-  response.headers.set('Cache-Control', cacheControl.join(', '));
-  response.headers.set('Vary', 'Accept-Encoding, Accept-Language');
+  response.headers.set("Cache-Control", cacheControl.join(", "));
+  response.headers.set("Vary", "Accept-Encoding, Accept-Language");
 
   return response;
 }

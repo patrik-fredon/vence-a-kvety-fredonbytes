@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Image from 'next/image';
-import Link from 'next/link';
-import { useTranslations } from 'next-intl';
-import { Product } from '@/types/product';
-import { Button } from '@/components/ui/Button';
-import { cn } from '@/lib/utils';
+import { useState } from "react";
+import Image from "next/image";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Product } from "@/types/product";
+import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
 
 interface ProductCardProps {
   product: Product;
@@ -16,26 +16,28 @@ interface ProductCardProps {
 }
 
 export function ProductCard({ product, locale, onAddToCart, className }: ProductCardProps) {
-  const t = useTranslations('product');
-  const tCurrency = useTranslations('currency');
+  const t = useTranslations("product");
+  const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
 
-  const primaryImage = product.images.find(img => img.isPrimary) || product.images[0];
-  const secondaryImage = product.images.find(img => !img.isPrimary) || product.images[1];
+  const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
+  const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
 
   const formatPrice = (price: number) => {
-    return tCurrency('format', { amount: price.toLocaleString(locale === 'cs' ? 'cs-CZ' : 'en-US') });
+    return tCurrency("format", {
+      amount: price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US"),
+    });
   };
 
   const getAvailabilityStatus = () => {
     if (!product.availability.inStock) {
-      return { text: t('outOfStock'), className: 'text-red-600 bg-red-50' };
+      return { text: t("outOfStock"), className: "text-red-600 bg-red-50" };
     }
     if (product.availability.stockQuantity && product.availability.stockQuantity < 5) {
-      return { text: t('limitedStock'), className: 'text-orange-600 bg-orange-50' };
+      return { text: t("limitedStock"), className: "text-orange-600 bg-orange-50" };
     }
-    return { text: t('inStock'), className: 'text-green-600 bg-green-50' };
+    return { text: t("inStock"), className: "text-green-600 bg-green-50" };
   };
 
   const availability = getAvailabilityStatus();
@@ -43,7 +45,7 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
   return (
     <div
       className={cn(
-        'group bg-white rounded-lg shadow-soft overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1',
+        "group bg-white rounded-lg shadow-soft overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -59,9 +61,9 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
                 alt={primaryImage.alt}
                 fill
                 className={cn(
-                  'object-cover transition-all duration-500',
-                  imageLoading ? 'scale-110 blur-sm' : 'scale-100 blur-0',
-                  isHovered && secondaryImage ? 'opacity-0' : 'opacity-100'
+                  "object-cover transition-all duration-500",
+                  imageLoading ? "scale-110 blur-sm" : "scale-100 blur-0",
+                  isHovered && secondaryImage ? "opacity-0" : "opacity-100"
                 )}
                 onLoad={() => setImageLoading(false)}
                 sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
@@ -72,8 +74,8 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
                   alt={secondaryImage.alt}
                   fill
                   className={cn(
-                    'object-cover transition-all duration-500',
-                    isHovered ? 'opacity-100' : 'opacity-0'
+                    "object-cover transition-all duration-500",
+                    isHovered ? "opacity-100" : "opacity-0"
                   )}
                   sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
                 />
@@ -90,22 +92,30 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
         )}
 
         {/* Availability Badge */}
-        <div className={cn(
-          'absolute top-3 right-3 px-2 py-1 rounded-md text-xs font-medium',
-          availability.className
-        )}>
+        <div
+          className={cn(
+            "absolute top-3 right-3 px-2 py-1 rounded-md text-xs font-medium",
+            availability.className
+          )}
+        >
           {availability.text}
         </div>
 
         {/* Quick Actions Overlay */}
-        <div className={cn(
-          'absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300',
-          isHovered ? 'opacity-100' : 'opacity-0'
-        )}>
+        <div
+          className={cn(
+            "absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300",
+            isHovered ? "opacity-100" : "opacity-0"
+          )}
+        >
           <div className="flex gap-2">
             <Link href={`/${locale}/products/${product.slug}`}>
-              <Button size="sm" variant="secondary" className="bg-white text-primary-700 hover:bg-neutral-50">
-                {t('customize')}
+              <Button
+                size="sm"
+                variant="secondary"
+                className="bg-white text-primary-700 hover:bg-neutral-50"
+              >
+                {t("customize")}
               </Button>
             </Link>
             {onAddToCart && product.availability.inStock && (
@@ -116,7 +126,7 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
                   onAddToCart(product);
                 }}
               >
-                {t('addToCart')}
+                {t("addToCart")}
               </Button>
             )}
           </div>
@@ -153,11 +163,7 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
           {/* Mobile Add to Cart */}
           <div className="sm:hidden">
             {onAddToCart && product.availability.inStock && (
-              <Button
-                size="sm"
-                onClick={() => onAddToCart(product)}
-                className="px-3"
-              >
+              <Button size="sm" onClick={() => onAddToCart(product)} className="px-3">
                 +
               </Button>
             )}
@@ -167,12 +173,8 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
         {/* Desktop Add to Cart */}
         <div className="hidden sm:block mt-3">
           {onAddToCart && product.availability.inStock && (
-            <Button
-              size="sm"
-              onClick={() => onAddToCart(product)}
-              className="w-full"
-            >
-              {t('addToCart')}
+            <Button size="sm" onClick={() => onAddToCart(product)} className="w-full">
+              {t("addToCart")}
             </Button>
           )}
         </div>

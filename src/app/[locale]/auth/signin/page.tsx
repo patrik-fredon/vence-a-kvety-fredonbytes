@@ -1,5 +1,5 @@
-import { Suspense } from 'react'
-import { SignInForm } from '@/components/auth/SignInForm'
+import { Suspense } from "react";
+import { SignInForm } from "@/components/auth/SignInForm";
 
 export default function SignInPage() {
   return (
@@ -8,10 +8,10 @@ export default function SignInPage() {
         <SignInForm />
       </Suspense>
     </div>
-  )
+  );
 }
 
 export const metadata = {
-  title: 'Přihlášení | Pohřební věnce',
-  description: 'Přihlaste se do svého účtu',
-}
+  title: "Přihlášení | Pohřební věnce",
+  description: "Přihlaste se do svého účtu",
+};

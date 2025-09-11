@@ -1,6 +1,6 @@
-import { Metadata } from 'next';
-import { notFound } from 'next/navigation';
-import { OrderTracking } from '@/components/order/OrderTracking';
+import { Metadata } from "next";
+import { notFound } from "next/navigation";
+import { OrderTracking } from "@/components/order/OrderTracking";
 
 interface OrderTrackingPageProps {
   params: Promise<{
@@ -13,12 +13,14 @@ export async function generateMetadata({ params }: OrderTrackingPageProps): Prom
   const { locale, id } = await params;
 
   return {
-    title: locale === 'cs'
-      ? `Sledování objednávky #${id.slice(-8).toUpperCase()} | Pohřební věnce`
-      : `Order Tracking #${id.slice(-8).toUpperCase()} | Funeral Wreaths`,
-    description: locale === 'cs'
-      ? 'Sledujte stav vaší objednávky pohřebních věnců v reálném čase.'
-      : 'Track your funeral wreath order status in real-time.',
+    title:
+      locale === "cs"
+        ? `Sledování objednávky #${id.slice(-8).toUpperCase()} | Pohřební věnce`
+        : `Order Tracking #${id.slice(-8).toUpperCase()} | Funeral Wreaths`,
+    description:
+      locale === "cs"
+        ? "Sledujte stav vaší objednávky pohřebních věnců v reálném čase."
+        : "Track your funeral wreath order status in real-time.",
   };
 }
 

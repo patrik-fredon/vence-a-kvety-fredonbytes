@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
-import Image from 'next/image';
-import { ProductImage, Customization } from '@/types/product';
-import { cn } from '@/lib/utils';
-import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/24/outline';
+import { useState, useEffect } from "react";
+import Image from "next/image";
+import { ProductImage, Customization } from "@/types/product";
+import { cn } from "@/lib/utils";
+import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 
 interface ProductImageGalleryProps {
   images: ProductImage[];
@@ -17,7 +17,7 @@ export function ProductImageGallery({
   images,
   productName,
   customizations = [],
-  className
+  className,
 }: ProductImageGalleryProps) {
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isZoomed, setIsZoomed] = useState(false);
@@ -29,10 +29,10 @@ export function ProductImageGallery({
     }
 
     // Get images that match current customizations or have no customization link
-    const relevantImages = images.filter(image => {
+    const relevantImages = images.filter((image) => {
       if (!image.customizationId) return true; // Always show base images
 
-      return customizations.some(customization =>
+      return customizations.some((customization) =>
         customization.choiceIds.includes(image.customizationId!)
       );
     });
@@ -51,33 +51,31 @@ export function ProductImageGallery({
   }, [relevantImages.length, selectedImageIndex]);
 
   const handlePrevious = () => {
-    setSelectedImageIndex(prev =>
-      prev === 0 ? relevantImages.length - 1 : prev - 1
-    );
+    setSelectedImageIndex((prev) => (prev === 0 ? relevantImages.length - 1 : prev - 1));
   };
 
   const handleNext = () => {
-    setSelectedImageIndex(prev =>
-      prev === relevantImages.length - 1 ? 0 : prev + 1
-    );
+    setSelectedImageIndex((prev) => (prev === relevantImages.length - 1 ? 0 : prev + 1));
   };
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
-    if (event.key === 'ArrowLeft') {
+    if (event.key === "ArrowLeft") {
       handlePrevious();
-    } else if (event.key === 'ArrowRight') {
+    } else if (event.key === "ArrowRight") {
       handleNext();
-    } else if (event.key === 'Escape') {
+    } else if (event.key === "Escape") {
       setIsZoomed(false);
     }
   };
 
   if (relevantImages.length === 0) {
     return (
-      <div className={cn(
-        'aspect-square bg-neutral-100 rounded-lg flex items-center justify-center',
-        className
-      )}>
+      <div
+        className={cn(
+          "aspect-square bg-neutral-100 rounded-lg flex items-center justify-center",
+          className
+        )}
+      >
         <div className="text-neutral-400 text-center">
           <div className="text-4xl mb-2">📷</div>
           <div className="text-sm">No images available</div>
@@ -87,7 +85,7 @@ export function ProductImageGallery({
   }
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn("space-y-4", className)}>
       {/* Main Image Display */}
       <div className="relative aspect-square bg-neutral-100 rounded-lg overflow-hidden group">
         {selectedImage && (
@@ -97,8 +95,8 @@ export function ProductImageGallery({
               alt={selectedImage.alt || productName}
               fill
               className={cn(
-                'object-cover transition-transform duration-300',
-                isZoomed ? 'scale-150 cursor-zoom-out' : 'cursor-zoom-in'
+                "object-cover transition-transform duration-300",
+                isZoomed ? "scale-150 cursor-zoom-out" : "cursor-zoom-in"
               )}
               onClick={() => setIsZoomed(!isZoomed)}
               onKeyDown={handleKeyDown}
@@ -145,10 +143,10 @@ export function ProductImageGallery({
               key={`${image.id}-${index}`}
               onClick={() => setSelectedImageIndex(index)}
               className={cn(
-                'flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all',
+                "flex-shrink-0 w-16 h-16 rounded-lg overflow-hidden border-2 transition-all",
                 index === selectedImageIndex
-                  ? 'border-primary-500 ring-2 ring-primary-200'
-                  : 'border-neutral-200 hover:border-neutral-300'
+                  ? "border-primary-500 ring-2 ring-primary-200"
+                  : "border-neutral-200 hover:border-neutral-300"
               )}
             >
               <Image
@@ -167,7 +165,7 @@ export function ProductImageGallery({
       {/* Zoom Instructions */}
       {selectedImage && (
         <div className="text-xs text-neutral-500 text-center">
-          {isZoomed ? 'Click to zoom out' : 'Click image to zoom in'}
+          {isZoomed ? "Click to zoom out" : "Click image to zoom in"}
         </div>
       )}
     </div>

@@ -3,15 +3,15 @@
  * Handles caching of product data, categories, and search results
  */
 
-import { Product, Category } from '@/types/product';
+import { Product, Category } from "@/types/product";
 import {
   getCacheClient,
   CACHE_KEYS,
   CACHE_TTL,
   generateCacheKey,
   serializeForCache,
-  deserializeFromCache
-} from './redis';
+  deserializeFromCache,
+} from "./redis";
 
 /**
  * Cache product by ID
@@ -24,7 +24,7 @@ export async function cacheProduct(product: Product): Promise<void> {
 
     await client.set(key, data, CACHE_TTL.PRODUCTS);
   } catch (error) {
-    console.error('Error caching product:', error);
+    console.error("Error caching product:", error);
   }
 }
 
@@ -39,7 +39,7 @@ export async function getCachedProduct(productId: string): Promise<Product | nul
 
     return deserializeFromCache<Product>(cached);
   } catch (error) {
-    console.error('Error getting cached product:', error);
+    console.error("Error getting cached product:", error);
     return null;
   }
 }
@@ -55,7 +55,7 @@ export async function cacheProductBySlug(slug: string, product: Product): Promis
 
     await client.set(key, data, CACHE_TTL.PRODUCTS);
   } catch (error) {
-    console.error('Error caching product by slug:', error);
+    console.error("Error caching product by slug:", error);
   }
 }
 
@@ -70,7 +70,7 @@ export async function getCachedProductBySlug(slug: string): Promise<Product | nu
 
     return deserializeFromCache<Product>(cached);
   } catch (error) {
-    console.error('Error getting cached product by slug:', error);
+    console.error("Error getting cached product by slug:", error);
     return null;
   }
 }
@@ -90,14 +90,14 @@ export async function cacheProductsList(
     const filterKey = Object.entries(filters)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, value]) => `${key}:${value}`)
-      .join('|');
+      .join("|");
 
     const key = generateCacheKey(CACHE_KEYS.PRODUCTS_LIST, filterKey);
     const data = serializeForCache({ products, pagination });
 
     await client.set(key, data, CACHE_TTL.PRODUCTS);
   } catch (error) {
-    console.error('Error caching products list:', error);
+    console.error("Error caching products list:", error);
   }
 }
 
@@ -106,7 +106,10 @@ export async function cacheProductsList(
  */
 export async function getCachedProductsList(
   filters: Record<string, any>
-): Promise<{ products: Product[]; pagination?: { page: number; limit: number; total: number } } | null> {
+): Promise<{
+  products: Product[];
+  pagination?: { page: number; limit: number; total: number };
+} | null> {
   try {
     const client = getCacheClient();
 
@@ -114,14 +117,17 @@ export async function getCachedProductsList(
     const filterKey = Object.entries(filters)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, value]) => `${key}:${value}`)
-      .join('|');
+      .join("|");
 
     const key = generateCacheKey(CACHE_KEYS.PRODUCTS_LIST, filterKey);
     const cached = await client.get(key);
 
-    return deserializeFromCache<{ products: Product[]; pagination?: { page: number; limit: number; total: number } }>(cached);
+    return deserializeFromCache<{
+      products: Product[];
+      pagination?: { page: number; limit: number; total: number };
+    }>(cached);
   } catch (error) {
-    console.error('Error getting cached products list:', error);
+    console.error("Error getting cached products list:", error);
     return null;
   }
 }
@@ -137,7 +143,7 @@ export async function cacheCategories(categories: Category[]): Promise<void> {
 
     await client.set(key, data, CACHE_TTL.CATEGORIES);
   } catch (error) {
-    console.error('Error caching categories:', error);
+    console.error("Error caching categories:", error);
   }
 }
 
@@ -152,7 +158,7 @@ export async function getCachedCategories(): Promise<Category[] | null> {
 
     return deserializeFromCache<Category[]>(cached);
   } catch (error) {
-    console.error('Error getting cached categories:', error);
+    console.error("Error getting cached categories:", error);
     return null;
   }
 }
@@ -168,7 +174,7 @@ export async function cacheCategoryBySlug(slug: string, category: Category): Pro
 
     await client.set(key, data, CACHE_TTL.CATEGORIES);
   } catch (error) {
-    console.error('Error caching category by slug:', error);
+    console.error("Error caching category by slug:", error);
   }
 }
 
@@ -183,7 +189,7 @@ export async function getCachedCategoryBySlug(slug: string): Promise<Category | 
 
     return deserializeFromCache<Category>(cached);
   } catch (error) {
-    console.error('Error getting cached category by slug:', error);
+    console.error("Error getting cached category by slug:", error);
     return null;
   }
 }
@@ -204,14 +210,14 @@ export async function cacheApiResponse(
     const paramsKey = Object.entries(params)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, value]) => `${key}:${value}`)
-      .join('|');
+      .join("|");
 
     const key = generateCacheKey(CACHE_KEYS.API_RESPONSE, endpoint, paramsKey);
     const data = serializeForCache(response);
 
     await client.set(key, data, ttl);
   } catch (error) {
-    console.error('Error caching API response:', error);
+    console.error("Error caching API response:", error);
   }
 }
 
@@ -229,14 +235,14 @@ export async function getCachedApiResponse(
     const paramsKey = Object.entries(params)
       .sort(([a], [b]) => a.localeCompare(b))
       .map(([key, value]) => `${key}:${value}`)
-      .join('|');
+      .join("|");
 
     const key = generateCacheKey(CACHE_KEYS.API_RESPONSE, endpoint, paramsKey);
     const cached = await client.get(key);
 
     return deserializeFromCache(cached);
   } catch (error) {
-    console.error('Error getting cached API response:', error);
+    console.error("Error getting cached API response:", error);
     return null;
   }
 }
@@ -253,11 +259,11 @@ export async function invalidateProductCache(productId?: string): Promise<void> 
       await client.del(generateCacheKey(CACHE_KEYS.PRODUCT, productId));
     } else {
       // Invalidate all product-related cache
-      await client.flushPattern('product:*');
-      await client.flushPattern('products:*');
+      await client.flushPattern("product:*");
+      await client.flushPattern("products:*");
     }
   } catch (error) {
-    console.error('Error invalidating product cache:', error);
+    console.error("Error invalidating product cache:", error);
   }
 }
 
@@ -274,10 +280,10 @@ export async function invalidateCategoryCache(categorySlug?: string): Promise<vo
     } else {
       // Invalidate all categories
       await client.del(CACHE_KEYS.CATEGORIES);
-      await client.flushPattern('category:*');
+      await client.flushPattern("category:*");
     }
   } catch (error) {
-    console.error('Error invalidating category cache:', error);
+    console.error("Error invalidating category cache:", error);
   }
 }
 
@@ -286,7 +292,7 @@ export async function invalidateCategoryCache(categorySlug?: string): Promise<vo
  */
 export async function warmUpProductCache(): Promise<void> {
   try {
-    console.log('Warming up product cache...');
+    console.log("Warming up product cache...");
 
     // This would typically pre-load:
     // - Featured products
@@ -296,6 +302,6 @@ export async function warmUpProductCache(): Promise<void> {
 
     // TODO: Implement cache warming logic based on analytics
   } catch (error) {
-    console.error('Error warming up product cache:', error);
+    console.error("Error warming up product cache:", error);
   }
 }

@@ -3,7 +3,7 @@
  * Handles order confirmations, status updates, and customer notifications
  */
 
-import { Order, OrderStatus } from '@/types/order';
+import { Order, OrderStatus } from "@/types/order";
 
 // Email service configuration
 interface EmailConfig {
@@ -18,7 +18,7 @@ interface OrderEmailData {
   order: Order;
   customerName: string;
   customerEmail: string;
-  locale: 'cs' | 'en';
+  locale: "cs" | "en";
 }
 
 // Email service class
@@ -28,9 +28,9 @@ export class EmailService {
   constructor() {
     this.config = {
       apiKey: process.env.RESEND_API_KEY,
-      fromEmail: process.env.FROM_EMAIL || 'objednavky@pohrebni-vence.cz',
-      fromName: process.env.FROM_NAME || 'Pohřební věnce',
-      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'
+      fromEmail: process.env.FROM_EMAIL || "objednavky@pohrebni-vence.cz",
+      fromName: process.env.FROM_NAME || "Pohřební věnce",
+      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
     };
   }
 
@@ -41,67 +41,71 @@ export class EmailService {
     try {
       const { order, customerName, customerEmail, locale } = data;
 
-      const subject = locale === 'cs'
-        ? `Potvrzení objednávky #${order.orderNumber}`
-        : `Order Confirmation #${order.orderNumber}`;
+      const subject =
+        locale === "cs"
+          ? `Potvrzení objednávky #${order.orderNumber}`
+          : `Order Confirmation #${order.orderNumber}`;
 
       const htmlContent = this.generateOrderConfirmationHTML(data);
       const textContent = this.generateOrderConfirmationText(data);
 
       // If Resend is configured, use it; otherwise log for development
-      if (this.config.apiKey && process.env.NODE_ENV === 'production') {
+      if (this.config.apiKey && process.env.NODE_ENV === "production") {
         return await this.sendWithResend({
           to: customerEmail,
           subject,
           html: htmlContent,
-          text: textContent
+          text: textContent,
         });
       } else {
         // Development mode - log email content
-        console.log('📧 Order Confirmation Email (Development Mode)');
-        console.log('To:', customerEmail);
-        console.log('Subject:', subject);
-        console.log('Content:', textContent);
+        console.log("📧 Order Confirmation Email (Development Mode)");
+        console.log("To:", customerEmail);
+        console.log("Subject:", subject);
+        console.log("Content:", textContent);
         return { success: true };
       }
     } catch (error) {
-      console.error('Error sending order confirmation:', error);
-      return { success: false, error: 'Failed to send confirmation email' };
+      console.error("Error sending order confirmation:", error);
+      return { success: false, error: "Failed to send confirmation email" };
     }
   }
 
   /**
    * Send order status update email
    */
-  async sendStatusUpdate(data: OrderEmailData & { newStatus: OrderStatus }): Promise<{ success: boolean; error?: string }> {
+  async sendStatusUpdate(
+    data: OrderEmailData & { newStatus: OrderStatus }
+  ): Promise<{ success: boolean; error?: string }> {
     try {
       const { order, customerName, customerEmail, locale, newStatus } = data;
 
-      const subject = locale === 'cs'
-        ? `Aktualizace objednávky #${order.orderNumber}`
-        : `Order Update #${order.orderNumber}`;
+      const subject =
+        locale === "cs"
+          ? `Aktualizace objednávky #${order.orderNumber}`
+          : `Order Update #${order.orderNumber}`;
 
       const htmlContent = this.generateStatusUpdateHTML({ ...data, newStatus });
       const textContent = this.generateStatusUpdateText({ ...data, newStatus });
 
-      if (this.config.apiKey && process.env.NODE_ENV === 'production') {
+      if (this.config.apiKey && process.env.NODE_ENV === "production") {
         return await this.sendWithResend({
           to: customerEmail,
           subject,
           html: htmlContent,
-          text: textContent
+          text: textContent,
         });
       } else {
-        console.log('📧 Order Status Update Email (Development Mode)');
-        console.log('To:', customerEmail);
-        console.log('Subject:', subject);
-        console.log('New Status:', newStatus);
-        console.log('Content:', textContent);
+        console.log("📧 Order Status Update Email (Development Mode)");
+        console.log("To:", customerEmail);
+        console.log("Subject:", subject);
+        console.log("New Status:", newStatus);
+        console.log("Content:", textContent);
         return { success: true };
       }
     } catch (error) {
-      console.error('Error sending status update:', error);
-      return { success: false, error: 'Failed to send status update email' };
+      console.error("Error sending status update:", error);
+      return { success: false, error: "Failed to send status update email" };
     }
   }
 
@@ -115,11 +119,11 @@ export class EmailService {
     text: string;
   }): Promise<{ success: boolean; error?: string }> {
     try {
-      const response = await fetch('https://api.resend.com/emails', {
-        method: 'POST',
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
         headers: {
-          'Authorization': `Bearer ${this.config.apiKey}`,
-          'Content-Type': 'application/json',
+          Authorization: `Bearer ${this.config.apiKey}`,
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           from: `${this.config.fromName} <${this.config.fromEmail}>`,
@@ -137,8 +141,8 @@ export class EmailService {
 
       return { success: true };
     } catch (error) {
-      console.error('Resend API error:', error);
-      return { success: false, error: 'Failed to send email via Resend' };
+      console.error("Resend API error:", error);
+      return { success: false, error: "Failed to send email via Resend" };
     }
   }
 
@@ -147,14 +151,14 @@ export class EmailService {
    */
   private generateOrderConfirmationHTML(data: OrderEmailData): string {
     const { order, customerName, locale } = data;
-    const isCs = locale === 'cs';
+    const isCs = locale === "cs";
 
     return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>${isCs ? 'Potvrzení objednávky' : 'Order Confirmation'}</title>
+  <title>${isCs ? "Potvrzení objednávky" : "Order Confirmation"}</title>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -169,59 +173,70 @@ export class EmailService {
 <body>
   <div class="container">
     <div class="header">
-      <h1>${isCs ? 'Potvrzení objednávky' : 'Order Confirmation'}</h1>
-      <p>${isCs ? 'Objednávka' : 'Order'} #${order.orderNumber}</p>
+      <h1>${isCs ? "Potvrzení objednávky" : "Order Confirmation"}</h1>
+      <p>${isCs ? "Objednávka" : "Order"} #${order.orderNumber}</p>
     </div>
 
     <div class="content">
-      <p>${isCs ? 'Vážený' : 'Dear'} ${customerName},</p>
+      <p>${isCs ? "Vážený" : "Dear"} ${customerName},</p>
 
-      <p>${isCs
-        ? 'Děkujeme za vaši objednávku. Níže najdete podrobnosti:'
-        : 'Thank you for your order. Please find the details below:'
+      <p>${
+        isCs
+          ? "Děkujeme za vaši objednávku. Níže najdete podrobnosti:"
+          : "Thank you for your order. Please find the details below:"
       }</p>
 
       <div class="order-details">
-        <h3>${isCs ? 'Objednané položky' : 'Ordered Items'}</h3>
-        ${order.items.map(item => `
+        <h3>${isCs ? "Objednané položky" : "Ordered Items"}</h3>
+        ${order.items
+          .map(
+            (item) => `
           <div class="item">
             <strong>${item.productName}</strong><br>
-            ${isCs ? 'Množství' : 'Quantity'}: ${item.quantity}<br>
-            ${isCs ? 'Cena' : 'Price'}: ${item.totalPrice.toLocaleString('cs-CZ')} Kč
+            ${isCs ? "Množství" : "Quantity"}: ${item.quantity}<br>
+            ${isCs ? "Cena" : "Price"}: ${item.totalPrice.toLocaleString("cs-CZ")} Kč
           </div>
-        `).join('')}
+        `
+          )
+          .join("")}
 
         <div class="total">
-          <p>${isCs ? 'Celková částka' : 'Total Amount'}: ${order.totalAmount.toLocaleString('cs-CZ')} Kč</p>
+          <p>${isCs ? "Celková částka" : "Total Amount"}: ${order.totalAmount.toLocaleString("cs-CZ")} Kč</p>
         </div>
       </div>
 
       <div class="order-details">
-        <h3>${isCs ? 'Doručení' : 'Delivery'}</h3>
-        <p><strong>${isCs ? 'Adresa' : 'Address'}:</strong><br>
+        <h3>${isCs ? "Doručení" : "Delivery"}</h3>
+        <p><strong>${isCs ? "Adresa" : "Address"}:</strong><br>
         ${order.deliveryInfo.address.street}<br>
         ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}</p>
 
-        ${order.deliveryInfo.preferredDate ? `
-          <p><strong>${isCs ? 'Preferovaný termín' : 'Preferred Date'}:</strong><br>
+        ${
+          order.deliveryInfo.preferredDate
+            ? `
+          <p><strong>${isCs ? "Preferovaný termín" : "Preferred Date"}:</strong><br>
           ${new Date(order.deliveryInfo.preferredDate).toLocaleDateString(locale)}</p>
-        ` : ''}
+        `
+            : ""
+        }
       </div>
 
-      <p>${isCs
-        ? 'Budeme vás informovat o dalších krocích zpracování vaší objednávky.'
-        : 'We will keep you informed about the next steps in processing your order.'
+      <p>${
+        isCs
+          ? "Budeme vás informovat o dalších krocích zpracování vaší objednávky."
+          : "We will keep you informed about the next steps in processing your order."
       }</p>
 
-      <p>${isCs
-        ? 'V případě dotazů nás neváhejte kontaktovat.'
-        : 'Please don\'t hesitate to contact us if you have any questions.'
+      <p>${
+        isCs
+          ? "V případě dotazů nás neváhejte kontaktovat."
+          : "Please don't hesitate to contact us if you have any questions."
       }</p>
     </div>
 
     <div class="footer">
       <p>${this.config.fromName}<br>
-      ${isCs ? 'Telefon' : 'Phone'}: +420 XXX XXX XXX<br>
+      ${isCs ? "Telefon" : "Phone"}: +420 XXX XXX XXX<br>
       Email: ${this.config.fromEmail}</p>
     </div>
   </div>
@@ -234,44 +249,51 @@ export class EmailService {
    */
   private generateOrderConfirmationText(data: OrderEmailData): string {
     const { order, customerName, locale } = data;
-    const isCs = locale === 'cs';
+    const isCs = locale === "cs";
 
     return `
-${isCs ? 'POTVRZENÍ OBJEDNÁVKY' : 'ORDER CONFIRMATION'}
-${isCs ? 'Objednávka' : 'Order'} #${order.orderNumber}
+${isCs ? "POTVRZENÍ OBJEDNÁVKY" : "ORDER CONFIRMATION"}
+${isCs ? "Objednávka" : "Order"} #${order.orderNumber}
 
-${isCs ? 'Vážený' : 'Dear'} ${customerName},
+${isCs ? "Vážený" : "Dear"} ${customerName},
 
-${isCs
-        ? 'Děkujeme za vaši objednávku. Níže najdete podrobnosti:'
-        : 'Thank you for your order. Please find the details below:'
-      }
+${
+  isCs
+    ? "Děkujeme za vaši objednávku. Níže najdete podrobnosti:"
+    : "Thank you for your order. Please find the details below:"
+}
 
-${isCs ? 'OBJEDNANÉ POLOŽKY:' : 'ORDERED ITEMS:'}
-${order.items.map(item => `
+${isCs ? "OBJEDNANÉ POLOŽKY:" : "ORDERED ITEMS:"}
+${order.items
+  .map(
+    (item) => `
 - ${item.productName}
-  ${isCs ? 'Množství' : 'Quantity'}: ${item.quantity}
-  ${isCs ? 'Cena' : 'Price'}: ${item.totalPrice.toLocaleString('cs-CZ')} Kč
-`).join('')}
+  ${isCs ? "Množství" : "Quantity"}: ${item.quantity}
+  ${isCs ? "Cena" : "Price"}: ${item.totalPrice.toLocaleString("cs-CZ")} Kč
+`
+  )
+  .join("")}
 
-${isCs ? 'CELKOVÁ ČÁSTKA' : 'TOTAL AMOUNT'}: ${order.totalAmount.toLocaleString('cs-CZ')} Kč
+${isCs ? "CELKOVÁ ČÁSTKA" : "TOTAL AMOUNT"}: ${order.totalAmount.toLocaleString("cs-CZ")} Kč
 
-${isCs ? 'DORUČENÍ:' : 'DELIVERY:'}
-${isCs ? 'Adresa' : 'Address'}: ${order.deliveryInfo.address.street}, ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}
-${order.deliveryInfo.preferredDate ? `${isCs ? 'Preferovaný termín' : 'Preferred Date'}: ${new Date(order.deliveryInfo.preferredDate).toLocaleDateString(locale)}` : ''}
+${isCs ? "DORUČENÍ:" : "DELIVERY:"}
+${isCs ? "Adresa" : "Address"}: ${order.deliveryInfo.address.street}, ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}
+${order.deliveryInfo.preferredDate ? `${isCs ? "Preferovaný termín" : "Preferred Date"}: ${new Date(order.deliveryInfo.preferredDate).toLocaleDateString(locale)}` : ""}
 
-${isCs
-        ? 'Budeme vás informovat o dalších krocích zpracování vaší objednávky.'
-        : 'We will keep you informed about the next steps in processing your order.'
-      }
+${
+  isCs
+    ? "Budeme vás informovat o dalších krocích zpracování vaší objednávky."
+    : "We will keep you informed about the next steps in processing your order."
+}
 
-${isCs
-        ? 'V případě dotazů nás neváhejte kontaktovat.'
-        : 'Please don\'t hesitate to contact us if you have any questions.'
-      }
+${
+  isCs
+    ? "V případě dotazů nás neváhejte kontaktovat."
+    : "Please don't hesitate to contact us if you have any questions."
+}
 
 ${this.config.fromName}
-${isCs ? 'Telefon' : 'Phone'}: +420 XXX XXX XXX
+${isCs ? "Telefon" : "Phone"}: +420 XXX XXX XXX
 Email: ${this.config.fromEmail}
 `;
   }
@@ -281,35 +303,35 @@ Email: ${this.config.fromEmail}
    */
   private generateStatusUpdateHTML(data: OrderEmailData & { newStatus: OrderStatus }): string {
     const { order, customerName, locale, newStatus } = data;
-    const isCs = locale === 'cs';
+    const isCs = locale === "cs";
 
     const statusMessages = {
       cs: {
-        pending: 'Vaše objednávka čeká na zpracování.',
-        confirmed: 'Vaše objednávka byla potvrzena a je připravována k odeslání.',
-        processing: 'Vaše objednávka se zpracovává.',
-        shipped: 'Vaše objednávka byla odeslána a je na cestě.',
-        delivered: 'Vaše objednávka byla úspěšně doručena.',
-        cancelled: 'Vaše objednávka byla zrušena.'
+        pending: "Vaše objednávka čeká na zpracování.",
+        confirmed: "Vaše objednávka byla potvrzena a je připravována k odeslání.",
+        processing: "Vaše objednávka se zpracovává.",
+        shipped: "Vaše objednávka byla odeslána a je na cestě.",
+        delivered: "Vaše objednávka byla úspěšně doručena.",
+        cancelled: "Vaše objednávka byla zrušena.",
       },
       en: {
-        pending: 'Your order is pending processing.',
-        confirmed: 'Your order has been confirmed and is being prepared for shipment.',
-        processing: 'Your order is being processed.',
-        shipped: 'Your order has been shipped and is on its way.',
-        delivered: 'Your order has been successfully delivered.',
-        cancelled: 'Your order has been cancelled.'
-      }
+        pending: "Your order is pending processing.",
+        confirmed: "Your order has been confirmed and is being prepared for shipment.",
+        processing: "Your order is being processed.",
+        shipped: "Your order has been shipped and is on its way.",
+        delivered: "Your order has been successfully delivered.",
+        cancelled: "Your order has been cancelled.",
+      },
     };
 
-    const statusMessage = statusMessages[locale][newStatus] || '';
+    const statusMessage = statusMessages[locale][newStatus] || "";
 
     return `
 <!DOCTYPE html>
 <html>
 <head>
   <meta charset="utf-8">
-  <title>${isCs ? 'Aktualizace objednávky' : 'Order Update'}</title>
+  <title>${isCs ? "Aktualizace objednávky" : "Order Update"}</title>
   <style>
     body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
     .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -322,21 +344,22 @@ Email: ${this.config.fromEmail}
 <body>
   <div class="container">
     <div class="header">
-      <h1>${isCs ? 'Aktualizace objednávky' : 'Order Update'}</h1>
-      <p>${isCs ? 'Objednávka' : 'Order'} #${order.orderNumber}</p>
+      <h1>${isCs ? "Aktualizace objednávky" : "Order Update"}</h1>
+      <p>${isCs ? "Objednávka" : "Order"} #${order.orderNumber}</p>
     </div>
 
     <div class="content">
-      <p>${isCs ? 'Vážený' : 'Dear'} ${customerName},</p>
+      <p>${isCs ? "Vážený" : "Dear"} ${customerName},</p>
 
       <div class="status-update">
-        <h3>${isCs ? 'Nový stav objednávky' : 'New Order Status'}: ${newStatus.toUpperCase()}</h3>
+        <h3>${isCs ? "Nový stav objednávky" : "New Order Status"}: ${newStatus.toUpperCase()}</h3>
         <p>${statusMessage}</p>
       </div>
 
-      <p>${isCs
-        ? 'Děkujeme za vaši důvěru a těšíme se na další spolupráci.'
-        : 'Thank you for your trust and we look forward to serving you again.'
+      <p>${
+        isCs
+          ? "Děkujeme za vaši důvěru a těšíme se na další spolupráci."
+          : "Thank you for your trust and we look forward to serving you again."
       }</p>
     </div>
 
@@ -354,43 +377,44 @@ Email: ${this.config.fromEmail}
    */
   private generateStatusUpdateText(data: OrderEmailData & { newStatus: OrderStatus }): string {
     const { order, customerName, locale, newStatus } = data;
-    const isCs = locale === 'cs';
+    const isCs = locale === "cs";
 
     const statusMessages = {
       cs: {
-        pending: 'Vaše objednávka čeká na zpracování.',
-        confirmed: 'Vaše objednávka byla potvrzena a je připravována k odeslání.',
-        processing: 'Vaše objednávka se zpracovává.',
-        shipped: 'Vaše objednávka byla odeslána a je na cestě.',
-        delivered: 'Vaše objednávka byla úspěšně doručena.',
-        cancelled: 'Vaše objednávka byla zrušena.'
+        pending: "Vaše objednávka čeká na zpracování.",
+        confirmed: "Vaše objednávka byla potvrzena a je připravována k odeslání.",
+        processing: "Vaše objednávka se zpracovává.",
+        shipped: "Vaše objednávka byla odeslána a je na cestě.",
+        delivered: "Vaše objednávka byla úspěšně doručena.",
+        cancelled: "Vaše objednávka byla zrušena.",
       },
       en: {
-        pending: 'Your order is pending processing.',
-        confirmed: 'Your order has been confirmed and is being prepared for shipment.',
-        processing: 'Your order is being processed.',
-        shipped: 'Your order has been shipped and is on its way.',
-        delivered: 'Your order has been successfully delivered.',
-        cancelled: 'Your order has been cancelled.'
-      }
+        pending: "Your order is pending processing.",
+        confirmed: "Your order has been confirmed and is being prepared for shipment.",
+        processing: "Your order is being processed.",
+        shipped: "Your order has been shipped and is on its way.",
+        delivered: "Your order has been successfully delivered.",
+        cancelled: "Your order has been cancelled.",
+      },
     };
 
-    const statusMessage = statusMessages[locale][newStatus] || '';
+    const statusMessage = statusMessages[locale][newStatus] || "";
 
     return `
-${isCs ? 'AKTUALIZACE OBJEDNÁVKY' : 'ORDER UPDATE'}
-${isCs ? 'Objednávka' : 'Order'} #${order.orderNumber}
+${isCs ? "AKTUALIZACE OBJEDNÁVKY" : "ORDER UPDATE"}
+${isCs ? "Objednávka" : "Order"} #${order.orderNumber}
 
-${isCs ? 'Vážený' : 'Dear'} ${customerName},
+${isCs ? "Vážený" : "Dear"} ${customerName},
 
-${isCs ? 'NOVÝ STAV OBJEDNÁVKY' : 'NEW ORDER STATUS'}: ${newStatus.toUpperCase()}
+${isCs ? "NOVÝ STAV OBJEDNÁVKY" : "NEW ORDER STATUS"}: ${newStatus.toUpperCase()}
 
 ${statusMessage}
 
-${isCs
-        ? 'Děkujeme za vaši důvěru a těšíme se na další spolupráci.'
-        : 'Thank you for your trust and we look forward to serving you again.'
-      }
+${
+  isCs
+    ? "Děkujeme za vaši důvěru a těšíme se na další spolupráci."
+    : "Thank you for your trust and we look forward to serving you again."
+}
 
 ${this.config.fromName}
 Email: ${this.config.fromEmail}
@@ -404,7 +428,7 @@ export const emailService = new EmailService();
 // Helper function to send order confirmation
 export async function sendOrderConfirmationEmail(
   order: Order,
-  locale: 'cs' | 'en' = 'cs'
+  locale: "cs" | "en" = "cs"
 ): Promise<{ success: boolean; error?: string }> {
   const customerName = `${order.customerInfo.firstName} ${order.customerInfo.lastName}`;
   const customerEmail = order.customerInfo.email;
@@ -413,7 +437,7 @@ export async function sendOrderConfirmationEmail(
     order,
     customerName,
     customerEmail,
-    locale
+    locale,
   });
 }
 
@@ -421,7 +445,7 @@ export async function sendOrderConfirmationEmail(
 export async function sendOrderStatusUpdateEmail(
   order: Order,
   newStatus: OrderStatus,
-  locale: 'cs' | 'en' = 'cs'
+  locale: "cs" | "en" = "cs"
 ): Promise<{ success: boolean; error?: string }> {
   const customerName = `${order.customerInfo.firstName} ${order.customerInfo.lastName}`;
   const customerEmail = order.customerInfo.email;
@@ -431,6 +455,6 @@ export async function sendOrderStatusUpdateEmail(
     customerName,
     customerEmail,
     locale,
-    newStatus
+    newStatus,
   });
 }

@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import { useEffect, useState } from 'react';
+import { useEffect, useState } from "react";
 import {
   ShoppingBagIcon,
   ClipboardDocumentListIcon,
   CurrencyDollarIcon,
   ExclamationTriangleIcon,
   ArrowUpIcon,
-  ArrowDownIcon
-} from '@heroicons/react/24/outline';
+  ArrowDownIcon,
+} from "@heroicons/react/24/outline";
 
 interface DashboardStats {
   orders: {
@@ -45,71 +45,71 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
 
   const fetchRecentOrders = async () => {
     try {
-      const response = await fetch('/api/admin/orders?limit=5');
+      const response = await fetch("/api/admin/orders?limit=5");
       if (response.ok) {
         const data = await response.json();
         setRecentOrders(data.orders || []);
       }
     } catch (error) {
-      console.error('Failed to fetch recent orders:', error);
+      console.error("Failed to fetch recent orders:", error);
     } finally {
       setLoading(false);
     }
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('cs-CZ', {
-      style: 'currency',
-      currency: 'CZK'
+    return new Intl.NumberFormat("cs-CZ", {
+      style: "currency",
+      currency: "CZK",
     }).format(amount);
   };
 
   const statCards = [
     {
-      title: 'Celkové objednávky',
+      title: "Celkové objednávky",
       value: stats?.orders.total || 0,
       subtitle: `${stats?.orders.pending || 0} čekajících`,
       icon: ClipboardDocumentListIcon,
-      color: 'blue',
+      color: "blue",
       trend: stats?.orders.today || 0,
-      trendLabel: 'dnes'
+      trendLabel: "dnes",
     },
     {
-      title: 'Aktivní produkty',
+      title: "Aktivní produkty",
       value: stats?.products.total || 0,
       subtitle: `${(stats?.products.low_stock || 0) + (stats?.products.out_of_stock || 0)} upozornění`,
       icon: ShoppingBagIcon,
-      color: 'green',
+      color: "green",
       trend: null,
-      trendLabel: ''
+      trendLabel: "",
     },
     {
-      title: 'Celkové tržby',
+      title: "Celkové tržby",
       value: formatCurrency(stats?.revenue.total || 0),
       subtitle: `${formatCurrency(stats?.revenue.this_month || 0)} tento měsíc`,
       icon: CurrencyDollarIcon,
-      color: 'purple',
+      color: "purple",
       trend: null,
-      trendLabel: ''
+      trendLabel: "",
     },
     {
-      title: 'Upozornění',
+      title: "Upozornění",
       value: stats?.alerts.unacknowledged || 0,
-      subtitle: 'nepotvrzených',
+      subtitle: "nepotvrzených",
       icon: ExclamationTriangleIcon,
-      color: stats?.alerts.unacknowledged ? 'red' : 'gray',
+      color: stats?.alerts.unacknowledged ? "red" : "gray",
       trend: null,
-      trendLabel: ''
-    }
+      trendLabel: "",
+    },
   ];
 
   const getColorClasses = (color: string) => {
     const colors = {
-      blue: 'bg-blue-500 text-white',
-      green: 'bg-green-500 text-white',
-      purple: 'bg-purple-500 text-white',
-      red: 'bg-red-500 text-white',
-      gray: 'bg-gray-500 text-white'
+      blue: "bg-blue-500 text-white",
+      green: "bg-green-500 text-white",
+      purple: "bg-purple-500 text-white",
+      red: "bg-red-500 text-white",
+      gray: "bg-gray-500 text-white",
     };
     return colors[color as keyof typeof colors] || colors.gray;
   };
@@ -197,34 +197,42 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
                       {order.customerName}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                        order.status === 'pending' ? 'bg-yellow-100 text-yellow-800' :
-                        order.status === 'confirmed' ? 'bg-blue-100 text-blue-800' :
-                        order.status === 'shipped' ? 'bg-purple-100 text-purple-800' :
-                        order.status === 'delivered' ? 'bg-green-100 text-green-800' :
-                        'bg-red-100 text-red-800'
-                      }`}>
-                        {order.status === 'pending' ? 'Čekající' :
-                         order.status === 'confirmed' ? 'Potvrzeno' :
-                         order.status === 'shipped' ? 'Odesláno' :
-                         order.status === 'delivered' ? 'Doručeno' :
-                         'Zrušeno'}
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          order.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : order.status === "confirmed"
+                              ? "bg-blue-100 text-blue-800"
+                              : order.status === "shipped"
+                                ? "bg-purple-100 text-purple-800"
+                                : order.status === "delivered"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                        }`}
+                      >
+                        {order.status === "pending"
+                          ? "Čekající"
+                          : order.status === "confirmed"
+                            ? "Potvrzeno"
+                            : order.status === "shipped"
+                              ? "Odesláno"
+                              : order.status === "delivered"
+                                ? "Doručeno"
+                                : "Zrušeno"}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(order.createdAt).toLocaleDateString('cs-CZ')}
+                      {new Date(order.createdAt).toLocaleDateString("cs-CZ")}
                     </td>
                   </tr>
                 ))}
               </tbody>
             </table>
           ) : (
-            <div className="p-6 text-center text-gray-500">
-              Žádné objednávky k zobrazení
-            </div>
+            <div className="p-6 text-center text-gray-500">Žádné objednávky k zobrazení</div>
           )}
         </div>
       </div>
@@ -250,8 +258,10 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
           <h4 className="text-lg font-semibold text-gray-900 mb-4">Systémové informace</h4>
           <div className="space-y-2 text-sm text-gray-600">
             <p>Verze: 1.0.0</p>
-            <p>Poslední aktualizace: {new Date().toLocaleDateString('cs-CZ')}</p>
-            <p>Stav systému: <span className="text-green-600 font-medium">Online</span></p>
+            <p>Poslední aktualizace: {new Date().toLocaleDateString("cs-CZ")}</p>
+            <p>
+              Stav systému: <span className="text-green-600 font-medium">Online</span>
+            </p>
           </div>
         </div>
 
@@ -264,10 +274,7 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
             >
               Technická podpora
             </a>
-            <a
-              href="/admin/help"
-              className="block text-sm text-blue-600 hover:text-blue-800"
-            >
+            <a href="/admin/help" className="block text-sm text-blue-600 hover:text-blue-800">
               Dokumentace
             </a>
           </div>

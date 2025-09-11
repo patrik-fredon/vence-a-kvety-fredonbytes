@@ -3,10 +3,10 @@
  * Provides intersection observer-based lazy loading with fallback components
  */
 
-'use client';
+"use client";
 
-import { useState, useEffect, useRef, ReactNode, ComponentType } from 'react';
-import { LoadingSpinner } from './LoadingSpinner';
+import { useState, useEffect, useRef, ReactNode, ComponentType } from "react";
+import { LoadingSpinner } from "./LoadingSpinner";
 
 interface LazyWrapperProps {
   children: ReactNode;
@@ -23,7 +23,7 @@ interface LazyWrapperProps {
 export function LazyWrapper({
   children,
   fallback,
-  rootMargin = '50px',
+  rootMargin = "50px",
   threshold = 0.1,
   className,
   minHeight = 200,
@@ -62,17 +62,14 @@ export function LazyWrapper({
   }, [isVisible]);
 
   const defaultFallback = (
-    <div
-      className="flex items-center justify-center"
-      style={{ minHeight }}
-    >
+    <div className="flex items-center justify-center" style={{ minHeight }}>
       <LoadingSpinner size="medium" />
     </div>
   );
 
   return (
     <div ref={ref} className={className} style={{ minHeight }}>
-      {isLoaded ? children : (fallback || defaultFallback)}
+      {isLoaded ? children : fallback || defaultFallback}
     </div>
   );
 }
@@ -110,13 +107,13 @@ interface SkeletonProps {
 
 export function Skeleton({
   className,
-  width = '100%',
-  height = '1rem',
-  rounded = false
+  width = "100%",
+  height = "1rem",
+  rounded = false,
 }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse bg-neutral-200 ${rounded ? 'rounded-full' : 'rounded'} ${className || ''}`}
+      className={`animate-pulse bg-neutral-200 ${rounded ? "rounded-full" : "rounded"} ${className || ""}`}
       style={{ width, height }}
     />
   );
@@ -194,14 +191,7 @@ interface LazyImageProps {
   placeholder?: string;
 }
 
-export function LazyImage({
-  src,
-  alt,
-  className,
-  width,
-  height,
-  placeholder
-}: LazyImageProps) {
+export function LazyImage({ src, alt, className, width, height, placeholder }: LazyImageProps) {
   const [isLoaded, setIsLoaded] = useState(false);
   const [isInView, setIsInView] = useState(false);
   const imgRef = useRef<HTMLImageElement>(null);
@@ -214,7 +204,7 @@ export function LazyImage({
           observer.disconnect();
         }
       },
-      { rootMargin: '50px' }
+      { rootMargin: "50px" }
     );
 
     if (imgRef.current) {
@@ -225,23 +215,23 @@ export function LazyImage({
   }, []);
 
   return (
-    <div className={`relative overflow-hidden ${className || ''}`}>
+    <div className={`relative overflow-hidden ${className || ""}`}>
       {!isLoaded && (
-        <div
-          className="absolute inset-0 bg-neutral-200 animate-pulse"
-          style={{ width, height }}
-        />
+        <div className="absolute inset-0 bg-neutral-200 animate-pulse" style={{ width, height }} />
       )}
 
       <img
         ref={imgRef}
-        src={isInView ? src : placeholder || 'data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7'}
+        src={
+          isInView
+            ? src
+            : placeholder ||
+              "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+        }
         alt={alt}
         width={width}
         height={height}
-        className={`transition-opacity duration-300 ${
-          isLoaded ? 'opacity-100' : 'opacity-0'
-        }`}
+        className={`transition-opacity duration-300 ${isLoaded ? "opacity-100" : "opacity-0"}`}
         onLoad={() => setIsLoaded(true)}
         loading="lazy"
       />
