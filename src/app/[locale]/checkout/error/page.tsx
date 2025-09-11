@@ -2,17 +2,17 @@
  * Payment error page
  */
 
-import React from 'react';
-import { Metadata } from 'next';
-import { getTranslations } from 'next-intl/server';
+import React from "react";
+import { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 import {
   ExclamationTriangleIcon,
   ArrowPathIcon,
   PhoneIcon,
   EnvelopeIcon,
-  ShoppingCartIcon
-} from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/Button';
+  ShoppingCartIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/Button";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -21,11 +21,11 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'checkout' });
+  const t = await getTranslations({ locale, namespace: "checkout" });
 
   return {
-    title: 'Chyba platby',
-    description: 'Došlo k chybě při zpracování platby. Zkuste to znovu nebo nás kontaktujte.',
+    title: "Chyba platby",
+    description: "Došlo k chybě při zpracování platby. Zkuste to znovu nebo nás kontaktujte.",
   };
 }
 
@@ -34,43 +34,46 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
   const { orderId, error } = await searchParams;
 
   const commonErrors: Record<string, { title: string; description: string; solution: string }> = {
-    'card_declined': {
-      title: 'Karta byla zamítnuta',
-      description: 'Vaše banka nebo poskytovatel karty zamítl platbu.',
-      solution: 'Zkuste jinou kartu nebo kontaktujte svou banku.'
+    card_declined: {
+      title: "Karta byla zamítnuta",
+      description: "Vaše banka nebo poskytovatel karty zamítl platbu.",
+      solution: "Zkuste jinou kartu nebo kontaktujte svou banku.",
     },
-    'insufficient_funds': {
-      title: 'Nedostatek prostředků',
-      description: 'Na kartě není dostatek prostředků pro dokončení platby.',
-      solution: 'Zkuste jinou kartu nebo dobijte účet.'
+    insufficient_funds: {
+      title: "Nedostatek prostředků",
+      description: "Na kartě není dostatek prostředků pro dokončení platby.",
+      solution: "Zkuste jinou kartu nebo dobijte účet.",
     },
-    'expired_card': {
-      title: 'Karta vypršela',
-      description: 'Platnost vaší karty již vypršela.',
-      solution: 'Použijte kartu s platnou dobou platnosti.'
+    expired_card: {
+      title: "Karta vypršela",
+      description: "Platnost vaší karty již vypršela.",
+      solution: "Použijte kartu s platnou dobou platnosti.",
     },
-    'incorrect_cvc': {
-      title: 'Nesprávný CVC kód',
-      description: 'Zadaný bezpečnostní kód karty není správný.',
-      solution: 'Zkontrolujte CVC kód na zadní straně karty.'
+    incorrect_cvc: {
+      title: "Nesprávný CVC kód",
+      description: "Zadaný bezpečnostní kód karty není správný.",
+      solution: "Zkontrolujte CVC kód na zadní straně karty.",
     },
-    'processing_error': {
-      title: 'Chyba zpracování',
-      description: 'Došlo k technické chybě při zpracování platby.',
-      solution: 'Zkuste to znovu za několik minut.'
+    processing_error: {
+      title: "Chyba zpracování",
+      description: "Došlo k technické chybě při zpracování platby.",
+      solution: "Zkuste to znovu za několik minut.",
     },
-    'network_error': {
-      title: 'Chyba připojení',
-      description: 'Problém s internetovým připojením během platby.',
-      solution: 'Zkontrolujte připojení a zkuste to znovu.'
-    }
+    network_error: {
+      title: "Chyba připojení",
+      description: "Problém s internetovým připojením během platby.",
+      solution: "Zkontrolujte připojení a zkuste to znovu.",
+    },
   };
 
-  const errorInfo = error && commonErrors[error] ? commonErrors[error] : {
-    title: 'Neočekávaná chyba',
-    description: 'Došlo k neočekávané chybě při zpracování platby.',
-    solution: 'Zkuste to znovu nebo nás kontaktujte pro pomoc.'
-  };
+  const errorInfo =
+    error && commonErrors[error]
+      ? commonErrors[error]
+      : {
+          title: "Neočekávaná chyba",
+          description: "Došlo k neočekávané chybě při zpracování platby.",
+          solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
+        };
 
   return (
     <div className="min-h-screen bg-neutral-50 py-12">
@@ -89,11 +92,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
             Bohužel se nepodařilo zpracovat vaši platbu.
           </p>
 
-          {orderId && (
-            <p className="text-sm text-neutral-500">
-              Objednávka #{orderId}
-            </p>
-          )}
+          {orderId && <p className="text-sm text-neutral-500">Objednávka #{orderId}</p>}
         </div>
 
         {/* Error Details Card */}
@@ -107,17 +106,11 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
 
           <div className="p-6">
             <div className="space-y-4">
-              <p className="text-neutral-700">
-                {errorInfo.description}
-              </p>
+              <p className="text-neutral-700">{errorInfo.description}</p>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-                <h3 className="font-medium text-blue-800 mb-2">
-                  Doporučené řešení
-                </h3>
-                <p className="text-blue-700 text-sm">
-                  {errorInfo.solution}
-                </p>
+                <h3 className="font-medium text-blue-800 mb-2">Doporučené řešení</h3>
+                <p className="text-blue-700 text-sm">{errorInfo.solution}</p>
               </div>
 
               {error && (
@@ -133,9 +126,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
 
         {/* Troubleshooting Steps */}
         <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-neutral-800 mb-4">
-            Kroky k vyřešení problému
-          </h3>
+          <h3 className="text-lg font-semibold text-neutral-800 mb-4">Kroky k vyřešení problému</h3>
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
@@ -143,9 +134,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 1
               </div>
               <div>
-                <p className="font-medium text-neutral-800">
-                  Zkontrolujte údaje karty
-                </p>
+                <p className="font-medium text-neutral-800">Zkontrolujte údaje karty</p>
                 <p className="text-sm text-neutral-600">
                   Ověřte číslo karty, datum vypršení platnosti a CVC kód.
                 </p>
@@ -157,9 +146,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 2
               </div>
               <div>
-                <p className="font-medium text-neutral-800">
-                  Zkuste jiný způsob platby
-                </p>
+                <p className="font-medium text-neutral-800">Zkuste jiný způsob platby</p>
                 <p className="text-sm text-neutral-600">
                   Použijte jinou kartu nebo zvolte GoPay pro více možností platby.
                 </p>
@@ -171,9 +158,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 3
               </div>
               <div>
-                <p className="font-medium text-neutral-800">
-                  Kontaktujte banku
-                </p>
+                <p className="font-medium text-neutral-800">Kontaktujte banku</p>
                 <p className="text-sm text-neutral-600">
                   Pokud problém přetrvává, kontaktujte svou banku nebo poskytovatele karty.
                 </p>
@@ -185,9 +170,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 4
               </div>
               <div>
-                <p className="font-medium text-neutral-800">
-                  Kontaktujte nás
-                </p>
+                <p className="font-medium text-neutral-800">Kontaktujte nás</p>
                 <p className="text-sm text-neutral-600">
                   Náš tým zákaznické podpory vám rád pomůže vyřešit problém.
                 </p>
@@ -215,10 +198,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
           )}
 
           <a href={`/${locale}/products`}>
-            <Button
-              variant="outline"
-              className="flex items-center justify-center"
-            >
+            <Button variant="outline" className="flex items-center justify-center">
               Pokračovat v nákupu
             </Button>
           </a>
@@ -259,9 +239,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
           <p className="mb-2">
             Všechny platby jsou zpracovávány bezpečně prostřednictvím certifikovaných poskytovatelů.
           </p>
-          <p>
-            Vaše platební údaje nejsou ukládány na našich serverech.
-          </p>
+          <p>Vaše platební údaje nejsou ukládány na našich serverech.</p>
         </div>
       </div>
     </div>

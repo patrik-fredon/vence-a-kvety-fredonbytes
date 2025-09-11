@@ -1,14 +1,14 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useTranslations } from 'next-intl';
-import { ShoppingCartIcon, TrashIcon } from '@heroicons/react/24/outline';
-import { useCart } from '@/lib/cart/context';
-import { CartItem } from '@/types/cart';
-import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Button } from '@/components/ui/Button';
-import Image from 'next/image';
+import React from "react";
+import { useTranslations } from "next-intl";
+import { ShoppingCartIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { useCart } from "@/lib/cart/context";
+import { CartItem } from "@/types/cart";
+import { formatPrice } from "@/lib/utils";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Button } from "@/components/ui/Button";
+import Image from "next/image";
 
 interface ShoppingCartProps {
   locale: string;
@@ -16,8 +16,8 @@ interface ShoppingCartProps {
   className?: string;
 }
 
-export function ShoppingCart({ locale, showHeader = true, className = '' }: ShoppingCartProps) {
-  const t = useTranslations('cart');
+export function ShoppingCart({ locale, showHeader = true, className = "" }: ShoppingCartProps) {
+  const t = useTranslations("cart");
   const { state, updateQuantity, removeItem } = useCart();
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
@@ -49,19 +49,15 @@ export function ShoppingCart({ locale, showHeader = true, className = '' }: Shop
           <ShoppingCartIcon className="w-8 h-8 text-primary-600" />
         </div>
 
-        <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">
-          {t('empty')}
-        </h2>
+        <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">{t("empty")}</h2>
 
-        <p className="text-neutral-600 mb-8">
-          {t('emptyDescription')}
-        </p>
+        <p className="text-neutral-600 mb-8">{t("emptyDescription")}</p>
 
         <a
           href={`/${locale}/products`}
           className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
         >
-          {t('continueShopping')}
+          {t("continueShopping")}
         </a>
       </div>
     );
@@ -74,11 +70,9 @@ export function ShoppingCart({ locale, showHeader = true, className = '' }: Shop
     <div className={`bg-white rounded-lg shadow-soft ${className}`}>
       {showHeader && (
         <div className="p-6 border-b border-neutral-200">
-          <h2 className="text-elegant text-2xl font-semibold text-primary-800">
-            {t('title')}
-          </h2>
+          <h2 className="text-elegant text-2xl font-semibold text-primary-800">{t("title")}</h2>
           <p className="text-neutral-600 mt-1">
-            {itemCount} {itemCount === 1 ? t('item') : t('items')}
+            {itemCount} {itemCount === 1 ? t("item") : t("items")}
           </p>
         </div>
       )}
@@ -101,19 +95,17 @@ export function ShoppingCart({ locale, showHeader = true, className = '' }: Shop
         {/* Cart Summary */}
         <div className="mt-8 pt-6 border-t border-neutral-200">
           <div className="flex justify-between items-center mb-4">
-            <span className="text-lg font-medium text-neutral-800">
-              {t('subtotal')}
-            </span>
+            <span className="text-lg font-medium text-neutral-800">{t("subtotal")}</span>
             <span className="text-lg font-semibold text-primary-800">
-              {formatPrice(subtotal, locale as 'cs' | 'en')}
+              {formatPrice(subtotal, locale as "cs" | "en")}
             </span>
           </div>
 
           <a
             href={`/${locale}/checkout`}
-            className={`inline-flex items-center justify-center w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors ${state.isLoading ? 'opacity-50 pointer-events-none' : ''}`}
+            className={`inline-flex items-center justify-center w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors ${state.isLoading ? "opacity-50 pointer-events-none" : ""}`}
           >
-            {t('proceedToCheckout')}
+            {t("proceedToCheckout")}
           </a>
         </div>
 
@@ -138,15 +130,15 @@ interface CartItemRowProps {
 }
 
 function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: CartItemRowProps) {
-  const t = useTranslations('cart');
+  const t = useTranslations("cart");
   const product = item.product;
 
   if (!product) {
     return null;
   }
 
-  const productName = locale === 'cs' ? product.name.cs : product.name.en;
-  const primaryImage = product.images?.find(img => img.isPrimary) || product.images?.[0];
+  const productName = locale === "cs" ? product.name.cs : product.name.en;
+  const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
 
   return (
     <div className="flex items-start space-x-4">
@@ -169,9 +161,7 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <h3 className="text-lg font-medium text-neutral-800 truncate">
-          {productName}
-        </h3>
+        <h3 className="text-lg font-medium text-neutral-800 truncate">{productName}</h3>
 
         {/* Customizations */}
         {item.customizations && item.customizations.length > 0 && (
@@ -180,7 +170,9 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
               <div key={index} className="text-sm text-neutral-600">
                 {/* Display customization details */}
                 {customization.customValue && (
-                  <span>{t('customMessage')}: {customization.customValue}</span>
+                  <span>
+                    {t("customMessage")}: {customization.customValue}
+                  </span>
                 )}
               </div>
             ))}
@@ -210,11 +202,11 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
           {/* Price */}
           <div className="text-right">
             <div className="text-lg font-semibold text-primary-800">
-              {formatPrice(item.totalPrice || 0, locale as 'cs' | 'en')}
+              {formatPrice(item.totalPrice || 0, locale as "cs" | "en")}
             </div>
             {item.quantity > 1 && (
               <div className="text-sm text-neutral-600">
-                {formatPrice(item.unitPrice || 0, locale as 'cs' | 'en')} {t('each')}
+                {formatPrice(item.unitPrice || 0, locale as "cs" | "en")} {t("each")}
               </div>
             )}
           </div>
@@ -226,7 +218,7 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
         onClick={() => onRemove(item.id)}
         disabled={isUpdating}
         className="flex-shrink-0 p-2 text-neutral-400 hover:text-red-600 disabled:opacity-50"
-        title={t('removeItem')}
+        title={t("removeItem")}
       >
         <TrashIcon className="w-5 h-5" />
       </button>

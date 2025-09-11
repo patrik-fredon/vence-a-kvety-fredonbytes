@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
 import {
   CreateOrderRequest,
   CreateOrderResponse,
   Order,
   OrderItem,
-  OrderStatus
-} from '@/types/order';
-import { CartItem } from '@/types/cart';
+  OrderStatus,
+} from "@/types/order";
+import { CartItem } from "@/types/cart";
 
 /**
  * Create a new order
@@ -19,28 +19,39 @@ export async function POST(request: NextRequest) {
 
     // Validate request body
     if (!body.items || body.items.length === 0) {
-      return NextResponse.json({
-        success: false,
-        error: 'Objednávka musí obsahovat alespoň jednu položku'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Objednávka musí obsahovat alespoň jednu položku",
+        },
+        { status: 400 }
+      );
     }
 
     if (!body.customerInfo || !body.deliveryInfo || !body.paymentMethod) {
-      return NextResponse.json({
-        success: false,
-        error: 'Chybí povinné informace o objednávce'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Chybí povinné informace o objednávce",
+        },
+        { status: 400 }
+      );
     }
 
     if (!body.agreeToTerms) {
-      return NextResponse.json({
-        success: false,
-        error: 'Musíte souhlasit s obchodními podmínkami'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Musíte souhlasit s obchodními podmínkami",
+        },
+        { status: 400 }
+      );
     }
 
     // Get current user (if authenticated)
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     // Generate order number
     const orderNumber = generateOrderNumber();
@@ -62,13 +73,13 @@ export async function POST(request: NextRequest) {
     const orderItems: OrderItem[] = body.items.map((item: CartItem) => ({
       id: crypto.randomUUID(),
       productId: item.productId,
-      productName: item.product?.name?.cs || 'Unknown Product',
-      productSlug: item.product?.slug || '',
+      productName: item.product?.name?.cs || "Unknown Product",
+      productSlug: item.product?.slug || "",
       quantity: item.quantity,
       unitPrice: item.unitPrice || 0,
       totalPrice: item.totalPrice || 0,
       customizations: item.customizations || [],
-      productSnapshot: item.product // Store product snapshot at time of order
+      productSnapshot: item.product, // Store product snapshot at time of order
     }));
 
     // Create order data matching the database schema
@@ -77,51 +88,54 @@ export async function POST(request: NextRequest) {
       customer_info: {
         ...body.customerInfo,
         orderNumber, // Include order number in customer info
-        sessionId: user ? null : getSessionId(request)
+        sessionId: user ? null : getSessionId(request),
       } as any,
       delivery_info: {
         ...body.deliveryInfo,
         deliveryCost,
-        estimatedDeliveryDate: body.deliveryInfo.preferredDate
+        estimatedDeliveryDate: body.deliveryInfo.preferredDate,
       } as any,
       payment_info: {
         method: body.paymentMethod,
         amount: totalAmount,
-        currency: 'CZK',
-        status: 'pending'
+        currency: "CZK",
+        status: "pending",
       } as any,
       items: {
         items: orderItems,
         itemCount,
         subtotal,
-        totalAmount
+        totalAmount,
       } as any,
-      status: 'pending',
+      status: "pending",
       total_amount: totalAmount,
-      notes: body.customerInfo.note || null
+      notes: body.customerInfo.note || null,
     };
 
     // Insert order into database
     const { data: order, error } = await supabase
-      .from('orders')
+      .from("orders")
       .insert(orderData)
       .select()
       .single();
 
     if (error) {
-      console.error('Error creating order:', error);
-      return NextResponse.json({
-        success: false,
-        error: 'Chyba při vytváření objednávky'
-      }, { status: 500 });
+      console.error("Error creating order:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Chyba při vytváření objednávky",
+        },
+        { status: 500 }
+      );
     }
 
     // Generate payment URL based on payment method
     let paymentUrl: string | undefined;
 
-    if (body.paymentMethod === 'stripe') {
+    if (body.paymentMethod === "stripe") {
       paymentUrl = await createStripePaymentSession(order.id, totalAmount, body.customerInfo.email);
-    } else if (body.paymentMethod === 'gopay') {
+    } else if (body.paymentMethod === "gopay") {
       paymentUrl = await createGopayPayment(order.id, totalAmount, body.customerInfo);
     }
 
@@ -148,16 +162,18 @@ export async function POST(request: NextRequest) {
         phone: customerInfo.phone,
         name: `${customerInfo.firstName} ${customerInfo.lastName}`,
         company: customerInfo.company,
-        note: customerInfo.note
+        note: customerInfo.note,
       },
       deliveryInfo: {
         address: deliveryInfo.address,
         urgency: deliveryInfo.urgency,
-        preferredDate: deliveryInfo.preferredDate ? new Date(deliveryInfo.preferredDate) : undefined,
+        preferredDate: deliveryInfo.preferredDate
+          ? new Date(deliveryInfo.preferredDate)
+          : undefined,
         preferredTimeSlot: deliveryInfo.preferredTimeSlot,
         specialInstructions: deliveryInfo.specialInstructions,
         recipientName: deliveryInfo.recipientName,
-        recipientPhone: deliveryInfo.recipientPhone
+        recipientPhone: deliveryInfo.recipientPhone,
       },
       paymentInfo: {
         method: paymentInfo.method,
@@ -166,38 +182,40 @@ export async function POST(request: NextRequest) {
         status: paymentInfo.status,
         transactionId: paymentInfo.transactionId,
         processedAt: paymentInfo.processedAt ? new Date(paymentInfo.processedAt) : undefined,
-        failureReason: paymentInfo.failureReason
+        failureReason: paymentInfo.failureReason,
       },
       status: order.status as OrderStatus,
       notes: order.notes || undefined,
       internalNotes: undefined,
       createdAt: new Date(order.created_at),
-      updatedAt: new Date(order.updated_at)
+      updatedAt: new Date(order.updated_at),
     };
 
     // Send order confirmation email
     try {
-      const { sendOrderConfirmationEmail } = await import('@/lib/email/service');
-      await sendOrderConfirmationEmail(createdOrder, 'cs');
+      const { sendOrderConfirmationEmail } = await import("@/lib/email/service");
+      await sendOrderConfirmationEmail(createdOrder, "cs");
     } catch (emailError) {
-      console.error('Error sending confirmation email:', emailError);
+      console.error("Error sending confirmation email:", emailError);
       // Don't fail the order creation if email fails
     }
 
     const response: CreateOrderResponse = {
       success: true,
       order: createdOrder,
-      paymentUrl
+      paymentUrl,
     };
 
     return NextResponse.json(response);
-
   } catch (error) {
-    console.error('Error in POST /api/orders:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in POST /api/orders:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -207,40 +225,50 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({
-        success: false,
-        error: 'Unauthorized'
-      }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     const { data: orders, error } = await supabase
-      .from('orders')
-      .select('*')
-      .eq('user_id', user.id)
-      .order('created_at', { ascending: false });
+      .from("orders")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("created_at", { ascending: false });
 
     if (error) {
-      console.error('Error fetching orders:', error);
-      return NextResponse.json({
-        success: false,
-        error: 'Chyba při načítání objednávek'
-      }, { status: 500 });
+      console.error("Error fetching orders:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Chyba při načítání objednávek",
+        },
+        { status: 500 }
+      );
     }
 
     return NextResponse.json({
       success: true,
-      orders
+      orders,
     });
-
   } catch (error) {
-    console.error('Error in GET /api/orders:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in GET /api/orders:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -254,7 +282,7 @@ function generateOrderNumber(): string {
 
 function getSessionId(request: NextRequest): string {
   // Get session ID from cookies or generate new one
-  const sessionId = request.cookies.get('session_id')?.value;
+  const sessionId = request.cookies.get("session_id")?.value;
   return sessionId || crypto.randomUUID();
 }
 
@@ -270,10 +298,10 @@ async function calculateDeliveryCost(
 
     let urgencyMultiplier = 1;
     switch (urgency) {
-      case 'express':
+      case "express":
         urgencyMultiplier = 1.5;
         break;
-      case 'same-day':
+      case "same-day":
         urgencyMultiplier = 2.0;
         break;
       default:
@@ -282,7 +310,7 @@ async function calculateDeliveryCost(
 
     return Math.round(baseCost * urgencyMultiplier);
   } catch (error) {
-    console.error('Error calculating delivery cost:', error);
+    console.error("Error calculating delivery cost:", error);
     return 150; // Default cost
   }
 }
@@ -294,20 +322,20 @@ async function createStripePaymentSession(
 ): Promise<string> {
   try {
     // Initialize payment through our payment API
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/payments/initialize`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         orderId,
         amount,
-        currency: 'czk',
+        currency: "czk",
         customerEmail,
         customerName: customerEmail, // Will be updated with actual name
-        paymentMethod: 'stripe',
-        locale: 'cs',
+        paymentMethod: "stripe",
+        locale: "cs",
       }),
     });
 
@@ -317,10 +345,10 @@ async function createStripePaymentSession(
       // Return checkout URL with client secret
       return `/cs/checkout/payment?orderId=${orderId}&clientSecret=${data.data.clientSecret}&method=stripe`;
     } else {
-      throw new Error(data.error || 'Failed to create Stripe payment session');
+      throw new Error(data.error || "Failed to create Stripe payment session");
     }
   } catch (error) {
-    console.error('Error creating Stripe payment session:', error);
+    console.error("Error creating Stripe payment session:", error);
     return `/cs/checkout/error?orderId=${orderId}&error=stripe_init_failed`;
   }
 }
@@ -332,20 +360,20 @@ async function createGopayPayment(
 ): Promise<string> {
   try {
     // Initialize payment through our payment API
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000';
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/payments/initialize`, {
-      method: 'POST',
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify({
         orderId,
         amount,
-        currency: 'czk',
+        currency: "czk",
         customerEmail: customerInfo.email,
         customerName: `${customerInfo.firstName} ${customerInfo.lastName}`,
-        paymentMethod: 'gopay',
-        locale: 'cs',
+        paymentMethod: "gopay",
+        locale: "cs",
       }),
     });
 
@@ -355,10 +383,10 @@ async function createGopayPayment(
       // Return GoPay redirect URL
       return data.data.redirectUrl;
     } else {
-      throw new Error(data.error || 'Failed to create GoPay payment');
+      throw new Error(data.error || "Failed to create GoPay payment");
     }
   } catch (error) {
-    console.error('Error creating GoPay payment:', error);
+    console.error("Error creating GoPay payment:", error);
     return `/cs/checkout/error?orderId=${orderId}&error=gopay_init_failed`;
   }
 }

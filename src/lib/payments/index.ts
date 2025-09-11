@@ -2,19 +2,19 @@
  * Unified payment service for Stripe and GoPay integration
  */
 
-import { PaymentMethod, PaymentInfo, PaymentStatus } from '@/types/order';
+import { PaymentMethod, PaymentInfo, PaymentStatus } from "@/types/order";
 import {
   createPaymentIntent,
   retrievePaymentIntent,
   handleSuccessfulPayment as handleStripeSuccess,
-  handleFailedPayment as handleStripeFailure
-} from './stripe';
+  handleFailedPayment as handleStripeFailure,
+} from "./stripe";
 import {
   createGopayClient,
   GopayPaymentRequest,
   handleGopaySuccess,
-  handleGopayFailure
-} from './gopay';
+  handleGopayFailure,
+} from "./gopay";
 
 export interface PaymentRequest {
   orderId: string;
@@ -27,7 +27,7 @@ export interface PaymentRequest {
   cancelUrl: string;
   webhookUrl: string;
   description: string;
-  locale?: 'cs' | 'en';
+  locale?: "cs" | "en";
 }
 
 export interface PaymentResponse {
@@ -58,18 +58,18 @@ export class PaymentService {
   static async initializePayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
       switch (request.paymentMethod) {
-        case 'stripe':
+        case "stripe":
           return await this.initializeStripePayment(request);
-        case 'gopay':
+        case "gopay":
           return await this.initializeGopayPayment(request);
         default:
           throw new Error(`Unsupported payment method: ${request.paymentMethod}`);
       }
     } catch (error) {
-      console.error('Error initializing payment:', error);
+      console.error("Error initializing payment:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Payment initialization failed',
+        error: error instanceof Error ? error.message : "Payment initialization failed",
       };
     }
   }
@@ -87,7 +87,7 @@ export class PaymentService {
         customerName: request.customerName,
         metadata: {
           description: request.description,
-          locale: request.locale || 'cs',
+          locale: request.locale || "cs",
         },
       });
 
@@ -97,7 +97,7 @@ export class PaymentService {
         clientSecret: paymentIntent.client_secret!,
       };
     } catch (error) {
-      console.error('Error initializing Stripe payment:', error);
+      console.error("Error initializing Stripe payment:", error);
       throw error;
     }
   }
@@ -118,7 +118,7 @@ export class PaymentService {
         returnUrl: request.returnUrl,
         notifyUrl: request.webhookUrl,
         description: request.description,
-        lang: request.locale?.toUpperCase() as 'CS' | 'EN' || 'CS',
+        lang: (request.locale?.toUpperCase() as "CS" | "EN") || "CS",
       };
 
       const payment = await gopayClient.createPayment(gopayRequest);
@@ -129,7 +129,7 @@ export class PaymentService {
         redirectUrl: payment.gw_url,
       };
     } catch (error) {
-      console.error('Error initializing GoPay payment:', error);
+      console.error("Error initializing GoPay payment:", error);
       throw error;
     }
   }
@@ -137,18 +137,21 @@ export class PaymentService {
   /**
    * Get payment status
    */
-  static async getPaymentStatus(paymentId: string, paymentMethod: PaymentMethod): Promise<PaymentResult | null> {
+  static async getPaymentStatus(
+    paymentId: string,
+    paymentMethod: PaymentMethod
+  ): Promise<PaymentResult | null> {
     try {
       switch (paymentMethod) {
-        case 'stripe':
+        case "stripe":
           return await this.getStripePaymentStatus(paymentId);
-        case 'gopay':
+        case "gopay":
           return await this.getGopayPaymentStatus(paymentId);
         default:
           throw new Error(`Unsupported payment method: ${paymentMethod}`);
       }
     } catch (error) {
-      console.error('Error getting payment status:', error);
+      console.error("Error getting payment status:", error);
       return null;
     }
   }
@@ -161,31 +164,31 @@ export class PaymentService {
 
     let status: PaymentStatus;
     switch (paymentIntent.status) {
-      case 'succeeded':
-        status = 'completed';
+      case "succeeded":
+        status = "completed";
         break;
-      case 'processing':
-        status = 'processing';
+      case "processing":
+        status = "processing";
         break;
-      case 'requires_payment_method':
-      case 'requires_confirmation':
-      case 'requires_action':
-        status = 'pending';
+      case "requires_payment_method":
+      case "requires_confirmation":
+      case "requires_action":
+        status = "pending";
         break;
-      case 'canceled':
-        status = 'cancelled';
+      case "canceled":
+        status = "cancelled";
         break;
       default:
-        status = 'failed';
+        status = "failed";
     }
 
     return {
-      orderId: paymentIntent.metadata.orderId || '',
+      orderId: paymentIntent.metadata.orderId || "",
       transactionId: paymentIntent.id,
       amount: paymentIntent.amount / 100,
       currency: paymentIntent.currency,
       status,
-      paymentMethod: 'stripe',
+      paymentMethod: "stripe",
       error: paymentIntent.last_payment_error?.message,
     };
   }
@@ -199,26 +202,26 @@ export class PaymentService {
 
     let status: PaymentStatus;
     switch (payment.state) {
-      case 'PAID':
-        status = 'completed';
+      case "PAID":
+        status = "completed";
         break;
-      case 'AUTHORIZED':
-        status = 'processing';
+      case "AUTHORIZED":
+        status = "processing";
         break;
-      case 'CREATED':
-      case 'PAYMENT_METHOD_CHOSEN':
-        status = 'pending';
+      case "CREATED":
+      case "PAYMENT_METHOD_CHOSEN":
+        status = "pending";
         break;
-      case 'CANCELED':
-        status = 'cancelled';
+      case "CANCELED":
+        status = "cancelled";
         break;
-      case 'TIMEOUTED':
-      case 'REFUNDED':
-      case 'PARTIALLY_REFUNDED':
-        status = 'refunded';
+      case "TIMEOUTED":
+      case "REFUNDED":
+      case "PARTIALLY_REFUNDED":
+        status = "refunded";
         break;
       default:
-        status = 'failed';
+        status = "failed";
     }
 
     return {
@@ -227,7 +230,7 @@ export class PaymentService {
       amount: payment.amount / 100,
       currency: payment.currency,
       status,
-      paymentMethod: 'gopay',
+      paymentMethod: "gopay",
     };
   }
 
@@ -241,15 +244,15 @@ export class PaymentService {
   ): Promise<PaymentResult | null> {
     try {
       switch (paymentMethod) {
-        case 'stripe':
+        case "stripe":
           return await this.processStripeWebhook(payload, signature);
-        case 'gopay':
+        case "gopay":
           return await this.processGopayWebhook(payload as string, signature);
         default:
           throw new Error(`Unsupported payment method: ${paymentMethod}`);
       }
     } catch (error) {
-      console.error('Error processing webhook:', error);
+      console.error("Error processing webhook:", error);
       return null;
     }
   }
@@ -257,12 +260,15 @@ export class PaymentService {
   /**
    * Process Stripe webhook
    */
-  private static async processStripeWebhook(payload: string | Buffer, signature: string): Promise<PaymentResult | null> {
-    const { verifyWebhookSignature } = await import('./stripe');
+  private static async processStripeWebhook(
+    payload: string | Buffer,
+    signature: string
+  ): Promise<PaymentResult | null> {
+    const { verifyWebhookSignature } = await import("./stripe");
 
     const event = verifyWebhookSignature(payload, signature, process.env.STRIPE_WEBHOOK_SECRET!);
 
-    if (event.type === 'payment_intent.succeeded') {
+    if (event.type === "payment_intent.succeeded") {
       const paymentIntent = event.data.object;
       const result = await handleStripeSuccess(paymentIntent);
 
@@ -271,10 +277,10 @@ export class PaymentService {
         transactionId: result.transactionId,
         amount: result.amount,
         currency: result.currency,
-        status: 'completed',
-        paymentMethod: 'stripe',
+        status: "completed",
+        paymentMethod: "stripe",
       };
-    } else if (event.type === 'payment_intent.payment_failed') {
+    } else if (event.type === "payment_intent.payment_failed") {
       const paymentIntent = event.data.object;
       const result = await handleStripeFailure(paymentIntent);
 
@@ -282,9 +288,9 @@ export class PaymentService {
         orderId: result.orderId,
         transactionId: result.transactionId,
         amount: 0,
-        currency: 'czk',
-        status: 'failed',
-        paymentMethod: 'stripe',
+        currency: "czk",
+        status: "failed",
+        paymentMethod: "stripe",
         error: result.error,
       };
     }
@@ -295,18 +301,21 @@ export class PaymentService {
   /**
    * Process GoPay webhook
    */
-  private static async processGopayWebhook(payload: string, signature: string): Promise<PaymentResult | null> {
+  private static async processGopayWebhook(
+    payload: string,
+    signature: string
+  ): Promise<PaymentResult | null> {
     const gopayClient = createGopayClient();
 
     if (!gopayClient.verifyNotification(payload, signature)) {
-      throw new Error('Invalid GoPay webhook signature');
+      throw new Error("Invalid GoPay webhook signature");
     }
 
     const data = JSON.parse(payload);
     const paymentId = data.id;
 
     if (!paymentId) {
-      throw new Error('Payment ID not found in GoPay webhook');
+      throw new Error("Payment ID not found in GoPay webhook");
     }
 
     // Get current payment status
@@ -320,7 +329,7 @@ export class PaymentService {
     paymentMethod: PaymentMethod,
     amount: number,
     currency: string,
-    status: PaymentStatus = 'pending',
+    status: PaymentStatus = "pending",
     transactionId?: string
   ): PaymentInfo {
     return {
@@ -329,12 +338,12 @@ export class PaymentService {
       currency,
       status,
       transactionId,
-      processedAt: status === 'completed' ? new Date() : undefined,
+      processedAt: status === "completed" ? new Date() : undefined,
     };
   }
 }
 
 // Export types and utilities
-export * from './stripe';
-export * from './gopay';
+export * from "./stripe";
+export * from "./gopay";
 export { PaymentService as default };

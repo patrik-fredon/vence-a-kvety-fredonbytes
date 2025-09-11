@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   PlusIcon,
   PencilIcon,
   TrashIcon,
   EyeIcon,
   MagnifyingGlassIcon,
-  FunnelIcon
-} from '@heroicons/react/24/outline';
-import ProductForm from './ProductForm';
-import DeleteConfirmModal from './DeleteConfirmModal';
+  FunnelIcon,
+} from "@heroicons/react/24/outline";
+import ProductForm from "./ProductForm";
+import DeleteConfirmModal from "./DeleteConfirmModal";
 
 interface Product {
   id: string;
@@ -42,8 +42,8 @@ export default function ProductManagement() {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedCategory, setSelectedCategory] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedCategory, setSelectedCategory] = useState("");
   const [showActiveOnly, setShowActiveOnly] = useState(true);
   const [showForm, setShowForm] = useState(false);
   const [editingProduct, setEditingProduct] = useState<Product | null>(null);
@@ -61,15 +61,15 @@ export default function ProductManagement() {
       setLoading(true);
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: '20'
+        limit: "20",
       });
 
       if (selectedCategory) {
-        params.append('category', selectedCategory);
+        params.append("category", selectedCategory);
       }
 
       if (showActiveOnly) {
-        params.append('active', 'true');
+        params.append("active", "true");
       }
 
       const response = await fetch(`/api/admin/products?${params}`);
@@ -79,7 +79,7 @@ export default function ProductManagement() {
         setTotalPages(Math.ceil((data.total || 0) / 20));
       }
     } catch (error) {
-      console.error('Failed to fetch products:', error);
+      console.error("Failed to fetch products:", error);
     } finally {
       setLoading(false);
     }
@@ -87,13 +87,13 @@ export default function ProductManagement() {
 
   const fetchCategories = async () => {
     try {
-      const response = await fetch('/api/admin/categories');
+      const response = await fetch("/api/admin/categories");
       if (response.ok) {
         const data = await response.json();
         setCategories(data.categories || []);
       }
     } catch (error) {
-      console.error('Failed to fetch categories:', error);
+      console.error("Failed to fetch categories:", error);
     }
   };
 
@@ -110,17 +110,17 @@ export default function ProductManagement() {
   const handleDeleteProduct = async (product: Product) => {
     try {
       const response = await fetch(`/api/admin/products/${product.id}`, {
-        method: 'DELETE'
+        method: "DELETE",
       });
 
       if (response.ok) {
         setDeleteProduct(null);
         fetchProducts();
       } else {
-        console.error('Failed to delete product');
+        console.error("Failed to delete product");
       }
     } catch (error) {
-      console.error('Error deleting product:', error);
+      console.error("Error deleting product:", error);
     }
   };
 
@@ -128,16 +128,16 @@ export default function ProductManagement() {
     try {
       const url = editingProduct
         ? `/api/admin/products/${editingProduct.id}`
-        : '/api/admin/products';
+        : "/api/admin/products";
 
-      const method = editingProduct ? 'PUT' : 'POST';
+      const method = editingProduct ? "PUT" : "POST";
 
       const response = await fetch(url, {
         method,
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(productData)
+        body: JSON.stringify(productData),
       });
 
       if (response.ok) {
@@ -145,23 +145,24 @@ export default function ProductManagement() {
         setEditingProduct(null);
         fetchProducts();
       } else {
-        console.error('Failed to save product');
+        console.error("Failed to save product");
       }
     } catch (error) {
-      console.error('Error saving product:', error);
+      console.error("Error saving product:", error);
     }
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name_cs.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name_cs.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.name_en.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('cs-CZ', {
-      style: 'currency',
-      currency: 'CZK'
+    return new Intl.NumberFormat("cs-CZ", {
+      style: "currency",
+      currency: "CZK",
     }).format(amount);
   };
 
@@ -215,7 +216,7 @@ export default function ProductManagement() {
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
             <option value="">Všechny kategorie</option>
-            {categories.map(category => (
+            {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name_cs}
               </option>
@@ -276,27 +277,27 @@ export default function ProductManagement() {
                   <tr key={product.id} className="hover:bg-gray-50">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
-                          {product.name_cs}
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {product.slug}
-                        </div>
+                        <div className="text-sm font-medium text-gray-900">{product.name_cs}</div>
+                        <div className="text-sm text-gray-500">{product.slug}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {product.category?.name_cs || 'Bez kategorie'}
+                      {product.category?.name_cs || "Bez kategorie"}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {formatCurrency(product.base_price)}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                       {product.track_inventory ? (
-                        <span className={`${
-                          product.stock_quantity === 0 ? 'text-red-600' :
-                          product.stock_quantity <= 5 ? 'text-yellow-600' :
-                          'text-green-600'
-                        }`}>
+                        <span
+                          className={`${
+                            product.stock_quantity === 0
+                              ? "text-red-600"
+                              : product.stock_quantity <= 5
+                                ? "text-yellow-600"
+                                : "text-green-600"
+                          }`}
+                        >
                           {product.stock_quantity} ks
                         </span>
                       ) : (
@@ -305,12 +306,14 @@ export default function ProductManagement() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
-                        <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          product.active
-                            ? 'bg-green-100 text-green-800'
-                            : 'bg-red-100 text-red-800'
-                        }`}>
-                          {product.active ? 'Aktivní' : 'Neaktivní'}
+                        <span
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            product.active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
+                        >
+                          {product.active ? "Aktivní" : "Neaktivní"}
                         </span>
                         {product.featured && (
                           <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
@@ -322,7 +325,7 @@ export default function ProductManagement() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
                         <button
-                          onClick={() => window.open(`/products/${product.slug}`, '_blank')}
+                          onClick={() => window.open(`/products/${product.slug}`, "_blank")}
                           className="text-blue-600 hover:text-blue-900"
                           title="Zobrazit"
                         >

@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   EyeIcon,
   PencilIcon,
@@ -8,9 +8,9 @@ import {
   FunnelIcon,
   CheckCircleIcon,
   TruckIcon,
-  XCircleIcon
-} from '@heroicons/react/24/outline';
-import OrderDetailModal from './OrderDetailModal';
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
+import OrderDetailModal from "./OrderDetailModal";
 
 interface Order {
   id: string;
@@ -18,7 +18,7 @@ interface Order {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
   totalAmount: number;
   itemCount: number;
   paymentMethod: string;
@@ -32,22 +32,22 @@ interface Order {
 }
 
 const statusOptions = [
-  { value: '', label: 'Všechny stavy' },
-  { value: 'pending', label: 'Čekající' },
-  { value: 'confirmed', label: 'Potvrzeno' },
-  { value: 'processing', label: 'Zpracovává se' },
-  { value: 'shipped', label: 'Odesláno' },
-  { value: 'delivered', label: 'Doručeno' },
-  { value: 'cancelled', label: 'Zrušeno' }
+  { value: "", label: "Všechny stavy" },
+  { value: "pending", label: "Čekající" },
+  { value: "confirmed", label: "Potvrzeno" },
+  { value: "processing", label: "Zpracovává se" },
+  { value: "shipped", label: "Odesláno" },
+  { value: "delivered", label: "Doručeno" },
+  { value: "cancelled", label: "Zrušeno" },
 ];
 
 export default function OrderManagement() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
-  const [statusFilter, setStatusFilter] = useState('');
-  const [dateFrom, setDateFrom] = useState('');
-  const [dateTo, setDateTo] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
+  const [statusFilter, setStatusFilter] = useState("");
+  const [dateFrom, setDateFrom] = useState("");
+  const [dateTo, setDateTo] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
@@ -61,19 +61,19 @@ export default function OrderManagement() {
       setLoading(true);
       const params = new URLSearchParams({
         page: currentPage.toString(),
-        limit: '20'
+        limit: "20",
       });
 
       if (statusFilter) {
-        params.append('status', statusFilter);
+        params.append("status", statusFilter);
       }
 
       if (dateFrom) {
-        params.append('dateFrom', dateFrom);
+        params.append("dateFrom", dateFrom);
       }
 
       if (dateTo) {
-        params.append('dateTo', dateTo);
+        params.append("dateTo", dateTo);
       }
 
       const response = await fetch(`/api/admin/orders?${params}`);
@@ -83,7 +83,7 @@ export default function OrderManagement() {
         setTotalPages(Math.ceil((data.pagination?.total || 0) / 20));
       }
     } catch (error) {
-      console.error('Failed to fetch orders:', error);
+      console.error("Failed to fetch orders:", error);
     } finally {
       setLoading(false);
     }
@@ -92,107 +92,108 @@ export default function OrderManagement() {
   const handleStatusUpdate = async (orderId: string, newStatus: string, internalNotes?: string) => {
     try {
       const response = await fetch(`/api/admin/orders/${orderId}/status`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           status: newStatus,
-          internalNotes
-        })
+          internalNotes,
+        }),
       });
 
       if (response.ok) {
         fetchOrders();
         setSelectedOrder(null);
       } else {
-        console.error('Failed to update order status');
+        console.error("Failed to update order status");
       }
     } catch (error) {
-      console.error('Error updating order status:', error);
+      console.error("Error updating order status:", error);
     }
   };
 
-  const filteredOrders = orders.filter(order =>
-    order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredOrders = orders.filter(
+    (order) =>
+      order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('cs-CZ', {
-      style: 'currency',
-      currency: 'CZK'
+    return new Intl.NumberFormat("cs-CZ", {
+      style: "currency",
+      currency: "CZK",
     }).format(amount);
   };
 
   const getStatusColor = (status: string) => {
     const colors = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      confirmed: 'bg-blue-100 text-blue-800',
-      processing: 'bg-purple-100 text-purple-800',
-      shipped: 'bg-indigo-100 text-indigo-800',
-      delivered: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
+      pending: "bg-yellow-100 text-yellow-800",
+      confirmed: "bg-blue-100 text-blue-800",
+      processing: "bg-purple-100 text-purple-800",
+      shipped: "bg-indigo-100 text-indigo-800",
+      delivered: "bg-green-100 text-green-800",
+      cancelled: "bg-red-100 text-red-800",
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
 
   const getStatusLabel = (status: string) => {
     const labels = {
-      pending: 'Čekající',
-      confirmed: 'Potvrzeno',
-      processing: 'Zpracovává se',
-      shipped: 'Odesláno',
-      delivered: 'Doručeno',
-      cancelled: 'Zrušeno'
+      pending: "Čekající",
+      confirmed: "Potvrzeno",
+      processing: "Zpracovává se",
+      shipped: "Odesláno",
+      delivered: "Doručeno",
+      cancelled: "Zrušeno",
     };
     return labels[status as keyof typeof labels] || status;
   };
 
   const getQuickActions = (order: Order) => {
     switch (order.status) {
-      case 'pending':
+      case "pending":
         return [
           {
-            label: 'Potvrdit',
-            action: () => handleStatusUpdate(order.id, 'confirmed'),
+            label: "Potvrdit",
+            action: () => handleStatusUpdate(order.id, "confirmed"),
             icon: CheckCircleIcon,
-            color: 'text-green-600 hover:text-green-900'
+            color: "text-green-600 hover:text-green-900",
           },
           {
-            label: 'Zrušit',
-            action: () => handleStatusUpdate(order.id, 'cancelled'),
+            label: "Zrušit",
+            action: () => handleStatusUpdate(order.id, "cancelled"),
             icon: XCircleIcon,
-            color: 'text-red-600 hover:text-red-900'
-          }
+            color: "text-red-600 hover:text-red-900",
+          },
         ];
-      case 'confirmed':
+      case "confirmed":
         return [
           {
-            label: 'Zpracovat',
-            action: () => handleStatusUpdate(order.id, 'processing'),
+            label: "Zpracovat",
+            action: () => handleStatusUpdate(order.id, "processing"),
             icon: PencilIcon,
-            color: 'text-purple-600 hover:text-purple-900'
-          }
+            color: "text-purple-600 hover:text-purple-900",
+          },
         ];
-      case 'processing':
+      case "processing":
         return [
           {
-            label: 'Odeslat',
-            action: () => handleStatusUpdate(order.id, 'shipped'),
+            label: "Odeslat",
+            action: () => handleStatusUpdate(order.id, "shipped"),
             icon: TruckIcon,
-            color: 'text-blue-600 hover:text-blue-900'
-          }
+            color: "text-blue-600 hover:text-blue-900",
+          },
         ];
-      case 'shipped':
+      case "shipped":
         return [
           {
-            label: 'Doručeno',
-            action: () => handleStatusUpdate(order.id, 'delivered'),
+            label: "Doručeno",
+            action: () => handleStatusUpdate(order.id, "delivered"),
             icon: CheckCircleIcon,
-            color: 'text-green-600 hover:text-green-900'
-          }
+            color: "text-green-600 hover:text-green-900",
+          },
         ];
       default:
         return [];
@@ -204,9 +205,7 @@ export default function OrderManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-gray-900">Správa objednávek</h2>
-        <div className="text-sm text-gray-500">
-          Celkem: {filteredOrders.length} objednávek
-        </div>
+        <div className="text-sm text-gray-500">Celkem: {filteredOrders.length} objednávek</div>
       </div>
 
       {/* Filters */}
@@ -230,7 +229,7 @@ export default function OrderManagement() {
             onChange={(e) => setStatusFilter(e.target.value)}
             className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
           >
-            {statusOptions.map(option => (
+            {statusOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -258,10 +257,10 @@ export default function OrderManagement() {
           {/* Clear filters */}
           <button
             onClick={() => {
-              setSearchTerm('');
-              setStatusFilter('');
-              setDateFrom('');
-              setDateTo('');
+              setSearchTerm("");
+              setStatusFilter("");
+              setDateFrom("");
+              setDateTo("");
               setCurrentPage(1);
             }}
             className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
@@ -313,9 +312,7 @@ export default function OrderManagement() {
                         <div className="text-sm font-medium text-gray-900">
                           #{order.orderNumber}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {order.itemCount} položek
-                        </div>
+                        <div className="text-sm text-gray-500">{order.itemCount} položek</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -323,13 +320,13 @@ export default function OrderManagement() {
                         <div className="text-sm font-medium text-gray-900">
                           {order.customerName}
                         </div>
-                        <div className="text-sm text-gray-500">
-                          {order.customerEmail}
-                        </div>
+                        <div className="text-sm text-gray-500">{order.customerEmail}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}
+                      >
                         {getStatusLabel(order.status)}
                       </span>
                     </td>
@@ -337,15 +334,13 @@ export default function OrderManagement() {
                       {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">
-                        {order.deliveryAddress}
-                      </div>
+                      <div className="text-sm text-gray-900">{order.deliveryAddress}</div>
                       <div className="text-sm text-gray-500">
-                        {new Date(order.preferredDate).toLocaleDateString('cs-CZ')}
+                        {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
-                      {new Date(order.createdAt).toLocaleDateString('cs-CZ')}
+                      {new Date(order.createdAt).toLocaleDateString("cs-CZ")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">

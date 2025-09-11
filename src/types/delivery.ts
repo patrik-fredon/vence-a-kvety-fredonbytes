@@ -2,12 +2,12 @@
  * Delivery-related type definitions for the funeral wreaths e-commerce platform
  */
 
-import { BaseEntity } from './index';
-import type { Address } from './index';
+import { BaseEntity } from "./index";
+import type { Address } from "./index";
 
 // Delivery option types
-export type DeliveryUrgency = 'standard' | 'express' | 'same-day';
-export type DeliveryTimeSlot = 'morning' | 'afternoon' | 'evening' | 'anytime';
+export type DeliveryUrgency = "standard" | "express" | "same-day";
+export type DeliveryTimeSlot = "morning" | "afternoon" | "evening" | "anytime";
 
 // Delivery availability interface
 export interface DeliveryAvailability {
@@ -94,7 +94,7 @@ export interface DeliveryCalendarResponse {
 export interface Holiday {
   date: Date;
   name: string;
-  type: 'public' | 'religious' | 'custom';
+  type: "public" | "religious" | "custom";
 }
 
 // Delivery zone configuration

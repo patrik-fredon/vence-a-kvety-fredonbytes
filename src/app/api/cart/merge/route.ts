@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { auth } from '@/lib/auth/config';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { auth } from "@/lib/auth/config";
 
 interface MergeCartRequest {
   sessionId: string;
@@ -18,53 +18,63 @@ export async function POST(request: NextRequest) {
 
     // Verify user is authenticated and matches the userId
     if (!session?.user?.id || session.user.id !== body.userId) {
-      return NextResponse.json({
-        success: false,
-        error: 'Unauthorized'
-      }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     // Get guest cart items
     const { data: guestItems, error: guestError } = await supabase
-      .from('cart_items')
-      .select('*')
-      .eq('session_id', body.sessionId);
+      .from("cart_items")
+      .select("*")
+      .eq("session_id", body.sessionId);
 
     if (guestError) {
-      console.error('Error fetching guest cart items:', guestError);
-      return NextResponse.json({
-        success: false,
-        error: 'Failed to fetch guest cart'
-      }, { status: 500 });
+      console.error("Error fetching guest cart items:", guestError);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to fetch guest cart",
+        },
+        { status: 500 }
+      );
     }
 
     if (!guestItems || guestItems.length === 0) {
       return NextResponse.json({
         success: true,
-        message: 'No guest cart items to merge'
+        message: "No guest cart items to merge",
       });
     }
 
     // Get existing user cart items
     const { data: userItems, error: userError } = await supabase
-      .from('cart_items')
-      .select('*')
-      .eq('user_id', body.userId);
+      .from("cart_items")
+      .select("*")
+      .eq("user_id", body.userId);
 
     if (userError) {
-      console.error('Error fetching user cart items:', userError);
-      return NextResponse.json({
-        success: false,
-        error: 'Failed to fetch user cart'
-      }, { status: 500 });
+      console.error("Error fetching user cart items:", userError);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Failed to fetch user cart",
+        },
+        { status: 500 }
+      );
     }
 
     // Process each guest item
     for (const guestItem of guestItems) {
       // Check if user already has the same product with same customizations
-      const existingUserItem = userItems?.find(userItem =>
-        userItem.product_id === guestItem.product_id &&
-        JSON.stringify(userItem.customizations) === JSON.stringify(guestItem.customizations)
+      const existingUserItem = userItems?.find(
+        (userItem) =>
+          userItem.product_id === guestItem.product_id &&
+          JSON.stringify(userItem.customizations) === JSON.stringify(guestItem.customizations)
       );
 
       if (existingUserItem) {
@@ -72,54 +82,54 @@ export async function POST(request: NextRequest) {
         const newQuantity = existingUserItem.quantity + guestItem.quantity;
 
         const { error: updateError } = await supabase
-          .from('cart_items')
+          .from("cart_items")
           .update({
             quantity: newQuantity,
-            updated_at: new Date().toISOString()
+            updated_at: new Date().toISOString(),
           })
-          .eq('id', existingUserItem.id);
+          .eq("id", existingUserItem.id);
 
         if (updateError) {
-          console.error('Error updating user cart item:', updateError);
+          console.error("Error updating user cart item:", updateError);
         }
       } else {
         // Create new user cart item
-        const { error: insertError } = await supabase
-          .from('cart_items')
-          .insert({
-            user_id: body.userId,
-            session_id: null,
-            product_id: guestItem.product_id,
-            quantity: guestItem.quantity,
-            customizations: guestItem.customizations
-          });
+        const { error: insertError } = await supabase.from("cart_items").insert({
+          user_id: body.userId,
+          session_id: null,
+          product_id: guestItem.product_id,
+          quantity: guestItem.quantity,
+          customizations: guestItem.customizations,
+        });
 
         if (insertError) {
-          console.error('Error creating user cart item:', insertError);
+          console.error("Error creating user cart item:", insertError);
         }
       }
     }
 
     // Delete guest cart items
     const { error: deleteError } = await supabase
-      .from('cart_items')
+      .from("cart_items")
       .delete()
-      .eq('session_id', body.sessionId);
+      .eq("session_id", body.sessionId);
 
     if (deleteError) {
-      console.error('Error deleting guest cart items:', deleteError);
+      console.error("Error deleting guest cart items:", deleteError);
     }
 
     return NextResponse.json({
       success: true,
-      message: 'Cart merged successfully'
+      message: "Cart merged successfully",
     });
-
   } catch (error) {
-    console.error('Cart merge API error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 });
+    console.error("Cart merge API error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }

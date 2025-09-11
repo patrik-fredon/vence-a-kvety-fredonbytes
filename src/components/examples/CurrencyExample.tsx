@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useCurrency } from '@/lib/i18n/hooks';
+import { useCurrency } from "@/lib/i18n/hooks";
 
 export function CurrencyExample() {
   const { format, formatCustom } = useCurrency();

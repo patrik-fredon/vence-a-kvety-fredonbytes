@@ -1,23 +1,23 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { useTranslations } from 'next-intl';
-import { ShoppingCartIcon, ArrowLeftIcon } from '@heroicons/react/24/outline';
-import { useCart } from '@/lib/cart/context';
-import { CartItem } from '@/types/cart';
-import { CheckoutForm } from '@/components/checkout/CheckoutForm';
-import { CompactOrderSummary } from '@/components/checkout/OrderSummary';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { Button } from '@/components/ui/Button';
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { ShoppingCartIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useCart } from "@/lib/cart/context";
+import { CartItem } from "@/types/cart";
+import { CheckoutForm } from "@/components/checkout/CheckoutForm";
+import { CompactOrderSummary } from "@/components/checkout/OrderSummary";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Button } from "@/components/ui/Button";
 
 interface CheckoutPageClientProps {
   locale: string;
 }
 
 export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
-  const t = useTranslations('checkout');
-  const tCart = useTranslations('cart');
+  const t = useTranslations("checkout");
+  const tCart = useTranslations("cart");
   const router = useRouter();
   const { state } = useCart();
 
@@ -37,7 +37,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
 
         setItems(state.items);
       } catch (error) {
-        console.error('Error loading cart items:', error);
+        console.error("Error loading cart items:", error);
         router.push(`/${locale}/cart`);
       } finally {
         setIsLoading(false);
@@ -77,18 +77,13 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
             <ShoppingCartIcon className="w-8 h-8 text-neutral-500" />
           </div>
 
-          <h1 className="text-2xl font-semibold text-neutral-800 mb-4">
-            Košík je prázdný
-          </h1>
+          <h1 className="text-2xl font-semibold text-neutral-800 mb-4">Košík je prázdný</h1>
 
           <p className="text-neutral-600 mb-8">
             Nemůžete pokračovat k objednávce s prázdným košíkem.
           </p>
 
-          <Button
-            onClick={() => router.push(`/${locale}/products`)}
-            className="w-full"
-          >
+          <Button onClick={() => router.push(`/${locale}/products`)} className="w-full">
             Pokračovat v nákupu
           </Button>
         </div>
@@ -113,11 +108,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                 Zpět do košíku
               </button>
             </div>
-
-            <h1 className="text-xl font-semibold text-neutral-800">
-              {t('title')}
-            </h1>
-
+            <h1 className="text-xl font-semibold text-neutral-800">{t("title")}</h1>
             <div className="w-24" /> {/* Spacer for centering */}
           </div>
         </div>
@@ -129,11 +120,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
           {/* Checkout Form - Takes 2 columns on large screens */}
           <div className="lg:col-span-2">
             <div className="bg-white rounded-lg shadow-soft p-6 lg:p-8">
-              <CheckoutForm
-                items={items}
-                locale={locale}
-                onOrderComplete={handleOrderComplete}
-              />
+              <CheckoutForm items={items} locale={locale} onOrderComplete={handleOrderComplete} />
             </div>
           </div>
 
@@ -163,20 +150,23 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                       const product = item.product;
                       if (!product) return null;
 
-                      const productName = locale === 'cs' ? product.name.cs : product.name.en;
+                      const productName = locale === "cs" ? product.name.cs : product.name.en;
 
                       return (
-                        <div key={item.id} className="flex items-start space-x-3 pb-4 border-b border-neutral-100 last:border-b-0 last:pb-0">
+                        <div
+                          key={item.id}
+                          className="flex items-start space-x-3 pb-4 border-b border-neutral-100 last:border-b-0 last:pb-0"
+                        >
                           <div className="flex-shrink-0 w-12 h-12 bg-neutral-100 rounded-lg"></div>
                           <div className="flex-1 min-w-0">
                             <h4 className="text-sm font-medium text-neutral-900 truncate">
                               {productName}
                             </h4>
                             <p className="text-xs text-neutral-600">
-                              {tCart('quantity')}: {item.quantity}
+                              {tCart("quantity")}: {item.quantity}
                             </p>
                             <p className="text-sm font-medium text-neutral-900 mt-1">
-                              {(item.totalPrice || 0).toLocaleString('cs-CZ')} Kč
+                              {(item.totalPrice || 0).toLocaleString("cs-CZ")} Kč
                             </p>
                           </div>
                         </div>
@@ -187,7 +177,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                   <div className="mt-6 pt-4 border-t border-neutral-200">
                     <div className="flex justify-between items-center text-lg font-semibold">
                       <span>Mezisoučet:</span>
-                      <span>{subtotal.toLocaleString('cs-CZ')} Kč</span>
+                      <span>{subtotal.toLocaleString("cs-CZ")} Kč</span>
                     </div>
                     <p className="text-xs text-neutral-500 mt-1">
                       Cena dopravy bude vypočítana na základě adresy

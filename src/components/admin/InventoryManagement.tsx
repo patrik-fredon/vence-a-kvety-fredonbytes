@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect } from "react";
 import {
   ExclamationTriangleIcon,
   CheckCircleIcon,
   XCircleIcon,
-  MagnifyingGlassIcon
-} from '@heroicons/react/24/outline';
+  MagnifyingGlassIcon,
+} from "@heroicons/react/24/outline";
 
 interface InventoryAlert {
   id: string;
@@ -15,7 +15,7 @@ interface InventoryAlert {
     name_en: string;
     slug: string;
   };
-  alert_type: 'low_stock' | 'out_of_stock';
+  alert_type: "low_stock" | "out_of_stock";
   current_stock: number;
   threshold: number;
   acknowledged: boolean;
@@ -38,9 +38,9 @@ export default function InventoryManagement() {
   const [alerts, setAlerts] = useState<InventoryAlert[]>([]);
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState('');
+  const [searchTerm, setSearchTerm] = useState("");
   const [showAcknowledged, setShowAcknowledged] = useState(false);
-  const [activeTab, setActiveTab] = useState<'alerts' | 'inventory'>('alerts');
+  const [activeTab, setActiveTab] = useState<"alerts" | "inventory">("alerts");
 
   useEffect(() => {
     fetchAlerts();
@@ -55,20 +55,20 @@ export default function InventoryManagement() {
         setAlerts(data.alerts || []);
       }
     } catch (error) {
-      console.error('Failed to fetch alerts:', error);
+      console.error("Failed to fetch alerts:", error);
     }
   };
 
   const fetchInventoryProducts = async () => {
     try {
       setLoading(true);
-      const response = await fetch('/api/admin/products?trackInventory=true&limit=100');
+      const response = await fetch("/api/admin/products?trackInventory=true&limit=100");
       if (response.ok) {
         const data = await response.json();
         setProducts(data.products || []);
       }
     } catch (error) {
-      console.error('Failed to fetch inventory products:', error);
+      console.error("Failed to fetch inventory products:", error);
     } finally {
       setLoading(false);
     }
@@ -77,25 +77,25 @@ export default function InventoryManagement() {
   const handleAcknowledgeAlert = async (alertId: string) => {
     try {
       const response = await fetch(`/api/admin/inventory/alerts/${alertId}/acknowledge`, {
-        method: 'POST'
+        method: "POST",
       });
 
       if (response.ok) {
         fetchAlerts();
       }
     } catch (error) {
-      console.error('Failed to acknowledge alert:', error);
+      console.error("Failed to acknowledge alert:", error);
     }
   };
 
   const handleUpdateStock = async (productId: string, newStock: number) => {
     try {
       const response = await fetch(`/api/admin/products/${productId}/inventory`, {
-        method: 'PUT',
+        method: "PUT",
         headers: {
-          'Content-Type': 'application/json'
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify({ stock_quantity: newStock })
+        body: JSON.stringify({ stock_quantity: newStock }),
       });
 
       if (response.ok) {
@@ -103,30 +103,32 @@ export default function InventoryManagement() {
         fetchAlerts();
       }
     } catch (error) {
-      console.error('Failed to update stock:', error);
+      console.error("Failed to update stock:", error);
     }
   };
 
-  const filteredProducts = products.filter(product =>
-    product.name_cs.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    product.slug.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredProducts = products.filter(
+    (product) =>
+      product.name_cs.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      product.slug.toLowerCase().includes(searchTerm.toLowerCase())
   );
 
   const getAlertIcon = (alertType: string) => {
-    return alertType === 'out_of_stock' ? XCircleIcon : ExclamationTriangleIcon;
+    return alertType === "out_of_stock" ? XCircleIcon : ExclamationTriangleIcon;
   };
 
   const getAlertColor = (alertType: string) => {
-    return alertType === 'out_of_stock'
-      ? 'text-red-600 bg-red-100'
-      : 'text-yellow-600 bg-yellow-100';
+    return alertType === "out_of_stock"
+      ? "text-red-600 bg-red-100"
+      : "text-yellow-600 bg-yellow-100";
   };
 
   const getStockStatus = (product: Product) => {
-    if (!product.track_inventory) return { label: 'Nesledováno', color: 'text-gray-500' };
-    if (product.stock_quantity === 0) return { label: 'Vyprodáno', color: 'text-red-600' };
-    if (product.stock_quantity <= product.low_stock_threshold) return { label: 'Nízké zásoby', color: 'text-yellow-600' };
-    return { label: 'Dostupné', color: 'text-green-600' };
+    if (!product.track_inventory) return { label: "Nesledováno", color: "text-gray-500" };
+    if (product.stock_quantity === 0) return { label: "Vyprodáno", color: "text-red-600" };
+    if (product.stock_quantity <= product.low_stock_threshold)
+      return { label: "Nízké zásoby", color: "text-yellow-600" };
+    return { label: "Dostupné", color: "text-green-600" };
   };
 
   return (
@@ -136,21 +138,21 @@ export default function InventoryManagement() {
         <h2 className="text-2xl font-bold text-gray-900">Skladové zásoby</h2>
         <div className="flex space-x-4">
           <button
-            onClick={() => setActiveTab('alerts')}
+            onClick={() => setActiveTab("alerts")}
             className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'alerts'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              activeTab === "alerts"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Upozornění ({alerts.length})
           </button>
           <button
-            onClick={() => setActiveTab('inventory')}
+            onClick={() => setActiveTab("inventory")}
             className={`px-4 py-2 rounded-lg transition-colors ${
-              activeTab === 'inventory'
-                ? 'bg-blue-600 text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+              activeTab === "inventory"
+                ? "bg-blue-600 text-white"
+                : "bg-gray-200 text-gray-700 hover:bg-gray-300"
             }`}
           >
             Zásoby ({products.length})
@@ -158,7 +160,7 @@ export default function InventoryManagement() {
         </div>
       </div>
 
-      {activeTab === 'alerts' && (
+      {activeTab === "alerts" && (
         <div className="space-y-6">
           {/* Alert filters */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
@@ -177,7 +179,7 @@ export default function InventoryManagement() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             {alerts.length === 0 ? (
               <div className="p-6 text-center text-gray-500">
-                {showAcknowledged ? 'Žádná potvrzená upozornění' : 'Žádná aktivní upozornění'}
+                {showAcknowledged ? "Žádná potvrzená upozornění" : "Žádná aktivní upozornění"}
               </div>
             ) : (
               <div className="divide-y divide-gray-200">
@@ -194,13 +196,12 @@ export default function InventoryManagement() {
                             {alert.product.name_cs}
                           </h4>
                           <p className="text-sm text-gray-500">
-                            {alert.alert_type === 'out_of_stock'
-                              ? 'Vyprodáno'
-                              : `Nízké zásoby (${alert.current_stock} ks, práh: ${alert.threshold} ks)`
-                            }
+                            {alert.alert_type === "out_of_stock"
+                              ? "Vyprodáno"
+                              : `Nízké zásoby (${alert.current_stock} ks, práh: ${alert.threshold} ks)`}
                           </p>
                           <p className="text-xs text-gray-400">
-                            {new Date(alert.created_at).toLocaleString('cs-CZ')}
+                            {new Date(alert.created_at).toLocaleString("cs-CZ")}
                           </p>
                         </div>
                       </div>
@@ -233,7 +234,7 @@ export default function InventoryManagement() {
         </div>
       )}
 
-      {activeTab === 'inventory' && (
+      {activeTab === "inventory" && (
         <div className="space-y-6">
           {/* Search */}
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-4">
@@ -290,13 +291,11 @@ export default function InventoryManagement() {
                               <div className="text-sm font-medium text-gray-900">
                                 {product.name_cs}
                               </div>
-                              <div className="text-sm text-gray-500">
-                                {product.slug}
-                              </div>
+                              <div className="text-sm text-gray-500">{product.slug}</div>
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                            {product.category?.name_cs || 'Bez kategorie'}
+                            {product.category?.name_cs || "Bez kategorie"}
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
                             <input

@@ -1,4 +1,4 @@
-import { currencyConfig, type Locale } from '@/i18n/config';
+import { currencyConfig, type Locale } from "@/i18n/config";
 
 /**
  * Format currency based on locale
@@ -7,7 +7,7 @@ export function formatCurrency(amount: number, locale: Locale): string {
   const config = currencyConfig[locale];
 
   return new Intl.NumberFormat(config.locale, {
-    style: 'currency',
+    style: "currency",
     currency: config.currency,
     minimumFractionDigits: 0,
     maximumFractionDigits: 2,
@@ -20,13 +20,13 @@ export function formatCurrency(amount: number, locale: Locale): string {
 export function formatCurrencyCustom(amount: number, locale: Locale): string {
   const config = currencyConfig[locale];
 
-  if (locale === 'cs') {
+  if (locale === "cs") {
     // Czech format: "1 234 Kč"
-    const formatted = new Intl.NumberFormat('cs-CZ').format(amount);
+    const formatted = new Intl.NumberFormat("cs-CZ").format(amount);
     return `${formatted} ${config.symbol}`;
   } else {
     // English format: "1,234 CZK"
-    const formatted = new Intl.NumberFormat('en-US').format(amount);
+    const formatted = new Intl.NumberFormat("en-US").format(amount);
     return `${formatted} ${config.symbol}`;
   }
 }
@@ -36,9 +36,9 @@ export function formatCurrencyCustom(amount: number, locale: Locale): string {
  */
 export function formatDate(date: Date, locale: Locale): string {
   return new Intl.DateTimeFormat(currencyConfig[locale].locale, {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
+    year: "numeric",
+    month: "long",
+    day: "numeric",
   }).format(date);
 }
 
@@ -54,11 +54,11 @@ export function formatDeliveryDate(date: Date, locale: Locale): string {
 
   // Check if date is today, tomorrow, or day after tomorrow
   if (date.toDateString() === today.toDateString()) {
-    return locale === 'cs' ? 'Dnes' : 'Today';
+    return locale === "cs" ? "Dnes" : "Today";
   } else if (date.toDateString() === tomorrow.toDateString()) {
-    return locale === 'cs' ? 'Zítra' : 'Tomorrow';
+    return locale === "cs" ? "Zítra" : "Tomorrow";
   } else if (date.toDateString() === dayAfterTomorrow.toDateString()) {
-    return locale === 'cs' ? 'Pozítří' : 'Day After Tomorrow';
+    return locale === "cs" ? "Pozítří" : "Day After Tomorrow";
   }
 
   // Otherwise format normally
@@ -73,19 +73,14 @@ export function getLocalizedContent<T>(
   locale: Locale,
   fallback?: Locale
 ): T {
-  return content[locale] || content[fallback || 'cs'];
+  return content[locale] || content[fallback || "cs"];
 }
 
 /**
  * Pluralize based on count and locale
  */
-export function pluralize(
-  count: number,
-  singular: string,
-  plural: string,
-  locale: Locale
-): string {
-  if (locale === 'cs') {
+export function pluralize(count: number, singular: string, plural: string, locale: Locale): string {
+  if (locale === "cs") {
     // Czech pluralization rules (simplified)
     if (count === 1) return singular;
     if (count >= 2 && count <= 4) return plural;
@@ -101,7 +96,7 @@ export function pluralize(
  */
 export function getRelativeTime(date: Date, locale: Locale): string {
   const rtf = new Intl.RelativeTimeFormat(currencyConfig[locale].locale, {
-    numeric: 'auto',
+    numeric: "auto",
   });
 
   const now = new Date();
@@ -111,12 +106,12 @@ export function getRelativeTime(date: Date, locale: Locale): string {
   const diffInDays = Math.floor(diffInHours / 24);
 
   if (Math.abs(diffInDays) >= 1) {
-    return rtf.format(diffInDays, 'day');
+    return rtf.format(diffInDays, "day");
   } else if (Math.abs(diffInHours) >= 1) {
-    return rtf.format(diffInHours, 'hour');
+    return rtf.format(diffInHours, "hour");
   } else if (Math.abs(diffInMinutes) >= 1) {
-    return rtf.format(diffInMinutes, 'minute');
+    return rtf.format(diffInMinutes, "minute");
   } else {
-    return rtf.format(diffInSeconds, 'second');
+    return rtf.format(diffInSeconds, "second");
   }
 }

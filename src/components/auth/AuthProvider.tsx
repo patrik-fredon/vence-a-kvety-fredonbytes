@@ -1,15 +1,15 @@
-'use client'
+"use client";
 
-import { createContext, useContext, useEffect, useState } from 'react'
-import { supabase } from '@/lib/supabase/client'
-import { authUtils, type AuthUser } from '@/lib/auth/utils'
-import type { Session } from '@supabase/supabase-js'
+import { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/lib/supabase/client";
+import { authUtils, type AuthUser } from "@/lib/auth/utils";
+import type { Session } from "@supabase/supabase-js";
 
 interface AuthContextType {
-  user: AuthUser | null
-  session: Session | null
-  loading: boolean
-  isAuthenticated: boolean
+  user: AuthUser | null;
+  session: Session | null;
+  loading: boolean;
+  isAuthenticated: boolean;
 }
 
 const AuthContext = createContext<AuthContextType>({
@@ -17,79 +17,77 @@ const AuthContext = createContext<AuthContextType>({
   session: null,
   loading: true,
   isAuthenticated: false,
-})
+});
 
 export function useAuthContext() {
-  const context = useContext(AuthContext)
+  const context = useContext(AuthContext);
   if (!context) {
-    throw new Error('useAuthContext must be used within an AuthProvider')
+    throw new Error("useAuthContext must be used within an AuthProvider");
   }
-  return context
+  return context;
 }
 
 interface AuthProviderProps {
-  children: React.ReactNode
+  children: React.ReactNode;
 }
 
 export function AuthProvider({ children }: AuthProviderProps) {
-  const [user, setUser] = useState<AuthUser | null>(null)
-  const [session, setSession] = useState<Session | null>(null)
-  const [loading, setLoading] = useState(true)
+  const [user, setUser] = useState<AuthUser | null>(null);
+  const [session, setSession] = useState<Session | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Get initial session
     const getInitialSession = async () => {
       try {
-        const { data: { session } } = await supabase.auth.getSession()
-        setSession(session)
+        const {
+          data: { session },
+        } = await supabase.auth.getSession();
+        setSession(session);
 
         if (session?.user) {
-          const { user: authUser } = await authUtils.getCurrentUser()
-          setUser(authUser)
+          const { user: authUser } = await authUtils.getCurrentUser();
+          setUser(authUser);
         }
       } catch (error) {
-        console.error('Error getting initial session:', error)
+        console.error("Error getting initial session:", error);
       } finally {
-        setLoading(false)
+        setLoading(false);
       }
-    }
+    };
 
-    getInitialSession()
+    getInitialSession();
 
     // Listen for auth changes
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (event, session) => {
-        setSession(session)
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setSession(session);
 
-        if (session?.user) {
-          try {
-            const { user: authUser } = await authUtils.getCurrentUser()
-            setUser(authUser)
-          } catch (error) {
-            console.error('Error getting user after auth change:', error)
-            setUser(null)
-          }
-        } else {
-          setUser(null)
+      if (session?.user) {
+        try {
+          const { user: authUser } = await authUtils.getCurrentUser();
+          setUser(authUser);
+        } catch (error) {
+          console.error("Error getting user after auth change:", error);
+          setUser(null);
         }
-
-        setLoading(false)
+      } else {
+        setUser(null);
       }
-    )
 
-    return () => subscription.unsubscribe()
-  }, [])
+      setLoading(false);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
 
   const value: AuthContextType = {
     user,
     session,
     loading,
     isAuthenticated: !!user,
-  }
+  };
 
-  return (
-    <AuthContext.Provider value={value}>
-      {children}
-    </AuthContext.Provider>
-  )
+  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
 }

@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { ExclamationTriangleIcon } from '@heroicons/react/24/outline';
+import { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
 
 interface DeleteConfirmModalProps {
   title: string;
@@ -15,7 +15,7 @@ export default function DeleteConfirmModal({
   title,
   message,
   onConfirm,
-  onCancel
+  onCancel,
 }: DeleteConfirmModalProps) {
   return (
     <Transition appear show={true} as={Fragment}>
@@ -49,19 +49,14 @@ export default function DeleteConfirmModal({
                     <ExclamationTriangleIcon className="h-6 w-6 text-red-600" />
                   </div>
                   <div>
-                    <Dialog.Title
-                      as="h3"
-                      className="text-lg font-medium leading-6 text-gray-900"
-                    >
+                    <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
                       {title}
                     </Dialog.Title>
                   </div>
                 </div>
 
                 <div className="mt-4">
-                  <p className="text-sm text-gray-500">
-                    {message}
-                  </p>
+                  <p className="text-sm text-gray-500">{message}</p>
                 </div>
 
                 <div className="mt-6 flex items-center justify-end space-x-3">

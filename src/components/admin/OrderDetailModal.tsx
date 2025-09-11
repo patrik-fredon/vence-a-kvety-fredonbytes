@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { XMarkIcon } from '@heroicons/react/24/outline';
+import { useState } from "react";
+import { Fragment } from "react";
+import { Dialog, Transition } from "@headlessui/react";
+import { XMarkIcon } from "@heroicons/react/24/outline";
 
 interface Order {
   id: string;
@@ -11,7 +11,7 @@ interface Order {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
-  status: 'pending' | 'confirmed' | 'processing' | 'shipped' | 'delivered' | 'cancelled';
+  status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
   totalAmount: number;
   itemCount: number;
   paymentMethod: string;
@@ -31,21 +31,25 @@ interface OrderDetailModalProps {
 }
 
 const statusOptions = [
-  { value: 'pending', label: 'Čekající' },
-  { value: 'confirmed', label: 'Potvrzeno' },
-  { value: 'processing', label: 'Zpracovává se' },
-  { value: 'shipped', label: 'Odesláno' },
-  { value: 'delivered', label: 'Doručeno' },
-  { value: 'cancelled', label: 'Zrušeno' }
+  { value: "pending", label: "Čekající" },
+  { value: "confirmed", label: "Potvrzeno" },
+  { value: "processing", label: "Zpracovává se" },
+  { value: "shipped", label: "Odesláno" },
+  { value: "delivered", label: "Doručeno" },
+  { value: "cancelled", label: "Zrušeno" },
 ];
 
-export default function OrderDetailModal({ order, onClose, onStatusUpdate }: OrderDetailModalProps) {
+export default function OrderDetailModal({
+  order,
+  onClose,
+  onStatusUpdate,
+}: OrderDetailModalProps) {
   const [selectedStatus, setSelectedStatus] = useState(order.status);
-  const [internalNotes, setInternalNotes] = useState(order.internalNotes || '');
+  const [internalNotes, setInternalNotes] = useState(order.internalNotes || "");
   const [loading, setLoading] = useState(false);
 
   const handleStatusUpdate = async () => {
-    if (selectedStatus === order.status && internalNotes === (order.internalNotes || '')) {
+    if (selectedStatus === order.status && internalNotes === (order.internalNotes || "")) {
       return;
     }
 
@@ -58,22 +62,22 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('cs-CZ', {
-      style: 'currency',
-      currency: 'CZK'
+    return new Intl.NumberFormat("cs-CZ", {
+      style: "currency",
+      currency: "CZK",
     }).format(amount);
   };
 
   const getStatusColor = (status: string) => {
     const colors = {
-      pending: 'bg-yellow-100 text-yellow-800',
-      confirmed: 'bg-blue-100 text-blue-800',
-      processing: 'bg-purple-100 text-purple-800',
-      shipped: 'bg-indigo-100 text-indigo-800',
-      delivered: 'bg-green-100 text-green-800',
-      cancelled: 'bg-red-100 text-red-800'
+      pending: "bg-yellow-100 text-yellow-800",
+      confirmed: "bg-blue-100 text-blue-800",
+      processing: "bg-purple-100 text-purple-800",
+      shipped: "bg-indigo-100 text-indigo-800",
+      delivered: "bg-green-100 text-green-800",
+      cancelled: "bg-red-100 text-red-800",
     };
-    return colors[status as keyof typeof colors] || 'bg-gray-100 text-gray-800';
+    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
   };
 
   return (
@@ -107,10 +111,7 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
                   <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
                     Detail objednávky #{order.orderNumber}
                   </Dialog.Title>
-                  <button
-                    onClick={onClose}
-                    className="text-gray-400 hover:text-gray-600"
-                  >
+                  <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
                     <XMarkIcon className="h-6 w-6" />
                   </button>
                 </div>
@@ -119,7 +120,9 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
                   {/* Order status and basic info */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900 mb-3">Informace o objednávce</h4>
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">
+                        Informace o objednávce
+                      </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-gray-500">Číslo objednávky:</span>
@@ -127,8 +130,10 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
                         </div>
                         <div className="flex justify-between">
                           <span className="text-gray-500">Stav:</span>
-                          <span className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}>
-                            {statusOptions.find(s => s.value === order.status)?.label}
+                          <span
+                            className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}
+                          >
+                            {statusOptions.find((s) => s.value === order.status)?.label}
                           </span>
                         </div>
                         <div className="flex justify-between">
@@ -180,7 +185,7 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
                       <div>
                         <span className="text-gray-500">Preferovaný termín:</span>
                         <p className="font-medium">
-                          {new Date(order.preferredDate).toLocaleDateString('cs-CZ')}
+                          {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
                         </p>
                       </div>
                     </div>
@@ -192,11 +197,11 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
                         <span className="text-gray-500">Vytvořeno:</span>
-                        <p>{new Date(order.createdAt).toLocaleString('cs-CZ')}</p>
+                        <p>{new Date(order.createdAt).toLocaleString("cs-CZ")}</p>
                       </div>
                       <div>
                         <span className="text-gray-500">Aktualizováno:</span>
-                        <p>{new Date(order.updatedAt).toLocaleString('cs-CZ')}</p>
+                        <p>{new Date(order.updatedAt).toLocaleString("cs-CZ")}</p>
                       </div>
                     </div>
                   </div>
@@ -224,7 +229,7 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
                           onChange={(e) => setSelectedStatus(e.target.value as any)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         >
-                          {statusOptions.map(option => (
+                          {statusOptions.map((option) => (
                             <option key={option.value} value={option.value}>
                               {option.label}
                             </option>
@@ -257,10 +262,14 @@ export default function OrderDetailModal({ order, onClose, onStatusUpdate }: Ord
                   </button>
                   <button
                     onClick={handleStatusUpdate}
-                    disabled={loading || (selectedStatus === order.status && internalNotes === (order.internalNotes || ''))}
+                    disabled={
+                      loading ||
+                      (selectedStatus === order.status &&
+                        internalNotes === (order.internalNotes || ""))
+                    }
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? 'Ukládám...' : 'Uložit změny'}
+                    {loading ? "Ukládám..." : "Uložit změny"}
                   </button>
                 </div>
               </Dialog.Panel>

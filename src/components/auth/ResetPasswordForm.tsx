@@ -1,78 +1,74 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { useUpdatePassword } from '@/lib/auth/hooks'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { useUpdatePassword } from "@/lib/auth/hooks";
 
 export function ResetPasswordForm() {
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
-    password: '',
-    confirmPassword: '',
-  })
+    password: "",
+    confirmPassword: "",
+  });
 
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
-  const { updatePassword, loading, error } = useUpdatePassword()
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const { updatePassword, loading, error } = useUpdatePassword();
 
   const validateForm = () => {
-    const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
 
     if (!formData.password) {
-      errors.password = 'Heslo je povinné'
+      errors.password = "Heslo je povinné";
     } else if (formData.password.length < 6) {
-      errors.password = 'Heslo musí mít alespoň 6 znaků'
+      errors.password = "Heslo musí mít alespoň 6 znaků";
     }
 
     if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Hesla se neshodují'
+      errors.confirmPassword = "Hesla se neshodují";
     }
 
-    setValidationErrors(errors)
-    return Object.keys(errors).length === 0
-  }
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
-    const result = await updatePassword(formData)
+    const result = await updatePassword(formData);
 
     if (result.success) {
-      router.push('/auth/signin?message=password-updated')
+      router.push("/auth/signin?message=password-updated");
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
-    }))
+      [e.target.name]: e.target.value,
+    }));
 
     // Clear validation error when user starts typing
     if (validationErrors[e.target.name]) {
-      setValidationErrors(prev => ({
+      setValidationErrors((prev) => ({
         ...prev,
-        [e.target.name]: ''
-      }))
+        [e.target.name]: "",
+      }));
     }
-  }
+  };
 
   return (
     <div className="max-w-md mx-auto">
       <div className="bg-white py-8 px-6 shadow rounded-lg">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center">
-            Nové heslo
-          </h2>
-          <p className="mt-2 text-sm text-gray-600 text-center">
-            Zadejte své nové heslo
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 text-center">Nové heslo</h2>
+          <p className="mt-2 text-sm text-gray-600 text-center">Zadejte své nové heslo</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -109,15 +105,11 @@ export function ResetPasswordForm() {
             </div>
           )}
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? 'Ukládání...' : 'Uložit heslo'}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Ukládání..." : "Uložit heslo"}
           </Button>
         </form>
       </div>
     </div>
-  )
+  );
 }

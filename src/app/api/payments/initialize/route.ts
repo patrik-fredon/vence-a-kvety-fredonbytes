@@ -2,9 +2,9 @@
  * API route for initializing payments (Stripe and GoPay)
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { PaymentService, PaymentRequest } from '@/lib/payments';
-import { PaymentMethod } from '@/types/order';
+import { NextRequest, NextResponse } from "next/server";
+import { PaymentService, PaymentRequest } from "@/lib/payments";
+import { PaymentMethod } from "@/types/order";
 
 export async function POST(request: NextRequest) {
   try {
@@ -13,11 +13,11 @@ export async function POST(request: NextRequest) {
     const {
       orderId,
       amount,
-      currency = 'czk',
+      currency = "czk",
       customerEmail,
       customerName,
       paymentMethod,
-      locale = 'cs'
+      locale = "cs",
     } = body;
 
     // Validate required fields
@@ -25,37 +25,38 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Missing required fields: orderId, amount, customerEmail, customerName, paymentMethod'
+          error:
+            "Missing required fields: orderId, amount, customerEmail, customerName, paymentMethod",
         },
         { status: 400 }
       );
     }
 
     // Validate payment method
-    if (!['stripe', 'gopay'].includes(paymentMethod)) {
+    if (!["stripe", "gopay"].includes(paymentMethod)) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Invalid payment method. Must be "stripe" or "gopay"'
+          error: 'Invalid payment method. Must be "stripe" or "gopay"',
         },
         { status: 400 }
       );
     }
 
     // Validate amount
-    if (typeof amount !== 'number' || amount <= 0) {
+    if (typeof amount !== "number" || amount <= 0) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Amount must be a positive number'
+          error: "Amount must be a positive number",
         },
         { status: 400 }
       );
     }
 
     // Get base URL for return/webhook URLs
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL ||
-      `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+    const baseUrl =
+      process.env.NEXT_PUBLIC_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 
     // Prepare payment request
     const paymentRequest: PaymentRequest = {
@@ -69,7 +70,7 @@ export async function POST(request: NextRequest) {
       cancelUrl: `${baseUrl}/${locale}/checkout/cancel?orderId=${orderId}`,
       webhookUrl: `${baseUrl}/api/payments/webhook/${paymentMethod}`,
       description: `Objednávka pohřebních věnců #${orderId}`,
-      locale: locale as 'cs' | 'en',
+      locale: locale as "cs" | "en",
     };
 
     // Initialize payment
@@ -79,7 +80,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: result.error || 'Payment initialization failed'
+          error: result.error || "Payment initialization failed",
         },
         { status: 500 }
       );
@@ -91,18 +92,17 @@ export async function POST(request: NextRequest) {
       data: {
         paymentId: result.paymentId,
         clientSecret: result.clientSecret, // For Stripe
-        redirectUrl: result.redirectUrl,   // For GoPay
+        redirectUrl: result.redirectUrl, // For GoPay
         paymentMethod,
-      }
+      },
     });
-
   } catch (error) {
-    console.error('Error in payment initialization:', error);
+    console.error("Error in payment initialization:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: 'Internal server error during payment initialization'
+        error: "Internal server error during payment initialization",
       },
       { status: 500 }
     );
@@ -114,9 +114,9 @@ export async function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
   });
 }

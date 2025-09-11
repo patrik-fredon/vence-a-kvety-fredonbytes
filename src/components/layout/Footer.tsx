@@ -1,25 +1,23 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
-import Link from 'next/link';
-import { PhoneIcon, EnvelopeIcon, MapPinIcon, ClockIcon } from '@heroicons/react/24/outline';
-import { ErrorBoundary } from '@/components/ui/ErrorBoundary';
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { PhoneIcon, EnvelopeIcon, MapPinIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface FooterProps {
   locale: string;
 }
 
 export function Footer({ locale }: FooterProps) {
-  const t = useTranslations('footer');
+  const t = useTranslations("footer");
 
   return (
     <ErrorBoundary
       fallback={
         <footer className="bg-primary-900 text-primary-100 py-8">
           <div className="container mx-auto px-4 text-center">
-            <p className="text-primary-200">
-              © 2024 Ketingmar s.r.o. • Všechna práva vyhrazena
-            </p>
+            <p className="text-primary-200">© 2024 Ketingmar s.r.o. • Všechna práva vyhrazena</p>
           </div>
         </footer>
       }
@@ -29,12 +27,8 @@ export function Footer({ locale }: FooterProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Company Info */}
             <div className="lg:col-span-2">
-              <h3 className="text-elegant text-xl font-semibold mb-4 text-white">
-                {t('company')}
-              </h3>
-              <p className="text-primary-200 mb-6 leading-relaxed">
-                {t('description')}
-              </p>
+              <h3 className="text-elegant text-xl font-semibold mb-4 text-white">{t("company")}</h3>
+              <p className="text-primary-200 mb-6 leading-relaxed">{t("description")}</p>
 
               {/* Business Hours */}
               <div className="mb-4">
@@ -46,16 +40,14 @@ export function Footer({ locale }: FooterProps) {
                   <p>Po - Pá: 8:00 - 18:00</p>
                   <p>So: 9:00 - 15:00</p>
                   <p>Ne: 10:00 - 14:00</p>
-                  <p className="text-accent-rose-300 font-medium">
-                    Nouzové objednávky: 24/7
-                  </p>
+                  <p className="text-accent-rose-300 font-medium">Nouzové objednávky: 24/7</p>
                 </div>
               </div>
             </div>
 
             {/* Contact Information */}
             <div>
-              <h4 className="font-semibold mb-4 text-white">{t('contact')}</h4>
+              <h4 className="font-semibold mb-4 text-white">{t("contact")}</h4>
               <div className="space-y-3 text-primary-200">
                 <div className="flex items-start space-x-3">
                   <PhoneIcon className="w-5 h-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
@@ -117,7 +109,8 @@ export function Footer({ locale }: FooterProps) {
                   <MapPinIcon className="w-5 h-5 mt-0.5 flex-shrink-0" aria-hidden="true" />
                   <div>
                     <address className="not-italic">
-                      Květinová 123<br />
+                      Květinová 123
+                      <br />
                       110 00 Praha 1<br />
                       Česká republika
                     </address>
@@ -128,25 +121,25 @@ export function Footer({ locale }: FooterProps) {
 
             {/* Legal & Navigation */}
             <div>
-              <h4 className="font-semibold mb-4 text-white">{t('legal')}</h4>
+              <h4 className="font-semibold mb-4 text-white">{t("legal")}</h4>
               <nav className="space-y-2" aria-label="Právní informace">
                 <Link
                   href={`/${locale}/privacy`}
                   className="block text-primary-200 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 rounded px-1 py-0.5"
                 >
-                  {t('privacy')}
+                  {t("privacy")}
                 </Link>
                 <Link
                   href={`/${locale}/terms`}
                   className="block text-primary-200 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 rounded px-1 py-0.5"
                 >
-                  {t('terms')}
+                  {t("terms")}
                 </Link>
                 <Link
                   href={`/${locale}/cookies`}
                   className="block text-primary-200 hover:text-white transition-colors focus:outline-none focus:ring-2 focus:ring-primary-400 rounded px-1 py-0.5"
                 >
-                  {t('cookies')}
+                  {t("cookies")}
                 </Link>
                 <Link
                   href={`/${locale}/gdpr`}
@@ -191,22 +184,14 @@ export function Footer({ locale }: FooterProps) {
           <div className="border-t border-primary-800 mt-8 pt-8">
             <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
               <div className="text-primary-200 text-sm text-center md:text-left">
-                <p>
-                  © 2024 {t('company')} • IČO: 12345678 • DIČ: CZ12345678
-                </p>
-                <p className="mt-1">
-                  {t('description')} • Všechna práva vyhrazena
-                </p>
+                <p>© 2024 {t("company")} • IČO: 12345678 • DIČ: CZ12345678</p>
+                <p className="mt-1">{t("description")} • Všechna práva vyhrazena</p>
               </div>
 
               {/* Emergency Notice */}
               <div className="text-center md:text-right">
-                <p className="text-accent-rose-300 text-sm font-medium">
-                  Nouzové objednávky: 24/7
-                </p>
-                <p className="text-primary-300 text-xs">
-                  Rozumíme naléhavosti vašich potřeb
-                </p>
+                <p className="text-accent-rose-300 text-sm font-medium">Nouzové objednávky: 24/7</p>
+                <p className="text-primary-300 text-xs">Rozumíme naléhavosti vašich potřeb</p>
               </div>
             </div>
           </div>

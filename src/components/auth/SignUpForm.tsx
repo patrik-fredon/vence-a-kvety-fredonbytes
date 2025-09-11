@@ -1,58 +1,58 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { useSignUp } from '@/lib/auth/hooks'
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { useSignUp } from "@/lib/auth/hooks";
 
 export function SignUpForm() {
-  const router = useRouter()
+  const router = useRouter();
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-    confirmPassword: '',
-    name: '',
-    phone: '',
-  })
+    email: "",
+    password: "",
+    confirmPassword: "",
+    name: "",
+    phone: "",
+  });
 
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({})
-  const { signUp, loading, error } = useSignUp()
+  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const { signUp, loading, error } = useSignUp();
 
   const validateForm = () => {
-    const errors: Record<string, string> = {}
+    const errors: Record<string, string> = {};
 
     if (!formData.email) {
-      errors.email = 'E-mail je povinný'
+      errors.email = "E-mail je povinný";
     } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
-      errors.email = 'E-mail není ve správném formátu'
+      errors.email = "E-mail není ve správném formátu";
     }
 
     if (!formData.password) {
-      errors.password = 'Heslo je povinné'
+      errors.password = "Heslo je povinné";
     } else if (formData.password.length < 6) {
-      errors.password = 'Heslo musí mít alespoň 6 znaků'
+      errors.password = "Heslo musí mít alespoň 6 znaků";
     }
 
     if (formData.password !== formData.confirmPassword) {
-      errors.confirmPassword = 'Hesla se neshodují'
+      errors.confirmPassword = "Hesla se neshodují";
     }
 
     if (!formData.name) {
-      errors.name = 'Jméno je povinné'
+      errors.name = "Jméno je povinné";
     }
 
-    setValidationErrors(errors)
-    return Object.keys(errors).length === 0
-  }
+    setValidationErrors(errors);
+    return Object.keys(errors).length === 0;
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     if (!validateForm()) {
-      return
+      return;
     }
 
     const result = await signUp({
@@ -60,38 +60,34 @@ export function SignUpForm() {
       password: formData.password,
       name: formData.name,
       phone: formData.phone || undefined,
-    })
+    });
 
     if (result.success) {
-      router.push('/auth/verify-email')
+      router.push("/auth/verify-email");
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
-    }))
+      [e.target.name]: e.target.value,
+    }));
 
     // Clear validation error when user starts typing
     if (validationErrors[e.target.name]) {
-      setValidationErrors(prev => ({
+      setValidationErrors((prev) => ({
         ...prev,
-        [e.target.name]: ''
-      }))
+        [e.target.name]: "",
+      }));
     }
-  }
+  };
 
   return (
     <div className="max-w-md mx-auto">
       <div className="bg-white py-8 px-6 shadow rounded-lg">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center">
-            Registrace
-          </h2>
-          <p className="mt-2 text-sm text-gray-600 text-center">
-            Vytvořte si nový účet
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 text-center">Registrace</h2>
+          <p className="mt-2 text-sm text-gray-600 text-center">Vytvořte si nový účet</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -166,27 +162,20 @@ export function SignUpForm() {
             </div>
           )}
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? 'Registrování...' : 'Zaregistrovat se'}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Registrování..." : "Zaregistrovat se"}
           </Button>
         </form>
 
         <div className="mt-6 text-center">
           <span className="text-sm text-gray-600">
-            Již máte účet?{' '}
-            <Link
-              href="/auth/signin"
-              className="text-indigo-600 hover:text-indigo-500 font-medium"
-            >
+            Již máte účet?{" "}
+            <Link href="/auth/signin" className="text-indigo-600 hover:text-indigo-500 font-medium">
               Přihlaste se
             </Link>
           </span>
         </div>
       </div>
     </div>
-  )
+  );
 }

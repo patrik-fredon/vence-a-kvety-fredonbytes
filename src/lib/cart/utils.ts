@@ -1,4 +1,4 @@
-import { randomUUID } from 'crypto';
+import { randomUUID } from "crypto";
 
 /**
  * Generate a unique session ID for guest cart management
@@ -11,23 +11,21 @@ export function generateCartSessionId(): string {
  * Get cart session ID from cookies (client-side)
  */
 export function getCartSessionId(): string | null {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return null;
   }
 
-  const cookies = document.cookie.split(';');
-  const sessionCookie = cookies.find(cookie =>
-    cookie.trim().startsWith('cart-session=')
-  );
+  const cookies = document.cookie.split(";");
+  const sessionCookie = cookies.find((cookie) => cookie.trim().startsWith("cart-session="));
 
-  return sessionCookie ? sessionCookie.split('=')[1] || null : null;
+  return sessionCookie ? sessionCookie.split("=")[1] || null : null;
 }
 
 /**
  * Set cart session ID in cookies (client-side)
  */
 export function setCartSessionId(sessionId: string): void {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return;
   }
 
@@ -39,11 +37,11 @@ export function setCartSessionId(sessionId: string): void {
  * Clear cart session ID from cookies
  */
 export function clearCartSessionId(): void {
-  if (typeof window === 'undefined') {
+  if (typeof window === "undefined") {
     return;
   }
 
-  document.cookie = 'cart-session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/';
+  document.cookie = "cart-session=; expires=Thu, 01 Jan 1970 00:00:00 GMT; path=/";
 }
 
 /**
@@ -56,13 +54,13 @@ export async function mergeGuestCartWithUserCart(userId: string): Promise<boolea
       return true; // No guest cart to merge
     }
 
-    const response = await fetch('/api/cart/merge', {
-      method: 'POST',
+    const response = await fetch("/api/cart/merge", {
+      method: "POST",
       headers: {
-        'Content-Type': 'application/json'
+        "Content-Type": "application/json",
       },
-      credentials: 'include',
-      body: JSON.stringify({ sessionId, userId })
+      credentials: "include",
+      body: JSON.stringify({ sessionId, userId }),
     });
 
     if (response.ok) {
@@ -72,7 +70,7 @@ export async function mergeGuestCartWithUserCart(userId: string): Promise<boolea
 
     return false;
   } catch (error) {
-    console.error('Error merging guest cart:', error);
+    console.error("Error merging guest cart:", error);
     return false;
   }
 }

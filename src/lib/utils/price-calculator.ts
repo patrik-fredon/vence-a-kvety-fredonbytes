@@ -2,7 +2,7 @@
  * Price calculation utilities for product customizations
  */
 
-import { Product, Customization, CustomizationOption, CustomizationChoice } from '@/types/product';
+import { Product, Customization, CustomizationOption, CustomizationChoice } from "@/types/product";
 
 /**
  * Calculate the final price based on base price and customizations
@@ -14,12 +14,12 @@ export function calculateFinalPrice(
 ): number {
   let finalPrice = basePrice;
 
-  customizations.forEach(customization => {
-    const option = customizationOptions.find(opt => opt.id === customization.optionId);
+  customizations.forEach((customization) => {
+    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
     if (!option) return;
 
-    customization.choiceIds.forEach(choiceId => {
-      const choice = option.choices.find(c => c.id === choiceId);
+    customization.choiceIds.forEach((choiceId) => {
+      const choice = option.choices.find((c) => c.id === choiceId);
       if (choice && choice.available) {
         finalPrice += choice.priceModifier;
       }
@@ -47,26 +47,26 @@ export function getPriceBreakdown(
   basePrice: number,
   customizations: Customization[],
   customizationOptions: CustomizationOption[],
-  locale: 'cs' | 'en' = 'cs'
+  locale: "cs" | "en" = "cs"
 ): PriceBreakdown {
   const breakdown: PriceBreakdown = {
     basePrice,
     customizations: [],
     totalModifiers: 0,
-    finalPrice: basePrice
+    finalPrice: basePrice,
   };
 
-  customizations.forEach(customization => {
-    const option = customizationOptions.find(opt => opt.id === customization.optionId);
+  customizations.forEach((customization) => {
+    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
     if (!option) return;
 
-    customization.choiceIds.forEach(choiceId => {
-      const choice = option.choices.find(c => c.id === choiceId);
+    customization.choiceIds.forEach((choiceId) => {
+      const choice = option.choices.find((c) => c.id === choiceId);
       if (choice && choice.available) {
         breakdown.customizations.push({
           optionName: option.name[locale],
           choiceName: choice.label[locale],
-          priceModifier: choice.priceModifier
+          priceModifier: choice.priceModifier,
         });
         breakdown.totalModifiers += choice.priceModifier;
       }
@@ -86,22 +86,22 @@ export interface ValidationResult {
     optionId: string;
     optionName: string;
     error: string;
-    errorCode: 'REQUIRED' | 'MIN_SELECTIONS' | 'MAX_SELECTIONS' | 'UNAVAILABLE_CHOICE';
+    errorCode: "REQUIRED" | "MIN_SELECTIONS" | "MAX_SELECTIONS" | "UNAVAILABLE_CHOICE";
   }>;
 }
 
 export function validateCustomizations(
   customizations: Customization[],
   customizationOptions: CustomizationOption[],
-  locale: 'cs' | 'en' = 'cs'
+  locale: "cs" | "en" = "cs"
 ): ValidationResult {
   const result: ValidationResult = {
     isValid: true,
-    errors: []
+    errors: [],
   };
 
-  customizationOptions.forEach(option => {
-    const customization = customizations.find(c => c.optionId === option.id);
+  customizationOptions.forEach((option) => {
+    const customization = customizations.find((c) => c.optionId === option.id);
     const selectionCount = customization?.choiceIds.length || 0;
     const optionName = option.name[locale];
 
@@ -111,7 +111,7 @@ export function validateCustomizations(
         optionId: option.id,
         optionName,
         error: `${optionName} is required`,
-        errorCode: 'REQUIRED'
+        errorCode: "REQUIRED",
       });
     }
 
@@ -121,7 +121,7 @@ export function validateCustomizations(
         optionId: option.id,
         optionName,
         error: `${optionName} requires at least ${option.minSelections} selections`,
-        errorCode: 'MIN_SELECTIONS'
+        errorCode: "MIN_SELECTIONS",
       });
     }
 
@@ -131,20 +131,20 @@ export function validateCustomizations(
         optionId: option.id,
         optionName,
         error: `${optionName} allows maximum ${option.maxSelections} selections`,
-        errorCode: 'MAX_SELECTIONS'
+        errorCode: "MAX_SELECTIONS",
       });
     }
 
     // Check if selected choices are available
     if (customization) {
-      customization.choiceIds.forEach(choiceId => {
-        const choice = option.choices.find(c => c.id === choiceId);
+      customization.choiceIds.forEach((choiceId) => {
+        const choice = option.choices.find((c) => c.id === choiceId);
         if (!choice || !choice.available) {
           result.errors.push({
             optionId: option.id,
             optionName,
             error: `Selected option in ${optionName} is no longer available`,
-            errorCode: 'UNAVAILABLE_CHOICE'
+            errorCode: "UNAVAILABLE_CHOICE",
           });
         }
       });
@@ -169,12 +169,12 @@ export function checkCustomizationAvailability(
   const unavailableOptions: string[] = [];
   let maxLeadTime = 0;
 
-  customizations.forEach(customization => {
-    const option = customizationOptions.find(opt => opt.id === customization.optionId);
+  customizations.forEach((customization) => {
+    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
     if (!option) return;
 
-    customization.choiceIds.forEach(choiceId => {
-      const choice = option.choices.find(c => c.id === choiceId);
+    customization.choiceIds.forEach((choiceId) => {
+      const choice = option.choices.find((c) => c.id === choiceId);
       if (!choice || !choice.available) {
         unavailableOptions.push(option.name.cs || option.name.en);
       }
@@ -185,7 +185,7 @@ export function checkCustomizationAvailability(
   return {
     available: unavailableOptions.length === 0,
     unavailableOptions,
-    estimatedLeadTime: maxLeadTime > 0 ? maxLeadTime : undefined
+    estimatedLeadTime: maxLeadTime > 0 ? maxLeadTime : undefined,
   };
 }
 
@@ -194,12 +194,12 @@ export function checkCustomizationAvailability(
  */
 export function formatPrice(
   price: number,
-  locale: 'cs' | 'en' = 'cs',
+  locale: "cs" | "en" = "cs",
   showSign: boolean = false
 ): string {
-  const formattedAmount = price.toLocaleString(locale === 'cs' ? 'cs-CZ' : 'en-US');
-  const currency = locale === 'cs' ? 'Kč' : 'CZK';
-  const sign = showSign && price > 0 ? '+' : '';
+  const formattedAmount = price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US");
+  const currency = locale === "cs" ? "Kč" : "CZK";
+  const sign = showSign && price > 0 ? "+" : "";
 
   return `${sign}${formattedAmount} ${currency}`;
 }

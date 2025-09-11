@@ -3,20 +3,15 @@
  * Handles caching of delivery availability, pricing, and calendar data
  */
 
-import {
-  DeliveryAvailability,
-  DeliveryCacheData,
-  DeliveryZone,
-  Holiday
-} from '@/types/delivery';
+import { DeliveryAvailability, DeliveryCacheData, DeliveryZone, Holiday } from "@/types/delivery";
 import {
   getCacheClient,
   CACHE_KEYS,
   CACHE_TTL,
   generateCacheKey,
   serializeForCache,
-  deserializeFromCache
-} from './redis';
+  deserializeFromCache,
+} from "./redis";
 
 /**
  * Generate cache key for delivery calendar
@@ -57,7 +52,7 @@ export async function cacheDeliveryCalendar(
 
     await client.set(key, data, CACHE_TTL.DELIVERY);
   } catch (error) {
-    console.error('Error caching delivery calendar:', error);
+    console.error("Error caching delivery calendar:", error);
   }
 }
 
@@ -80,10 +75,10 @@ export async function getCachedDeliveryCalendar(
     // Convert date strings back to Date objects
     return data.map((item: any) => ({
       ...item,
-      date: new Date(item.date)
+      date: new Date(item.date),
     }));
   } catch (error) {
-    console.error('Error getting cached delivery calendar:', error);
+    console.error("Error getting cached delivery calendar:", error);
     return null;
   }
 }
@@ -98,13 +93,13 @@ export async function cacheDeliveryAvailability(
 ): Promise<void> {
   try {
     const client = getCacheClient();
-    const dateStr = date.toISOString().split('T')[0]!; // YYYY-MM-DD
+    const dateStr = date.toISOString().split("T")[0]!; // YYYY-MM-DD
     const key = getAvailabilityCacheKey(dateStr, postalCode);
     const data = serializeForCache(availability);
 
     await client.set(key, data, CACHE_TTL.DELIVERY);
   } catch (error) {
-    console.error('Error caching delivery availability:', error);
+    console.error("Error caching delivery availability:", error);
   }
 }
 
@@ -117,7 +112,7 @@ export async function getCachedDeliveryAvailability(
 ): Promise<DeliveryAvailability | null> {
   try {
     const client = getCacheClient();
-    const dateStr = date.toISOString().split('T')[0]!; // YYYY-MM-DD
+    const dateStr = date.toISOString().split("T")[0]!; // YYYY-MM-DD
     const key = getAvailabilityCacheKey(dateStr, postalCode);
     const cached = await client.get(key);
 
@@ -126,10 +121,10 @@ export async function getCachedDeliveryAvailability(
 
     return {
       ...data,
-      date: new Date(data.date)
+      date: new Date(data.date),
     };
   } catch (error) {
-    console.error('Error getting cached delivery availability:', error);
+    console.error("Error getting cached delivery availability:", error);
     return null;
   }
 }
@@ -145,7 +140,7 @@ export async function cacheDeliveryZones(zones: DeliveryZone[]): Promise<void> {
 
     await client.set(key, data, CACHE_TTL.DAY);
   } catch (error) {
-    console.error('Error caching delivery zones:', error);
+    console.error("Error caching delivery zones:", error);
   }
 }
 
@@ -160,7 +155,7 @@ export async function getCachedDeliveryZones(): Promise<DeliveryZone[] | null> {
 
     return deserializeFromCache<DeliveryZone[]>(cached);
   } catch (error) {
-    console.error('Error getting cached delivery zones:', error);
+    console.error("Error getting cached delivery zones:", error);
     return null;
   }
 }
@@ -176,7 +171,7 @@ export async function cacheHolidays(holidays: Holiday[]): Promise<void> {
 
     await client.set(key, data, CACHE_TTL.DAY);
   } catch (error) {
-    console.error('Error caching holidays:', error);
+    console.error("Error caching holidays:", error);
   }
 }
 
@@ -195,10 +190,10 @@ export async function getCachedHolidays(): Promise<Holiday[] | null> {
     // Convert date strings back to Date objects
     return data.map((holiday: any) => ({
       ...holiday,
-      date: new Date(holiday.date)
+      date: new Date(holiday.date),
     }));
   } catch (error) {
-    console.error('Error getting cached holidays:', error);
+    console.error("Error getting cached holidays:", error);
     return null;
   }
 }
@@ -218,7 +213,7 @@ export async function cacheDeliveryPricing(
 
     await client.set(key, data, CACHE_TTL.SHORT);
   } catch (error) {
-    console.error('Error caching delivery pricing:', error);
+    console.error("Error caching delivery pricing:", error);
   }
 }
 
@@ -236,7 +231,7 @@ export async function getCachedDeliveryPricing(
 
     return deserializeFromCache(cached);
   } catch (error) {
-    console.error('Error getting cached delivery pricing:', error);
+    console.error("Error getting cached delivery pricing:", error);
     return null;
   }
 }
@@ -249,9 +244,9 @@ export async function invalidateDeliveryCache(): Promise<void> {
     const client = getCacheClient();
 
     // Clear delivery-related cache patterns
-    await client.flushPattern('delivery:*');
+    await client.flushPattern("delivery:*");
   } catch (error) {
-    console.error('Error invalidating delivery cache:', error);
+    console.error("Error invalidating delivery cache:", error);
   }
 }
 
@@ -262,10 +257,10 @@ export async function warmUpDeliveryCache(): Promise<void> {
   try {
     // This would typically pre-load frequently accessed data
     // For example, current month's calendar, popular postal codes, etc.
-    console.log('Warming up delivery cache...');
+    console.log("Warming up delivery cache...");
 
     // TODO: Implement cache warming logic
   } catch (error) {
-    console.error('Error warming up delivery cache:', error);
+    console.error("Error warming up delivery cache:", error);
   }
 }

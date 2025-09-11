@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 import { orderUtils } from '@/lib/supabase/utils';
@@ -8,17 +9,21 @@ interface StatusHistoryItem {
   timestamp: string;
   description: string;
 }
+=======
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { orderUtils } from "@/lib/supabase/utils";
+>>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
 
 /**
  * Get order history and status timeline
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { id: orderId } = await params;
 
     // Get order with user validation for non-admin users
@@ -27,12 +32,23 @@ export async function GET(
       user?.id // Only pass user ID if user is authenticated
     );
 
+<<<<<<< HEAD
     if (error) {
       console.error('Error fetching order:', error);
       return NextResponse.json({
         success: false,
         error: 'Objednávka nebyla nalezena'
       }, { status: 404 });
+=======
+    if (error || !historyData) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Objednávka nebyla nalezena",
+        },
+        { status: 404 }
+      );
+>>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
     }
 
     // Generate status history based on order timestamps
@@ -105,15 +121,28 @@ export async function GET(
 
     return NextResponse.json({
       success: true,
+<<<<<<< HEAD
       order: orderSummary,
       statusHistory
+=======
+      order: {
+        id: order.id,
+        orderNumber: (order.customer_info as any).orderNumber || order.id.slice(-8).toUpperCase(),
+        status: order.status,
+        totalAmount: order.total_amount,
+        createdAt: order.created_at,
+      },
+      statusHistory,
+>>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
     });
-
   } catch (error) {
-    console.error('Error in GET /api/orders/[id]/history:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in GET /api/orders/[id]/history:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }

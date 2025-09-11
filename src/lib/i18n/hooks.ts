@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useLocale } from 'next-intl';
-import { formatCurrency, formatCurrencyCustom, formatDate, formatDeliveryDate } from './utils';
-import { type Locale } from '@/i18n/config';
+import { useLocale } from "next-intl";
+import { formatCurrency, formatCurrencyCustom, formatDate, formatDeliveryDate } from "./utils";
+import { type Locale } from "@/i18n/config";
 
 /**
  * Hook for currency formatting
@@ -37,7 +37,7 @@ export function useLocaleUtils() {
   return {
     locale,
     isRTL: false, // Neither Czech nor English are RTL
-    currency: locale === 'cs' ? 'CZK' : 'CZK',
-    currencySymbol: locale === 'cs' ? 'Kč' : 'CZK',
+    currency: locale === "cs" ? "CZK" : "CZK",
+    currencySymbol: locale === "cs" ? "Kč" : "CZK",
   };
 }

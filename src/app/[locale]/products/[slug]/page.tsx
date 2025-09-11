@@ -1,10 +1,10 @@
-import { notFound } from 'next/navigation';
-import { getTranslations } from 'next-intl/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { transformProductRow, transformCategoryRow } from '@/lib/utils/product-transforms';
-import { Product, ProductRow, CategoryRow } from '@/types/product';
-import { ProductDetail } from '@/components/product/ProductDetail';
-import { getCachedProductBySlug, cacheProductBySlug } from '@/lib/cache/product-cache';
+import { notFound } from "next/navigation";
+import { getTranslations } from "next-intl/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { transformProductRow, transformCategoryRow } from "@/lib/utils/product-transforms";
+import { Product, ProductRow, CategoryRow } from "@/types/product";
+import { ProductDetail } from "@/components/product/ProductDetail";
+import { getCachedProductBySlug, cacheProductBySlug } from "@/lib/cache/product-cache";
 
 interface ProductDetailPageProps {
   params: Promise<{
@@ -22,10 +22,10 @@ export async function generateStaticParams() {
 
   // Get popular/featured products for static generation
   const { data: products } = await supabase
-    .from('products')
-    .select('slug')
-    .eq('active', true)
-    .or('featured.eq.true,created_at.gte.2024-01-01') // Featured or recent products
+    .from("products")
+    .select("slug")
+    .eq("active", true)
+    .or("featured.eq.true,created_at.gte.2024-01-01") // Featured or recent products
     .limit(50); // Limit to avoid too many static pages
 
   if (!products) return [];
@@ -33,10 +33,7 @@ export async function generateStaticParams() {
   // Generate params for both locales
   const params = [];
   for (const product of products) {
-    params.push(
-      { locale: 'cs', slug: product.slug },
-      { locale: 'en', slug: product.slug }
-    );
+    params.push({ locale: "cs", slug: product.slug }, { locale: "en", slug: product.slug });
   }
 
   return params;
@@ -53,7 +50,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     const supabase = createServerClient();
 
     const { data, error } = await supabase
-      .from('products')
+      .from("products")
       .select(`
         *,
         categories (
@@ -71,8 +68,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           updated_at
         )
       `)
-      .eq('slug', slug)
-      .eq('active', true)
+      .eq("slug", slug)
+      .eq("active", true)
       .single();
 
     if (error || !data) {
@@ -100,20 +97,20 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   const supabase = createServerClient();
 
   const { data } = await supabase
-    .from('products')
-    .select('name_cs, name_en, description_cs, description_en, seo_metadata')
-    .eq('slug', slug)
-    .eq('active', true)
+    .from("products")
+    .select("name_cs, name_en, description_cs, description_en, seo_metadata")
+    .eq("slug", slug)
+    .eq("active", true)
     .single();
 
   if (!data) {
     return {
-      title: 'Product Not Found',
+      title: "Product Not Found",
     };
   }
 
-  const name = locale === 'cs' ? data.name_cs : data.name_en;
-  const description = locale === 'cs' ? data.description_cs : data.description_en;
+  const name = locale === "cs" ? data.name_cs : data.name_en;
+  const description = locale === "cs" ? data.description_cs : data.description_en;
 
   // Type-safe handling of seo_metadata
   const seoMetadata = data.seo_metadata as any;

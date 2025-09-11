@@ -1,5 +1,5 @@
-import { getTranslations } from 'next-intl/server';
-import { ShoppingCart } from '@/components/cart/ShoppingCart';
+import { getTranslations } from "next-intl/server";
+import { ShoppingCart } from "@/components/cart/ShoppingCart";
 
 interface CartPageProps {
   params: Promise<{ locale: string }>;
@@ -7,14 +7,12 @@ interface CartPageProps {
 
 export default async function CartPage({ params }: CartPageProps) {
   const { locale } = await params;
-  const t = await getTranslations('cart');
+  const t = await getTranslations("cart");
 
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-8">
-          {t('title')}
-        </h1>
+        <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-8">{t("title")}</h1>
 
         <ShoppingCart locale={locale} showHeader={false} />
       </div>

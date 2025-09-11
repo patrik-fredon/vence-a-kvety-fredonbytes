@@ -1,11 +1,11 @@
-import { NextIntlClientProvider } from 'next-intl';
-import { getMessages } from 'next-intl/server';
-import { notFound } from 'next/navigation';
-import { locales, type Locale } from '@/i18n/config';
-import { MainLayout } from '@/components/layout/MainLayout';
-import { AuthProvider } from '@/components/auth/AuthProvider';
-import { CartProvider } from '@/lib/cart/context';
-import { generateLocalizedMetadata } from '@/lib/i18n/metadata';
+import { NextIntlClientProvider } from "next-intl";
+import { getMessages } from "next-intl/server";
+import { notFound } from "next/navigation";
+import { locales, type Locale } from "@/i18n/config";
+import { MainLayout } from "@/components/layout/MainLayout";
+import { AuthProvider } from "@/components/auth/AuthProvider";
+import { CartProvider } from "@/lib/cart/context";
+import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
 
 interface LocaleLayoutProps {
   children: React.ReactNode;
@@ -17,10 +17,7 @@ export async function generateMetadata({ params }: LocaleLayoutProps) {
   return generateLocalizedMetadata({ locale: locale as Locale });
 }
 
-export default async function LocaleLayout({
-  children,
-  params
-}: LocaleLayoutProps) {
+export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const { locale } = await params;
   // Validate that the incoming `locale` parameter is valid
   if (!locales.includes(locale as any)) {
@@ -34,9 +31,7 @@ export default async function LocaleLayout({
     <NextIntlClientProvider messages={messages}>
       <AuthProvider>
         <CartProvider>
-          <MainLayout locale={locale}>
-            {children}
-          </MainLayout>
+          <MainLayout locale={locale}>{children}</MainLayout>
         </CartProvider>
       </AuthProvider>
     </NextIntlClientProvider>

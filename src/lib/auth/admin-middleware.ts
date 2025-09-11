@@ -1,12 +1,12 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { auth } from '@/lib/auth/config';
-import { userUtils } from '@/lib/supabase/utils';
+import { NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth/config";
+import { userUtils } from "@/lib/supabase/utils";
 
 export interface AdminUser {
   id: string;
   email: string;
   name?: string;
-  role: 'admin' | 'super_admin';
+  role: "admin" | "super_admin";
 }
 
 /**
@@ -17,33 +17,42 @@ export async function requireAdmin(request: NextRequest): Promise<AdminUser | Ne
     const session = await auth();
 
     if (!session?.user?.id) {
-      return NextResponse.json({
-        success: false,
-        error: 'Authentication required'
-      }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Authentication required",
+        },
+        { status: 401 }
+      );
     }
 
     const role = await userUtils.getUserRole(session.user.id);
 
-    if (!role || !['admin', 'super_admin'].includes(role)) {
-      return NextResponse.json({
-        success: false,
-        error: 'Insufficient permissions. Admin access required.'
-      }, { status: 403 });
+    if (!role || !["admin", "super_admin"].includes(role)) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Insufficient permissions. Admin access required.",
+        },
+        { status: 403 }
+      );
     }
 
     return {
       id: session.user.id,
       email: session.user.email!,
       name: session.user.name || undefined,
-      role: role as 'admin' | 'super_admin'
+      role: role as "admin" | "super_admin",
     };
   } catch (error) {
-    console.error('Admin middleware error:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Internal server error'
-    }, { status: 500 });
+    console.error("Admin middleware error:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Internal server error",
+      },
+      { status: 500 }
+    );
   }
 }
 
@@ -57,11 +66,14 @@ export async function requireSuperAdmin(request: NextRequest): Promise<AdminUser
     return adminCheck;
   }
 
-  if (adminCheck.role !== 'super_admin') {
-    return NextResponse.json({
-      success: false,
-      error: 'Super admin access required'
-    }, { status: 403 });
+  if (adminCheck.role !== "super_admin") {
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Super admin access required",
+      },
+      { status: 403 }
+    );
   }
 
   return adminCheck;
@@ -80,22 +92,20 @@ export async function logAdminAction(
   request?: NextRequest
 ) {
   try {
-    const { supabaseAdmin } = await import('@/lib/supabase/server');
+    const { supabaseAdmin } = await import("@/lib/supabase/server");
 
-    await supabaseAdmin
-      .from('admin_activity_log')
-      .insert({
-        admin_id: adminId,
-        action,
-        resource_type: resourceType,
-        resource_id: resourceId,
-        old_values: oldValues,
-        new_values: newValues,
-        ip_address: (request as any)?.ip || request?.headers.get('x-forwarded-for') || null,
-        user_agent: request?.headers.get('user-agent') || null
-      });
+    await supabaseAdmin.from("admin_activity_log").insert({
+      admin_id: adminId,
+      action,
+      resource_type: resourceType,
+      resource_id: resourceId,
+      old_values: oldValues,
+      new_values: newValues,
+      ip_address: (request as any)?.ip || request?.headers.get("x-forwarded-for") || null,
+      user_agent: request?.headers.get("user-agent") || null,
+    });
   } catch (error) {
-    console.error('Failed to log admin action:', error);
+    console.error("Failed to log admin action:", error);
   }
 }
 

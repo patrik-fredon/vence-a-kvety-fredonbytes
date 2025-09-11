@@ -1,5 +1,5 @@
-import Link from 'next/link';
-import { getTranslations } from 'next-intl/server';
+import Link from "next/link";
+import { getTranslations } from "next-intl/server";
 
 interface HomeProps {
   params: Promise<{ locale: string }>;
@@ -7,33 +7,29 @@ interface HomeProps {
 
 export default async function Home({ params }: HomeProps) {
   const { locale } = await params;
-  const t = await getTranslations('home');
+  const t = await getTranslations("home");
 
   return (
     <div className="container mx-auto px-4 py-16">
       <div className="text-center max-w-4xl mx-auto">
         <h1 className="text-elegant text-5xl md:text-6xl font-semibold text-primary-800 mb-6">
-          {t('title')}
+          {t("title")}
         </h1>
-        <p className="text-xl md:text-2xl text-neutral-700 mb-8 leading-relaxed">
-          {t('subtitle')}
-        </p>
-        <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto">
-          {t('description')}
-        </p>
+        <p className="text-xl md:text-2xl text-neutral-700 mb-8 leading-relaxed">{t("subtitle")}</p>
+        <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto">{t("description")}</p>
 
         <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
           <Link
             href={`/${locale}/products`}
             className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-medium text-lg transition-colors shadow-elegant"
           >
-            {t('browseWreaths')}
+            {t("browseWreaths")}
           </Link>
           <Link
             href={`/${locale}/contact`}
             className="border-2 border-primary-600 text-primary-700 hover:bg-primary-50 px-8 py-4 rounded-lg font-medium text-lg transition-colors"
           >
-            {t('contactUs')}
+            {t("contactUs")}
           </Link>
         </div>
       </div>
@@ -44,11 +40,9 @@ export default async function Home({ params }: HomeProps) {
             <span className="text-2xl">🌹</span>
           </div>
           <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
-            {t('features.handcrafted.title')}
+            {t("features.handcrafted.title")}
           </h3>
-          <p className="text-neutral-600">
-            {t('features.handcrafted.description')}
-          </p>
+          <p className="text-neutral-600">{t("features.handcrafted.description")}</p>
         </div>
 
         <div className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
@@ -56,11 +50,9 @@ export default async function Home({ params }: HomeProps) {
             <span className="text-2xl">🚚</span>
           </div>
           <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
-            {t('features.fastDelivery.title')}
+            {t("features.fastDelivery.title")}
           </h3>
-          <p className="text-neutral-600">
-            {t('features.fastDelivery.description')}
-          </p>
+          <p className="text-neutral-600">{t("features.fastDelivery.description")}</p>
         </div>
 
         <div className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
@@ -68,11 +60,9 @@ export default async function Home({ params }: HomeProps) {
             <span className="text-2xl">💝</span>
           </div>
           <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
-            {t('features.personalApproach.title')}
+            {t("features.personalApproach.title")}
           </h3>
-          <p className="text-neutral-600">
-            {t('features.personalApproach.description')}
-          </p>
+          <p className="text-neutral-600">{t("features.personalApproach.description")}</p>
         </div>
       </div>
     </div>

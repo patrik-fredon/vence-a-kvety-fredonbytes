@@ -2,28 +2,28 @@
  * Order-related type definitions for the funeral wreaths e-commerce platform
  */
 
-import { BaseEntity, Address, ContactInfo } from './index';
-import { CartItem } from './cart';
-import { DeliveryUrgency, DeliveryTimeSlot } from './delivery';
+import { BaseEntity, Address, ContactInfo } from "./index";
+import { CartItem } from "./cart";
+import { DeliveryUrgency, DeliveryTimeSlot } from "./delivery";
 
 // Order status types
 export type OrderStatus =
-  | 'pending'
-  | 'confirmed'
-  | 'processing'
-  | 'shipped'
-  | 'delivered'
-  | 'cancelled';
+  | "pending"
+  | "confirmed"
+  | "processing"
+  | "shipped"
+  | "delivered"
+  | "cancelled";
 
 export type PaymentStatus =
-  | 'pending'
-  | 'processing'
-  | 'completed'
-  | 'failed'
-  | 'cancelled'
-  | 'refunded';
+  | "pending"
+  | "processing"
+  | "completed"
+  | "failed"
+  | "cancelled"
+  | "refunded";
 
-export type PaymentMethod = 'stripe' | 'gopay';
+export type PaymentMethod = "stripe" | "gopay";
 
 // Customer information for checkout
 export interface CustomerInfo extends ContactInfo {
@@ -108,7 +108,7 @@ export interface CheckoutFormData {
 }
 
 // Checkout step types
-export type CheckoutStep = 'customer' | 'delivery' | 'payment' | 'review';
+export type CheckoutStep = "customer" | "delivery" | "payment" | "review";
 
 // Checkout state management
 export interface CheckoutState {

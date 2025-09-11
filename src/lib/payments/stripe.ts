@@ -2,15 +2,15 @@
  * Stripe payment integration configuration and utilities
  */
 
-import Stripe from 'stripe';
-import { loadStripe, StripeElementsOptions } from '@stripe/stripe-js';
+import Stripe from "stripe";
+import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 
 // Server-side Stripe instance
 export const stripe = process.env.STRIPE_SECRET_KEY
   ? new Stripe(process.env.STRIPE_SECRET_KEY, {
-    apiVersion: '2025-08-27.basil',
-    typescript: true,
-  })
+      apiVersion: "2025-08-27.basil",
+      typescript: true,
+    })
   : null;
 
 // Client-side Stripe promise
@@ -26,33 +26,33 @@ export const getStripe = () => {
 // Stripe Elements configuration
 export const stripeElementsOptions: StripeElementsOptions = {
   appearance: {
-    theme: 'stripe',
+    theme: "stripe",
     variables: {
-      colorPrimary: '#059669', // Primary green color
-      colorBackground: '#ffffff',
-      colorText: '#1f2937',
-      colorDanger: '#dc2626',
-      fontFamily: 'Inter, system-ui, sans-serif',
-      spacingUnit: '4px',
-      borderRadius: '8px',
+      colorPrimary: "#059669", // Primary green color
+      colorBackground: "#ffffff",
+      colorText: "#1f2937",
+      colorDanger: "#dc2626",
+      fontFamily: "Inter, system-ui, sans-serif",
+      spacingUnit: "4px",
+      borderRadius: "8px",
     },
     rules: {
-      '.Input': {
-        border: '2px solid #e5e7eb',
-        borderRadius: '8px',
-        padding: '12px',
-        fontSize: '16px',
+      ".Input": {
+        border: "2px solid #e5e7eb",
+        borderRadius: "8px",
+        padding: "12px",
+        fontSize: "16px",
       },
-      '.Input:focus': {
-        border: '2px solid #059669',
-        boxShadow: '0 0 0 3px rgba(5, 150, 105, 0.1)',
+      ".Input:focus": {
+        border: "2px solid #059669",
+        boxShadow: "0 0 0 3px rgba(5, 150, 105, 0.1)",
       },
-      '.Input--invalid': {
-        border: '2px solid #dc2626',
+      ".Input--invalid": {
+        border: "2px solid #dc2626",
       },
     },
   },
-  locale: 'cs', // Default to Czech, will be updated dynamically
+  locale: "cs", // Default to Czech, will be updated dynamically
 };
 
 // Payment intent creation options
@@ -68,19 +68,14 @@ export interface CreatePaymentIntentOptions {
 /**
  * Create a Stripe Payment Intent
  */
-export async function createPaymentIntent(options: CreatePaymentIntentOptions): Promise<Stripe.PaymentIntent> {
+export async function createPaymentIntent(
+  options: CreatePaymentIntentOptions
+): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
-  const {
-    amount,
-    currency = 'czk',
-    orderId,
-    customerEmail,
-    customerName,
-    metadata = {}
-  } = options;
+  const { amount, currency = "czk", orderId, customerEmail, customerName, metadata = {} } = options;
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -101,24 +96,26 @@ export async function createPaymentIntent(options: CreatePaymentIntentOptions): 
 
     return paymentIntent;
   } catch (error) {
-    console.error('Error creating Stripe Payment Intent:', error);
-    throw new Error('Failed to create payment intent');
+    console.error("Error creating Stripe Payment Intent:", error);
+    throw new Error("Failed to create payment intent");
   }
 }
 
 /**
  * Retrieve a Payment Intent by ID
  */
-export async function retrievePaymentIntent(paymentIntentId: string): Promise<Stripe.PaymentIntent> {
+export async function retrievePaymentIntent(
+  paymentIntentId: string
+): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
   try {
     return await stripe.paymentIntents.retrieve(paymentIntentId);
   } catch (error) {
-    console.error('Error retrieving Payment Intent:', error);
-    throw new Error('Failed to retrieve payment intent');
+    console.error("Error retrieving Payment Intent:", error);
+    throw new Error("Failed to retrieve payment intent");
   }
 }
 
@@ -130,7 +127,7 @@ export async function confirmPaymentIntent(
   paymentMethodId: string
 ): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
   try {
@@ -138,8 +135,8 @@ export async function confirmPaymentIntent(
       payment_method: paymentMethodId,
     });
   } catch (error) {
-    console.error('Error confirming Payment Intent:', error);
-    throw new Error('Failed to confirm payment');
+    console.error("Error confirming Payment Intent:", error);
+    throw new Error("Failed to confirm payment");
   }
 }
 
@@ -152,14 +149,14 @@ export function verifyWebhookSignature(
   secret: string
 ): Stripe.Event {
   if (!stripe) {
-    throw new Error('Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.');
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
   try {
     return stripe.webhooks.constructEvent(payload, signature, secret);
   } catch (error) {
-    console.error('Webhook signature verification failed:', error);
-    throw new Error('Invalid webhook signature');
+    console.error("Webhook signature verification failed:", error);
+    throw new Error("Invalid webhook signature");
   }
 }
 
@@ -170,7 +167,7 @@ export async function handleSuccessfulPayment(paymentIntent: Stripe.PaymentInten
   const orderId = paymentIntent.metadata.orderId;
 
   if (!orderId) {
-    throw new Error('Order ID not found in payment intent metadata');
+    throw new Error("Order ID not found in payment intent metadata");
   }
 
   // Update order status in database
@@ -192,7 +189,7 @@ export async function handleFailedPayment(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata.orderId;
 
   if (!orderId) {
-    throw new Error('Order ID not found in payment intent metadata');
+    throw new Error("Order ID not found in payment intent metadata");
   }
 
   console.log(`Payment failed for order ${orderId}:`, paymentIntent.last_payment_error?.message);
@@ -200,6 +197,6 @@ export async function handleFailedPayment(paymentIntent: Stripe.PaymentIntent) {
   return {
     orderId,
     transactionId: paymentIntent.id,
-    error: paymentIntent.last_payment_error?.message || 'Payment failed',
+    error: paymentIntent.last_payment_error?.message || "Payment failed",
   };
 }

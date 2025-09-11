@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { Component, ReactNode } from 'react';
-import { ExclamationTriangleIcon, ArrowPathIcon } from '@heroicons/react/24/outline';
+import { Component, ReactNode } from "react";
+import { ExclamationTriangleIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
 
 interface ErrorBoundaryState {
   hasError: boolean;
@@ -25,7 +25,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: any) {
-    console.error('ErrorBoundary caught an error:', error, errorInfo);
+    console.error("ErrorBoundary caught an error:", error, errorInfo);
     this.props.onError?.(error, errorInfo);
   }
 
@@ -39,12 +39,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return this.props.fallback;
       }
 
-      return (
-        <ErrorFallback
-          error={this.state.error}
-          onRetry={this.handleRetry}
-        />
-      );
+      return <ErrorFallback error={this.state.error} onRetry={this.handleRetry} />;
     }
 
     return this.props.children;
@@ -62,9 +57,9 @@ interface ErrorFallbackProps {
 export function ErrorFallback({
   error,
   onRetry,
-  title = 'Něco se pokazilo',
-  message = 'Omlouváme se, došlo k neočekávané chybě. Zkuste to prosím znovu.',
-  showRetry = true
+  title = "Něco se pokazilo",
+  message = "Omlouváme se, došlo k neočekávané chybě. Zkuste to prosím znovu.",
+  showRetry = true,
 }: ErrorFallbackProps) {
   return (
     <div className="min-h-[400px] flex items-center justify-center p-8">
@@ -73,15 +68,11 @@ export function ErrorFallback({
           <ExclamationTriangleIcon className="w-8 h-8 text-error" />
         </div>
 
-        <h2 className="text-elegant text-xl font-semibold text-neutral-800 mb-3">
-          {title}
-        </h2>
+        <h2 className="text-elegant text-xl font-semibold text-neutral-800 mb-3">{title}</h2>
 
-        <p className="text-neutral-600 mb-6 leading-relaxed">
-          {message}
-        </p>
+        <p className="text-neutral-600 mb-6 leading-relaxed">{message}</p>
 
-        {process.env.NODE_ENV === 'development' && error && (
+        {process.env.NODE_ENV === "development" && error && (
           <details className="mb-6 text-left">
             <summary className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700">
               Zobrazit technické detaily
@@ -121,7 +112,11 @@ export function PageErrorFallback({ error, onRetry }: ErrorFallbackProps) {
   );
 }
 
-export function ComponentErrorFallback({ error, onRetry, className = '' }: ErrorFallbackProps & { className?: string }) {
+export function ComponentErrorFallback({
+  error,
+  onRetry,
+  className = "",
+}: ErrorFallbackProps & { className?: string }) {
   return (
     <div className={`bg-white border border-neutral-200 rounded-lg p-6 ${className}`}>
       <ErrorFallback
@@ -137,7 +132,7 @@ export function ComponentErrorFallback({ error, onRetry, className = '' }: Error
 // Hook for handling async errors in components
 export function useErrorHandler() {
   return (error: Error) => {
-    console.error('Async error caught:', error);
+    console.error("Async error caught:", error);
     // In a real app, you might want to send this to an error reporting service
     throw error; // Re-throw to trigger error boundary
   };

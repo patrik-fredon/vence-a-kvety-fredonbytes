@@ -2,7 +2,7 @@
  * Checkout form validation utilities
  */
 
-import { CustomerInfo, DeliveryInfo, CheckoutValidationErrors } from '@/types/order';
+import { CustomerInfo, DeliveryInfo, CheckoutValidationErrors } from "@/types/order";
 
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -16,38 +16,40 @@ const POSTAL_CODE_REGEX = /^[0-9]{3}\s?[0-9]{2}$/;
 /**
  * Validate customer information
  */
-export function validateCustomerInfo(customerInfo: Partial<CustomerInfo>): Partial<Record<keyof CustomerInfo, string>> {
+export function validateCustomerInfo(
+  customerInfo: Partial<CustomerInfo>
+): Partial<Record<keyof CustomerInfo, string>> {
   const errors: Partial<Record<keyof CustomerInfo, string>> = {};
 
   // Required fields
   if (!customerInfo.firstName?.trim()) {
-    errors.firstName = 'Jméno je povinné';
+    errors.firstName = "Jméno je povinné";
   }
 
   if (!customerInfo.lastName?.trim()) {
-    errors.lastName = 'Příjmení je povinné';
+    errors.lastName = "Příjmení je povinné";
   }
 
   if (!customerInfo.email?.trim()) {
-    errors.email = 'E-mail je povinný';
+    errors.email = "E-mail je povinný";
   } else if (!EMAIL_REGEX.test(customerInfo.email)) {
-    errors.email = 'Neplatný formát e-mailu';
+    errors.email = "Neplatný formát e-mailu";
   }
 
   if (!customerInfo.phone?.trim()) {
-    errors.phone = 'Telefon je povinný';
-  } else if (!PHONE_REGEX.test(customerInfo.phone.replace(/\s/g, ''))) {
-    errors.phone = 'Neplatný formát telefonu (použijte formát +420123456789)';
+    errors.phone = "Telefon je povinný";
+  } else if (!PHONE_REGEX.test(customerInfo.phone.replace(/\s/g, ""))) {
+    errors.phone = "Neplatný formát telefonu (použijte formát +420123456789)";
   }
 
   // Optional validation for company
   if (customerInfo.company && customerInfo.company.length > 100) {
-    errors.company = 'Název společnosti je příliš dlouhý (max. 100 znaků)';
+    errors.company = "Název společnosti je příliš dlouhý (max. 100 znaků)";
   }
 
   // Optional validation for note
   if (customerInfo.note && customerInfo.note.length > 500) {
-    errors.note = 'Poznámka je příliš dlouhá (max. 500 znaků)';
+    errors.note = "Poznámka je příliš dlouhá (max. 500 znaků)";
   }
 
   return errors;
@@ -56,37 +58,39 @@ export function validateCustomerInfo(customerInfo: Partial<CustomerInfo>): Parti
 /**
  * Validate delivery information
  */
-export function validateDeliveryInfo(deliveryInfo: Partial<DeliveryInfo>): Partial<Record<keyof DeliveryInfo, string>> {
+export function validateDeliveryInfo(
+  deliveryInfo: Partial<DeliveryInfo>
+): Partial<Record<keyof DeliveryInfo, string>> {
   const errors: Partial<Record<keyof DeliveryInfo, string>> = {};
 
   // Validate address
   if (!deliveryInfo.address) {
-    errors.address = 'Adresa je povinná';
+    errors.address = "Adresa je povinná";
   } else {
     const address = deliveryInfo.address;
 
     if (!address.street?.trim()) {
-      errors.address = 'Ulice je povinná';
+      errors.address = "Ulice je povinná";
     }
 
     if (!address.city?.trim()) {
-      errors.address = 'Město je povinné';
+      errors.address = "Město je povinné";
     }
 
     if (!address.postalCode?.trim()) {
-      errors.address = 'PSČ je povinné';
+      errors.address = "PSČ je povinné";
     } else if (!POSTAL_CODE_REGEX.test(address.postalCode)) {
-      errors.address = 'Neplatný formát PSČ (použijte formát 12345 nebo 123 45)';
+      errors.address = "Neplatný formát PSČ (použijte formát 12345 nebo 123 45)";
     }
 
     if (!address.country?.trim()) {
-      errors.address = 'Země je povinná';
+      errors.address = "Země je povinná";
     }
   }
 
   // Validate urgency
   if (!deliveryInfo.urgency) {
-    errors.urgency = 'Způsob doručení je povinný';
+    errors.urgency = "Způsob doručení je povinný";
   }
 
   // Validate preferred date (if provided)
@@ -97,30 +101,33 @@ export function validateDeliveryInfo(deliveryInfo: Partial<DeliveryInfo>): Parti
     tomorrow.setHours(0, 0, 0, 0);
 
     if (deliveryInfo.preferredDate < tomorrow) {
-      errors.preferredDate = 'Datum doručení musí být nejdříve zítra';
+      errors.preferredDate = "Datum doručení musí být nejdříve zítra";
     }
 
     // Check if it's not too far in the future (max 30 days)
     const maxDate = new Date(now);
     maxDate.setDate(now.getDate() + 30);
     if (deliveryInfo.preferredDate > maxDate) {
-      errors.preferredDate = 'Datum doručení může být maximálně 30 dní dopředu';
+      errors.preferredDate = "Datum doručení může být maximálně 30 dní dopředu";
     }
   }
 
   // Validate special instructions length
   if (deliveryInfo.specialInstructions && deliveryInfo.specialInstructions.length > 500) {
-    errors.specialInstructions = 'Speciální pokyny jsou příliš dlouhé (max. 500 znaků)';
+    errors.specialInstructions = "Speciální pokyny jsou příliš dlouhé (max. 500 znaků)";
   }
 
   // Validate recipient name if provided
   if (deliveryInfo.recipientName && deliveryInfo.recipientName.length > 100) {
-    errors.recipientName = 'Jméno příjemce je příliš dlouhé (max. 100 znaků)';
+    errors.recipientName = "Jméno příjemce je příliš dlouhé (max. 100 znaků)";
   }
 
   // Validate recipient phone if provided
-  if (deliveryInfo.recipientPhone && !PHONE_REGEX.test(deliveryInfo.recipientPhone.replace(/\s/g, ''))) {
-    errors.recipientPhone = 'Neplatný formát telefonu příjemce';
+  if (
+    deliveryInfo.recipientPhone &&
+    !PHONE_REGEX.test(deliveryInfo.recipientPhone.replace(/\s/g, ""))
+  ) {
+    errors.recipientPhone = "Neplatný formát telefonu příjemce";
   }
 
   return errors;
@@ -150,7 +157,7 @@ export function validateCheckoutForm(
 
   // Validate terms agreement
   if (!agreeToTerms) {
-    errors.general = ['Musíte souhlasit s obchodními podmínkami'];
+    errors.general = ["Musíte souhlasit s obchodními podmínkami"];
   }
 
   return errors;
@@ -174,13 +181,13 @@ export function formatValidationErrors(errors: CheckoutValidationErrors): string
   const messages: string[] = [];
 
   if (errors.customerInfo) {
-    Object.values(errors.customerInfo).forEach(error => {
+    Object.values(errors.customerInfo).forEach((error) => {
       if (error) messages.push(error);
     });
   }
 
   if (errors.deliveryInfo) {
-    Object.values(errors.deliveryInfo).forEach(error => {
+    Object.values(errors.deliveryInfo).forEach((error) => {
       if (error) messages.push(error);
     });
   }
@@ -201,7 +208,7 @@ export function sanitizeCustomerInfo(customerInfo: Partial<CustomerInfo>): Parti
     firstName: customerInfo.firstName?.trim(),
     lastName: customerInfo.lastName?.trim(),
     email: customerInfo.email?.trim().toLowerCase(),
-    phone: customerInfo.phone?.replace(/\s/g, ''),
+    phone: customerInfo.phone?.replace(/\s/g, ""),
     company: customerInfo.company?.trim(),
     note: customerInfo.note?.trim(),
   };
@@ -215,7 +222,7 @@ export function sanitizeDeliveryInfo(deliveryInfo: Partial<DeliveryInfo>): Parti
       ...sanitized.address,
       street: sanitized.address.street?.trim(),
       city: sanitized.address.city?.trim(),
-      postalCode: sanitized.address.postalCode?.replace(/\s/g, ''),
+      postalCode: sanitized.address.postalCode?.replace(/\s/g, ""),
       country: sanitized.address.country?.trim(),
     };
   }
@@ -229,7 +236,7 @@ export function sanitizeDeliveryInfo(deliveryInfo: Partial<DeliveryInfo>): Parti
   }
 
   if (sanitized.recipientPhone) {
-    sanitized.recipientPhone = sanitized.recipientPhone.replace(/\s/g, '');
+    sanitized.recipientPhone = sanitized.recipientPhone.replace(/\s/g, "");
   }
 
   return sanitized;

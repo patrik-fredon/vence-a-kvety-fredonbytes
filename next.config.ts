@@ -1,7 +1,7 @@
 import type { NextConfig } from "next";
-import createNextIntlPlugin from 'next-intl/plugin';
+import createNextIntlPlugin from "next-intl/plugin";
 
-const withNextIntl = createNextIntlPlugin('./src/i18n/request.ts');
+const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   // Enable experimental features for better performance
@@ -10,7 +10,7 @@ const nextConfig: NextConfig = {
     // Enable partial prerendering for better performance
     ppr: true,
     // Optimize server components
-    serverComponentsExternalPackages: ['@upstash/redis'],
+    serverComponentsExternalPackages: ["@upstash/redis"],
   },
 
   // Turbopack configuration (replaces experimental.turbo)
@@ -38,10 +38,10 @@ const nextConfig: NextConfig = {
     // Enable image optimization for external domains
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: '**.supabase.co',
-        port: '',
-        pathname: '/storage/v1/object/public/**',
+        protocol: "https",
+        hostname: "**.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/public/**",
       },
     ],
   },

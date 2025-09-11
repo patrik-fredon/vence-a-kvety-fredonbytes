@@ -11,39 +11,39 @@ import {
   DeliveryTimeSlot,
   Holiday,
   DeliveryZone,
-  DeliverySettings
-} from '@/types/delivery';
-import type { Address } from '@/types';
+  DeliverySettings,
+} from "@/types/delivery";
+import type { Address } from "@/types";
 
 // Czech public holidays (fixed dates and calculated dates)
 export const CZECH_HOLIDAYS_2024: Holiday[] = [
-  { date: new Date(2024, 0, 1), name: 'Nový rok', type: 'public' },
-  { date: new Date(2024, 3, 1), name: 'Velikonoční pondělí', type: 'religious' },
-  { date: new Date(2024, 4, 1), name: 'Svátek práce', type: 'public' },
-  { date: new Date(2024, 4, 8), name: 'Den vítězství', type: 'public' },
-  { date: new Date(2024, 6, 5), name: 'Den slovanských věrozvěstů', type: 'religious' },
-  { date: new Date(2024, 6, 6), name: 'Den upálení Jana Husa', type: 'religious' },
-  { date: new Date(2024, 8, 28), name: 'Den české státnosti', type: 'public' },
-  { date: new Date(2024, 9, 28), name: 'Den vzniku Československa', type: 'public' },
-  { date: new Date(2024, 10, 17), name: 'Den boje za svobodu a demokracii', type: 'public' },
-  { date: new Date(2024, 11, 24), name: 'Štědrý den', type: 'religious' },
-  { date: new Date(2024, 11, 25), name: '1. svátek vánoční', type: 'religious' },
-  { date: new Date(2024, 11, 26), name: '2. svátek vánoční', type: 'religious' },
+  { date: new Date(2024, 0, 1), name: "Nový rok", type: "public" },
+  { date: new Date(2024, 3, 1), name: "Velikonoční pondělí", type: "religious" },
+  { date: new Date(2024, 4, 1), name: "Svátek práce", type: "public" },
+  { date: new Date(2024, 4, 8), name: "Den vítězství", type: "public" },
+  { date: new Date(2024, 6, 5), name: "Den slovanských věrozvěstů", type: "religious" },
+  { date: new Date(2024, 6, 6), name: "Den upálení Jana Husa", type: "religious" },
+  { date: new Date(2024, 8, 28), name: "Den české státnosti", type: "public" },
+  { date: new Date(2024, 9, 28), name: "Den vzniku Československa", type: "public" },
+  { date: new Date(2024, 10, 17), name: "Den boje za svobodu a demokracii", type: "public" },
+  { date: new Date(2024, 11, 24), name: "Štědrý den", type: "religious" },
+  { date: new Date(2024, 11, 25), name: "1. svátek vánoční", type: "religious" },
+  { date: new Date(2024, 11, 26), name: "2. svátek vánoční", type: "religious" },
 ];
 
 export const CZECH_HOLIDAYS_2025: Holiday[] = [
-  { date: new Date(2025, 0, 1), name: 'Nový rok', type: 'public' },
-  { date: new Date(2025, 3, 21), name: 'Velikonoční pondělí', type: 'religious' },
-  { date: new Date(2025, 4, 1), name: 'Svátek práce', type: 'public' },
-  { date: new Date(2025, 4, 8), name: 'Den vítězství', type: 'public' },
-  { date: new Date(2025, 6, 5), name: 'Den slovanských věrozvěstů', type: 'religious' },
-  { date: new Date(2025, 6, 6), name: 'Den upálení Jana Husa', type: 'religious' },
-  { date: new Date(2025, 8, 28), name: 'Den české státnosti', type: 'public' },
-  { date: new Date(2025, 9, 28), name: 'Den vzniku Československa', type: 'public' },
-  { date: new Date(2025, 10, 17), name: 'Den boje za svobodu a demokracii', type: 'public' },
-  { date: new Date(2025, 11, 24), name: 'Štědrý den', type: 'religious' },
-  { date: new Date(2025, 11, 25), name: '1. svátek vánoční', type: 'religious' },
-  { date: new Date(2025, 11, 26), name: '2. svátek vánoční', type: 'religious' },
+  { date: new Date(2025, 0, 1), name: "Nový rok", type: "public" },
+  { date: new Date(2025, 3, 21), name: "Velikonoční pondělí", type: "religious" },
+  { date: new Date(2025, 4, 1), name: "Svátek práce", type: "public" },
+  { date: new Date(2025, 4, 8), name: "Den vítězství", type: "public" },
+  { date: new Date(2025, 6, 5), name: "Den slovanských věrozvěstů", type: "religious" },
+  { date: new Date(2025, 6, 6), name: "Den upálení Jana Husa", type: "religious" },
+  { date: new Date(2025, 8, 28), name: "Den české státnosti", type: "public" },
+  { date: new Date(2025, 9, 28), name: "Den vzniku Československa", type: "public" },
+  { date: new Date(2025, 10, 17), name: "Den boje za svobodu a demokracii", type: "public" },
+  { date: new Date(2025, 11, 24), name: "Štědrý den", type: "religious" },
+  { date: new Date(2025, 11, 25), name: "1. svátek vánoční", type: "religious" },
+  { date: new Date(2025, 11, 26), name: "2. svátek vánoční", type: "religious" },
 ];
 
 // Default delivery settings
@@ -52,49 +52,49 @@ export const DEFAULT_DELIVERY_SETTINGS: DeliverySettings = {
   expressDeliveryHours: 12,
   sameDayDeliveryHours: 4,
   workingHours: {
-    start: '08:00',
-    end: '18:00'
+    start: "08:00",
+    end: "18:00",
   },
   workingDays: [1, 2, 3, 4, 5], // Monday to Friday
   maxAdvanceBookingDays: 30,
-  defaultTimeSlot: 'anytime'
+  defaultTimeSlot: "anytime",
 };
 
 // Default delivery options
 export const DEFAULT_DELIVERY_OPTIONS: DeliveryOption[] = [
   {
-    id: 'standard',
-    name: 'Standardní doručení',
-    description: 'Doručení následující pracovní den',
-    urgency: 'standard',
+    id: "standard",
+    name: "Standardní doručení",
+    description: "Doručení následující pracovní den",
+    urgency: "standard",
     baseCost: 150,
     estimatedHours: 24,
-    availableTimeSlots: ['morning', 'afternoon', 'anytime'],
+    availableTimeSlots: ["morning", "afternoon", "anytime"],
     minimumNoticeHours: 12,
-    maxDistance: 50
+    maxDistance: 50,
   },
   {
-    id: 'express',
-    name: 'Expresní doručení',
-    description: 'Doručení do 12 hodin',
-    urgency: 'express',
+    id: "express",
+    name: "Expresní doručení",
+    description: "Doručení do 12 hodin",
+    urgency: "express",
     baseCost: 300,
     estimatedHours: 12,
-    availableTimeSlots: ['morning', 'afternoon', 'evening', 'anytime'],
+    availableTimeSlots: ["morning", "afternoon", "evening", "anytime"],
     minimumNoticeHours: 4,
-    maxDistance: 30
+    maxDistance: 30,
   },
   {
-    id: 'same-day',
-    name: 'Doručení tentýž den',
-    description: 'Doručení do 4 hodin',
-    urgency: 'same-day',
+    id: "same-day",
+    name: "Doručení tentýž den",
+    description: "Doručení do 4 hodin",
+    urgency: "same-day",
     baseCost: 500,
     estimatedHours: 4,
-    availableTimeSlots: ['anytime'],
+    availableTimeSlots: ["anytime"],
     minimumNoticeHours: 2,
-    maxDistance: 15
-  }
+    maxDistance: 15,
+  },
 ];
 
 /**
@@ -102,13 +102,13 @@ export const DEFAULT_DELIVERY_OPTIONS: DeliveryOption[] = [
  */
 export function isCzechHoliday(date: Date): boolean {
   const year = date.getFullYear();
-  const holidays = year === 2024 ? CZECH_HOLIDAYS_2024 :
-    year === 2025 ? CZECH_HOLIDAYS_2025 : [];
+  const holidays = year === 2024 ? CZECH_HOLIDAYS_2024 : year === 2025 ? CZECH_HOLIDAYS_2025 : [];
 
-  return holidays.some(holiday =>
-    holiday.date.getDate() === date.getDate() &&
-    holiday.date.getMonth() === date.getMonth() &&
-    holiday.date.getFullYear() === date.getFullYear()
+  return holidays.some(
+    (holiday) =>
+      holiday.date.getDate() === date.getDate() &&
+      holiday.date.getMonth() === date.getMonth() &&
+      holiday.date.getFullYear() === date.getFullYear()
   );
 }
 
@@ -123,16 +123,21 @@ export function isWeekend(date: Date): boolean {
 /**
  * Check if a date is a working day (not weekend, not holiday)
  */
-export function isWorkingDay(date: Date, settings: DeliverySettings = DEFAULT_DELIVERY_SETTINGS): boolean {
+export function isWorkingDay(
+  date: Date,
+  settings: DeliverySettings = DEFAULT_DELIVERY_SETTINGS
+): boolean {
   const dayOfWeek = date.getDay();
-  return settings.workingDays.includes(dayOfWeek) &&
-    !isCzechHoliday(date);
+  return settings.workingDays.includes(dayOfWeek) && !isCzechHoliday(date);
 }
 
 /**
  * Get the next working day from a given date
  */
-export function getNextWorkingDay(fromDate: Date, settings: DeliverySettings = DEFAULT_DELIVERY_SETTINGS): Date {
+export function getNextWorkingDay(
+  fromDate: Date,
+  settings: DeliverySettings = DEFAULT_DELIVERY_SETTINGS
+): Date {
   const nextDay = new Date(fromDate);
   nextDay.setDate(nextDay.getDate() + 1);
 
@@ -155,13 +160,13 @@ export function calculateEarliestDeliveryDate(
 
   let hoursToAdd: number;
   switch (urgency) {
-    case 'same-day':
+    case "same-day":
       hoursToAdd = settings.sameDayDeliveryHours;
       break;
-    case 'express':
+    case "express":
       hoursToAdd = settings.expressDeliveryHours;
       break;
-    case 'standard':
+    case "standard":
     default:
       hoursToAdd = settings.standardDeliveryHours;
       break;
@@ -170,8 +175,8 @@ export function calculateEarliestDeliveryDate(
   const deliveryDate = new Date(now.getTime() + hoursToAdd * 60 * 60 * 1000);
 
   // For same-day delivery, check if it's still possible today
-  if (urgency === 'same-day') {
-    const endOfWorkingHours = parseInt(settings.workingHours.end.split(':')[0] || '18');
+  if (urgency === "same-day") {
+    const endOfWorkingHours = parseInt(settings.workingHours.end.split(":")[0] || "18");
     if (currentHour >= endOfWorkingHours - settings.sameDayDeliveryHours) {
       // Too late for same-day, move to next working day
       return getNextWorkingDay(now, settings);
@@ -221,10 +226,16 @@ export function generateAvailableDeliveryDates(
     availableDates.push({
       date: new Date(currentDate),
       available: isWorking,
-      timeSlots: isWorking ? ['morning', 'afternoon', 'anytime'] : [],
+      timeSlots: isWorking ? ["morning", "afternoon", "anytime"] : [],
       isHoliday,
       isWeekend: isWeekendDay,
-      reason: !isWorking ? (isHoliday ? 'Státní svátek' : isWeekendDay ? 'Víkend' : 'Nedostupné') : undefined
+      reason: !isWorking
+        ? isHoliday
+          ? "Státní svátek"
+          : isWeekendDay
+            ? "Víkend"
+            : "Nedostupné"
+        : undefined,
     });
   }
 
@@ -237,10 +248,10 @@ export function generateAvailableDeliveryDates(
 export function calculateDeliveryCost(
   address: Address,
   urgency: DeliveryUrgency,
-  timeSlot: DeliveryTimeSlot = 'anytime',
+  timeSlot: DeliveryTimeSlot = "anytime",
   deliveryZone?: DeliveryZone
 ): DeliveryCostCalculation {
-  const option = DEFAULT_DELIVERY_OPTIONS.find(opt => opt.urgency === urgency);
+  const option = DEFAULT_DELIVERY_OPTIONS.find((opt) => opt.urgency === urgency);
   if (!option) {
     throw new Error(`Invalid delivery urgency: ${urgency}`);
   }
@@ -255,7 +266,7 @@ export function calculateDeliveryCost(
 
   // Time slot cost
   let timeSlotCost = 0;
-  if (timeSlot === 'morning' || timeSlot === 'evening') {
+  if (timeSlot === "morning" || timeSlot === "evening") {
     timeSlotCost = 50; // Premium for specific time slots
   }
 
@@ -269,7 +280,7 @@ export function calculateDeliveryCost(
     timeSlotCost,
     totalCost,
     estimatedDeliveryDate,
-    estimatedTimeSlot: timeSlot
+    estimatedTimeSlot: timeSlot,
   };
 }
 
@@ -279,29 +290,29 @@ export function calculateDeliveryCost(
 export function getDeliveryZones(): DeliveryZone[] {
   return [
     {
-      id: 'prague',
-      name: 'Praha',
-      postalCodes: ['100', '110', '120', '130', '140', '150', '160', '170', '180', '190'],
+      id: "prague",
+      name: "Praha",
+      postalCodes: ["100", "110", "120", "130", "140", "150", "160", "170", "180", "190"],
       baseCost: 150,
       maxDistance: 25,
-      supportedUrgencies: ['standard', 'express', 'same-day']
+      supportedUrgencies: ["standard", "express", "same-day"],
     },
     {
-      id: 'central-bohemia',
-      name: 'Střední Čechy',
-      postalCodes: ['250', '260', '270', '280', '290'],
+      id: "central-bohemia",
+      name: "Střední Čechy",
+      postalCodes: ["250", "260", "270", "280", "290"],
       baseCost: 200,
       maxDistance: 50,
-      supportedUrgencies: ['standard', 'express']
+      supportedUrgencies: ["standard", "express"],
     },
     {
-      id: 'other',
-      name: 'Ostatní oblasti',
+      id: "other",
+      name: "Ostatní oblasti",
       postalCodes: [],
       baseCost: 300,
       maxDistance: 100,
-      supportedUrgencies: ['standard']
-    }
+      supportedUrgencies: ["standard"],
+    },
   ];
 }
 
@@ -310,9 +321,7 @@ export function getDeliveryZones(): DeliveryZone[] {
  */
 export function findDeliveryZone(postalCode: string): DeliveryZone {
   const zones = getDeliveryZones();
-  const zone = zones.find(z =>
-    z.postalCodes.some(pc => postalCode.startsWith(pc))
-  );
+  const zone = zones.find((z) => z.postalCodes.some((pc) => postalCode.startsWith(pc)));
   return zone || zones[zones.length - 1]!; // Default to 'other' zone
 }
 
@@ -328,7 +337,7 @@ export function validateDeliveryRequest(
 
   // Check postal code
   if (!address.postalCode) {
-    errors.push('PSČ je povinné');
+    errors.push("PSČ je povinné");
   }
 
   // Check delivery zone support
@@ -341,16 +350,16 @@ export function validateDeliveryRequest(
   if (preferredDate) {
     const earliestDate = calculateEarliestDeliveryDate(urgency);
     if (preferredDate < earliestDate) {
-      errors.push('Zvolené datum je příliš brzy pro tento typ doručení');
+      errors.push("Zvolené datum je příliš brzy pro tento typ doručení");
     }
 
     if (!isWorkingDay(preferredDate)) {
-      errors.push('Zvolené datum není pracovní den');
+      errors.push("Zvolené datum není pracovní den");
     }
   }
 
   return {
     valid: errors.length === 0,
-    errors
+    errors,
   };
 }
