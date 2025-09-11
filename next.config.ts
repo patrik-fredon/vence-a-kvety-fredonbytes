@@ -7,6 +7,10 @@ const nextConfig: NextConfig = {
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: ["@/components", "@/lib", "@/types"],
+    // Enable partial prerendering for better performance
+    ppr: true,
+    // Optimize server components
+    serverComponentsExternalPackages: ['@upstash/redis'],
   },
 
   // Turbopack configuration (replaces experimental.turbo)
@@ -31,6 +35,15 @@ const nextConfig: NextConfig = {
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Enable image optimization for external domains
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**.supabase.co',
+        port: '',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
   },
 
   // Compression and optimization
