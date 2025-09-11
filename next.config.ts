@@ -7,10 +7,6 @@ const nextConfig: NextConfig = {
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: ["@/components", "@/lib", "@/types"],
-    // Enable partial prerendering for better performance
-    ppr: true,
-    // Optimize server components
-    serverComponentsExternalPackages: ["@upstash/redis"],
   },
 
   // Turbopack configuration (replaces experimental.turbo)
