@@ -9,8 +9,9 @@ import ProductManagement from "./ProductManagement";
 import OrderManagement from "./OrderManagement";
 import InventoryManagement from "./InventoryManagement";
 import AdminActivityLog from "./AdminActivityLog";
+import { MonitoringDashboard } from "./MonitoringDashboard";
 
-type AdminView = "overview" | "products" | "orders" | "inventory" | "activity";
+type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 
 interface DashboardStats {
   orders: {
@@ -69,6 +70,8 @@ export default function AdminDashboard() {
         return <InventoryManagement />;
       case "activity":
         return <AdminActivityLog />;
+      case "monitoring":
+        return <MonitoringDashboard />;
       default:
         return <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />;
     }

@@ -1,205 +1,173 @@
-/**
- * Price calculation utilities for product customizations
- */
+import { Customization } from '@/types/product';
 
-import { Product, Customization, CustomizationOption, CustomizationChoice } from "@/types/product";
-
-/**
- * Calculate the final price based on base price and customizations
- */
-export function calculateFinalPrice(
-  basePrice: number,
-  customizations: Customization[],
-  customizationOptions: CustomizationOption[]
-): number {
-  let finalPrice = basePrice;
-
-  customizations.forEach((customization) => {
-    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
-    if (!option) return;
-
-    customization.choiceIds.forEach((choiceId) => {
-      const choice = option.choices.find((c) => c.id === choiceId);
-      if (choice && choice.available) {
-        finalPrice += choice.priceModifier;
-      }
-    });
-  });
-
-  return Math.max(0, finalPrice); // Ensure price doesn't go negative
+export interface Address {
+  street: string;
+  city: string;
+  postalCode: string;
+  country: string;
 }
 
-/**
- * Get price breakdown for display purposes
- */
-export interface PriceBreakdown {
-  basePrice: number;
-  customizations: Array<{
-    optionName: string;
-    choiceName: string;
-    priceModifier: number;
-  }>;
-  totalModifiers: number;
+export interface Discount {
+  type: 'percentage' | 'fixed';
+  value: number;
+  code: string;
+}
+
+export interface DiscountResult {
   finalPrice: number;
+  totalDiscount: number;
+  appliedDiscounts: Discount[];
 }
 
-export function getPriceBreakdown(
+/**
+ * Calculate total price including customizations
+ */
+export function calculateTotalPrice(
   basePrice: number,
-  customizations: Customization[],
-  customizationOptions: CustomizationOption[],
-  locale: "cs" | "en" = "cs"
-): PriceBreakdown {
-  const breakdown: PriceBreakdown = {
-    basePrice,
-    customizations: [],
-    totalModifiers: 0,
-    finalPrice: basePrice,
-  };
+  customizations: Customization[]
+): number {
+  let total = basePrice;
 
-  customizations.forEach((customization) => {
-    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
-    if (!option) return;
+  for (const customization of customizations) {
+    if (customization.priceModifier) {
+      total += customization.priceModifier;
+    }
+  }
 
-    customization.choiceIds.forEach((choiceId) => {
-      const choice = option.choices.find((c) => c.id === choiceId);
-      if (choice && choice.available) {
-        breakdown.customizations.push({
-          optionName: option.name[locale],
-          choiceName: choice.label[locale],
-          priceModifier: choice.priceModifier,
-        });
-        breakdown.totalModifiers += choice.priceModifier;
-      }
-    });
-  });
-
-  breakdown.finalPrice = Math.max(0, basePrice + breakdown.totalModifiers);
-  return breakdown;
+  // Ensure price is not negative
+  return Math.max(0, total);
 }
 
 /**
- * Validate customization selections against option constraints
+ * Calculate delivery fee based on address and delivery options
  */
-export interface ValidationResult {
-  isValid: boolean;
-  errors: Array<{
-    optionId: string;
-    optionName: string;
-    error: string;
-    errorCode: "REQUIRED" | "MIN_SELECTIONS" | "MAX_SELECTIONS" | "UNAVAILABLE_CHOICE";
-  }>;
-}
+export function calculateDeliveryFee(
+  address: Address,
+  deliveryDate: Date,
+  isExpress: boolean = false
+): number {
+  let baseFee = 0;
 
-export function validateCustomizations(
-  customizations: Customization[],
-  customizationOptions: CustomizationOption[],
-  locale: "cs" | "en" = "cs"
-): ValidationResult {
-  const result: ValidationResult = {
-    isValid: true,
-    errors: [],
+  // Base delivery fee by city
+  const cityRates: Record<string, number> = {
+    'Praha': 200,
+    'Brno': 250,
+    'Ostrava': 300,
+    'Plzeň': 280,
+    'Liberec': 320,
+    'Olomouc': 290,
+    'České Budějovice': 310,
+    'Hradec Králové': 300,
+    'Pardubice': 290,
+    'Zlín': 280,
   };
 
-  customizationOptions.forEach((option) => {
-    const customization = customizations.find((c) => c.optionId === option.id);
-    const selectionCount = customization?.choiceIds.length || 0;
-    const optionName = option.name[locale];
+  baseFee = cityRates[address.city] || 350; // Default rate for other cities
 
-    // Check required options
-    if (option.required && selectionCount === 0) {
-      result.errors.push({
-        optionId: option.id,
-        optionName,
-        error: `${optionName} is required`,
-        errorCode: "REQUIRED",
-      });
-    }
+  // Express delivery surcharge
+  if (isExpress) {
+    baseFee *= 1.5;
+  }
 
-    // Check minimum selections
-    if (option.minSelections && selectionCount < option.minSelections) {
-      result.errors.push({
-        optionId: option.id,
-        optionName,
-        error: `${optionName} requires at least ${option.minSelections} selections`,
-        errorCode: "MIN_SELECTIONS",
-      });
-    }
+  // Weekend delivery surcharge
+  const dayOfWeek = deliveryDate.getDay();
+  if (dayOfWeek === 0 || dayOfWeek === 6) { // Sunday or Saturday
+    baseFee += 100;
+  }
 
-    // Check maximum selections
-    if (option.maxSelections && selectionCount > option.maxSelections) {
-      result.errors.push({
-        optionId: option.id,
-        optionName,
-        error: `${optionName} allows maximum ${option.maxSelections} selections`,
-        errorCode: "MAX_SELECTIONS",
-      });
-    }
+  // Holiday surcharge (simplified - in real app would check holiday calendar)
+  const isHoliday = isPublicHoliday(deliveryDate);
+  if (isHoliday) {
+    baseFee += 150;
+  }
 
-    // Check if selected choices are available
-    if (customization) {
-      customization.choiceIds.forEach((choiceId) => {
-        const choice = option.choices.find((c) => c.id === choiceId);
-        if (!choice || !choice.available) {
-          result.errors.push({
-            optionId: option.id,
-            optionName,
-            error: `Selected option in ${optionName} is no longer available`,
-            errorCode: "UNAVAILABLE_CHOICE",
-          });
-        }
-      });
-    }
-  });
-
-  result.isValid = result.errors.length === 0;
-  return result;
+  return Math.round(baseFee);
 }
 
 /**
- * Check if customizations affect product availability
+ * Apply discounts to a price
  */
-export function checkCustomizationAvailability(
-  customizations: Customization[],
-  customizationOptions: CustomizationOption[]
-): {
-  available: boolean;
-  unavailableOptions: string[];
-  estimatedLeadTime?: number;
-} {
-  const unavailableOptions: string[] = [];
-  let maxLeadTime = 0;
+export function applyDiscounts(
+  originalPrice: number,
+  discounts: Discount[]
+): DiscountResult {
+  let currentPrice = originalPrice;
+  let totalDiscount = 0;
+  const appliedDiscounts: Discount[] = [];
 
-  customizations.forEach((customization) => {
-    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
-    if (!option) return;
+  for (const discount of discounts) {
+    let discountAmount = 0;
 
-    customization.choiceIds.forEach((choiceId) => {
-      const choice = option.choices.find((c) => c.id === choiceId);
-      if (!choice || !choice.available) {
-        unavailableOptions.push(option.name.cs || option.name.en);
+    if (discount.type === 'percentage') {
+      if (discount.value > 0 && discount.value <= 100) {
+        discountAmount = (currentPrice * discount.value) / 100;
       }
-      // Note: Lead time logic would be implemented here if choices had lead times
-    });
-  });
+    } else if (discount.type === 'fixed') {
+      if (discount.value > 0) {
+        discountAmount = Math.min(discount.value, currentPrice);
+      }
+    }
+
+    if (discountAmount > 0) {
+      currentPrice -= discountAmount;
+      totalDiscount += discountAmount;
+      appliedDiscounts.push(discount);
+    }
+  }
 
   return {
-    available: unavailableOptions.length === 0,
-    unavailableOptions,
-    estimatedLeadTime: maxLeadTime > 0 ? maxLeadTime : undefined,
+    finalPrice: Math.max(0, currentPrice),
+    totalDiscount,
+    appliedDiscounts,
   };
+}
+
+/**
+ * Check if a date is a public holiday (simplified implementation)
+ */
+function isPublicHoliday(date: Date): boolean {
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+
+  // Czech public holidays (simplified)
+  const holidays = [
+    { month: 1, day: 1 },   // New Year's Day
+    { month: 5, day: 1 },   // Labour Day
+    { month: 5, day: 8 },   // Liberation Day
+    { month: 7, day: 5 },   // Saints Cyril and Methodius Day
+    { month: 7, day: 6 },   // Jan Hus Day
+    { month: 9, day: 28 },  // Czech Statehood Day
+    { month: 10, day: 28 }, // Independent Czechoslovak State Day
+    { month: 11, day: 17 }, // Struggle for Freedom and Democracy Day
+    { month: 12, day: 24 }, // Christmas Eve
+    { month: 12, day: 25 }, // Christmas Day
+    { month: 12, day: 26 }, // St. Stephen's Day
+  ];
+
+  return holidays.some(holiday => holiday.month === month && holiday.day === day);
+}
+
+/**
+ * Calculate tax amount (VAT)
+ */
+export function calculateTax(price: number, taxRate: number = 0.21): number {
+  return Math.round(price * taxRate);
 }
 
 /**
  * Format price for display
  */
-export function formatPrice(
+export function formatPriceForDisplay(
   price: number,
-  locale: "cs" | "en" = "cs",
-  showSign: boolean = false
+  locale: 'cs' | 'en' = 'cs',
+  includeTax: boolean = true
 ): string {
-  const formattedAmount = price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US");
-  const currency = locale === "cs" ? "Kč" : "CZK";
-  const sign = showSign && price > 0 ? "+" : "";
+  const taxAmount = includeTax ? calculateTax(price) : 0;
+  const totalPrice = price + taxAmount;
 
-  return `${sign}${formattedAmount} ${currency}`;
+  if (locale === 'cs') {
+    return `${totalPrice.toLocaleString('cs-CZ')} Kč${includeTax ? ' (vč. DPH)' : ''}`;
+  } else {
+    return `CZK ${totalPrice.toLocaleString('en-US')}${includeTax ? ' (incl. VAT)' : ''}`;
+  }
 }

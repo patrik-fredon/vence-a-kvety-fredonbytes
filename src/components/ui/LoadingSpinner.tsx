@@ -1,18 +1,28 @@
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
   className?: string;
+  label?: string;
 }
 
-export function LoadingSpinner({ size = "md", className = "" }: LoadingSpinnerProps) {
+export function LoadingSpinner({ size = "md", className = "", label = "Načítání..." }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-6 h-6",
     lg: "w-8 h-8",
   };
 
+  // Check for reduced motion preference
+  const prefersReducedMotion = typeof window !== 'undefined' &&
+    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
   return (
-    <div className={`${sizeClasses[size]} ${className}`}>
-      <div className="animate-spin rounded-full border-2 border-primary-200 border-t-primary-600"></div>
+    <div
+      className={`${sizeClasses[size]} ${className}`}
+      role="status"
+      aria-label={label}
+    >
+      <div className={`rounded-full border-2 border-primary-200 border-t-primary-600 ${prefersReducedMotion ? '' : 'animate-spin'
+        }`}></div>
     </div>
   );
 }
