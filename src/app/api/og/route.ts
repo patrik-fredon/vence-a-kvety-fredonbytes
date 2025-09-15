@@ -1,7 +1,5 @@
 import { ImageResponse } from 'next/og';
 import { NextRequest } from 'next/server';
-import { title } from 'process';
-import { title } from 'process';
 
 export const runtime = 'edge';
 
@@ -180,8 +178,7 @@ style = {{
             >
   { locale === 'cs'
   ? 'Prémiové pohřební věnce • Ruční výroba • Rychlé dodání'
-  : 'Premium funeral wreaths • Handcrafted • Fast delivery'
-              }
+  : 'Premium funeral wreaths • Handcrafted • Fast delivery'}
 </div>
   </div>
   </div>

@@ -18,7 +18,15 @@
     "test:all": "npm run type-check && npm run lint && npm run test && npm run build",
     "clean": "rm -rf .next out dist coverage",
     "analyze": "cross-env ANALYZE=true next build",
-    "postinstall": "playwright install"
+    "postinstall": "playwright install",
+    "db:migrate": "node scripts/migrate.js",
+    "db:seed:production": "node scripts/seed-production.js",
+    "deploy": "./scripts/deploy.sh",
+    "deploy:production": "./scripts/deploy.sh production",
+    "deploy:preview": "./scripts/deploy.sh preview",
+    "deploy:verify": "node scripts/verify-deployment-setup.js",
+    "vercel:build": "npm run build",
+    "vercel:dev": "next dev"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",

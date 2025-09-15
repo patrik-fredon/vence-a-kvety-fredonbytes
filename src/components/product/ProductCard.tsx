@@ -186,6 +186,6 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
           )}
         </div>
       </div>
-    </div>
+    </article>
   );
 }
