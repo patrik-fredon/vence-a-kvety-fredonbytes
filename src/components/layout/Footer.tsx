@@ -22,7 +22,11 @@ export function Footer({ locale }: FooterProps) {
         </footer>
       }
     >
-      <footer className="bg-primary-900 text-primary-100 py-12 mt-20" role="contentinfo">
+      <footer
+        id="footer"
+        className="bg-primary-900 text-primary-100 py-12 mt-20"
+        role="contentinfo"
+      >
         <div className="container mx-auto px-4">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
             {/* Company Info */}

@@ -10,6 +10,7 @@ import {
   generateProductStructuredData,
   generateBreadcrumbStructuredData
 } from "@/components/seo/StructuredData";
+import { generateProductMetadata } from "@/components/seo/PageMetadata";
 
 interface ProductDetailPageProps {
   params: Promise<{
@@ -185,22 +186,24 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   const seoMetadata = data.seo_metadata as any;
   const seoTitle = seoMetadata?.title?.[locale] as string;
   const seoDescription = seoMetadata?.description?.[locale] as string;
-  const ogImage = seoMetadata?.ogImage as string;
 
-  // Get first product image if no OG image specified
+  // Get first product image
   const productImages = data.images as any[];
-  const firstImage = productImages?.[0]?.url || ogImage;
+  const firstImage = productImages?.[0]?.url;
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
-  const productUrl = `${baseUrl}/${locale}/products/${slug}`;
-
-  // Enhanced title with category context
-  const finalTitle = seoTitle || `${name} | ${categoryName} | Pohřební věnce`;
-  const finalDescription = seoDescription || description || `${name} - prémiové pohřební věnce a květinové aranžmá od Ketingmar s.r.o.`;
-
-  return {
-    title: finalTitle,
-    description: finalDescription,
+  // Use the new generateProductMetadata function
+  return generateProductMetadata({
+    product: {
+      name: seoTitle || name,
+      description: seoDescription || description || undefined,
+      price: data.base_price,
+      category: categoryName,
+      images: productImages?.map(img => ({ url: img.url, alt: img.alt || name })),
+      availability: 'InStock', // This should be dynamic based on actual availability
+      brand: 'Ketingmar s.r.o.',
+    },
+    locale,
+    slug,
     keywords: [
       name.toLowerCase(),
       categoryName.toLowerCase(),
@@ -211,47 +214,5 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       "věnce",
       "ketingmar"
     ].filter(Boolean),
-    authors: [{ name: "Ketingmar s.r.o." }],
-    creator: "Ketingmar s.r.o.",
-    publisher: "Ketingmar s.r.o.",
-    robots: "index, follow",
-    alternates: {
-      canonical: productUrl,
-      languages: {
-        cs: `${baseUrl}/cs/products/${slug}`,
-        en: `${baseUrl}/en/products/${slug}`,
-      },
-    },
-    openGraph: {
-      type: "product",
-      locale: locale === "cs" ? "cs_CZ" : "en_US",
-      alternateLocale: locale === "cs" ? "en_US" : "cs_CZ",
-      title: finalTitle,
-      description: finalDescription,
-      siteName: "Pohřební věnce | Ketingmar s.r.o.",
-      url: productUrl,
-      images: firstImage ? [
-        {
-          url: firstImage.startsWith('http') ? firstImage : `${baseUrl}${firstImage}`,
-          width: 1200,
-          height: 630,
-          alt: name,
-          type: "image/jpeg",
-        }
-      ] : [],
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: finalTitle,
-      description: finalDescription,
-      images: firstImage ? [firstImage.startsWith('http') ? firstImage : `${baseUrl}${firstImage}`] : [],
-    },
-    other: {
-      "product:price:amount": data.base_price?.toString(),
-      "product:price:currency": "CZK",
-      "product:availability": "in stock", // This should be dynamic based on actual availability
-      "product:brand": "Ketingmar s.r.o.",
-      "product:category": categoryName,
-    },
-  };
+  });
 }

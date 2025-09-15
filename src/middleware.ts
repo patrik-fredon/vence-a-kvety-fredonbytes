@@ -3,12 +3,42 @@ import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth/config";
 import createIntlMiddleware from "next-intl/middleware";
 import { locales, defaultLocale } from "./i18n/config";
+import { Ratelimit } from "@upstash/ratelimit";
+import { Redis } from "@upstash/redis";
 
 // Create the internationalization middleware
 const intlMiddleware = createIntlMiddleware({
   locales,
   defaultLocale,
   localePrefix: "always",
+});
+
+// Initialize rate limiting
+const redis = Redis.fromEnv();
+
+// Different rate limits for different types of requests
+const generalRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(100, "1 m"), // 100 requests per minute
+  analytics: true,
+});
+
+const apiRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(30, "1 m"), // 30 API requests per minute
+  analytics: true,
+});
+
+const authRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(5, "1 m"), // 5 auth attempts per minute
+  analytics: true,
+});
+
+const strictRateLimit = new Ratelimit({
+  redis,
+  limiter: Ratelimit.slidingWindow(10, "1 m"), // 10 requests per minute for sensitive operations
+  analytics: true,
 });
 
 // Define protected routes (without locale prefix)
@@ -22,6 +52,49 @@ const adminRoutes = ["/admin"];
 
 export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
+
+  // Get client IP for rate limiting
+  const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "127.0.0.1";
+
+  // Apply rate limiting based on route type
+  let rateLimitResult;
+
+  if (pathname.startsWith("/api/")) {
+    // API routes get stricter rate limiting
+    if (pathname.includes("/auth/") || pathname.includes("/payment")) {
+      rateLimitResult = await authRateLimit.limit(ip);
+    } else if (pathname.includes("/admin/") || pathname.includes("/orders/")) {
+      rateLimitResult = await strictRateLimit.limit(ip);
+    } else {
+      rateLimitResult = await apiRateLimit.limit(ip);
+    }
+  } else {
+    // General page requests
+    rateLimitResult = await generalRateLimit.limit(ip);
+  }
+
+  // Check if rate limit exceeded
+  if (!rateLimitResult.success) {
+    return new NextResponse(
+      JSON.stringify({
+        error: {
+          code: "RATE_LIMIT_EXCEEDED",
+          message: "Too many requests. Please try again later.",
+          retryAfter: Math.round(rateLimitResult.reset / 1000),
+        },
+      }),
+      {
+        status: 429,
+        headers: {
+          "Content-Type": "application/json",
+          "Retry-After": Math.round(rateLimitResult.reset / 1000).toString(),
+          "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+          "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+          "X-RateLimit-Reset": new Date(rateLimitResult.reset).toISOString(),
+        },
+      }
+    );
+  }
 
   // Handle internationalization first
   const intlResponse = intlMiddleware(request);

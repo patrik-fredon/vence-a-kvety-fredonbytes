@@ -177,3 +177,236 @@ export function validateStructuredData(data: any): boolean {
     return false;
   }
 }
+
+/**
+ * Generate dynamic Open Graph image URL
+ */
+export function generateDynamicOgImage(params: {
+  title: string;
+  subtitle?: string;
+  category?: string;
+  price?: number;
+  locale: string;
+}): string {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+
+  const searchParams = new URLSearchParams({
+    title: params.title.substring(0, 60),
+    locale: params.locale,
+    ...(params.subtitle && { subtitle: params.subtitle.substring(0, 80) }),
+    ...(params.category && { category: params.category }),
+    ...(params.price && { price: params.price.toString() }),
+  });
+
+  return `${baseUrl}/api/og?${searchParams.toString()}`;
+}
+
+/**
+ * Generate enhanced meta tags for different page types
+ */
+export function generateEnhancedMetaTags(params: {
+  title: string;
+  description: string;
+  keywords?: string[];
+  locale: string;
+  path: string;
+  type?: 'website' | 'product' | 'article' | 'profile';
+  image?: string;
+  price?: number;
+  availability?: string;
+  brand?: string;
+  category?: string;
+  publishedTime?: string;
+  modifiedTime?: string;
+  author?: string;
+}) {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const fullUrl = `${baseUrl}/${params.locale}${params.path}`;
+
+  const metaTags: Record<string, string> = {
+    // Basic meta tags
+    'title': params.title,
+    'description': params.description,
+    'robots': 'index, follow',
+    'canonical': fullUrl,
+    'language': params.locale === 'cs' ? 'cs-CZ' : 'en-US',
+
+    // Open Graph
+    'og:type': params.type || 'website',
+    'og:title': params.title,
+    'og:description': params.description,
+    'og:url': fullUrl,
+    'og:site_name': 'Pohřební věnce | Ketingmar s.r.o.',
+    'og:locale': params.locale === 'cs' ? 'cs_CZ' : 'en_US',
+    'og:locale:alternate': params.locale === 'cs' ? 'en_US' : 'cs_CZ',
+
+    // Twitter Card
+    'twitter:card': 'summary_large_image',
+    'twitter:title': params.title,
+    'twitter:description': params.description,
+    'twitter:site': '@ketingmar', // Add when available
+    'twitter:creator': '@ketingmar',
+
+    // Additional meta tags
+    'theme-color': '#1f2937',
+    'msapplication-TileColor': '#1f2937',
+    'apple-mobile-web-app-capable': 'yes',
+    'apple-mobile-web-app-status-bar-style': 'default',
+    'format-detection': 'telephone=no',
+  };
+
+  // Add keywords if provided
+  if (params.keywords && params.keywords.length > 0) {
+    metaTags['keywords'] = params.keywords.join(', ');
+  }
+
+  // Add image if provided
+  if (params.image) {
+    const imageUrl = params.image.startsWith('http') ? params.image : `${baseUrl}${params.image}`;
+    metaTags['og:image'] = imageUrl;
+    metaTags['og:image:width'] = '1200';
+    metaTags['og:image:height'] = '630';
+    metaTags['og:image:alt'] = params.title;
+    metaTags['twitter:image'] = imageUrl;
+  }
+
+  // Product-specific meta tags
+  if (params.type === 'product') {
+    if (params.price) {
+      metaTags['product:price:amount'] = params.price.toString();
+      metaTags['product:price:currency'] = 'CZK';
+    }
+    if (params.availability) {
+      metaTags['product:availability'] = params.availability;
+    }
+    if (params.brand) {
+      metaTags['product:brand'] = params.brand;
+    }
+    if (params.category) {
+      metaTags['product:category'] = params.category;
+    }
+  }
+
+  // Article-specific meta tags
+  if (params.type === 'article') {
+    if (params.publishedTime) {
+      metaTags['article:published_time'] = params.publishedTime;
+    }
+    if (params.modifiedTime) {
+      metaTags['article:modified_time'] = params.modifiedTime;
+    }
+    if (params.author) {
+      metaTags['article:author'] = params.author;
+    }
+  }
+
+  return metaTags;
+}
+
+/**
+ * Generate JSON-LD script tag
+ */
+export function generateJsonLdScript(data: any): string {
+  if (!validateStructuredData(data)) {
+    console.warn('Invalid structured data provided');
+    return '';
+  }
+
+  return `<script type="application/ld+json">${JSON.stringify(data, null, 2)}</script>`;
+}
+
+/**
+ * Optimize URL structure for SEO
+ */
+export function optimizeUrlStructure(path: string, params?: Record<string, any>): string {
+  let optimizedPath = path;
+
+  // Remove trailing slashes
+  optimizedPath = optimizedPath.replace(/\/+$/, '');
+
+  // Ensure leading slash
+  if (!optimizedPath.startsWith('/')) {
+    optimizedPath = '/' + optimizedPath;
+  }
+
+  // Clean up double slashes
+  optimizedPath = optimizedPath.replace(/\/+/g, '/');
+
+  // Add clean query parameters if provided
+  if (params && Object.keys(params).length > 0) {
+    const cleanParams = cleanUrlParams(params);
+    const searchParams = new URLSearchParams(cleanParams);
+    const queryString = searchParams.toString();
+
+    if (queryString) {
+      optimizedPath += '?' + queryString;
+    }
+  }
+
+  return optimizedPath;
+}
+
+/**
+ * Generate hreflang attributes for multilingual pages
+ */
+export function generateHreflangAttributes(path: string): Record<string, string> {
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+
+  return {
+    'cs': `${baseUrl}/cs${path}`,
+    'en': `${baseUrl}/en${path}`,
+    'x-default': `${baseUrl}/cs${path}`, // Default to Czech
+  };
+}
+
+/**
+ * Calculate reading time for content
+ */
+export function calculateReadingTime(content: string): number {
+  const wordsPerMinute = 200; // Average reading speed
+  const words = content.trim().split(/\s+/).length;
+  return Math.ceil(words / wordsPerMinute);
+}
+
+/**
+ * Generate schema markup for reviews/ratings
+ */
+export function generateReviewSchema(reviews: Array<{
+  author: string;
+  rating: number;
+  reviewBody: string;
+  datePublished: string;
+}>, itemName: string): any {
+  if (reviews.length === 0) return null;
+
+  const totalRating = reviews.reduce((sum, review) => sum + review.rating, 0);
+  const averageRating = totalRating / reviews.length;
+
+  return {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    name: itemName,
+    aggregateRating: {
+      "@type": "AggregateRating",
+      ratingValue: averageRating.toFixed(1),
+      reviewCount: reviews.length,
+      bestRating: "5",
+      worstRating: "1",
+    },
+    review: reviews.map(review => ({
+      "@type": "Review",
+      author: {
+        "@type": "Person",
+        name: review.author,
+      },
+      reviewRating: {
+        "@type": "Rating",
+        ratingValue: review.rating,
+        bestRating: "5",
+        worstRating: "1",
+      },
+      reviewBody: review.reviewBody,
+      datePublished: review.datePublished,
+    })),
+  };
+}

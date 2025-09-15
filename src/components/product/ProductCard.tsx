@@ -43,13 +43,15 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
   const availability = getAvailabilityStatus();
 
   return (
-    <div
+    <article
       className={cn(
         "group bg-white rounded-lg shadow-soft overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      role="article"
+      aria-labelledby={`product-${product.id}-title`}
     >
       {/* Product Image */}
       <div className="relative aspect-square overflow-hidden bg-neutral-100">
@@ -97,6 +99,8 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
             "absolute top-3 right-3 px-2 py-1 rounded-md text-xs font-medium",
             availability.className
           )}
+          role="status"
+          aria-label={`Dostupnost: ${availability.text}`}
         >
           {availability.text}
         </div>
@@ -136,7 +140,10 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
       {/* Product Info */}
       <div className="p-4">
         <Link href={`/${locale}/products/${product.slug}`} className="block">
-          <h3 className="font-elegant text-lg font-semibold text-primary-800 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors">
+          <h3
+            id={`product-${product.id}-title`}
+            className="font-elegant text-lg font-semibold text-primary-800 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors"
+          >
             {product.name[locale as keyof typeof product.name]}
           </h3>
         </Link>

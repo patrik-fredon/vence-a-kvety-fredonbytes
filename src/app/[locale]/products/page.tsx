@@ -13,7 +13,9 @@ import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
 import {
   StructuredData,
   generateBreadcrumbStructuredData,
-  generateWebsiteStructuredData
+  generateWebsiteStructuredData,
+  generateItemListStructuredData,
+  generateCollectionPageStructuredData
 } from "@/components/seo/StructuredData";
 
 interface ProductsPageProps {
@@ -158,10 +160,44 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
   const breadcrumbStructuredData = generateBreadcrumbStructuredData(breadcrumbs, locale);
   const websiteStructuredData = generateWebsiteStructuredData(locale);
 
+  // Generate ItemList structured data for products
+  const productItems = products.map(product => ({
+    name: locale === "cs" ? product.name.cs : product.name.en,
+    url: `/${locale}/products/${product.slug}`,
+    image: product.images?.[0]?.url,
+    description: locale === "cs" ? product.description?.cs : product.description?.en,
+    price: product.basePrice,
+  }));
+
+  const itemListStructuredData = generateItemListStructuredData(
+    productItems,
+    locale === "cs" ? "Pohřební věnce a květinové aranžmá" : "Funeral Wreaths and Floral Arrangements",
+    locale
+  );
+
+  // Generate CollectionPage structured data if filtering by category
+  let collectionPageStructuredData = null;
+  if (category && typeof category === "string") {
+    const categoryData = categories.find(cat => cat.slug === category);
+    if (categoryData) {
+      const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
+      const categoryDescription = locale === "cs" ? categoryData.description?.cs : categoryData.description?.en;
+
+      collectionPageStructuredData = generateCollectionPageStructuredData({
+        name: categoryName,
+        description: categoryDescription,
+        url: `/${locale}/products?category=${category}`,
+        productCount: products.length, // This would be the total count in a real implementation
+      }, locale);
+    }
+  }
+
   return (
     <>
       <StructuredData data={breadcrumbStructuredData} />
       <StructuredData data={websiteStructuredData} />
+      <StructuredData data={itemListStructuredData} />
+      {collectionPageStructuredData && <StructuredData data={collectionPageStructuredData} />}
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="mb-8">

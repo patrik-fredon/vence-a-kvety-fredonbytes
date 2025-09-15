@@ -52,15 +52,10 @@ export function Header({ locale }: HeaderProps) {
 
   return (
     <>
-      {/* Skip to main content link for accessibility */}
-      <a
-        href="#main-content"
-        className="sr-only focus:not-sr-only focus:absolute focus:top-4 focus:left-4 bg-primary-600 text-white px-4 py-2 rounded-lg z-50"
+      <header
+        className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-40"
+        role="banner"
       >
-        Přejít na hlavní obsah
-      </a>
-
-      <header className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-40">
         <div className="container mx-auto px-4">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}

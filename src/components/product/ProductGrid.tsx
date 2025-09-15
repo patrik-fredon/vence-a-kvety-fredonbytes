@@ -7,6 +7,8 @@ import { ProductCard } from "./ProductCard";
 import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
+import { KeyboardNavigationGrid } from "@/components/accessibility/KeyboardNavigationGrid";
+import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
 
 interface ProductGridProps {
@@ -26,6 +28,7 @@ export function ProductGrid({
 }: ProductGridProps) {
   const t = useTranslations("product");
   const tCommon = useTranslations("common");
+  const announce = useAnnouncer();
 
   // State management
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -97,6 +100,17 @@ export function ProductGrid({
         setTotalProducts(pagination?.total || 0);
         setHasMore(page < (pagination?.totalPages || 1));
         setCurrentPage(page);
+
+        // Announce results to screen readers
+        if (resetProducts || page === 1) {
+          announce(
+            t("showingResults", {
+              count: newProducts.length,
+              total: pagination?.total || 0,
+            }),
+            'polite'
+          );
+        }
       } catch (err) {
         console.error("Error fetching products:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
@@ -190,16 +204,29 @@ export function ProductGrid({
       {!error && (
         <>
           {products.length > 0 ? (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  locale={locale}
-                  onAddToCart={handleAddToCart}
-                />
+            <KeyboardNavigationGrid
+              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+              columns={4}
+              orientation="both"
+              ariaLabel={t("title")}
+              onItemActivate={(index, element) => {
+                // Handle Enter/Space key activation
+                const link = element.querySelector('a');
+                if (link) {
+                  link.click();
+                }
+              }}
+            >
+              {products.map((product, index) => (
+                <div key={product.id} data-keyboard-nav-item tabIndex={index === 0 ? 0 : -1}>
+                  <ProductCard
+                    product={product}
+                    locale={locale}
+                    onAddToCart={handleAddToCart}
+                  />
+                </div>
               ))}
-            </div>
+            </KeyboardNavigationGrid>
           ) : !loading ? (
             // No Results State
             <div className="text-center py-12">
