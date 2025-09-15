@@ -5,6 +5,7 @@ import { locales, type Locale } from "@/i18n/config";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { AuthProvider } from "@/components/auth/AuthProvider";
 import { CartProvider } from "@/lib/cart/context";
+import { AccessibilityProvider } from "@/lib/accessibility/context";
 import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
 
 interface LocaleLayoutProps {
@@ -29,11 +30,13 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <AuthProvider>
-        <CartProvider>
-          <MainLayout locale={locale}>{children}</MainLayout>
-        </CartProvider>
-      </AuthProvider>
+      <AccessibilityProvider>
+        <AuthProvider>
+          <CartProvider>
+            <MainLayout locale={locale}>{children}</MainLayout>
+          </CartProvider>
+        </AuthProvider>
+      </AccessibilityProvider>
     </NextIntlClientProvider>
   );
 }

@@ -92,7 +92,11 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
 
   if (mobile) {
     return (
-      <nav className="space-y-2">
+      <nav
+        className="space-y-2"
+        role="navigation"
+        aria-label="Mobilní navigace"
+      >
         {navItems.map((item) => (
           <div key={item.href}>
             {item.hasDropdown ? (
@@ -166,7 +170,13 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
   }
 
   return (
-    <nav className="flex items-center space-x-8" ref={dropdownRef}>
+    <nav
+      id="main-navigation"
+      className="flex items-center space-x-8"
+      ref={dropdownRef}
+      role="navigation"
+      aria-label="Hlavní navigace"
+    >
       {navItems.map((item) => (
         <div key={item.href} className="relative">
           {item.hasDropdown ? (
