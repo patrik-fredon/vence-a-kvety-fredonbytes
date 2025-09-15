@@ -39,7 +39,8 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "stripe": "^18.5.0",
-    "tailwind-merge": "^2.5.4"
+    "tailwind-merge": "^2.5.4",
+    "web-vitals": "^5.1.0"
   },
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
