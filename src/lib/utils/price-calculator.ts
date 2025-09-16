@@ -171,3 +171,25 @@ export function formatPriceForDisplay(
     return `CZK ${totalPrice.toLocaleString('en-US')}${includeTax ? ' (incl. VAT)' : ''}`;
   }
 }
+
+/**
+ * Alias for formatPriceForDisplay for backward compatibility
+ */
+export const formatPrice = formatPriceForDisplay;
+
+/**
+ * Calculate final price with customizations and discounts
+ */
+export function calculateFinalPrice(
+  basePrice: number,
+  customizations: Customization[] = [],
+  discounts: Discount[] = []
+): number {
+  // First calculate total with customizations
+  const totalWithCustomizations = calculateTotalPrice(basePrice, customizations);
+
+  // Then apply discounts
+  const result = applyDiscounts(totalWithCustomizations, discounts);
+
+  return result.finalPrice;
+}

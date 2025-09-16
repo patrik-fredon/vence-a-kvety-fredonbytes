@@ -99,23 +99,5 @@ export function usePerformanceReporting() {
     performanceMonitor.recordMetric(name, value, context);
   };
 
-  const measureFunction = async<T>(
-    name: string,
-    fn: () => Promise<T> | T,
-    context ?: string
-  ): Promise<T> => {
-    const start = performance.now();
-    try {
-      const result = await fn();
-    const duration = performance.now() - start;
-    recordMetric(name, duration, context);
-    return result;
-    } catch (error) {
-      const duration = performance.now() - start;
-    recordMetric(`${name}_ERROR`, duration, context);
-    throw error;
-    }
-  };
-
-    return {recordMetric, measureFunction};
+  return { recordMetric };
 }

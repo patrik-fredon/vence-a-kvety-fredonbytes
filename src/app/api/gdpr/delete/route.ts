@@ -46,20 +46,26 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate request body
-    const bodyValidation = await validateRequestBody(request, (body: any) => {
+    const bodyValidation = await validateRequestBody(request, (body: any): ValidationResult<DeleteRequestBody> => {
       const confirmationResult = validateRequiredString(body.confirmation, "confirmation");
       const reasonResult = body.reason
         ? validateRequiredString(body.reason, "reason", 500)
         : { isValid: true, data: undefined, errors: [] };
 
+      // Collect all errors
+      const allErrors = [...confirmationResult.errors, ...reasonResult.errors];
+
       if (!confirmationResult.isValid) {
-        return confirmationResult;
+        return {
+          isValid: false,
+          errors: allErrors,
+        };
       }
 
       if (confirmationResult.data !== "DELETE_MY_DATA") {
         return {
           isValid: false,
-          errors: [{
+          errors: [...allErrors, {
             field: "confirmation",
             message: "Invalid confirmation text. Please type 'DELETE_MY_DATA' to confirm.",
             code: "INVALID_CONFIRMATION"
@@ -67,13 +73,20 @@ export async function POST(request: NextRequest) {
         };
       }
 
+      if (!reasonResult.isValid) {
+        return {
+          isValid: false,
+          errors: allErrors,
+        };
+      }
+
       return {
-        isValid: reasonResult.isValid,
+        isValid: true,
         data: {
           confirmation: confirmationResult.data,
           reason: reasonResult.data,
         },
-        errors: reasonResult.errors,
+        errors: [],
       };
     });
 
