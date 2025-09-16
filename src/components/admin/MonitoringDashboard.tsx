@@ -185,8 +185,8 @@ export function MonitoringDashboard() {
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
               className={`${activeTab === tab.id
-                  ? 'border-primary-500 text-primary-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                ? 'border-primary-500 text-primary-600'
+                : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
                 } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center`}
             >
               <tab.icon className="w-4 h-4 mr-2" />
@@ -347,7 +347,7 @@ export function MonitoringDashboard() {
             </div>
             <div className="border-t border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 p-6">
-                {['LCP', 'FID', 'CLS', 'FCP', 'TTFB'].map((metric) => {
+                {['LCP', 'INP', 'CLS', 'FCP', 'TTFB'].map((metric) => {
                   const value = stats?.performance.averageValues[metric];
                   return (
                     <div key={metric} className="text-center">

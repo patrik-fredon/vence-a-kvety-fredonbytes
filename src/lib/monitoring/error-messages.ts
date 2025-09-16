@@ -248,9 +248,11 @@ export function getErrorMessage(error: Error, context: ErrorContext = {}): Error
               });
             } else {
               // Fallback: clear localStorage and reload
-              localStorage.clear();
-              sessionStorage.clear();
-              window.location.reload();
+              if (typeof window !== 'undefined') {
+                localStorage.clear();
+                sessionStorage.clear();
+                (window as any).location.reload();
+              }
             }
           },
         },

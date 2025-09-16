@@ -92,7 +92,7 @@ export function withSecurity(
         user = {
           id: session.user.id,
           email: session.user.email || undefined,
-          role: session.user.role || "user",
+          role: (session.user as any).role || "user",
         };
         isAuthenticated = true;
 

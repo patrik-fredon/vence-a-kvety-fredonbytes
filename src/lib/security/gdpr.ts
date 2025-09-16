@@ -72,7 +72,7 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
 
     // Get user profile
     const { data: userProfile, error: userError } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .select("*")
       .eq("id", userId)
       .single();
@@ -103,35 +103,18 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
       console.error("Error fetching cart items:", cartError);
     }
 
-    // Get addresses
-    const { data: addresses, error: addressError } = await supabase
-      .from("user_addresses")
-      .select("*")
-      .eq("user_id", userId);
-
-    if (addressError) {
-      console.error("Error fetching addresses:", addressError);
-    }
-
-    // Get activity log
-    const { data: activityLog, error: activityError } = await supabase
-      .from("user_activity_log")
-      .select("*")
-      .eq("user_id", userId)
-      .order("created_at", { ascending: false })
-      .limit(1000); // Limit to last 1000 activities
-
-    if (activityError) {
-      console.error("Error fetching activity log:", activityError);
-    }
+    // Note: user_addresses and user_activity_log tables don't exist in current schema
+    // These would need to be created if address and activity tracking is needed
+    const addresses: any[] = [];
+    const activityLog: any[] = [];
 
     // Compile export data
     const exportData: GDPRDataExport = {
       user: {
         id: userProfile.id,
         email: userProfile.email,
-        name: userProfile.name,
-        phone: userProfile.phone,
+        name: userProfile.name || undefined,
+        phone: userProfile.phone || undefined,
         createdAt: userProfile.created_at,
         updatedAt: userProfile.updated_at,
       },
@@ -141,29 +124,20 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
         totalAmount: order.total_amount,
         customerInfo: order.customer_info,
         deliveryInfo: order.delivery_info,
-        items: order.items,
+        items: Array.isArray(order.items) ? order.items : [],
         createdAt: order.created_at,
       })) || [],
       cartItems: cartItems?.map(item => ({
         id: item.id,
-        productId: item.product_id,
+        productId: item.product_id || '',
         quantity: item.quantity,
-        customizations: item.customizations,
+        customizations: Array.isArray(item.customizations) ? item.customizations : [],
         createdAt: item.created_at,
       })) || [],
-      addresses: addresses?.map(address => ({
-        id: address.id,
-        street: address.street,
-        city: address.city,
-        postalCode: address.postal_code,
-        country: address.country,
-        isDefault: address.is_default,
-      })) || [],
-      preferences: {
-        language: userProfile.preferred_language || "cs",
-        currency: userProfile.preferred_currency || "CZK",
-        notifications: userProfile.notification_preferences || {},
-      },
+      addresses: Array.isArray(userProfile.addresses) ? userProfile.addresses as any[] : [],
+      preferences: typeof userProfile.preferences === 'object' && userProfile.preferences !== null
+        ? userProfile.preferences
+        : { language: "cs", currency: "CZK", notifications: {} },
       activityLog: activityLog?.map(log => ({
         action: log.action,
         timestamp: log.created_at,
@@ -262,7 +236,7 @@ export async function deleteUserData(userId: string): Promise<GDPRDeletionResult
 
     // Delete user profile
     const { error: userError } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .delete()
       .eq("id", userId);
 

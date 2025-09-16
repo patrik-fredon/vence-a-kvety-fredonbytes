@@ -231,7 +231,7 @@ export const KeyboardNavigation = {
     }
 
     if (newIndex !== currentIndex && elements[newIndex]) {
-      elements[newIndex].focus();
+      elements[newIndex]?.focus();
     }
 
     return newIndex;
