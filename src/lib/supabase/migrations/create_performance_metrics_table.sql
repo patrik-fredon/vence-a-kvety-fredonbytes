@@ -69,7 +69,7 @@ SELECT
   PERCENTILE_CONT(0.75) WITHIN GROUP (ORDER BY value) as p75_value,
   MAX(created_at) as last_measurement
 FROM performance_metrics
-WHERE name IN ('LCP', 'FID', 'CLS', 'FCP', 'TTFB')
+WHERE name IN ('LCP', 'INP', 'CLS', 'FCP', 'TTFB')
   AND created_at >= NOW() - INTERVAL '30 days'
 GROUP BY name
 ORDER BY name;

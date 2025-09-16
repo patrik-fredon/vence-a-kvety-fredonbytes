@@ -11,7 +11,7 @@ interface PerformanceMetric {
 
 interface WebVitalsThresholds {
   LCP: { good: number; poor: number }; // Largest Contentful Paint
-  FID: { good: number; poor: number }; // First Input Delay
+  INP: { good: number; poor: number }; // Interaction to Next Paint (replaces FID)
   CLS: { good: number; poor: number }; // Cumulative Layout Shift
   FCP: { good: number; poor: number }; // First Contentful Paint
   TTFB: { good: number; poor: number }; // Time to First Byte
@@ -25,7 +25,7 @@ class PerformanceMonitor {
   // Web Vitals thresholds (in milliseconds, except CLS which is unitless)
   private thresholds: WebVitalsThresholds = {
     LCP: { good: 2500, poor: 4000 },
-    FID: { good: 100, poor: 300 },
+    INP: { good: 200, poor: 500 }, // INP thresholds (replaces FID)
     CLS: { good: 0.1, poor: 0.25 },
     FCP: { good: 1800, poor: 3000 },
     TTFB: { good: 800, poor: 1800 },
@@ -44,13 +44,14 @@ class PerformanceMonitor {
   private async initializeWebVitals() {
     try {
       // Dynamic import to avoid SSR issues
-      const { getCLS, getFID, getFCP, getLCP, getTTFB } = await import('web-vitals');
+      const webVitals = await import('web-vitals');
 
-      getCLS(this.handleMetric.bind(this));
-      getFID(this.handleMetric.bind(this));
-      getFCP(this.handleMetric.bind(this));
-      getLCP(this.handleMetric.bind(this));
-      getTTFB(this.handleMetric.bind(this));
+      // Use available functions from web-vitals v5+
+      if (webVitals.onCLS) webVitals.onCLS(this.handleMetric.bind(this));
+      if (webVitals.onINP) webVitals.onINP(this.handleMetric.bind(this)); // INP replaces FID in v5+
+      if (webVitals.onFCP) webVitals.onFCP(this.handleMetric.bind(this));
+      if (webVitals.onLCP) webVitals.onLCP(this.handleMetric.bind(this));
+      if (webVitals.onTTFB) webVitals.onTTFB(this.handleMetric.bind(this));
     } catch (error) {
       console.warn('Web Vitals library not available:', error);
     }
@@ -83,7 +84,7 @@ class PerformanceMonitor {
         this.recordMetric('SERVER_RESPONSE', responseTime);
 
         // DOM processing time
-        const domTime = navigation.domContentLoadedEventEnd - navigation.domLoading;
+        const domTime = navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
         this.recordMetric('DOM_PROCESSING', domTime);
       }
     }
@@ -231,7 +232,7 @@ class PerformanceMonitor {
 
     switch (metricName) {
       case 'LCP':
-      case 'FID':
+      case 'INP':
       case 'CLS':
       case 'FCP':
       case 'TTFB':
