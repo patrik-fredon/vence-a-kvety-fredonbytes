@@ -13,16 +13,22 @@ let redis: Redis | null = null;
  */
 export function getRedisClient(): Redis {
   if (!redis) {
-    const redisUrl = process.env.REDIS_URL;
+    // Use Upstash standard environment variables
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.REDIS_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.REDIS_TOKEN;
 
     if (!redisUrl) {
-      throw new Error("REDIS_URL environment variable is not set");
+      throw new Error("UPSTASH_REDIS_REST_URL or REDIS_URL environment variable is not set");
+    }
+
+    if (!redisToken) {
+      throw new Error("UPSTASH_REDIS_REST_TOKEN or REDIS_TOKEN environment variable is not set");
     }
 
     // Initialize Upstash Redis client
     redis = new Redis({
       url: redisUrl,
-      token: process.env.REDIS_TOKEN,
+      token: redisToken,
     });
   }
 
