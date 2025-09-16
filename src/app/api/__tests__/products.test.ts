@@ -125,7 +125,7 @@ describe('/api/products', () => {
           })),
         })),
       })),
-    }));
+    })) as any;
 
     const request = new NextRequest('http://localhost:3000/api/products');
     const response = await GET(request);

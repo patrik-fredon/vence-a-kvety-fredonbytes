@@ -24,13 +24,13 @@ describe('Security Validation', () => {
       const result = validateEmail('invalid-email');
       expect(result.isValid).toBe(false);
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0].code).toBe('INVALID_FORMAT');
+      expect(result.errors[0]?.code).toBe('INVALID_FORMAT');
     });
 
     it('should reject empty email', () => {
       const result = validateEmail('');
       expect(result.isValid).toBe(false);
-      expect(result.errors[0].code).toBe('REQUIRED');
+      expect(result.errors[0]?.code).toBe('REQUIRED');
     });
   });
 
@@ -50,7 +50,7 @@ describe('Security Validation', () => {
     it('should reject invalid phone numbers', () => {
       const result = validatePhone('123');
       expect(result.isValid).toBe(false);
-      expect(result.errors[0].code).toBe('INVALID_FORMAT');
+      expect(result.errors[0]?.code).toBe('INVALID_FORMAT');
     });
   });
 
@@ -65,7 +65,7 @@ describe('Security Validation', () => {
     it('should reject invalid UUIDs', () => {
       const result = validateUUID('invalid-uuid');
       expect(result.isValid).toBe(false);
-      expect(result.errors[0].code).toBe('INVALID_FORMAT');
+      expect(result.errors[0]?.code).toBe('INVALID_FORMAT');
     });
   });
 
@@ -79,19 +79,19 @@ describe('Security Validation', () => {
     it('should reject numbers below minimum', () => {
       const result = validateNumber(0, 'quantity', 1, 10);
       expect(result.isValid).toBe(false);
-      expect(result.errors[0].code).toBe('MIN_VALUE');
+      expect(result.errors[0]?.code).toBe('MIN_VALUE');
     });
 
     it('should reject numbers above maximum', () => {
       const result = validateNumber(15, 'quantity', 1, 10);
       expect(result.isValid).toBe(false);
-      expect(result.errors[0].code).toBe('MAX_VALUE');
+      expect(result.errors[0]?.code).toBe('MAX_VALUE');
     });
 
     it('should reject non-numeric values', () => {
       const result = validateNumber('abc', 'quantity');
       expect(result.isValid).toBe(false);
-      expect(result.errors[0].code).toBe('INVALID_TYPE');
+      expect(result.errors[0]?.code).toBe('INVALID_TYPE');
     });
   });
 

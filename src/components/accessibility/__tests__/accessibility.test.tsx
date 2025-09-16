@@ -300,7 +300,7 @@ describe('Accessibility Implementation', () => {
       const buttons = screen.getAllByRole('button');
 
       // Focus should cycle within modal
-      buttons[0].focus();
+      buttons[0]?.focus();
       expect(buttons[0]).toHaveFocus();
 
       await user.tab();

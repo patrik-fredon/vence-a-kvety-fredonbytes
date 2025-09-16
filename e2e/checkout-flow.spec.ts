@@ -104,7 +104,7 @@ test.describe('Checkout Flow', () => {
 
     // Enter invalid email
     await page.fill('[data-testid="customer-email"]', 'invalid-email');
-    await page.blur('[data-testid="customer-email"]');
+    await page.locator('[data-testid="customer-email"]').blur();
 
     // Check for email validation error
     const emailError = page.locator('[data-testid="customer-email-error"]');

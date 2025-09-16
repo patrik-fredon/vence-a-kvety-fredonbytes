@@ -16,11 +16,13 @@ describe('Price Calculator', () => {
       const customizations: Customization[] = [
         {
           optionId: 'size',
+          choiceIds: ['large'],
           customValue: 'large',
           priceModifier: 500,
         },
         {
           optionId: 'ribbon',
+          choiceIds: ['gold'],
           customValue: 'gold',
           priceModifier: 200,
         },
@@ -35,6 +37,7 @@ describe('Price Calculator', () => {
       const customizations: Customization[] = [
         {
           optionId: 'discount',
+          choiceIds: ['simple'],
           customValue: 'simple',
           priceModifier: -300,
         },
@@ -49,6 +52,7 @@ describe('Price Calculator', () => {
       const customizations: Customization[] = [
         {
           optionId: 'discount',
+          choiceIds: ['huge'],
           customValue: 'huge',
           priceModifier: -200,
         },
@@ -71,6 +75,7 @@ describe('Price Calculator', () => {
       const customizations: Customization[] = [
         {
           optionId: 'message',
+          choiceIds: [],
           customValue: 'In loving memory',
           // No priceModifier
         },

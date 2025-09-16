@@ -49,16 +49,20 @@ jest.mock('next/link', () => ({
 
 const mockProduct: Product = {
   id: '1',
+  nameCs: 'Pohřební věnec',
+  nameEn: 'Funeral Wreath',
   name: { cs: 'Pohřební věnec', en: 'Funeral Wreath' },
   description: { cs: 'Krásný pohřební věnec', en: 'Beautiful funeral wreath' },
   slug: 'funeral-wreath',
   basePrice: 1500,
   category: {
     id: 'cat1',
+    nameCs: 'Věnce',
+    nameEn: 'Wreaths',
     name: { cs: 'Věnce', en: 'Wreaths' },
     slug: 'wreaths',
     description: { cs: '', en: '' },
-    parentId: null,
+    parentId: undefined,
     sortOrder: 0,
     active: true,
     createdAt: new Date(),
@@ -84,12 +88,12 @@ const mockProduct: Product = {
   availability: {
     inStock: true,
     stockQuantity: 10,
-    estimatedDelivery: new Date(),
+    estimatedRestockDate: new Date(),
   },
   seoMetadata: {
     title: { cs: '', en: '' },
     description: { cs: '', en: '' },
-    keywords: [],
+    keywords: { cs: [], en: [] },
   },
   active: true,
   featured: false,

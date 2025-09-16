@@ -117,7 +117,12 @@ describe('ErrorBoundary', () => {
 
   it('shows development error details in development mode', () => {
     const originalEnv = process.env.NODE_ENV;
-    process.env.NODE_ENV = 'development';
+
+    // Mock NODE_ENV for this test
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: 'development',
+      configurable: true,
+    });
 
     const error = new Error('Test error');
     error.stack = 'Error stack trace';
@@ -128,6 +133,10 @@ describe('ErrorBoundary', () => {
 
     expect(screen.getByText('Zobrazit technické detaily')).toBeInTheDocument();
 
-    process.env.NODE_ENV = originalEnv;
+    // Restore original NODE_ENV
+    Object.defineProperty(process.env, 'NODE_ENV', {
+      value: originalEnv,
+      configurable: true,
+    });
   });
 });
