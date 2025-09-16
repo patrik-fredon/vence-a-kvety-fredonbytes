@@ -3,6 +3,7 @@
  * Seeds the database with realistic funeral wreaths themed data
  */
 
+require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
 
 // Initialize Supabase client
