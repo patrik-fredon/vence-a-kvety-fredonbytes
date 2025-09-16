@@ -87,6 +87,7 @@ interface ErrorFallbackProps {
     label: string;
     action: () => void;
     icon?: React.ComponentType<{ className?: string }>;
+    primary?: boolean;
   }>;
 }
 
@@ -158,8 +159,8 @@ export function ErrorFallback({
               key={index}
               onClick={action.action}
               className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${action.primary
-                  ? 'bg-primary-600 hover:bg-primary-700 text-white'
-                  : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
+                ? 'bg-primary-600 hover:bg-primary-700 text-white'
+                : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
                 }`}
             >
               {action.icon && <action.icon className="w-4 h-4" />}
