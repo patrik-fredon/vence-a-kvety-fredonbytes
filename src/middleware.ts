@@ -13,33 +13,49 @@ const intlMiddleware = createIntlMiddleware({
   localePrefix: "always",
 });
 
-// Initialize rate limiting
-const redis = Redis.fromEnv();
+// Initialize rate limiting with error handling
+let redis: Redis | null = null;
+let rateLimitingEnabled = true;
 
-// Different rate limits for different types of requests
-const generalRateLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(100, "1 m"), // 100 requests per minute
-  analytics: true,
-});
+try {
+  // Try to initialize Redis client
+  redis = Redis.fromEnv();
+} catch (error) {
+  console.error("Failed to initialize Redis for rate limiting:", error);
+  rateLimitingEnabled = false;
+}
 
-const apiRateLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(30, "1 m"), // 30 API requests per minute
-  analytics: true,
-});
+// Different rate limits for different types of requests (only if Redis is available)
+let generalRateLimit: Ratelimit | null = null;
+let apiRateLimit: Ratelimit | null = null;
+let authRateLimit: Ratelimit | null = null;
+let strictRateLimit: Ratelimit | null = null;
 
-const authRateLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(5, "1 m"), // 5 auth attempts per minute
-  analytics: true,
-});
+if (redis && rateLimitingEnabled) {
+  generalRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(100, "1 m"), // 100 requests per minute
+    analytics: true,
+  });
 
-const strictRateLimit = new Ratelimit({
-  redis,
-  limiter: Ratelimit.slidingWindow(10, "1 m"), // 10 requests per minute for sensitive operations
-  analytics: true,
-});
+  apiRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(30, "1 m"), // 30 API requests per minute
+    analytics: true,
+  });
+
+  authRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(5, "1 m"), // 5 auth attempts per minute
+    analytics: true,
+  });
+
+  strictRateLimit = new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(10, "1 m"), // 10 requests per minute for sensitive operations
+    analytics: true,
+  });
+}
 
 // Define protected routes (without locale prefix)
 const protectedRoutes = ["/profile", "/account", "/orders", "/admin"];
