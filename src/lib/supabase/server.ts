@@ -33,3 +33,6 @@ export const createServerClient = () => {
     }
   );
 };
+
+// Alias for backward compatibility
+export { createServerClient as createClient };
