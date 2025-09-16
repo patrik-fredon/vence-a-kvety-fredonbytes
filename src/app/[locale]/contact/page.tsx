@@ -1,5 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { ContactForm } from "@/components/contact/ContactForm";
 
 interface ContactPageProps {
   params: Promise<{ locale: string }>;
@@ -82,20 +83,18 @@ export default async function ContactPage({ params }: ContactPageProps) {
             </div>
           </div>
 
-          {/* Contact Form Placeholder */}
+          {/* Contact Form */}
           <div className="bg-white rounded-lg shadow-soft p-8">
             <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-6">
               Napište nám
             </h2>
 
-            <div className="text-center py-8">
-              <p className="text-neutral-600 mb-4">
-                Kontaktní formulář bude implementován v dalších krocích.
-              </p>
-              <p className="text-sm text-neutral-500">
-                Zatím nás prosím kontaktujte telefonicky nebo e-mailem.
-              </p>
-            </div>
+            <p className="text-neutral-600 mb-6">
+              Máte dotaz ohledně našich pohřebních věnců nebo potřebujete poradit s výběrem?
+              Napište nám a my se Vám ozveme co nejdříve.
+            </p>
+
+            <ContactForm locale={locale} />
           </div>
         </div>
       </div>
