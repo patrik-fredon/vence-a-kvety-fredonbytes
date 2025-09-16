@@ -82,14 +82,14 @@ export function useKeyboardNavigation<T extends HTMLElement>(
     }
 
     // Handle Enter and Space for activation
-    if ((event.key === 'Enter' || event.key === ' ') && currentIndex >= 0) {
+    if ((event.key === 'Enter' || event.key === ' ') && currentIndex >= 0 && items[currentIndex]) {
       event.preventDefault();
       onActivate?.(currentIndex, items[currentIndex]);
     }
   }, [items, currentIndex, orientation, wrap, columns, onActivate]);
 
   const focusItem = useCallback((index: number) => {
-    if (index >= 0 && index < items.length) {
+    if (index >= 0 && index < items.length && items[index]) {
       setCurrentIndex(index);
       items[index].focus();
     }
