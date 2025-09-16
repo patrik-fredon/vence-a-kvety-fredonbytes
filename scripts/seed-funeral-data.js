@@ -5,6 +5,7 @@
 
 require('dotenv').config();
 const { createClient } = require('@supabase/supabase-js');
+const { randomUUID } = require('crypto');
 
 // Initialize Supabase client
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
@@ -17,10 +18,19 @@ if (!supabaseUrl || !supabaseServiceKey) {
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey);
 
+// Generate consistent UUIDs for categories
+const categoryIds = {
+  classic: randomUUID(),
+  modern: randomUUID(),
+  heart: randomUUID(),
+  cross: randomUUID(),
+  seasonal: randomUUID(),
+};
+
 // Seed data
 const categories = [
   {
-    id: 'cat-wreaths-classic',
+    id: categoryIds.classic,
     name_cs: 'Klasické věnce',
     name_en: 'Classic Wreaths',
     slug: 'klasicke-vence',
@@ -32,7 +42,7 @@ const categories = [
     active: true,
   },
   {
-    id: 'cat-wreaths-modern',
+    id: categoryIds.modern,
     name_cs: 'Moderní věnce',
     name_en: 'Modern Wreaths',
     slug: 'moderni-vence',
@@ -44,7 +54,7 @@ const categories = [
     active: true,
   },
   {
-    id: 'cat-wreaths-heart',
+    id: categoryIds.heart,
     name_cs: 'Srdcové věnce',
     name_en: 'Heart Wreaths',
     slug: 'srdcove-vence',
@@ -56,7 +66,7 @@ const categories = [
     active: true,
   },
   {
-    id: 'cat-wreaths-cross',
+    id: categoryIds.cross,
     name_cs: 'Křížové věnce',
     name_en: 'Cross Wreaths',
     slug: 'krizove-vence',
@@ -68,7 +78,7 @@ const categories = [
     active: true,
   },
   {
-    id: 'cat-wreaths-seasonal',
+    id: categoryIds.seasonal,
     name_cs: 'Sezónní věnce',
     name_en: 'Seasonal Wreaths',
     slug: 'sezonni-vence',
@@ -83,24 +93,24 @@ const categories = [
 
 const products = [
   {
-    id: 'prod-classic-rose-wreath',
+    id: randomUUID(),
     name_cs: 'Klasický růžový věnec',
     name_en: 'Classic Rose Wreath',
     slug: 'klasicky-ruzovy-venec',
     description_cs: 'Elegantní pohřební věnec z červených a bílých růží s tradičním designem. Vhodný pro všechny typy pohřebních obřadů.',
     description_en: 'Elegant funeral wreath made of red and white roses with traditional design. Suitable for all types of funeral ceremonies.',
     base_price: 2500,
-    category_id: 'cat-wreaths-classic',
+    category_id: categoryIds.classic,
     images: [
       {
-        id: 'img-classic-rose-1',
+        id: randomUUID(),
         url: '/images/products/classic-rose-wreath-1.jpg',
         alt: 'Klasický růžový věnec - hlavní pohled',
         isPrimary: true,
         sortOrder: 0,
       },
       {
-        id: 'img-classic-rose-2',
+        id: randomUUID(),
         url: '/images/products/classic-rose-wreath-2.jpg',
         alt: 'Klasický růžový věnec - detail',
         isPrimary: false,
@@ -162,17 +172,17 @@ const products = [
     featured: true,
   },
   {
-    id: 'prod-white-lily-wreath',
+    id: randomUUID(),
     name_cs: 'Bílý liliový věnec',
     name_en: 'White Lily Wreath',
     slug: 'bily-liliovy-venec',
     description_cs: 'Čistý a důstojný pohřební věnec z bílých lilií symbolizující čistotu a věčnost. Ideální pro tichou vzpomínku.',
     description_en: 'Pure and dignified funeral wreath made of white lilies symbolizing purity and eternity. Perfect for quiet remembrance.',
     base_price: 2800,
-    category_id: 'cat-wreaths-classic',
+    category_id: categoryIds.classic,
     images: [
       {
-        id: 'img-lily-1',
+        id: randomUUID(),
         url: '/images/products/white-lily-wreath-1.jpg',
         alt: 'Bílý liliový věnec - hlavní pohled',
         isPrimary: true,
@@ -208,17 +218,17 @@ const products = [
     featured: true,
   },
   {
-    id: 'prod-heart-red-roses',
+    id: randomUUID(),
     name_cs: 'Srdce z červených růží',
     name_en: 'Heart of Red Roses',
     slug: 'srdce-z-cervenych-ruzi',
     description_cs: 'Pohřební věnec ve tvaru srdce z červených růží vyjadřující hlubokou lásku a nekonečnou vzpomínku na milovanou osobu.',
     description_en: 'Heart-shaped funeral wreath made of red roses expressing deep love and endless memory of a beloved person.',
     base_price: 3200,
-    category_id: 'cat-wreaths-heart',
+    category_id: categoryIds.heart,
     images: [
       {
-        id: 'img-heart-roses-1',
+        id: randomUUID(),
         url: '/images/products/heart-red-roses-1.jpg',
         alt: 'Srdce z červených růží - hlavní pohled',
         isPrimary: true,
@@ -254,17 +264,17 @@ const products = [
     featured: false,
   },
   {
-    id: 'prod-cross-white-flowers',
+    id: randomUUID(),
     name_cs: 'Kříž z bílých květin',
     name_en: 'Cross of White Flowers',
     slug: 'kriz-z-bilych-kvetin',
     description_cs: 'Pohřební věnec ve tvaru kříže z bílých květin pro křesťanské pohřby. Symbol víry, naděje a věčného života.',
     description_en: 'Cross-shaped funeral wreath made of white flowers for Christian funerals. Symbol of faith, hope and eternal life.',
     base_price: 2900,
-    category_id: 'cat-wreaths-cross',
+    category_id: categoryIds.cross,
     images: [
       {
-        id: 'img-cross-white-1',
+        id: randomUUID(),
         url: '/images/products/cross-white-flowers-1.jpg',
         alt: 'Kříž z bílých květin - hlavní pohled',
         isPrimary: true,
@@ -300,17 +310,17 @@ const products = [
     featured: false,
   },
   {
-    id: 'prod-autumn-wreath',
+    id: randomUUID(),
     name_cs: 'Podzimní věnec',
     name_en: 'Autumn Wreath',
     slug: 'podzimni-venec',
     description_cs: 'Sezónní pohřební věnec s podzimními květinami a dekoracemi v teplých barvách. Ideální pro podzimní období.',
     description_en: 'Seasonal funeral wreath with autumn flowers and decorations in warm colors. Perfect for the autumn season.',
     base_price: 2600,
-    category_id: 'cat-wreaths-seasonal',
+    category_id: categoryIds.seasonal,
     images: [
       {
-        id: 'img-autumn-1',
+        id: randomUUID(),
         url: '/images/products/autumn-wreath-1.jpg',
         alt: 'Podzimní věnec - hlavní pohled',
         isPrimary: true,
@@ -350,7 +360,7 @@ const products = [
 // Sample contact form submissions for testing
 const sampleContactForms = [
   {
-    id: 'contact-1',
+    id: randomUUID(),
     name: 'Marie Nováková',
     email: 'marie.novakova@email.cz',
     phone: '+420 123 456 789',
@@ -361,7 +371,7 @@ const sampleContactForms = [
     user_agent: 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36',
   },
   {
-    id: 'contact-2',
+    id: randomUUID(),
     name: 'Jan Svoboda',
     email: 'jan.svoboda@gmail.com',
     phone: null,
@@ -377,11 +387,18 @@ async function seedDatabase() {
   console.log('🌱 Starting database seeding...');
 
   try {
+    // Clear existing data first
+    console.log('🧹 Clearing existing data...');
+    await supabase.from('products').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    await supabase.from('categories').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    await supabase.from('contact_forms').delete().neq('id', '00000000-0000-0000-0000-000000000000');
+    console.log('✅ Existing data cleared');
+
     // Seed categories
     console.log('📂 Seeding categories...');
     const { error: categoriesError } = await supabase
       .from('categories')
-      .upsert(categories, { onConflict: 'id' });
+      .insert(categories);
 
     if (categoriesError) {
       console.error('❌ Error seeding categories:', categoriesError);
@@ -393,7 +410,7 @@ async function seedDatabase() {
     console.log('🌹 Seeding products...');
     const { error: productsError } = await supabase
       .from('products')
-      .upsert(products, { onConflict: 'id' });
+      .insert(products);
 
     if (productsError) {
       console.error('❌ Error seeding products:', productsError);
@@ -405,7 +422,7 @@ async function seedDatabase() {
     console.log('📧 Seeding sample contact forms...');
     const { error: contactError } = await supabase
       .from('contact_forms')
-      .upsert(sampleContactForms, { onConflict: 'id' });
+      .insert(sampleContactForms);
 
     if (contactError) {
       console.error('❌ Error seeding contact forms:', contactError);
