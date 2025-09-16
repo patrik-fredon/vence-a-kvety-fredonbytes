@@ -376,6 +376,48 @@ export interface Database {
           },
         ];
       };
+      contact_forms: {
+        Row: {
+          id: string;
+          name: string;
+          email: string;
+          phone: string | null;
+          subject: string;
+          message: string;
+          status: "new" | "read" | "replied" | "archived";
+          ip_address: string | null;
+          user_agent: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          email: string;
+          phone?: string | null;
+          subject: string;
+          message: string;
+          status?: "new" | "read" | "replied" | "archived";
+          ip_address?: string | null;
+          user_agent?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          email?: string;
+          phone?: string | null;
+          subject?: string;
+          message?: string;
+          status?: "new" | "read" | "replied" | "archived";
+          ip_address?: string | null;
+          user_agent?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Relationships: [];
+      };
     };
     Views: {
       [_ in never]: never;

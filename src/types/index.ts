@@ -122,5 +122,6 @@ export * from "./product";
 export * from "./cart";
 export * from "./delivery";
 export * from "./order";
+export * from "./contact";
 
 export default {};

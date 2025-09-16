@@ -82,6 +82,9 @@ export async function middleware(request: NextRequest) {
         rateLimitResult = authRateLimit ? await authRateLimit.limit(ip) : null;
       } else if (pathname.includes("/admin/") || pathname.includes("/orders/")) {
         rateLimitResult = strictRateLimit ? await strictRateLimit.limit(ip) : null;
+      } else if (pathname.includes("/contact")) {
+        // Contact form gets moderate rate limiting (5 per minute)
+        rateLimitResult = authRateLimit ? await authRateLimit.limit(ip) : null;
       } else {
         rateLimitResult = apiRateLimit ? await apiRateLimit.limit(ip) : null;
       }

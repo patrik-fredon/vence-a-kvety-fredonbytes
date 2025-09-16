@@ -21,6 +21,7 @@
     "postinstall": "playwright install",
     "db:migrate": "node scripts/migrate.js",
     "db:seed:production": "node scripts/seed-production.js",
+    "db:seed:funeral": "node scripts/seed-funeral-data.js",
     "deploy": "./scripts/deploy.sh",
     "deploy:production": "./scripts/deploy.sh production",
     "deploy:preview": "./scripts/deploy.sh preview",
@@ -46,6 +47,7 @@
     "next-intl": "^4.3.6",
     "react": "19.1.0",
     "react-dom": "19.1.0",
+    "resend": "^6.1.0",
     "stripe": "^18.5.0",
     "tailwind-merge": "^2.5.4",
     "web-vitals": "^5.1.0"
