@@ -2,7 +2,7 @@ import type { InputHTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 
 interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
-  label: string;
+  label?: string;
   error?: string;
   helpText?: string;
   icon?: ReactNode;
@@ -48,17 +48,19 @@ export function Input({
   return (
     <div className="space-y-1">
       {/* Label */}
-      <label
-        htmlFor={inputId}
-        className="block text-sm font-medium text-neutral-700"
-      >
-        {label}
-        {required && (
-          <span className="text-red-500 ml-1" aria-label="required">
-            *
-          </span>
-        )}
-      </label>
+      {label && (
+        <label
+          htmlFor={inputId}
+          className="block text-sm font-medium text-neutral-700"
+        >
+          {label}
+          {required && (
+            <span className="text-red-500 ml-1" aria-label="required">
+              *
+            </span>
+          )}
+        </label>
+      )}
 
       {/* Input Container */}
       <div className="relative">

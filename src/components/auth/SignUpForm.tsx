@@ -126,7 +126,7 @@ export function SignUpForm() {
             onChange={handleChange}
             autoComplete="tel"
             disabled={loading}
-            helperText="Telefon použijeme pro komunikaci ohledně objednávky"
+            helpText="Telefon použijeme pro komunikaci ohledně objednávky"
           />
 
           <Input
@@ -140,7 +140,7 @@ export function SignUpForm() {
             required
             autoComplete="new-password"
             disabled={loading}
-            helperText="Minimálně 6 znaků"
+            helpText="Minimálně 6 znaků"
           />
 
           <Input

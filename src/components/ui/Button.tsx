@@ -4,7 +4,7 @@ import { useReducedMotion } from "@/lib/accessibility/hooks";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "outline" | "ghost";
+  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
   size?: "sm" | "md" | "lg";
   loading?: boolean;
   loadingText?: string;
@@ -54,6 +54,11 @@ export function Button({
     ghost: cn(
       "text-primary-700 hover:bg-primary-50",
       "high-contrast:text-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
+    ),
+    destructive: cn(
+      "bg-red-600 text-white hover:bg-red-700 shadow-soft",
+      "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
+      "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
   };
 

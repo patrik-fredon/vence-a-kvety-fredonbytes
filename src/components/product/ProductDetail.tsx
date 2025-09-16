@@ -5,7 +5,6 @@ import { useTranslations } from "next-intl";
 import { Product, Customization } from "@/types/product";
 import {
   calculateFinalPrice,
-  validateCustomizations as validateCustomizationsUtil,
 } from "@/lib/utils/price-calculator";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { LazyProductCustomizer } from "@/components/dynamic";
@@ -34,10 +33,10 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       return calculateFinalPrice(
         product.basePrice,
         newCustomizations,
-        product.customizationOptions
+        [] // No discounts for now
       );
     },
-    [product.basePrice, product.customizationOptions]
+    [product.basePrice]
   );
 
   // Handle customization changes
