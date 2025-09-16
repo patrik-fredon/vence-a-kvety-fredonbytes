@@ -48,7 +48,7 @@ function getClientIdentifier(request: NextRequest): string {
   const remoteAddr = request.headers.get('remote-addr');
 
   if (forwarded) {
-    return forwarded.split(',')[0].trim();
+    return forwarded.split(',')[0]?.trim() || 'unknown';
   }
 
   if (realIp) {

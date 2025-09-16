@@ -72,25 +72,27 @@ export async function middleware(request: NextRequest) {
   // Get client IP for rate limiting
   const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "127.0.0.1";
 
-  // Apply rate limiting based on route type
+  // Apply rate limiting based on route type (only if rate limiting is enabled)
   let rateLimitResult;
 
-  if (pathname.startsWith("/api/")) {
-    // API routes get stricter rate limiting
-    if (pathname.includes("/auth/") || pathname.includes("/payment")) {
-      rateLimitResult = await authRateLimit.limit(ip);
-    } else if (pathname.includes("/admin/") || pathname.includes("/orders/")) {
-      rateLimitResult = await strictRateLimit.limit(ip);
+  if (rateLimitingEnabled && redis) {
+    if (pathname.startsWith("/api/")) {
+      // API routes get stricter rate limiting
+      if (pathname.includes("/auth/") || pathname.includes("/payment")) {
+        rateLimitResult = authRateLimit ? await authRateLimit.limit(ip) : null;
+      } else if (pathname.includes("/admin/") || pathname.includes("/orders/")) {
+        rateLimitResult = strictRateLimit ? await strictRateLimit.limit(ip) : null;
+      } else {
+        rateLimitResult = apiRateLimit ? await apiRateLimit.limit(ip) : null;
+      }
     } else {
-      rateLimitResult = await apiRateLimit.limit(ip);
+      // General page requests
+      rateLimitResult = generalRateLimit ? await generalRateLimit.limit(ip) : null;
     }
-  } else {
-    // General page requests
-    rateLimitResult = await generalRateLimit.limit(ip);
   }
 
-  // Check if rate limit exceeded
-  if (!rateLimitResult.success) {
+  // Check if rate limit exceeded (only if rate limiting is enabled and result exists)
+  if (rateLimitResult && !rateLimitResult.success) {
     return new NextResponse(
       JSON.stringify({
         error: {

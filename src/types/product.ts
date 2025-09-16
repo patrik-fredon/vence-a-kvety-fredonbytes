@@ -92,6 +92,7 @@ export interface Customization {
   optionId: string;
   choiceIds: string[];
   customValue?: string; // For text inputs like messages
+  priceModifier?: number; // Price adjustment for this customization
 }
 
 // Product with applied customizations
