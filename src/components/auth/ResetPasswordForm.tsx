@@ -83,7 +83,7 @@ export function ResetPasswordForm() {
             required
             autoComplete="new-password"
             disabled={loading}
-            helperText="Minimálně 6 znaků"
+            helpText="Minimálně 6 znaků"
           />
 
           <Input

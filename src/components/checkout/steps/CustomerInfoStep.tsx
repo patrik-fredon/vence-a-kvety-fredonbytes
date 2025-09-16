@@ -40,11 +40,9 @@ export function CustomerInfoStep({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* First Name */}
         <div>
-          <label htmlFor="firstName" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t("firstName")} *
-          </label>
           <Input
             id="firstName"
+            label={`${t("firstName")} *`}
             type="text"
             value={customerInfo.firstName || ""}
             onChange={(e) => handleChange("firstName", e.target.value)}
@@ -56,11 +54,9 @@ export function CustomerInfoStep({
 
         {/* Last Name */}
         <div>
-          <label htmlFor="lastName" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t("lastName")} *
-          </label>
           <Input
             id="lastName"
+            label={`${t("lastName")} *`}
             type="text"
             value={customerInfo.lastName || ""}
             onChange={(e) => handleChange("lastName", e.target.value)}
@@ -74,11 +70,9 @@ export function CustomerInfoStep({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t("email")} *
-          </label>
           <Input
             id="email"
+            label={`${t("email")} *`}
             type="email"
             value={customerInfo.email || ""}
             onChange={(e) => handleChange("email", e.target.value)}
@@ -93,11 +87,9 @@ export function CustomerInfoStep({
 
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t("phone")} *
-          </label>
           <Input
             id="phone"
+            label={`${t("phone")} *`}
             type="tel"
             value={customerInfo.phone || ""}
             onChange={(e) => handleChange("phone", e.target.value)}
@@ -111,11 +103,9 @@ export function CustomerInfoStep({
 
       {/* Company (Optional) */}
       <div>
-        <label htmlFor="company" className="block text-sm font-medium text-neutral-700 mb-2">
-          Společnost (volitelné)
-        </label>
         <Input
           id="company"
+          label="Společnost (volitelné)"
           type="text"
           value={customerInfo.company || ""}
           onChange={(e) => handleChange("company", e.target.value)}

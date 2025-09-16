@@ -11,7 +11,7 @@ import {
 import { Menu, Transition } from "@headlessui/react";
 import { Fragment } from "react";
 
-type AdminView = "overview" | "products" | "orders" | "inventory" | "activity";
+type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 
 interface AdminHeaderProps {
   currentView: AdminView;
@@ -24,6 +24,7 @@ const viewTitles: Record<AdminView, string> = {
   orders: "Správa objednávek",
   inventory: "Skladové zásoby",
   activity: "Aktivita administrátorů",
+  monitoring: "Monitoring systému",
 };
 
 export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderProps) {
@@ -86,9 +87,8 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                     {({ active }) => (
                       <a
                         href="/"
-                        className={`${
-                          active ? "bg-gray-100" : ""
-                        } flex items-center px-4 py-2 text-sm text-gray-700`}
+                        className={`${active ? "bg-gray-100" : ""
+                          } flex items-center px-4 py-2 text-sm text-gray-700`}
                       >
                         <UserCircleIcon className="h-4 w-4 mr-3" />
                         Zobrazit web
@@ -102,9 +102,8 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                     {({ active }) => (
                       <button
                         onClick={handleSignOut}
-                        className={`${
-                          active ? "bg-gray-100" : ""
-                        } flex items-center w-full px-4 py-2 text-sm text-gray-700`}
+                        className={`${active ? "bg-gray-100" : ""
+                          } flex items-center w-full px-4 py-2 text-sm text-gray-700`}
                       >
                         <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
                         Odhlásit se

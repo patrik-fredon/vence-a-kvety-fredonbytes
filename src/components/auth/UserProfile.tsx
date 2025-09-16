@@ -1,15 +1,5 @@
 "use client";
 
-<<<<<<< HEAD
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { useAuth, useUpdateProfile, useSignOut } from '@/lib/auth/hooks'
-import { OrderHistory } from '@/components/order/OrderHistory'
-import { AddressBook } from '@/components/auth/AddressBook'
-import { useParams } from 'next/navigation'
-import { Address, UserPreferences, defaultUserPreferences } from '@/types/user'
-=======
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
@@ -27,7 +17,6 @@ interface Address {
   country: string;
   isDefault: boolean;
 }
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
 
 interface UserPreferences {
   language: "cs" | "en";
@@ -138,9 +127,6 @@ export function UserProfile() {
     await signOut();
   };
 
-<<<<<<< HEAD
-
-=======
   const addAddress = () => {
     const newAddress: Address = {
       id: Date.now().toString(),
@@ -172,7 +158,6 @@ export function UserProfile() {
       }))
     );
   };
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
 
   const handlePreferenceChange = (
     category: keyof UserPreferences,
@@ -217,6 +202,7 @@ export function UserProfile() {
                 key={tab}
                 onClick={() => setActiveTab(tab)}
 <<<<<<< HEAD
+<<<<<<< HEAD
                 className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === tab
                   ? 'border-indigo-500 text-indigo-600'
                   : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
@@ -228,6 +214,12 @@ export function UserProfile() {
                     : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                 }`}
 >>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
+=======
+                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === tab
+                    ? "border-indigo-500 text-indigo-600"
+                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                  }`}
+>>>>>>> 73125da (feat(gdpr): add ValidationResult import and disable monitoring endpoints)
               >
                 {getTabLabel(tab)}
               </button>
@@ -270,7 +262,7 @@ export function UserProfile() {
                   label={locale === "cs" ? "E-mail" : "Email"}
                   value={user.email}
                   disabled
-                  helperText={locale === "cs" ? "E-mail nelze změnit" : "Email cannot be changed"}
+                  helpText={locale === "cs" ? "E-mail nelze změnit" : "Email cannot be changed"}
                 />
 
                 <Input

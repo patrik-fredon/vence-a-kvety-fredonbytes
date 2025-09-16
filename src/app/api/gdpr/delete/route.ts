@@ -6,7 +6,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { deleteUserData, logUserActivity } from "@/lib/security/gdpr";
-import { validateCSRFToken, validateRequestBody, validateRequiredString } from "@/lib/security/validation";
+import { validateCSRFToken, validateRequestBody, validateRequiredString, ValidationResult } from "@/lib/security/validation";
 
 interface DeleteRequestBody {
   confirmation: string;

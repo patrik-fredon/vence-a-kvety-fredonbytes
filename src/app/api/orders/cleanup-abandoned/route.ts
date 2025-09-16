@@ -53,7 +53,11 @@ export async function POST(request: NextRequest) {
           for (const item of order.items) {
             // Note: This would need actual inventory tracking implementation
             // For now, we just count the items that would be restored
-            restoredInventory += item.quantity || 1;
+            if (item && typeof item === 'object' && 'quantity' in item) {
+              restoredInventory += (item.quantity as number) || 1;
+            } else {
+              restoredInventory += 1;
+            }
           }
         }
 
@@ -73,7 +77,7 @@ export async function POST(request: NextRequest) {
       .delete()
       .lt('created_at', sevenDaysAgo.toISOString())
       .is('user_id', null) // Only anonymous carts
-      .select('*', { count: 'exact', head: true });
+      .select('*');
 
     if (cartError) {
       console.error('Failed to clean up cart items:', cartError);
