@@ -179,29 +179,9 @@ export async function deleteUserData(userId: string): Promise<GDPRDeletionResult
       deletedRecords.cartItems = cartCount || 0;
     }
 
-    // Delete addresses
-    const { error: addressError, count: addressCount } = await supabase
-      .from("user_addresses")
-      .delete()
-      .eq("user_id", userId);
-
-    if (addressError) {
-      errors.push(`Failed to delete addresses: ${addressError.message}`);
-    } else {
-      deletedRecords.addresses = addressCount || 0;
-    }
-
-    // Delete activity log
-    const { error: activityError, count: activityCount } = await supabase
-      .from("user_activity_log")
-      .delete()
-      .eq("user_id", userId);
-
-    if (activityError) {
-      errors.push(`Failed to delete activity log: ${activityError.message}`);
-    } else {
-      deletedRecords.activityLog = activityCount || 0;
-    }
+    // Note: user_addresses and user_activity_log tables are not in the current schema
+    // If these tables are needed, they should be added to the database schema
+    // For now, we'll skip these deletions to avoid errors
 
     // Anonymize orders instead of deleting (for business records)
     const { data: orders, error: ordersSelectError } = await supabase
@@ -286,13 +266,9 @@ export async function logUserActivity(
   try {
     const supabase = await createClient();
 
-    await supabase.from("user_activity_log").insert({
-      user_id: userId,
-      action,
-      details: details || {},
-      ip_address: ipAddress,
-      created_at: new Date().toISOString(),
-    });
+    // Note: user_activity_log table is not in the current schema
+    // Activity logging is disabled until the table is added to the database
+    console.log('Activity log:', { userId, action, details, ipAddress });
   } catch (error) {
     console.error("Error logging user activity:", error);
   }
