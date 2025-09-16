@@ -51,11 +51,14 @@ const mockCartItems: CartItem[] = [
     customizations: [
       {
         optionId: 'message',
+        choiceIds: [],
         customValue: 'In loving memory',
       },
     ],
     product: {
       id: 'prod1',
+      nameCs: 'Pohřební věnec',
+      nameEn: 'Funeral Wreath',
       name: { cs: 'Pohřební věnec', en: 'Funeral Wreath' },
       description: { cs: 'Krásný pohřební věnec', en: 'Beautiful funeral wreath' },
       slug: 'funeral-wreath',
@@ -71,10 +74,12 @@ const mockCartItems: CartItem[] = [
       ],
       category: {
         id: 'cat1',
+        nameCs: 'Věnce',
+        nameEn: 'Wreaths',
         name: { cs: 'Věnce', en: 'Wreaths' },
         slug: 'wreaths',
         description: { cs: '', en: '' },
-        parentId: null,
+        parentId: undefined,
         sortOrder: 0,
         active: true,
         createdAt: new Date(),
@@ -84,12 +89,12 @@ const mockCartItems: CartItem[] = [
       availability: {
         inStock: true,
         stockQuantity: 10,
-        estimatedDelivery: new Date(),
+        estimatedRestockDate: new Date(),
       },
       seoMetadata: {
         title: { cs: '', en: '' },
         description: { cs: '', en: '' },
-        keywords: [],
+        keywords: { cs: [], en: [] },
       },
       active: true,
       featured: false,
@@ -194,7 +199,9 @@ describe('ShoppingCart', () => {
 
   it('removes item when quantity becomes 0', async () => {
     const user = userEvent.setup();
-    mockCartContext.state.items[0].quantity = 1;
+    if (mockCartContext.state.items[0]) {
+      mockCartContext.state.items[0].quantity = 1;
+    }
 
     render(<ShoppingCart {...defaultProps} />);
 
@@ -236,7 +243,7 @@ describe('ShoppingCart', () => {
   });
 
   it('shows error message when present', () => {
-    mockCartContext.state.error = 'Something went wrong';
+    mockCartContext.state.error = 'Something went wrong' as any;
 
     render(<ShoppingCart {...defaultProps} />);
 
@@ -275,9 +282,10 @@ describe('ShoppingCart', () => {
     const itemWithoutProduct = {
       ...mockCartItems[0],
       product: null,
+      productId: 'missing-product',
     };
 
-    mockCartContext.state.items = [itemWithoutProduct];
+    mockCartContext.state.items = [itemWithoutProduct as any];
 
     render(<ShoppingCart {...defaultProps} />);
 
