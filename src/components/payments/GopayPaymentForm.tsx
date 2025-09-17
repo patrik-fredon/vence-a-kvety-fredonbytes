@@ -1,14 +1,14 @@
 "use client";
 
-import React, { useState } from "react";
-import { useTranslations } from "next-intl";
 import {
+  ArrowTopRightOnSquareIcon,
   BanknotesIcon,
   CreditCardIcon,
   DevicePhoneMobileIcon,
   ExclamationTriangleIcon,
-  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 

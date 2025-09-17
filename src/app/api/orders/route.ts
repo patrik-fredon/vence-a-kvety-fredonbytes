@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import {
+import type { CartItem } from "@/types/cart";
+import type {
   CreateOrderRequest,
   CreateOrderResponse,
   Order,
   OrderItem,
   OrderStatus,
 } from "@/types/order";
-import { CartItem } from "@/types/cart";
 
 /**
  * Create a new order

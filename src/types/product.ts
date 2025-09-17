@@ -2,7 +2,7 @@
  * Product-related type definitions for the funeral wreaths e-commerce platform
  */
 
-import { BaseEntity, LocalizedContent, ImageData, SEOMetadata } from "./index";
+import type { BaseEntity, ImageData, LocalizedContent, SEOMetadata } from "./index";
 
 // Customization option types
 export type CustomizationType = "size" | "flowers" | "ribbon" | "message";

@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
-  ExclamationTriangleIcon,
   CheckCircleIcon,
-  XCircleIcon,
+  ExclamationTriangleIcon,
   MagnifyingGlassIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 interface InventoryAlert {
   id: string;

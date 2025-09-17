@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
-import { auth } from "@/lib/auth/config";
-import { AddToCartRequest } from "@/types/cart";
 import { randomUUID } from "crypto";
+import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth/config";
+import { createServerClient } from "@/lib/supabase/server";
+import type { AddToCartRequest } from "@/types/cart";
 
 /**
  * POST /api/cart/items - Add item to cart

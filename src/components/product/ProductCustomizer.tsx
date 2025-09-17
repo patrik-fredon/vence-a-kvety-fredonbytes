@@ -1,12 +1,17 @@
 "use client";
 
-import { useState, useCallback, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { Product, Customization, CustomizationOption, CustomizationChoice } from "@/types/product";
-import { formatPrice } from "@/lib/utils/price-calculator";
-import { cn } from "@/lib/utils";
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import { formatPrice } from "@/lib/utils/price-calculator";
+import type {
+  Customization,
+  CustomizationChoice,
+  CustomizationOption,
+  Product,
+} from "@/types/product";
 
 interface ProductCustomizerProps {
   product: Product;

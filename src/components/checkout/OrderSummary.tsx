@@ -1,13 +1,13 @@
 "use client";
 
-import React from "react";
-import { useTranslations } from "next-intl";
-import Image from "next/image";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { CartItem } from "@/types/cart";
-import { OrderSummary as OrderSummaryType } from "@/types/order";
-import { formatPrice } from "@/lib/utils";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import React from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { formatPrice } from "@/lib/utils";
+import type { CartItem } from "@/types/cart";
+import { OrderSummary as OrderSummaryType } from "@/types/order";
 
 interface OrderSummaryProps {
   items: CartItem[];

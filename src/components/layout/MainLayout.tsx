@@ -1,7 +1,7 @@
-import { Header } from "./Header";
-import { Footer } from "./Footer";
-import { SkipLinks } from "@/components/accessibility/SkipLinks";
 import { AccessibilityToolbar } from "@/components/accessibility/AccessibilityToolbar";
+import { SkipLinks } from "@/components/accessibility/SkipLinks";
+import { Footer } from "./Footer";
+import { Header } from "./Header";
 
 interface MainLayoutProps {
   children: React.ReactNode;

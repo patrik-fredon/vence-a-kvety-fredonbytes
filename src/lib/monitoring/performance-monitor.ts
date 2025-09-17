@@ -1,9 +1,9 @@
-import { logPerformanceIssue } from './error-logger';
+import { logPerformanceIssue } from "./error-logger";
 
 interface PerformanceMetric {
   name: string;
   value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
+  rating: "good" | "needs-improvement" | "poor";
   timestamp: number;
   url: string;
   id: string;
@@ -20,7 +20,7 @@ interface WebVitalsThresholds {
 class PerformanceMonitor {
   private metrics: PerformanceMetric[] = [];
   private maxMetrics = 100;
-  private apiEndpoint = '/api/monitoring/performance';
+  private apiEndpoint = "/api/monitoring/performance";
 
   // Web Vitals thresholds (in milliseconds, except CLS which is unitless)
   private thresholds: WebVitalsThresholds = {
@@ -32,7 +32,7 @@ class PerformanceMonitor {
   };
 
   constructor() {
-    if (typeof window !== 'undefined') {
+    if (typeof window !== "undefined") {
       this.initializeWebVitals();
       this.initializeCustomMetrics();
     }
@@ -44,7 +44,7 @@ class PerformanceMonitor {
   private async initializeWebVitals() {
     try {
       // Dynamic import to avoid SSR issues
-      const webVitals = await import('web-vitals');
+      const webVitals = await import("web-vitals");
 
       // Use available functions from web-vitals v5+
       if (webVitals.onCLS) webVitals.onCLS(this.handleMetric.bind(this));
@@ -53,7 +53,7 @@ class PerformanceMonitor {
       if (webVitals.onLCP) webVitals.onLCP(this.handleMetric.bind(this));
       if (webVitals.onTTFB) webVitals.onTTFB(this.handleMetric.bind(this));
     } catch (error) {
-      console.warn('Web Vitals library not available:', error);
+      console.warn("Web Vitals library not available:", error);
     }
   }
 
@@ -62,30 +62,32 @@ class PerformanceMonitor {
    */
   private initializeCustomMetrics() {
     // Monitor page load time
-    window.addEventListener('load', () => {
+    window.addEventListener("load", () => {
       const loadTime = performance.now();
-      this.recordMetric('PAGE_LOAD', loadTime);
+      this.recordMetric("PAGE_LOAD", loadTime);
     });
 
     // Monitor navigation timing
-    if ('navigation' in performance) {
-      const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+    if ("navigation" in performance) {
+      const navigation = performance.getEntriesByType(
+        "navigation"
+      )[0] as PerformanceNavigationTiming;
       if (navigation) {
         // DNS lookup time
         const dnsTime = navigation.domainLookupEnd - navigation.domainLookupStart;
-        this.recordMetric('DNS_LOOKUP', dnsTime);
+        this.recordMetric("DNS_LOOKUP", dnsTime);
 
         // Connection time
         const connectionTime = navigation.connectEnd - navigation.connectStart;
-        this.recordMetric('CONNECTION', connectionTime);
+        this.recordMetric("CONNECTION", connectionTime);
 
         // Server response time
         const responseTime = navigation.responseEnd - navigation.requestStart;
-        this.recordMetric('SERVER_RESPONSE', responseTime);
+        this.recordMetric("SERVER_RESPONSE", responseTime);
 
         // DOM processing time
         const domTime = navigation.domContentLoadedEventEnd - navigation.domContentLoadedEventStart;
-        this.recordMetric('DOM_PROCESSING', domTime);
+        this.recordMetric("DOM_PROCESSING", domTime);
       }
     }
 
@@ -114,14 +116,9 @@ class PerformanceMonitor {
     this.addMetric(performanceMetric);
 
     // Log performance issues for poor ratings
-    if (rating === 'poor') {
+    if (rating === "poor") {
       const threshold = this.getThreshold(metric.name);
-      logPerformanceIssue(
-        metric.name,
-        metric.value,
-        threshold.poor,
-        `Web Vitals - ${metric.name}`
-      );
+      logPerformanceIssue(metric.name, metric.value, threshold.poor, `Web Vitals - ${metric.name}`);
     }
   }
 
@@ -136,14 +133,14 @@ class PerformanceMonitor {
       value,
       rating,
       timestamp: Date.now(),
-      url: typeof window !== 'undefined' ? window.location.href : 'unknown',
+      url: typeof window !== "undefined" ? window.location.href : "unknown",
       id: `${name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
     };
 
     this.addMetric(metric);
 
     // Log performance issues
-    if (rating === 'poor') {
+    if (rating === "poor") {
       const threshold = this.getThreshold(name);
       logPerformanceIssue(name, value, threshold.poor, context);
     }
@@ -155,22 +152,19 @@ class PerformanceMonitor {
   private monitorResourceTiming() {
     const observer = new PerformanceObserver((list) => {
       for (const entry of list.getEntries()) {
-        if (entry.entryType === 'resource') {
+        if (entry.entryType === "resource") {
           const resource = entry as PerformanceResourceTiming;
 
           // Monitor slow resources (> 2 seconds)
           if (resource.duration > 2000) {
-            this.recordMetric(
-              'SLOW_RESOURCE',
-              resource.duration,
-              `Resource: ${resource.name}`
-            );
+            this.recordMetric("SLOW_RESOURCE", resource.duration, `Resource: ${resource.name}`);
           }
 
           // Monitor large resources
-          if (resource.transferSize && resource.transferSize > 1024 * 1024) { // > 1MB
+          if (resource.transferSize && resource.transferSize > 1024 * 1024) {
+            // > 1MB
             this.recordMetric(
-              'LARGE_RESOURCE',
+              "LARGE_RESOURCE",
               resource.transferSize,
               `Resource: ${resource.name}`
             );
@@ -179,31 +173,28 @@ class PerformanceMonitor {
       }
     });
 
-    observer.observe({ entryTypes: ['resource'] });
+    observer.observe({ entryTypes: ["resource"] });
   }
 
   /**
    * Monitor long tasks that block the main thread
    */
   private monitorLongTasks() {
-    if ('PerformanceObserver' in window) {
+    if ("PerformanceObserver" in window) {
       try {
         const observer = new PerformanceObserver((list) => {
           for (const entry of list.getEntries()) {
-            if (entry.duration > 50) { // Tasks longer than 50ms
-              this.recordMetric(
-                'LONG_TASK',
-                entry.duration,
-                'Main thread blocking task'
-              );
+            if (entry.duration > 50) {
+              // Tasks longer than 50ms
+              this.recordMetric("LONG_TASK", entry.duration, "Main thread blocking task");
             }
           }
         });
 
-        observer.observe({ entryTypes: ['longtask'] });
+        observer.observe({ entryTypes: ["longtask"] });
       } catch (error) {
         // Long task API not supported
-        console.warn('Long task monitoring not supported:', error);
+        console.warn("Long task monitoring not supported:", error);
       }
     }
   }
@@ -211,15 +202,15 @@ class PerformanceMonitor {
   /**
    * Get performance rating based on thresholds
    */
-  private getRating(metricName: string, value: number): 'good' | 'needs-improvement' | 'poor' {
+  private getRating(metricName: string, value: number): "good" | "needs-improvement" | "poor" {
     const threshold = this.getThreshold(metricName);
 
     if (value <= threshold.good) {
-      return 'good';
+      return "good";
     } else if (value <= threshold.poor) {
-      return 'needs-improvement';
+      return "needs-improvement";
     } else {
-      return 'poor';
+      return "poor";
     }
   }
 
@@ -231,27 +222,27 @@ class PerformanceMonitor {
     const defaultThreshold = { good: 1000, poor: 3000 };
 
     switch (metricName) {
-      case 'LCP':
-      case 'INP':
-      case 'CLS':
-      case 'FCP':
-      case 'TTFB':
+      case "LCP":
+      case "INP":
+      case "CLS":
+      case "FCP":
+      case "TTFB":
         return this.thresholds[metricName as keyof WebVitalsThresholds];
-      case 'PAGE_LOAD':
+      case "PAGE_LOAD":
         return { good: 2000, poor: 5000 };
-      case 'DNS_LOOKUP':
+      case "DNS_LOOKUP":
         return { good: 50, poor: 200 };
-      case 'CONNECTION':
+      case "CONNECTION":
         return { good: 100, poor: 500 };
-      case 'SERVER_RESPONSE':
+      case "SERVER_RESPONSE":
         return { good: 500, poor: 1500 };
-      case 'DOM_PROCESSING':
+      case "DOM_PROCESSING":
         return { good: 1000, poor: 3000 };
-      case 'SLOW_RESOURCE':
+      case "SLOW_RESOURCE":
         return { good: 1000, poor: 2000 };
-      case 'LARGE_RESOURCE':
+      case "LARGE_RESOURCE":
         return { good: 500 * 1024, poor: 1024 * 1024 }; // 500KB, 1MB
-      case 'LONG_TASK':
+      case "LONG_TASK":
         return { good: 50, poor: 100 };
       default:
         return defaultThreshold;
@@ -291,15 +282,15 @@ class PerformanceMonitor {
    * Send metrics to server
    */
   private async sendMetricsToServer() {
-    if (this.metrics.length === 0 || process.env.NODE_ENV === 'development') {
+    if (this.metrics.length === 0 || process.env.NODE_ENV === "development") {
       return;
     }
 
     try {
       const response = await fetch(this.apiEndpoint, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({
           metrics: this.metrics,
@@ -313,7 +304,7 @@ class PerformanceMonitor {
         this.metrics = [];
       }
     } catch (error) {
-      console.warn('Failed to send performance metrics:', error);
+      console.warn("Failed to send performance metrics:", error);
     }
   }
 
@@ -323,16 +314,16 @@ class PerformanceMonitor {
   getPerformanceSummary() {
     const summary = {
       totalMetrics: this.metrics.length,
-      goodMetrics: this.metrics.filter(m => m.rating === 'good').length,
-      needsImprovementMetrics: this.metrics.filter(m => m.rating === 'needs-improvement').length,
-      poorMetrics: this.metrics.filter(m => m.rating === 'poor').length,
+      goodMetrics: this.metrics.filter((m) => m.rating === "good").length,
+      needsImprovementMetrics: this.metrics.filter((m) => m.rating === "needs-improvement").length,
+      poorMetrics: this.metrics.filter((m) => m.rating === "poor").length,
       averageValues: {} as Record<string, number>,
     };
 
     // Calculate averages for each metric type
-    const metricTypes = [...new Set(this.metrics.map(m => m.name))];
-    metricTypes.forEach(type => {
-      const typeMetrics = this.metrics.filter(m => m.name === type);
+    const metricTypes = [...new Set(this.metrics.map((m) => m.name))];
+    metricTypes.forEach((type) => {
+      const typeMetrics = this.metrics.filter((m) => m.name === type);
       const average = typeMetrics.reduce((sum, m) => sum + m.value, 0) / typeMetrics.length;
       summary.averageValues[type] = Math.round(average * 100) / 100;
     });
@@ -353,6 +344,7 @@ const performanceMonitor = new PerformanceMonitor();
 
 // Export functions
 export const recordPerformanceMetric = performanceMonitor.recordMetric.bind(performanceMonitor);
-export const getPerformanceSummary = performanceMonitor.getPerformanceSummary.bind(performanceMonitor);
+export const getPerformanceSummary =
+  performanceMonitor.getPerformanceSummary.bind(performanceMonitor);
 export const getRecentMetrics = performanceMonitor.getRecentMetrics.bind(performanceMonitor);
 export { performanceMonitor };

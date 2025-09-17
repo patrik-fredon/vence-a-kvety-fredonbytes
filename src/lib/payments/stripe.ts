@@ -2,8 +2,8 @@
  * Stripe payment integration configuration and utilities
  */
 
+import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import Stripe from "stripe";
-import { loadStripe, StripeElementsOptions } from "@stripe/stripe-js";
 
 // Server-side Stripe instance
 export const stripe = process.env.STRIPE_SECRET_KEY

@@ -1,4 +1,4 @@
-import { cn, formatPrice, slugify, debounce, isEmpty } from "../utils";
+import { cn, debounce, formatPrice, isEmpty, slugify } from "../utils";
 
 describe("Utils", () => {
   describe("cn (className merger)", () => {

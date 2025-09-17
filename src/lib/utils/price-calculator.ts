@@ -1,4 +1,4 @@
-import { Customization } from '@/types/product';
+import type { Customization } from "@/types/product";
 
 export interface Address {
   street: string;
@@ -8,7 +8,7 @@ export interface Address {
 }
 
 export interface Discount {
-  type: 'percentage' | 'fixed';
+  type: "percentage" | "fixed";
   value: number;
   code: string;
 }
@@ -22,10 +22,7 @@ export interface DiscountResult {
 /**
  * Calculate total price including customizations
  */
-export function calculateTotalPrice(
-  basePrice: number,
-  customizations: Customization[]
-): number {
+export function calculateTotalPrice(basePrice: number, customizations: Customization[]): number {
   let total = basePrice;
 
   for (const customization of customizations) {
@@ -50,16 +47,16 @@ export function calculateDeliveryFee(
 
   // Base delivery fee by city
   const cityRates: Record<string, number> = {
-    'Praha': 200,
-    'Brno': 250,
-    'Ostrava': 300,
-    'Plzeň': 280,
-    'Liberec': 320,
-    'Olomouc': 290,
-    'České Budějovice': 310,
-    'Hradec Králové': 300,
-    'Pardubice': 290,
-    'Zlín': 280,
+    Praha: 200,
+    Brno: 250,
+    Ostrava: 300,
+    Plzeň: 280,
+    Liberec: 320,
+    Olomouc: 290,
+    "České Budějovice": 310,
+    "Hradec Králové": 300,
+    Pardubice: 290,
+    Zlín: 280,
   };
 
   baseFee = cityRates[address.city] || 350; // Default rate for other cities
@@ -71,7 +68,8 @@ export function calculateDeliveryFee(
 
   // Weekend delivery surcharge
   const dayOfWeek = deliveryDate.getDay();
-  if (dayOfWeek === 0 || dayOfWeek === 6) { // Sunday or Saturday
+  if (dayOfWeek === 0 || dayOfWeek === 6) {
+    // Sunday or Saturday
     baseFee += 100;
   }
 
@@ -87,10 +85,7 @@ export function calculateDeliveryFee(
 /**
  * Apply discounts to a price
  */
-export function applyDiscounts(
-  originalPrice: number,
-  discounts: Discount[]
-): DiscountResult {
+export function applyDiscounts(originalPrice: number, discounts: Discount[]): DiscountResult {
   let currentPrice = originalPrice;
   let totalDiscount = 0;
   const appliedDiscounts: Discount[] = [];
@@ -98,11 +93,11 @@ export function applyDiscounts(
   for (const discount of discounts) {
     let discountAmount = 0;
 
-    if (discount.type === 'percentage') {
+    if (discount.type === "percentage") {
       if (discount.value > 0 && discount.value <= 100) {
         discountAmount = (currentPrice * discount.value) / 100;
       }
-    } else if (discount.type === 'fixed') {
+    } else if (discount.type === "fixed") {
       if (discount.value > 0) {
         discountAmount = Math.min(discount.value, currentPrice);
       }
@@ -131,12 +126,12 @@ function isPublicHoliday(date: Date): boolean {
 
   // Czech public holidays (simplified)
   const holidays = [
-    { month: 1, day: 1 },   // New Year's Day
-    { month: 5, day: 1 },   // Labour Day
-    { month: 5, day: 8 },   // Liberation Day
-    { month: 7, day: 5 },   // Saints Cyril and Methodius Day
-    { month: 7, day: 6 },   // Jan Hus Day
-    { month: 9, day: 28 },  // Czech Statehood Day
+    { month: 1, day: 1 }, // New Year's Day
+    { month: 5, day: 1 }, // Labour Day
+    { month: 5, day: 8 }, // Liberation Day
+    { month: 7, day: 5 }, // Saints Cyril and Methodius Day
+    { month: 7, day: 6 }, // Jan Hus Day
+    { month: 9, day: 28 }, // Czech Statehood Day
     { month: 10, day: 28 }, // Independent Czechoslovak State Day
     { month: 11, day: 17 }, // Struggle for Freedom and Democracy Day
     { month: 12, day: 24 }, // Christmas Eve
@@ -144,7 +139,7 @@ function isPublicHoliday(date: Date): boolean {
     { month: 12, day: 26 }, // St. Stephen's Day
   ];
 
-  return holidays.some(holiday => holiday.month === month && holiday.day === day);
+  return holidays.some((holiday) => holiday.month === month && holiday.day === day);
 }
 
 /**
@@ -159,16 +154,16 @@ export function calculateTax(price: number, taxRate: number = 0.21): number {
  */
 export function formatPriceForDisplay(
   price: number,
-  locale: 'cs' | 'en' = 'cs',
+  locale: "cs" | "en" = "cs",
   includeTax: boolean = true
 ): string {
   const taxAmount = includeTax ? calculateTax(price) : 0;
   const totalPrice = price + taxAmount;
 
-  if (locale === 'cs') {
-    return `${totalPrice.toLocaleString('cs-CZ')} Kč${includeTax ? ' (vč. DPH)' : ''}`;
+  if (locale === "cs") {
+    return `${totalPrice.toLocaleString("cs-CZ")} Kč${includeTax ? " (vč. DPH)" : ""}`;
   } else {
-    return `CZK ${totalPrice.toLocaleString('en-US')}${includeTax ? ' (incl. VAT)' : ''}`;
+    return `CZK ${totalPrice.toLocaleString("en-US")}${includeTax ? " (incl. VAT)" : ""}`;
   }
 }
 

@@ -1,7 +1,7 @@
 "use client";
 
 import { usePathname, useRouter } from "next/navigation";
-import { locales, localeNames, type Locale } from "@/i18n/config";
+import { type Locale, localeNames, locales } from "@/i18n/config";
 
 interface LanguageToggleProps {
   currentLocale: string;

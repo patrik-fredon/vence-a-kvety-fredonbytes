@@ -1,8 +1,9 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useEffect, useCallback } from "react";
-import { CartState, CartSummary, AddToCartRequest } from "@/types/cart";
+import type React from "react";
+import { createContext, useCallback, useContext, useEffect, useReducer } from "react";
 import { useAuthContext } from "@/components/auth/AuthProvider";
+import type { AddToCartRequest, CartState, CartSummary } from "@/types/cart";
 
 // Cart actions
 type CartAction =

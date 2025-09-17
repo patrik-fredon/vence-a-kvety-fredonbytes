@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { sendOrderStatusUpdateEmail } from "@/lib/email/service";
 import { createServerClient } from "@/lib/supabase/server";
 import { orderUtils } from "@/lib/supabase/utils";
-import { Order, OrderStatus } from "@/types/order";
-import { sendOrderStatusUpdateEmail } from "@/lib/email/service";
+import type { Order, OrderStatus } from "@/types/order";
 
 /**
  * Get order by ID
@@ -109,7 +109,7 @@ export async function GET(
       success: true,
       order: orderResponse,
     });
-  } catch (error) {
+  } catch (error) 
     console.error("Error in GET /api/orders/[id]:", error);
     return NextResponse.json(
       {
@@ -118,7 +118,6 @@ export async function GET(
       },
       { status: 500 }
     );
-  }
 }
 
 /**
@@ -288,10 +287,8 @@ export async function PATCH(
 
         // Send status update email
         await sendOrderStatusUpdateEmail(orderForEmail, status, "cs");
-      } catch (emailError) {
+      } catch (emailError) 
         console.error("Error sending status update email:", emailError);
-        // Don't fail the request if email fails
-      }
     }
 
     return NextResponse.json({
@@ -299,7 +296,7 @@ export async function PATCH(
       order: updatedOrder,
       message: "Stav objednávky byl úspěšně aktualizován",
     });
-  } catch (error) {
+  } catch (error) 
     console.error("Error in PATCH /api/orders/[id]:", error);
     return NextResponse.json(
       {
@@ -308,5 +305,4 @@ export async function PATCH(
       },
       { status: 500 }
     );
-  }
 }

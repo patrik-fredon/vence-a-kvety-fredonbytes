@@ -1,9 +1,9 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import { CartSummary, CartItemRow } from "@/types/cart";
-import { Product } from "@/types/product";
+import { createServerClient } from "@/lib/supabase/server";
 import { calculateFinalPrice } from "@/lib/utils/price-calculator";
+import { CartItemRow, type CartSummary } from "@/types/cart";
+import type { Product } from "@/types/product";
 
 /**
  * GET /api/cart - Retrieve user's cart items

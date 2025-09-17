@@ -5,15 +5,15 @@
 
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import {
   DeliveryCalendar,
   DeliveryCostCalculator,
   DeliveryOptionsSelector,
 } from "@/components/delivery";
-import { DeliveryUrgency, DeliveryTimeSlot, DeliveryCostCalculation } from "@/types/delivery";
 import type { Address } from "@/types";
+import type { DeliveryCostCalculation, DeliveryTimeSlot, DeliveryUrgency } from "@/types/delivery";
 
 export default function DeliveryDemoPage() {
   const t = useTranslations("delivery");

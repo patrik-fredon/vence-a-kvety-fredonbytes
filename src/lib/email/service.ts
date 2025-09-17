@@ -3,7 +3,7 @@
  * Handles order confirmations, status updates, and customer notifications
  */
 
-import { Order, OrderStatus } from "@/types/order";
+import type { Order, OrderStatus } from "@/types/order";
 
 // Email service configuration
 interface EmailConfig {

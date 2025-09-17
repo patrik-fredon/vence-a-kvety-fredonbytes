@@ -1,14 +1,14 @@
 "use client";
 
-import { useEffect, useState } from "react";
 import {
-  ShoppingBagIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
   ClipboardDocumentListIcon,
   CurrencyDollarIcon,
   ExclamationTriangleIcon,
-  ArrowUpIcon,
-  ArrowDownIcon,
+  ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 interface DashboardStats {
   orders: {

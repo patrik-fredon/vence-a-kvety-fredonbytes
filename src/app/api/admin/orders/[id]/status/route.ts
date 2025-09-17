@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { withAdminAuth, logAdminAction } from "@/lib/auth/admin-middleware";
+import { type NextRequest, NextResponse } from "next/server";
+import { logAdminAction, withAdminAuth } from "@/lib/auth/admin-middleware";
 import { orderUtils } from "@/lib/supabase/utils";
 
 /**

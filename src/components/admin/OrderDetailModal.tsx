@@ -1,9 +1,8 @@
 "use client";
 
-import { useState } from "react";
-import { Fragment } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { Fragment, useState } from "react";
 
 interface Order {
   id: string;

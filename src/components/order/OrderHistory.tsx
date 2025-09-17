@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Order, OrderStatus } from "@/types/order";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Order, OrderStatus } from "@/types/order";
 
 interface OrderHistoryProps {
   locale: string;

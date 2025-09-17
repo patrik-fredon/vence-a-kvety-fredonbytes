@@ -1,5 +1,5 @@
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { getTranslations } from "next-intl/server";
-import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { ContactForm } from "@/components/contact/ContactForm";
 
 interface ContactPageProps {
@@ -90,8 +90,8 @@ export default async function ContactPage({ params }: ContactPageProps) {
             </h2>
 
             <p className="text-neutral-600 mb-6">
-              Máte dotaz ohledně našich pohřebních věnců nebo potřebujete poradit s výběrem?
-              Napište nám a my se Vám ozveme co nejdříve.
+              Máte dotaz ohledně našich pohřebních věnců nebo potřebujete poradit s výběrem? Napište
+              nám a my se Vám ozveme co nejdříve.
             </p>
 
             <ContactForm locale={locale} />

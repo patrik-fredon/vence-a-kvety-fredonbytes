@@ -1,22 +1,22 @@
 import { getTranslations } from "next-intl/server";
-import { createServerClient } from "@/lib/supabase/server";
 import { ProductGrid } from "@/components/product";
-import { transformProductRow, transformCategoryRow } from "@/lib/utils/product-transforms";
-import { Product, Category, ProductRow, CategoryRow } from "@/types/product";
 import {
-  getCachedCategories,
+  generateBreadcrumbStructuredData,
+  generateCollectionPageStructuredData,
+  generateItemListStructuredData,
+  generateWebsiteStructuredData,
+  StructuredData,
+} from "@/components/seo/StructuredData";
+import {
   cacheCategories,
-  getCachedProductsList,
   cacheProductsList,
+  getCachedCategories,
+  getCachedProductsList,
 } from "@/lib/cache/product-cache";
 import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
-import {
-  StructuredData,
-  generateBreadcrumbStructuredData,
-  generateWebsiteStructuredData,
-  generateItemListStructuredData,
-  generateCollectionPageStructuredData
-} from "@/components/seo/StructuredData";
+import { createServerClient } from "@/lib/supabase/server";
+import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
+import { Category, type CategoryRow, type Product, type ProductRow } from "@/types/product";
 
 interface ProductsPageProps {
   params: Promise<{ locale: string }>;
@@ -32,9 +32,10 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
   const { category } = await searchParams;
 
   let title = locale === "cs" ? "Produkty" : "Products";
-  let description = locale === "cs"
-    ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá. Ruční výroba, rychlé dodání."
-    : "Browse our collection of funeral wreaths and floral arrangements. Handcrafted, fast delivery.";
+  let description =
+    locale === "cs"
+      ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá. Ruční výroba, rychlé dodání."
+      : "Browse our collection of funeral wreaths and floral arrangements. Handcrafted, fast delivery.";
 
   // If filtering by category, get category info for better metadata
   if (category && typeof category === "string") {
@@ -48,7 +49,8 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
 
     if (categoryData) {
       const categoryName = locale === "cs" ? categoryData.name_cs : categoryData.name_en;
-      const categoryDesc = locale === "cs" ? categoryData.description_cs : categoryData.description_en;
+      const categoryDesc =
+        locale === "cs" ? categoryData.description_cs : categoryData.description_en;
 
       title = `${categoryName} | ${title}`;
       description = categoryDesc || description;
@@ -67,7 +69,7 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
       "rozloučení",
       "věnce",
       "funeral wreaths",
-      "floral arrangements"
+      "floral arrangements",
     ],
   });
 }
@@ -98,7 +100,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
 
   // Try to get initial products from cache
   const initialFilters = { active: true, limit: 12, order: "created_at" };
-  let cachedProductsData = await getCachedProductsList(initialFilters);
+  const cachedProductsData = await getCachedProductsList(initialFilters);
   let products: Product[];
 
   if (cachedProductsData) {
@@ -147,7 +149,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
 
   // Add category to breadcrumbs if filtering by category
   if (category && typeof category === "string") {
-    const categoryData = categories.find(cat => cat.slug === category);
+    const categoryData = categories.find((cat) => cat.slug === category);
     if (categoryData) {
       const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
       breadcrumbs.push({
@@ -161,7 +163,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
   const websiteStructuredData = generateWebsiteStructuredData(locale);
 
   // Generate ItemList structured data for products
-  const productItems = products.map(product => ({
+  const productItems = products.map((product) => ({
     name: locale === "cs" ? product.name.cs : product.name.en,
     url: `/${locale}/products/${product.slug}`,
     image: product.images?.[0]?.url,
@@ -171,24 +173,30 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
 
   const itemListStructuredData = generateItemListStructuredData(
     productItems,
-    locale === "cs" ? "Pohřební věnce a květinové aranžmá" : "Funeral Wreaths and Floral Arrangements",
+    locale === "cs"
+      ? "Pohřební věnce a květinové aranžmá"
+      : "Funeral Wreaths and Floral Arrangements",
     locale
   );
 
   // Generate CollectionPage structured data if filtering by category
   let collectionPageStructuredData = null;
   if (category && typeof category === "string") {
-    const categoryData = categories.find(cat => cat.slug === category);
+    const categoryData = categories.find((cat) => cat.slug === category);
     if (categoryData) {
       const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
-      const categoryDescription = locale === "cs" ? categoryData.description?.cs : categoryData.description?.en;
+      const categoryDescription =
+        locale === "cs" ? categoryData.description?.cs : categoryData.description?.en;
 
-      collectionPageStructuredData = generateCollectionPageStructuredData({
-        name: categoryName,
-        description: categoryDescription,
-        url: `/${locale}/products?category=${category}`,
-        productCount: products.length, // This would be the total count in a real implementation
-      }, locale);
+      collectionPageStructuredData = generateCollectionPageStructuredData(
+        {
+          name: categoryName,
+          description: categoryDescription,
+          url: `/${locale}/products?category=${category}`,
+          productCount: products.length, // This would be the total count in a real implementation
+        },
+        locale
+      );
     }
   }
 
@@ -201,7 +209,9 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="mb-8">
-          <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-4">{t("title")}</h1>
+          <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-4">
+            {t("title")}
+          </h1>
           <p className="text-lg text-neutral-600">
             {locale === "cs"
               ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá."

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import {
+import { useEffect, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { cn } from "@/lib/utils";
+import type {
   Category,
   ProductFilters as ProductFiltersType,
   ProductSortOptions,
 } from "@/types/product";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { cn } from "@/lib/utils";
 
 interface ProductFiltersProps {
   categories: Category[];

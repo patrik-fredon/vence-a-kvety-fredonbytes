@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
   EyeIcon,
-  MagnifyingGlassIcon,
   FunnelIcon,
+  MagnifyingGlassIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
-import ProductForm from "./ProductForm";
+import { useEffect, useState } from "react";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import ProductForm from "./ProductForm";
 
 interface Product {
   id: string;

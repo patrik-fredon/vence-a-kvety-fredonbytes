@@ -1,12 +1,15 @@
 <<<<<<< HEAD
+
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { orderUtils } from "@/lib/supabase/utils";
+
 =======
-import { NextRequest, NextResponse } from 'next/server';
+
+import { type NextRequest, NextResponse } from 'next/server';
 import { createServerClient } from '@/lib/supabase/server';
 import { orderUtils } from '@/lib/supabase/utils';
-import { OrderStatus } from '@/types/order';
+import type { OrderStatus } from '@/types/order';
 
 interface StatusHistoryItem {
   status: OrderStatus;
@@ -145,7 +148,7 @@ export async function GET(
       statusHistory
 >>>>>>> 2de4c3c (Api routing problem, non functional state)
     });
-  } catch (error) {
+  } catch (error) 
     console.error("Error in GET /api/orders/[id]/history:", error);
     return NextResponse.json(
       {
@@ -154,5 +157,4 @@ export async function GET(
       },
       { status: 500 }
     );
-  }
 }

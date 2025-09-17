@@ -1,18 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-  PaymentElement,
-} from "@stripe/react-stripe-js";
 import { CreditCardIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { getStripe, stripeElementsOptions } from "@/lib/payments/stripe";
+import {
+  CardElement,
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import { useTranslations } from "next-intl";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { getStripe, stripeElementsOptions } from "@/lib/payments/stripe";
 
 interface StripePaymentFormProps {
   clientSecret: string;

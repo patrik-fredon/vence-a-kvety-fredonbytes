@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { withAdminAuth } from "@/lib/auth/admin-middleware";
 import { adminUtils } from "@/lib/supabase/utils";
 

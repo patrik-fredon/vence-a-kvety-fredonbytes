@@ -3,7 +3,7 @@
  * Helps identify and fix Supabase connection issues
  */
 
-const jwt = require('jsonwebtoken');
+const jwt = require("jsonwebtoken");
 
 function decodeSupabaseKey(key) {
   try {
@@ -15,8 +15,8 @@ function decodeSupabaseKey(key) {
 }
 
 function analyzeSupabaseConfig() {
-  console.log('🔍 SUPABASE CONFIGURATION ANALYSIS');
-  console.log('=' .repeat(50));
+  console.log("🔍 SUPABASE CONFIGURATION ANALYSIS");
+  console.log("=".repeat(50));
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
@@ -37,7 +37,7 @@ function analyzeSupabaseConfig() {
     console.log(`   Issued: ${new Date(anonDecoded.iat * 1000).toISOString()}`);
     console.log(`   Expires: ${new Date(anonDecoded.exp * 1000).toISOString()}`);
   } else {
-    console.log('   ❌ Invalid or malformed key');
+    console.log("   ❌ Invalid or malformed key");
   }
 
   // Decode service key
@@ -49,7 +49,7 @@ function analyzeSupabaseConfig() {
     console.log(`   Issued: ${new Date(serviceDecoded.iat * 1000).toISOString()}`);
     console.log(`   Expires: ${new Date(serviceDecoded.exp * 1000).toISOString()}`);
   } else {
-    console.log('   ❌ Invalid or malformed key');
+    console.log("   ❌ Invalid or malformed key");
   }
 
   // Check for mismatches
@@ -85,13 +85,13 @@ function analyzeSupabaseConfig() {
     urlProjectId,
     anonProjectId,
     serviceProjectId,
-    hasMatches: urlProjectId === anonProjectId && urlProjectId === serviceProjectId
+    hasMatches: urlProjectId === anonProjectId && urlProjectId === serviceProjectId,
   };
 }
 
 function generateCorrectConfig() {
   console.log(`\n🔧 SOLUTION OPTIONS:`);
-  console.log('=' .repeat(50));
+  console.log("=".repeat(50));
 
   const analysis = analyzeSupabaseConfig();
 
@@ -121,7 +121,7 @@ function generateCorrectConfig() {
 }
 
 // Run analysis
-require('dotenv').config();
+require("dotenv").config();
 analyzeSupabaseConfig();
 generateCorrectConfig();
 

@@ -2,8 +2,8 @@
  * Utility functions for transforming between database rows and TypeScript interfaces
  */
 
-import { Product, Category, ProductRow, CategoryRow } from "@/types/product";
-import { Locale, LocalizedContent } from "@/types";
+import type { Locale, LocalizedContent } from "@/types";
+import type { Category, CategoryRow, Product, ProductRow } from "@/types/product";
 
 /**
  * Transform a database category row to Category interface

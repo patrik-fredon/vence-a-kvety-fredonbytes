@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Product, Category, ProductFilters, ProductSortOptions, ApiResponse } from "@/types";
-import { ProductCard } from "./ProductCard";
-import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
-import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
-import { Button } from "@/components/ui/Button";
+import { useCallback, useEffect, useState } from "react";
 import { KeyboardNavigationGrid } from "@/components/accessibility/KeyboardNavigationGrid";
+import { Button } from "@/components/ui/Button";
+import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
+import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
+import { ProductCard } from "./ProductCard";
+import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
 
 interface ProductGridProps {
   initialProducts?: Product[];
@@ -108,7 +108,7 @@ export function ProductGrid({
               count: newProducts.length,
               total: pagination?.total || 0,
             }),
-            'polite'
+            "polite"
           );
         }
       } catch (err) {
@@ -211,7 +211,7 @@ export function ProductGrid({
               ariaLabel={t("title")}
               onItemActivate={(index, element) => {
                 // Handle Enter/Space key activation
-                const link = element.querySelector('a');
+                const link = element.querySelector("a");
                 if (link) {
                   link.click();
                 }
@@ -219,11 +219,7 @@ export function ProductGrid({
             >
               {products.map((product, index) => (
                 <div key={product.id} data-keyboard-nav-item tabIndex={index === 0 ? 0 : -1}>
-                  <ProductCard
-                    product={product}
-                    locale={locale}
-                    onAddToCart={handleAddToCart}
-                  />
+                  <ProductCard product={product} locale={locale} onAddToCart={handleAddToCart} />
                 </div>
               ))}
             </KeyboardNavigationGrid>

@@ -1,11 +1,11 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { Product } from "@/types/product";
-import { cn } from "@/lib/utils";
-import { StarIcon, HeartIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { HeartIcon, ShareIcon, StarIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { cn } from "@/lib/utils";
+import type { Product } from "@/types/product";
 
 interface ProductInfoProps {
   product: Product;

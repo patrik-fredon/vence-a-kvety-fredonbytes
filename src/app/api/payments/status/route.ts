@@ -2,9 +2,9 @@
  * API route for checking payment status
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { PaymentService } from "@/lib/payments";
-import { PaymentMethod } from "@/types/order";
+import type { PaymentMethod } from "@/types/order";
 
 export async function GET(request: NextRequest) {
   try {

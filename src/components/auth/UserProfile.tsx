@@ -1,13 +1,13 @@
 "use client";
 
-<<<<<<< HEAD
-import { useState, useEffect } from "react";
+
+import { useParams } from "next/navigation";
+import { useEffect, useState } from "react";
+import { AddressBook } from "@/components/auth/AddressBook";
+import { OrderHistory } from "@/components/order/OrderHistory";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useAuth, useUpdateProfile, useSignOut } from "@/lib/auth/hooks";
-import { OrderHistory } from "@/components/order/OrderHistory";
-import { AddressBook } from "@/components/auth/AddressBook";
-import { useParams } from "next/navigation";
+import { useAuth, useSignOut, useUpdateProfile } from "@/lib/auth/hooks";
 
 interface Address {
   id: string;
@@ -35,17 +35,6 @@ interface UserPreferences {
     allowAnalytics: boolean;
   };
 }
-=======
-import { useState, useEffect } from 'react'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { useAuth, useUpdateProfile, useSignOut } from '@/lib/auth/hooks'
-import { OrderHistory } from '@/components/order/OrderHistory'
-import { UserPreferencesComponent } from './UserPreferences'
-import { AddressBook } from './AddressBook'
-import { useParams } from 'next/navigation'
-import { Address, UserPreferences, defaultUserPreferences } from '@/types/user'
->>>>>>> db25158 (Enhance user profile with address book and preferences management)
 
 export function UserProfile() {
   const { user } = useAuth();
@@ -269,18 +258,20 @@ export function UserProfile() {
         <div className="border-b border-gray-200">
           <nav className="-mb-px flex space-x-8 px-6 overflow-x-auto">
 <<<<<<< HEAD
-            {(["profile", "orders", "addresses", "preferences"] as const).map((tab) => (
-              <button
-                key={tab}
-                onClick={() => setActiveTab(tab)}
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === tab
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
-              >
-                {getTabLabel(tab)}
-              </button>
-            ))}
+  {
+    (["profile", "orders", "addresses", "preferences"] as const).map((tab) => (
+      <button
+        key={tab}
+        onClick={() => setActiveTab(tab)}
+        className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === tab
+          ? "border-indigo-500 text-indigo-600"
+          : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+          }`}
+      >
+        {getTabLabel(tab)}
+      </button>
+    ))
+  }
 =======
             <button
               onClick={() => setActiveTab('profile')}
@@ -323,88 +314,88 @@ export function UserProfile() {
               {locale === 'cs' ? 'Objednávky' : 'Orders'}
             </button>
 >>>>>>> db25158 (Enhance user profile with address book and preferences management)
-          </nav>
-        </div>
-        <div className="px-6 py-4">
-          <div className="flex justify-between items-center">
+          </nav >
+        </div >
+    <div className="px-6 py-4">
+      <div className="flex justify-between items-center">
 <<<<<<< HEAD
             <h1 className="text-2xl font-bold text-gray-900">{getTabLabel(activeTab)}</h1>
             <Button variant="outline" onClick={handleSignOut} disabled={signOutLoading}>
 =======
             <h1 className="text-2xl font-bold text-gray-900">
-              {activeTab === 'profile' && (locale === 'cs' ? 'Základní údaje' : 'Basic Information')}
-              {activeTab === 'addresses' && (locale === 'cs' ? 'Adresář' : 'Address Book')}
-              {activeTab === 'preferences' && (locale === 'cs' ? 'Nastavení účtu' : 'Account Settings')}
-              {activeTab === 'orders' && (locale === 'cs' ? 'Historie objednávek' : 'Order History')}
-            </h1>
-            <Button
-              variant="outline"
-              onClick={handleSignOut}
-              disabled={signOutLoading}
-            >
+        {activeTab === 'profile' && (locale === 'cs' ? 'Základní údaje' : 'Basic Information')}
+        {activeTab === 'addresses' && (locale === 'cs' ? 'Adresář' : 'Address Book')}
+        {activeTab === 'preferences' && (locale === 'cs' ? 'Nastavení účtu' : 'Account Settings')}
+        {activeTab === 'orders' && (locale === 'cs' ? 'Historie objednávek' : 'Order History')}
+      </h1>
+      <Button
+        variant="outline"
+        onClick={handleSignOut}
+        disabled={signOutLoading}
+      >
 >>>>>>> db25158 (Enhance user profile with address book and preferences management)
-              {signOutLoading
-                ? locale === "cs"
-                  ? "Odhlašování..."
-                  : "Signing out..."
-                : locale === "cs"
-                  ? "Odhlásit se"
-                  : "Sign Out"}
-            </Button>
-          </div>
-        </div>
-      </div>
+        {signOutLoading
+          ? locale === "cs"
+            ? "Odhlašování..."
+            : "Signing out..."
+          : locale === "cs"
+            ? "Odhlásit se"
+            : "Sign Out"}
+      </Button>
+    </div>
+        </div >
+      </div >
 
-      {/* Tab Content */}
+    {/* Tab Content */ }
 <<<<<<< HEAD
-      <div className="bg-white shadow rounded-lg">
-        <div className="p-6">
-          {successMessage && (
-            <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
-              <p className="text-sm text-green-600">{successMessage}</p>
+    < div className = "bg-white shadow rounded-lg" >
+      <div className="p-6">
+        {successMessage && (
+          <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
+            <p className="text-sm text-green-600">{successMessage}</p>
+          </div>
+        )}
+
+        {/* Basic Profile Tab */}
+        {activeTab === "profile" && (
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <div className="grid grid-cols-1 gap-4">
+              <Input
+                id="email"
+                name="email"
+                type="email"
+                label={locale === "cs" ? "E-mail" : "Email"}
+                value={user.email}
+                disabled
+                helpText={locale === "cs" ? "E-mail nelze změnit" : "Email cannot be changed"}
+              />
+
+              <Input
+                id="name"
+                name="name"
+                type="text"
+                label={locale === "cs" ? "Jméno a příjmení" : "Full Name"}
+                value={formData.name}
+                onChange={handleChange}
+                disabled={!isEditing || updateLoading}
+                required
+              />
+
+              <Input
+                id="phone"
+                name="phone"
+                type="tel"
+                label={locale === "cs" ? "Telefon" : "Phone"}
+                value={formData.phone}
+                onChange={handleChange}
+                disabled={!isEditing || updateLoading}
+              />
             </div>
-          )}
 
-          {/* Basic Profile Tab */}
-          {activeTab === "profile" && (
-            <form onSubmit={handleSubmit} className="space-y-6">
-              <div className="grid grid-cols-1 gap-4">
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  label={locale === "cs" ? "E-mail" : "Email"}
-                  value={user.email}
-                  disabled
-                  helpText={locale === "cs" ? "E-mail nelze změnit" : "Email cannot be changed"}
-                />
-
-                <Input
-                  id="name"
-                  name="name"
-                  type="text"
-                  label={locale === "cs" ? "Jméno a příjmení" : "Full Name"}
-                  value={formData.name}
-                  onChange={handleChange}
-                  disabled={!isEditing || updateLoading}
-                  required
-                />
-
-                <Input
-                  id="phone"
-                  name="phone"
-                  type="tel"
-                  label={locale === "cs" ? "Telefon" : "Phone"}
-                  value={formData.phone}
-                  onChange={handleChange}
-                  disabled={!isEditing || updateLoading}
-                />
+            {updateError && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-3">
+                <p className="text-sm text-red-600">{updateError}</p>
               </div>
-
-              {updateError && (
-                <div className="bg-red-50 border border-red-200 rounded-md p-3">
-                  <p className="text-sm text-red-600">{updateError}</p>
-                </div>
 =======
       {successMessage && (
         <div className="mb-4 bg-green-50 border border-green-200 rounded-md p-3">
@@ -469,8 +460,8 @@ export function UserProfile() {
                     type="submit"
                     disabled={updateLoading}
                   >
-                    {updateLoading 
-                      ? (locale === 'cs' ? 'Ukládání...' : 'Saving...') 
+                    {updateLoading
+                      ? (locale === 'cs' ? 'Ukládání...' : 'Saving...')
                       : (locale === 'cs' ? 'Uložit změny' : 'Save Changes')
                     }
                   </Button>
@@ -483,245 +474,245 @@ export function UserProfile() {
                   {locale === 'cs' ? 'Upravit profil' : 'Edit Profile'}
                 </Button>
 >>>>>>> db25158 (Enhance user profile with address book and preferences management)
-              )}
+            )}
 
-              <div className="flex justify-end space-x-3">
-                {isEditing ? (
-                  <>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setIsEditing(false)}
-                      disabled={updateLoading}
-                    >
-                      {locale === "cs" ? "Zrušit" : "Cancel"}
-                    </Button>
-                    <Button type="submit" disabled={updateLoading}>
-                      {updateLoading
-                        ? locale === "cs"
-                          ? "Ukládání..."
-                          : "Saving..."
-                        : locale === "cs"
-                          ? "Uložit změny"
-                          : "Save Changes"}
-                    </Button>
-                  </>
-                ) : (
-                  <Button type="button" onClick={() => setIsEditing(true)}>
-                    {locale === "cs" ? "Upravit profil" : "Edit Profile"}
+            <div className="flex justify-end space-x-3">
+              {isEditing ? (
+                <>
+                  <Button
+                    type="button"
+                    variant="outline"
+                    onClick={() => setIsEditing(false)}
+                    disabled={updateLoading}
+                  >
+                    {locale === "cs" ? "Zrušit" : "Cancel"}
                   </Button>
-                )}
-              </div>
-            </form>
-          )}
-
-          {/* Orders Tab */}
-          {activeTab === "orders" && <OrderHistory locale={locale} />}
-
-          {/* Addresses Tab */}
-          {activeTab === "addresses" && (
-            <div className="space-y-6">
-              <AddressBook
-                addresses={addresses}
-                onAddressesChange={setAddresses}
-                locale={locale}
-                disabled={updateLoading}
-              />
-
-              <div className="flex justify-end">
-                <Button onClick={handleSubmit} disabled={updateLoading}>
-                  {updateLoading
-                    ? locale === "cs"
-                      ? "Ukládání..."
-                      : "Saving..."
-                    : locale === "cs"
-                      ? "Uložit adresy"
-                      : "Save Addresses"}
+                  <Button type="submit" disabled={updateLoading}>
+                    {updateLoading
+                      ? locale === "cs"
+                        ? "Ukládání..."
+                        : "Saving..."
+                      : locale === "cs"
+                        ? "Uložit změny"
+                        : "Save Changes"}
+                  </Button>
+                </>
+              ) : (
+                <Button type="button" onClick={() => setIsEditing(true)}>
+                  {locale === "cs" ? "Upravit profil" : "Edit Profile"}
                 </Button>
+              )}
+            </div>
+          </form>
+        )}
+
+        {/* Orders Tab */}
+        {activeTab === "orders" && <OrderHistory locale={locale} />}
+
+        {/* Addresses Tab */}
+        {activeTab === "addresses" && (
+          <div className="space-y-6">
+            <AddressBook
+              addresses={addresses}
+              onAddressesChange={setAddresses}
+              locale={locale}
+              disabled={updateLoading}
+            />
+
+            <div className="flex justify-end">
+              <Button onClick={handleSubmit} disabled={updateLoading}>
+                {updateLoading
+                  ? locale === "cs"
+                    ? "Ukládání..."
+                    : "Saving..."
+                  : locale === "cs"
+                    ? "Uložit adresy"
+                    : "Save Addresses"}
+              </Button>
+            </div>
+          </div>
+        )}
+
+        {/* Preferences Tab */}
+        {activeTab === "preferences" && (
+          <div className="space-y-8">
+            {/* Language Preferences */}
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                {locale === "cs" ? "Jazyk" : "Language"}
+              </h3>
+              <div className="space-y-3">
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="language"
+                    value="cs"
+                    checked={preferences.language === "cs"}
+                    onChange={(e) =>
+                      handlePreferenceChange("language", "language", e.target.value)
+                    }
+                    className="mr-3 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <span className="text-sm text-gray-700">Čeština</span>
+                </label>
+                <label className="flex items-center">
+                  <input
+                    type="radio"
+                    name="language"
+                    value="en"
+                    checked={preferences.language === "en"}
+                    onChange={(e) =>
+                      handlePreferenceChange("language", "language", e.target.value)
+                    }
+                    className="mr-3 text-indigo-600 focus:ring-indigo-500"
+                  />
+                  <span className="text-sm text-gray-700">English</span>
+                </label>
               </div>
             </div>
-          )}
 
-          {/* Preferences Tab */}
-          {activeTab === "preferences" && (
-            <div className="space-y-8">
-              {/* Language Preferences */}
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {locale === "cs" ? "Jazyk" : "Language"}
-                </h3>
-                <div className="space-y-3">
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="language"
-                      value="cs"
-                      checked={preferences.language === "cs"}
-                      onChange={(e) =>
-                        handlePreferenceChange("language", "language", e.target.value)
-                      }
-                      className="mr-3 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="text-sm text-gray-700">Čeština</span>
-                  </label>
-                  <label className="flex items-center">
-                    <input
-                      type="radio"
-                      name="language"
-                      value="en"
-                      checked={preferences.language === "en"}
-                      onChange={(e) =>
-                        handlePreferenceChange("language", "language", e.target.value)
-                      }
-                      className="mr-3 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="text-sm text-gray-700">English</span>
-                  </label>
-                </div>
-              </div>
-
-              {/* Email Notifications */}
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {locale === "cs" ? "E-mailová oznámení" : "Email Notifications"}
-                </h3>
-                <div className="space-y-3">
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Aktualizace objednávek" : "Order Updates"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.emailNotifications.orderUpdates}
-                      onChange={(e) =>
-                        handlePreferenceChange(
-                          "emailNotifications",
-                          "orderUpdates",
-                          e.target.checked
-                        )
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Propagační nabídky" : "Promotional Offers"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.emailNotifications.promotions}
-                      onChange={(e) =>
-                        handlePreferenceChange("emailNotifications", "promotions", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Newsletter" : "Newsletter"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.emailNotifications.newsletter}
-                      onChange={(e) =>
-                        handlePreferenceChange("emailNotifications", "newsletter", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* SMS Notifications */}
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {locale === "cs" ? "SMS oznámení" : "SMS Notifications"}
-                </h3>
-                <div className="space-y-3">
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Aktualizace objednávek" : "Order Updates"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.smsNotifications.orderUpdates}
-                      onChange={(e) =>
-                        handlePreferenceChange("smsNotifications", "orderUpdates", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Připomínky doručení" : "Delivery Reminders"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.smsNotifications.deliveryReminders}
-                      onChange={(e) =>
-                        handlePreferenceChange(
-                          "smsNotifications",
-                          "deliveryReminders",
-                          e.target.checked
-                        )
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* Privacy Settings */}
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {locale === "cs" ? "Soukromí" : "Privacy"}
-                </h3>
-                <div className="space-y-3">
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Sdílet data pro marketing" : "Share Data for Marketing"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.privacy.shareDataForMarketing}
-                      onChange={(e) =>
-                        handlePreferenceChange("privacy", "shareDataForMarketing", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Povolit analytiku" : "Allow Analytics"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.privacy.allowAnalytics}
-                      onChange={(e) =>
-                        handlePreferenceChange("privacy", "allowAnalytics", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              <div className="flex justify-end">
-                <Button onClick={handleSubmit} disabled={updateLoading}>
-                  {updateLoading
-                    ? locale === "cs"
-                      ? "Ukládání..."
-                      : "Saving..."
-                    : locale === "cs"
-                      ? "Uložit nastavení"
-                      : "Save Preferences"}
-                </Button>
+            {/* Email Notifications */}
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                {locale === "cs" ? "E-mailová oznámení" : "Email Notifications"}
+              </h3>
+              <div className="space-y-3">
+                <label className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">
+                    {locale === "cs" ? "Aktualizace objednávek" : "Order Updates"}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.emailNotifications.orderUpdates}
+                    onChange={(e) =>
+                      handlePreferenceChange(
+                        "emailNotifications",
+                        "orderUpdates",
+                        e.target.checked
+                      )
+                    }
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">
+                    {locale === "cs" ? "Propagační nabídky" : "Promotional Offers"}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.emailNotifications.promotions}
+                    onChange={(e) =>
+                      handlePreferenceChange("emailNotifications", "promotions", e.target.checked)
+                    }
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">
+                    {locale === "cs" ? "Newsletter" : "Newsletter"}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.emailNotifications.newsletter}
+                    onChange={(e) =>
+                      handlePreferenceChange("emailNotifications", "newsletter", e.target.checked)
+                    }
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </label>
               </div>
             </div>
-          )}
-        </div>
-<<<<<<< HEAD
+
+            {/* SMS Notifications */}
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                {locale === "cs" ? "SMS oznámení" : "SMS Notifications"}
+              </h3>
+              <div className="space-y-3">
+                <label className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">
+                    {locale === "cs" ? "Aktualizace objednávek" : "Order Updates"}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.smsNotifications.orderUpdates}
+                    onChange={(e) =>
+                      handlePreferenceChange("smsNotifications", "orderUpdates", e.target.checked)
+                    }
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">
+                    {locale === "cs" ? "Připomínky doručení" : "Delivery Reminders"}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.smsNotifications.deliveryReminders}
+                    onChange={(e) =>
+                      handlePreferenceChange(
+                        "smsNotifications",
+                        "deliveryReminders",
+                        e.target.checked
+                      )
+                    }
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </label>
+              </div>
+            </div>
+
+            {/* Privacy Settings */}
+            <div>
+              <h3 className="text-lg font-medium text-gray-900 mb-4">
+                {locale === "cs" ? "Soukromí" : "Privacy"}
+              </h3>
+              <div className="space-y-3">
+                <label className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">
+                    {locale === "cs" ? "Sdílet data pro marketing" : "Share Data for Marketing"}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.privacy.shareDataForMarketing}
+                    onChange={(e) =>
+                      handlePreferenceChange("privacy", "shareDataForMarketing", e.target.checked)
+                    }
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </label>
+                <label className="flex items-center justify-between">
+                  <span className="text-sm text-gray-700">
+                    {locale === "cs" ? "Povolit analytiku" : "Allow Analytics"}
+                  </span>
+                  <input
+                    type="checkbox"
+                    checked={preferences.privacy.allowAnalytics}
+                    onChange={(e) =>
+                      handlePreferenceChange("privacy", "allowAnalytics", e.target.checked)
+                    }
+                    className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                  />
+                </label>
+              </div>
+            </div>
+
+            <div className="flex justify-end">
+              <Button onClick={handleSubmit} disabled={updateLoading}>
+                {updateLoading
+                  ? locale === "cs"
+                    ? "Ukládání..."
+                    : "Saving..."
+                  : locale === "cs"
+                    ? "Uložit nastavení"
+                    : "Save Preferences"}
+              </Button>
+            </div>
+          </div>
+        )}
       </div>
+<<<<<<< HEAD
+      </div >
 =======
       )}
 
@@ -753,6 +744,6 @@ export function UserProfile() {
         </div>
       )}
 >>>>>>> db25158 (Enhance user profile with address book and preferences management)
-    </div>
+    </div >
   );
 }

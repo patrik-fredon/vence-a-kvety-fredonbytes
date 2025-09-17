@@ -2,12 +2,15 @@
  * Dynamic imports for heavy components to enable code splitting and lazy loading
  */
 
-import dynamic from 'next/dynamic';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import dynamic from "next/dynamic";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Product components with lazy loading
 export const LazyProductCustomizer = dynamic(
-  () => import('@/components/product/ProductCustomizer').then(mod => ({ default: mod.ProductCustomizer })),
+  () =>
+    import("@/components/product/ProductCustomizer").then((mod) => ({
+      default: mod.ProductCustomizer,
+    })),
   {
     loading: () => <LoadingSpinner size="md" />,
     ssr: false,

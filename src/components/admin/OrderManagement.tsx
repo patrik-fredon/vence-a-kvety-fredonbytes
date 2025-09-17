@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
-  EyeIcon,
-  PencilIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
   CheckCircleIcon,
+  EyeIcon,
+  FunnelIcon,
+  MagnifyingGlassIcon,
+  PencilIcon,
   TruckIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 import OrderDetailModal from "./OrderDetailModal";
 
 interface Order {

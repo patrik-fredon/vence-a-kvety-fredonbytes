@@ -3,25 +3,25 @@
  * Handles CRUD operations for products with search and filtering
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { invalidateApiCache, setCacheHeaders, withCache } from "@/lib/cache/api-cache";
+import { CACHE_TTL } from "@/lib/cache/redis";
 import { createServerClient } from "@/lib/supabase/server";
 import {
-  Product,
-  ProductSearchParams,
-  CreateProductRequest,
-  ProductRow,
-  CategoryRow,
-} from "@/types/product";
-import { ApiResponse } from "@/types";
-import {
-  transformProductRow,
-  transformCategoryRow,
-  productToRow,
-  validateProductData,
   createSlug,
+  productToRow,
+  transformCategoryRow,
+  transformProductRow,
+  validateProductData,
 } from "@/lib/utils/product-transforms";
-import { withCache, setCacheHeaders, invalidateApiCache } from "@/lib/cache/api-cache";
-import { CACHE_TTL } from "@/lib/cache/redis";
+import type { ApiResponse } from "@/types";
+import type {
+  CategoryRow,
+  CreateProductRequest,
+  Product,
+  ProductRow,
+  ProductSearchParams,
+} from "@/types/product";
 
 /**
  * GET /api/products

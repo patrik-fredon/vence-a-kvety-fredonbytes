@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ContactForm } from '@/types/contact';
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { ContactForm } from "@/types/contact";
 
 interface ContactFormsTableProps {
   contactForms: any[];
@@ -19,7 +19,7 @@ export function ContactFormsTable({
   totalPages,
   currentStatus,
   currentSearch,
-  locale
+  locale,
 }: ContactFormsTableProps) {
   const router = useRouter();
   const [selectedForm, setSelectedForm] = useState<any | null>(null);
@@ -27,37 +27,39 @@ export function ContactFormsTable({
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      new: { color: 'bg-yellow-100 text-yellow-800', label: 'Nová' },
-      read: { color: 'bg-blue-100 text-blue-800', label: 'Přečtená' },
-      replied: { color: 'bg-green-100 text-green-800', label: 'Zodpovězená' },
-      archived: { color: 'bg-gray-100 text-gray-800', label: 'Archivovaná' }
+      new: { color: "bg-yellow-100 text-yellow-800", label: "Nová" },
+      read: { color: "bg-blue-100 text-blue-800", label: "Přečtená" },
+      replied: { color: "bg-green-100 text-green-800", label: "Zodpovězená" },
+      archived: { color: "bg-gray-100 text-gray-800", label: "Archivovaná" },
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
 
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}
+      >
         {config.label}
       </span>
     );
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('cs-CZ', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("cs-CZ", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const handleStatusChange = async (formId: string, newStatus: string) => {
     try {
       const response = await fetch(`/api/admin/contact-forms/${formId}/status`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: newStatus }),
       });
@@ -65,10 +67,10 @@ export function ContactFormsTable({
       if (response.ok) {
         router.refresh();
       } else {
-        console.error('Failed to update status');
+        console.error("Failed to update status");
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     }
   };
 
@@ -96,11 +98,11 @@ export function ContactFormsTable({
               onChange={(e) => {
                 const params = new URLSearchParams(window.location.search);
                 if (e.target.value) {
-                  params.set('search', e.target.value);
+                  params.set("search", e.target.value);
                 } else {
-                  params.delete('search');
+                  params.delete("search");
                 }
-                params.set('page', '1');
+                params.set("page", "1");
                 router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
               }}
             />
@@ -113,12 +115,12 @@ export function ContactFormsTable({
               value={currentStatus}
               onChange={(e) => {
                 const params = new URLSearchParams(window.location.search);
-                if (e.target.value !== 'all') {
-                  params.set('status', e.target.value);
+                if (e.target.value !== "all") {
+                  params.set("status", e.target.value);
                 } else {
-                  params.delete('status');
+                  params.delete("status");
                 }
-                params.set('page', '1');
+                params.set("page", "1");
                 router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
               }}
               className="px-3 py-2 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
@@ -162,19 +164,13 @@ export function ContactFormsTable({
                   <div>
                     <div className="text-sm font-medium text-neutral-900">{form.name}</div>
                     <div className="text-sm text-neutral-500">{form.email}</div>
-                    {form.phone && (
-                      <div className="text-sm text-neutral-500">{form.phone}</div>
-                    )}
+                    {form.phone && <div className="text-sm text-neutral-500">{form.phone}</div>}
                   </div>
                 </td>
                 <td className="px-6 py-4">
-                  <div className="text-sm text-neutral-900 max-w-xs truncate">
-                    {form.subject}
-                  </div>
+                  <div className="text-sm text-neutral-900 max-w-xs truncate">{form.subject}</div>
                 </td>
-                <td className="px-6 py-4 whitespace-nowrap">
-                  {getStatusBadge(form.status)}
-                </td>
+                <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(form.status)}</td>
                 <td className="px-6 py-4 whitespace-nowrap text-sm text-neutral-500">
                   {formatDate(form.created_at)}
                 </td>
@@ -216,7 +212,7 @@ export function ContactFormsTable({
                 <button
                   onClick={() => {
                     const params = new URLSearchParams(window.location.search);
-                    params.set('page', (currentPage - 1).toString());
+                    params.set("page", (currentPage - 1).toString());
                     router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
                   }}
                   className="px-3 py-2 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50"
@@ -228,7 +224,7 @@ export function ContactFormsTable({
                 <button
                   onClick={() => {
                     const params = new URLSearchParams(window.location.search);
-                    params.set('page', (currentPage + 1).toString());
+                    params.set("page", (currentPage + 1).toString());
                     router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
                   }}
                   className="px-3 py-2 text-sm border border-neutral-300 rounded-lg hover:bg-neutral-50"
@@ -247,33 +243,32 @@ export function ContactFormsTable({
           <div className="bg-white rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
             <div className="p-6">
               <div className="flex items-center justify-between mb-4">
-                <h3 className="text-lg font-semibold text-neutral-900">
-                  Detail zprávy
-                </h3>
-                <button
-                  onClick={closeModal}
-                  className="text-neutral-400 hover:text-neutral-600"
-                >
+                <h3 className="text-lg font-semibold text-neutral-900">Detail zprávy</h3>
+                <button onClick={closeModal} className="text-neutral-400 hover:text-neutral-600">
                   <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M6 18L18 6M6 6l12 12"
+                    />
                   </svg>
                 </button>
               </div>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Jméno
-                  </label>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Jméno</label>
                   <p className="text-sm text-neutral-900">{selectedForm.name}</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    E-mail
-                  </label>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">E-mail</label>
                   <p className="text-sm text-neutral-900">
-                    <a href={`mailto:${selectedForm.email}`} className="text-primary-600 hover:text-primary-800">
+                    <a
+                      href={`mailto:${selectedForm.email}`}
+                      className="text-primary-600 hover:text-primary-800"
+                    >
                       {selectedForm.email}
                     </a>
                   </p>
@@ -285,7 +280,10 @@ export function ContactFormsTable({
                       Telefon
                     </label>
                     <p className="text-sm text-neutral-900">
-                      <a href={`tel:${selectedForm.phone}`} className="text-primary-600 hover:text-primary-800">
+                      <a
+                        href={`tel:${selectedForm.phone}`}
+                        className="text-primary-600 hover:text-primary-800"
+                      >
                         {selectedForm.phone}
                       </a>
                     </p>
@@ -293,16 +291,12 @@ export function ContactFormsTable({
                 )}
 
                 <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Předmět
-                  </label>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Předmět</label>
                   <p className="text-sm text-neutral-900">{selectedForm.subject}</p>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-neutral-700 mb-1">
-                    Zpráva
-                  </label>
+                  <label className="block text-sm font-medium text-neutral-700 mb-1">Zpráva</label>
                   <div className="bg-neutral-50 rounded-lg p-4">
                     <p className="text-sm text-neutral-900 whitespace-pre-wrap">
                       {selectedForm.message}

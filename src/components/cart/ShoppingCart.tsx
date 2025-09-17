@@ -1,14 +1,14 @@
 "use client";
 
-import React from "react";
-import { useTranslations } from "next-intl";
 import { ShoppingCartIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useCart } from "@/lib/cart/context";
-import { CartItem } from "@/types/cart";
-import { formatPrice } from "@/lib/utils";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Button } from "@/components/ui/Button";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useCart } from "@/lib/cart/context";
+import { formatPrice } from "@/lib/utils";
+import type { CartItem } from "@/types/cart";
 
 interface ShoppingCartProps {
   locale: string;

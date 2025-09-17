@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { type NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 /**
  * Cleanup abandoned orders endpoint
@@ -8,9 +8,9 @@ import { createClient } from '@/lib/supabase/server';
 export async function POST(request: NextRequest) {
   try {
     // Verify this is a cron job request
-    const authHeader = request.headers.get('authorization');
+    const authHeader = request.headers.get("authorization");
     if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
-      return NextResponse.json({ error: 'Unauthorized' }, { status: 401 });
+      return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
     const supabase = createClient();
@@ -20,10 +20,10 @@ export async function POST(request: NextRequest) {
     twoHoursAgo.setHours(twoHoursAgo.getHours() - 2);
 
     const { data: abandonedOrders, error: fetchError } = await supabase
-      .from('orders')
-      .select('id, customer_info, items')
-      .eq('status', 'pending')
-      .lt('created_at', twoHoursAgo.toISOString());
+      .from("orders")
+      .select("id, customer_info, items")
+      .eq("status", "pending")
+      .lt("created_at", twoHoursAgo.toISOString());
 
     if (fetchError) {
       throw new Error(`Failed to fetch abandoned orders: ${fetchError.message}`);
@@ -36,12 +36,12 @@ export async function POST(request: NextRequest) {
       try {
         // Update order status to abandoned
         const { error: updateError } = await supabase
-          .from('orders')
+          .from("orders")
           .update({
-            status: 'abandoned',
-            updated_at: new Date().toISOString()
+            status: "abandoned",
+            updated_at: new Date().toISOString(),
           })
-          .eq('id', order.id);
+          .eq("id", order.id);
 
         if (updateError) {
           console.error(`Failed to update order ${order.id}:`, updateError);
@@ -53,7 +53,7 @@ export async function POST(request: NextRequest) {
           for (const item of order.items) {
             // Note: This would need actual inventory tracking implementation
             // For now, we just count the items that would be restored
-            if (item && typeof item === 'object' && 'quantity' in item) {
+            if (item && typeof item === "object" && "quantity" in item) {
               restoredInventory += (item.quantity as number) || 1;
             } else {
               restoredInventory += 1;
@@ -62,7 +62,6 @@ export async function POST(request: NextRequest) {
         }
 
         cleanedCount++;
-
       } catch (error) {
         console.error(`Error processing abandoned order ${order.id}:`, error);
       }
@@ -73,14 +72,14 @@ export async function POST(request: NextRequest) {
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
     const { count: cartCount, error: cartError } = await supabase
-      .from('cart_items')
+      .from("cart_items")
       .delete()
-      .lt('created_at', sevenDaysAgo.toISOString())
-      .is('user_id', null) // Only anonymous carts
-      .select('*');
+      .lt("created_at", sevenDaysAgo.toISOString())
+      .is("user_id", null) // Only anonymous carts
+      .select("*");
 
     if (cartError) {
-      console.error('Failed to clean up cart items:', cartError);
+      console.error("Failed to clean up cart items:", cartError);
     }
 
     return NextResponse.json({
@@ -89,17 +88,19 @@ export async function POST(request: NextRequest) {
       results: {
         abandonedOrders: cleanedCount,
         restoredInventoryItems: restoredInventory,
-        cleanedCartItems: cartCount || 0
-      }
+        cleanedCartItems: cartCount || 0,
+      },
     });
-
   } catch (error) {
-    console.error('Abandoned order cleanup failed:', error);
+    console.error("Abandoned order cleanup failed:", error);
 
-    return NextResponse.json({
-      success: false,
-      timestamp: new Date().toISOString(),
-      error: error instanceof Error ? error.message : 'Unknown error'
-    }, { status: 500 });
+    return NextResponse.json(
+      {
+        success: false,
+        timestamp: new Date().toISOString(),
+        error: error instanceof Error ? error.message : "Unknown error",
+      },
+      { status: 500 }
+    );
   }
 }

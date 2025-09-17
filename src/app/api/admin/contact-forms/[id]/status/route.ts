@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { auth } from '@/lib/auth/config';
+import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth/config";
+import { createServerClient } from "@/lib/supabase/server";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -19,7 +19,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Unauthorized',
+          message: "Unauthorized",
         },
         { status: 401 }
       );
@@ -36,7 +36,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Invalid JSON body',
+          message: "Invalid JSON body",
         },
         { status: 400 }
       );
@@ -45,12 +45,12 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { status } = body;
 
     // Validate status
-    const validStatuses = ['new', 'read', 'replied', 'archived'];
+    const validStatuses = ["new", "read", "replied", "archived"];
     if (!status || !validStatuses.includes(status)) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Invalid status. Must be one of: ' + validStatuses.join(', '),
+          message: "Invalid status. Must be one of: " + validStatuses.join(", "),
         },
         { status: 400 }
       );
@@ -59,21 +59,21 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     // Update contact form status
     const supabase = createServerClient();
     const { data, error } = await supabase
-      .from('contact_forms')
+      .from("contact_forms")
       .update({
         status,
-        updated_at: new Date().toISOString()
+        updated_at: new Date().toISOString(),
       })
-      .eq('id', id)
+      .eq("id", id)
       .select()
       .single();
 
     if (error) {
-      console.error('Error updating contact form status:', error);
+      console.error("Error updating contact form status:", error);
       return NextResponse.json(
         {
           success: false,
-          message: 'Failed to update contact form status',
+          message: "Failed to update contact form status",
         },
         { status: 500 }
       );
@@ -83,7 +83,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json(
         {
           success: false,
-          message: 'Contact form not found',
+          message: "Contact form not found",
         },
         { status: 404 }
       );
@@ -91,16 +91,15 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
 
     return NextResponse.json({
       success: true,
-      message: 'Contact form status updated successfully',
+      message: "Contact form status updated successfully",
       data,
     });
-
   } catch (error) {
-    console.error('Contact form status update API error:', error);
+    console.error("Contact form status update API error:", error);
     return NextResponse.json(
       {
         success: false,
-        message: 'Internal server error',
+        message: "Internal server error",
       },
       { status: 500 }
     );

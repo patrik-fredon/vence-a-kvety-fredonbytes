@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
+import { type NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 
 export async function PATCH(
   request: NextRequest,
@@ -14,12 +14,8 @@ export async function PATCH(
       status: "disabled",
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
-    console.error('Error in error resolution endpoint:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error("Error in error resolution endpoint:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

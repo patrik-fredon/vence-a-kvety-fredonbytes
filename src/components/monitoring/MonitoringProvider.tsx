@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect } from 'react';
-import { performanceMonitor } from '@/lib/monitoring/performance-monitor';
-import { errorLogger } from '@/lib/monitoring/error-logger';
+import { useEffect } from "react";
+import { errorLogger } from "@/lib/monitoring/error-logger";
+import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
 
 interface MonitoringProviderProps {
   children: React.ReactNode;
@@ -12,64 +12,66 @@ interface MonitoringProviderProps {
 export function MonitoringProvider({ children, userId }: MonitoringProviderProps) {
   useEffect(() => {
     // Initialize monitoring only on client side
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     // Set user context for error logging
     if (userId) {
       // Store user ID in session for error context
-      sessionStorage.setItem('monitoring_user_id', userId);
+      sessionStorage.setItem("monitoring_user_id", userId);
     }
 
     // Initialize performance monitoring
-    console.log('🔍 Monitoring initialized');
+    console.log("🔍 Monitoring initialized");
 
     // Monitor route changes for SPA navigation
     const handleRouteChange = () => {
       // Record navigation timing
       if (performance.navigation) {
-        const navigation = performance.getEntriesByType('navigation')[0] as PerformanceNavigationTiming;
+        const navigation = performance.getEntriesByType(
+          "navigation"
+        )[0] as PerformanceNavigationTiming;
         if (navigation) {
-          performanceMonitor.recordMetric('ROUTE_CHANGE', performance.now(), 'Navigation');
+          performanceMonitor.recordMetric("ROUTE_CHANGE", performance.now(), "Navigation");
         }
       }
     };
 
     // Listen for route changes (Next.js specific)
-    window.addEventListener('popstate', handleRouteChange);
+    window.addEventListener("popstate", handleRouteChange);
 
     // Monitor visibility changes to pause/resume monitoring
     const handleVisibilityChange = () => {
       if (document.hidden) {
-        console.log('🔍 Monitoring paused (tab hidden)');
+        console.log("🔍 Monitoring paused (tab hidden)");
       } else {
-        console.log('🔍 Monitoring resumed (tab visible)');
+        console.log("🔍 Monitoring resumed (tab visible)");
       }
     };
 
-    document.addEventListener('visibilitychange', handleVisibilityChange);
+    document.addEventListener("visibilitychange", handleVisibilityChange);
 
     // Monitor network status
     const handleOnline = () => {
-      console.log('🔍 Network: Online');
+      console.log("🔍 Network: Online");
     };
 
     const handleOffline = () => {
-      console.log('🔍 Network: Offline');
-      errorLogger.logError(new Error('Network connection lost'), {
-        level: 'component',
-        context: 'Network Status',
+      console.log("🔍 Network: Offline");
+      errorLogger.logError(new Error("Network connection lost"), {
+        level: "component",
+        context: "Network Status",
       });
     };
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
 
     // Cleanup
     return () => {
-      window.removeEventListener('popstate', handleRouteChange);
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("popstate", handleRouteChange);
+      document.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, [userId]);
 
@@ -80,9 +82,9 @@ export function MonitoringProvider({ children, userId }: MonitoringProviderProps
 export function useErrorReporting() {
   const reportError = (error: Error, context?: string) => {
     errorLogger.logError(error, {
-      level: 'component',
+      level: "component",
       context,
-      userId: sessionStorage.getItem('monitoring_user_id') || undefined,
+      userId: sessionStorage.getItem("monitoring_user_id") || undefined,
     });
   };
 

@@ -1,7 +1,12 @@
 "use client";
 
-import { Component, ReactNode } from "react";
-import { ExclamationTriangleIcon, ArrowPathIcon, HomeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import {
+  ArrowPathIcon,
+  ExclamationTriangleIcon,
+  HomeIcon,
+  PhoneIcon,
+} from "@heroicons/react/24/outline";
+import { Component, type ReactNode } from "react";
 import { logError } from "@/lib/monitoring/error-logger";
 import { getErrorMessage } from "@/lib/monitoring/error-messages";
 
@@ -15,7 +20,7 @@ interface ErrorBoundaryProps {
   children: ReactNode;
   fallback?: ReactNode;
   onError?: (error: Error, errorInfo: any) => void;
-  level?: 'page' | 'component' | 'critical';
+  level?: "page" | "component" | "critical";
   context?: string;
 }
 
@@ -31,7 +36,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   componentDidCatch(error: Error, errorInfo: any) {
-    const { level = 'component', context } = this.props;
+    const { level = "component", context } = this.props;
 
     // Log error with context
     logError(error, {
@@ -40,8 +45,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       context,
       errorId: this.state.errorId,
       timestamp: new Date().toISOString(),
-      userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
-      url: typeof window !== 'undefined' ? window.location.href : 'unknown'
+      userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
+      url: typeof window !== "undefined" ? window.location.href : "unknown",
     });
 
     // Call custom error handler if provided
@@ -58,17 +63,29 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
         return this.props.fallback;
       }
 
-      const { level = 'component' } = this.props;
+      const { level = "component" } = this.props;
 
-      if (level === 'page') {
-        return <PageErrorFallback error={this.state.error} onRetry={this.handleRetry} errorId={this.state.errorId} />;
+      if (level === "page") {
+        return (
+          <PageErrorFallback
+            error={this.state.error}
+            onRetry={this.handleRetry}
+            errorId={this.state.errorId}
+          />
+        );
       }
 
-      if (level === 'critical') {
+      if (level === "critical") {
         return <CriticalErrorFallback error={this.state.error} errorId={this.state.errorId} />;
       }
 
-      return <ErrorFallback error={this.state.error} onRetry={this.handleRetry} errorId={this.state.errorId} />;
+      return (
+        <ErrorFallback
+          error={this.state.error}
+          onRetry={this.handleRetry}
+          errorId={this.state.errorId}
+        />
+      );
     }
 
     return this.props.children;
@@ -102,16 +119,23 @@ export function ErrorFallback({
   recoveryActions = [],
 }: ErrorFallbackProps) {
   // Get enhanced error message if title/message not provided
-  const errorMessage = (!title || !message) ? getErrorMessage(error || new Error('Unknown error')) : null;
+  const errorMessage =
+    !title || !message ? getErrorMessage(error || new Error("Unknown error")) : null;
 
   const finalTitle = title || errorMessage?.title || "Něco se pokazilo";
-  const finalMessage = message || errorMessage?.message || "Omlouváme se, došlo k neočekávané chybě. Zkuste to prosím znovu.";
-  const finalRecoveryActions = recoveryActions.length > 0 ? recoveryActions : (errorMessage?.recoveryActions || []);
+  const finalMessage =
+    message ||
+    errorMessage?.message ||
+    "Omlouváme se, došlo k neočekávané chybě. Zkuste to prosím znovu.";
+  const finalRecoveryActions =
+    recoveryActions.length > 0 ? recoveryActions : errorMessage?.recoveryActions || [];
   const finalShowContactSupport = showContactSupport || errorMessage?.contactSupport || false;
 
   const handleContactSupport = () => {
-    const subject = encodeURIComponent(`Chyba na webu - ${errorId || 'neznámé ID'}`);
-    const body = encodeURIComponent(`Dobrý den,\n\nnarazil jsem na chybu na vašem webu.\n\nID chyby: ${errorId || 'neznámé'}\nČas: ${new Date().toLocaleString('cs-CZ')}\nStránka: ${window.location.href}\n\nPopis problému:\n[Popište prosím, co jste dělali, když se chyba objevila]\n\nDěkuji`);
+    const subject = encodeURIComponent(`Chyba na webu - ${errorId || "neznámé ID"}`);
+    const body = encodeURIComponent(
+      `Dobrý den,\n\nnarazil jsem na chybu na vašem webu.\n\nID chyby: ${errorId || "neznámé"}\nČas: ${new Date().toLocaleString("cs-CZ")}\nStránka: ${window.location.href}\n\nPopis problému:\n[Popište prosím, co jste dělali, když se chyba objevila]\n\nDěkuji`
+    );
     window.open(`mailto:podpora@pohrebni-vence.cz?subject=${subject}&body=${body}`);
   };
 
@@ -158,10 +182,11 @@ export function ErrorFallback({
             <button
               key={index}
               onClick={action.action}
-              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${action.primary
-                ? 'bg-primary-600 hover:bg-primary-700 text-white'
-                : 'bg-neutral-100 hover:bg-neutral-200 text-neutral-700'
-                }`}
+              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                action.primary
+                  ? "bg-primary-600 hover:bg-primary-700 text-white"
+                  : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700"
+              }`}
             >
               {action.icon && <action.icon className="w-4 h-4" />}
               <span>{action.label}</span>
@@ -185,7 +210,7 @@ export function ErrorFallback({
 
 export function PageErrorFallback({ error, onRetry, errorId }: ErrorFallbackProps) {
   const handleGoHome = () => {
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   const handleRefreshPage = () => {
@@ -241,13 +266,15 @@ export function ComponentErrorFallback({
 
 export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
   const handleContactSupport = () => {
-    const subject = encodeURIComponent(`Kritická chyba - ${errorId || 'neznámé ID'}`);
-    const body = encodeURIComponent(`Dobrý den,\n\nnarazil jsem na kritickou chybu na vašem webu.\n\nID chyby: ${errorId || 'neznámé'}\nČas: ${new Date().toLocaleString('cs-CZ')}\nStránka: ${window.location.href}\n\nDěkuji za rychlé vyřešení.`);
+    const subject = encodeURIComponent(`Kritická chyba - ${errorId || "neznámé ID"}`);
+    const body = encodeURIComponent(
+      `Dobrý den,\n\nnarazil jsem na kritickou chybu na vašem webu.\n\nID chyby: ${errorId || "neznámé"}\nČas: ${new Date().toLocaleString("cs-CZ")}\nStránka: ${window.location.href}\n\nDěkuji za rychlé vyřešení.`
+    );
     window.open(`mailto:podpora@pohrebni-vence.cz?subject=${subject}&body=${body}`);
   };
 
   const handleGoHome = () => {
-    window.location.href = '/';
+    window.location.href = "/";
   };
 
   return (
@@ -261,8 +288,8 @@ export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
           <h1 className="text-2xl font-bold text-red-800 mb-4">Kritická chyba</h1>
 
           <p className="text-red-700 mb-6 leading-relaxed">
-            Omlouváme se, došlo ke kritické chybě, která znemožňuje pokračování.
-            Prosím kontaktujte naši podporu nebo se vraťte na hlavní stránku.
+            Omlouváme se, došlo ke kritické chybě, která znemožňuje pokračování. Prosím kontaktujte
+            naši podporu nebo se vraťte na hlavní stránku.
           </p>
 
           {errorId && (

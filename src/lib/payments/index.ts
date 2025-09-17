@@ -2,19 +2,19 @@
  * Unified payment service for Stripe and GoPay integration
  */
 
-import { PaymentMethod, PaymentInfo, PaymentStatus } from "@/types/order";
-import {
-  createPaymentIntent,
-  retrievePaymentIntent,
-  handleSuccessfulPayment as handleStripeSuccess,
-  handleFailedPayment as handleStripeFailure,
-} from "./stripe";
+import type { PaymentInfo, PaymentMethod, PaymentStatus } from "@/types/order";
 import {
   createGopayClient,
-  GopayPaymentRequest,
-  handleGopaySuccess,
+  type GopayPaymentRequest,
   handleGopayFailure,
+  handleGopaySuccess,
 } from "./gopay";
+import {
+  createPaymentIntent,
+  handleFailedPayment as handleStripeFailure,
+  handleSuccessfulPayment as handleStripeSuccess,
+  retrievePaymentIntent,
+} from "./stripe";
 
 export interface PaymentRequest {
   orderId: string;
@@ -59,9 +59,9 @@ export class PaymentService {
     try {
       switch (request.paymentMethod) {
         case "stripe":
-          return await this.initializeStripePayment(request);
+          return await PaymentService.initializeStripePayment(request);
         case "gopay":
-          return await this.initializeGopayPayment(request);
+          return await PaymentService.initializeGopayPayment(request);
         default:
           throw new Error(`Unsupported payment method: ${request.paymentMethod}`);
       }
@@ -144,9 +144,9 @@ export class PaymentService {
     try {
       switch (paymentMethod) {
         case "stripe":
-          return await this.getStripePaymentStatus(paymentId);
+          return await PaymentService.getStripePaymentStatus(paymentId);
         case "gopay":
-          return await this.getGopayPaymentStatus(paymentId);
+          return await PaymentService.getGopayPaymentStatus(paymentId);
         default:
           throw new Error(`Unsupported payment method: ${paymentMethod}`);
       }
@@ -245,9 +245,9 @@ export class PaymentService {
     try {
       switch (paymentMethod) {
         case "stripe":
-          return await this.processStripeWebhook(payload, signature);
+          return await PaymentService.processStripeWebhook(payload, signature);
         case "gopay":
-          return await this.processGopayWebhook(payload as string, signature);
+          return await PaymentService.processGopayWebhook(payload as string, signature);
         default:
           throw new Error(`Unsupported payment method: ${paymentMethod}`);
       }
@@ -319,7 +319,7 @@ export class PaymentService {
     }
 
     // Get current payment status
-    return await this.getGopayPaymentStatus(paymentId.toString());
+    return await PaymentService.getGopayPaymentStatus(paymentId.toString());
   }
 
   /**
@@ -343,7 +343,7 @@ export class PaymentService {
   }
 }
 
+export * from "./gopay";
 // Export types and utilities
 export * from "./stripe";
-export * from "./gopay";
 export { PaymentService as default };

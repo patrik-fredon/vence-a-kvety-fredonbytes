@@ -1,12 +1,12 @@
+import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
-import { notFound } from "next/navigation";
-import { locales, type Locale } from "@/i18n/config";
-import { MainLayout } from "@/components/layout/MainLayout";
 import { AuthProvider } from "@/components/auth/AuthProvider";
-import { CartProvider } from "@/lib/cart/context";
-import { AccessibilityProvider } from "@/lib/accessibility/context";
+import { MainLayout } from "@/components/layout/MainLayout";
 import { MonitoringProvider } from "@/components/monitoring/MonitoringProvider";
+import { type Locale, locales } from "@/i18n/config";
+import { AccessibilityProvider } from "@/lib/accessibility/context";
+import { CartProvider } from "@/lib/cart/context";
 import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
 import { createClient } from "@/lib/supabase/server";
 
@@ -32,7 +32,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   // Get user for monitoring context
   const supabase = createClient();
-  const { data: { user } } = await supabase.auth.getUser();
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
 
   return (
     <NextIntlClientProvider messages={messages}>

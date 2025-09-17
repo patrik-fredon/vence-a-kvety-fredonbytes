@@ -1,9 +1,9 @@
 "use client";
 
+import type { Session, User } from "@supabase/supabase-js";
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase/client";
-import { authUtils, type AuthUser } from "./utils";
-import type { User, Session } from "@supabase/supabase-js";
+import { type AuthUser, authUtils } from "./utils";
 
 export function useAuth() {
   const [user, setUser] = useState<AuthUser | null>(null);

@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 
 interface NavigationProps {
   locale: string;
@@ -92,11 +92,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
 
   if (mobile) {
     return (
-      <nav
-        className="space-y-2"
-        role="navigation"
-        aria-label="Mobilní navigace"
-      >
+      <nav className="space-y-2" role="navigation" aria-label="Mobilní navigace">
         {navItems.map((item) => (
           <div key={item.href}>
             {item.hasDropdown ? (

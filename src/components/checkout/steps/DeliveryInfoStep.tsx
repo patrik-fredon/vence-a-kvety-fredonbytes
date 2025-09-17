@@ -1,19 +1,19 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import {
-  MapPinIcon,
   CalendarIcon,
   ClockIcon,
-  UserIcon,
+  MapPinIcon,
   PhoneIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
-import { DeliveryInfo } from "@/types/order";
-import { DeliveryUrgency, DeliveryTimeSlot } from "@/types/delivery";
-import { Input } from "@/components/ui/Input";
-import { DeliveryOptionsSelector } from "@/components/delivery/DeliveryOptionsSelector";
+import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
 import { DeliveryCalendar } from "@/components/delivery/DeliveryCalendar";
+import { DeliveryOptionsSelector } from "@/components/delivery/DeliveryOptionsSelector";
+import { Input } from "@/components/ui/Input";
+import type { DeliveryTimeSlot, DeliveryUrgency } from "@/types/delivery";
+import type { DeliveryInfo } from "@/types/order";
 
 interface DeliveryInfoStepProps {
   deliveryInfo: Partial<DeliveryInfo>;

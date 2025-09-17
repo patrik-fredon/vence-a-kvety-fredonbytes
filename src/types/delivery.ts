@@ -2,8 +2,8 @@
  * Delivery-related type definitions for the funeral wreaths e-commerce platform
  */
 
-import { BaseEntity } from "./index";
 import type { Address } from "./index";
+import { BaseEntity } from "./index";
 
 // Delivery option types
 export type DeliveryUrgency = "standard" | "express" | "same-day";

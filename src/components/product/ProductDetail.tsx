@@ -1,16 +1,14 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Product, Customization } from "@/types/product";
-import {
-  calculateFinalPrice,
-} from "@/lib/utils/price-calculator";
-import { ProductImageGallery } from "./ProductImageGallery";
+import { useCallback, useState } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
-import { ProductInfo } from "./ProductInfo";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { calculateFinalPrice } from "@/lib/utils/price-calculator";
+import type { Customization, Product } from "@/types/product";
+import { ProductImageGallery } from "./ProductImageGallery";
+import { ProductInfo } from "./ProductInfo";
 
 interface ProductDetailProps {
   product: Product;

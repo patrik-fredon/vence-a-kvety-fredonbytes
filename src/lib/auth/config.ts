@@ -1,6 +1,6 @@
-import NextAuth from "next-auth";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import type { NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth";
 
 function getSupabaseConfig() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;

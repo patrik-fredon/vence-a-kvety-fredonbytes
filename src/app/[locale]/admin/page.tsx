@@ -1,8 +1,8 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { redirect } from "next/navigation";
+import AdminDashboard from "@/components/admin/AdminDashboard";
 import { auth } from "@/lib/auth/config";
 import { userUtils } from "@/lib/supabase/utils";
-import AdminDashboard from "@/components/admin/AdminDashboard";
 
 export const metadata: Metadata = {
   title: "Admin Dashboard | Pohřební věnce",

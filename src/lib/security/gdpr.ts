@@ -3,8 +3,8 @@
  * Handles data export, deletion, and privacy rights
  */
 
-import { createClient } from "@/lib/supabase/server";
 import { User } from "@supabase/supabase-js";
+import { createClient } from "@/lib/supabase/server";
 
 export interface GDPRDataExport {
   user: {
@@ -118,31 +118,37 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
         createdAt: userProfile.created_at,
         updatedAt: userProfile.updated_at,
       },
-      orders: orders?.map(order => ({
-        id: order.id,
-        status: order.status,
-        totalAmount: order.total_amount,
-        customerInfo: order.customer_info,
-        deliveryInfo: order.delivery_info,
-        items: Array.isArray(order.items) ? order.items : [],
-        createdAt: order.created_at,
-      })) || [],
-      cartItems: cartItems?.map(item => ({
-        id: item.id,
-        productId: item.product_id || '',
-        quantity: item.quantity,
-        customizations: Array.isArray(item.customizations) ? item.customizations : [],
-        createdAt: item.created_at,
-      })) || [],
-      addresses: Array.isArray(userProfile.addresses) ? userProfile.addresses as any[] : [],
-      preferences: typeof userProfile.preferences === 'object' && userProfile.preferences !== null && !Array.isArray(userProfile.preferences)
-        ? userProfile.preferences as { language: string; currency: string; notifications: any }
-        : { language: "cs", currency: "CZK", notifications: {} },
-      activityLog: activityLog?.map(log => ({
-        action: log.action,
-        timestamp: log.created_at,
-        details: log.details,
-      })) || [],
+      orders:
+        orders?.map((order) => ({
+          id: order.id,
+          status: order.status,
+          totalAmount: order.total_amount,
+          customerInfo: order.customer_info,
+          deliveryInfo: order.delivery_info,
+          items: Array.isArray(order.items) ? order.items : [],
+          createdAt: order.created_at,
+        })) || [],
+      cartItems:
+        cartItems?.map((item) => ({
+          id: item.id,
+          productId: item.product_id || "",
+          quantity: item.quantity,
+          customizations: Array.isArray(item.customizations) ? item.customizations : [],
+          createdAt: item.created_at,
+        })) || [],
+      addresses: Array.isArray(userProfile.addresses) ? (userProfile.addresses as any[]) : [],
+      preferences:
+        typeof userProfile.preferences === "object" &&
+        userProfile.preferences !== null &&
+        !Array.isArray(userProfile.preferences)
+          ? (userProfile.preferences as { language: string; currency: string; notifications: any })
+          : { language: "cs", currency: "CZK", notifications: {} },
+      activityLog:
+        activityLog?.map((log) => ({
+          action: log.action,
+          timestamp: log.created_at,
+          details: log.details,
+        })) || [],
     };
 
     return exportData;
@@ -215,10 +221,7 @@ export async function deleteUserData(userId: string): Promise<GDPRDeletionResult
     }
 
     // Delete user profile
-    const { error: userError } = await supabase
-      .from("user_profiles")
-      .delete()
-      .eq("id", userId);
+    const { error: userError } = await supabase.from("user_profiles").delete().eq("id", userId);
 
     if (userError) {
       errors.push(`Failed to delete user profile: ${userError.message}`);
@@ -268,7 +271,7 @@ export async function logUserActivity(
 
     // Note: user_activity_log table is not in the current schema
     // Activity logging is disabled until the table is added to the database
-    console.log('Activity log:', { userId, action, details, ipAddress });
+    console.log("Activity log:", { userId, action, details, ipAddress });
   } catch (error) {
     console.error("Error logging user activity:", error);
   }
@@ -321,7 +324,7 @@ export async function updateUserConsent(
 
     // Note: user_consent table is not in the current schema
     // Consent updates are logged but not persisted until the table is added
-    console.log('Consent update:', { userId, consent });
+    console.log("Consent update:", { userId, consent });
 
     // Log consent change
     await logUserActivity(userId, "consent_updated", consent);

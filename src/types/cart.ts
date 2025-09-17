@@ -2,8 +2,8 @@
  * Shopping cart type definitions for the funeral wreaths e-commerce platform
  */
 
-import { BaseEntity } from "./index";
-import { Product, Customization } from "./product";
+import type { BaseEntity } from "./index";
+import type { Customization, Product } from "./product";
 
 // Cart item interface
 export interface CartItem extends BaseEntity {

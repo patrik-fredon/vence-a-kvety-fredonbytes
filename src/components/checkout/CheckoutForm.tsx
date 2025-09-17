@@ -1,34 +1,34 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import {
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
-import {
-  CheckoutFormData,
-  CheckoutStep,
-  CheckoutState,
-  CustomerInfo,
-  DeliveryInfo,
-  PaymentMethod,
-} from "@/types/order";
-import { CartItem } from "@/types/cart";
-import { DeliveryUrgency } from "@/types/delivery";
-import {
-  validateCheckoutForm,
-  hasValidationErrors,
-  formatValidationErrors,
-  sanitizeCustomerInfo,
-  sanitizeDeliveryInfo,
-} from "@/lib/validation/checkout";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import {
+  formatValidationErrors,
+  hasValidationErrors,
+  sanitizeCustomerInfo,
+  sanitizeDeliveryInfo,
+  validateCheckoutForm,
+} from "@/lib/validation/checkout";
+import type { CartItem } from "@/types/cart";
+import { DeliveryUrgency } from "@/types/delivery";
+import {
+  type CheckoutFormData,
+  type CheckoutState,
+  type CheckoutStep,
+  type CustomerInfo,
+  type DeliveryInfo,
+  PaymentMethod,
+} from "@/types/order";
 import { CustomerInfoStep } from "./steps/CustomerInfoStep";
 import { DeliveryInfoStep } from "./steps/DeliveryInfoStep";
 import { PaymentStep } from "./steps/PaymentStep";
@@ -141,21 +141,23 @@ export function CheckoutForm({
     const { customerInfo, deliveryInfo, agreeToTerms } = state.formData;
 
     switch (state.currentStep) {
-      case "customer":
+      case "customer": {
         const customerErrors = validateCheckoutForm(customerInfo, {}, false);
         if (hasValidationErrors(customerErrors)) {
           setState((prev) => ({ ...prev, errors: customerErrors }));
           return false;
         }
         break;
+      }
 
-      case "delivery":
+      case "delivery": {
         const deliveryErrors = validateCheckoutForm({}, deliveryInfo, false);
         if (hasValidationErrors(deliveryErrors)) {
           setState((prev) => ({ ...prev, errors: deliveryErrors }));
           return false;
         }
         break;
+      }
 
       case "payment":
         if (!state.formData.paymentMethod) {
@@ -167,13 +169,14 @@ export function CheckoutForm({
         }
         break;
 
-      case "review":
+      case "review": {
         const allErrors = validateCheckoutForm(customerInfo, deliveryInfo, agreeToTerms);
         if (hasValidationErrors(allErrors)) {
           setState((prev) => ({ ...prev, errors: allErrors }));
           return false;
         }
         break;
+      }
     }
 
     setState((prev) => ({ ...prev, errors: {} }));

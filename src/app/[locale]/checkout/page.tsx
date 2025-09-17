@@ -1,7 +1,7 @@
-import React from "react";
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { notFound, redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
+import React from "react";
 import { CheckoutPageClient } from "./CheckoutPageClient";
 
 interface CheckoutPageProps {

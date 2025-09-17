@@ -1,26 +1,14 @@
-<<<<<<< HEAD
-import { supabase } from "@/lib/supabase/client";
 import type { User } from "@supabase/supabase-js";
-=======
-import { supabase } from '@/lib/supabase/client'
-import type { User } from '@supabase/supabase-js'
-import { Address, UserPreferences } from '@/types/user'
->>>>>>> 2de4c3c (Api routing problem, non functional state)
+import { supabase } from "@/lib/supabase/client";
+import type { Address, UserPreferences } from "@/types/user";
 
 export interface AuthUser {
-<<<<<<< HEAD
   id: string;
   email: string;
   name?: string | null;
   phone?: string | null;
-=======
-  id: string
-  email: string
-  name?: string | null
-  phone?: string | null
-  addresses?: Address[]
-  preferences?: UserPreferences
->>>>>>> db25158 (Enhance user profile with address book and preferences management)
+  addresses?: Address[];
+  preferences?: UserPreferences;
 }
 
 export interface SignUpData {
@@ -45,17 +33,10 @@ export interface UpdatePasswordData {
 }
 
 export interface UpdateProfileData {
-<<<<<<< HEAD
   name?: string;
   phone?: string;
-  addresses?: any[];
-  preferences?: any;
-=======
-  name?: string
-  phone?: string
-  addresses?: Address[]
-  preferences?: UserPreferences
->>>>>>> db25158 (Enhance user profile with address book and preferences management)
+  addresses?: Address[];
+  preferences?: UserPreferences;
 }
 
 export class AuthError extends Error {
@@ -248,18 +229,9 @@ export const authUtils = {
         email: user.email!,
         name: profile?.name || user.user_metadata?.name || null,
         phone: profile?.phone || user.user_metadata?.phone || null,
-<<<<<<< HEAD
-<<<<<<< HEAD
-      };
-=======
         addresses: profile?.addresses || [],
         preferences: profile?.preferences || {},
-=======
-        addresses: (profile?.addresses as Address[]) || [],
-        preferences: (profile?.preferences as UserPreferences) || {},
->>>>>>> 2de4c3c (Api routing problem, non functional state)
-      }
->>>>>>> db25158 (Enhance user profile with address book and preferences management)
+      };
 
       return { user: authUser, error: null };
     } catch (error) {

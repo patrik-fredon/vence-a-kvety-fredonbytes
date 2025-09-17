@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   ClockIcon,
-  UserIcon,
   EyeIcon,
   PencilIcon,
-  TrashIcon,
   PlusIcon,
+  TrashIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 interface ActivityLogEntry {
   id: string;

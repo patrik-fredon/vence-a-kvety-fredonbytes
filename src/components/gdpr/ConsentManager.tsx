@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
@@ -184,12 +184,8 @@ export function ConsentManager({ onConsentChange, showBanner = false }: ConsentM
           <div className="max-w-7xl mx-auto p-4">
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
               <div className="flex-1">
-                <h3 className="text-lg font-semibold text-gray-900 mb-2">
-                  {t("consentTitle")}
-                </h3>
-                <p className="text-sm text-gray-600 mb-4">
-                  {t("consentDescription")}
-                </p>
+                <h3 className="text-lg font-semibold text-gray-900 mb-2">{t("consentTitle")}</h3>
+                <p className="text-sm text-gray-600 mb-4">{t("consentDescription")}</p>
 
                 {/* Consent Options */}
                 <div className="space-y-3">
@@ -198,9 +194,7 @@ export function ConsentManager({ onConsentChange, showBanner = false }: ConsentM
                       <label className="text-sm font-medium text-gray-700">
                         {t("functionalCookies")}
                       </label>
-                      <p className="text-xs text-gray-500">
-                        {t("functionalCookiesDescription")}
-                      </p>
+                      <p className="text-xs text-gray-500">{t("functionalCookiesDescription")}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -215,9 +209,7 @@ export function ConsentManager({ onConsentChange, showBanner = false }: ConsentM
                       <label className="text-sm font-medium text-gray-700">
                         {t("analyticsCookies")}
                       </label>
-                      <p className="text-xs text-gray-500">
-                        {t("analyticsCookiesDescription")}
-                      </p>
+                      <p className="text-xs text-gray-500">{t("analyticsCookiesDescription")}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -232,9 +224,7 @@ export function ConsentManager({ onConsentChange, showBanner = false }: ConsentM
                       <label className="text-sm font-medium text-gray-700">
                         {t("marketingCookies")}
                       </label>
-                      <p className="text-xs text-gray-500">
-                        {t("marketingCookiesDescription")}
-                      </p>
+                      <p className="text-xs text-gray-500">{t("marketingCookiesDescription")}</p>
                     </div>
                     <input
                       type="checkbox"
@@ -264,11 +254,7 @@ export function ConsentManager({ onConsentChange, showBanner = false }: ConsentM
                 >
                   {saving ? <LoadingSpinner size="sm" /> : t("savePreferences")}
                 </Button>
-                <Button
-                  onClick={acceptAll}
-                  disabled={saving}
-                  className="whitespace-nowrap"
-                >
+                <Button onClick={acceptAll} disabled={saving} className="whitespace-nowrap">
                   {t("acceptAll")}
                 </Button>
               </div>

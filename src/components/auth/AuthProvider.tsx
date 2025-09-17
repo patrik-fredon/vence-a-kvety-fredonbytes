@@ -1,9 +1,9 @@
 "use client";
 
-import { createContext, useContext, useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase/client";
-import { authUtils, type AuthUser } from "@/lib/auth/utils";
 import type { Session } from "@supabase/supabase-js";
+import { createContext, useContext, useEffect, useState } from "react";
+import { type AuthUser, authUtils } from "@/lib/auth/utils";
+import { supabase } from "@/lib/supabase/client";
 
 interface AuthContextType {
   user: AuthUser | null;

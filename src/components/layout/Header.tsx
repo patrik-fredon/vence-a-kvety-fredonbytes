@@ -1,13 +1,13 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import Link from "next/link";
 import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { AuthStatus } from "@/components/auth/AuthStatus";
+import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { LanguageToggle } from "./LanguageToggle";
 import { Navigation } from "./Navigation";
-import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface HeaderProps {
   locale: string;

@@ -4,14 +4,14 @@
  */
 
 import {
-  transformProductRow,
-  transformCategoryRow,
-  validateProductData,
-  validateCategoryData,
   createSlug,
   getLocalizedContent,
+  transformCategoryRow,
+  transformProductRow,
+  validateCategoryData,
+  validateProductData,
 } from "@/lib/utils/product-transforms";
-import { ProductRow, CategoryRow } from "@/types/product";
+import type { CategoryRow, ProductRow } from "@/types/product";
 
 describe("Product Transform Functions", () => {
   const mockCategoryRow: CategoryRow = {

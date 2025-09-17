@@ -1,8 +1,8 @@
 "use client";
 
 import { useLocale } from "next-intl";
+import type { Locale } from "@/i18n/config";
 import { formatCurrency, formatCurrencyCustom, formatDate, formatDeliveryDate } from "./utils";
-import { type Locale } from "@/i18n/config";
 
 /**
  * Hook for currency formatting

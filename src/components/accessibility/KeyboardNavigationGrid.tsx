@@ -3,16 +3,16 @@
  * Provides arrow key navigation and proper focus management
  */
 
-'use client';
+"use client";
 
-import { useRef, useEffect, useCallback } from 'react';
-import { useKeyboardNavigation } from '@/lib/accessibility/hooks';
+import { useCallback, useEffect, useRef } from "react";
+import { useKeyboardNavigation } from "@/lib/accessibility/hooks";
 
 interface KeyboardNavigationGridProps {
   children: React.ReactNode;
   className?: string;
   columns?: number;
-  orientation?: 'horizontal' | 'vertical' | 'both';
+  orientation?: "horizontal" | "vertical" | "both";
   wrap?: boolean;
   onItemActivate?: (index: number, element: HTMLElement) => void;
   role?: string;
@@ -21,13 +21,13 @@ interface KeyboardNavigationGridProps {
 
 export function KeyboardNavigationGrid({
   children,
-  className = '',
+  className = "",
   columns = 1,
-  orientation = 'both',
+  orientation = "both",
   wrap = true,
   onItemActivate,
-  role = 'grid',
-  ariaLabel
+  role = "grid",
+  ariaLabel,
 }: KeyboardNavigationGridProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const itemsRef = useRef<HTMLElement[]>([]);
@@ -36,7 +36,7 @@ export function KeyboardNavigationGrid({
   useEffect(() => {
     if (containerRef.current) {
       const focusableElements = containerRef.current.querySelectorAll(
-        '[data-keyboard-nav-item]'
+        "[data-keyboard-nav-item]"
       ) as NodeListOf<HTMLElement>;
       itemsRef.current = Array.from(focusableElements);
     }
@@ -48,27 +48,36 @@ export function KeyboardNavigationGrid({
       orientation,
       wrap,
       columns,
-      onActivate: onItemActivate
+      onActivate: onItemActivate,
     }
   );
 
-  const handleContainerKeyDown = useCallback((event: React.KeyboardEvent) => {
-    handleKeyDown(event.nativeEvent);
-  }, [handleKeyDown]);
+  const handleContainerKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      handleKeyDown(event.nativeEvent);
+    },
+    [handleKeyDown]
+  );
 
-  const handleContainerFocus = useCallback((event: React.FocusEvent) => {
-    // If focus enters the container and no item is focused, focus the first item
-    if (event.target === containerRef.current && itemsRef.current.length > 0) {
-      focusItem(0);
-    }
-  }, [focusItem]);
+  const handleContainerFocus = useCallback(
+    (event: React.FocusEvent) => {
+      // If focus enters the container and no item is focused, focus the first item
+      if (event.target === containerRef.current && itemsRef.current.length > 0) {
+        focusItem(0);
+      }
+    },
+    [focusItem]
+  );
 
-  const handleContainerBlur = useCallback((event: React.FocusEvent) => {
-    // If focus leaves the container entirely, reset focus state
-    if (!containerRef.current?.contains(event.relatedTarget as Node)) {
-      resetFocus();
-    }
-  }, [resetFocus]);
+  const handleContainerBlur = useCallback(
+    (event: React.FocusEvent) => {
+      // If focus leaves the container entirely, reset focus state
+      if (!containerRef.current?.contains(event.relatedTarget as Node)) {
+        resetFocus();
+      }
+    },
+    [resetFocus]
+  );
 
   return (
     <div

@@ -1,12 +1,12 @@
 "use client";
 
-import React from "react";
-import { useTranslations } from "next-intl";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { Button } from "@/components/ui/Button";
 import { useCart } from "@/lib/cart/context";
 import { formatPrice } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
-import Image from "next/image";
 
 interface MiniCartProps {
   locale: string;

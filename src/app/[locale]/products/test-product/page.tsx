@@ -1,5 +1,5 @@
 import { ProductDetail } from "@/components/product/ProductDetail";
-import { Product } from "@/types/product";
+import type { Product } from "@/types/product";
 
 interface TestProductPageProps {
   params: Promise<{ locale: string }>;

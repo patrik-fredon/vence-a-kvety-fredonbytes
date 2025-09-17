@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import {
-  CreditCardIcon,
   BanknotesIcon,
-  ShieldCheckIcon,
+  CreditCardIcon,
   ExclamationTriangleIcon,
+  ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
-import { PaymentMethod } from "@/types/order";
-import { StripePaymentForm } from "@/components/payments/StripePaymentForm";
+import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
 import { GopayPaymentForm } from "@/components/payments/GopayPaymentForm";
+import { StripePaymentForm } from "@/components/payments/StripePaymentForm";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import type { PaymentMethod } from "@/types/order";
 
 interface PaymentStepProps {
   paymentMethod?: PaymentMethod;

@@ -1,10 +1,10 @@
-import { render, screen } from '@testing-library/react';
-import { ErrorBoundary } from '../ErrorBoundary';
+import { render, screen } from "@testing-library/react";
+import { ErrorBoundary } from "../ErrorBoundary";
 
 // Component that throws an error
 const ThrowError = ({ shouldThrow }: { shouldThrow: boolean }) => {
   if (shouldThrow) {
-    throw new Error('Test error');
+    throw new Error("Test error");
   }
   return <div>No error</div>;
 };
@@ -19,18 +19,18 @@ afterAll(() => {
   console.error = originalError;
 });
 
-describe('ErrorBoundary', () => {
-  it('renders children when there is no error', () => {
+describe("ErrorBoundary", () => {
+  it("renders children when there is no error", () => {
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={false} />
       </ErrorBoundary>
     );
 
-    expect(screen.getByText('No error')).toBeInTheDocument();
+    expect(screen.getByText("No error")).toBeInTheDocument();
   });
 
-  it('renders error UI when there is an error', () => {
+  it("renders error UI when there is an error", () => {
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
@@ -41,7 +41,7 @@ describe('ErrorBoundary', () => {
     expect(screen.getByText(/zkusit znovu/i)).toBeInTheDocument();
   });
 
-  it('renders custom fallback when provided', () => {
+  it("renders custom fallback when provided", () => {
     const CustomFallback = () => <div>Custom error message</div>;
 
     render(
@@ -50,10 +50,10 @@ describe('ErrorBoundary', () => {
       </ErrorBoundary>
     );
 
-    expect(screen.getByText('Custom error message')).toBeInTheDocument();
+    expect(screen.getByText("Custom error message")).toBeInTheDocument();
   });
 
-  it('calls onError callback when error occurs', () => {
+  it("calls onError callback when error occurs", () => {
     const onError = jest.fn();
 
     render(
@@ -70,7 +70,7 @@ describe('ErrorBoundary', () => {
     );
   });
 
-  it('shows retry button that can reset error state', () => {
+  it("shows retry button that can reset error state", () => {
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
@@ -83,14 +83,14 @@ describe('ErrorBoundary', () => {
     expect(retryButton).toBeInTheDocument();
   });
 
-  it('has proper accessibility attributes', () => {
+  it("has proper accessibility attributes", () => {
     render(
       <ErrorBoundary>
         <ThrowError shouldThrow={true} />
       </ErrorBoundary>
     );
 
-    const errorContainer = screen.getByRole('alert');
+    const errorContainer = screen.getByRole("alert");
     expect(errorContainer).toBeInTheDocument();
   });
 });

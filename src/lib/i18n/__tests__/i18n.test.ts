@@ -1,13 +1,13 @@
+import { currencyConfig, defaultLocale, type Locale, locales } from "@/i18n/config";
 import {
   formatCurrency,
   formatCurrencyCustom,
   formatDate,
   formatDeliveryDate,
   getLocalizedContent,
-  pluralize,
   getRelativeTime,
+  pluralize,
 } from "../utils";
-import { locales, defaultLocale, currencyConfig, type Locale } from "@/i18n/config";
 
 describe("i18n Configuration", () => {
   test("should have correct locale configuration", () => {

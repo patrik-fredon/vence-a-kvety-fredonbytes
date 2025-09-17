@@ -2,16 +2,16 @@
  * Payment error page
  */
 
-import React from "react";
-import { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import {
-  ExclamationTriangleIcon,
   ArrowPathIcon,
-  PhoneIcon,
   EnvelopeIcon,
+  ExclamationTriangleIcon,
+  PhoneIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
+import React from "react";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {

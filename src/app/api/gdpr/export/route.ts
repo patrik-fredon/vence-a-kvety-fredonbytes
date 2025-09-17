@@ -3,7 +3,7 @@
  * Allows users to export all their personal data
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { exportUserData, logUserActivity } from "@/lib/security/gdpr";
 import { validateCSRFToken } from "@/lib/security/validation";
@@ -41,7 +41,8 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = session.user.id;
-    const clientIP = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
+    const clientIP =
+      request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
 
     // Log the data export request
     await logUserActivity(userId, "gdpr_data_export_requested", {}, clientIP);
@@ -63,14 +64,19 @@ export async function POST(request: NextRequest) {
     }
 
     // Log successful export
-    await logUserActivity(userId, "gdpr_data_export_completed", {
-      recordsExported: {
-        orders: exportData.orders.length,
-        cartItems: exportData.cartItems.length,
-        addresses: exportData.addresses.length,
-        activityLog: exportData.activityLog.length,
+    await logUserActivity(
+      userId,
+      "gdpr_data_export_completed",
+      {
+        recordsExported: {
+          orders: exportData.orders.length,
+          cartItems: exportData.cartItems.length,
+          addresses: exportData.addresses.length,
+          activityLog: exportData.activityLog.length,
+        },
       },
-    }, clientIP);
+      clientIP
+    );
 
     // Return the export data
     return NextResponse.json({
@@ -79,7 +85,6 @@ export async function POST(request: NextRequest) {
       exportedAt: new Date().toISOString(),
       message: "Data export completed successfully",
     });
-
   } catch (error) {
     console.error("GDPR export error:", error);
 

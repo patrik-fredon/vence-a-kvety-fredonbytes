@@ -3,10 +3,15 @@
  * Allows users to request deletion of all their personal data
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { deleteUserData, logUserActivity } from "@/lib/security/gdpr";
-import { validateCSRFToken, validateRequestBody, validateRequiredString, ValidationResult } from "@/lib/security/validation";
+import {
+  type ValidationResult,
+  validateCSRFToken,
+  validateRequestBody,
+  validateRequiredString,
+} from "@/lib/security/validation";
 
 interface DeleteRequestBody {
   confirmation: string;
@@ -46,49 +51,55 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate request body
-    const bodyValidation = await validateRequestBody(request, (body: any): ValidationResult<DeleteRequestBody> => {
-      const confirmationResult = validateRequiredString(body.confirmation, "confirmation");
-      const reasonResult = body.reason
-        ? validateRequiredString(body.reason, "reason", 500)
-        : { isValid: true, data: undefined, errors: [] };
+    const bodyValidation = await validateRequestBody(
+      request,
+      (body: any): ValidationResult<DeleteRequestBody> => {
+        const confirmationResult = validateRequiredString(body.confirmation, "confirmation");
+        const reasonResult = body.reason
+          ? validateRequiredString(body.reason, "reason", 500)
+          : { isValid: true, data: undefined, errors: [] };
 
-      // Collect all errors
-      const allErrors = [...confirmationResult.errors, ...reasonResult.errors];
+        // Collect all errors
+        const allErrors = [...confirmationResult.errors, ...reasonResult.errors];
 
-      if (!confirmationResult.isValid) {
+        if (!confirmationResult.isValid) {
+          return {
+            isValid: false,
+            errors: allErrors,
+          };
+        }
+
+        if (confirmationResult.data !== "DELETE_MY_DATA") {
+          return {
+            isValid: false,
+            errors: [
+              ...allErrors,
+              {
+                field: "confirmation",
+                message: "Invalid confirmation text. Please type 'DELETE_MY_DATA' to confirm.",
+                code: "INVALID_CONFIRMATION",
+              },
+            ],
+          };
+        }
+
+        if (!reasonResult.isValid) {
+          return {
+            isValid: false,
+            errors: allErrors,
+          };
+        }
+
         return {
-          isValid: false,
-          errors: allErrors,
+          isValid: true,
+          data: {
+            confirmation: confirmationResult.data,
+            reason: reasonResult.data,
+          },
+          errors: [],
         };
       }
-
-      if (confirmationResult.data !== "DELETE_MY_DATA") {
-        return {
-          isValid: false,
-          errors: [...allErrors, {
-            field: "confirmation",
-            message: "Invalid confirmation text. Please type 'DELETE_MY_DATA' to confirm.",
-            code: "INVALID_CONFIRMATION"
-          }],
-        };
-      }
-
-      if (!reasonResult.isValid) {
-        return {
-          isValid: false,
-          errors: allErrors,
-        };
-      }
-
-      return {
-        isValid: true,
-        data: {
-          confirmation: confirmationResult.data,
-          reason: reasonResult.data,
-        },
-        errors: [],
-      };
-    });
+    );
 
     if (!bodyValidation.isValid) {
       return NextResponse.json(
@@ -105,7 +116,8 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = session.user.id;
-    const clientIP = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
+    const clientIP =
+      request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
     const { reason } = bodyValidation.data!;
 
     // Log the deletion request
@@ -116,9 +128,14 @@ export async function POST(request: NextRequest) {
 
     if (!deletionResult.success) {
       // Log failed deletion
-      await logUserActivity(userId, "gdpr_data_deletion_failed", {
-        errors: deletionResult.errors,
-      }, clientIP);
+      await logUserActivity(
+        userId,
+        "gdpr_data_deletion_failed",
+        {
+          errors: deletionResult.errors,
+        },
+        clientIP
+      );
 
       return NextResponse.json(
         {
@@ -142,7 +159,6 @@ export async function POST(request: NextRequest) {
       deletedRecords: deletionResult.deletedRecords,
       deletedAt: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error("GDPR deletion error:", error);
 

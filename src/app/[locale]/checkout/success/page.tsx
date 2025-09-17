@@ -2,20 +2,20 @@
  * Payment success page
  */
 
-import React from "react";
-import { Metadata } from "next";
+import {
+  CalendarIcon,
+  CheckCircleIcon,
+  EnvelopeIcon,
+  MapPinIcon,
+  PhoneIcon,
+} from "@heroicons/react/24/outline";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { getTranslations } from "next-intl/server";
-import {
-  CheckCircleIcon,
-  EnvelopeIcon,
-  PhoneIcon,
-  CalendarIcon,
-  MapPinIcon,
-} from "@heroicons/react/24/outline";
-import { createServerClient } from "@/lib/supabase/server";
+import React from "react";
 import { Button } from "@/components/ui/Button";
+import { createServerClient } from "@/lib/supabase/server";
 
 interface PageProps {
   params: Promise<{ locale: string }>;

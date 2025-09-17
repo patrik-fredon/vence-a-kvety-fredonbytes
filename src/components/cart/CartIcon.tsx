@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { useCart } from "@/lib/cart/context";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
+import React from "react";
+import { useCart } from "@/lib/cart/context";
 
 interface CartIconProps {
   locale: string;

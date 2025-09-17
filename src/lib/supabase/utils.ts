@@ -1,6 +1,6 @@
 import { supabase } from "./client";
-import { supabaseAdmin } from "./server";
 import type { Database } from "./database.types";
+import { supabaseAdmin } from "./server";
 
 type Tables = Database["public"]["Tables"];
 type Product = Tables["products"]["Row"];
@@ -238,7 +238,6 @@ export const orderUtils = {
       updated_at: new Date().toISOString(),
     };
 
-<<<<<<< HEAD
     // Add timestamp fields based on status
     switch (status) {
       case "confirmed":
@@ -255,8 +254,6 @@ export const orderUtils = {
         break;
     }
 
-=======
->>>>>>> 2de4c3c (Api routing problem, non functional state)
     if (internalNotes) {
       updateData.notes = internalNotes; // Use notes field instead of internal_notes
     }
@@ -288,67 +285,43 @@ export const orderUtils = {
     }
 
     // Generate status history based on current status
-    if (order.status !== 'pending') {
+    if (order.status !== "pending") {
       statusHistory.push({
-<<<<<<< HEAD
         status: "confirmed",
         timestamp: order.confirmed_at,
         description: "Objednávka byla potvrzena",
-=======
-        status: 'confirmed',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla potvrzena'
->>>>>>> 2de4c3c (Api routing problem, non functional state)
       });
     }
 
-    if (['processing', 'ready', 'shipped', 'delivered'].includes(order.status)) {
+    if (["processing", "ready", "shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
-        status: 'processing',
+        status: "processing",
         timestamp: order.updated_at,
-        description: 'Objednávka se zpracovává'
+        description: "Objednávka se zpracovává",
       });
     }
 
-    if (['shipped', 'delivered'].includes(order.status)) {
+    if (["shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
-<<<<<<< HEAD
         status: "shipped",
         timestamp: order.shipped_at,
         description: "Objednávka byla odeslána",
-=======
-        status: 'shipped',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla odeslána'
->>>>>>> 2de4c3c (Api routing problem, non functional state)
       });
     }
 
-    if (order.status === 'delivered') {
+    if (order.status === "delivered") {
       statusHistory.push({
-<<<<<<< HEAD
         status: "delivered",
         timestamp: order.delivered_at,
         description: "Objednávka byla doručena",
-=======
-        status: 'delivered',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla doručena'
->>>>>>> 2de4c3c (Api routing problem, non functional state)
       });
     }
 
-    if (order.status === 'cancelled') {
+    if (order.status === "cancelled") {
       statusHistory.push({
-<<<<<<< HEAD
         status: "cancelled",
         timestamp: order.cancelled_at,
         description: "Objednávka byla zrušena",
-=======
-        status: 'cancelled',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla zrušena'
->>>>>>> 2de4c3c (Api routing problem, non functional state)
       });
     }
 
@@ -404,17 +377,10 @@ export const orderUtils = {
       totalRevenue: orders
         .filter((o) => ["delivered", "shipped"].includes(o.status))
         .reduce((sum, o) => sum + Number(o.total_amount), 0),
-<<<<<<< HEAD
       todayOrders: orders.filter((o) => {
         const today = new Date().toISOString().split("T")[0]!;
         return o.created_at ? o.created_at.startsWith(today) : false;
       }).length,
-=======
-      todayOrders: orders.filter(o => {
-        const today = new Date().toISOString().split('T')[0];
-        return o.created_at?.startsWith(today);
-      }).length
->>>>>>> 2de4c3c (Api routing problem, non functional state)
     };
 
     return { data: stats, error: null };

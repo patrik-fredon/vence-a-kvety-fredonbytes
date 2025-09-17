@@ -3,15 +3,15 @@
  * Handles GET, PUT, DELETE for specific categories by slug
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import { Category, UpdateCategoryRequest, CategoryRow } from "@/types/product";
-import { ApiResponse } from "@/types";
 import {
+  createSlug,
   transformCategoryRow,
   validateCategoryData,
-  createSlug,
 } from "@/lib/utils/product-transforms";
+import type { ApiResponse } from "@/types";
+import type { Category, CategoryRow, UpdateCategoryRequest } from "@/types/product";
 
 interface RouteContext {
   params: Promise<{

@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import Image from "next/image";
-import { ProductImage, Customization } from "@/types/product";
-import { cn } from "@/lib/utils";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import { useEffect, useState } from "react";
+import { cn } from "@/lib/utils";
+import type { Customization, ProductImage } from "@/types/product";
 
 interface ProductImageGalleryProps {
   images: ProductImage[];

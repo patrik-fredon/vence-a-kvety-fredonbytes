@@ -13,7 +13,7 @@ interface Address {
 import { useState } from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
-import { Address } from '@/types/user';
+import type { Address } from '@/types/user';
 
 interface AddressBookProps {
   addresses: Address[];
@@ -22,7 +22,7 @@ interface AddressBookProps {
   locale: string;
 }
 
-interface AddressFormData {
+type AddressFormData = {}
 >>>>>>> db25158 (Enhance user profile with address book and preferences management)
   name: string;
   street: string;
@@ -449,8 +449,7 @@ export function AddressBook({ addresses, onSave, loading = false, locale }: Addr
 }
 =======
           {locale === 'cs' ? 'Adresář' : 'Address Book'}
-        </h3>
-        {!editingId && (
+        </h3>!editingId && (
           <Button
             type="button"
             variant="outline"
@@ -459,11 +458,8 @@ export function AddressBook({ addresses, onSave, loading = false, locale }: Addr
           >
             {locale === 'cs' ? 'Přidat adresu' : 'Add Address'}
           </Button>
-        )}
-      </div>
-
-      {/* Address Form */}
-      {editingId && (
+        )
+      </div>editingId && (
         <div className="bg-gray-50 border rounded-lg p-4">
           <h4 className="text-md font-medium text-gray-900 mb-4">
             {editingId === 'new' 
@@ -559,9 +555,7 @@ export function AddressBook({ addresses, onSave, loading = false, locale }: Addr
             </Button>
           </div>
         </div>
-      )}
-
-      {/* Address List */}
+      )
       <div className="space-y-4">
         {localAddresses.map((address) => (
           <div key={address.id} className="border rounded-lg p-4 bg-white">
@@ -623,10 +617,7 @@ export function AddressBook({ addresses, onSave, loading = false, locale }: Addr
             <p>{locale === 'cs' ? 'Žádné adresy nejsou uloženy' : 'No addresses saved'}</p>
           </div>
         )}
-      </div>
-
-      {/* Save Changes */}
-      {hasChanges && !editingId && (
+      </div>hasChanges && !editingId && (
         <div className="flex justify-end space-x-3 pt-4 border-t">
           <Button
             type="button"
@@ -647,7 +638,7 @@ export function AddressBook({ addresses, onSave, loading = false, locale }: Addr
             }
           </Button>
         </div>
-      )}
+      )
     </div>
   );
 }

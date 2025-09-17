@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { PhoneIcon, EnvelopeIcon, MapPinIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface FooterProps {

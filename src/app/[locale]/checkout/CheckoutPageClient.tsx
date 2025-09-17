@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { ArrowLeftIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ShoppingCartIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { useCart } from "@/lib/cart/context";
-import { CartItem } from "@/types/cart";
+import React, { useEffect, useState } from "react";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { CompactOrderSummary } from "@/components/checkout/OrderSummary";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useCart } from "@/lib/cart/context";
+import type { CartItem } from "@/types/cart";
 
 interface CheckoutPageClientProps {
   locale: string;

@@ -1,6 +1,6 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
-import { type Locale } from "@/i18n/config";
+import type { Locale } from "@/i18n/config";
 
 interface MetadataParams {
   locale: Locale;
@@ -62,13 +62,13 @@ export async function generateLocalizedMetadata({
       url: fullUrl,
       images: image
         ? [
-          {
-            url: image,
-            width: 1200,
-            height: 630,
-            alt: finalTitle,
-          },
-        ]
+            {
+              url: image,
+              width: 1200,
+              height: 630,
+              alt: finalTitle,
+            },
+          ]
         : undefined,
     },
     twitter: {
