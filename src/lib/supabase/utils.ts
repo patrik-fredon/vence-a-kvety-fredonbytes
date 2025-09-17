@@ -238,8 +238,6 @@ export const orderUtils = {
       updated_at: new Date().toISOString(),
     };
 
-<<<<<<< HEAD
-=======
     // Add timestamp fields based on status
     switch (status) {
       case "confirmed":
@@ -256,7 +254,7 @@ export const orderUtils = {
         break;
     }
 
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
+
     if (internalNotes) {
       updateData.notes = internalNotes; // Use notes field instead of internal_notes
     }
@@ -290,15 +288,9 @@ export const orderUtils = {
     // Generate status history based on current status
     if (order.status !== 'pending') {
       statusHistory.push({
-<<<<<<< HEAD
-        status: 'confirmed',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla potvrzena'
-=======
         status: "confirmed",
-        timestamp: order.confirmed_at,
+        timestamp: order.confirmed_at || order.updated_at,
         description: "Objednávka byla potvrzena",
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
       });
     }
 
@@ -312,43 +304,25 @@ export const orderUtils = {
 
     if (['shipped', 'delivered'].includes(order.status)) {
       statusHistory.push({
-<<<<<<< HEAD
-        status: 'shipped',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla odeslána'
-=======
         status: "shipped",
-        timestamp: order.shipped_at,
+        timestamp: order.shipped_at || order.updated_at,
         description: "Objednávka byla odeslána",
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
       });
     }
 
     if (order.status === 'delivered') {
       statusHistory.push({
-<<<<<<< HEAD
-        status: 'delivered',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla doručena'
-=======
         status: "delivered",
-        timestamp: order.delivered_at,
+        timestamp: order.delivered_at || order.updated_at,
         description: "Objednávka byla doručena",
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
       });
     }
 
     if (order.status === 'cancelled') {
       statusHistory.push({
-<<<<<<< HEAD
-        status: 'cancelled',
-        timestamp: order.updated_at,
-        description: 'Objednávka byla zrušena'
-=======
         status: "cancelled",
-        timestamp: order.cancelled_at,
+        timestamp: order.cancelled_at || order.updated_at,
         description: "Objednávka byla zrušena",
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
       });
     }
 
@@ -404,22 +378,10 @@ export const orderUtils = {
       totalRevenue: orders
         .filter((o) => ["delivered", "shipped"].includes(o.status))
         .reduce((sum, o) => sum + Number(o.total_amount), 0),
-<<<<<<< HEAD
-      todayOrders: orders.filter(o => {
-<<<<<<< HEAD
-        const today = new Date().toISOString().split('T')[0];
-        return o.created_at?.startsWith(today);
-=======
-        const today = new Date().toISOString().split('T')[0]!;
-        return o.created_at ? o.created_at.startsWith(today) : false;
->>>>>>> 915de74 (Implement administrative dashboard with role-based access and activity logging)
-      }).length
-=======
       todayOrders: orders.filter((o) => {
         const today = new Date().toISOString().split("T")[0]!;
         return o.created_at ? o.created_at.startsWith(today) : false;
       }).length,
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
     };
 
     return { data: stats, error: null };

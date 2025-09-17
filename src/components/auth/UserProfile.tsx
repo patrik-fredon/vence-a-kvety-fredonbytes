@@ -3,37 +3,11 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
-import { useAuth, useUpdateProfile, useSignOut } from "@/lib/auth/hooks";
+import { useAuth, useSignOut, useUpdateProfile } from "@/lib/auth/hooks";
 import { OrderHistory } from "@/components/order/OrderHistory";
-import { AddressBook } from "@/components/auth/AddressBook";
+import { AddressBook } from "./AddressBook";
 import { useParams } from "next/navigation";
-
-interface Address {
-  id: string;
-  name: string;
-  street: string;
-  city: string;
-  postalCode: string;
-  country: string;
-  isDefault: boolean;
-}
-
-interface UserPreferences {
-  language: "cs" | "en";
-  emailNotifications: {
-    orderUpdates: boolean;
-    promotions: boolean;
-    newsletter: boolean;
-  };
-  smsNotifications: {
-    orderUpdates: boolean;
-    deliveryReminders: boolean;
-  };
-  privacy: {
-    shareDataForMarketing: boolean;
-    allowAnalytics: boolean;
-  };
-}
+import { Address, UserPreferences, defaultUserPreferences } from "@/types/user";
 
 export function UserProfile() {
   const { user } = useAuth();
@@ -48,22 +22,7 @@ export function UserProfile() {
   });
 
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [preferences, setPreferences] = useState<UserPreferences>({
-    language: "cs",
-    emailNotifications: {
-      orderUpdates: true,
-      promotions: false,
-      newsletter: false,
-    },
-    smsNotifications: {
-      orderUpdates: true,
-      deliveryReminders: true,
-    },
-    privacy: {
-      shareDataForMarketing: false,
-      allowAnalytics: true,
-    },
-  });
+  const [preferences, setPreferences] = useState<UserPreferences>(defaultUserPreferences);
   const [isEditing, setIsEditing] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
   const [activeTab, setActiveTab] = useState<"profile" | "orders" | "addresses" | "preferences">(
@@ -76,8 +35,6 @@ export function UserProfile() {
         name: user.name || "",
         phone: user.phone || "",
       });
-
-      // Load user preferences and addresses from profile
       loadUserProfile();
     }
   }, [user]);
@@ -127,38 +84,6 @@ export function UserProfile() {
     await signOut();
   };
 
-  const addAddress = () => {
-    const newAddress: Address = {
-      id: Date.now().toString(),
-      name: "",
-      street: "",
-      city: "",
-      postalCode: "",
-      country: "Česká republika",
-      isDefault: addresses.length === 0,
-    };
-    setAddresses((prev) => [...prev, newAddress]);
-  };
-
-  const updateAddress = (id: string, field: keyof Address, value: string | boolean) => {
-    setAddresses((prev) =>
-      prev.map((addr) => (addr.id === id ? { ...addr, [field]: value } : addr))
-    );
-  };
-
-  const removeAddress = (id: string) => {
-    setAddresses((prev) => prev.filter((addr) => addr.id !== id));
-  };
-
-  const setDefaultAddress = (id: string) => {
-    setAddresses((prev) =>
-      prev.map((addr) => ({
-        ...addr,
-        isDefault: addr.id === id,
-      }))
-    );
-  };
-
   const handlePreferenceChange = (
     category: keyof UserPreferences,
     key: string,
@@ -201,25 +126,10 @@ export function UserProfile() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-<<<<<<< HEAD
-<<<<<<< HEAD
                 className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === tab
-                  ? 'border-indigo-500 text-indigo-600'
-                  : 'border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300'
+                  ? "border-indigo-500 text-indigo-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
                   }`}
-=======
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${
-                  activeTab === tab
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                }`}
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
-=======
-                className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap ${activeTab === tab
-                    ? "border-indigo-500 text-indigo-600"
-                    : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                  }`}
->>>>>>> 73125da (feat(gdpr): add ValidationResult import and disable monitoring endpoints)
               >
                 {getTabLabel(tab)}
               </button>
@@ -388,25 +298,51 @@ export function UserProfile() {
                 </div>
               </div>
 
-              {/* Email Notifications */}
+              {/* Notifications */}
               <div>
                 <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {locale === "cs" ? "E-mailová oznámení" : "Email Notifications"}
+                  {locale === "cs" ? "Oznámení" : "Notifications"}
                 </h3>
                 <div className="space-y-3">
+                  <label className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700">
+                      {locale === "cs" ? "E-mailová oznámení" : "Email Notifications"}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={preferences.notifications.email}
+                      onChange={(e) =>
+                        handlePreferenceChange(
+                          "notifications",
+                          "email",
+                          e.target.checked
+                        )
+                      }
+                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                  </label>
+                  <label className="flex items-center justify-between">
+                    <span className="text-sm text-gray-700">
+                      {locale === "cs" ? "SMS oznámení" : "SMS Notifications"}
+                    </span>
+                    <input
+                      type="checkbox"
+                      checked={preferences.notifications.sms}
+                      onChange={(e) =>
+                        handlePreferenceChange("notifications", "sms", e.target.checked)
+                      }
+                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                    />
+                  </label>
                   <label className="flex items-center justify-between">
                     <span className="text-sm text-gray-700">
                       {locale === "cs" ? "Aktualizace objednávek" : "Order Updates"}
                     </span>
                     <input
                       type="checkbox"
-                      checked={preferences.emailNotifications.orderUpdates}
+                      checked={preferences.notifications.orderUpdates}
                       onChange={(e) =>
-                        handlePreferenceChange(
-                          "emailNotifications",
-                          "orderUpdates",
-                          e.target.checked
-                        )
+                        handlePreferenceChange("notifications", "orderUpdates", e.target.checked)
                       }
                       className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                     />
@@ -417,61 +353,9 @@ export function UserProfile() {
                     </span>
                     <input
                       type="checkbox"
-                      checked={preferences.emailNotifications.promotions}
+                      checked={preferences.notifications.promotions}
                       onChange={(e) =>
-                        handlePreferenceChange("emailNotifications", "promotions", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Newsletter" : "Newsletter"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.emailNotifications.newsletter}
-                      onChange={(e) =>
-                        handlePreferenceChange("emailNotifications", "newsletter", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                </div>
-              </div>
-
-              {/* SMS Notifications */}
-              <div>
-                <h3 className="text-lg font-medium text-gray-900 mb-4">
-                  {locale === "cs" ? "SMS oznámení" : "SMS Notifications"}
-                </h3>
-                <div className="space-y-3">
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Aktualizace objednávek" : "Order Updates"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.smsNotifications.orderUpdates}
-                      onChange={(e) =>
-                        handlePreferenceChange("smsNotifications", "orderUpdates", e.target.checked)
-                      }
-                      className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                  </label>
-                  <label className="flex items-center justify-between">
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Připomínky doručení" : "Delivery Reminders"}
-                    </span>
-                    <input
-                      type="checkbox"
-                      checked={preferences.smsNotifications.deliveryReminders}
-                      onChange={(e) =>
-                        handlePreferenceChange(
-                          "smsNotifications",
-                          "deliveryReminders",
-                          e.target.checked
-                        )
+                        handlePreferenceChange("notifications", "promotions", e.target.checked)
                       }
                       className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                     />
@@ -487,13 +371,13 @@ export function UserProfile() {
                 <div className="space-y-3">
                   <label className="flex items-center justify-between">
                     <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Sdílet data pro marketing" : "Share Data for Marketing"}
+                      {locale === "cs" ? "Sdílet data" : "Share Data"}
                     </span>
                     <input
                       type="checkbox"
-                      checked={preferences.privacy.shareDataForMarketing}
+                      checked={preferences.privacy.shareData}
                       onChange={(e) =>
-                        handlePreferenceChange("privacy", "shareDataForMarketing", e.target.checked)
+                        handlePreferenceChange("privacy", "shareData", e.target.checked)
                       }
                       className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                     />
@@ -504,9 +388,9 @@ export function UserProfile() {
                     </span>
                     <input
                       type="checkbox"
-                      checked={preferences.privacy.allowAnalytics}
+                      checked={preferences.privacy.analytics}
                       onChange={(e) =>
-                        handlePreferenceChange("privacy", "allowAnalytics", e.target.checked)
+                        handlePreferenceChange("privacy", "analytics", e.target.checked)
                       }
                       className="rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
                     />
@@ -529,11 +413,6 @@ export function UserProfile() {
           )}
         </div>
       </div>
-<<<<<<< HEAD
-    </div >
-  )
-=======
     </div>
   );
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
 }

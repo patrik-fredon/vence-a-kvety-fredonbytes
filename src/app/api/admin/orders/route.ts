@@ -102,11 +102,7 @@ export async function GET(request: NextRequest) {
         deliveredAt: undefined,
         cancelledAt: undefined,
         notes: order.notes,
-<<<<<<< HEAD
-        internalNotes: order.notes
-=======
         internalNotes: order.internal_notes,
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
       };
     });
 

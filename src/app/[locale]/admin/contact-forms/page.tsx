@@ -33,7 +33,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
 
   // Apply filters
   if (status !== "all") {
-    query = query.eq("status", status);
+    query = query.eq("status", status as "new" | "read" | "replied" | "archived");
   }
 
   if (search) {

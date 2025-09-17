@@ -1,7 +1,6 @@
-<<<<<<< HEAD
 import { supabase } from '@/lib/supabase/client'
 import type { User } from '@supabase/supabase-js'
-import { Address, UserPreferences } from '@/types/user'
+import { Address, UserPreferences, defaultUserPreferences } from '@/types/user'
 
 export interface AuthUser {
   id: string
@@ -10,16 +9,6 @@ export interface AuthUser {
   phone?: string | null
   addresses?: Address[]
   preferences?: UserPreferences
-=======
-import { supabase } from "@/lib/supabase/client";
-import type { User } from "@supabase/supabase-js";
-
-export interface AuthUser {
-  id: string;
-  email: string;
-  name?: string | null;
-  phone?: string | null;
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
 }
 
 export interface SignUpData {
@@ -44,17 +33,10 @@ export interface UpdatePasswordData {
 }
 
 export interface UpdateProfileData {
-<<<<<<< HEAD
-  name?: string
-  phone?: string
-  addresses?: Address[]
-  preferences?: UserPreferences
-=======
   name?: string;
   phone?: string;
-  addresses?: any[];
-  preferences?: any;
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
+  addresses?: Address[];
+  preferences?: UserPreferences;
 }
 
 export class AuthError extends Error {
@@ -247,13 +229,9 @@ export const authUtils = {
         email: user.email!,
         name: profile?.name || user.user_metadata?.name || null,
         phone: profile?.phone || user.user_metadata?.phone || null,
-<<<<<<< HEAD
-        addresses: (profile?.addresses as Address[]) || [],
-        preferences: (profile?.preferences as UserPreferences) || {},
-      }
-=======
+        addresses: (profile?.addresses as unknown as Address[]) || [],
+        preferences: (profile?.preferences as unknown as UserPreferences) || defaultUserPreferences,
       };
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
 
       return { user: authUser, error: null };
     } catch (error) {

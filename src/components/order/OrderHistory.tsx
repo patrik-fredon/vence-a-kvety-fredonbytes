@@ -72,13 +72,9 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
           totalAmount: order.total_amount,
           itemCount: order.items?.itemCount || 0,
           createdAt: order.created_at,
-<<<<<<< HEAD
-          deliveryAddress: `${order.delivery_info?.address?.city || ''}, ${order.delivery_info?.address?.postalCode || ''}`,
-          customerName: `${order.customer_info?.firstName || ''} ${order.customer_info?.lastName || ''}`.trim(),
-          items: order.items?.items || []
-=======
           deliveryAddress: `${order.delivery_info?.address?.city || ""}, ${order.delivery_info?.address?.postalCode || ""}`,
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
+          customerName: `${order.customer_info?.firstName || ""} ${order.customer_info?.lastName || ""}`.trim(),
+          items: order.items?.items || []
         }));
         setAllOrders(transformedOrders);
       } else {
@@ -414,10 +410,6 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                     <div className="flex items-center">
                       <div className="flex-shrink-0">
                         <div className="h-10 w-10 rounded-full bg-gray-300 flex items-center justify-center">
-<<<<<<< HEAD
-                          <svg className="h-6 w-6 text-gray-600" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
-=======
                           <svg
                             className="h-6 w-6 text-gray-600"
                             fill="none"
@@ -430,7 +422,6 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                               strokeWidth={2}
                               d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"
                             />
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
                           </svg>
                         </div>
                       </div>
@@ -439,21 +430,13 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                           <p className="text-sm font-medium text-indigo-600 truncate">
                             #{order.orderNumber}
                           </p>
-<<<<<<< HEAD
-                          <div className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}>
-=======
                           <div
                             className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}
                           >
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
                             {getStatusLabel(order.status)}
                           </div>
                         </div>
                         <div className="mt-2 flex items-center text-sm text-gray-500">
-<<<<<<< HEAD
-                          <svg className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-=======
                           <svg
                             className="flex-shrink-0 mr-1.5 h-4 w-4 text-gray-400"
                             fill="none"
@@ -466,17 +449,10 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                               strokeWidth={2}
                               d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
                             />
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
                           </svg>
                           <p>{formatDate(order.createdAt)}</p>
                           <span className="mx-2">•</span>
                           <p>
-<<<<<<< HEAD
-                            {order.itemCount} {order.itemCount === 1
-                              ? (locale === 'cs' ? 'položka' : 'item')
-                              : (locale === 'cs' ? 'položek' : 'items')
-                            }
-=======
                             {order.itemCount}{" "}
                             {order.itemCount === 1
                               ? locale === "cs"
@@ -485,7 +461,6 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                               : locale === "cs"
                                 ? "položek"
                                 : "items"}
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
                           </p>
                           {order.deliveryAddress && (
                             <>
@@ -502,10 +477,6 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                           {order.totalAmount.toLocaleString(locale)} Kč
                         </p>
                       </div>
-<<<<<<< HEAD
-                      <svg className="ml-2 h-5 w-5 text-gray-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
-=======
                       <svg
                         className="ml-2 h-5 w-5 text-gray-400"
                         fill="none"
@@ -518,16 +489,17 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                           strokeWidth={2}
                           d="M9 5l7 7-7 7"
                         />
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
                       </svg>
                     </div>
-                  </div>
-                </Link>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-    </div>
+                  </div >
+                </Link >
+              </li >
+            ))
+            }
+          </ul >
+        </div >
+      )
+      }
+    </div >
   );
 }

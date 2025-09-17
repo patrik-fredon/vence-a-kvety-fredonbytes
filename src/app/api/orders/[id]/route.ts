@@ -82,17 +82,10 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       internalNotes: order.notes || undefined,
       createdAt: new Date(order.created_at),
       updatedAt: new Date(order.updated_at),
-<<<<<<< HEAD
-      confirmedAt: undefined,
-      shippedAt: undefined,
-      deliveredAt: undefined,
-      cancelledAt: undefined
-=======
       confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : undefined,
       shippedAt: order.shipped_at ? new Date(order.shipped_at) : undefined,
       deliveredAt: order.delivered_at ? new Date(order.delivered_at) : undefined,
       cancelledAt: order.cancelled_at ? new Date(order.cancelled_at) : undefined,
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
     };
 
     return NextResponse.json({
@@ -253,17 +246,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           internalNotes: updatedOrder.notes || undefined,
           createdAt: new Date(updatedOrder.created_at),
           updatedAt: new Date(updatedOrder.updated_at),
-<<<<<<< HEAD
-          confirmedAt: undefined,
-          shippedAt: undefined,
-          deliveredAt: undefined,
-          cancelledAt: undefined
-=======
           confirmedAt: updatedOrder.confirmed_at ? new Date(updatedOrder.confirmed_at) : undefined,
           shippedAt: updatedOrder.shipped_at ? new Date(updatedOrder.shipped_at) : undefined,
           deliveredAt: updatedOrder.delivered_at ? new Date(updatedOrder.delivered_at) : undefined,
           cancelledAt: updatedOrder.cancelled_at ? new Date(updatedOrder.cancelled_at) : undefined,
->>>>>>> 1d5ec08 (Refactor checkout validation and sanitization logic)
         };
 
         // Send status update email
