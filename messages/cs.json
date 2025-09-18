@@ -231,6 +231,83 @@
     "description": "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení.",
     "keywords": "pohřební věnce, květinové aranžmá, pohřeb, rozloučení, věnce"
   },
+  "seo": {
+    "home": {
+      "title": "Pohřební věnce Praha | Ruční výroba | Ketingmar s.r.o.",
+      "description": "Prémiové pohřební věnce a květinové aranžmá s rychlým doručením v Praze. Ruční výroba, čerstvé květiny, důstojné rozloučení. Objednávka online 24/7.",
+      "keywords": [
+        "pohřební věnce",
+        "květinové aranžmá",
+        "smuteční věnce",
+        "pohřeb Praha",
+        "rozloučení",
+        "ruční výroba věnců",
+        "čerstvé květiny",
+        "rychlé doručení",
+        "luxusní věnce",
+        "pietní místo"
+      ],
+      "openGraph": {
+        "title": "Pohřební věnce Praha | Důstojné rozloučení s krásou květin",
+        "description": "Pomáháme rodinám vyjádřit lásku a úctu prostřednictvím krásných pohřebních věnců. Ruční výroba, čerstvé květiny, rychlé doručení.",
+        "type": "website"
+      }
+    },
+    "products": {
+      "title": "Katalog pohřebních věnců | Srdce, kříže, kruhy | Ketingmar",
+      "description": "Široký výběr pohřebních věnců - srdce, kříže, kruhy. Různé velikosti a barvy. Možnost personalizace. Ceny od 2.500 Kč. Rychlé doručení v Praze.",
+      "keywords": [
+        "pohřební věnce katalog",
+        "smuteční věnce srdce",
+        "pohřební kříž",
+        "věnce kruhy",
+        "velikosti věnců",
+        "barvy věnců",
+        "personalizace věnců",
+        "ceny pohřebních věnců",
+        "objednávka věnců online"
+      ],
+      "openGraph": {
+        "title": "Katalog pohřebních věnců | Široký výběr tvarů a velikostí",
+        "description": "Vyberte si z našeho katalogu pohřebních věnců. Srdce, kříže, kruhy v různých velikostech a barvách. Možnost personalizace podle vašich představ.",
+        "type": "website"
+      }
+    },
+    "about": {
+      "title": "O nás | Rodinná květinová dílnička | Ketingmar s.r.o.",
+      "description": "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi. Specializujeme se na pohřební věnce a smuteční květinové aranžmá s důrazem na kvalitu a detail.",
+      "keywords": [
+        "rodinná květinová dílnička",
+        "zkušení floristé",
+        "specializace pohřební věnce",
+        "kvalitní květinové aranžmá",
+        "osobní přístup",
+        "Praha květinářství"
+      ],
+      "openGraph": {
+        "title": "O nás | Rodinná květinová dílnička s tradicí",
+        "description": "Poznajte naši rodinnou květinovou dílničku. Věnujeme se pohřebním věncům s láskou, citem a důrazem na každý detail.",
+        "type": "website"
+      }
+    },
+    "faq": {
+      "title": "Často kladené otázky | Péče o pohřební věnce | Ketingmar",
+      "description": "Odpovědi na nejčastější otázky o pohřebních věncích - skladování, výdrž květin, recyklace. Praktické rady pro péči o smuteční věnce.",
+      "keywords": [
+        "FAQ pohřební věnce",
+        "péče o věnce",
+        "skladování věnců",
+        "výdrž květin",
+        "recyklace věnců",
+        "rady floristů"
+      ],
+      "openGraph": {
+        "title": "FAQ | Vše co potřebujete vědět o pohřebních věncích",
+        "description": "Praktické rady a odpovědi na nejčastější otázky o pohřebních věncích, jejich skladování a péči.",
+        "type": "website"
+      }
+    }
+  },
   "currency": {
     "format": "{amount} Kč"
   },
@@ -248,7 +325,7 @@
     },
     "philosophy": {
       "quote": "Život je křehký jako motýlí prach, ale krása a láska zůstávají navždy",
-      "text": "Uvědomujeme si, že život je křehký a že v jednom okamžiku se náš svět může změnit. Stejně jako motýl prochází krásnou transformací, i naši blízcí pokračují svou cestou v jiné podobě. Věříme, že krásné květiny mohou vyjádřit to, co slova nedokážou – vaši lásku, úctu a věčnou vzpomínku."
+      "text": "Uvědomujeme si, že život je křehký jako motýlí prach a že v jednom okamžiku se může náš svět změnit. Naše fyzická podoba se pak promění v jinou energii. Každý den je plný těchto proměn, viditelných i neviditelných. Jednou z těchto viditelných proměn je motýl, jehož přirozeným procesem je transformace z housenky na krásného tvora. Stejně tak vnímáme odchod na druhou stranu – jako přirozenou transformaci, která pokračuje v jiné podobě."
     },
     "title": "Pohřební věnce",
     "subtitle": "Prémiové pohřební věnce a květinové aranžmá pro důstojné rozloučení",
