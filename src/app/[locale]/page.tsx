@@ -59,19 +59,20 @@ export default async function Home({ params }: HomeProps) {
       <StructuredData data={localBusinessStructuredData} />
       <StructuredData data={faqStructuredData} />
       <div className="container mx-auto px-4 py-16">
+        {/* Hero Section */}
         <div className="text-center max-w-4xl mx-auto">
           <h1 className="text-elegant text-5xl md:text-6xl font-semibold text-primary-800 mb-6">
-            {t("title")}
+            {t("hero.title")}
           </h1>
-          <p className="text-xl md:text-2xl text-neutral-700 mb-8 leading-relaxed">{t("subtitle")}</p>
-          <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto">{t("description")}</p>
+          <p className="text-xl md:text-2xl text-neutral-700 mb-8 leading-relaxed">{t("hero.subtitle")}</p>
+          <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto">{t("hero.description")}</p>
 
           <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
             <Link
               href={`/${locale}/products`}
               className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-medium text-lg transition-colors shadow-elegant"
             >
-              {t("browseWreaths")}
+              {t("hero.cta")}
             </Link>
             <Link
               href={`/${locale}/contact`}
@@ -82,6 +83,36 @@ export default async function Home({ params }: HomeProps) {
           </div>
         </div>
 
+        {/* Philosophy Section */}
+        <div className="mt-20 max-w-4xl mx-auto text-center">
+          <blockquote className="text-2xl md:text-3xl text-primary-700 font-elegant italic mb-6">
+            "{t("philosophy.quote")}"
+          </blockquote>
+          <p className="text-lg text-neutral-600 leading-relaxed">
+            {t("philosophy.text")}
+          </p>
+        </div>
+
+        {/* Benefits Section */}
+        <div className="mt-20 max-w-6xl mx-auto">
+          <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-primary-800 text-center mb-12">
+            {t("benefits.title")}
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
+            {[0, 1, 2, 3].map((index) => (
+              <div key={index} className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
+                <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
+                  {t(`benefits.items.${index}.title`)}
+                </h3>
+                <p className="text-neutral-600">
+                  {t(`benefits.items.${index}.description`)}
+                </p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Features Section */}
         <div className="mt-20 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
             <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">

@@ -160,7 +160,7 @@ export function generateProductMetadata(params: {
     image: product.images?.[0]?.url,
     price: product.price,
     availability: product.availability === 'InStock' ? 'in stock' :
-                  product.availability === 'OutOfStock' ? 'out of stock' : 'preorder',
+      product.availability === 'OutOfStock' ? 'out of stock' : 'preorder',
     brand: product.brand || 'Ketingmar s.r.o.',
     category: product.category,
   });
@@ -228,5 +228,57 @@ export function generateHomepageMetadata(locale: string): Metadata {
     path: '',
     type: 'website',
     image: '/og-homepage.jpg', // Create this image
+  });
+}
+
+/**
+ * Generate metadata for FAQ page
+ */
+export function generateFAQPageMetadata(locale: string): Metadata {
+  const title = locale === 'cs'
+    ? "Často kladené otázky | Pohřební věnce | Ketingmar s.r.o."
+    : "Frequently Asked Questions | Funeral Wreaths | Ketingmar s.r.o.";
+
+  const description = locale === 'cs'
+    ? "Odpovědi na nejčastější otázky o pohřebních věncích - skladování, výdrž květin, recyklace. Praktické rady pro péči o smuteční věnce."
+    : "Answers to the most common questions about funeral wreaths - storage, flower longevity, recycling. Practical advice for memorial wreath care.";
+
+  const keywords = locale === 'cs'
+    ? ["FAQ pohřební věnce", "péče o věnce", "skladování věnců", "výdrž květin", "recyklace věnců", "rady floristů"]
+    : ["FAQ funeral wreaths", "wreath care", "wreath storage", "flower longevity", "wreath recycling", "florist advice"];
+
+  return generatePageMetadata({
+    title,
+    description,
+    keywords,
+    locale,
+    path: '/faq',
+    type: 'website',
+  });
+}
+
+/**
+ * Generate metadata for About page
+ */
+export function generateAboutPageMetadata(locale: string): Metadata {
+  const title = locale === 'cs'
+    ? "O nás | Rodinná květinová dílnička | Ketingmar s.r.o."
+    : "About Us | Family Floral Workshop | Ketingmar s.r.o.";
+
+  const description = locale === 'cs'
+    ? "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi. Specializujeme se na pohřební věnce a smuteční květinové aranžmá s důrazem na kvalitu a detail."
+    : "Small family floral workshop with years of experience. We specialize in funeral wreaths and memorial arrangements with emphasis on quality and detail.";
+
+  const keywords = locale === 'cs'
+    ? ["rodinná květinová dílnička", "zkušení floristé", "specializace pohřební věnce", "kvalitní květinové aranžmá", "osobní přístup", "Praha květinářství"]
+    : ["family floral workshop", "experienced florists", "funeral wreaths specialization", "quality floral arrangements", "personal approach", "Prague florist"];
+
+  return generatePageMetadata({
+    title,
+    description,
+    keywords,
+    locale,
+    path: '/about',
+    type: 'website',
   });
 }
