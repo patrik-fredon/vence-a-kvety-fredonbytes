@@ -18,6 +18,11 @@ interface PageMetadataProps {
   author?: string;
   noIndex?: boolean;
   canonicalUrl?: string;
+  openGraph?: {
+    title?: string;
+    description?: string;
+    type?: 'website' | 'article' | 'profile' | 'book';
+  };
 }
 
 /**
@@ -46,11 +51,11 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       languages: hreflangUrls,
     },
     openGraph: {
-      type: 'website',
+      type: (props.openGraph?.type as any) || 'website',
       locale: props.locale === "cs" ? "cs_CZ" : "en_US",
       alternateLocale: props.locale === "cs" ? "en_US" : "cs_CZ",
-      title: props.title,
-      description: props.description,
+      title: props.openGraph?.title || props.title,
+      description: props.openGraph?.description || props.description,
       siteName: "Pohřební věnce | Ketingmar s.r.o.",
       url: fullUrl,
       images: props.image ? [
@@ -58,7 +63,7 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
           url: props.image.startsWith('http') ? props.image : `${baseUrl}${props.image}`,
           width: 1200,
           height: 630,
-          alt: props.title,
+          alt: props.openGraph?.title || props.title,
         }
       ] : [],
     },
@@ -205,80 +210,59 @@ export function generateCategoryMetadata(params: {
 }
 
 /**
- * Generate metadata for homepage
+ * Generate metadata for homepage using i18n content
  */
-export function generateHomepageMetadata(locale: string): Metadata {
-  const title = locale === 'cs'
-    ? "Pohřební věnce | Ketingmar s.r.o. | Prémiové květinové aranžmá"
-    : "Funeral Wreaths | Ketingmar s.r.o. | Premium Floral Arrangements";
-
-  const description = locale === 'cs'
-    ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, pečlivý výběr květin, rychlé dodání. Pomáháme vám vyjádřit úctu a lásku v těžkých chvílích."
-    : "Premium funeral wreaths and floral arrangements. Handcrafted, careful flower selection, fast delivery. We help you express respect and love in difficult times.";
-
-  const keywords = locale === 'cs'
-    ? ["pohřební věnce", "květinové aranžmá", "pohřeb", "rozloučení", "věnce", "ruční výroba", "rychlé dodání", "ketingmar"]
-    : ["funeral wreaths", "floral arrangements", "funeral", "farewell", "wreaths", "handcrafted", "fast delivery", "ketingmar"];
+export async function generateHomepageMetadata(locale: string): Promise<Metadata> {
+  // Import translations dynamically
+  const messages = await import(`../../../messages/${locale}.json`);
+  const seoData = messages.default.seo.home;
 
   return generatePageMetadata({
-    title,
-    description,
-    keywords,
+    title: seoData.title,
+    description: seoData.description,
+    keywords: seoData.keywords,
     locale,
     path: '',
     type: 'website',
-    image: '/og-homepage.jpg', // Create this image
+    image: '/og-homepage.jpg',
+    openGraph: seoData.openGraph,
   });
 }
 
 /**
- * Generate metadata for FAQ page
+ * Generate metadata for FAQ page using i18n content
  */
-export function generateFAQPageMetadata(locale: string): Metadata {
-  const title = locale === 'cs'
-    ? "Často kladené otázky | Pohřební věnce | Ketingmar s.r.o."
-    : "Frequently Asked Questions | Funeral Wreaths | Ketingmar s.r.o.";
-
-  const description = locale === 'cs'
-    ? "Odpovědi na nejčastější otázky o pohřebních věncích - skladování, výdrž květin, recyklace. Praktické rady pro péči o smuteční věnce."
-    : "Answers to the most common questions about funeral wreaths - storage, flower longevity, recycling. Practical advice for memorial wreath care.";
-
-  const keywords = locale === 'cs'
-    ? ["FAQ pohřební věnce", "péče o věnce", "skladování věnců", "výdrž květin", "recyklace věnců", "rady floristů"]
-    : ["FAQ funeral wreaths", "wreath care", "wreath storage", "flower longevity", "wreath recycling", "florist advice"];
+export async function generateFAQPageMetadata(locale: string): Promise<Metadata> {
+  // Import translations dynamically
+  const messages = await import(`../../../messages/${locale}.json`);
+  const seoData = messages.default.seo.faq;
 
   return generatePageMetadata({
-    title,
-    description,
-    keywords,
+    title: seoData.title,
+    description: seoData.description,
+    keywords: seoData.keywords,
     locale,
     path: '/faq',
     type: 'website',
+    openGraph: seoData.openGraph,
   });
 }
 
 /**
- * Generate metadata for About page
+ * Generate metadata for About page using i18n content
  */
-export function generateAboutPageMetadata(locale: string): Metadata {
-  const title = locale === 'cs'
-    ? "O nás | Rodinná květinová dílnička | Ketingmar s.r.o."
-    : "About Us | Family Floral Workshop | Ketingmar s.r.o.";
-
-  const description = locale === 'cs'
-    ? "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi. Specializujeme se na pohřební věnce a smuteční květinové aranžmá s důrazem na kvalitu a detail."
-    : "Small family floral workshop with years of experience. We specialize in funeral wreaths and memorial arrangements with emphasis on quality and detail.";
-
-  const keywords = locale === 'cs'
-    ? ["rodinná květinová dílnička", "zkušení floristé", "specializace pohřební věnce", "kvalitní květinové aranžmá", "osobní přístup", "Praha květinářství"]
-    : ["family floral workshop", "experienced florists", "funeral wreaths specialization", "quality floral arrangements", "personal approach", "Prague florist"];
+export async function generateAboutPageMetadata(locale: string): Promise<Metadata> {
+  // Import translations dynamically
+  const messages = await import(`../../../messages/${locale}.json`);
+  const seoData = messages.default.seo.about;
 
   return generatePageMetadata({
-    title,
-    description,
-    keywords,
+    title: seoData.title,
+    description: seoData.description,
+    keywords: seoData.keywords,
     locale,
     path: '/about',
     type: 'website',
+    openGraph: seoData.openGraph,
   });
 }

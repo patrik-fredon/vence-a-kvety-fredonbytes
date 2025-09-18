@@ -9,7 +9,7 @@ import {
   getCachedProductsList,
   cacheProductsList,
 } from "@/lib/cache/product-cache";
-import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
+import { generatePageMetadata } from "@/components/seo/PageMetadata";
 import {
   StructuredData,
   generateBreadcrumbStructuredData,
@@ -26,15 +26,18 @@ interface ProductsPageProps {
 // Enable ISR with 30 minutes revalidation for product listings
 export const revalidate = 1800;
 
-// Generate metadata for products page
+// Generate metadata for products page using i18n content
 export async function generateMetadata({ params, searchParams }: ProductsPageProps) {
   const { locale } = await params;
   const { category } = await searchParams;
 
-  let title = locale === "cs" ? "Produkty" : "Products";
-  let description = locale === "cs"
-    ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá. Ruční výroba, rychlé dodání."
-    : "Browse our collection of funeral wreaths and floral arrangements. Handcrafted, fast delivery.";
+  // Import translations dynamically
+  const messages = await import(`../../../../messages/${locale}.json`);
+  const seoData = messages.default.seo.products;
+
+  let title = seoData.title;
+  let description = seoData.description;
+  let keywords = seoData.keywords;
 
   // If filtering by category, get category info for better metadata
   if (category && typeof category === "string") {
@@ -50,25 +53,19 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
       const categoryName = locale === "cs" ? categoryData.name_cs : categoryData.name_en;
       const categoryDesc = locale === "cs" ? categoryData.description_cs : categoryData.description_en;
 
-      title = `${categoryName} | ${title}`;
+      title = `${categoryName} | ${seoData.title}`;
       description = categoryDesc || description;
     }
   }
 
-  return generateLocalizedMetadata({
-    locale: locale as "cs" | "en",
+  return generatePageMetadata({
     title,
     description,
+    keywords,
+    locale,
     path: "/products",
-    keywords: [
-      "pohřební věnce",
-      "květinové aranžmá",
-      "pohřeb",
-      "rozloučení",
-      "věnce",
-      "funeral wreaths",
-      "floral arrangements"
-    ],
+    type: 'website',
+    openGraph: seoData.openGraph,
   });
 }
 
