@@ -1,0 +1,48 @@
+{
+  "timestamp": "2025-09-19T22:12:37.804Z",
+  "stats": {
+    "totalKeys": 313,
+    "matchingKeys": 313,
+    "missingInEnglish": 0,
+    "missingInCzech": 0,
+    "structuralMismatches": 0,
+    "conversionFocusIssues": 1
+  },
+  "issues": [
+    {
+      "type": "CTA_CONSISTENCY",
+      "severity": "MEDIUM",
+      "message": "CTA action orientation mismatch at home.browseWreaths",
+      "details": "Czech: \"Prohlédnout věnce\", English: \"Browse Wreaths\"",
+      "requirement": "3.3"
+    }
+  ],
+  "warnings": [
+    {
+      "type": "TRUST_FOCUS_VARIANCE",
+      "message": "Trust-building focus variance in benefit 1",
+      "details": "Czech trust words: 0, English: 2"
+    },
+    {
+      "type": "EMOTIONAL_TONE_VARIANCE",
+      "message": "Emotional tone variance in home.hero.description",
+      "details": "Czech emotional words: 2, English: 5"
+    },
+    {
+      "type": "EMOTIONAL_TONE_VARIANCE",
+      "message": "Emotional tone variance in about.mission",
+      "details": "Czech emotional words: 1, English: 4"
+    },
+    {
+      "type": "CULTURAL_APPROPRIATENESS",
+      "message": "Currency format should be appropriate for international audience at currency.format",
+      "details": "Current value: \"{amount} CZK\""
+    },
+    {
+      "type": "CULTURAL_APPROPRIATENESS",
+      "message": "Company legal form might need explanation for international audience at footer.company",
+      "details": "Current value: \"Ketingmar s.r.o.\""
+    }
+  ],
+  "completeness": 100
+}

@@ -1,0 +1,318 @@
+{
+  "timestamp": "2025-09-19T22:12:14.318Z",
+  "overallScore": 30,
+  "status": "POOR - Critical issues must be resolved",
+  "testResults": {
+    "structuralConsistency": {
+      "passed": false,
+      "error": "Command failed: node scripts/cross-language-consistency-check.js"
+    },
+    "languageSwitching": {
+      "passed": true,
+      "successRate": 100,
+      "totalTests": 27,
+      "passedTests": 27,
+      "failedTests": 0,
+      "testResults": [
+        {
+          "name": "Critical content switching: home.hero.title",
+          "status": "PASS",
+          "details": "Czech: \"Důstojné rozloučení s krásou květin...\", English: \"A Dignified Farewell with the Beauty of Flowers...\""
+        },
+        {
+          "name": "Critical content switching: home.hero.subtitle",
+          "status": "PASS",
+          "details": "Czech: \"Pohřební věnce vytvořené s láskou a úctou k vašim ...\", English: \"Funeral wreaths created with love and respect for ...\""
+        },
+        {
+          "name": "Critical content switching: home.hero.description",
+          "status": "PASS",
+          "details": "Czech: \"V těžkých chvílích rozloučení vám pomůžeme vyjádři...\", English: \"In the difficult moments of farewell, we help you ...\""
+        },
+        {
+          "name": "Critical content switching: home.hero.cta",
+          "status": "PASS",
+          "details": "Czech: \"Vybrat věnec pro rozloučení...\", English: \"Choose a Wreath for Farewell...\""
+        },
+        {
+          "name": "Critical content switching: home.benefits.title",
+          "status": "PASS",
+          "details": "Czech: \"Proč si vybrat naše pohřební věnce...\", English: \"Why Choose Our Funeral Wreaths...\""
+        },
+        {
+          "name": "Critical content switching: home.philosophy.quote",
+          "status": "PASS",
+          "details": "Czech: \"Život je křehký jako motýlí prach, ale krása a lás...\", English: \"Life is fragile as butterfly dust, but beauty and ...\""
+        },
+        {
+          "name": "Critical content switching: faq.title",
+          "status": "PASS",
+          "details": "Czech: \"Často kladené otázky...\", English: \"Frequently Asked Questions...\""
+        },
+        {
+          "name": "Critical content switching: about.title",
+          "status": "PASS",
+          "details": "Czech: \"O naší květinové dílničce...\", English: \"About Our Floral Workshop...\""
+        },
+        {
+          "name": "SEO metadata switching: home",
+          "status": "PASS",
+          "details": "Czech title: \"Pohřební věnce Praha | Ruční výroba | Ketingmar s.r.o.\", English title: \"Funeral Wreaths Prague | Handcrafted | Ketingmar s.r.o.\""
+        },
+        {
+          "name": "SEO metadata switching: products",
+          "status": "PASS",
+          "details": "Czech title: \"Katalog pohřebních věnců | Srdce, kříže, kruhy | Ketingmar\", English title: \"Funeral Wreaths Catalog | Hearts, Crosses | Ketingmar\""
+        },
+        {
+          "name": "SEO metadata switching: about",
+          "status": "PASS",
+          "details": "Czech title: \"O nás | Rodinná květinová dílnička | Ketingmar s.r.o.\", English title: \"About Us | Family Floral Workshop | Ketingmar s.r.o.\""
+        },
+        {
+          "name": "SEO metadata switching: faq",
+          "status": "PASS",
+          "details": "Czech title: \"Často kladené otázky | Péče o pohřební věnce | Ketingmar\", English title: \"Frequently Asked Questions | Funeral Wreath Care | Ketingmar\""
+        },
+        {
+          "name": "Navigation switching: home",
+          "status": "PASS",
+          "details": "Czech: \"Domů\", English: \"Home\""
+        },
+        {
+          "name": "Navigation switching: products",
+          "status": "PASS",
+          "details": "Czech: \"Produkty\", English: \"Products\""
+        },
+        {
+          "name": "Navigation switching: about",
+          "status": "PASS",
+          "details": "Czech: \"O nás\", English: \"About\""
+        },
+        {
+          "name": "Navigation switching: contact",
+          "status": "PASS",
+          "details": "Czech: \"Kontakt\", English: \"Contact\""
+        },
+        {
+          "name": "Navigation switching: cart",
+          "status": "PASS",
+          "details": "Czech: \"Košík\", English: \"Cart\""
+        },
+        {
+          "name": "Conversion element switching: product.addToCart",
+          "status": "PASS",
+          "details": "Czech: \"Přidat do košíku\", English: \"Add to Cart\""
+        },
+        {
+          "name": "Conversion element switching: cart.checkout",
+          "status": "PASS",
+          "details": "Czech: \"Pokračovat k objednávce\", English: \"Proceed to Checkout\""
+        },
+        {
+          "name": "Conversion element switching: checkout.placeOrder",
+          "status": "PASS",
+          "details": "Czech: \"Dokončit objednávku\", English: \"Place Order\""
+        },
+        {
+          "name": "Conversion element switching: home.hero.cta",
+          "status": "PASS",
+          "details": "Czech: \"Vybrat věnec pro rozloučení\", English: \"Choose a Wreath for Farewell\""
+        },
+        {
+          "name": "Emotional content switching: home.hero.description",
+          "status": "PASS",
+          "details": "Czech emotional words: 4, English: 6"
+        },
+        {
+          "name": "Emotional content switching: home.philosophy.text",
+          "status": "PASS",
+          "details": "Czech emotional words: 0, English: 1"
+        },
+        {
+          "name": "Emotional content switching: about.story",
+          "status": "PASS",
+          "details": "Czech emotional words: 4, English: 3"
+        },
+        {
+          "name": "Emotional content switching: about.mission",
+          "status": "PASS",
+          "details": "Czech emotional words: 1, English: 4"
+        },
+        {
+          "name": "Benefits array structure",
+          "status": "PASS",
+          "details": "Czech benefits: 4, English benefits: 4"
+        },
+        {
+          "name": "FAQ array structure",
+          "status": "PASS",
+          "details": "Czech FAQ: 3, English FAQ: 3"
+        }
+      ]
+    },
+    "messageAlignment": {
+      "passed": false,
+      "totalIssues": 6,
+      "totalRecommendations": 3,
+      "issues": [
+        {
+          "type": "EMOTIONAL_TONE",
+          "element": "Mission Statement",
+          "issue": "Significant emotional tone variance",
+          "czech": "1 emotional words",
+          "english": "4 emotional words",
+          "recommendation": "Adjust emotional language to maintain consistent tone"
+        },
+        {
+          "type": "TRUST_BUILDING",
+          "element": "Benefit 1",
+          "issue": "Trust-building language imbalance",
+          "czech": "0 trust words",
+          "english": "2 trust words",
+          "recommendation": "Balance trust-building elements between languages"
+        },
+        {
+          "type": "TRUST_BUILDING",
+          "element": "Benefit 3",
+          "issue": "No trust-building language detected",
+          "recommendation": "Add credibility indicators or quality assurances"
+        },
+        {
+          "type": "TRUST_BUILDING",
+          "element": "Benefit 4",
+          "issue": "No trust-building language detected",
+          "recommendation": "Add credibility indicators or quality assurances"
+        },
+        {
+          "type": "VALUE_PROPOSITION",
+          "element": "Hero Subtitle",
+          "issue": "Weak value proposition in one or both languages",
+          "recommendation": "Strengthen value proposition with specific benefits"
+        },
+        {
+          "type": "VALUE_PROPOSITION",
+          "element": "Hero Description",
+          "issue": "Weak value proposition in one or both languages",
+          "recommendation": "Strengthen value proposition with specific benefits"
+        }
+      ],
+      "recommendations": [
+        {
+          "element": "Currency Format",
+          "recommendation": "Consider adding currency explanation for international users"
+        },
+        {
+          "element": "Company Legal Form",
+          "recommendation": "Consider adding explanation of s.r.o. for international users"
+        },
+        {
+          "element": "Business Context",
+          "recommendation": "English version should be accessible to international audience"
+        }
+      ]
+    },
+    "overallScore": 30,
+    "criticalIssues": [],
+    "recommendations": [
+      {
+        "source": "Message Alignment",
+        "category": "Cultural Adaptation",
+        "message": "Currency Format: Consider adding currency explanation for international users"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Cultural Adaptation",
+        "message": "Company Legal Form: Consider adding explanation of s.r.o. for international users"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Cultural Adaptation",
+        "message": "Business Context: English version should be accessible to international audience"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Content Optimization",
+        "message": "Mission Statement: Adjust emotional language to maintain consistent tone"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Content Optimization",
+        "message": "Benefit 1: Balance trust-building elements between languages"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Content Optimization",
+        "message": "Benefit 3: Add credibility indicators or quality assurances"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Content Optimization",
+        "message": "Benefit 4: Add credibility indicators or quality assurances"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Content Optimization",
+        "message": "Hero Subtitle: Strengthen value proposition with specific benefits"
+      },
+      {
+        "source": "Message Alignment",
+        "category": "Content Optimization",
+        "message": "Hero Description: Strengthen value proposition with specific benefits"
+      }
+    ]
+  },
+  "criticalIssues": [],
+  "recommendations": [
+    {
+      "source": "Message Alignment",
+      "category": "Cultural Adaptation",
+      "message": "Currency Format: Consider adding currency explanation for international users"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Cultural Adaptation",
+      "message": "Company Legal Form: Consider adding explanation of s.r.o. for international users"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Cultural Adaptation",
+      "message": "Business Context: English version should be accessible to international audience"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Content Optimization",
+      "message": "Mission Statement: Adjust emotional language to maintain consistent tone"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Content Optimization",
+      "message": "Benefit 1: Balance trust-building elements between languages"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Content Optimization",
+      "message": "Benefit 3: Add credibility indicators or quality assurances"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Content Optimization",
+      "message": "Benefit 4: Add credibility indicators or quality assurances"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Content Optimization",
+      "message": "Hero Subtitle: Strengthen value proposition with specific benefits"
+    },
+    {
+      "source": "Message Alignment",
+      "category": "Content Optimization",
+      "message": "Hero Description: Strengthen value proposition with specific benefits"
+    }
+  ],
+  "requirementsCompliance": {
+    "3.1": false,
+    "3.3": false,
+    "3.4": false
+  }
+}

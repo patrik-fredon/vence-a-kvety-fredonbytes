@@ -145,7 +145,7 @@
     - Validate user journey from content to conversion points
     - _Requirements: 6.1, 6.2, 6.3_
 
-  - [-] 8.3 Perform cross-language consistency check
+  - [x] 8.3 Perform cross-language consistency check
     - Compare Czech and English versions for message alignment
     - Verify both languages maintain same conversion focus
     - Test language switching functionality with new content
