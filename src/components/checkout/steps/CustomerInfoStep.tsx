@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useTranslations } from 'next-intl';
-import { UserIcon, EnvelopeIcon, PhoneIcon, BuildingOfficeIcon } from '@heroicons/react/24/outline';
-import { CustomerInfo } from '@/types/order';
-import { Input } from '@/components/ui/Input';
+import React from "react";
+import { useTranslations } from "next-intl";
+import { UserIcon, EnvelopeIcon, PhoneIcon, BuildingOfficeIcon } from "@heroicons/react/24/outline";
+import { CustomerInfo } from "@/types/order";
+import { Input } from "@/components/ui/Input";
 
 interface CustomerInfoStepProps {
   customerInfo: Partial<CustomerInfo>;
@@ -17,14 +17,14 @@ export function CustomerInfoStep({
   customerInfo,
   errors = {},
   onChange,
-  locale
+  locale,
 }: CustomerInfoStepProps) {
-  const t = useTranslations('checkout');
+  const t = useTranslations("checkout");
 
   const handleChange = (field: keyof CustomerInfo, value: string) => {
     onChange({
       ...customerInfo,
-      [field]: value
+      [field]: value,
     });
   };
 
@@ -32,24 +32,20 @@ export function CustomerInfoStep({
     <div className="space-y-6">
       <div>
         <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-2">
-          {t('customerInfo')}
+          {t("customerInfo")}
         </h2>
-        <p className="text-neutral-600">
-          Zadejte své kontaktní údaje pro doručení objednávky.
-        </p>
+        <p className="text-neutral-600">Zadejte své kontaktní údaje pro doručení objednávky.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* First Name */}
         <div>
-          <label htmlFor="firstName" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t('firstName')} *
-          </label>
           <Input
             id="firstName"
+            label={`${t("firstName")} *`}
             type="text"
-            value={customerInfo.firstName || ''}
-            onChange={(e) => handleChange('firstName', e.target.value)}
+            value={customerInfo.firstName || ""}
+            onChange={(e) => handleChange("firstName", e.target.value)}
             error={errors.firstName}
             placeholder="Zadejte své jméno"
             required
@@ -58,14 +54,12 @@ export function CustomerInfoStep({
 
         {/* Last Name */}
         <div>
-          <label htmlFor="lastName" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t('lastName')} *
-          </label>
           <Input
             id="lastName"
+            label={`${t("lastName")} *`}
             type="text"
-            value={customerInfo.lastName || ''}
-            onChange={(e) => handleChange('lastName', e.target.value)}
+            value={customerInfo.lastName || ""}
+            onChange={(e) => handleChange("lastName", e.target.value)}
             error={errors.lastName}
             placeholder="Zadejte své příjmení"
             required
@@ -76,14 +70,12 @@ export function CustomerInfoStep({
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t('email')} *
-          </label>
           <Input
             id="email"
+            label={`${t("email")} *`}
             type="email"
-            value={customerInfo.email || ''}
-            onChange={(e) => handleChange('email', e.target.value)}
+            value={customerInfo.email || ""}
+            onChange={(e) => handleChange("email", e.target.value)}
             error={errors.email}
             placeholder="vas@email.cz"
             required
@@ -95,34 +87,28 @@ export function CustomerInfoStep({
 
         {/* Phone */}
         <div>
-          <label htmlFor="phone" className="block text-sm font-medium text-neutral-700 mb-2">
-            {t('phone')} *
-          </label>
           <Input
             id="phone"
+            label={`${t("phone")} *`}
             type="tel"
-            value={customerInfo.phone || ''}
-            onChange={(e) => handleChange('phone', e.target.value)}
+            value={customerInfo.phone || ""}
+            onChange={(e) => handleChange("phone", e.target.value)}
             error={errors.phone}
             placeholder="+420 123 456 789"
             required
           />
-          <p className="mt-1 text-xs text-neutral-500">
-            Telefon pro případné dotazy k objednávce.
-          </p>
+          <p className="mt-1 text-xs text-neutral-500">Telefon pro případné dotazy k objednávce.</p>
         </div>
       </div>
 
       {/* Company (Optional) */}
       <div>
-        <label htmlFor="company" className="block text-sm font-medium text-neutral-700 mb-2">
-          Společnost (volitelné)
-        </label>
         <Input
           id="company"
+          label="Společnost (volitelné)"
           type="text"
-          value={customerInfo.company || ''}
-          onChange={(e) => handleChange('company', e.target.value)}
+          value={customerInfo.company || ""}
+          onChange={(e) => handleChange("company", e.target.value)}
           error={errors.company}
           placeholder="Název společnosti"
         />
@@ -135,25 +121,18 @@ export function CustomerInfoStep({
         </label>
         <textarea
           id="note"
-          value={customerInfo.note || ''}
-          onChange={(e) => handleChange('note', e.target.value)}
+          value={customerInfo.note || ""}
+          onChange={(e) => handleChange("note", e.target.value)}
           placeholder="Jakékoliv speciální požadavky nebo poznámky..."
           rows={3}
           className={`
             w-full px-4 py-3 border rounded-lg resize-none
             focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            ${errors.note
-              ? 'border-red-300 bg-red-50'
-              : 'border-neutral-300 bg-white'
-            }
+            ${errors.note ? "border-red-300 bg-red-50" : "border-neutral-300 bg-white"}
           `}
         />
-        {errors.note && (
-          <p className="mt-1 text-sm text-red-600">{errors.note}</p>
-        )}
-        <p className="mt-1 text-xs text-neutral-500">
-          Maximálně 500 znaků
-        </p>
+        {errors.note && <p className="mt-1 text-sm text-red-600">{errors.note}</p>}
+        <p className="mt-1 text-xs text-neutral-500">Maximálně 500 znaků</p>
       </div>
 
       {/* Info Box */}
@@ -161,16 +140,22 @@ export function CustomerInfoStep({
         <div className="flex items-start">
           <div className="flex-shrink-0">
             <svg className="w-5 h-5 text-blue-600 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-              <path fillRule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clipRule="evenodd" />
+              <path
+                fillRule="evenodd"
+                d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
+                clipRule="evenodd"
+              />
             </svg>
           </div>
           <div className="ml-3">
-            <h3 className="text-sm font-medium text-blue-800">
-              Ochrana osobních údajů
-            </h3>
+            <h3 className="text-sm font-medium text-blue-800">Ochrana osobních údajů</h3>
             <p className="mt-1 text-sm text-blue-700">
-              Vaše osobní údaje používáme pouze pro zpracování objednávky a jsou chráněny podle GDPR.
-              Více informací najdete v našich <a href="/privacy" className="underline">zásadách ochrany osobních údajů</a>.
+              Vaše osobní údaje používáme pouze pro zpracování objednávky a jsou chráněny podle
+              GDPR. Více informací najdete v našich{" "}
+              <a href="/privacy" className="underline">
+                zásadách ochrany osobních údajů
+              </a>
+              .
             </p>
           </div>
         </div>

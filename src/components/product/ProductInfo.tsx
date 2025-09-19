@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
-import Link from 'next/link';
-import { Product } from '@/types/product';
-import { cn } from '@/lib/utils';
-import { StarIcon, HeartIcon, ShareIcon } from '@heroicons/react/24/outline';
-import { StarIcon as StarIconSolid } from '@heroicons/react/24/solid';
+import { useTranslations } from "next-intl";
+import Link from "next/link";
+import { Product } from "@/types/product";
+import { cn } from "@/lib/utils";
+import { StarIcon, HeartIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
 
 interface ProductInfoProps {
   product: Product;
@@ -15,12 +15,12 @@ interface ProductInfoProps {
 }
 
 export function ProductInfo({ product, locale, finalPrice, className }: ProductInfoProps) {
-  const t = useTranslations('product');
-  const tCurrency = useTranslations('currency');
+  const t = useTranslations("product");
+  const tCurrency = useTranslations("currency");
 
   const formatPrice = (price: number) => {
-    return tCurrency('format', {
-      amount: price.toLocaleString(locale === 'cs' ? 'cs-CZ' : 'en-US')
+    return tCurrency("format", {
+      amount: price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US"),
     });
   };
 
@@ -37,28 +37,28 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
           url: window.location.href,
         });
       } catch (error) {
-        console.log('Error sharing:', error);
+        console.log("Error sharing:", error);
       }
     } else {
       // Fallback: copy to clipboard
       navigator.clipboard.writeText(window.location.href);
       // TODO: Show toast notification in later tasks
-      alert(t('linkCopied'));
+      alert(t("linkCopied"));
     }
   };
 
   const handleAddToWishlist = () => {
     // TODO: Implement wishlist functionality in later tasks
-    console.log('Added to wishlist:', product.id);
-    alert(t('addedToWishlist'));
+    console.log("Added to wishlist:", product.id);
+    alert(t("addedToWishlist"));
   };
 
   return (
-    <div className={cn('space-y-4', className)}>
+    <div className={cn("space-y-4", className)}>
       {/* Breadcrumb */}
       <nav className="text-sm text-neutral-600">
         <Link href={`/${locale}/products`} className="hover:text-primary-600">
-          {t('allProducts')}
+          {t("allProducts")}
         </Link>
         {product.category && (
           <>
@@ -87,7 +87,7 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
         {product.featured && (
           <div className="inline-flex items-center gap-1 bg-primary-100 text-primary-700 px-2 py-1 rounded-md text-sm font-medium">
             <StarIconSolid className="w-4 h-4" />
-            {t('featured')}
+            {t("featured")}
           </div>
         )}
       </div>
@@ -99,43 +99,35 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
             <StarIcon
               key={star}
               className={cn(
-                'w-5 h-5',
+                "w-5 h-5",
                 star <= Math.floor(rating)
-                  ? 'text-yellow-400 fill-current'
+                  ? "text-yellow-400 fill-current"
                   : star <= rating
-                  ? 'text-yellow-400 fill-current opacity-50'
-                  : 'text-neutral-300'
+                    ? "text-yellow-400 fill-current opacity-50"
+                    : "text-neutral-300"
               )}
             />
           ))}
-          <span className="ml-2 text-sm font-medium text-neutral-700">
-            {rating}
-          </span>
+          <span className="ml-2 text-sm font-medium text-neutral-700">{rating}</span>
         </div>
         <div className="text-sm text-neutral-600">
-          ({reviewCount} {t('reviews')})
+          ({reviewCount} {t("reviews")})
         </div>
       </div>
 
       {/* Price Display */}
       <div className="py-2">
-        <div className="text-sm text-neutral-600 mb-1">{t('basePrice')}</div>
-        <div className="text-2xl font-bold text-primary-700">
-          {formatPrice(product.basePrice)}
-        </div>
+        <div className="text-sm text-neutral-600 mb-1">{t("basePrice")}</div>
+        <div className="text-2xl font-bold text-primary-700">{formatPrice(product.basePrice)}</div>
         {finalPrice !== product.basePrice && (
-          <div className="text-sm text-neutral-500 mt-1">
-            {t('priceWillUpdate')}
-          </div>
+          <div className="text-sm text-neutral-500 mt-1">{t("priceWillUpdate")}</div>
         )}
       </div>
 
       {/* Description */}
       {product.description && (
         <div>
-          <h3 className="text-lg font-semibold text-primary-800 mb-2">
-            {t('description')}
-          </h3>
+          <h3 className="text-lg font-semibold text-primary-800 mb-2">{t("description")}</h3>
           <div className="text-neutral-700 leading-relaxed whitespace-pre-line">
             {product.description[locale as keyof typeof product.description]}
           </div>
@@ -144,31 +136,30 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
 
       {/* Product Details */}
       <div className="border-t pt-4">
-        <h3 className="text-lg font-semibold text-primary-800 mb-3">
-          {t('productDetails')}
-        </h3>
+        <h3 className="text-lg font-semibold text-primary-800 mb-3">{t("productDetails")}</h3>
         <dl className="grid grid-cols-1 gap-2 text-sm">
           <div className="flex justify-between">
-            <dt className="text-neutral-600">{t('category')}:</dt>
+            <dt className="text-neutral-600">{t("category")}:</dt>
             <dd className="text-neutral-800">
-              {product.category?.name[locale as keyof typeof product.category.name] || t('uncategorized')}
+              {product.category?.name[locale as keyof typeof product.category.name] ||
+                t("uncategorized")}
             </dd>
           </div>
           <div className="flex justify-between">
-            <dt className="text-neutral-600">{t('sku')}:</dt>
+            <dt className="text-neutral-600">{t("sku")}:</dt>
             <dd className="text-neutral-800 font-mono">{product.id.slice(-8).toUpperCase()}</dd>
           </div>
           {product.availability.leadTimeHours && (
             <div className="flex justify-between">
-              <dt className="text-neutral-600">{t('leadTime')}:</dt>
+              <dt className="text-neutral-600">{t("leadTime")}:</dt>
               <dd className="text-neutral-800">
-                {product.availability.leadTimeHours} {t('hours')}
+                {product.availability.leadTimeHours} {t("hours")}
               </dd>
             </div>
           )}
           {product.availability.maxOrderQuantity && (
             <div className="flex justify-between">
-              <dt className="text-neutral-600">{t('maxQuantity')}:</dt>
+              <dt className="text-neutral-600">{t("maxQuantity")}:</dt>
               <dd className="text-neutral-800">{product.availability.maxOrderQuantity}</dd>
             </div>
           )}
@@ -180,19 +171,19 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
         <button
           onClick={handleAddToWishlist}
           className="flex items-center gap-2 px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
-          aria-label={t('addToWishlist')}
+          aria-label={t("addToWishlist")}
         >
           <HeartIcon className="w-5 h-5" />
-          <span className="hidden sm:inline">{t('wishlist')}</span>
+          <span className="hidden sm:inline">{t("wishlist")}</span>
         </button>
 
         <button
           onClick={handleShare}
           className="flex items-center gap-2 px-4 py-2 border border-neutral-300 rounded-lg hover:bg-neutral-50 transition-colors"
-          aria-label={t('share')}
+          aria-label={t("share")}
         >
           <ShareIcon className="w-5 h-5" />
-          <span className="hidden sm:inline">{t('share')}</span>
+          <span className="hidden sm:inline">{t("share")}</span>
         </button>
       </div>
     </div>

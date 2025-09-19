@@ -1,17 +1,12 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useTranslations } from 'next-intl';
-import {
-  UserIcon,
-  MapPinIcon,
-  CreditCardIcon,
-  CheckCircleIcon
-} from '@heroicons/react/24/outline';
-import { CheckoutFormData } from '@/types/order';
-import { CartItem } from '@/types/cart';
-import { formatPrice } from '@/lib/utils';
-import { OrderSummary } from '../OrderSummary';
+import React from "react";
+import { useTranslations } from "next-intl";
+import { UserIcon, MapPinIcon, CreditCardIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
+import { CheckoutFormData } from "@/types/order";
+import { CartItem } from "@/types/cart";
+import { formatPrice } from "@/lib/utils";
+import { OrderSummary } from "../OrderSummary";
 
 interface ReviewStepProps {
   formData: CheckoutFormData;
@@ -38,10 +33,10 @@ export function ReviewStep({
   subscribeNewsletter,
   onAgreeToTermsChange,
   onSubscribeNewsletterChange,
-  locale
+  locale,
 }: ReviewStepProps) {
-  const t = useTranslations('checkout');
-  const tDelivery = useTranslations('delivery');
+  const t = useTranslations("checkout");
+  const tDelivery = useTranslations("delivery");
 
   const { customerInfo, deliveryInfo, paymentMethod } = formData;
 
@@ -51,9 +46,7 @@ export function ReviewStep({
         <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-2">
           Kontrola objednávky
         </h2>
-        <p className="text-neutral-600">
-          Zkontrolujte všechny údaje před dokončením objednávky.
-        </p>
+        <p className="text-neutral-600">Zkontrolujte všechny údaje před dokončením objednávky.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
@@ -111,8 +104,10 @@ export function ReviewStep({
               <div>
                 <span className="font-medium text-neutral-700">Adresa:</span>
                 <div className="ml-2 text-neutral-900">
-                  {deliveryInfo.address?.street}<br />
-                  {deliveryInfo.address?.postalCode} {deliveryInfo.address?.city}<br />
+                  {deliveryInfo.address?.street}
+                  <br />
+                  {deliveryInfo.address?.postalCode} {deliveryInfo.address?.city}
+                  <br />
                   {deliveryInfo.address?.country}
                 </div>
               </div>
@@ -120,9 +115,9 @@ export function ReviewStep({
               <div>
                 <span className="font-medium text-neutral-700">Způsob doručení:</span>
                 <span className="ml-2 text-neutral-900">
-                  {deliveryInfo.urgency === 'standard' && 'Standardní doručení'}
-                  {deliveryInfo.urgency === 'express' && 'Expresní doručení'}
-                  {deliveryInfo.urgency === 'same-day' && 'Doručení tentýž den'}
+                  {deliveryInfo.urgency === "standard" && "Standardní doručení"}
+                  {deliveryInfo.urgency === "express" && "Expresní doručení"}
+                  {deliveryInfo.urgency === "same-day" && "Doručení tentýž den"}
                 </span>
               </div>
 
@@ -130,12 +125,15 @@ export function ReviewStep({
                 <div>
                   <span className="font-medium text-neutral-700">Datum doručení:</span>
                   <span className="ml-2 text-neutral-900">
-                    {deliveryInfo.preferredDate.toLocaleDateString(locale === 'cs' ? 'cs-CZ' : 'en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+                    {deliveryInfo.preferredDate.toLocaleDateString(
+                      locale === "cs" ? "cs-CZ" : "en-US",
+                      {
+                        weekday: "long",
+                        year: "numeric",
+                        month: "long",
+                        day: "numeric",
+                      }
+                    )}
                   </span>
                 </div>
               )}
@@ -182,8 +180,8 @@ export function ReviewStep({
             <div className="text-sm">
               <span className="font-medium text-neutral-700">Způsob platby:</span>
               <span className="ml-2 text-neutral-900">
-                {paymentMethod === 'stripe' && 'Platební karta (Stripe)'}
-                {paymentMethod === 'gopay' && 'GoPay'}
+                {paymentMethod === "stripe" && "Platební karta (Stripe)"}
+                {paymentMethod === "gopay" && "GoPay"}
               </span>
             </div>
           </div>
@@ -214,22 +212,23 @@ export function ReviewStep({
             required
           />
           <label htmlFor="agreeToTerms" className="text-sm text-neutral-700">
-            Souhlasím s{' '}
+            Souhlasím s{" "}
             <a
               href="/terms"
               target="_blank"
               className="text-primary-600 hover:text-primary-700 underline"
             >
               obchodními podmínkami
-            </a>{' '}
-            a{' '}
+            </a>{" "}
+            a{" "}
             <a
               href="/privacy"
               target="_blank"
               className="text-primary-600 hover:text-primary-700 underline"
             >
               zásadami ochrany osobních údajů
-            </a>. *
+            </a>
+            . *
           </label>
         </div>
 
@@ -254,9 +253,8 @@ export function ReviewStep({
           <div className="text-sm text-blue-700">
             <p className="font-medium mb-1">Připraveno k odeslání</p>
             <p>
-              Po kliknutí na "Dokončit objednávku" bude vytvořena vaše objednávka
-              a budete přesměrováni na platební bránu. Na váš e-mail pošleme
-              potvrzení objednávky.
+              Po kliknutí na "Dokončit objednávku" bude vytvořena vaše objednávka a budete
+              přesměrováni na platební bránu. Na váš e-mail pošleme potvrzení objednávky.
             </p>
           </div>
         </div>

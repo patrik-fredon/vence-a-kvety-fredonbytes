@@ -2,33 +2,33 @@
  * API route for checking payment status
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { PaymentService } from '@/lib/payments';
-import { PaymentMethod } from '@/types/order';
+import { NextRequest, NextResponse } from "next/server";
+import { PaymentService } from "@/lib/payments";
+import { PaymentMethod } from "@/types/order";
 
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const paymentId = searchParams.get('paymentId');
-    const paymentMethod = searchParams.get('paymentMethod') as PaymentMethod;
+    const paymentId = searchParams.get("paymentId");
+    const paymentMethod = searchParams.get("paymentMethod") as PaymentMethod;
 
     // Validate required parameters
     if (!paymentId || !paymentMethod) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Missing required parameters: paymentId and paymentMethod'
+          error: "Missing required parameters: paymentId and paymentMethod",
         },
         { status: 400 }
       );
     }
 
     // Validate payment method
-    if (!['stripe', 'gopay'].includes(paymentMethod)) {
+    if (!["stripe", "gopay"].includes(paymentMethod)) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Invalid payment method. Must be "stripe" or "gopay"'
+          error: 'Invalid payment method. Must be "stripe" or "gopay"',
         },
         { status: 400 }
       );
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Payment not found or status could not be retrieved'
+          error: "Payment not found or status could not be retrieved",
         },
         { status: 404 }
       );
@@ -57,16 +57,15 @@ export async function GET(request: NextRequest) {
         status: result.status,
         paymentMethod: result.paymentMethod,
         error: result.error,
-      }
+      },
     });
-
   } catch (error) {
-    console.error('Error checking payment status:', error);
+    console.error("Error checking payment status:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: 'Internal server error while checking payment status'
+        error: "Internal server error while checking payment status",
       },
       { status: 500 }
     );
@@ -83,18 +82,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Missing required fields: paymentId and paymentMethod'
+          error: "Missing required fields: paymentId and paymentMethod",
         },
         { status: 400 }
       );
     }
 
     // Validate payment method
-    if (!['stripe', 'gopay'].includes(paymentMethod)) {
+    if (!["stripe", "gopay"].includes(paymentMethod)) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Invalid payment method. Must be "stripe" or "gopay"'
+          error: 'Invalid payment method. Must be "stripe" or "gopay"',
         },
         { status: 400 }
       );
@@ -107,7 +106,7 @@ export async function POST(request: NextRequest) {
       return NextResponse.json(
         {
           success: false,
-          error: 'Payment not found or status could not be retrieved'
+          error: "Payment not found or status could not be retrieved",
         },
         { status: 404 }
       );
@@ -123,16 +122,15 @@ export async function POST(request: NextRequest) {
         status: result.status,
         paymentMethod: result.paymentMethod,
         error: result.error,
-      }
+      },
     });
-
   } catch (error) {
-    console.error('Error checking payment status:', error);
+    console.error("Error checking payment status:", error);
 
     return NextResponse.json(
       {
         success: false,
-        error: 'Internal server error while checking payment status'
+        error: "Internal server error while checking payment status",
       },
       { status: 500 }
     );
@@ -144,9 +142,9 @@ export async function OPTIONS(request: NextRequest) {
   return new NextResponse(null, {
     status: 200,
     headers: {
-      'Access-Control-Allow-Origin': '*',
-      'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
-      'Access-Control-Allow-Headers': 'Content-Type, Authorization',
+      "Access-Control-Allow-Origin": "*",
+      "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
+      "Access-Control-Allow-Headers": "Content-Type, Authorization",
     },
   });
 }

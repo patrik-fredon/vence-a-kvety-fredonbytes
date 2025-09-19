@@ -1,52 +1,48 @@
-'use client'
+"use client";
 
-import { useState } from 'react'
-import { useRouter, useSearchParams } from 'next/navigation'
-import Link from 'next/link'
-import { Button } from '@/components/ui/Button'
-import { Input } from '@/components/ui/Input'
-import { useSignIn } from '@/lib/auth/hooks'
+import { useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { useSignIn } from "@/lib/auth/hooks";
 
 export function SignInForm() {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-  const callbackUrl = searchParams.get('callbackUrl') || '/'
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const callbackUrl = searchParams.get("callbackUrl") || "/";
 
   const [formData, setFormData] = useState({
-    email: '',
-    password: '',
-  })
+    email: "",
+    password: "",
+  });
 
-  const { signIn, loading, error } = useSignIn()
+  const { signIn, loading, error } = useSignIn();
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
-    const result = await signIn(formData)
+    const result = await signIn(formData);
 
     if (result.success) {
-      router.push(callbackUrl)
-      router.refresh()
+      router.push(callbackUrl);
+      router.refresh();
     }
-  }
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value
-    }))
-  }
+      [e.target.name]: e.target.value,
+    }));
+  };
 
   return (
     <div className="max-w-md mx-auto">
       <div className="bg-white py-8 px-6 shadow rounded-lg">
         <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center">
-            Přihlášení
-          </h2>
-          <p className="mt-2 text-sm text-gray-600 text-center">
-            Přihlaste se do svého účtu
-          </p>
+          <h2 className="text-2xl font-bold text-gray-900 text-center">Přihlášení</h2>
+          <p className="mt-2 text-sm text-gray-600 text-center">Přihlaste se do svého účtu</p>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
@@ -80,12 +76,8 @@ export function SignInForm() {
             </div>
           )}
 
-          <Button
-            type="submit"
-            className="w-full"
-            disabled={loading}
-          >
-            {loading ? 'Přihlašování...' : 'Přihlásit se'}
+          <Button type="submit" className="w-full" disabled={loading}>
+            {loading ? "Přihlašování..." : "Přihlásit se"}
           </Button>
         </form>
 
@@ -101,7 +93,7 @@ export function SignInForm() {
 
           <div className="text-center">
             <span className="text-sm text-gray-600">
-              Nemáte účet?{' '}
+              Nemáte účet?{" "}
               <Link
                 href="/auth/signup"
                 className="text-indigo-600 hover:text-indigo-500 font-medium"
@@ -113,5 +105,5 @@ export function SignInForm() {
         </div>
       </div>
     </div>
-  )
+  );
 }

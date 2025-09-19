@@ -2,17 +2,17 @@
  * Payment cancellation page
  */
 
-import React from 'react';
-import { Metadata } from 'next';
-import { useTranslations } from 'next-intl';
-import { getTranslations } from 'next-intl/server';
+import React from "react";
+import { Metadata } from "next";
+import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import {
   XCircleIcon,
   ArrowLeftIcon,
   ShoppingCartIcon,
-  ExclamationTriangleIcon
-} from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/Button';
+  ExclamationTriangleIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/Button";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -21,11 +21,11 @@ interface PageProps {
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: 'checkout' });
+  const t = await getTranslations({ locale, namespace: "checkout" });
 
   return {
-    title: 'Platba zrušena',
-    description: 'Platba byla zrušena. Můžete se vrátit a zkusit to znovu.',
+    title: "Platba zrušena",
+    description: "Platba byla zrušena. Můžete se vrátit a zkusit to znovu.",
   };
 }
 
@@ -50,11 +50,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
             Vaše platba nebyla dokončena. Objednávka zůstává aktivní.
           </p>
 
-          {orderId && (
-            <p className="text-sm text-neutral-500">
-              Objednávka #{orderId}
-            </p>
-          )}
+          {orderId && <p className="text-sm text-neutral-500">Objednávka #{orderId}</p>}
         </div>
 
         {/* Information Card */}
@@ -68,9 +64,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
 
           <div className="p-6">
             <div className="space-y-4 text-sm text-neutral-700">
-              <p>
-                Platba byla přerušena nebo zrušena. Možné důvody:
-              </p>
+              <p>Platba byla přerušena nebo zrušena. Možné důvody:</p>
 
               <ul className="list-disc list-inside space-y-2 ml-4">
                 <li>Klikli jste na tlačítko "Zpět" nebo "Zrušit" v platební bráně</li>
@@ -80,12 +74,10 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
               </ul>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-                <h3 className="font-medium text-blue-800 mb-2">
-                  Vaše objednávka je stále aktivní
-                </h3>
+                <h3 className="font-medium text-blue-800 mb-2">Vaše objednávka je stále aktivní</h3>
                 <p className="text-blue-700 text-sm">
-                  Můžete se vrátit k dokončení platby nebo zvolit jiný způsob platby.
-                  Objednávka bude automaticky zrušena po 24 hodinách, pokud nebude zaplacena.
+                  Můžete se vrátit k dokončení platby nebo zvolit jiný způsob platby. Objednávka
+                  bude automaticky zrušena po 24 hodinách, pokud nebude zaplacena.
                 </p>
               </div>
             </div>
@@ -94,9 +86,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
 
         {/* Next Steps */}
         <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-neutral-800 mb-4">
-            Co můžete udělat?
-          </h3>
+          <h3 className="text-lg font-semibold text-neutral-800 mb-4">Co můžete udělat?</h3>
 
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
@@ -104,11 +94,10 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                 1
               </div>
               <div>
-                <p className="font-medium text-neutral-800">
-                  Zkuste platbu znovu
-                </p>
+                <p className="font-medium text-neutral-800">Zkuste platbu znovu</p>
                 <p className="text-sm text-neutral-600">
-                  Vraťte se k objednávce a zkuste dokončit platbu znovu se stejným nebo jiným způsobem platby.
+                  Vraťte se k objednávce a zkuste dokončit platbu znovu se stejným nebo jiným
+                  způsobem platby.
                 </p>
               </div>
             </div>
@@ -118,9 +107,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                 2
               </div>
               <div>
-                <p className="font-medium text-neutral-800">
-                  Kontaktujte nás
-                </p>
+                <p className="font-medium text-neutral-800">Kontaktujte nás</p>
                 <p className="text-sm text-neutral-600">
                   Pokud problém přetrvává, kontaktujte naši zákaznickou podporu pro pomoc.
                 </p>
@@ -132,9 +119,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                 3
               </div>
               <div>
-                <p className="font-medium text-neutral-800">
-                  Upravte objednávku
-                </p>
+                <p className="font-medium text-neutral-800">Upravte objednávku</p>
                 <p className="text-sm text-neutral-600">
                   Můžete se vrátit do košíku a upravit objednávku před dokončením platby.
                 </p>
@@ -162,10 +147,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
           )}
 
           <a href={`/${locale}/products`}>
-            <Button
-              variant="outline"
-              className="flex items-center justify-center"
-            >
+            <Button variant="outline" className="flex items-center justify-center">
               Pokračovat v nákupu
             </Button>
           </a>
@@ -178,9 +160,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
           </p>
 
           <div className="bg-white rounded-lg border border-neutral-200 p-4 inline-block">
-            <h4 className="font-medium text-neutral-800 mb-2">
-              Kontaktujte zákaznickou podporu
-            </h4>
+            <h4 className="font-medium text-neutral-800 mb-2">Kontaktujte zákaznickou podporu</h4>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-center space-x-4">
                 <a
@@ -203,9 +183,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                   +420 123 456 789
                 </a>
               </div>
-              <p className="text-neutral-500">
-                Pondělí - Pátek: 8:00 - 18:00
-              </p>
+              <p className="text-neutral-500">Pondělí - Pátek: 8:00 - 18:00</p>
             </div>
           </div>
         </div>

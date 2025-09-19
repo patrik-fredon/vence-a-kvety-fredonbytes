@@ -5,7 +5,7 @@
 export interface GopayConfig {
   clientId: string;
   clientSecret: string;
-  environment: 'sandbox' | 'production';
+  environment: "sandbox" | "production";
 }
 
 export interface GopayPaymentRequest {
@@ -17,7 +17,7 @@ export interface GopayPaymentRequest {
   returnUrl: string;
   notifyUrl: string;
   description: string;
-  lang?: 'CS' | 'EN';
+  lang?: "CS" | "EN";
 }
 
 export interface GopayPaymentResponse {
@@ -57,9 +57,10 @@ export class GopayClient {
 
   constructor(config: GopayConfig) {
     this.config = config;
-    this.baseUrl = config.environment === 'production'
-      ? 'https://gate.gopay.cz/api'
-      : 'https://gw.sandbox.gopay.com/api';
+    this.baseUrl =
+      config.environment === "production"
+        ? "https://gate.gopay.cz/api"
+        : "https://gw.sandbox.gopay.com/api";
   }
 
   /**
@@ -72,16 +73,18 @@ export class GopayClient {
     }
 
     try {
-      const credentials = Buffer.from(`${this.config.clientId}:${this.config.clientSecret}`).toString('base64');
+      const credentials = Buffer.from(
+        `${this.config.clientId}:${this.config.clientSecret}`
+      ).toString("base64");
 
       const response = await fetch(`${this.baseUrl}/oauth2/token`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/x-www-form-urlencoded',
-          'Authorization': `Basic ${credentials}`,
+          Accept: "application/json",
+          "Content-Type": "application/x-www-form-urlencoded",
+          Authorization: `Basic ${credentials}`,
         },
-        body: 'grant_type=client_credentials&scope=payment-create',
+        body: "grant_type=client_credentials&scope=payment-create",
       });
 
       if (!response.ok) {
@@ -91,12 +94,12 @@ export class GopayClient {
       const tokenData: GopayAccessToken = await response.json();
 
       this.accessToken = tokenData.access_token;
-      this.tokenExpiry = Date.now() + (tokenData.expires_in * 1000) - 60000; // Subtract 1 minute for safety
+      this.tokenExpiry = Date.now() + tokenData.expires_in * 1000 - 60000; // Subtract 1 minute for safety
 
       return this.accessToken;
     } catch (error) {
-      console.error('Error getting GoPay access token:', error);
-      throw new Error('Failed to authenticate with GoPay');
+      console.error("Error getting GoPay access token:", error);
+      throw new Error("Failed to authenticate with GoPay");
     }
   }
 
@@ -109,22 +112,22 @@ export class GopayClient {
 
       const paymentData = {
         payer: {
-          default_payment_instrument: 'BANK_ACCOUNT',
+          default_payment_instrument: "BANK_ACCOUNT",
           allowed_payment_instruments: [
-            'BANK_ACCOUNT',
-            'PAYMENT_CARD',
-            'PAYPAL',
-            'GPAY',
-            'APPLE_PAY'
+            "BANK_ACCOUNT",
+            "PAYMENT_CARD",
+            "PAYPAL",
+            "GPAY",
+            "APPLE_PAY",
           ],
           contact: {
-            first_name: paymentRequest.customerName.split(' ')[0] || '',
-            last_name: paymentRequest.customerName.split(' ').slice(1).join(' ') || '',
+            first_name: paymentRequest.customerName.split(" ")[0] || "",
+            last_name: paymentRequest.customerName.split(" ").slice(1).join(" ") || "",
             email: paymentRequest.customerEmail,
           },
         },
         target: {
-          type: 'ACCOUNT',
+          type: "ACCOUNT",
           goid: parseInt(this.config.clientId),
         },
         amount: Math.round(paymentRequest.amount * 100), // Convert to cents
@@ -144,34 +147,34 @@ export class GopayClient {
         },
         additional_params: [
           {
-            name: 'order_id',
+            name: "order_id",
             value: paymentRequest.orderId,
           },
         ],
-        lang: paymentRequest.lang || 'CS',
+        lang: paymentRequest.lang || "CS",
       };
 
       const response = await fetch(`${this.baseUrl}/payments/payment`, {
-        method: 'POST',
+        method: "POST",
         headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify(paymentData),
       });
 
       if (!response.ok) {
         const errorData = await response.json();
-        console.error('GoPay payment creation failed:', errorData);
+        console.error("GoPay payment creation failed:", errorData);
         throw new Error(`GoPay payment creation failed: ${response.statusText}`);
       }
 
       const paymentResponse: GopayPaymentResponse = await response.json();
       return paymentResponse;
     } catch (error) {
-      console.error('Error creating GoPay payment:', error);
-      throw new Error('Failed to create GoPay payment');
+      console.error("Error creating GoPay payment:", error);
+      throw new Error("Failed to create GoPay payment");
     }
   }
 
@@ -183,10 +186,10 @@ export class GopayClient {
       const token = await this.getAccessToken();
 
       const response = await fetch(`${this.baseUrl}/payments/payment/${paymentId}`, {
-        method: 'GET',
+        method: "GET",
         headers: {
-          'Accept': 'application/json',
-          'Authorization': `Bearer ${token}`,
+          Accept: "application/json",
+          Authorization: `Bearer ${token}`,
         },
       });
 
@@ -196,8 +199,8 @@ export class GopayClient {
 
       return await response.json();
     } catch (error) {
-      console.error('Error getting GoPay payment status:', error);
-      throw new Error('Failed to get payment status');
+      console.error("Error getting GoPay payment status:", error);
+      throw new Error("Failed to get payment status");
     }
   }
 
@@ -206,15 +209,15 @@ export class GopayClient {
    */
   verifyNotification(payload: string, signature: string): boolean {
     try {
-      const crypto = require('crypto');
+      const crypto = require("crypto");
       const expectedSignature = crypto
-        .createHmac('sha1', this.config.clientSecret)
+        .createHmac("sha1", this.config.clientSecret)
         .update(payload)
-        .digest('hex');
+        .digest("hex");
 
       return signature === expectedSignature;
     } catch (error) {
-      console.error('Error verifying GoPay notification:', error);
+      console.error("Error verifying GoPay notification:", error);
       return false;
     }
   }
@@ -228,13 +231,15 @@ export function createGopayClient(): GopayClient {
   const clientSecret = process.env.GOPAY_CLIENT_SECRET;
 
   if (!clientId || !clientSecret) {
-    throw new Error('GoPay configuration is missing. Please set GOPAY_CLIENT_ID and GOPAY_CLIENT_SECRET environment variables.');
+    throw new Error(
+      "GoPay configuration is missing. Please set GOPAY_CLIENT_ID and GOPAY_CLIENT_SECRET environment variables."
+    );
   }
 
   const config: GopayConfig = {
     clientId,
     clientSecret,
-    environment: process.env.NODE_ENV === 'production' ? 'production' : 'sandbox',
+    environment: process.env.NODE_ENV === "production" ? "production" : "sandbox",
   };
 
   return new GopayClient(config);

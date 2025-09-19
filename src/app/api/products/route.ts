@@ -3,54 +3,60 @@
  * Handles CRUD operations for products with search and filtering
  */
 
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
 import {
   Product,
   ProductSearchParams,
   CreateProductRequest,
   ProductRow,
-  CategoryRow
-} from '@/types/product';
-import { ApiResponse } from '@/types';
+  CategoryRow,
+} from "@/types/product";
+import { ApiResponse } from "@/types";
 import {
   transformProductRow,
   transformCategoryRow,
   productToRow,
   validateProductData,
-  createSlug
-} from '@/lib/utils/product-transforms';
+  createSlug,
+} from "@/lib/utils/product-transforms";
+import { withCache, setCacheHeaders, invalidateApiCache } from "@/lib/cache/api-cache";
+import { CACHE_TTL } from "@/lib/cache/redis";
 
 /**
  * GET /api/products
  * Retrieve products with optional filtering, searching, and pagination
  */
-export async function GET(request: NextRequest) {
+async function getProducts(request: NextRequest) {
   try {
     const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
 
     // Parse query parameters
     const params: ProductSearchParams = {
-      page: parseInt(searchParams.get('page') || '1'),
-      limit: Math.min(parseInt(searchParams.get('limit') || '12'), 100), // Max 100 items per page
-      categoryId: searchParams.get('categoryId') || undefined,
-      categorySlug: searchParams.get('categorySlug') || undefined,
-      minPrice: searchParams.get('minPrice') ? parseFloat(searchParams.get('minPrice')!) : undefined,
-      maxPrice: searchParams.get('maxPrice') ? parseFloat(searchParams.get('maxPrice')!) : undefined,
-      inStock: searchParams.get('inStock') === 'true' ? true : undefined,
-      featured: searchParams.get('featured') === 'true' ? true : undefined,
-      search: searchParams.get('search') || undefined,
-      locale: searchParams.get('locale') || 'cs',
+      page: parseInt(searchParams.get("page") || "1"),
+      limit: Math.min(parseInt(searchParams.get("limit") || "12"), 100), // Max 100 items per page
+      categoryId: searchParams.get("categoryId") || undefined,
+      categorySlug: searchParams.get("categorySlug") || undefined,
+      minPrice: searchParams.get("minPrice")
+        ? parseFloat(searchParams.get("minPrice")!)
+        : undefined,
+      maxPrice: searchParams.get("maxPrice")
+        ? parseFloat(searchParams.get("maxPrice")!)
+        : undefined,
+      inStock: searchParams.get("inStock") === "true" ? true : undefined,
+      featured: searchParams.get("featured") === "true" ? true : undefined,
+      search: searchParams.get("search") || undefined,
+      locale: searchParams.get("locale") || "cs",
       sort: {
-        field: (searchParams.get('sortField') as any) || 'created_at',
-        direction: (searchParams.get('sortDirection') as 'asc' | 'desc') || 'desc',
+        field: (searchParams.get("sortField") as any) || "created_at",
+        direction: (searchParams.get("sortDirection") as "asc" | "desc") || "desc",
       },
     };
 
     // Build the query
     let query = supabase
-      .from('products')
+      .from("products")
       .select(`
         *,
         categories (
@@ -68,47 +74,52 @@ export async function GET(request: NextRequest) {
           updated_at
         )
       `)
-      .eq('active', true);
+      .eq("active", true);
 
     // Apply filters
     if (params.categoryId) {
-      query = query.eq('category_id', params.categoryId);
+      query = query.eq("category_id", params.categoryId);
     }
 
     if (params.categorySlug) {
-      query = query.eq('categories.slug', params.categorySlug);
+      query = query.eq("categories.slug", params.categorySlug);
     }
 
     if (params.minPrice !== undefined) {
-      query = query.gte('base_price', params.minPrice);
+      query = query.gte("base_price", params.minPrice);
     }
 
     if (params.maxPrice !== undefined) {
-      query = query.lte('base_price', params.maxPrice);
+      query = query.lte("base_price", params.maxPrice);
     }
 
     if (params.featured) {
-      query = query.eq('featured', true);
+      query = query.eq("featured", true);
     }
 
     if (params.inStock) {
-      query = query.contains('availability', { inStock: true });
+      query = query.contains("availability", { inStock: true });
     }
 
     // Apply search
     if (params.search) {
       const searchTerm = `%${params.search}%`;
-      query = query.or(`name_cs.ilike.${searchTerm},name_en.ilike.${searchTerm},description_cs.ilike.${searchTerm},description_en.ilike.${searchTerm}`);
+      query = query.or(
+        `name_cs.ilike.${searchTerm},name_en.ilike.${searchTerm},description_cs.ilike.${searchTerm},description_en.ilike.${searchTerm}`
+      );
     }
 
     // Apply sorting
-    const sortField = params.sort?.field === 'name'
-      ? (params.locale === 'en' ? 'name_en' : 'name_cs')
-      : params.sort?.field === 'price'
-        ? 'base_price'
-        : params.sort?.field || 'created_at';
+    const sortField =
+      params.sort?.field === "name"
+        ? params.locale === "en"
+          ? "name_en"
+          : "name_cs"
+        : params.sort?.field === "price"
+          ? "base_price"
+          : params.sort?.field || "created_at";
 
-    query = query.order(sortField, { ascending: params.sort?.direction === 'asc' });
+    query = query.order(sortField, { ascending: params.sort?.direction === "asc" });
 
     // Apply pagination
     const offset = ((params.page || 1) - 1) * (params.limit || 12);
@@ -117,13 +128,13 @@ export async function GET(request: NextRequest) {
     const { data: productsData, error, count } = await query;
 
     if (error) {
-      console.error('Error fetching products:', error);
+      console.error("Error fetching products:", error);
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'FETCH_ERROR',
-            message: 'Failed to fetch products',
+            code: "FETCH_ERROR",
+            message: "Failed to fetch products",
             details: error.message,
           },
         } as ApiResponse,
@@ -132,16 +143,18 @@ export async function GET(request: NextRequest) {
     }
 
     // Transform the data
-    const products: Product[] = (productsData || []).map((row: ProductRow & { categories?: CategoryRow | null }) => {
-      const category = row.categories ? transformCategoryRow(row.categories) : undefined;
-      return transformProductRow(row, category);
-    });
+    const products: Product[] = (productsData || []).map(
+      (row: ProductRow & { categories?: CategoryRow | null }) => {
+        const category = row.categories ? transformCategoryRow(row.categories) : undefined;
+        return transformProductRow(row, category);
+      }
+    );
 
     // Get total count for pagination
     const { count: totalCount } = await supabase
-      .from('products')
-      .select('*', { count: 'exact', head: true })
-      .eq('active', true);
+      .from("products")
+      .select("*", { count: "exact", head: true })
+      .eq("active", true);
 
     const total = totalCount || 0;
     const totalPages = Math.ceil(total / (params.limit || 12));
@@ -157,21 +170,34 @@ export async function GET(request: NextRequest) {
       },
     };
 
-    return NextResponse.json(response);
+    const jsonResponse = NextResponse.json(response);
+
+    // Set cache headers for better performance
+    return setCacheHeaders(jsonResponse, {
+      maxAge: CACHE_TTL.PRODUCTS,
+      staleWhileRevalidate: CACHE_TTL.DAY,
+    });
   } catch (error) {
-    console.error('Unexpected error in GET /api/products:', error);
+    console.error("Unexpected error in GET /api/products:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Internal server error',
+          code: "INTERNAL_ERROR",
+          message: "Internal server error",
         },
       } as ApiResponse,
       { status: 500 }
     );
   }
 }
+
+// Export cached GET handler
+export const GET = withCache(getProducts, {
+  ttl: CACHE_TTL.PRODUCTS,
+  keyPrefix: "products",
+  varyBy: ["accept-language"],
+});
 
 /**
  * POST /api/products
@@ -189,8 +215,8 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: {
-            code: 'VALIDATION_ERROR',
-            message: 'Invalid product data',
+            code: "VALIDATION_ERROR",
+            message: "Invalid product data",
             details: validation.errors,
           },
         } as ApiResponse,
@@ -205,9 +231,9 @@ export async function POST(request: NextRequest) {
 
     // Check if slug already exists
     const { data: existingProduct } = await supabase
-      .from('products')
-      .select('id')
-      .eq('slug', body.slug)
+      .from("products")
+      .select("id")
+      .eq("slug", body.slug)
       .single();
 
     if (existingProduct) {
@@ -215,8 +241,8 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: {
-            code: 'SLUG_EXISTS',
-            message: 'A product with this slug already exists',
+            code: "SLUG_EXISTS",
+            message: "A product with this slug already exists",
           },
         } as ApiResponse,
         { status: 409 }
@@ -251,14 +277,17 @@ export async function POST(request: NextRequest) {
       availability: body.availability || { inStock: true },
       seoMetadata: body.seoMetadata || {
         title: { cs: body.nameCs, en: body.nameEn },
-        description: { cs: body.descriptionCs || body.nameCs, en: body.descriptionEn || body.nameEn },
+        description: {
+          cs: body.descriptionCs || body.nameCs,
+          en: body.descriptionEn || body.nameEn,
+        },
       },
       active: body.active !== undefined ? body.active : true,
       featured: body.featured || false,
     });
 
     const { data, error } = await supabase
-      .from('products')
+      .from("products")
       .insert(productData)
       .select(`
         *,
@@ -280,13 +309,13 @@ export async function POST(request: NextRequest) {
       .single();
 
     if (error) {
-      console.error('Error creating product:', error);
+      console.error("Error creating product:", error);
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: 'CREATE_ERROR',
-            message: 'Failed to create product',
+            code: "CREATE_ERROR",
+            message: "Failed to create product",
             details: error.message,
           },
         } as ApiResponse,
@@ -298,6 +327,9 @@ export async function POST(request: NextRequest) {
     const category = data.categories ? transformCategoryRow(data.categories) : undefined;
     const product = transformProductRow(data, category);
 
+    // Invalidate products cache after creating new product
+    await invalidateApiCache("products*");
+
     const response: ApiResponse<Product> = {
       success: true,
       data: product,
@@ -305,13 +337,13 @@ export async function POST(request: NextRequest) {
 
     return NextResponse.json(response, { status: 201 });
   } catch (error) {
-    console.error('Unexpected error in POST /api/products:', error);
+    console.error("Unexpected error in POST /api/products:", error);
     return NextResponse.json(
       {
         success: false,
         error: {
-          code: 'INTERNAL_ERROR',
-          message: 'Internal server error',
+          code: "INTERNAL_ERROR",
+          message: "Internal server error",
         },
       } as ApiResponse,
       { status: 500 }

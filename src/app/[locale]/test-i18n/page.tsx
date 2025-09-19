@@ -1,5 +1,5 @@
-import { getTranslations } from 'next-intl/server';
-import { CurrencyExample } from '@/components/examples/CurrencyExample';
+import { getTranslations } from "next-intl/server";
+import { CurrencyExample } from "@/components/examples/CurrencyExample";
 
 interface TestI18nProps {
   params: Promise<{ locale: string }>;
@@ -21,20 +21,20 @@ export default async function TestI18n({ params }: TestI18nProps) {
             <div className="p-4 bg-gray-50 rounded">
               <h3 className="font-medium mb-2">Navigation</h3>
               <ul className="space-y-1 text-sm">
-                <li>Home: {t('navigation.home')}</li>
-                <li>Products: {t('navigation.products')}</li>
-                <li>About: {t('navigation.about')}</li>
-                <li>Contact: {t('navigation.contact')}</li>
+                <li>Home: {t("navigation.home")}</li>
+                <li>Products: {t("navigation.products")}</li>
+                <li>About: {t("navigation.about")}</li>
+                <li>Contact: {t("navigation.contact")}</li>
               </ul>
             </div>
 
             <div className="p-4 bg-gray-50 rounded">
               <h3 className="font-medium mb-2">Common</h3>
               <ul className="space-y-1 text-sm">
-                <li>Loading: {t('common.loading')}</li>
-                <li>Error: {t('common.error')}</li>
-                <li>Success: {t('common.success')}</li>
-                <li>Save: {t('common.save')}</li>
+                <li>Loading: {t("common.loading")}</li>
+                <li>Error: {t("common.error")}</li>
+                <li>Success: {t("common.success")}</li>
+                <li>Save: {t("common.save")}</li>
               </ul>
             </div>
           </div>
@@ -44,9 +44,9 @@ export default async function TestI18n({ params }: TestI18nProps) {
         <section>
           <h2 className="text-2xl font-semibold mb-4">Home Page Content</h2>
           <div className="p-4 bg-gray-50 rounded">
-            <h3 className="font-medium mb-2">{t('home.title')}</h3>
-            <p className="text-sm text-gray-600 mb-2">{t('home.subtitle')}</p>
-            <p className="text-sm text-gray-600">{t('home.description')}</p>
+            <h3 className="font-medium mb-2">{t("home.title")}</h3>
+            <p className="text-sm text-gray-600 mb-2">{t("home.subtitle")}</p>
+            <p className="text-sm text-gray-600">{t("home.description")}</p>
           </div>
         </section>
 
@@ -60,9 +60,17 @@ export default async function TestI18n({ params }: TestI18nProps) {
         <section>
           <h2 className="text-2xl font-semibold mb-4">Locale Information</h2>
           <div className="p-4 bg-gray-50 rounded">
-            <p><strong>Current Locale:</strong> {locale}</p>
-            <p><strong>Date Format:</strong> {new Date().toLocaleDateString(locale === 'cs' ? 'cs-CZ' : 'en-US')}</p>
-            <p><strong>Number Format:</strong> {(12345.67).toLocaleString(locale === 'cs' ? 'cs-CZ' : 'en-US')}</p>
+            <p>
+              <strong>Current Locale:</strong> {locale}
+            </p>
+            <p>
+              <strong>Date Format:</strong>{" "}
+              {new Date().toLocaleDateString(locale === "cs" ? "cs-CZ" : "en-US")}
+            </p>
+            <p>
+              <strong>Number Format:</strong>{" "}
+              {(12345.67).toLocaleString(locale === "cs" ? "cs-CZ" : "en-US")}
+            </p>
           </div>
         </section>
       </div>

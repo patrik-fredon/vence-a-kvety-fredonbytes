@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useCurrency } from '@/lib/i18n/hooks';
+import { useCurrency } from "@/lib/i18n/hooks";
 
 interface CurrencyDisplayProps {
   amount: number;

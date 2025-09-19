@@ -12,13 +12,12 @@ interface StatusHistoryItem {
 /**
  * Get order history and status timeline
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { id: orderId } = await params;
 
     // Get order with user validation for non-admin users
@@ -108,12 +107,14 @@ export async function GET(
       order: orderSummary,
       statusHistory
     });
-
   } catch (error) {
-    console.error('Error in GET /api/orders/[id]/history:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in GET /api/orders/[id]/history:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }

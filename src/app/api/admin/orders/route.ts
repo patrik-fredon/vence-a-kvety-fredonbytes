@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { orderUtils, userUtils } from '@/lib/supabase/utils';
-import { OrderStatus } from '@/types/order';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { orderUtils, userUtils } from "@/lib/supabase/utils";
+import { OrderStatus } from "@/types/order";
 
 /**
  * Get all orders (Admin only)
@@ -9,31 +9,51 @@ import { OrderStatus } from '@/types/order';
 export async function GET(request: NextRequest) {
   try {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     if (!user) {
-      return NextResponse.json({
-        success: false,
-        error: 'Unauthorized'
-      }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     // Check if user is admin
     const isAdmin = await userUtils.isAdmin(user.id);
     if (!isAdmin) {
-      return NextResponse.json({
-        success: false,
-        error: 'Insufficient permissions'
-      }, { status: 403 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Insufficient permissions",
+        },
+        { status: 403 }
+      );
     }
 
     // Parse query parameters
     const { searchParams } = new URL(request.url);
-    const status = searchParams.get('status') as OrderStatus | null;
-    const dateFrom = searchParams.get('dateFrom');
-    const dateTo = searchParams.get('dateTo');
-    const limit = parseInt(searchParams.get('limit') || '20');
-    const offset = parseInt(searchParams.get('offset') || '0');
+    const statusParam = searchParams.get("status");
+    const validStatuses: OrderStatus[] = [
+      "pending",
+      "confirmed",
+      "processing",
+      "shipped",
+      "delivered",
+      "cancelled",
+    ];
+    const status =
+      statusParam && validStatuses.includes(statusParam as OrderStatus)
+        ? (statusParam as OrderStatus)
+        : null;
+    const dateFrom = searchParams.get("dateFrom");
+    const dateTo = searchParams.get("dateTo");
+    const limit = parseInt(searchParams.get("limit") || "20");
+    const offset = parseInt(searchParams.get("offset") || "0");
 
     // Get orders with filters
     const { data: orders, error } = await orderUtils.getAllOrders({
@@ -41,19 +61,22 @@ export async function GET(request: NextRequest) {
       dateFrom: dateFrom || undefined,
       dateTo: dateTo || undefined,
       limit,
-      offset
+      offset,
     });
 
     if (error) {
-      console.error('Error fetching orders:', error);
-      return NextResponse.json({
-        success: false,
-        error: 'Chyba při načítání objednávek'
-      }, { status: 500 });
+      console.error("Error fetching orders:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Chyba při načítání objednávek",
+        },
+        { status: 500 }
+      );
     }
 
     // Transform orders for admin view
-    const transformedOrders = orders.map(order => {
+    const transformedOrders = orders.map((order) => {
       const customerInfo = order.customer_info as any;
       const deliveryInfo = order.delivery_info as any;
       const paymentInfo = order.payment_info as any;
@@ -79,7 +102,7 @@ export async function GET(request: NextRequest) {
         deliveredAt: undefined,
         cancelledAt: undefined,
         notes: order.notes,
-        internalNotes: order.notes
+        internalNotes: order.internal_notes,
       };
     });
 
@@ -89,15 +112,17 @@ export async function GET(request: NextRequest) {
       pagination: {
         limit,
         offset,
-        total: transformedOrders.length
-      }
+        total: transformedOrders.length,
+      },
     });
-
   } catch (error) {
-    console.error('Error in GET /api/admin/orders:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in GET /api/admin/orders:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }

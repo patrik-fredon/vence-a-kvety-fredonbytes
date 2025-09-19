@@ -2,10 +2,10 @@
  * Product-related type definitions for the funeral wreaths e-commerce platform
  */
 
-import { BaseEntity, LocalizedContent, ImageData, SEOMetadata } from './index';
+import { BaseEntity, LocalizedContent, ImageData, SEOMetadata } from "./index";
 
 // Customization option types
-export type CustomizationType = 'size' | 'flowers' | 'ribbon' | 'message';
+export type CustomizationType = "size" | "flowers" | "ribbon" | "message";
 
 export interface CustomizationChoice {
   id: string;
@@ -92,6 +92,7 @@ export interface Customization {
   optionId: string;
   choiceIds: string[];
   customValue?: string; // For text inputs like messages
+  priceModifier?: number; // Price adjustment for this customization
 }
 
 // Product with applied customizations
@@ -114,8 +115,8 @@ export interface ProductFilters {
 }
 
 export interface ProductSortOptions {
-  field: 'name' | 'price' | 'created_at' | 'featured' | 'popularity';
-  direction: 'asc' | 'desc';
+  field: "name" | "price" | "created_at" | "featured" | "popularity";
+  direction: "asc" | "desc";
 }
 
 export interface ProductSearchParams extends ProductFilters {
@@ -134,8 +135,8 @@ export interface CreateProductRequest {
   descriptionEn?: string;
   basePrice: number;
   categoryId?: string;
-  images?: Omit<ProductImage, 'id'>[];
-  customizationOptions?: Omit<CustomizationOption, 'id'>[];
+  images?: Omit<ProductImage, "id">[];
+  customizationOptions?: Omit<CustomizationOption, "id">[];
   availability?: ProductAvailability;
   seoMetadata?: SEOMetadata;
   active?: boolean;

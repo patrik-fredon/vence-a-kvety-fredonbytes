@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   MapPinIcon,
   CalendarIcon,
   ClockIcon,
   UserIcon,
-  PhoneIcon
-} from '@heroicons/react/24/outline';
-import { DeliveryInfo } from '@/types/order';
-import { DeliveryUrgency, DeliveryTimeSlot } from '@/types/delivery';
-import { Input } from '@/components/ui/Input';
-import { DeliveryOptionsSelector } from '@/components/delivery/DeliveryOptionsSelector';
-import { DeliveryCalendar } from '@/components/delivery/DeliveryCalendar';
+  PhoneIcon,
+} from "@heroicons/react/24/outline";
+import { DeliveryInfo } from "@/types/order";
+import { DeliveryUrgency, DeliveryTimeSlot } from "@/types/delivery";
+import { Input } from "@/components/ui/Input";
+import { DeliveryOptionsSelector } from "@/components/delivery/DeliveryOptionsSelector";
+import { DeliveryCalendar } from "@/components/delivery/DeliveryCalendar";
 
 interface DeliveryInfoStepProps {
   deliveryInfo: Partial<DeliveryInfo>;
@@ -26,10 +26,10 @@ export function DeliveryInfoStep({
   deliveryInfo,
   errors = {},
   onChange,
-  locale
+  locale,
 }: DeliveryInfoStepProps) {
-  const t = useTranslations('checkout');
-  const tDelivery = useTranslations('delivery');
+  const t = useTranslations("checkout");
+  const tDelivery = useTranslations("delivery");
 
   const [showCalendar, setShowCalendar] = useState(false);
   const [availableDates, setAvailableDates] = useState<Date[]>([]);
@@ -39,13 +39,13 @@ export function DeliveryInfoStep({
     const loadAvailableDates = async () => {
       if (deliveryInfo.address?.postalCode && deliveryInfo.urgency) {
         try {
-          const response = await fetch('/api/delivery/calendar', {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
+          const response = await fetch("/api/delivery/calendar", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
             body: JSON.stringify({
               postalCode: deliveryInfo.address.postalCode,
-              urgency: deliveryInfo.urgency
-            })
+              urgency: deliveryInfo.urgency,
+            }),
           });
 
           const data = await response.json();
@@ -56,7 +56,7 @@ export function DeliveryInfoStep({
             setAvailableDates(dates);
           }
         } catch (error) {
-          console.error('Error loading available dates:', error);
+          console.error("Error loading available dates:", error);
         }
       }
     };
@@ -66,34 +66,34 @@ export function DeliveryInfoStep({
 
   const handleAddressChange = (field: string, value: string) => {
     const currentAddress = deliveryInfo.address || {
-      street: '',
-      city: '',
-      postalCode: '',
-      country: 'CZ'
+      street: "",
+      city: "",
+      postalCode: "",
+      country: "CZ",
     };
 
     const newAddress = {
       ...currentAddress,
-      [field]: value
+      [field]: value,
     };
 
     onChange({
       ...deliveryInfo,
-      address: newAddress
+      address: newAddress,
     });
   };
 
   const handleUrgencyChange = (urgency: DeliveryUrgency) => {
     onChange({
       ...deliveryInfo,
-      urgency
+      urgency,
     });
   };
 
   const handleDateSelect = (date: Date) => {
     onChange({
       ...deliveryInfo,
-      preferredDate: date
+      preferredDate: date,
     });
     setShowCalendar(false);
   };
@@ -101,7 +101,7 @@ export function DeliveryInfoStep({
   const handleTimeSlotChange = (timeSlot: DeliveryTimeSlot) => {
     onChange({
       ...deliveryInfo,
-      preferredTimeSlot: timeSlot
+      preferredTimeSlot: timeSlot,
     });
   };
 
@@ -109,11 +109,9 @@ export function DeliveryInfoStep({
     <div className="space-y-8">
       <div>
         <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-2">
-          {t('deliveryInfo')}
+          {t("deliveryInfo")}
         </h2>
-        <p className="text-neutral-600">
-          Zadejte adresu doručení a vyberte způsob dodání.
-        </p>
+        <p className="text-neutral-600">Zadejte adresu doručení a vyberte způsob dodání.</p>
       </div>
 
       {/* Delivery Address */}
@@ -132,8 +130,8 @@ export function DeliveryInfoStep({
             <Input
               id="street"
               type="text"
-              value={deliveryInfo.address?.street || ''}
-              onChange={(e) => handleAddressChange('street', e.target.value)}
+              value={deliveryInfo.address?.street || ""}
+              onChange={(e) => handleAddressChange("street", e.target.value)}
               error={errors.address}
               placeholder="Např. Václavské náměstí 1"
               required
@@ -149,8 +147,8 @@ export function DeliveryInfoStep({
               <Input
                 id="city"
                 type="text"
-                value={deliveryInfo.address?.city || ''}
-                onChange={(e) => handleAddressChange('city', e.target.value)}
+                value={deliveryInfo.address?.city || ""}
+                onChange={(e) => handleAddressChange("city", e.target.value)}
                 error={errors.address}
                 placeholder="Praha"
                 required
@@ -159,14 +157,17 @@ export function DeliveryInfoStep({
 
             {/* Postal Code */}
             <div>
-              <label htmlFor="postalCode" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label
+                htmlFor="postalCode"
+                className="block text-sm font-medium text-neutral-700 mb-2"
+              >
                 PSČ *
               </label>
               <Input
                 id="postalCode"
                 type="text"
-                value={deliveryInfo.address?.postalCode || ''}
-                onChange={(e) => handleAddressChange('postalCode', e.target.value)}
+                value={deliveryInfo.address?.postalCode || ""}
+                onChange={(e) => handleAddressChange("postalCode", e.target.value)}
                 error={errors.address}
                 placeholder="110 00"
                 required
@@ -180,8 +181,8 @@ export function DeliveryInfoStep({
               </label>
               <select
                 id="country"
-                value={deliveryInfo.address?.country || 'CZ'}
-                onChange={(e) => handleAddressChange('country', e.target.value)}
+                value={deliveryInfo.address?.country || "CZ"}
+                onChange={(e) => handleAddressChange("country", e.target.value)}
                 className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
                 required
               >
@@ -203,7 +204,7 @@ export function DeliveryInfoStep({
 
           <DeliveryOptionsSelector
             address={deliveryInfo.address}
-            selectedUrgency={deliveryInfo.urgency || 'standard'}
+            selectedUrgency={deliveryInfo.urgency || "standard"}
             onUrgencyChange={handleUrgencyChange}
           />
         </div>
@@ -226,12 +227,15 @@ export function DeliveryInfoStep({
               {deliveryInfo.preferredDate ? (
                 <span className="flex items-center">
                   <CalendarIcon className="w-5 h-5 mr-2 text-primary-600" />
-                  {deliveryInfo.preferredDate.toLocaleDateString(locale === 'cs' ? 'cs-CZ' : 'en-US', {
-                    weekday: 'long',
-                    year: 'numeric',
-                    month: 'long',
-                    day: 'numeric'
-                  })}
+                  {deliveryInfo.preferredDate.toLocaleDateString(
+                    locale === "cs" ? "cs-CZ" : "en-US",
+                    {
+                      weekday: "long",
+                      year: "numeric",
+                      month: "long",
+                      day: "numeric",
+                    }
+                  )}
                 </span>
               ) : (
                 <span className="flex items-center text-neutral-500">
@@ -258,27 +262,24 @@ export function DeliveryInfoStep({
       {/* Time Slot Selection */}
       {deliveryInfo.preferredDate && (
         <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-neutral-800">
-            Čas doručení
-          </h3>
+          <h3 className="text-lg font-semibold text-neutral-800">Čas doručení</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {(['morning', 'afternoon', 'evening', 'anytime'] as DeliveryTimeSlot[]).map((slot) => (
+            {(["morning", "afternoon", "evening", "anytime"] as DeliveryTimeSlot[]).map((slot) => (
               <button
                 key={slot}
                 type="button"
                 onClick={() => handleTimeSlotChange(slot)}
                 className={`
                   p-4 border-2 rounded-lg text-left transition-colors
-                  ${deliveryInfo.preferredTimeSlot === slot
-                    ? 'border-primary-500 bg-primary-50 text-primary-900'
-                    : 'border-neutral-200 bg-white text-neutral-900 hover:border-neutral-300'
+                  ${
+                    deliveryInfo.preferredTimeSlot === slot
+                      ? "border-primary-500 bg-primary-50 text-primary-900"
+                      : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-300"
                   }
                 `}
               >
-                <div className="font-medium">
-                  {tDelivery(`calendar.${slot}`)}
-                </div>
+                <div className="font-medium">{tDelivery(`calendar.${slot}`)}</div>
               </button>
             ))}
           </div>
@@ -298,13 +299,16 @@ export function DeliveryInfoStep({
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
           <div>
-            <label htmlFor="recipientName" className="block text-sm font-medium text-neutral-700 mb-2">
+            <label
+              htmlFor="recipientName"
+              className="block text-sm font-medium text-neutral-700 mb-2"
+            >
               Jméno příjemce
             </label>
             <Input
               id="recipientName"
               type="text"
-              value={deliveryInfo.recipientName || ''}
+              value={deliveryInfo.recipientName || ""}
               onChange={(e) => onChange({ ...deliveryInfo, recipientName: e.target.value })}
               error={errors.recipientName}
               placeholder="Jméno a příjmení příjemce"
@@ -312,13 +316,16 @@ export function DeliveryInfoStep({
           </div>
 
           <div>
-            <label htmlFor="recipientPhone" className="block text-sm font-medium text-neutral-700 mb-2">
+            <label
+              htmlFor="recipientPhone"
+              className="block text-sm font-medium text-neutral-700 mb-2"
+            >
               Telefon příjemce
             </label>
             <Input
               id="recipientPhone"
               type="tel"
-              value={deliveryInfo.recipientPhone || ''}
+              value={deliveryInfo.recipientPhone || ""}
               onChange={(e) => onChange({ ...deliveryInfo, recipientPhone: e.target.value })}
               error={errors.recipientPhone}
               placeholder="+420 123 456 789"
@@ -329,30 +336,32 @@ export function DeliveryInfoStep({
 
       {/* Special Instructions */}
       <div>
-        <label htmlFor="specialInstructions" className="block text-sm font-medium text-neutral-700 mb-2">
+        <label
+          htmlFor="specialInstructions"
+          className="block text-sm font-medium text-neutral-700 mb-2"
+        >
           Speciální pokyny pro doručení (volitelné)
         </label>
         <textarea
           id="specialInstructions"
-          value={deliveryInfo.specialInstructions || ''}
+          value={deliveryInfo.specialInstructions || ""}
           onChange={(e) => onChange({ ...deliveryInfo, specialInstructions: e.target.value })}
           placeholder="Např. 'Zazvonit u vrátnice', 'Nechat u sousedů', apod."
           rows={3}
           className={`
             w-full px-4 py-3 border rounded-lg resize-none
             focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            ${errors.specialInstructions
-              ? 'border-red-300 bg-red-50'
-              : 'border-neutral-300 bg-white'
+            ${
+              errors.specialInstructions
+                ? "border-red-300 bg-red-50"
+                : "border-neutral-300 bg-white"
             }
           `}
         />
         {errors.specialInstructions && (
           <p className="mt-1 text-sm text-red-600">{errors.specialInstructions}</p>
         )}
-        <p className="mt-1 text-xs text-neutral-500">
-          Maximálně 500 znaků
-        </p>
+        <p className="mt-1 text-xs text-neutral-500">Maximálně 500 znaků</p>
       </div>
     </div>
   );

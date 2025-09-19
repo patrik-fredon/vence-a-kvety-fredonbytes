@@ -3,7 +3,7 @@
  */
 
 // Locale types for internationalization
-export type Locale = 'cs' | 'en';
+export type Locale = "cs" | "en";
 
 // Localized content type
 export type LocalizedContent<T = string> = Record<Locale, T>;
@@ -38,7 +38,7 @@ export type RequiredFields<T, K extends keyof T> = T & Required<Pick<T, K>>;
 
 // Environment configuration
 export interface AppConfig {
-  env: 'development' | 'production' | 'test';
+  env: "development" | "production" | "test";
   baseUrl: string;
   apiUrl: string;
   defaultLocale: Locale;
@@ -67,7 +67,7 @@ export interface FormState<T = any> {
 }
 
 // Loading states
-export type LoadingState = 'idle' | 'loading' | 'success' | 'error';
+export type LoadingState = "idle" | "loading" | "success" | "error";
 
 // Component props with common patterns
 export interface ComponentWithChildren {
@@ -118,9 +118,10 @@ export interface ContactInfo {
 }
 
 // Re-export product types for convenience
-export * from './product';
-export * from './cart';
-export * from './delivery';
-export * from './order';
+export * from "./product";
+export * from "./cart";
+export * from "./delivery";
+export * from "./order";
+export * from "./contact";
 
 export default {};

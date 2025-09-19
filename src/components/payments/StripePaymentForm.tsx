@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { useTranslations } from 'next-intl';
+import React, { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   Elements,
   CardElement,
   useStripe,
   useElements,
   PaymentElement,
-} from '@stripe/react-stripe-js';
-import { CreditCardIcon, ExclamationTriangleIcon } from '@heroicons/react/24/outline';
-import { getStripe, stripeElementsOptions } from '@/lib/payments/stripe';
-import { Button } from '@/components/ui/Button';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+} from "@stripe/react-stripe-js";
+import { CreditCardIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { getStripe, stripeElementsOptions } from "@/lib/payments/stripe";
+import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface StripePaymentFormProps {
   clientSecret: string;
@@ -45,9 +45,9 @@ function PaymentForm({
   customerEmail,
   onSuccess,
   onError,
-  locale
+  locale,
 }: PaymentFormProps) {
-  const t = useTranslations('checkout');
+  const t = useTranslations("checkout");
   const stripe = useStripe();
   const elements = useElements();
 
@@ -58,7 +58,7 @@ function PaymentForm({
     event.preventDefault();
 
     if (!stripe || !elements) {
-      onError('Stripe není připraven. Zkuste to znovu.');
+      onError("Stripe není připraven. Zkuste to znovu.");
       return;
     }
 
@@ -73,26 +73,26 @@ function PaymentForm({
           return_url: `${window.location.origin}/${locale}/checkout/success?orderId=${orderId}`,
           receipt_email: customerEmail,
         },
-        redirect: 'if_required',
+        redirect: "if_required",
       });
 
       if (error) {
-        console.error('Payment confirmation error:', error);
+        console.error("Payment confirmation error:", error);
 
-        let errorMsg = 'Platba se nezdařila. Zkuste to znovu.';
+        let errorMsg = "Platba se nezdařila. Zkuste to znovu.";
 
         switch (error.type) {
-          case 'card_error':
-            errorMsg = error.message || 'Chyba platební karty.';
+          case "card_error":
+            errorMsg = error.message || "Chyba platební karty.";
             break;
-          case 'validation_error':
-            errorMsg = 'Neplatné údaje karty.';
+          case "validation_error":
+            errorMsg = "Neplatné údaje karty.";
             break;
-          case 'api_connection_error':
-            errorMsg = 'Problém s připojením. Zkuste to znovu.';
+          case "api_connection_error":
+            errorMsg = "Problém s připojením. Zkuste to znovu.";
             break;
-          case 'rate_limit_error':
-            errorMsg = 'Příliš mnoho pokusů. Zkuste to za chvíli.';
+          case "rate_limit_error":
+            errorMsg = "Příliš mnoho pokusů. Zkuste to za chvíli.";
             break;
           default:
             errorMsg = error.message || errorMsg;
@@ -100,17 +100,17 @@ function PaymentForm({
 
         setErrorMessage(errorMsg);
         onError(errorMsg);
-      } else if (paymentIntent && paymentIntent.status === 'succeeded') {
-        console.log('Payment succeeded:', paymentIntent);
+      } else if (paymentIntent && paymentIntent.status === "succeeded") {
+        console.log("Payment succeeded:", paymentIntent);
         onSuccess(paymentIntent);
       } else {
-        console.log('Payment requires additional action:', paymentIntent);
-        setErrorMessage('Platba vyžaduje dodatečné ověření.');
-        onError('Platba vyžaduje dodatečné ověření.');
+        console.log("Payment requires additional action:", paymentIntent);
+        setErrorMessage("Platba vyžaduje dodatečné ověření.");
+        onError("Platba vyžaduje dodatečné ověření.");
       }
     } catch (err) {
-      console.error('Unexpected error during payment:', err);
-      const errorMsg = 'Neočekávaná chyba při zpracování platby.';
+      console.error("Unexpected error during payment:", err);
+      const errorMsg = "Neočekávaná chyba při zpracování platby.";
       setErrorMessage(errorMsg);
       onError(errorMsg);
     } finally {
@@ -124,20 +124,18 @@ function PaymentForm({
       <div className="space-y-4">
         <div className="flex items-center space-x-2 mb-4">
           <CreditCardIcon className="w-5 h-5 text-primary-600" />
-          <h3 className="text-lg font-semibold text-neutral-900">
-            Údaje platební karty
-          </h3>
+          <h3 className="text-lg font-semibold text-neutral-900">Údaje platební karty</h3>
         </div>
 
         <div className="p-4 border-2 border-neutral-200 rounded-lg bg-white">
           <PaymentElement
             options={{
-              layout: 'tabs',
+              layout: "tabs",
               defaultValues: {
                 billingDetails: {
                   email: customerEmail,
-                }
-              }
+                },
+              },
             }}
           />
         </div>
@@ -159,8 +157,8 @@ function PaymentForm({
         <div className="flex justify-between items-center">
           <span className="text-sm text-neutral-600">Celková částka:</span>
           <span className="text-lg font-semibold text-neutral-900">
-            {new Intl.NumberFormat(locale === 'cs' ? 'cs-CZ' : 'en-US', {
-              style: 'currency',
+            {new Intl.NumberFormat(locale === "cs" ? "cs-CZ" : "en-US", {
+              style: "currency",
               currency: currency.toUpperCase(),
             }).format(amount)}
           </span>
@@ -182,8 +180,9 @@ function PaymentForm({
         ) : (
           <>
             <CreditCardIcon className="w-5 h-5 mr-2" />
-            Zaplatit {new Intl.NumberFormat(locale === 'cs' ? 'cs-CZ' : 'en-US', {
-              style: 'currency',
+            Zaplatit{" "}
+            {new Intl.NumberFormat(locale === "cs" ? "cs-CZ" : "en-US", {
+              style: "currency",
               currency: currency.toUpperCase(),
             }).format(amount)}
           </>
@@ -213,7 +212,7 @@ export function StripePaymentForm({
   customerEmail,
   onSuccess,
   onError,
-  locale
+  locale,
 }: StripePaymentFormProps) {
   const [stripePromise] = useState(() => getStripe());
 
@@ -221,15 +220,15 @@ export function StripePaymentForm({
   const elementsOptions = {
     clientSecret,
     appearance: {
-      theme: 'stripe' as const,
+      theme: "stripe" as const,
       variables: {
-        colorPrimary: '#059669',
-        colorBackground: '#ffffff',
-        colorText: '#1f2937',
-        colorDanger: '#dc2626',
-        fontFamily: 'Inter, system-ui, sans-serif',
-        spacingUnit: '4px',
-        borderRadius: '8px',
+        colorPrimary: "#059669",
+        colorBackground: "#ffffff",
+        colorText: "#1f2937",
+        colorDanger: "#dc2626",
+        fontFamily: "Inter, system-ui, sans-serif",
+        spacingUnit: "4px",
+        borderRadius: "8px",
       },
     },
   };

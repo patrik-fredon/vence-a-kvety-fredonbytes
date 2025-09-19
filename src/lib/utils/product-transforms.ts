@@ -2,8 +2,8 @@
  * Utility functions for transforming between database rows and TypeScript interfaces
  */
 
-import { Product, Category, ProductRow, CategoryRow } from '@/types/product';
-import { Locale, LocalizedContent } from '@/types';
+import { Product, Category, ProductRow, CategoryRow } from "@/types/product";
+import { Locale, LocalizedContent } from "@/types";
 
 /**
  * Transform a database category row to Category interface
@@ -14,12 +14,13 @@ export function transformCategoryRow(row: CategoryRow): Category {
     en: row.name_en,
   };
 
-  const description: LocalizedContent | undefined = row.description_cs || row.description_en
-    ? {
-      cs: row.description_cs || '',
-      en: row.description_en || '',
-    }
-    : undefined;
+  const description: LocalizedContent | undefined =
+    row.description_cs || row.description_en
+      ? {
+          cs: row.description_cs || "",
+          en: row.description_en || "",
+        }
+      : undefined;
 
   return {
     id: row.id,
@@ -48,12 +49,13 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     en: row.name_en,
   };
 
-  const description: LocalizedContent | undefined = row.description_cs || row.description_en
-    ? {
-      cs: row.description_cs || '',
-      en: row.description_en || '',
-    }
-    : undefined;
+  const description: LocalizedContent | undefined =
+    row.description_cs || row.description_en
+      ? {
+          cs: row.description_cs || "",
+          en: row.description_en || "",
+        }
+      : undefined;
 
   return {
     id: row.id,
@@ -66,8 +68,11 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     categoryId: row.category_id || undefined,
     images: Array.isArray(row.images) ? row.images : [],
     customizationOptions: Array.isArray(row.customization_options) ? row.customization_options : [],
-    availability: typeof row.availability === 'object' ? row.availability : { inStock: true },
-    seoMetadata: typeof row.seo_metadata === 'object' ? row.seo_metadata : { title: name, description: description || name },
+    availability: typeof row.availability === "object" ? row.availability : { inStock: true },
+    seoMetadata:
+      typeof row.seo_metadata === "object"
+        ? row.seo_metadata
+        : { title: name, description: description || name },
     active: row.active,
     featured: row.featured,
     createdAt: new Date(row.created_at),
@@ -81,7 +86,9 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
 /**
  * Transform Category interface to database row format
  */
-export function categoryToRow(category: Omit<Category, 'id' | 'createdAt' | 'updatedAt' | 'name' | 'description'>): Omit<CategoryRow, 'id' | 'created_at' | 'updated_at'> {
+export function categoryToRow(
+  category: Omit<Category, "id" | "createdAt" | "updatedAt" | "name" | "description">
+): Omit<CategoryRow, "id" | "created_at" | "updated_at"> {
   return {
     name_cs: category.nameCs,
     name_en: category.nameEn,
@@ -98,7 +105,9 @@ export function categoryToRow(category: Omit<Category, 'id' | 'createdAt' | 'upd
 /**
  * Transform Product interface to database row format
  */
-export function productToRow(product: Omit<Product, 'id' | 'createdAt' | 'updatedAt' | 'name' | 'description' | 'category'>): Omit<ProductRow, 'id' | 'created_at' | 'updated_at'> {
+export function productToRow(
+  product: Omit<Product, "id" | "createdAt" | "updatedAt" | "name" | "description" | "category">
+): Omit<ProductRow, "id" | "created_at" | "updated_at"> {
   return {
     name_cs: product.nameCs,
     name_en: product.nameEn,
@@ -129,13 +138,13 @@ export function getLocalizedContent<T>(content: LocalizedContent<T>, locale: Loc
 export function createSlug(name: string): string {
   return name
     .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '') // Remove diacritics
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "") // Remove diacritics
+    .replace(/[^a-z0-9\s-]/g, "") // Remove special characters
+    .replace(/\s+/g, "-") // Replace spaces with hyphens
+    .replace(/-+/g, "-") // Replace multiple hyphens with single
     .trim()
-    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+    .replace(/^-|-$/g, ""); // Remove leading/trailing hyphens
 }
 
 /**
@@ -144,20 +153,20 @@ export function createSlug(name: string): string {
 export function validateProductData(data: any): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
 
-  if (!data.nameCs || typeof data.nameCs !== 'string') {
-    errors.push('Czech name is required');
+  if (!data.nameCs || typeof data.nameCs !== "string") {
+    errors.push("Czech name is required");
   }
 
-  if (!data.nameEn || typeof data.nameEn !== 'string') {
-    errors.push('English name is required');
+  if (!data.nameEn || typeof data.nameEn !== "string") {
+    errors.push("English name is required");
   }
 
-  if (!data.slug || typeof data.slug !== 'string') {
-    errors.push('Slug is required');
+  if (!data.slug || typeof data.slug !== "string") {
+    errors.push("Slug is required");
   }
 
-  if (typeof data.basePrice !== 'number' || data.basePrice < 0) {
-    errors.push('Base price must be a positive number');
+  if (typeof data.basePrice !== "number" || data.basePrice < 0) {
+    errors.push("Base price must be a positive number");
   }
 
   return {
@@ -172,16 +181,16 @@ export function validateProductData(data: any): { isValid: boolean; errors: stri
 export function validateCategoryData(data: any): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
 
-  if (!data.nameCs || typeof data.nameCs !== 'string') {
-    errors.push('Czech name is required');
+  if (!data.nameCs || typeof data.nameCs !== "string") {
+    errors.push("Czech name is required");
   }
 
-  if (!data.nameEn || typeof data.nameEn !== 'string') {
-    errors.push('English name is required');
+  if (!data.nameEn || typeof data.nameEn !== "string") {
+    errors.push("English name is required");
   }
 
-  if (!data.slug || typeof data.slug !== 'string') {
-    errors.push('Slug is required');
+  if (!data.slug || typeof data.slug !== "string") {
+    errors.push("Slug is required");
   }
 
   return {

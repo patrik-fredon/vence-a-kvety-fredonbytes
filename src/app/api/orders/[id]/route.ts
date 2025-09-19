@@ -1,19 +1,18 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { orderUtils } from '@/lib/supabase/utils';
-import { Order, OrderStatus } from '@/types/order';
-import { sendOrderStatusUpdateEmail } from '@/lib/email/service';
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { orderUtils } from "@/lib/supabase/utils";
+import { Order, OrderStatus } from "@/types/order";
+import { sendOrderStatusUpdateEmail } from "@/lib/email/service";
 
 /**
  * Get order by ID
  */
-export async function GET(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { id: orderId } = await params;
 
     // Get order with user validation for non-admin users
@@ -23,11 +22,14 @@ export async function GET(
     );
 
     if (error) {
-      console.error('Error fetching order:', error);
-      return NextResponse.json({
-        success: false,
-        error: 'Objednávka nebyla nalezena'
-      }, { status: 404 });
+      console.error("Error fetching order:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Objednávka nebyla nalezena",
+        },
+        { status: 404 }
+      );
     }
 
     // Convert database row to Order type
@@ -53,16 +55,18 @@ export async function GET(
         phone: customerInfo.phone,
         name: `${customerInfo.firstName} ${customerInfo.lastName}`,
         company: customerInfo.company,
-        note: customerInfo.note
+        note: customerInfo.note,
       },
       deliveryInfo: {
         address: deliveryInfo.address,
         urgency: deliveryInfo.urgency,
-        preferredDate: deliveryInfo.preferredDate ? new Date(deliveryInfo.preferredDate) : undefined,
+        preferredDate: deliveryInfo.preferredDate
+          ? new Date(deliveryInfo.preferredDate)
+          : undefined,
         preferredTimeSlot: deliveryInfo.preferredTimeSlot,
         specialInstructions: deliveryInfo.specialInstructions,
         recipientName: deliveryInfo.recipientName,
-        recipientPhone: deliveryInfo.recipientPhone
+        recipientPhone: deliveryInfo.recipientPhone,
       },
       paymentInfo: {
         method: paymentInfo.method,
@@ -71,50 +75,54 @@ export async function GET(
         status: paymentInfo.status,
         transactionId: paymentInfo.transactionId,
         processedAt: paymentInfo.processedAt ? new Date(paymentInfo.processedAt) : undefined,
-        failureReason: paymentInfo.failureReason
+        failureReason: paymentInfo.failureReason,
       },
       status: order.status as OrderStatus,
       notes: order.notes || undefined,
       internalNotes: order.notes || undefined,
       createdAt: new Date(order.created_at),
       updatedAt: new Date(order.updated_at),
-      confirmedAt: undefined,
-      shippedAt: undefined,
-      deliveredAt: undefined,
-      cancelledAt: undefined
+      confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : undefined,
+      shippedAt: order.shipped_at ? new Date(order.shipped_at) : undefined,
+      deliveredAt: order.delivered_at ? new Date(order.delivered_at) : undefined,
+      cancelledAt: order.cancelled_at ? new Date(order.cancelled_at) : undefined,
     };
 
     return NextResponse.json({
       success: true,
-      order: orderResponse
+      order: orderResponse,
     });
-
   } catch (error) {
-    console.error('Error in GET /api/orders/[id]:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in GET /api/orders/[id]:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }
 
 /**
  * Update order status (Admin only)
  */
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ id: string }> }
-) {
+export async function PATCH(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
-    const { data: { user } } = await supabase.auth.getUser();
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
     const { id: orderId } = await params;
 
     if (!user) {
-      return NextResponse.json({
-        success: false,
-        error: 'Unauthorized'
-      }, { status: 401 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Unauthorized",
+        },
+        { status: 401 }
+      );
     }
 
     // Check if user is admin (this would be implemented based on your auth system)
@@ -125,32 +133,46 @@ export async function PATCH(
     const { status, internalNotes } = body;
 
     if (!status) {
-      return NextResponse.json({
-        success: false,
-        error: 'Status je povinný'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Status je povinný",
+        },
+        { status: 400 }
+      );
     }
 
     // Validate status
     const validStatuses: OrderStatus[] = [
-      'pending', 'confirmed', 'processing', 'shipped', 'delivered', 'cancelled'
+      "pending",
+      "confirmed",
+      "processing",
+      "shipped",
+      "delivered",
+      "cancelled",
     ];
 
     if (!validStatuses.includes(status)) {
-      return NextResponse.json({
-        success: false,
-        error: 'Neplatný status objednávky'
-      }, { status: 400 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Neplatný status objednávky",
+        },
+        { status: 400 }
+      );
     }
 
     // Get current order to check if status change is valid
     const { data: currentOrder, error: fetchError } = await orderUtils.getOrderById(orderId);
 
     if (fetchError || !currentOrder) {
-      return NextResponse.json({
-        success: false,
-        error: 'Objednávka nebyla nalezena'
-      }, { status: 404 });
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Objednávka nebyla nalezena",
+        },
+        { status: 404 }
+      );
     }
 
     // Update order status
@@ -161,11 +183,14 @@ export async function PATCH(
     );
 
     if (updateError) {
-      console.error('Error updating order status:', updateError);
-      return NextResponse.json({
-        success: false,
-        error: 'Chyba při aktualizaci stavu objednávky'
-      }, { status: 500 });
+      console.error("Error updating order status:", updateError);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Chyba při aktualizaci stavu objednávky",
+        },
+        { status: 500 }
+      );
     }
 
     // Send email notification if status changed
@@ -194,16 +219,18 @@ export async function PATCH(
             phone: customerInfo.phone,
             name: `${customerInfo.firstName} ${customerInfo.lastName}`,
             company: customerInfo.company,
-            note: customerInfo.note
+            note: customerInfo.note,
           },
           deliveryInfo: {
             address: deliveryInfo.address,
             urgency: deliveryInfo.urgency,
-            preferredDate: deliveryInfo.preferredDate ? new Date(deliveryInfo.preferredDate) : undefined,
+            preferredDate: deliveryInfo.preferredDate
+              ? new Date(deliveryInfo.preferredDate)
+              : undefined,
             preferredTimeSlot: deliveryInfo.preferredTimeSlot,
             specialInstructions: deliveryInfo.specialInstructions,
             recipientName: deliveryInfo.recipientName,
-            recipientPhone: deliveryInfo.recipientPhone
+            recipientPhone: deliveryInfo.recipientPhone,
           },
           paymentInfo: {
             method: paymentInfo.method,
@@ -212,23 +239,23 @@ export async function PATCH(
             status: paymentInfo.status,
             transactionId: paymentInfo.transactionId,
             processedAt: paymentInfo.processedAt ? new Date(paymentInfo.processedAt) : undefined,
-            failureReason: paymentInfo.failureReason
+            failureReason: paymentInfo.failureReason,
           },
           status: updatedOrder.status as OrderStatus,
           notes: updatedOrder.notes || undefined,
           internalNotes: updatedOrder.notes || undefined,
           createdAt: new Date(updatedOrder.created_at),
           updatedAt: new Date(updatedOrder.updated_at),
-          confirmedAt: undefined,
-          shippedAt: undefined,
-          deliveredAt: undefined,
-          cancelledAt: undefined
+          confirmedAt: updatedOrder.confirmed_at ? new Date(updatedOrder.confirmed_at) : undefined,
+          shippedAt: updatedOrder.shipped_at ? new Date(updatedOrder.shipped_at) : undefined,
+          deliveredAt: updatedOrder.delivered_at ? new Date(updatedOrder.delivered_at) : undefined,
+          cancelledAt: updatedOrder.cancelled_at ? new Date(updatedOrder.cancelled_at) : undefined,
         };
 
         // Send status update email
-        await sendOrderStatusUpdateEmail(orderForEmail, status, 'cs');
+        await sendOrderStatusUpdateEmail(orderForEmail, status, "cs");
       } catch (emailError) {
-        console.error('Error sending status update email:', emailError);
+        console.error("Error sending status update email:", emailError);
         // Don't fail the request if email fails
       }
     }
@@ -236,14 +263,16 @@ export async function PATCH(
     return NextResponse.json({
       success: true,
       order: updatedOrder,
-      message: 'Stav objednávky byl úspěšně aktualizován'
+      message: "Stav objednávky byl úspěšně aktualizován",
     });
-
   } catch (error) {
-    console.error('Error in PATCH /api/orders/[id]:', error);
-    return NextResponse.json({
-      success: false,
-      error: 'Interní chyba serveru'
-    }, { status: 500 });
+    console.error("Error in PATCH /api/orders/[id]:", error);
+    return NextResponse.json(
+      {
+        success: false,
+        error: "Interní chyba serveru",
+      },
+      { status: 500 }
+    );
   }
 }

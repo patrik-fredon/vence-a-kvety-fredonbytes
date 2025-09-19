@@ -1,4 +1,4 @@
-import Link from 'next/link'
+import Link from "next/link";
 
 export default function VerifyEmailPage() {
   return (
@@ -21,15 +21,12 @@ export default function VerifyEmailPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">
-              Ověřte svůj e-mail
-            </h2>
+            <h2 className="text-2xl font-bold text-gray-900 mb-2">Ověřte svůj e-mail</h2>
             <p className="text-gray-600 mb-6">
               Registrace byla úspěšná! Odeslali jsme vám ověřovací e-mail.
             </p>
             <p className="text-sm text-gray-500 mb-6">
-              Zkontrolujte svou e-mailovou schránku a klikněte na odkaz
-              pro dokončení registrace.
+              Zkontrolujte svou e-mailovou schránku a klikněte na odkaz pro dokončení registrace.
             </p>
             <div className="space-y-3">
               <Link
@@ -38,10 +35,7 @@ export default function VerifyEmailPage() {
               >
                 Přejít na přihlášení
               </Link>
-              <Link
-                href="/"
-                className="block text-indigo-600 hover:text-indigo-500"
-              >
+              <Link href="/" className="block text-indigo-600 hover:text-indigo-500">
                 Zpět na hlavní stránku
               </Link>
             </div>
@@ -49,10 +43,10 @@ export default function VerifyEmailPage() {
         </div>
       </div>
     </div>
-  )
+  );
 }
 
 export const metadata = {
-  title: 'Ověření e-mailu | Pohřební věnce',
-  description: 'Ověřte svůj e-mail pro dokončení registrace',
-}
+  title: "Ověření e-mailu | Pohřební věnce",
+  description: "Ověřte svůj e-mail pro dokončení registrace",
+};

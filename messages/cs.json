@@ -231,6 +231,83 @@
     "description": "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení.",
     "keywords": "pohřební věnce, květinové aranžmá, pohřeb, rozloučení, věnce"
   },
+  "seo": {
+    "home": {
+      "title": "Pohřební věnce Praha | Ruční výroba | Ketingmar s.r.o.",
+      "description": "Prémiové pohřební věnce a květinové aranžmá s rychlým doručením v Praze. Ruční výroba, čerstvé květiny, důstojné rozloučení. Objednávka online 24/7.",
+      "keywords": [
+        "pohřební věnce",
+        "květinové aranžmá",
+        "smuteční věnce",
+        "pohřeb Praha",
+        "rozloučení",
+        "ruční výroba věnců",
+        "čerstvé květiny",
+        "rychlé doručení",
+        "luxusní věnce",
+        "pietní místo"
+      ],
+      "openGraph": {
+        "title": "Pohřební věnce Praha | Důstojné rozloučení s krásou květin",
+        "description": "Pomáháme rodinám vyjádřit lásku a úctu prostřednictvím krásných pohřebních věnců. Ruční výroba, čerstvé květiny, rychlé doručení.",
+        "type": "website"
+      }
+    },
+    "products": {
+      "title": "Katalog pohřebních věnců | Srdce, kříže, kruhy | Ketingmar",
+      "description": "Široký výběr pohřebních věnců - srdce, kříže, kruhy. Různé velikosti a barvy. Možnost personalizace. Ceny od 2.500 Kč. Rychlé doručení v Praze.",
+      "keywords": [
+        "pohřební věnce katalog",
+        "smuteční věnce srdce",
+        "pohřební kříž",
+        "věnce kruhy",
+        "velikosti věnců",
+        "barvy věnců",
+        "personalizace věnců",
+        "ceny pohřebních věnců",
+        "objednávka věnců online"
+      ],
+      "openGraph": {
+        "title": "Katalog pohřebních věnců | Široký výběr tvarů a velikostí",
+        "description": "Vyberte si z našeho katalogu pohřebních věnců. Srdce, kříže, kruhy v různých velikostech a barvách. Možnost personalizace podle vašich představ.",
+        "type": "website"
+      }
+    },
+    "about": {
+      "title": "O nás | Rodinná květinová dílnička | Ketingmar s.r.o.",
+      "description": "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi. Specializujeme se na pohřební věnce a smuteční květinové aranžmá s důrazem na kvalitu a detail.",
+      "keywords": [
+        "rodinná květinová dílnička",
+        "zkušení floristé",
+        "specializace pohřební věnce",
+        "kvalitní květinové aranžmá",
+        "osobní přístup",
+        "Praha květinářství"
+      ],
+      "openGraph": {
+        "title": "O nás | Rodinná květinová dílnička s tradicí",
+        "description": "Poznajte naši rodinnou květinovou dílničku. Věnujeme se pohřebním věncům s láskou, citem a důrazem na každý detail.",
+        "type": "website"
+      }
+    },
+    "faq": {
+      "title": "Často kladené otázky | Péče o pohřební věnce | Ketingmar",
+      "description": "Odpovědi na nejčastější otázky o pohřebních věncích - skladování, výdrž květin, recyklace. Praktické rady pro péči o smuteční věnce.",
+      "keywords": [
+        "FAQ pohřební věnce",
+        "péče o věnce",
+        "skladování věnců",
+        "výdrž květin",
+        "recyklace věnců",
+        "rady floristů"
+      ],
+      "openGraph": {
+        "title": "FAQ | Vše co potřebujete vědět o pohřebních věncích",
+        "description": "Praktické rady a odpovědi na nejčastější otázky o pohřebních věncích, jejich skladování a péči.",
+        "type": "website"
+      }
+    }
+  },
   "currency": {
     "format": "{amount} Kč"
   },
@@ -240,11 +317,42 @@
     "dayAfterTomorrow": "Pozítří"
   },
   "home": {
+    "hero": {
+      "title": "Důstojné rozloučení s krásou květin",
+      "subtitle": "Pohřební věnce vytvořené s láskou a úctou k vašim blízkým",
+      "description": "V těžkých chvílích rozloučení vám pomůžeme vyjádřit lásku a úctu prostřednictvím nádherných květinových aranžmá. Každý věnec vytváříme s citem, pečlivostí a porozuměním pro vaši ztrátu.",
+      "cta": "Vybrat věnec pro rozloučení"
+    },
+    "philosophy": {
+      "quote": "Život je křehký jako motýlí prach, ale krása a láska zůstávají navždy",
+      "text": "Uvědomujeme si, že život je křehký jako motýlí prach a že v jednom okamžiku se může náš svět změnit. Naše fyzická podoba se pak promění v jinou energii. Každý den je plný těchto proměn, viditelných i neviditelných. Jednou z těchto viditelných proměn je motýl, jehož přirozeným procesem je transformace z housenky na krásného tvora. Stejně tak vnímáme odchod na druhou stranu – jako přirozenou transformaci, která pokračuje v jiné podobě."
+    },
     "title": "Pohřební věnce",
     "subtitle": "Prémiové pohřební věnce a květinové aranžmá pro důstojné rozloučení",
     "description": "Ruční výroba, pečlivý výběr květin a rychlé dodání. Pomáháme vám vyjádřit úctu a lásku v těžkých chvílích.",
     "browseWreaths": "Prohlédnout věnce",
     "contactUs": "Kontaktovat nás",
+    "benefits": {
+      "title": "Proč si vybrat naše pohřební věnce",
+      "items": [
+        {
+          "title": "Garance čerstvosti květin",
+          "description": "Květiny objednáváme vždy čerstvé až na základě vaší objednávky. Garantujeme nejvyšší kvalitu a dlouhou výdrž každého květu pro důstojné rozloučení."
+        },
+        {
+          "title": "Spolehlivé doručení na míru",
+          "description": "Produkty doručíme přesně na vámi určené místo v čase, který vám vyhovuje. Rozumíme naléhavosti a zajistíme včasné dodání bez stresu."
+        },
+        {
+          "title": "Pečlivá ruční práce",
+          "description": "Dáváme si záležet na uložení každého jednoho květu tak, aby výsledná práce byla dokonalá. Každý věnec je jedinečné dílo vytvořené s láskou a úctou."
+        },
+        {
+          "title": "Možnost personalizace",
+          "description": "Máte možnost si vybrat tvar, velikost a barevnost vašeho smutečního věnce podle vlastních představ. Pomůžeme vám vytvořit osobní a významné rozloučení."
+        }
+      ]
+    },
     "features": {
       "handcrafted": {
         "title": "Ruční výroba",
@@ -260,25 +368,87 @@
       }
     }
   },
-  "home": {
-    "title": "Pohřební věnce",
-    "subtitle": "Prémiové pohřební věnce a květinové aranžmá pro důstojné rozloučení",
-    "description": "Ruční výroba, pečlivý výběr květin a rychlé dodání. Pomáháme vám vyjádřit úctu a lásku v těžkých chvílích.",
-    "browseWreaths": "Prohlédnout věnce",
-    "contactUs": "Kontaktovat nás",
-    "features": {
-      "handcrafted": {
-        "title": "Ruční výroba",
-        "description": "Každý věnec je pečlivě vytvořen našimi zkušenými floristy s důrazem na detail a kvalitu."
+  "faq": {
+    "title": "Často kladené otázky",
+    "items": [
+      {
+        "question": "Jak správně skladovat a pečovat o pohřební věnec?",
+        "answer": "Pokud si přejete věnec doručit den nebo dva před obřadem, doporučujeme jej nechat vodorovně uložený v původní krabici. Zajistíte tak, že voda z korpusu věnce neodteče. Žádná další péče není nutná – věnec je dostatečně nasycen vodou a květiny jsou ošetřeny pro co nejdelší výdrž."
       },
-      "fastDelivery": {
-        "title": "Rychlé dodání",
-        "description": "Dodání již následující den. Rozumíme naléhavosti a zajistíme včasné doručení."
+      {
+        "question": "Jak dlouho zůstanou květiny v pohřebním věnci čerstvé?",
+        "answer": "Výdrž květin závisí na povětrnostních podmínkách. Obecně platí, že čím kratší stonek, tím delší výdrž. Smuteční věnce jsou určeny k vystavení na pietním místě. V létě při vysokých teplotách vydrží věnec krásný po dobu jednoho týdne, v chladnějším období může vydržet až dva týdny."
       },
-      "personalApproach": {
-        "title": "Osobní přístup",
-        "description": "Pomůžeme vám vybrat nebo přizpůsobit věnec podle vašich představ a požadavků."
+      {
+        "question": "Co dělat s věncem po uvadnutí květin?",
+        "answer": "Doporučujeme ekologickou recyklaci. Květiny z věnce vyhoďte do sběrné popelnice určené pro bio odpad a korpus věnce do sběru plastů. Společně tak šetříme přírodu a dbáme na odpovědné nakládání s materiály."
       }
-    }
+    ]
+  },
+  "about": {
+    "title": "O naší květinové dílničce",
+    "mission": "Pomáháme rodinám vyjádřit lásku a úctu k jejich blízkým prostřednictvím krásných květinových aranžmá v nejtěžších chvílích života.",
+    "story": "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi, která svou práci dělá s citem a důrazem na každý detail. Květinám se věnujeme řadu let a věříme, že sféra smutečních květin si zaslouží více pozornosti a krásy. Do každé vaší objednávky dáváme kousek svého srdce a profesionální přístup, aby tato smutná událost ve vašich životech byla alespoň trochu příjemnější.",
+    "values": "Každý květ vybíráme s odbornou pečlivostí a kvalitou, aby výsledek naší práce splňoval všechna vaša očekávání. Květiny kupujeme vždy čerstvé, pečlivě je čistíme a ošetřujeme s profesionální péčí, aby památku vašeho milovaného uctívaly na pietním místě co nejdéle.",
+    "commitment": "Naším závazkem je poskytovat nejen krásné květinové aranžmá, ale také porozumění, empatie a podporu v těžkých chvílích. Věříme, že kvalitní ruční práce a osobní přístup mohou přinést útěchu a důstojnost do procesu rozloučení."
+  },
+  "gdpr": {
+    "consentTitle": "Souhlas se zpracováním osobních údajů",
+    "consentDescription": "Používáme cookies a zpracováváme osobní údaje pro zlepšení vašeho zážitku. Můžete si vybrat, s čím souhlasíte.",
+    "functionalCookies": "Funkční cookies",
+    "functionalCookiesDescription": "Nezbytné pro základní fungování webu",
+    "analyticsCookies": "Analytické cookies",
+    "analyticsCookiesDescription": "Pomáhají nám zlepšovat web analýzou návštěvnosti",
+    "marketingCookies": "Marketingové cookies",
+    "marketingCookiesDescription": "Umožňují personalizaci reklam a obsahu",
+    "acceptAll": "Přijmout vše",
+    "rejectAll": "Odmítnout vše",
+    "savePreferences": "Uložit předvolby",
+    "manageConsent": "Spravovat souhlas",
+    "consentSaveError": "Nepodařilo se uložit předvolby souhlasu",
+    "exportData": "Exportovat data",
+    "exporting": "Exportuji...",
+    "exportComplete": "Export dokončen",
+    "exportError": "Nepodařilo se exportovat data",
+    "deleteData": "Smazat data",
+    "deletionConfirmationTitle": "Smazání všech dat",
+    "deletionWarning": "Tato akce je nevratná. Všechna vaše data budou trvale smazána včetně objednávek, košíku a profilu.",
+    "reasonLabel": "Důvod smazání",
+    "reasonPlaceholder": "Proč chcete smazat svá data?",
+    "confirmationLabel": "Potvrzení",
+    "confirmationHint": "Napište 'DELETE_MY_DATA' pro potvrzení",
+    "confirmationTextError": "Musíte napsat přesně 'DELETE_MY_DATA'",
+    "confirmDeletion": "Potvrdit smazání",
+    "deleting": "Mažu...",
+    "deletionSuccess": "Vaše data byla úspěšně smazána",
+    "deletionError": "Nepodařilo se smazat data",
+    "optional": "volitelné"
+  },
+  "accessibility": {
+    "accessibilityOptions": "Možnosti přístupnosti",
+    "toolbarDescription": "Přizpůsobte si prohlížení pomocí funkcí pro přístupnost",
+    "toolbarOpened": "Panel přístupnosti otevřen",
+    "toolbarClosed": "Panel přístupnosti zavřen",
+    "openAccessibilityToolbar": "Otevřít panel přístupnosti",
+    "closeAccessibilityToolbar": "Zavřít panel přístupnosti",
+    "navigation": "Navigace",
+    "visualOptions": "Vizuální možnosti",
+    "skipToContent": "Přejít na hlavní obsah",
+    "skipToNavigation": "Přejít na navigaci",
+    "skipToSearch": "Přejít na vyhledávání",
+    "skipToFooter": "Přejít na zápatí",
+    "skipNavigation": "Přeskočit navigaci",
+    "skippedToContent": "Přeskočeno na hlavní obsah",
+    "skippedToNavigation": "Přeskočeno na navigaci",
+    "enableHighContrast": "Zapnout vysoký kontrast",
+    "disableHighContrast": "Vypnout vysoký kontrast",
+    "highContrastOn": "Vysoký kontrast zapnut",
+    "highContrastOff": "Vysoký kontrast vypnut",
+    "keyboardShortcuts": "Klávesové zkratky",
+    "navigateForward": "Navigovat vpřed",
+    "navigateBackward": "Navigovat vzad",
+    "activate": "Aktivovat prvek",
+    "close": "Zavřít dialog",
+    "navigateArrows": "Navigovat šipkami"
   }
 }

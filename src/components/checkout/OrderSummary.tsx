@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React from 'react';
-import { useTranslations } from 'next-intl';
-import Image from 'next/image';
-import { ShoppingCartIcon } from '@heroicons/react/24/outline';
-import { CartItem } from '@/types/cart';
-import { OrderSummary as OrderSummaryType } from '@/types/order';
-import { formatPrice } from '@/lib/utils';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import React from "react";
+import { useTranslations } from "next-intl";
+import Image from "next/image";
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { CartItem } from "@/types/cart";
+import { OrderSummary as OrderSummaryType } from "@/types/order";
+import { formatPrice } from "@/lib/utils";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 interface OrderSummaryProps {
   items: CartItem[];
@@ -28,11 +28,11 @@ export function OrderSummary({
   estimatedDeliveryDate,
   locale,
   isLoading = false,
-  className = ''
+  className = "",
 }: OrderSummaryProps) {
-  const t = useTranslations('checkout');
-  const tCart = useTranslations('cart');
-  const tDelivery = useTranslations('delivery');
+  const t = useTranslations("checkout");
+  const tCart = useTranslations("cart");
+  const tDelivery = useTranslations("delivery");
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -50,11 +50,9 @@ export function OrderSummary({
     <div className={`bg-white rounded-lg shadow-soft ${className}`}>
       {/* Header */}
       <div className="p-6 border-b border-neutral-200">
-        <h2 className="text-elegant text-xl font-semibold text-primary-800">
-          {t('orderSummary')}
-        </h2>
+        <h2 className="text-elegant text-xl font-semibold text-primary-800">{t("orderSummary")}</h2>
         <p className="text-neutral-600 mt-1">
-          {itemCount} {itemCount === 1 ? tCart('item') : tCart('items')}
+          {itemCount} {itemCount === 1 ? tCart("item") : tCart("items")}
         </p>
       </div>
 
@@ -62,11 +60,7 @@ export function OrderSummary({
       <div className="p-6 border-b border-neutral-200">
         <div className="space-y-4">
           {items.map((item) => (
-            <OrderSummaryItem
-              key={item.id}
-              item={item}
-              locale={locale}
-            />
+            <OrderSummaryItem key={item.id} item={item} locale={locale} />
           ))}
         </div>
       </div>
@@ -75,38 +69,29 @@ export function OrderSummary({
       <div className="p-6 space-y-3">
         {/* Subtotal */}
         <div className="flex justify-between items-center">
-          <span className="text-neutral-700">
-            {tCart('subtotal')}
-          </span>
+          <span className="text-neutral-700">{tCart("subtotal")}</span>
           <span className="font-medium text-neutral-900">
-            {formatPrice(subtotal, locale as 'cs' | 'en')}
+            {formatPrice(subtotal, locale as "cs" | "en")}
           </span>
         </div>
 
         {/* Delivery Cost */}
         <div className="flex justify-between items-center">
-          <span className="text-neutral-700">
-            {tCart('shipping')}
-          </span>
+          <span className="text-neutral-700">{tCart("shipping")}</span>
           <span className="font-medium text-neutral-900">
-            {deliveryCost > 0
-              ? formatPrice(deliveryCost, locale as 'cs' | 'en')
-              : t('free')
-            }
+            {deliveryCost > 0 ? formatPrice(deliveryCost, locale as "cs" | "en") : t("free")}
           </span>
         </div>
 
         {/* Estimated Delivery Date */}
         {estimatedDeliveryDate && (
           <div className="flex justify-between items-center text-sm">
-            <span className="text-neutral-600">
-              {tDelivery('cost.estimatedDelivery')}
-            </span>
+            <span className="text-neutral-600">{tDelivery("cost.estimatedDelivery")}</span>
             <span className="text-neutral-800">
-              {estimatedDeliveryDate.toLocaleDateString(locale === 'cs' ? 'cs-CZ' : 'en-US', {
-                weekday: 'short',
-                month: 'short',
-                day: 'numeric'
+              {estimatedDeliveryDate.toLocaleDateString(locale === "cs" ? "cs-CZ" : "en-US", {
+                weekday: "short",
+                month: "short",
+                day: "numeric",
               })}
             </span>
           </div>
@@ -115,11 +100,9 @@ export function OrderSummary({
         {/* Total */}
         <div className="pt-3 border-t border-neutral-200">
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold text-neutral-900">
-              {tCart('total')}
-            </span>
+            <span className="text-lg font-semibold text-neutral-900">{tCart("total")}</span>
             <span className="text-xl font-bold text-primary-800">
-              {formatPrice(totalAmount, locale as 'cs' | 'en')}
+              {formatPrice(totalAmount, locale as "cs" | "en")}
             </span>
           </div>
         </div>
@@ -135,15 +118,15 @@ interface OrderSummaryItemProps {
 }
 
 function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
-  const tCart = useTranslations('cart');
+  const tCart = useTranslations("cart");
   const product = item.product;
 
   if (!product) {
     return null;
   }
 
-  const productName = locale === 'cs' ? product.name.cs : product.name.en;
-  const primaryImage = product.images?.find(img => img.isPrimary) || product.images?.[0];
+  const productName = locale === "cs" ? product.name.cs : product.name.en;
+  const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
 
   return (
     <div className="flex items-start space-x-3">
@@ -166,9 +149,7 @@ function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <h4 className="text-sm font-medium text-neutral-900 truncate">
-          {productName}
-        </h4>
+        <h4 className="text-sm font-medium text-neutral-900 truncate">{productName}</h4>
 
         {/* Customizations */}
         {item.customizations && item.customizations.length > 0 && (
@@ -176,7 +157,9 @@ function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
             {item.customizations.map((customization, index) => (
               <div key={index} className="text-xs text-neutral-600">
                 {customization.customValue && (
-                  <span>{tCart('customMessage')}: {customization.customValue}</span>
+                  <span>
+                    {tCart("customMessage")}: {customization.customValue}
+                  </span>
                 )}
               </div>
             ))}
@@ -186,10 +169,10 @@ function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
         {/* Quantity and Price */}
         <div className="mt-2 flex items-center justify-between">
           <span className="text-xs text-neutral-600">
-            {tCart('quantity')}: {item.quantity}
+            {tCart("quantity")}: {item.quantity}
           </span>
           <span className="text-sm font-medium text-neutral-900">
-            {formatPrice(item.totalPrice || 0, locale as 'cs' | 'en')}
+            {formatPrice(item.totalPrice || 0, locale as "cs" | "en")}
           </span>
         </div>
       </div>
@@ -204,40 +187,38 @@ export function CompactOrderSummary({
   deliveryCost,
   totalAmount,
   locale,
-  className = ''
-}: Omit<OrderSummaryProps, 'estimatedDeliveryDate' | 'isLoading'>) {
-  const t = useTranslations('checkout');
-  const tCart = useTranslations('cart');
+  className = "",
+}: Omit<OrderSummaryProps, "estimatedDeliveryDate" | "isLoading">) {
+  const t = useTranslations("checkout");
+  const tCart = useTranslations("cart");
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <div className={`bg-neutral-50 rounded-lg p-4 ${className}`}>
       <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-neutral-700">
-          {t('orderSummary')}
-        </span>
+        <span className="text-sm font-medium text-neutral-700">{t("orderSummary")}</span>
         <span className="text-sm text-neutral-600">
-          {itemCount} {itemCount === 1 ? tCart('item') : tCart('items')}
+          {itemCount} {itemCount === 1 ? tCart("item") : tCart("items")}
         </span>
       </div>
 
       <div className="space-y-2 text-sm">
         <div className="flex justify-between">
-          <span className="text-neutral-600">{tCart('subtotal')}</span>
-          <span>{formatPrice(subtotal, locale as 'cs' | 'en')}</span>
+          <span className="text-neutral-600">{tCart("subtotal")}</span>
+          <span>{formatPrice(subtotal, locale as "cs" | "en")}</span>
         </div>
 
         <div className="flex justify-between">
-          <span className="text-neutral-600">{tCart('shipping')}</span>
-          <span>{formatPrice(deliveryCost, locale as 'cs' | 'en')}</span>
+          <span className="text-neutral-600">{tCart("shipping")}</span>
+          <span>{formatPrice(deliveryCost, locale as "cs" | "en")}</span>
         </div>
 
         <div className="pt-2 border-t border-neutral-200">
           <div className="flex justify-between font-semibold">
-            <span>{tCart('total')}</span>
+            <span>{tCart("total")}</span>
             <span className="text-primary-800">
-              {formatPrice(totalAmount, locale as 'cs' | 'en')}
+              {formatPrice(totalAmount, locale as "cs" | "en")}
             </span>
           </div>
         </div>

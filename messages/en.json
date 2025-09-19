@@ -231,6 +231,83 @@
     "description": "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
     "keywords": "funeral wreaths, floral arrangements, funeral, farewell, wreaths"
   },
+  "seo": {
+    "home": {
+      "title": "Funeral Wreaths Prague | Handcrafted | Ketingmar s.r.o.",
+      "description": "Premium funeral wreaths and floral arrangements with fast delivery in Prague. Handcrafted, fresh flowers, dignified farewell. Order online 24/7.",
+      "keywords": [
+        "funeral wreaths",
+        "floral arrangements",
+        "memorial wreaths",
+        "funeral Prague",
+        "farewell",
+        "handcrafted wreaths",
+        "fresh flowers",
+        "fast delivery",
+        "luxury wreaths",
+        "memorial site"
+      ],
+      "openGraph": {
+        "title": "Funeral Wreaths Prague | Dignified Farewell with Flower Beauty",
+        "description": "We help families express love and respect through beautiful funeral wreaths. Handcrafted, fresh flowers, fast delivery.",
+        "type": "website"
+      }
+    },
+    "products": {
+      "title": "Funeral Wreaths Catalog | Hearts, Crosses | Ketingmar",
+      "description": "Wide selection of funeral wreaths - hearts, crosses, circles. Various sizes and colors. Personalization options. Prices from 2,500 CZK. Fast delivery in Prague.",
+      "keywords": [
+        "funeral wreaths catalog",
+        "memorial wreaths hearts",
+        "funeral cross",
+        "wreaths circles",
+        "wreath sizes",
+        "wreath colors",
+        "wreath personalization",
+        "funeral wreath prices",
+        "order wreaths online"
+      ],
+      "openGraph": {
+        "title": "Funeral Wreaths Catalog | Wide Selection of Shapes and Sizes",
+        "description": "Choose from our catalog of funeral wreaths. Hearts, crosses, circles in various sizes and colors. Personalization options according to your ideas.",
+        "type": "website"
+      }
+    },
+    "about": {
+      "title": "About Us | Family Floral Workshop | Ketingmar s.r.o.",
+      "description": "Small family floral workshop with years of experience. We specialize in funeral wreaths and memorial arrangements with emphasis on quality and detail.",
+      "keywords": [
+        "family floral workshop",
+        "experienced florists",
+        "funeral wreaths specialization",
+        "quality floral arrangements",
+        "personal approach",
+        "Prague florist"
+      ],
+      "openGraph": {
+        "title": "About Us | Family Floral Workshop with Tradition",
+        "description": "Get to know our family floral workshop. We dedicate ourselves to funeral wreaths with love, sensitivity and attention to every detail.",
+        "type": "website"
+      }
+    },
+    "faq": {
+      "title": "Frequently Asked Questions | Funeral Wreath Care | Ketingmar",
+      "description": "Answers to the most common questions about funeral wreaths - storage, flower longevity, recycling. Practical advice for memorial wreath care.",
+      "keywords": [
+        "FAQ funeral wreaths",
+        "wreath care",
+        "wreath storage",
+        "flower longevity",
+        "wreath recycling",
+        "florist advice"
+      ],
+      "openGraph": {
+        "title": "FAQ | Everything You Need to Know About Funeral Wreaths",
+        "description": "Practical advice and answers to the most common questions about funeral wreaths, their storage and care.",
+        "type": "website"
+      }
+    }
+  },
   "currency": {
     "format": "{amount} CZK"
   },
@@ -240,11 +317,42 @@
     "dayAfterTomorrow": "Day After Tomorrow"
   },
   "home": {
+    "hero": {
+      "title": "A Dignified Farewell with the Beauty of Flowers",
+      "subtitle": "Funeral wreaths created with love and respect for your loved ones",
+      "description": "In the difficult moments of farewell, we help you express love and respect through beautiful floral arrangements. Each wreath is created with sensitivity, care, and understanding for your loss.",
+      "cta": "Choose a Wreath for Farewell"
+    },
+    "philosophy": {
+      "quote": "Life is fragile as butterfly dust, but beauty and love remain forever",
+      "text": "We understand that life is fragile as butterfly dust and that in one moment our world can change. Our physical form then transforms into another energy. Every day is full of these transformations, visible and invisible. One of these visible transformations is the butterfly, whose natural process is transformation from caterpillar to beautiful creature. Similarly, we perceive the departure to the other side – as a natural transformation that continues in another form."
+    },
     "title": "Funeral Wreaths",
     "subtitle": "Premium funeral wreaths and floral arrangements for dignified farewell",
     "description": "Handcrafted, careful flower selection and fast delivery. We help you express respect and love in difficult times.",
     "browseWreaths": "Browse Wreaths",
     "contactUs": "Contact Us",
+    "benefits": {
+      "title": "Why Choose Our Funeral Wreaths",
+      "items": [
+        {
+          "title": "Fresh Flower Guarantee",
+          "description": "We always order flowers fresh based on your order. We guarantee the highest quality and long-lasting freshness of every bloom for a dignified farewell."
+        },
+        {
+          "title": "Reliable Custom Delivery",
+          "description": "We deliver products exactly to your specified location at a time that suits you. We understand urgency and ensure timely delivery without stress."
+        },
+        {
+          "title": "Careful Handcrafted Work",
+          "description": "We take care in placing every single flower so that the final work is perfect. Each wreath is a unique piece created with love and respect."
+        },
+        {
+          "title": "Personalization Options",
+          "description": "You have the option to choose the shape, size, and colors of your funeral wreath according to your own ideas. We help you create a personal and meaningful farewell."
+        }
+      ]
+    },
     "features": {
       "handcrafted": {
         "title": "Handcrafted",
@@ -260,25 +368,87 @@
       }
     }
   },
-  "home": {
-    "title": "Funeral Wreaths",
-    "subtitle": "Premium funeral wreaths and floral arrangements for dignified farewell",
-    "description": "Handcrafted, careful flower selection and fast delivery. We help you express respect and love in difficult times.",
-    "browseWreaths": "Browse Wreaths",
-    "contactUs": "Contact Us",
-    "features": {
-      "handcrafted": {
-        "title": "Handcrafted",
-        "description": "Each wreath is carefully crafted by our experienced florists with attention to detail and quality."
+  "faq": {
+    "title": "Frequently Asked Questions",
+    "items": [
+      {
+        "question": "How to properly store and care for a funeral wreath?",
+        "answer": "If you wish to have the wreath delivered a day or two before the ceremony, we recommend keeping it horizontally in the original box. This ensures that water from the wreath base doesn't drain out. No additional care is needed – the wreath is sufficiently saturated with water and the flowers are treated for maximum longevity."
       },
-      "fastDelivery": {
-        "title": "Fast Delivery",
-        "description": "Next-day delivery available. We understand urgency and ensure timely delivery."
+      {
+        "question": "How long will the flowers in a funeral wreath stay fresh?",
+        "answer": "The longevity of flowers depends on weather conditions. Generally, the shorter the stem, the longer the durability. Funeral wreaths are intended for display at memorial sites. In summer with high temperatures, the wreath will remain beautiful for one week, while in cooler weather it can last up to two weeks."
       },
-      "personalApproach": {
-        "title": "Personal Approach",
-        "description": "We help you select or customize a wreath according to your ideas and requirements."
+      {
+        "question": "What to do with the wreath after the flowers wilt?",
+        "answer": "We recommend ecological recycling. Dispose of the flowers from the wreath in the collection bin designated for bio waste and the wreath base in plastic recycling. Together we protect nature and ensure responsible handling of materials."
       }
-    }
+    ]
+  },
+  "about": {
+    "title": "About Our Floral Workshop",
+    "mission": "We help families express love and respect for their loved ones through beautiful floral arrangements in life's most difficult moments.",
+    "story": "We are a small family floral workshop that approaches our work with sensitivity and attention to every detail. We have been dedicated to flowers for many years and believe that the sphere of funeral flowers deserves more attention and beauty. We put a piece of our heart into each of your orders, so that this sad event in your lives becomes at least a little more pleasant.",
+    "values": "We select each flower with care so that the result of our work meets all your expectations. We always buy flowers fresh, carefully clean and treat them so that they honor the memory of your loved one at the memorial site for as long as possible.",
+    "commitment": "Our commitment is to provide not only beautiful floral arrangements, but also understanding, empathy, and support in difficult times. We believe that quality handwork and personal approach can bring comfort and dignity to the farewell process."
+  },
+  "gdpr": {
+    "consentTitle": "Data Processing Consent",
+    "consentDescription": "We use cookies and process personal data to improve your experience. You can choose what you agree with.",
+    "functionalCookies": "Functional cookies",
+    "functionalCookiesDescription": "Essential for basic website functionality",
+    "analyticsCookies": "Analytics cookies",
+    "analyticsCookiesDescription": "Help us improve the website by analyzing traffic",
+    "marketingCookies": "Marketing cookies",
+    "marketingCookiesDescription": "Enable personalization of ads and content",
+    "acceptAll": "Accept All",
+    "rejectAll": "Reject All",
+    "savePreferences": "Save Preferences",
+    "manageConsent": "Manage Consent",
+    "consentSaveError": "Failed to save consent preferences",
+    "exportData": "Export Data",
+    "exporting": "Exporting...",
+    "exportComplete": "Export Complete",
+    "exportError": "Failed to export data",
+    "deleteData": "Delete Data",
+    "deletionConfirmationTitle": "Delete All Data",
+    "deletionWarning": "This action is irreversible. All your data will be permanently deleted including orders, cart, and profile.",
+    "reasonLabel": "Reason for deletion",
+    "reasonPlaceholder": "Why do you want to delete your data?",
+    "confirmationLabel": "Confirmation",
+    "confirmationHint": "Type 'DELETE_MY_DATA' to confirm",
+    "confirmationTextError": "You must type exactly 'DELETE_MY_DATA'",
+    "confirmDeletion": "Confirm Deletion",
+    "deleting": "Deleting...",
+    "deletionSuccess": "Your data has been successfully deleted",
+    "deletionError": "Failed to delete data",
+    "optional": "optional"
+  },
+  "accessibility": {
+    "accessibilityOptions": "Accessibility Options",
+    "toolbarDescription": "Customize your browsing experience with accessibility features",
+    "toolbarOpened": "Accessibility toolbar opened",
+    "toolbarClosed": "Accessibility toolbar closed",
+    "openAccessibilityToolbar": "Open accessibility toolbar",
+    "closeAccessibilityToolbar": "Close accessibility toolbar",
+    "navigation": "Navigation",
+    "visualOptions": "Visual Options",
+    "skipToContent": "Skip to main content",
+    "skipToNavigation": "Skip to navigation",
+    "skipToSearch": "Skip to search",
+    "skipToFooter": "Skip to footer",
+    "skipNavigation": "Skip navigation",
+    "skippedToContent": "Jumped to main content",
+    "skippedToNavigation": "Jumped to navigation",
+    "enableHighContrast": "Enable high contrast",
+    "disableHighContrast": "Disable high contrast",
+    "highContrastOn": "High contrast mode enabled",
+    "highContrastOff": "High contrast mode disabled",
+    "keyboardShortcuts": "Keyboard Shortcuts",
+    "navigateForward": "Navigate forward",
+    "navigateBackward": "Navigate backward",
+    "activate": "Activate element",
+    "close": "Close dialog",
+    "navigateArrows": "Navigate with arrows"
   }
 }
