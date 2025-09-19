@@ -1,0 +1,30 @@
+{
+  "enabled": true,
+  "name": "Documentation Sync",
+  "description": "Monitors TypeScript source files, configuration files, and other relevant project files for changes and automatically updates documentation in README.md, docs folder, and GitHub repository files like CODE_OF_CONDUCT.md, CONTRIBUTING.md, and LICENSE to keep them current with codebase changes",
+  "version": "1",
+  "when": {
+    "type": "fileCreated",
+    "patterns": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.jsx",
+      "package.json",
+      "tsconfig.json",
+      "next.config.ts",
+      "tailwind.config.ts",
+      "playwright.config.ts",
+      "jest.config.js",
+      "vercel.json",
+      "supabase/**/*.sql",
+      "messages/*.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Source code files have been modified in this TypeScript/Next.js project. Please analyze the changes and update the project documentation accordingly. Focus on:\n\n1. Update README.md with any new features, API changes, or setup instructions\n2. Update documentation in the /docs folder if it exists with technical details\n3. Refresh GitHub repository documentation files:\n   - CODE_OF_CONDUCT.md (if behavioral guidelines changed)\n   - LICENSE (if licensing changed) \n   - CONTRIBUTING.md (if development workflow changed)\n   - Any other .md files in the root\n\nEnsure all documentation is:\n- Accurate and reflects current codebase state\n- Detailed for user understanding\n- Fresh and up-to-date\n- Consistent with the project's internationalization (Czech/English support)\n- Aligned with the Next.js 15 + TypeScript + Supabase architecture\n\nPay special attention to API changes, new components, configuration updates, and any architectural modifications."
+  }
+}

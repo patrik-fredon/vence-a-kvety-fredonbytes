@@ -1,12 +1,25 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import path from "path";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
   // Enable experimental features for better performance
   experimental: {
-    optimizePackageImports: ["@/components", "@/lib", "@/types"],
+    optimizePackageImports: [
+      "@/components",
+      "@/lib",
+      "@/types",
+      "@headlessui/react",
+      "@heroicons/react",
+      "clsx",
+      "tailwind-merge"
+    ],
+    // Enable server components optimization
+    serverComponentsExternalPackages: ["@supabase/supabase-js"],
+    // Optimize CSS imports
+    optimizeCss: true,
   },
 
   // Turbopack configuration (replaces experimental.turbo)
@@ -129,20 +142,75 @@ const nextConfig: NextConfig = {
     ];
   },
 
-  // Webpack configuration for better bundle optimization
-  webpack: (config, { dev, isServer }) => {
+  // Webpack configuration for better bundle optimization and tree-shaking
+  webpack: (config, { dev, isServer, webpack }) => {
     // Optimize bundle size in production
     if (!dev && !isServer) {
+      // Enhanced code splitting configuration
       config.optimization.splitChunks = {
         chunks: "all",
+        minSize: 20000,
+        maxSize: 244000,
         cacheGroups: {
+          // Vendor libraries
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: "vendors",
             chunks: "all",
+            priority: 10,
+          },
+          // React and React DOM
+          react: {
+            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
+            name: "react",
+            chunks: "all",
+            priority: 20,
+          },
+          // UI libraries
+          ui: {
+            test: /[\\/]node_modules[\\/](@headlessui|@heroicons)[\\/]/,
+            name: "ui-libs",
+            chunks: "all",
+            priority: 15,
+          },
+          // Supabase
+          supabase: {
+            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
+            name: "supabase",
+            chunks: "all",
+            priority: 15,
+          },
+          // Common components
+          components: {
+            test: /[\\/]src[\\/]components[\\/]/,
+            name: "components",
+            chunks: "all",
+            minChunks: 2,
+            priority: 5,
           },
         },
       };
+
+      // Tree-shaking optimizations
+      config.optimization.usedExports = true;
+      config.optimization.sideEffects = false;
+
+      // Module concatenation for better tree-shaking
+      config.optimization.concatenateModules = true;
+    }
+
+    // Resolve alias for better tree-shaking
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@/components": path.resolve(__dirname, "src/components"),
+      "@/lib": path.resolve(__dirname, "src/lib"),
+      "@/types": path.resolve(__dirname, "src/types"),
+      "@/app": path.resolve(__dirname, "src/app"),
+    };
+
+    // Ignore source maps in production for smaller bundles
+    if (!dev) {
+      config.devtool = false;
     }
 
     return config;

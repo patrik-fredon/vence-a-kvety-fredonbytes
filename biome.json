@@ -1,0 +1,180 @@
+{
+  "$schema": "https://biomejs.dev/schemas/2.2.0/schema.json",
+  "vcs": {
+    "enabled": true,
+    "clientKind": "git",
+    "useIgnoreFile": true
+  },
+  "files": {
+    "ignoreUnknown": true,
+    "includes": [
+      "src/**/*",
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.jsx",
+      "*.json"
+    ],
+    "ignore": [
+      "node_modules/**",
+      ".next/**",
+      "dist/**",
+      "build/**",
+      "coverage/**",
+      "*.d.ts"
+    ]
+  },
+  "formatter": {
+    "enabled": true,
+    "indentStyle": "space",
+    "indentWidth": 2,
+    "lineWidth": 100,
+    "lineEnding": "lf",
+    "formatWithErrors": false
+  },
+  "linter": {
+    "enabled": true,
+    "rules": {
+      "recommended": true,
+      "suspicious": {
+        "noExplicitAny": "error",
+        "noArrayIndexKey": "warn",
+        "noAssignInExpressions": "error",
+        "noAsyncPromiseExecutor": "error",
+        "noCommentText": "error",
+        "noCompareNegZero": "error",
+        "noConsoleLog": "warn",
+        "noConstEnum": "error",
+        "noControlCharactersInRegex": "error",
+        "noDebugger": "error",
+        "noDuplicateCase": "error",
+        "noDuplicateClassMembers": "error",
+        "noDuplicateObjectKeys": "error",
+        "noDuplicateParameters": "error",
+        "noEmptyBlockStatements": "error",
+        "noFallthroughSwitchClause": "error",
+        "noFunctionAssign": "error",
+        "noGlobalObjectCalls": "error",
+        "noImportAssign": "error",
+        "noMisleadingCharacterClass": "error",
+        "noPrototypeBuiltins": "error",
+        "noRedeclare": "error",
+        "noShadowRestrictedNames": "error",
+        "noUnsafeNegation": "error"
+      },
+      "style": {
+        "useImportType": "error",
+        "useExportType": "error",
+        "noNonNullAssertion": "warn",
+        "useConst": "error",
+        "useDefaultParameterLast": "error",
+        "useEnumInitializers": "error",
+        "useExponentiationOperator": "error",
+        "useFragmentSyntax": "error",
+        "useLiteralEnumMembers": "error",
+        "useNodejsImportProtocol": "error",
+        "useNumberNamespace": "error",
+        "useNumericLiterals": "error",
+        "useSelfClosingElements": "error",
+        "useShorthandArrayType": "error",
+        "useShorthandAssign": "error",
+        "useSingleVarDeclarator": "error",
+        "useTemplate": "error"
+      },
+      "correctness": {
+        "useExhaustiveDependencies": "warn",
+        "useHookAtTopLevel": "error",
+        "noChildrenProp": "error",
+        "noConstAssign": "error",
+        "noConstructorReturn": "error",
+        "noEmptyCharacterClassInRegex": "error",
+        "noEmptyPattern": "error",
+        "noGlobalObjectCalls": "error",
+        "noInvalidConstructorSuper": "error",
+        "noInvalidNewBuiltin": "error",
+        "noNonoctalDecimalEscape": "error",
+        "noPrecisionLoss": "error",
+        "noSelfAssign": "error",
+        "noSetterReturn": "error",
+        "noSwitchDeclarations": "error",
+        "noUndeclaredVariables": "error",
+        "noUnreachable": "error",
+        "noUnreachableSuper": "error",
+        "noUnsafeFinally": "error",
+        "noUnusedLabels": "error",
+        "noUnusedVariables": "error",
+        "useIsNan": "error",
+        "useValidForDirection": "error",
+        "useYield": "error"
+      },
+      "performance": {
+        "noDelete": "error",
+        "noAccumulatingSpread": "warn"
+      },
+      "complexity": {
+        "noExcessiveCognitiveComplexity": "warn",
+        "noUselessFragments": "error",
+        "noBannedTypes": "error",
+        "noUselessTypeConstraint": "error",
+        "useArrowFunction": "error",
+        "useLiteralKeys": "error",
+        "useOptionalChain": "error",
+        "useSimplifiedLogicExpression": "error"
+      },
+      "a11y": {
+        "useAltText": "error",
+        "useAriaPropsForRole": "error",
+        "useValidAriaProps": "error",
+        "useSemanticElements": "warn",
+        "useButtonType": "error",
+        "useKeyWithClickEvents": "error",
+        "useKeyWithMouseEvents": "error",
+        "useValidAnchor": "error",
+        "noAccessKey": "error",
+        "noAriaUnsupportedElements": "error",
+        "noAutofocus": "error",
+        "noBlankTarget": "error",
+        "noDistractingElements": "error",
+        "noHeaderScope": "error",
+        "noNoninteractiveElementToInteractiveRole": "error",
+        "noNoninteractiveTabindex": "error",
+        "noPositiveTabindex": "error",
+        "noRedundantAlt": "error",
+        "noRedundantRoles": "error",
+        "useFocusableInteractive": "error",
+        "useHeadingContent": "error",
+        "useHtmlLang": "error",
+        "useIframeTitle": "error",
+        "useMediaCaption": "error",
+        "useValidLang": "error"
+      }
+    }
+  },
+  "javascript": {
+    "formatter": {
+      "quoteStyle": "double",
+      "semicolons": "always",
+      "trailingCommas": "es5",
+      "arrowParentheses": "always",
+      "bracketSpacing": true,
+      "bracketSameLine": false,
+      "quoteProperties": "asNeeded"
+    }
+  },
+  "json": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "lineWidth": 100
+    }
+  },
+  "css": {
+    "formatter": {
+      "enabled": true,
+      "indentStyle": "space",
+      "indentWidth": 2,
+      "lineWidth": 100
+    }
+  }
+}
