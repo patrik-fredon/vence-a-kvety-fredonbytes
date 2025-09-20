@@ -37,35 +37,46 @@ export function Button({
 
   const variants = {
     primary: cn(
-      "bg-primary-600 text-white hover:bg-primary-700 shadow-soft",
+      "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800",
+      "shadow-md hover:shadow-lg transition-all duration-200",
+      "focus-visible:ring-primary-500/20",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     secondary: cn(
-      "bg-secondary-600 text-white hover:bg-secondary-700 shadow-soft",
+      "bg-secondary-600 text-white hover:bg-secondary-700 active:bg-secondary-800",
+      "shadow-md hover:shadow-lg transition-all duration-200",
+      "focus-visible:ring-secondary-500/20",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     outline: cn(
-      "border-2 border-primary-600 text-primary-700 hover:bg-primary-50",
+      "border-2 border-primary-600 text-primary-700 bg-white",
+      "hover:bg-primary-50 active:bg-primary-100",
+      "shadow-sm hover:shadow-md transition-all duration-200",
+      "focus-visible:ring-primary-500/20",
       "high-contrast:border-ButtonText high-contrast:text-ButtonText",
       "high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     ghost: cn(
-      "text-primary-700 hover:bg-primary-50",
+      "text-primary-700 bg-transparent hover:bg-primary-50 active:bg-primary-100",
+      "transition-all duration-200",
+      "focus-visible:ring-primary-500/20",
       "high-contrast:text-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     destructive: cn(
-      "bg-red-600 text-white hover:bg-red-700 shadow-soft",
+      "bg-error-600 text-white hover:bg-error-700 active:bg-error-800",
+      "shadow-md hover:shadow-lg transition-all duration-200",
+      "focus-visible:ring-error-500/20",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
   };
 
   const sizes = {
-    sm: "px-3 py-2 text-sm rounded-md min-h-[2rem]",
-    md: "px-4 py-2 text-base rounded-lg min-h-[2.5rem]",
-    lg: "px-6 py-3 text-lg rounded-lg min-h-[3rem]",
+    sm: "px-3 py-2 text-sm rounded-md min-h-[2rem] font-medium",
+    md: "px-4 py-2.5 text-base rounded-lg min-h-[2.75rem] font-medium",
+    lg: "px-6 py-3 text-lg rounded-lg min-h-[3.25rem] font-semibold",
   };
 
   const isDisabled = disabled || loading;

@@ -30,7 +30,7 @@ export const primaryColors = {
 } as const;
 
 /**
- * Secondary color palette - Muted sage
+ * Secondary color palette - Muted sage (adjusted for better contrast)
  * Provides subtle contrast and sophistication
  */
 export const secondaryColors = {
@@ -39,12 +39,12 @@ export const secondaryColors = {
   200: "#D4DAC9",
   300: "#B8C2A6",
   400: "#9BA883",
-  500: "#8B9467", // Main secondary color
-  600: "#6F7752",
-  700: "#565C42",
-  800: "#3E4230",
-  900: "#2A2D21",
-  950: "#181A15",
+  500: "#6F7752", // Main secondary color (darkened for better contrast)
+  600: "#565C42",
+  700: "#3E4230",
+  800: "#2A2D21",
+  900: "#181A15",
+  950: "#0F110D",
 } as const;
 
 /**

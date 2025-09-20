@@ -14,10 +14,20 @@
 
 export { Button } from "./Button";
 export { Input } from "./Input";
-export { LoadingSpinner } from "./LoadingSpinner";
+export { Text } from "./Text";
+export { Heading } from "./Heading";
+export { Badge } from "./Badge";
+export { Divider } from "./Divider";
+export { LoadingSpinner, LoadingState, PageLoadingState, ComponentLoadingState } from "./LoadingSpinner";
 export { OptimizedImage } from "./OptimizedImage";
 export { ErrorBoundary } from "./ErrorBoundary";
 export { LazyWrapper } from "./LazyWrapper";
+
+// =============================================================================
+// MOLECULES - Combinations of atoms
+// =============================================================================
+
+export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./Card";
 
 // =============================================================================
 // TYPE EXPORTS
@@ -33,15 +43,11 @@ export type {
 } from "@/types/components";
 
 // =============================================================================
-// FUTURE ATOMS (to be implemented)
+// FUTURE COMPONENTS (to be implemented as needed)
 // =============================================================================
 
-// export { Text } from "./Text";
-// export { Heading } from "./Heading";
 // export { Icon } from "./Icon";
-// export { Badge } from "./Badge";
 // export { Avatar } from "./Avatar";
-// export { Divider } from "./Divider";
 // export { Skeleton } from "./Skeleton";
 // export { Tooltip } from "./Tooltip";
 // export { Switch } from "./Switch";
@@ -52,7 +58,6 @@ export type {
 // export { Slider } from "./Slider";
 // export { Progress } from "./Progress";
 // export { Alert } from "./Alert";
-// export { Card } from "./Card";
 // export { Modal } from "./Modal";
 // export { Drawer } from "./Drawer";
 // export { Popover } from "./Popover";
