@@ -10,10 +10,7 @@ import {
   CheckCircleIcon,
   EnvelopeIcon,
   PhoneIcon,
-  CalendarIcon,
-  MapPinIcon,
 } from "@heroicons/react/24/outline";
-import { createServerClient } from "@/lib/supabase/server";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {

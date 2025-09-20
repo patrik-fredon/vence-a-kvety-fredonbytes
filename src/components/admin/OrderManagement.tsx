@@ -41,51 +41,9 @@ const statusOptions = [
   { value: "cancelled", label: "Zrušeno" },
 ];
 
-"use client";
-
-import { useState, useEffect } from "react";
-import {
-  EyeIcon,
-  PencilIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
-  CheckCircleIcon,
-  TruckIcon,
-  XCircleIcon,
-} from "@heroicons/react/24/outline";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import OrderDetailModal from "./OrderDetailModal";
-
-interface Order {
-  id: string;
-  orderNumber: string;
-  customerName: string;
-  customerEmail: string;
-  customerPhone: string;
-  status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
-  totalAmount: number;
-  itemCount: number;
-  paymentMethod: string;
-  paymentStatus: string;
-  deliveryAddress: string;
-  preferredDate: string;
-  createdAt: string;
-  updatedAt: string;
-  notes?: string;
-  internalNotes?: string;
-}
-
-const statusOptions = [
-  { value: "", label: "Všechny stavy" },
-  { value: "pending", label: "Čekající" },
-  { value: "confirmed", label: "Potvrzeno" },
-  { value: "processing", label: "Zpracovává se" },
-  { value: "shipped", label: "Odesláno" },
-  { value: "delivered", label: "Doručeno" },
-  { value: "cancelled", label: "Zrušeno" },
-];
 
 export default function OrderManagement() {
   const [orders, setOrders] = useState<Order[]>([]);
