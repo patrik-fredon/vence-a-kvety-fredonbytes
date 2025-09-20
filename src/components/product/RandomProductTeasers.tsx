@@ -159,40 +159,4 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
   );
 }
 
-if (products.length === 0) {
-  return (
-    <div className="text-center py-12">
-      <p className="text-neutral-600">{t("noProducts")}</p>
-    </div>
-  );
-}
 
-return (
-  <div className="mt-20 max-w-6xl mx-auto">
-    <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-primary-800 text-center mb-12">
-      {t("featuredProducts.title")}
-    </h2>
-
-    <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {products.map((product) => (
-        <ProductTeaser
-          key={product.id}
-          product={product}
-          locale={locale}
-          onAddToCart={handleAddToCart}
-          loading={addingToCart === product.id}
-        />
-      ))}
-    </div>
-
-    <div className="text-center mt-8">
-      <a
-        href={`/${locale}/products`}
-        className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
-      >
-        {t("featuredProducts.viewAll")}
-      </a>
-    </div>
-  </div>
-);
-}

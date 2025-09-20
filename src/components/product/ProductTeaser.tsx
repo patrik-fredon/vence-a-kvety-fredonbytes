@@ -47,7 +47,7 @@ export function ProductTeaser({ product, locale, onAddToCart, loading }: Product
               <span className="text-4xl opacity-60">🌹</span>
             </div>
           )}
-          
+
           {/* Featured badge */}
           {product.featured && (
             <div className="absolute top-3 left-3 bg-primary-600 text-white px-2 py-1 rounded-full text-xs font-medium">
@@ -75,8 +75,8 @@ export function ProductTeaser({ product, locale, onAddToCart, loading }: Product
         {/* Availability */}
         <div className="mb-4">
           <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.availability?.inStock
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
+            ? "bg-green-100 text-green-800"
+            : "bg-red-100 text-red-800"
             }`}>
             {product.availability?.inStock ? t("inStock") : t("outOfStock")}
           </span>
@@ -97,61 +97,5 @@ export function ProductTeaser({ product, locale, onAddToCart, loading }: Product
       </div>
     </div>
   );
-} className="block">
-        <div className="aspect-square bg-neutral-100 overflow-hidden">
-          {primaryImage ? (
-            <Image
-              src={primaryImage.url}
-              alt={primaryImage.alt}
-              width={400}
-              height={400}
-              className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-            />
-          ) : (
-            <div className="w-full h-full flex items-center justify-center">
-              <span className="text-4xl">🌹</span>
-            </div>
-          )}
-        </div>
-      </Link>
-
-      {/* Product Info */}
-      <div className="p-6">
-        <Link href={`/${locale}/products/${product.slug}`}>
-          <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-2 hover:text-primary-700 transition-colors line-clamp-2">
-            {productName}
-          </h3>
-        </Link>
-
-        {/* Price */}
-        <div className="mb-4">
-          <span className="text-2xl font-semibold text-primary-800">
-            {formatPrice(product.basePrice, locale as "cs" | "en")}
-          </span>
-        </div>
-
-        {/* Availability */}
-        <div className="mb-4">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.availability?.inStock
-              ? "bg-green-100 text-green-800"
-              : "bg-red-100 text-red-800"
-            }`}>
-            {product.availability?.inStock ? t("inStock") : t("outOfStock")}
-          </span>
-        </div>
-
-        {/* Add to Cart Button */}
-        <Button
-          onClick={handleAddToCart}
-          disabled={!product.availability?.inStock || loading}
-          loading={loading}
-          className="w-full"
-          icon={<ShoppingCartIcon className="w-4 h-4" />}
-          iconPosition="left"
-        >
-          {t("addToCart")}
-        </Button>
-      </div>
-    </div>
-  );
 }
+

@@ -12,6 +12,18 @@ const performanceConfig = {
     FCP: { good: 1800, poor: 3000 }, // First Contentful Paint (ms)
     TTFB: { good: 800, poor: 1800 }, // Time to First Byte (ms)
   },
+  development: {
+    debug: {
+      showWebVitalsOverlay: process.env.NODE_ENV === 'development',
+    },
+  },
+  monitoring: {
+    webVitalsTracking: {
+      endpoint: '/api/monitoring/web-vitals',
+      sampleRate: 0.1,
+      autoReport: true,
+    },
+  },
 };
 
 interface WebVitalsMetric {
@@ -45,10 +57,10 @@ interface WebVitalsTrackerProps {
 }
 
 export function WebVitalsTracker({
-  debug = performanceConfig.development.debug.showWebVitalsOverlay,
-  endpoint = performanceConfig.monitoring.webVitalsTracking.endpoint,
-  sampleRate = performanceConfig.monitoring.webVitalsTracking.sampleRate,
-  autoReport = performanceConfig.monitoring.webVitalsTracking.autoReport,
+  debug = performanceConfig.development?.debug?.showWebVitalsOverlay ?? false,
+  endpoint = performanceConfig.monitoring?.webVitalsTracking?.endpoint ?? '/api/monitoring/web-vitals',
+  sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ?? 0.1,
+  autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ?? true,
   onMetric,
 }: WebVitalsTrackerProps) {
   const [vitals, setVitals] = useState<WebVitalsData>({});
@@ -215,6 +227,11 @@ export function WebVitalsTracker({
    * Get or create session ID
    */
   const getSessionId = () => {
+    // Check if we're in the browser environment
+    if (typeof window === 'undefined' || typeof sessionStorage === 'undefined') {
+      return `server-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    }
+
     let sessionId = sessionStorage.getItem('webvitals_session_id');
     if (!sessionId) {
       sessionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;

@@ -37,9 +37,11 @@ jest.mock('@/components/ui/LoadingSpinner', () => {
 });
 
 // Import after mocks
-import { RandomProductTeasers } from '../RandomProductTeasers';
 import { useTranslations } from 'next-intl';
 import { useCart } from '@/lib/cart/context';
+
+// Import the actual component
+const { RandomProductTeasers } = require('../RandomProductTeasers');
 
 const mockTranslations = {
   'featuredProducts.title': 'Featured Funeral Wreaths',

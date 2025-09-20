@@ -5,6 +5,9 @@ import path from "path";
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
+  // Server external packages (moved from experimental)
+  serverExternalPackages: ["@supabase/supabase-js"],
+
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: [
@@ -16,8 +19,6 @@ const nextConfig: NextConfig = {
       "clsx",
       "tailwind-merge"
     ],
-    // Enable server components optimization
-    serverComponentsExternalPackages: ["@supabase/supabase-js"],
     // Optimize CSS imports
     optimizeCss: true,
   },

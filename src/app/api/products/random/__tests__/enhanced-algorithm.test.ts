@@ -159,7 +159,99 @@ describe('Enhanced Random Products API', () => {
     const response = await GET(request);
     const data = await response.json();
 
-    expect(data.s(true)
-   expect(data.products).toHaveLength(1);
+    expect(data.success).toBe(true);
+    expect(data.products).toHaveLength(1);
 
-    const product = data.produc
+    const product = data.products[0];
+    expect(product).toHaveProperty('id');
+    expect(product).toHaveProperty('name');
+    expect(product.name).toHaveProperty('cs');
+    expect(product.name).toHaveProperty('en');
+    expect(product).toHaveProperty('slug');
+    expect(product).toHaveProperty('basePrice');
+    expect(product).toHaveProperty('images');
+    expect(product).toHaveProperty('availability');
+    expect(product).toHaveProperty('seoMetadata');
+  });
+
+  it('should handle database errors gracefully', async () => {
+    // Mock database error
+    const { createServerClient } = require('@/lib/supabase/server');
+    createServerClient.mockReturnValue({
+      from: jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            order: jest.fn(() => ({
+              limit: jest.fn(() => ({
+                data: null,
+                error: { message: 'Database connection failed' },
+              })),
+            })),
+          })),
+        })),
+      })),
+    });
+
+    const request = new NextRequest('http://localhost:3000/api/products/random?count=3&locale=en');
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(response.status).toBe(500);
+    expect(data.success).toBe(false);
+    expect(data.error).toBe('Failed to fetch products');
+  });
+
+  it('should use default values for missing parameters', async () => {
+    const request = new NextRequest('http://localhost:3000/api/products/random');
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(data.success).toBe(true);
+    // Should default to count=3
+    expect(data.products.length).toBeLessThanOrEqual(3);
+  });
+
+  it('should filter out inactive products', async () => {
+    // Add inactive product to mock data
+    const mockWithInactive = [
+      ...mockProducts,
+      {
+        id: 'inactive-product',
+        name_cs: 'Neaktivní věnec',
+        name_en: 'Inactive Wreath',
+        slug: 'inactive-wreath',
+        base_price: 1000,
+        images: [],
+        availability: { inStock: true },
+        active: false, // This should be filtered out
+        featured: false,
+      },
+    ];
+
+    const { createServerClient } = require('@/lib/supabase/server');
+    createServerClient.mockReturnValue({
+      from: jest.fn(() => ({
+        select: jest.fn(() => ({
+          eq: jest.fn(() => ({
+            order: jest.fn(() => ({
+              limit: jest.fn(() => ({
+                data: mockWithInactive,
+                error: null,
+              })),
+            })),
+          })),
+        })),
+      })),
+    });
+
+    const request = new NextRequest('http://localhost:3000/api/products/random?count=5&locale=en');
+    const response = await GET(request);
+    const data = await response.json();
+
+    expect(data.success).toBe(true);
+
+    // Should not include inactive product
+    const productIds = data.products.map((p: any) => p.id);
+    expect(productIds).not.toContain('inactive-product');
+  });
+});
