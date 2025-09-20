@@ -53,22 +53,24 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
     fetchRandomProducts();
   }, [fetchRandomProducts]);
 
-  const handleAddToCart = async (productId: string) => {
+  const handleAddToCart = async (product: Product) => {
     try {
-      setAddingToCart(productId);
+      console.log("🛒 [RandomProductTeasers] Starting add to cart for product:", product.id);
+      setAddingToCart(product.id);
 
       const success = await addToCart({
-        productId,
+        productId: product.id,
         quantity: 1,
         customizations: [],
       });
 
-      if (!success) {
-        // Error handling is done in the cart context
-        console.error("Failed to add product to cart");
+      if (success) {
+        console.log("✅ [RandomProductTeasers] Successfully added product to cart:", product.id);
+      } else {
+        console.error("❌ [RandomProductTeasers] Failed to add product to cart:", product.id);
       }
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      console.error("💥 [RandomProductTeasers] Error adding to cart:", error);
     } finally {
       setAddingToCart(null);
     }

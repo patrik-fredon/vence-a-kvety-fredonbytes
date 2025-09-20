@@ -9,12 +9,21 @@ import { randomUUID } from "crypto";
  */
 export async function POST(request: NextRequest) {
   try {
+    console.log("🛒 [API] POST /api/cart/items - Add to cart request received");
+
     const supabase = createServerClient();
     const session = await auth();
     const body: AddToCartRequest = await request.json();
 
+    console.log("📋 [API] Request body:", {
+      productId: body.productId,
+      quantity: body.quantity,
+      customizations: body.customizations?.length || 0,
+    });
+
     // Validate request body
     if (!body.productId || !body.quantity || body.quantity <= 0) {
+      console.log("❌ [API] Invalid request body");
       return NextResponse.json(
         {
           success: false,
@@ -138,7 +147,12 @@ export async function POST(request: NextRequest) {
         .single();
 
       if (error) {
-        console.error("Error adding cart item:", error);
+        console.error("💥 [API] Error adding cart item:", {
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
         return NextResponse.json(
           {
             success: false,
@@ -150,6 +164,14 @@ export async function POST(request: NextRequest) {
 
       result = data;
     }
+
+    console.log("✅ [API] Successfully added item to cart:", {
+      itemId: result.id,
+      productId: result.product_id,
+      quantity: result.quantity,
+      unitPrice: result.unit_price,
+      totalPrice: result.total_price,
+    });
 
     // Set session cookie for guest users
     const response = NextResponse.json({
@@ -167,6 +189,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (!session?.user?.id && sessionId) {
+      console.log("🍪 [API] Setting cart-session cookie for guest user:", sessionId);
       response.cookies.set("cart-session", sessionId, {
         httpOnly: false, // Allow JavaScript access for client-side cart management
         secure: process.env.NODE_ENV === "production",
@@ -177,7 +200,7 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Add to cart API error:", error);
+    console.error("💥 [API] Add to cart API error:", error);
     return NextResponse.json(
       {
         success: false,

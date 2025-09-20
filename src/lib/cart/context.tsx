@@ -294,6 +294,13 @@ export function CartProvider({ children }: CartProviderProps) {
           setCartSessionId(sessionId);
         }
 
+        console.log("🚀 [CartContext] Making API request to /api/cart/items", {
+          productId: request.productId,
+          quantity: request.quantity,
+          sessionId: sessionId,
+          userId: user?.id,
+        });
+
         const response = await fetch("/api/cart/items", {
           method: "POST",
           headers: {
@@ -303,9 +310,13 @@ export function CartProvider({ children }: CartProviderProps) {
           body: JSON.stringify(request),
         });
 
+        console.log("📡 [CartContext] API response status:", response.status);
+
         const data = await response.json();
+        console.log("📦 [CartContext] API response data:", data);
 
         if (data.success) {
+          console.log("✅ [CartContext] Item added successfully, refreshing cart");
           // Confirm optimistic update with actual server data
           dispatch({
             type: "CONFIRM_OPTIMISTIC",

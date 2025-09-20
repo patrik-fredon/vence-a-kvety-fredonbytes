@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { createServerClient } from "@/lib/supabase/server";
-import { ProductGrid } from "@/components/product";
+import { ProductGridWithCart } from "@/components/product/ProductGridWithCart";
 import { transformProductRow, transformCategoryRow } from "@/lib/utils/product-transforms";
 import { Product, Category, ProductRow, CategoryRow } from "@/types/product";
 import {
@@ -207,7 +207,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
         </div>
 
         {/* Product Grid with Filters */}
-        <ProductGrid initialProducts={products} initialCategories={categories} locale={locale} />
+        <ProductGridWithCart initialProducts={products} initialCategories={categories} locale={locale} />
       </div>
     </>
   );

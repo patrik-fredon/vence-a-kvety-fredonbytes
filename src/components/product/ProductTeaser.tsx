@@ -11,7 +11,7 @@ import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 interface ProductTeaserProps {
   product: Product;
   locale: string;
-  onAddToCart?: (productId: string) => void;
+  onAddToCart?: (product: Product) => void;
   loading?: boolean;
 }
 
@@ -23,7 +23,7 @@ export function ProductTeaser({ product, locale, onAddToCart, loading }: Product
 
   const handleAddToCart = () => {
     if (onAddToCart) {
-      onAddToCart(product.id);
+      onAddToCart(product);
     }
   };
 
