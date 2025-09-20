@@ -2,7 +2,7 @@
 
 import { useLocale, useTranslations } from "next-intl";
 import { useRouter, usePathname } from "next/navigation";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useMemo } from "react";
 import {
   formatCurrency,
   formatCurrencyCustom,
@@ -21,10 +21,10 @@ import { type Locale, i18nConfig } from "@/i18n/config";
 export function useCurrency() {
   const locale = useLocale() as Locale;
 
-  return {
+  return useMemo(() => ({
     format: (amount: number) => formatCurrency(amount, locale),
     formatCustom: (amount: number) => formatCurrencyCustom(amount, locale),
-  };
+  }), [locale]);
 }
 
 /**
@@ -33,10 +33,10 @@ export function useCurrency() {
 export function useDate() {
   const locale = useLocale() as Locale;
 
-  return {
+  return useMemo(() => ({
     format: (date: Date) => formatDate(date, locale),
     formatDelivery: (date: Date) => formatDeliveryDate(date, locale),
-  };
+  }), [locale]);
 }
 
 /**

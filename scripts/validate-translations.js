@@ -54,6 +54,10 @@ function extractKeys(obj, prefix = '') {
  * Validate translation key format
  */
 function validateKeyFormat(key) {
+  if (typeof key !== 'string' || !key.trim()) {
+    return false;
+  }
+
   // Allow array indices (numbers) in addition to regular keys
   const keyPattern = /^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*$/;
   return keyPattern.test(key);

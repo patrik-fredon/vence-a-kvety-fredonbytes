@@ -173,6 +173,7 @@ describe("LanguageToggle", () => {
     });
 
     test("should handle switch locale errors gracefully", async () => {
+      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
       mockSwitchLocale.mockRejectedValue(new Error("Network error"));
 
       render(<LanguageToggle currentLocale="cs" />);
@@ -180,10 +181,15 @@ describe("LanguageToggle", () => {
       const select = screen.getByRole("combobox");
       fireEvent.change(select, { target: { value: "en" } });
 
-      // Should not throw error
+      // Should not throw error and should handle gracefully
       await waitFor(() => {
         expect(mockSwitchLocale).toHaveBeenCalledWith("en");
       });
+
+      // Should log error to console
+      expect(consoleSpy).toHaveBeenCalledWith("Language switch failed:", expect.any(Error));
+
+      consoleSpy.mockRestore();
     });
   });
 

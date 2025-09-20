@@ -191,82 +191,88 @@ export function getLocaleCookie(): Locale | null {
 }
 
 /**
+ * Check if a translation key exists in messages
+ */
+function hasTranslation(messages: Record<string, any>, key: string): boolean {
+  const keys = key.split(".");
+  let current = messages;
+
+  for (const k of keys) {
+    if (typeof current !== "object" || current === null || !(k in current)) {
+      return false;
+    }
+    current = current[k];
+  }
+
+  return typeof current === "string";
+}
+
+/**
+ * Get missing translation keys
+ */
+function getMissingKeys(messages: Record<string, any>, requiredKeys: string[]): string[] {
+  return requiredKeys.filter((key) => !hasTranslation(messages, key));
+}
+
+/**
  * Translation validation utilities
  */
 export const translationValidation = {
-  /**
-   * Check if a translation key exists in messages
-   */
-  hasTranslation(messages: Record<string, any>, key: string): boolean {
+  hasTranslation,
+  getMissingKeys,
+
+  logMissingKey,
+  getTranslationWithFallback,
+};
+
+/**
+ * Log missing translation key
+ */
+function logMissingKey(key: string, locale: Locale): void {
+  if (i18nConfig.fallback.logMissingKeys) {
+    console.warn(`Missing translation key: "${key}" for locale: "${locale}"`);
+  }
+}
+
+/**
+ * Get translation with fallback
+ */
+function getTranslationWithFallback(
+  messages: Record<string, any>,
+  fallbackMessages: Record<string, any>,
+  key: string,
+  locale: Locale
+): string | null {
+  if (hasTranslation(messages, key)) {
     const keys = key.split(".");
     let current = messages;
-
     for (const k of keys) {
-      if (typeof current !== "object" || current === null || !(k in current)) {
-        return false;
-      }
       current = current[k];
     }
+    return current as string;
+  }
 
-    return typeof current === "string";
-  },
-
-  /**
-   * Get missing translation keys
-   */
-  getMissingKeys(messages: Record<string, any>, requiredKeys: string[]): string[] {
-    return requiredKeys.filter((key) => !this.hasTranslation(messages, key));
-  },
-
-  /**
-   * Log missing translation key
-   */
-  logMissingKey(key: string, locale: Locale): void {
-    if (i18nConfig.fallback.logMissingKeys) {
-      console.warn(`Missing translation key: "${key}" for locale: "${locale}"`);
+  // Try fallback messages
+  if (i18nConfig.fallback.enabled && hasTranslation(fallbackMessages, key)) {
+    const keys = key.split(".");
+    let current = fallbackMessages;
+    for (const k of keys) {
+      current = current[k];
     }
-  },
+    logMissingKey(key, locale);
+    return current as string;
+  }
 
-  /**
-   * Get translation with fallback
-   */
-  getTranslationWithFallback(
-    messages: Record<string, any>,
-    fallbackMessages: Record<string, any>,
-    key: string,
-    locale: Locale
-  ): string | null {
-    if (this.hasTranslation(messages, key)) {
-      const keys = key.split(".");
-      let current = messages;
-      for (const k of keys) {
-        current = current[k];
-      }
-      return current as string;
-    }
+  // Log missing key
+  logMissingKey(key, locale);
 
-    // Try fallback messages
-    if (i18nConfig.fallback.enabled && this.hasTranslation(fallbackMessages, key)) {
-      const keys = key.split(".");
-      let current = fallbackMessages;
-      for (const k of keys) {
-        current = current[k];
-      }
-      this.logMissingKey(key, locale);
-      return current as string;
-    }
+  // Return key or null based on configuration
+  if (i18nConfig.fallback.showMissingKeys) {
+    return `[${key}]`;
+  }
 
-    // Log missing key
-    this.logMissingKey(key, locale);
-
-    // Return key or null based on configuration
-    if (i18nConfig.fallba.showMissingKeys) {
-      return `[${key}]`;
-    }
-
-    return null;
-  },
-};
+  return null;
+}
 
 /**
  * Detect browser locale

@@ -62,10 +62,18 @@ export function validateTranslationCompleteness(
   return result;
 }
 
+// Cache for extracted keys to improve performance
+const keyCache = new WeakMap<TranslationMessages, string[]>();
+
 /**
  * Extract all translation keys from nested messages object
  */
 function extractAllKeys(messages: TranslationMessages, prefix = ""): string[] {
+  // Use cache for root level extraction
+  if (!prefix && keyCache.has(messages)) {
+    return keyCache.get(messages)!;
+  }
+
   const keys: string[] = [];
 
   for (const [key, value] of Object.entries(messages)) {
@@ -76,6 +84,11 @@ function extractAllKeys(messages: TranslationMessages, prefix = ""): string[] {
     } else if (typeof value === "object" && value !== null) {
       keys.push(...extractAllKeys(value, fullKey));
     }
+  }
+
+  // Cache root level results
+  if (!prefix) {
+    keyCache.set(messages, keys);
   }
 
   return keys;

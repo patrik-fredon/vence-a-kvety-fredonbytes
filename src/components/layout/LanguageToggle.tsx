@@ -31,11 +31,14 @@ export function LanguageToggle({
 
   const handleLocaleChange = async (newLocale: Locale) => {
     clearError();
-    await switchLocale(newLocale);
+    setShowError(false);
 
-    if (error) {
+    try {
+      await switchLocale(newLocale);
+    } catch (err) {
+      console.error("Language switch failed:", err);
       setShowError(true);
-      setTimeout(() => setShowError(false), 3000);
+      setTimeout(() => setShowError(false), 5000);
     }
   };
 
