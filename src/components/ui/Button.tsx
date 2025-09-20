@@ -4,8 +4,8 @@ import { useReducedMotion } from "@/lib/accessibility/hooks";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
-  variant?: "primary" | "secondary" | "outline" | "ghost" | "destructive";
-  size?: "sm" | "md" | "lg";
+  variant?: "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+  size?: "sm" | "default" | "lg" | "icon";
   loading?: boolean;
   loadingText?: string;
   icon?: ReactNode;
@@ -15,8 +15,8 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 export function Button({
   children,
   className,
-  variant = "primary",
-  size = "md",
+  variant = "default",
+  size = "default",
   loading = false,
   loadingText,
   icon,
@@ -28,7 +28,7 @@ export function Button({
 
   const baseStyles = cn(
     "inline-flex items-center justify-center font-medium transition-colors",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500 focus-visible:ring-offset-2",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950 focus-visible:ring-offset-2",
     "disabled:pointer-events-none disabled:opacity-50",
     "relative overflow-hidden",
     // High contrast mode support
@@ -36,47 +36,54 @@ export function Button({
   );
 
   const variants = {
-    primary: cn(
-      "bg-primary-600 text-white hover:bg-primary-700 active:bg-primary-800",
-      "shadow-md hover:shadow-lg transition-all duration-200",
-      "focus-visible:ring-primary-500/20",
-      "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
-      "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
-    ),
-    secondary: cn(
-      "bg-secondary-600 text-white hover:bg-secondary-700 active:bg-secondary-800",
-      "shadow-md hover:shadow-lg transition-all duration-200",
-      "focus-visible:ring-secondary-500/20",
-      "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
-      "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
-    ),
-    outline: cn(
-      "border-2 border-primary-600 text-primary-700 bg-white",
-      "hover:bg-primary-50 active:bg-primary-100",
+    default: cn(
+      "bg-stone-900 text-white hover:bg-stone-800 active:bg-stone-700",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-primary-500/20",
-      "high-contrast:border-ButtonText high-contrast:text-ButtonText",
-      "high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
-    ),
-    ghost: cn(
-      "text-primary-700 bg-transparent hover:bg-primary-50 active:bg-primary-100",
-      "transition-all duration-200",
-      "focus-visible:ring-primary-500/20",
-      "high-contrast:text-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
+      "focus-visible:ring-stone-950/20",
+      "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
+      "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     destructive: cn(
       "bg-error-600 text-white hover:bg-error-700 active:bg-error-800",
-      "shadow-md hover:shadow-lg transition-all duration-200",
+      "shadow-sm hover:shadow-md transition-all duration-200",
       "focus-visible:ring-error-500/20",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
+    outline: cn(
+      "border border-stone-300 text-stone-700 bg-white",
+      "hover:bg-stone-50 active:bg-stone-100",
+      "shadow-sm hover:shadow-md transition-all duration-200",
+      "focus-visible:ring-stone-950/20",
+      "high-contrast:border-ButtonText high-contrast:text-ButtonText",
+      "high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
+    ),
+    secondary: cn(
+      "bg-stone-100 text-stone-900 hover:bg-stone-200 active:bg-stone-300",
+      "shadow-sm hover:shadow-md transition-all duration-200",
+      "focus-visible:ring-stone-950/20",
+      "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
+      "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
+    ),
+    ghost: cn(
+      "text-stone-700 bg-transparent hover:bg-stone-100 active:bg-stone-200",
+      "transition-all duration-200",
+      "focus-visible:ring-stone-950/20",
+      "high-contrast:text-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
+    ),
+    link: cn(
+      "text-stone-900 bg-transparent hover:text-amber-600 active:text-amber-700",
+      "underline-offset-4 hover:underline transition-all duration-200",
+      "focus-visible:ring-stone-950/20",
+      "high-contrast:text-ButtonText high-contrast:hover:text-Highlight"
+    ),
   };
 
   const sizes = {
-    sm: "px-3 py-2 text-sm rounded-md min-h-[2rem] font-medium",
-    md: "px-4 py-2.5 text-base rounded-lg min-h-[2.75rem] font-medium",
-    lg: "px-6 py-3 text-lg rounded-lg min-h-[3.25rem] font-semibold",
+    sm: "px-3 py-1.5 text-sm rounded-md min-h-[2rem] font-medium",
+    default: "px-4 py-2 text-sm rounded-md min-h-[2.5rem] font-medium",
+    lg: "px-8 py-3 text-base rounded-md min-h-[3rem] font-medium",
+    icon: "h-9 w-9 rounded-md",
   };
 
   const isDisabled = disabled || loading;
