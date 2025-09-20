@@ -1,70 +1,199 @@
-"use client";
+'use client';
 
-import { useDate, useLocaleUtils } from "@/lib/i18n/hooks";
+import { useTranslations } from 'next-intl';
+import { type Locale } from '../../i18n/config';
 
 interface DateDisplayProps {
-  date: Date;
+  date: Date | string | null | undefined;
+  locale?: Locale;
   className?: string;
-  format?: "default" | "delivery";
+  includeTime?: boolean;
+  relative?: boolean;
+  format?: 'short' | 'medium' | 'long' | 'full';
 }
 
-/**
- * Component for displaying dates with proper locale formatting
- */
-export function DateDisplay({ date, className, format = "default" }: DateDisplayProps) {
-  const { format: formatDate, formatDelivery } = useDate();
+export function DateDisplay({
+  date,
+  locale = 'cs',
+  className = '',
+  includeTime = false,
+  relative = false,
+  format = 'short'
+}: DateDisplayProps) {
+  const t = useTranslations('date');
 
-  const formattedDate = format === "delivery" ? formatDelivery(date) : formatDate(date);
-
-  return (
-    <span className={className} suppressHydrationWarning>
-      {formattedDate}
-    </span>
-  );
-}
-
-/**
- * Component for displaying relative time
- */
-interface RelativeTimeProps {
-  date: Date;
-  className?: string;
-}
-
-export function RelativeTime({ date, className }: RelativeTimeProps) {
-  const { locale } = useLocaleUtils();
-
-  // Simple relative time calculation
-  const now = new Date();
-  const diffInSeconds = Math.floor((date.getTime() - now.getTime()) / 1000);
-  const diffInMinutes = Math.floor(diffInSeconds / 60);
-  const diffInHours = Math.floor(diffInMinutes / 60);
-  const diffInDays = Math.floor(diffInHours / 24);
-
-  let relativeText = "";
-
-  if (Math.abs(diffInDays) >= 1) {
-    relativeText =
-      locale === "cs"
-        ? `${diffInDays > 0 ? "za" : "před"} ${Math.abs(diffInDays)} ${Math.abs(diffInDays) === 1 ? "den" : "dny"}`
-        : `${Math.abs(diffInDays)} day${Math.abs(diffInDays) === 1 ? "" : "s"} ${diffInDays > 0 ? "from now" : "ago"}`;
-  } else if (Math.abs(diffInHours) >= 1) {
-    relativeText =
-      locale === "cs"
-        ? `${diffInHours > 0 ? "za" : "před"} ${Math.abs(diffInHours)} ${Math.abs(diffInHours) === 1 ? "hodinu" : "hodin"}`
-        : `${Math.abs(diffInHours)} hour${Math.abs(diffInHours) === 1 ? "" : "s"} ${diffInHours > 0 ? "from now" : "ago"}`;
-  } else if (Math.abs(diffInMinutes) >= 1) {
-    relativeText =
-      locale === "cs"
-        ? `${diffInMinutes > 0 ? "za" : "před"} ${Math.abs(diffInMinutes)} ${Math.abs(diffInMinutes) === 1 ? "minutu" : "minut"}`
-        : `${Math.abs(diffInMinutes)} minute${Math.abs(diffInMinutes) === 1 ? "" : "s"} ${diffInMinutes > 0 ? "from now" : "ago"}`;
-  } else {
-    relativeText = locale === "cs" ? "právě teď" : "just now";
+  // Handle invalid dates
+  if (!date) {
+    return (
+      <span className={className} data-testid="date-display">
+        -
+      </span>
+    );
   }
 
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+
+  if (isNaN(dateObj.getTime())) {
+    return (
+      <span className={className} data-testid="date-display">
+        -
+      </span>
+    );
+  }
+
+  // Handle relative dates
+  if (relative) {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+    const dayAfterTomorrow = new Date(today);
+    dayAfterTomorrow.setDate(today.getDate() + 2);
+
+    const isToday = dateObj.toDateString() === today.toDateString();
+    const isTomorrow = dateObj.toDateString() === tomorrow.toDateString();
+    const isDayAfterTomorrow = dateObj.toDateString() === dayAfterTomorrow.toDateString();
+
+    if (isToday) {
+      return (
+        <span className={className} data-testid="date-display">
+          {t('today')}
+        </span>
+      );
+    }
+
+    if (isTomorrow) {
+      return (
+        <span className={className} data-testid="date-display">
+          {t('tomorrow')}
+        </span>
+      );
+    }
+
+    if (isDayAfterTomorrow) {
+      return (
+        <span className={className} data-testid="date-display">
+          {t('dayAfterTomorrow')}
+        </span>
+      );
+    }
+  }
+
+  // Format options based on locale
+  const localeString = locale === 'cs' ? 'cs-CZ' : 'en-US';
+
+  let formatOptions: Intl.DateTimeFormatOptions = {};
+
+  switch (format) {
+    case 'short':
+      formatOptions = {
+        year: 'numeric',
+        month: 'numeric',
+        day: 'numeric',
+      };
+      break;
+    case 'medium':
+      formatOptions = {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric',
+      };
+      break;
+    case 'long':
+      formatOptions = {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+      break;
+    case 'full':
+      formatOptions = {
+        weekday: 'long',
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric',
+      };
+      break;
+  }
+
+  if (includeTime) {
+    formatOptions.hour = '2-digit';
+    formatOptions.minute = '2-digit';
+
+    // Czech uses 24-hour format, English uses 12-hour format
+    if (locale === 'en') {
+      formatOptions.hour12 = true;
+    }
+  }
+
+  const formattedDate = dateObj.toLocaleDateString(localeString, formatOptions);
+
+  // For Czech locale with time, we might need to adjust the format
+  const displayValue = includeTime && locale === 'cs'
+    ? formattedDate.replace(',', '') // Remove comma between date and time in Czech
+    : formattedDate;
+
   return (
-    <span className={className} suppressHydrationWarning>
-      {relativeText}
+    <span className={className} data-testid="date-display">
+      {displayValue}
     </span>
   );
+}
+
+// Utility function for formatting dates without component
+export function formatDate(
+  date: Date | string,
+  locale: Locale = 'cs',
+  options: {
+    includeTime?: boolean;
+    relative?: boolean;
+    format?: 'short' | 'medium' | 'long' | 'full';
+  } = {}
+): string {
+  const { includeTime = false, relative = false, format = 'short' } = options;
+
+  const dateObj = typeof date === 'string' ? new Date(date) : date;
+
+  if (isNaN(dateObj.getTime())) return '-';
+
+  // Handle relative dates
+  if (relative) {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    const isToday = dateObj.toDateString() === today.toDateString();
+    const isTomorrow = dateObj.toDateString() === tomorrow.toDateString();
+
+    if (isToday) return locale === 'cs' ? 'Dnes' : 'Today';
+    if (isTomorrow) return locale === 'cs' ? 'Zítra' : 'Tomorrow';
+  }
+
+  const localeString = locale === 'cs' ? 'cs-CZ' : 'en-US';
+
+  let formatOptions: Intl.DateTimeFormatOptions = {};
+
+  switch (format) {
+    case 'short':
+      formatOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+      break;
+    case 'medium':
+      formatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+      break;
+    case 'long':
+      formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+      break;
+    case 'full':
+      formatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      break;
+  }
+
+  if (includeTime) {
+    formatOptions.hour = '2-digit';
+    formatOptions.minute = '2-digit';
+    if (locale === 'en') {
+      formatOptions.hour12 = true;
+    }
+  }
+
+  return dateObj.toLocaleDateString(localeString, formatOptions);
 }

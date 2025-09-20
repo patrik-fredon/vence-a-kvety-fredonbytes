@@ -1,54 +1,70 @@
-"use client";
+'use client';
 
-import { useCurrency } from "@/lib/i18n/hooks";
+import { useTranslations } from 'next-intl';
+import { currencyConfig, type Locale } from '../../i18n/config';
 
 interface CurrencyDisplayProps {
-  amount: number;
+  amount: number | null | undefined;
+  locale?: Locale;
   className?: string;
-  custom?: boolean;
+  showSymbol?: boolean;
 }
 
-/**
- * Component for displaying currency with proper locale formatting
- */
-export function CurrencyDisplay({ amount, className, custom = false }: CurrencyDisplayProps) {
-  const { format, formatCustom } = useCurrency();
+export function CurrencyDisplay({
+  amount,
+  locale = 'cs',
+  className = '',
+  showSymbol = true
+}: CurrencyDisplayProps) {
+  const t = useTranslations('currency');
 
-  const formattedAmount = custom ? formatCustom(amount) : format(amount);
-
-  return (
-    <span className={className} suppressHydrationWarning>
-      {formattedAmount}
-    </span>
-  );
-}
-
-/**
- * Component for displaying price ranges
- */
-interface PriceRangeProps {
-  minPrice: number;
-  maxPrice: number;
-  className?: string;
-  custom?: boolean;
-}
-
-export function PriceRange({ minPrice, maxPrice, className, custom = false }: PriceRangeProps) {
-  const { format, formatCustom } = useCurrency();
-
-  const formatPrice = custom ? formatCustom : format;
-
-  if (minPrice === maxPrice) {
+  // Handle invalid amounts
+  if (amount === null || amount === undefined || isNaN(amount)) {
     return (
-      <span className={className} suppressHydrationWarning>
-        {formatPrice(minPrice)}
+      <span className={className} data-testid="currency-display">
+        {showSymbol ? (locale === 'cs' ? '0 Kč' : '0 CZK') : '0'}
       </span>
     );
   }
 
+  const config = currencyConfig[locale];
+
+  // Format the number according to locale
+  const formattedAmount = amount.toLocaleString(config.locale, {
+    minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  });
+
+  // Apply currency symbol based on locale
+  const displayValue = showSymbol
+    ? t('format', { amount: formattedAmount })
+    : formattedAmount;
+
   return (
-    <span className={className} suppressHydrationWarning>
-      {formatPrice(minPrice)} - {formatPrice(maxPrice)}
+    <span className={className} data-testid="currency-display">
+      {displayValue}
     </span>
   );
+}
+
+// Utility function for formatting currency without component
+export function formatCurrency(
+  amount: number,
+  locale: Locale = 'cs',
+  showSymbol: boolean = true
+): string {
+  if (isNaN(amount)) return showSymbol ? (locale === 'cs' ? '0 Kč' : '0 CZK') : '0';
+
+  const config = currencyConfig[locale];
+  const formattedAmount = amount.toLocaleString(config.locale, {
+    minimumFractionDigits: amount % 1 === 0 ? 0 : 2,
+    maximumFractionDigits: 2,
+  });
+
+  if (!showSymbol) return formattedAmount;
+
+  // Use the translation format
+  return locale === 'cs'
+    ? `${formattedAmount} Kč`
+    : `${formattedAmount} CZK`;
 }

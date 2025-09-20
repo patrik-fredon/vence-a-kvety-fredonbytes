@@ -196,9 +196,10 @@ async function testAPIPerformance() {
 
     try {
       // Check if API route file exists
-      const routeFile = `src/app/api${endpoint}/route.ts`;
-      const pageFile = `src/app/api${endpoint}/page.ts`;
+      const routeFile = `src/app${endpoint}/route.ts`;
+      const pageFile = `src/app${endpoint}/page.ts`;
 
+      console.log(`    🔍 Looking for: ${routeFile}`);
       const routeExists = fs.existsSync(routeFile) || fs.existsSync(pageFile);
 
       if (!routeExists) {

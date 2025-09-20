@@ -31,7 +31,7 @@
         <div class="header">
             <h1>Cache and API Performance Report - Task 14.2</h1>
             <p>Redis Caching, API Performance, and Cart Synchronization Analysis</p>
-            <p>Generated on 9/20/2025, 10:17:23 PM</p>
+            <p>Generated on 9/20/2025, 10:20:57 PM</p>
         </div>
         <div class="content">
             <div class="section">
@@ -41,7 +41,7 @@
                     <div class="metric-label">Redis Available</div>
                 </div>
                 <div class="metric">
-                    <div class="metric-value">0ms</div>
+                    <div class="metric-value">265ms</div>
                     <div class="metric-label">Avg API Response</div>
                 </div>
                 <div class="metric">
@@ -49,7 +49,7 @@
                     <div class="metric-label">Avg Cart Operation</div>
                 </div>
                 <div class="metric">
-                    <div class="metric-value">18.3 MB</div>
+                    <div class="metric-value">18.27 MB</div>
                     <div class="metric-label">Peak Memory Usage</div>
                 </div>
             </div>
@@ -59,11 +59,11 @@
                 <p><strong>Status:</strong> Upstash Redis configuration found</p>
                 
                     <div class="metric">
-                        <div class="metric-value">38ms</div>
+                        <div class="metric-value">34ms</div>
                         <div class="metric-label">Average SET Time</div>
                     </div>
                     <div class="metric">
-                        <div class="metric-value">24ms</div>
+                        <div class="metric-value">20ms</div>
                         <div class="metric-label">Average GET Time</div>
                     </div>
                     <div class="metric">
@@ -79,12 +79,12 @@
                     <div class="endpoint">
                         <div>
                             <strong>/api/products</strong>
-                            
-                            
+                            <span style="color: #059669; font-size: 12px;">📦 Cached</span>
+                            <span style="color: #2563eb; font-size: 12px;">🗄️ DB</span>
                         </div>
                         <div>
-                            <span class="status not_found">not_found</span>
-                            
+                            <span class="status success">success</span>
+                            <span style="margin-left: 10px;">281ms</span>
                         </div>
                     </div>
                 
@@ -92,35 +92,35 @@
                         <div>
                             <strong>/api/cart</strong>
                             
-                            
+                            <span style="color: #2563eb; font-size: 12px;">🗄️ DB</span>
                         </div>
                         <div>
-                            <span class="status not_found">not_found</span>
-                            
+                            <span class="status success">success</span>
+                            <span style="margin-left: 10px;">307ms</span>
                         </div>
                     </div>
                 
                     <div class="endpoint">
                         <div>
                             <strong>/api/categories</strong>
-                            
-                            
+                            <span style="color: #059669; font-size: 12px;">📦 Cached</span>
+                            <span style="color: #2563eb; font-size: 12px;">🗄️ DB</span>
                         </div>
                         <div>
-                            <span class="status not_found">not_found</span>
-                            
+                            <span class="status success">success</span>
+                            <span style="margin-left: 10px;">308ms</span>
                         </div>
                     </div>
                 
                     <div class="endpoint">
                         <div>
                             <strong>/api/health</strong>
-                            
-                            
+                            <span style="color: #059669; font-size: 12px;">📦 Cached</span>
+                            <span style="color: #2563eb; font-size: 12px;">🗄️ DB</span>
                         </div>
                         <div>
-                            <span class="status not_found">not_found</span>
-                            
+                            <span class="status success">success</span>
+                            <span style="margin-left: 10px;">169ms</span>
                         </div>
                     </div>
                 
@@ -128,11 +128,11 @@
                         <div>
                             <strong>/api/contact</strong>
                             
-                            
+                            <span style="color: #2563eb; font-size: 12px;">🗄️ DB</span>
                         </div>
                         <div>
-                            <span class="status not_found">not_found</span>
-                            
+                            <span class="status success">success</span>
+                            <span style="margin-left: 10px;">224ms</span>
                         </div>
                     </div>
                 
@@ -140,11 +140,11 @@
                         <div>
                             <strong>/api/orders</strong>
                             
-                            
+                            <span style="color: #2563eb; font-size: 12px;">🗄️ DB</span>
                         </div>
                         <div>
-                            <span class="status not_found">not_found</span>
-                            
+                            <span class="status success">success</span>
+                            <span style="margin-left: 10px;">300ms</span>
                         </div>
                     </div>
                 
@@ -170,17 +170,17 @@
                 
                     <div class="operation">
                         <span>ADD ITEM</span>
-                        <span>53ms</span>
+                        <span>55ms</span>
                     </div>
                 
                     <div class="operation">
                         <span>UPDATE QUANTITY</span>
-                        <span>36ms</span>
+                        <span>44ms</span>
                     </div>
                 
                     <div class="operation">
                         <span>REMOVE ITEM</span>
-                        <span>55ms</span>
+                        <span>46ms</span>
                     </div>
                 
                     <div class="operation">
@@ -198,11 +198,11 @@
                     <div class="metric-label">Initial Heap</div>
                 </div>
                 <div class="metric">
-                    <div class="metric-value">18.3 MB</div>
+                    <div class="metric-value">18.27 MB</div>
                     <div class="metric-label">Peak Heap</div>
                 </div>
                 <div class="metric">
-                    <div class="metric-value">18.31 MB</div>
+                    <div class="metric-value">18.27 MB</div>
                     <div class="metric-label">Final Heap</div>
                 </div>
             </div>
