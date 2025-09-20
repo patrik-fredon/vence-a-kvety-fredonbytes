@@ -1,0 +1,173 @@
+{
+  "components": {
+    "Header": {
+      "component": "Header",
+      "score": 50,
+      "tabletPatterns": 5,
+      "desktopPatterns": 1,
+      "largeDesktopPatterns": 0,
+      "hasContainer": true,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": false,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No responsive grid layout",
+        "No responsive typography",
+        "No responsive spacing"
+      ]
+    },
+    "Footer": {
+      "component": "Footer",
+      "score": 33,
+      "tabletPatterns": 0,
+      "desktopPatterns": 8,
+      "largeDesktopPatterns": 0,
+      "hasContainer": true,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": false,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No tablet breakpoint (md:) usage",
+        "No responsive grid layout",
+        "No responsive typography",
+        "No responsive spacing"
+      ]
+    },
+    "HeroSection": {
+      "component": "HeroSection",
+      "score": 67,
+      "tabletPatterns": 2,
+      "desktopPatterns": 3,
+      "largeDesktopPatterns": 1,
+      "hasContainer": true,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": true,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No responsive grid layout",
+        "No responsive spacing"
+      ]
+    },
+    "ProductGrid": {
+      "component": "ProductGrid",
+      "score": 67,
+      "tabletPatterns": 3,
+      "desktopPatterns": 3,
+      "largeDesktopPatterns": 0,
+      "hasContainer": true,
+      "hasResponsiveGrid": true,
+      "hasResponsiveText": false,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No responsive typography",
+        "No responsive spacing"
+      ]
+    },
+    "ProductCard": {
+      "component": "ProductCard",
+      "score": 33,
+      "tabletPatterns": 4,
+      "desktopPatterns": 0,
+      "largeDesktopPatterns": 0,
+      "hasContainer": false,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": true,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No desktop breakpoint (lg:) usage",
+        "No container or max-width constraints",
+        "No responsive grid layout",
+        "No responsive spacing"
+      ]
+    },
+    "ContactForm": {
+      "component": "ContactForm",
+      "score": 17,
+      "tabletPatterns": 0,
+      "desktopPatterns": 0,
+      "largeDesktopPatterns": 0,
+      "hasContainer": true,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": false,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No tablet breakpoint (md:) usage",
+        "No desktop breakpoint (lg:) usage",
+        "No responsive grid layout",
+        "No responsive typography",
+        "No responsive spacing"
+      ]
+    },
+    "ShoppingCart": {
+      "component": "ShoppingCart",
+      "score": 0,
+      "tabletPatterns": 0,
+      "desktopPatterns": 0,
+      "largeDesktopPatterns": 0,
+      "hasContainer": false,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": false,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No tablet breakpoint (md:) usage",
+        "No desktop breakpoint (lg:) usage",
+        "No container or max-width constraints",
+        "No responsive grid layout",
+        "No responsive typography",
+        "No responsive spacing"
+      ]
+    },
+    "Button": {
+      "component": "Button",
+      "score": 50,
+      "tabletPatterns": 14,
+      "desktopPatterns": 4,
+      "largeDesktopPatterns": 0,
+      "hasContainer": false,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": true,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No container or max-width constraints",
+        "No responsive grid layout",
+        "No responsive spacing"
+      ]
+    },
+    "Card": {
+      "component": "Card",
+      "score": 33,
+      "tabletPatterns": 1,
+      "desktopPatterns": 1,
+      "largeDesktopPatterns": 1,
+      "hasContainer": false,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": false,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No container or max-width constraints",
+        "No responsive grid layout",
+        "No responsive typography",
+        "No responsive spacing"
+      ]
+    },
+    "Input": {
+      "component": "Input",
+      "score": 0,
+      "tabletPatterns": 0,
+      "desktopPatterns": 0,
+      "largeDesktopPatterns": 0,
+      "hasContainer": false,
+      "hasResponsiveGrid": false,
+      "hasResponsiveText": false,
+      "hasResponsiveSpacing": false,
+      "issues": [
+        "No tablet breakpoint (md:) usage",
+        "No desktop breakpoint (lg:) usage",
+        "No container or max-width constraints",
+        "No responsive grid layout",
+        "No responsive typography",
+        "No responsive spacing"
+      ]
+    }
+  }
+}
