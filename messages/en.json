@@ -370,7 +370,13 @@
         "title": "Personal Approach",
         "description": "We help you select or customize a wreath according to your ideas and requirements."
       }
-    }
+    },
+    "featuredProducts": {
+      "title": "Featured Funeral Wreaths",
+      "viewAll": "View All Wreaths"
+    },
+    "tryAgain": "Try Again",
+    "noProducts": "No products are currently available."
   },
   "faq": {
     "title": "Frequently Asked Questions",

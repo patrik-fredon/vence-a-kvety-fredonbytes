@@ -370,7 +370,13 @@
         "title": "Osobní přístup",
         "description": "Pomůžeme vám vybrat nebo přizpůsobit věnec podle vašich představ a požadavků."
       }
-    }
+    },
+    "featuredProducts": {
+      "title": "Vybrané pohřební věnce",
+      "viewAll": "Zobrazit všechny věnce"
+    },
+    "tryAgain": "Zkusit znovu",
+    "noProducts": "Momentálně nejsou k dispozici žádné produkty."
   },
   "faq": {
     "title": "Často kladené otázky",
