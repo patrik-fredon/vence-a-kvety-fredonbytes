@@ -18,9 +18,26 @@
 /playwright/.cache/
 
 # next.js
-/.next/
-/out/
-/archive/
+.next/
+out/
+archive/
+.serena/
+.kiro/
+.vscode/
+.clinerules/
+.kilocode/
+.roo/
+.windsurf/
+.cursor/
+.qoder/
+.augment/
+.storybook/
+.storybook-out/
+.storybook-out/
+.storybook-out/
+.swc/
+e2e/
+
 # production
 /build
 /dist

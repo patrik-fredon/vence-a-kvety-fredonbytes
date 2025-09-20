@@ -8,6 +8,7 @@ import {
   generateFAQStructuredData
 } from "@/components/seo/StructuredData";
 import { generateHomepageMetadata } from "@/components/seo/PageMetadata";
+import { RandomProductTeasers } from "@/components/product/RandomProductTeasers";
 
 interface HomeProps {
   params: Promise<{ locale: string }>;
@@ -112,6 +113,9 @@ export default async function Home({ params }: HomeProps) {
           </div>
         </div>
 
+        {/* Featured Products Section */}
+        <RandomProductTeasers locale={locale} count={3} />
+
         {/* Features Section */}
         <div className="mt-20 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
           <div className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
@@ -128,7 +132,7 @@ export default async function Home({ params }: HomeProps) {
             <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">🚚</span>
             </div>
-            <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
+            <h3 className="text-elegant text-xl font-semibent text-primary-800 mb-3">
               {t("features.fastDelivery.title")}
             </h3>
             <p className="text-neutral-600">{t("features.fastDelivery.description")}</p>

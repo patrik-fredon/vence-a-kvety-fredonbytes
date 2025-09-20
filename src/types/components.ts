@@ -381,6 +381,154 @@ export interface ResponsiveProps {
 }
 
 // =============================================================================
+// ADVANCED COMPONENT PATTERNS
+// =============================================================================
+
+/**
+ * Render prop pattern interface
+ */
+export interface RenderPropComponent<T = any> {
+  children: (props: T) => ReactNode;
+}
+
+/**
+ * Compound component pattern interface
+ */
+export interface CompoundComponent<T extends Record<string, any>> {
+  [K in keyof T]: T[K];
+}
+
+/**
+ * Polymorphic component props
+ */
+export type PolymorphicProps<T extends keyof JSX.IntrinsicElements> = {
+  as?: T;
+} & ComponentPropsWithoutRef<T>;
+
+/**
+ * Forward ref component type
+ */
+export type ForwardRefComponent<T, P = {}> = React.ForwardRefExoticComponent<
+  React.PropsWithoutRef<P> & React.RefAttributes<T>
+>;
+
+// =============================================================================
+// DESIGN SYSTEM TOKENS
+// =============================================================================
+
+/**
+ * Design system spacing scale
+ */
+export type SpacingScale =
+  | "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4"
+  | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16"
+  | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56"
+  | "60" | "64" | "72" | "80" | "96";
+
+/**
+ * Design system color palette
+ */
+export type ColorScale =
+  | "50" | "100" | "200" | "300" | "400" | "500"
+  | "600" | "700" | "800" | "900" | "950";
+
+/**
+ * Funeral-appropriate color scheme
+ */
+export interface FuneralColorScheme {
+  primary: {
+    50: string;
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string; // Deep forest green
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+    950: string;
+  };
+  secondary: {
+    50: string;
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string; // Muted sage
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+    950: string;
+  };
+  accent: {
+    50: string;
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string; // Respectful gold
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+    950: string;
+  };
+  neutral: {
+    50: string;
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string;
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+    950: string;
+  };
+}
+
+// =============================================================================
+// COMPONENT STATE MANAGEMENT
+// =============================================================================
+
+/**
+ * Component state for form controls
+ */
+export interface FormControlState {
+  value: any;
+  error?: string;
+  touched: boolean;
+  dirty: boolean;
+  valid: boolean;
+  disabled: boolean;
+  required: boolean;
+}
+
+/**
+ * Component state for async operations
+ */
+export interface AsyncState<T = any> {
+  data: T | null;
+  loading: boolean;
+  error: Error | null;
+  lastFetch?: Date;
+}
+
+/**
+ * Component state for pagination
+ */
+export interface PaginationState {
+  page: number;
+  pageSize: number;
+  total: number;
+  hasNext: boolean;
+  hasPrevious: boolean;
+}
+
+// =============================================================================
 // EXPORT ALL TYPES
 // =============================================================================
 

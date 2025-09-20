@@ -7,6 +7,7 @@ import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { AuthStatus } from "@/components/auth/AuthStatus";
 import { LanguageToggle } from "./LanguageToggle";
 import { Navigation } from "./Navigation";
+import { CartIcon } from "@/components/cart/CartIcon";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface HeaderProps {
@@ -85,26 +86,7 @@ export function Header({ locale }: HeaderProps) {
               </div>
 
               {/* Cart icon */}
-              <Link
-                href={`/${locale}/cart`}
-                className="p-2 text-neutral-700 hover:text-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-lg"
-                aria-label={t("cart")}
-              >
-                <svg
-                  className="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                  aria-hidden="true"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M3 3h2l.4 2M7 13h10l4-8H5.4m0 0L7 13m0 0l-1.1 5H19M7 13v8a2 2 0 002 2h6a2 2 0 002-2v-8m-8 0V9a2 2 0 012-2h4a2 2 0 012 2v4.01"
-                  />
-                </svg>
-              </Link>
+              <CartIcon locale={locale} />
 
               {/* Mobile menu button */}
               <button
@@ -136,9 +118,8 @@ export function Header({ locale }: HeaderProps) {
         {/* Mobile menu */}
         <div
           id="mobile-menu"
-          className={`fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-elegant transform transition-transform duration-300 ease-in-out z-50 md:hidden ${
-            isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-          }`}
+          className={`fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-elegant transform transition-transform duration-300 ease-in-out z-50 md:hidden ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
           aria-hidden={!isMobileMenuOpen}
         >
           <div className="flex flex-col h-full">

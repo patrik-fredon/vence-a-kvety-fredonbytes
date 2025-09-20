@@ -5,3 +5,5 @@ export { ProductDetail } from "./ProductDetail";
 export { ProductImageGallery } from "./ProductImageGallery";
 export { ProductInfo } from "./ProductInfo";
 export { ProductCustomizer } from "./ProductCustomizer";
+export { ProductTeaser } from "./ProductTeaser";
+export { RandomProductTeasers } from "./RandomProductTeasers";

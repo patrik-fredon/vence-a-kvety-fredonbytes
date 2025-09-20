@@ -241,7 +241,7 @@ export function setDisplayName<T extends React.ComponentType<any>>(
 export function createCompoundComponent<
   T extends React.ComponentType<any>,
   S extends Record<string, React.ComponentType<any>>
->(MaensubComponents: S): T & S {
+>(MainComponent: T, subComponents: S): T & S {
   const CompoundComponent = MainComponent as T & S;
 
   Object.keys(subComponents).forEach((key) => {
