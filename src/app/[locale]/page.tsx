@@ -71,7 +71,7 @@ export default async function Home({ params }: HomeProps) {
           <blockquote className="text-2xl md:text-3xl text-primary-700 font-elegant italic mb-6">
             "{t("philosophy.quote")}"
           </blockquote>
-          <p className="text-lg text-neutral-600 leading-relaxed">
+          <p className="text-lg text-white leading-relaxed">
             {t("philosophy.text")}
           </p>
         </div>

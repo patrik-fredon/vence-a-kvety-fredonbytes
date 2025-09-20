@@ -34,97 +34,113 @@ export function HeroSection({
       }}
       aria-label={t("hero.title")}
     >
-      {/* Stone-900/40 overlay for proper text contrast */}
+      {/* Enhanced overlay for better text contrast */}
       <div
-        className="absolute inset-0 bg-stone-900/40"
+        className="absolute inset-0 bg-gradient-to-b from-stone-900/60 via-stone-900/50 to-stone-900/70"
         aria-hidden="true"
       />
 
-      {/* Content container */}
-      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-        {/* Main heading with responsive typography scaling (4xl to 5xl) */}
-        <h1 className={cn(
-          // Responsive font sizes: 4xl on mobile, 5xl on larger screens
-          "text-4xl lg:text-5xl xl:text-6xl",
-          // Typography styling
-          "font-light leading-tight tracking-wide",
-          // Margin bottom
-          "mb-6",
-          // Text color with amber accent support
-          "text-white"
-        )}>
-          {t("hero.title")}
-        </h1>
+      {/* Content container with subtle background */}
+      <div className="relative text-white z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        {/* Optional subtle background for text content */}
+        <div className="absolute inset-0 bg-stone-900/20 backdrop-blur-sm rounded-2xl -m-8" aria-hidden="true" />
 
-        {/* Subtitle with elegant styling */}
-        <p className={cn(
-          "text-xl md:text-2xl lg:text-3xl",
-          "font-light leading-relaxed",
-          "text-amber-200", // Amber accent for subtitle
-          "mb-6"
-        )}>
-          {t("hero.subtitle")}
-        </p>
+        {/* Text content wrapper */}
+        <div className="relative z-10 py-8">
+          {/* Main heading with enhanced visibility */}
+          <h1 className={cn(
+            // Responsive font sizes: 4xl on mobile, 5xl on larger screens
+            "text-4xl lg:text-5xl xl:text-6xl",
+            // Typography styling with enhanced weight for better visibility
+            "font-semibold leading-tight tracking-wide",
+            // Enhanced text shadow for better contrast
+            "drop-shadow-2xl",
+            // Text stroke for additional contrast (webkit browsers)
+            "[text-shadow:_2px_2px_4px_rgb(0_0_0_/_80%)]",
+            // Margin bottom
+            "mb-6",
+            // Bright amber color for maximum visibility and warmth
+            "text-amber-50"
+          )}>
+            {t("hero.title")}
+          </h1>
 
-        {/* Description text */}
-        <p className={cn(
-          "text-lg md:text-xl",
-          "font-light leading-relaxed",
-          "text-white/90",
-          "max-w-2xl mx-auto",
-          "mb-8"
-        )}>
-          {t("hero.description")}
-        </p>
+          {/* Subtitle with enhanced visibility */}
+          <p className={cn(
+            "text-xl md:text-2xl lg:text-3xl",
+            "font-medium leading-relaxed",
+            // Enhanced text shadow
+            "drop-shadow-xl",
+            "[text-shadow:_1px_1px_3px_rgb(0_0_0_/_70%)]",
+            "text-amber-100",
+            "mb-6"
+          )}>
+            {t("hero.subtitle")}
+          </p>
 
-        {/* CTA Button with amber-600 background and hover states */}
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
-          <Link href={`/${locale}/products`}>
-            <Button
-              size="lg"
-              className={cn(
-                // Amber-600 background with hover states
-                "bg-amber-600 hover:bg-amber-700 active:bg-amber-800",
-                "text-white font-medium",
-                // Enhanced padding for hero CTA
-                "px-8 py-4 text-lg",
-                // Shadow and transitions
-                "shadow-lg hover:shadow-xl",
-                "transition-all duration-300",
-                // Focus states
-                "focus-visible:ring-amber-500/20 focus-visible:ring-offset-2",
-                // High contrast mode support
-                "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
-                "high-contrast:border-2 high-contrast:border-ButtonText"
-              )}
-            >
-              {t("hero.cta")}
-            </Button>
-          </Link>
+          {/* Description text with better contrast */}
+          <p className={cn(
+            "text-lg md:text-xl",
+            "font-normal leading-relaxed",
+            // Enhanced text shadow for description
+            "drop-shadow-lg",
+            "[text-shadow:_1px_1px_2px_rgb(0_0_0_/_60%)]",
+            "text-stone-100",
+            "max-w-2xl mx-auto",
+            "mb-8"
+          )}>
+            {t("hero.description")}
+          </p>
 
-          {/* Secondary CTA - Contact button */}
-          <Link href={`/${locale}/contact`}>
-            <Button
-              variant="outline"
-              size="lg"
-              className={cn(
-                // Outline styling with white border and text
-                "border-2 border-white/80 text-white bg-transparent",
-                "hover:bg-white/10 hover:border-white",
-                "active:bg-white/20",
-                // Enhanced padding
-                "px-8 py-4 text-lg font-medium",
-                // Transitions
-                "transition-all duration-300",
-                // Focus states
-                "focus-visible:ring-white/20 focus-visible:ring-offset-2",
-                // High contrast mode support
-                "high-contrast:border-ButtonText high-contrast:text-ButtonText"
-              )}
-            >
-              {t("contactUs")}
-            </Button>
-          </Link>
+          {/* CTA Button with amber-600 background and hover states */}
+          <div className="flex flex-col sm:flex-row gap-4 justify-center items-center">
+            <Link href={`/${locale}/products`}>
+              <Button
+                size="lg"
+                className={cn(
+                  // Amber-600 background with hover states
+                  "bg-amber-600 hover:bg-amber-700 active:bg-amber-800",
+                  "text-white font-medium",
+                  // Enhanced padding for hero CTA
+                  "px-8 py-4 text-lg",
+                  // Shadow and transitions
+                  "shadow-lg hover:shadow-xl",
+                  "transition-all duration-300",
+                  // Focus states
+                  "focus-visible:ring-amber-500/0 focus-visible:ring-offset-2",
+                  // High contrast mode support
+                  "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
+                  "high-contrast:border-2 high-contrast:border-ButtonText"
+                )}
+              >
+                {t("hero.cta")}
+              </Button>
+            </Link>
+
+            {/* Secondary CTA - Contact button */}
+            <Link href={`/${locale}/contact`}>
+              <Button
+                variant="outline"
+                size="lg"
+                className={cn(
+                  // Outline styling with white border and text
+                  "border-2 border-white/80 text-white bg-transparent",
+                  "hover:bg-white/10 hover:border-white",
+                  "active:bg-white/20",
+                  // Enhanced padding
+                  "px-8 py-4 text-lg font-medium",
+                  // Transitions
+                  "transition-all duration-300",
+                  // Focus states
+                  "focus-visible:ring-white/20 focus-visible:ring-offset-2",
+                  // High contrast mode support
+                  "high-contrast:border-ButtonText high-contrast:text-ButtonText"
+                )}
+              >
+                {t("contactUs")}
+              </Button>
+            </Link>
+          </div>
         </div>
       </div>
 
