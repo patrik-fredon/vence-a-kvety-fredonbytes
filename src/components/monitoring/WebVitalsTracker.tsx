@@ -65,8 +65,13 @@ export function WebVitalsTracker({
 }: WebVitalsTrackerProps) {
   const [vitals, setVitals] = useState<WebVitalsData>({});
   const [isVisible, setIsVisible] = useState(debug);
+  const [isMounted, setIsMounted] = useState(false);
   const reportedMetrics = useRef(new Set<string>());
   const metricsQueue = useRef<WebVitalsMetric[]>([]);
+
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
 
   useEffect(() => {
     let webVitalsModule: any = null;
@@ -229,7 +234,7 @@ export function WebVitalsTracker({
   const getSessionId = () => {
     // Check if we're in the browser environment
     if (typeof window === 'undefined' || typeof sessionStorage === 'undefined') {
-      return `server-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      return null; // Return null for server-side rendering
     }
 
     let sessionId = sessionStorage.getItem('webvitals_session_id');
@@ -320,7 +325,7 @@ export function WebVitalsTracker({
         )}
 
         <div style={{ marginTop: '12px', fontSize: '10px', color: '#9ca3af' }}>
-          Session: {getSessionId().split('-')[0]}
+          Session: {isMounted ? (getSessionId()?.split('-')[0] || 'N/A') : 'Loading...'}
         </div>
       </div>
     );

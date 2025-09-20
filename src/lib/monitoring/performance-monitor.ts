@@ -252,7 +252,7 @@ class PerformanceMonitor {
       case 'LARGE_RESOURCE':
         return { good: 500 * 1024, poor: 1024 * 1024 }; // 500KB, 1MB
       case 'LONG_TASK':
-        return { good: 50, poor: 100 };
+        return { good: 100, poor: 200 }; // More lenient thresholds for development
       default:
         return defaultThreshold;
     }

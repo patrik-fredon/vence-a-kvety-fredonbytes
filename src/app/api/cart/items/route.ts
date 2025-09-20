@@ -30,10 +30,10 @@ export async function POST(request: NextRequest) {
       sessionId = randomUUID();
     }
 
-    // Check if product exists
+    // Check if product exists and get price
     const { data: product, error: productError } = await supabase
       .from("products")
-      .select("id, active, availability")
+      .select("id, active, availability, base_price")
       .eq("id", body.productId)
       .single();
 
@@ -52,6 +52,16 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "Product is not available",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!product.base_price) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Product price not available",
         },
         { status: 400 }
       );
@@ -77,13 +87,16 @@ export async function POST(request: NextRequest) {
     let result;
 
     if (existingItem) {
-      // Update existing item quantity
+      // Update existing item quantity and recalculate total price
       const newQuantity = existingItem.quantity + body.quantity;
+      const unitPrice = parseFloat(product.base_price.toString());
+      const newTotalPrice = unitPrice * newQuantity;
 
       const { data, error } = await supabase
         .from("cart_items")
         .update({
           quantity: newQuantity,
+          total_price: newTotalPrice,
           updated_at: new Date().toISOString(),
         })
         .eq("id", existingItem.id)
@@ -103,12 +116,18 @@ export async function POST(request: NextRequest) {
 
       result = data;
     } else {
+      // Calculate prices
+      const unitPrice = parseFloat(product.base_price.toString());
+      const totalPrice = unitPrice * body.quantity;
+
       // Create new cart item
       const cartItemData = {
         user_id: session?.user?.id || null,
         session_id: session?.user?.id ? null : sessionId,
         product_id: body.productId,
         quantity: body.quantity,
+        unit_price: unitPrice,
+        total_price: totalPrice,
         customizations: body.customizations as any,
       };
 
@@ -149,7 +168,7 @@ export async function POST(request: NextRequest) {
 
     if (!session?.user?.id && sessionId) {
       response.cookies.set("cart-session", sessionId, {
-        httpOnly: true,
+        httpOnly: false, // Allow JavaScript access for client-side cart management
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 30, // 30 days
