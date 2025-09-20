@@ -96,6 +96,9 @@
     "allCategories": "Všechny kategorie",
     "inStockOnly": "Pouze skladem",
     "featuredOnly": "Pouze doporučené",
+    "addToFavorites": "Přidat do oblíbených",
+    "removeFromFavorites": "Odebrat z oblíbených",
+    "tryAgain": "Zkusit znovu",
     "validation": {
       "title": "Prosím dokončete následující:",
       "required": "{option} je povinné",
