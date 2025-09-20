@@ -23,7 +23,8 @@ export function CartIcon({ locale, className = "" }: CartIconProps) {
       href={`/${locale}/cart`}
       className={cn(
         "relative inline-flex items-center text-stone-700 hover:text-stone-900 transition-colors duration-200",
-        "focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20 focus-visible:ring-offset-2 rounded-md p-2",
+        "high-contrast:text-ButtonText high-contrast:hover:text-Highlight",
         className
       )}
       title={t("cart")}
@@ -31,7 +32,12 @@ export function CartIcon({ locale, className = "" }: CartIconProps) {
       <ShoppingCartIcon className="w-5 h-5" />
 
       {itemCount > 0 && (
-        <span className="absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-bold rounded-full w-4 h-4 flex items-center justify-center min-w-[1rem] px-1">
+        <span className={cn(
+          "absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-semibold rounded-full",
+          "w-5 h-5 flex items-center justify-center min-w-[1.25rem] px-1",
+          "shadow-sm border border-white",
+          "high-contrast:bg-Highlight high-contrast:text-HighlightText high-contrast:border-HighlightText"
+        )}>
           {itemCount > 99 ? "99+" : itemCount}
         </span>
       )}

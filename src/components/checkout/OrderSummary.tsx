@@ -8,6 +8,7 @@ import { CartItem } from "@/types/cart";
 import { OrderSummary as OrderSummaryType } from "@/types/order";
 import { formatPrice } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 
 interface OrderSummaryProps {
   items: CartItem[];
@@ -38,56 +39,56 @@ export function OrderSummary({
 
   if (isLoading) {
     return (
-      <div className={`bg-white rounded-lg shadow-soft p-6 ${className}`}>
-        <div className="flex items-center justify-center py-8">
+      <Card className={className} variant="default">
+        <CardContent className="flex items-center justify-center py-12">
           <LoadingSpinner size="lg" />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   return (
-    <div className={`bg-white rounded-lg shadow-soft ${className}`}>
+    <Card className={className} variant="default">
       {/* Header */}
-      <div className="p-6 border-b border-neutral-200">
-        <h2 className="text-elegant text-xl font-semibold text-primary-800">{t("orderSummary")}</h2>
-        <p className="text-neutral-600 mt-1">
+      <CardHeader>
+        <CardTitle className="text-xl font-light text-stone-900">{t("orderSummary")}</CardTitle>
+        <p className="text-stone-600 mt-1">
           {itemCount} {itemCount === 1 ? tCart("item") : tCart("items")}
         </p>
-      </div>
+      </CardHeader>
 
       {/* Items List */}
-      <div className="p-6 border-b border-neutral-200">
+      <CardContent className="border-b border-stone-200">
         <div className="space-y-4">
           {items.map((item) => (
             <OrderSummaryItem key={item.id} item={item} locale={locale} />
           ))}
         </div>
-      </div>
+      </CardContent>
 
       {/* Pricing Breakdown */}
-      <div className="p-6 space-y-3">
+      <CardFooter className="flex-col space-y-3">
         {/* Subtotal */}
-        <div className="flex justify-between items-center">
-          <span className="text-neutral-700">{tCart("subtotal")}</span>
-          <span className="font-medium text-neutral-900">
+        <div className="flex justify-between items-center w-full">
+          <span className="text-stone-700">{tCart("subtotal")}</span>
+          <span className="font-medium text-stone-900">
             {formatPrice(subtotal, locale as "cs" | "en")}
           </span>
         </div>
 
         {/* Delivery Cost */}
-        <div className="flex justify-between items-center">
-          <span className="text-neutral-700">{tCart("shipping")}</span>
-          <span className="font-medium text-neutral-900">
+        <div className="flex justify-between items-center w-full">
+          <span className="text-stone-700">{tCart("shipping")}</span>
+          <span className="font-medium text-stone-900">
             {deliveryCost > 0 ? formatPrice(deliveryCost, locale as "cs" | "en") : t("free")}
           </span>
         </div>
 
         {/* Estimated Delivery Date */}
         {estimatedDeliveryDate && (
-          <div className="flex justify-between items-center text-sm">
-            <span className="text-neutral-600">{tDelivery("cost.estimatedDelivery")}</span>
-            <span className="text-neutral-800">
+          <div className="flex justify-between items-center text-sm w-full">
+            <span className="text-stone-600">{tDelivery("cost.estimatedDelivery")}</span>
+            <span className="text-stone-800">
               {estimatedDeliveryDate.toLocaleDateString(locale === "cs" ? "cs-CZ" : "en-US", {
                 weekday: "short",
                 month: "short",
@@ -98,16 +99,16 @@ export function OrderSummary({
         )}
 
         {/* Total */}
-        <div className="pt-3 border-t border-neutral-200">
+        <div className="pt-3 border-t border-stone-200 w-full">
           <div className="flex justify-between items-center">
-            <span className="text-lg font-semibold text-neutral-900">{tCart("total")}</span>
-            <span className="text-xl font-bold text-primary-800">
+            <span className="text-lg font-semibold text-stone-900">{tCart("total")}</span>
+            <span className="text-xl font-bold text-stone-900">
               {formatPrice(totalAmount, locale as "cs" | "en")}
             </span>
           </div>
         </div>
-      </div>
-    </div>
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -129,9 +130,9 @@ function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
   const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
 
   return (
-    <div className="flex items-start space-x-3">
+    <div className="flex items-start space-x-3 p-3 border border-stone-200 rounded-lg bg-stone-50/50">
       {/* Product Image */}
-      <div className="flex-shrink-0 w-16 h-16 bg-neutral-100 rounded-lg overflow-hidden">
+      <div className="flex-shrink-0 w-16 h-16 bg-white rounded-lg overflow-hidden shadow-sm">
         {primaryImage ? (
           <Image
             src={primaryImage.url}
@@ -142,20 +143,20 @@ function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <ShoppingCartIcon className="w-6 h-6 text-neutral-400" />
+            <ShoppingCartIcon className="w-6 h-6 text-stone-400" />
           </div>
         )}
       </div>
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <h4 className="text-sm font-medium text-neutral-900 truncate">{productName}</h4>
+        <h4 className="text-sm font-medium text-stone-900 truncate">{productName}</h4>
 
         {/* Customizations */}
         {item.customizations && item.customizations.length > 0 && (
           <div className="mt-1 space-y-1">
             {item.customizations.map((customization, index) => (
-              <div key={index} className="text-xs text-neutral-600">
+              <div key={index} className="text-xs text-stone-600">
                 {customization.customValue && (
                   <span>
                     {tCart("customMessage")}: {customization.customValue}
@@ -168,10 +169,10 @@ function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
 
         {/* Quantity and Price */}
         <div className="mt-2 flex items-center justify-between">
-          <span className="text-xs text-neutral-600">
+          <span className="text-xs text-stone-600">
             {tCart("quantity")}: {item.quantity}
           </span>
-          <span className="text-sm font-medium text-neutral-900">
+          <span className="text-sm font-medium text-stone-900">
             {formatPrice(item.totalPrice || 0, locale as "cs" | "en")}
           </span>
         </div>
@@ -195,34 +196,36 @@ export function CompactOrderSummary({
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className={`bg-neutral-50 rounded-lg p-4 ${className}`}>
-      <div className="flex items-center justify-between mb-3">
-        <span className="text-sm font-medium text-neutral-700">{t("orderSummary")}</span>
-        <span className="text-sm text-neutral-600">
-          {itemCount} {itemCount === 1 ? tCart("item") : tCart("items")}
-        </span>
-      </div>
-
-      <div className="space-y-2 text-sm">
-        <div className="flex justify-between">
-          <span className="text-neutral-600">{tCart("subtotal")}</span>
-          <span>{formatPrice(subtotal, locale as "cs" | "en")}</span>
+    <Card className={className} variant="outlined">
+      <CardContent className="bg-stone-50">
+        <div className="flex items-center justify-between mb-3">
+          <span className="text-sm font-medium text-stone-700">{t("orderSummary")}</span>
+          <span className="text-sm text-stone-600">
+            {itemCount} {itemCount === 1 ? tCart("item") : tCart("items")}
+          </span>
         </div>
 
-        <div className="flex justify-between">
-          <span className="text-neutral-600">{tCart("shipping")}</span>
-          <span>{formatPrice(deliveryCost, locale as "cs" | "en")}</span>
-        </div>
+        <div className="space-y-2 text-sm">
+          <div className="flex justify-between">
+            <span className="text-stone-600">{tCart("subtotal")}</span>
+            <span>{formatPrice(subtotal, locale as "cs" | "en")}</span>
+          </div>
 
-        <div className="pt-2 border-t border-neutral-200">
-          <div className="flex justify-between font-semibold">
-            <span>{tCart("total")}</span>
-            <span className="text-primary-800">
-              {formatPrice(totalAmount, locale as "cs" | "en")}
-            </span>
+          <div className="flex justify-between">
+            <span className="text-stone-600">{tCart("shipping")}</span>
+            <span>{formatPrice(deliveryCost, locale as "cs" | "en")}</span>
+          </div>
+
+          <div className="pt-2 border-t border-stone-200">
+            <div className="flex justify-between font-semibold">
+              <span>{tCart("total")}</span>
+              <span className="text-stone-900">
+                {formatPrice(totalAmount, locale as "cs" | "en")}
+              </span>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
+      </CardContent>
+    </Card>
   );
 }

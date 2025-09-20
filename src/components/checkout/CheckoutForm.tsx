@@ -29,6 +29,7 @@ import {
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Card, CardContent } from "@/components/ui/Card";
 import { CustomerInfoStep } from "./steps/CustomerInfoStep";
 import { DeliveryInfoStep } from "./steps/DeliveryInfoStep";
 import { PaymentStep } from "./steps/PaymentStep";
@@ -245,163 +246,173 @@ export function CheckoutForm({
   return (
     <div className={`checkout-form ${className}`}>
       {/* Progress Steps */}
-      <div className="mb-8">
-        <div className="flex items-center justify-between">
-          {STEPS.map((step, index) => {
-            const isActive = step === state.currentStep;
-            const isCompleted = STEPS.indexOf(state.currentStep) > index;
-            const isClickable = STEPS.indexOf(state.currentStep) >= index;
+      <Card className="mb-8" variant="default">
+        <CardContent className="py-6">
+          <div className="flex items-center justify-between">
+            {STEPS.map((step, index) => {
+              const isActive = step === state.currentStep;
+              const isCompleted = STEPS.indexOf(state.currentStep) > index;
+              const isClickable = STEPS.indexOf(state.currentStep) >= index;
 
-            return (
-              <React.Fragment key={step}>
-                <button
-                  onClick={() => isClickable && goToStep(step)}
-                  disabled={!isClickable}
-                  className={`
-                    flex items-center justify-center w-10 h-10 rounded-full border-2 transition-colors
-                    ${
-                      isActive
-                        ? "border-primary-600 bg-primary-600 text-white"
-                        : isCompleted
-                          ? "border-green-500 bg-green-500 text-white"
-                          : "border-neutral-300 bg-white text-neutral-400"
-                    }
-                    ${isClickable ? "cursor-pointer hover:border-primary-500" : "cursor-not-allowed"}
-                  `}
-                >
-                  {isCompleted ? (
-                    <CheckIcon className="w-5 h-5" />
-                  ) : (
-                    <span className="text-sm font-medium">{index + 1}</span>
-                  )}
-                </button>
-
-                {index < STEPS.length - 1 && (
-                  <div
+              return (
+                <React.Fragment key={step}>
+                  <button
+                    onClick={() => isClickable && goToStep(step)}
+                    disabled={!isClickable}
                     className={`
-                    flex-1 h-0.5 mx-4
-                    ${isCompleted ? "bg-green-500" : "bg-neutral-200"}
-                  `}
-                  />
-                )}
-              </React.Fragment>
-            );
-          })}
-        </div>
+                      flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200
+                      ${isActive
+                        ? "border-amber-600 bg-amber-600 text-white shadow-md"
+                        : isCompleted
+                          ? "border-green-500 bg-green-500 text-white shadow-sm"
+                          : "border-stone-300 bg-white text-stone-400"
+                      }
+                      ${isClickable ? "cursor-pointer hover:border-amber-500 hover:shadow-md" : "cursor-not-allowed"}
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20
+                    `}
+                  >
+                    {isCompleted ? (
+                      <CheckIcon className="w-5 h-5" />
+                    ) : (
+                      <span className="text-sm font-medium">{index + 1}</span>
+                    )}
+                  </button>
 
-        <div className="flex justify-between mt-4">
-          {STEPS.map((step) => (
-            <div key={step} className="text-center">
-              <p className="text-sm font-medium text-neutral-700">{t(STEP_TITLES[step])}</p>
-            </div>
-          ))}
-        </div>
-      </div>
+                  {index < STEPS.length - 1 && (
+                    <div
+                      className={`
+                      flex-1 h-0.5 mx-4 transition-colors duration-200
+                      ${isCompleted ? "bg-green-500" : "bg-stone-200"}
+                    `}
+                    />
+                  )}
+                </React.Fragment>
+              );
+            })}
+          </div>
+
+          <div className="flex justify-between mt-4">
+            {STEPS.map((step) => (
+              <div key={step} className="text-center">
+                <p className="text-sm font-medium text-stone-700">{t(STEP_TITLES[step])}</p>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
 
       {/* Error Messages */}
       {Object.keys(state.errors).length > 0 && (
-        <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <div className="flex items-start">
-            <ExclamationTriangleIcon className="w-5 h-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
-            <div>
-              <h3 className="text-sm font-medium text-red-800 mb-2">
-                Prosím opravte následující chyby:
-              </h3>
-              <ul className="text-sm text-red-700 space-y-1">
-                {formatValidationErrors(state.errors).map((error, index) => (
-                  <li key={index}>• {error}</li>
-                ))}
-              </ul>
+        <Card className="mb-6" variant="outlined">
+          <CardContent className="p-4 bg-red-50">
+            <div className="flex items-start">
+              <ExclamationTriangleIcon className="w-5 h-5 text-red-600 mt-0.5 mr-3 flex-shrink-0" />
+              <div>
+                <h3 className="text-sm font-medium text-red-800 mb-2">
+                  Prosím opravte následující chyby:
+                </h3>
+                <ul className="text-sm text-red-700 space-y-1">
+                  {formatValidationErrors(state.errors).map((error, index) => (
+                    <li key={index}>• {error}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-        </div>
+          </CardContent>
+        </Card>
       )}
 
       {/* Step Content */}
-      <div className="mb-8">
-        {state.currentStep === "customer" && (
-          <CustomerInfoStep
-            customerInfo={state.formData.customerInfo}
-            errors={state.errors.customerInfo}
-            onChange={(customerInfo) => updateFormData({ customerInfo })}
-            locale={locale}
-          />
-        )}
+      <Card className="mb-8" variant="default">
+        <CardContent className="py-6">
+          {state.currentStep === "customer" && (
+            <CustomerInfoStep
+              customerInfo={state.formData.customerInfo}
+              errors={state.errors.customerInfo}
+              onChange={(customerInfo) => updateFormData({ customerInfo })}
+              locale={locale}
+            />
+          )}
 
-        {state.currentStep === "delivery" && (
-          <DeliveryInfoStep
-            deliveryInfo={state.formData.deliveryInfo}
-            errors={state.errors.deliveryInfo}
-            onChange={(deliveryInfo) => updateFormData({ deliveryInfo })}
-            locale={locale}
-          />
-        )}
+          {state.currentStep === "delivery" && (
+            <DeliveryInfoStep
+              deliveryInfo={state.formData.deliveryInfo}
+              errors={state.errors.deliveryInfo}
+              onChange={(deliveryInfo) => updateFormData({ deliveryInfo })}
+              locale={locale}
+            />
+          )}
 
-        {state.currentStep === "payment" && (
-          <PaymentStep
-            paymentMethod={state.formData.paymentMethod}
-            onChange={(paymentMethod) => updateFormData({ paymentMethod })}
-            locale={locale}
-          />
-        )}
+          {state.currentStep === "payment" && (
+            <PaymentStep
+              paymentMethod={state.formData.paymentMethod}
+              onChange={(paymentMethod) => updateFormData({ paymentMethod })}
+              locale={locale}
+            />
+          )}
 
-        {state.currentStep === "review" && (
-          <ReviewStep
-            formData={state.formData}
-            items={items}
-            subtotal={subtotal}
-            deliveryCost={state.deliveryCost}
-            totalAmount={totalAmount}
-            estimatedDeliveryDate={state.estimatedDeliveryDate}
-            agreeToTerms={state.formData.agreeToTerms}
-            subscribeNewsletter={state.formData.subscribeNewsletter}
-            onAgreeToTermsChange={(agreeToTerms) => updateFormData({ agreeToTerms })}
-            onSubscribeNewsletterChange={(subscribeNewsletter) =>
-              updateFormData({ subscribeNewsletter })
-            }
-            locale={locale}
-          />
-        )}
-      </div>
+          {state.currentStep === "review" && (
+            <ReviewStep
+              formData={state.formData}
+              items={items}
+              subtotal={subtotal}
+              deliveryCost={state.deliveryCost}
+              totalAmount={totalAmount}
+              estimatedDeliveryDate={state.estimatedDeliveryDate}
+              agreeToTerms={state.formData.agreeToTerms}
+              subscribeNewsletter={state.formData.subscribeNewsletter}
+              onAgreeToTermsChange={(agreeToTerms) => updateFormData({ agreeToTerms })}
+              onSubscribeNewsletterChange={(subscribeNewsletter) =>
+                updateFormData({ subscribeNewsletter })
+              }
+              locale={locale}
+            />
+          )}
+        </CardContent>
+      </Card>
 
       {/* Navigation Buttons */}
-      <div className="flex items-center justify-between">
-        <Button
-          variant="outline"
-          onClick={goToPreviousStep}
-          disabled={state.currentStep === "customer" || state.isSubmitting}
-          className="flex items-center"
-        >
-          <ChevronLeftIcon className="w-4 h-4 mr-2" />
-          {tCommon("previous")}
-        </Button>
+      <Card variant="default">
+        <CardContent className="py-4">
+          <div className="flex items-center justify-between">
+            <Button
+              variant="outline"
+              onClick={goToPreviousStep}
+              disabled={state.currentStep === "customer" || state.isSubmitting}
+              className="flex items-center"
+            >
+              <ChevronLeftIcon className="w-4 h-4 mr-2" />
+              {tCommon("previous")}
+            </Button>
 
-        {state.currentStep === "review" ? (
-          <Button
-            onClick={handleSubmit}
-            disabled={state.isSubmitting}
-            className="flex items-center min-w-[140px]"
-          >
-            {state.isSubmitting ? (
-              <>
-                <LoadingSpinner size="sm" className="mr-2" />
-                Odesílání...
-              </>
+            {state.currentStep === "review" ? (
+              <Button
+                onClick={handleSubmit}
+                disabled={state.isSubmitting}
+                className="flex items-center min-w-[140px] bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                {state.isSubmitting ? (
+                  <>
+                    <LoadingSpinner size="sm" className="mr-2" />
+                    Odesílání...
+                  </>
+                ) : (
+                  t("placeOrder")
+                )}
+              </Button>
             ) : (
-              t("placeOrder")
+              <Button
+                onClick={goToNextStep}
+                disabled={state.isSubmitting}
+                className="flex items-center bg-amber-600 hover:bg-amber-700 text-white"
+              >
+                {tCommon("next")}
+                <ChevronRightIcon className="w-4 h-4 ml-2" />
+              </Button>
             )}
-          </Button>
-        ) : (
-          <Button
-            onClick={goToNextStep}
-            disabled={state.isSubmitting}
-            className="flex items-center"
-          >
-            {tCommon("next")}
-            <ChevronRightIcon className="w-4 h-4 ml-2" />
-          </Button>
-        )}
-      </div>
+          </div>
+        </CardContent>
+      </Card>
     </div>
   );
 }
