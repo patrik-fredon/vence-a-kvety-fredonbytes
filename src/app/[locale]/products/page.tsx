@@ -2,7 +2,7 @@ import { getTranslations } from "next-intl/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { ProductGridWithCart } from "@/components/product/ProductGridWithCart";
 import { transformProductRow, transformCategoryRow } from "@/lib/utils/product-transforms";
-import { Product, Category, ProductRow, CategoryRow } from "@/types/product";
+import { Product, ProductRow, CategoryRow } from "@/types/product";
 import {
   getCachedCategories,
   cacheCategories,
@@ -158,13 +158,16 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
   const websiteStructuredData = generateWebsiteStructuredData(locale);
 
   // Generate ItemList structured data for products
-  const productItems = products.map(product => ({
-    name: locale === "cs" ? product.name.cs : product.name.en,
-    url: `/${locale}/products/${product.slug}`,
-    image: product.images?.[0]?.url,
-    description: locale === "cs" ? product.description?.cs : product.description?.en,
-    price: product.basePrice,
-  }));
+  const productItems = products.map(product => {
+    const description = locale === "cs" ? product.description?.cs : product.description?.en;
+    return {
+      name: locale === "cs" ? product.name.cs : product.name.en,
+      url: `/${locale}/products/${product.slug}`,
+      ...(product.images?.[0]?.url && { image: product.images[0].url }),
+      ...(description && { description }),
+      price: product.basePrice,
+    };
+  });
 
   const itemListStructuredData = generateItemListStructuredData(
     productItems,
@@ -182,7 +185,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
 
       collectionPageStructuredData = generateCollectionPageStructuredData({
         name: categoryName,
-        description: categoryDescription,
+        ...(categoryDescription && { description: categoryDescription }),
         url: `/${locale}/products?category=${category}`,
         productCount: products.length, // This would be the total count in a real implementation
       }, locale);

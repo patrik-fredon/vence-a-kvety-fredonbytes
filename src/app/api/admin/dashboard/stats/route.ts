@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { withAdminAuth } from "@/lib/auth/admin-middleware";
 import { adminUtils } from "@/lib/supabase/utils";
 
-export const GET = withAdminAuth(async (request: NextRequest) => {
+export const GET = withAdminAuth(async () => {
   try {
     const { data: stats, error } = await adminUtils.getDashboardStats();
 

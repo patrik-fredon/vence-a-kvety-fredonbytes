@@ -36,7 +36,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
 
   return (
     <NextIntlClientProvider messages={messages}>
-      <MonitoringProvider userId={user?.id}>
+      <MonitoringProvider {...(user?.id && { userId: user.id })}>
         <AccessibilityProvider>
           <AuthProvider>
             <CartProvider>
