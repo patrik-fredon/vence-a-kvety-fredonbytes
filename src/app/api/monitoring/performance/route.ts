@@ -19,12 +19,55 @@ interface PerformanceDataRequest {
 
 export async function POST(request: NextRequest) {
   try {
-    // TODO: Monitoring tables not yet implemented in database schema
-    // This endpoint is disabled until the required tables are created
+    // Rate limiting
+    const rateLimitResult = await rateLimit('performance-monitoring', request);
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        { error: 'Rate limit exceeded' },
+        { status: 429 }
+      );
+    }
+
+    const body = await request.json() as PerformanceDataRequest;
+    const { metrics, userAgent, timestamp } = body;
+
+    if (!metrics || !Array.isArray(metrics)) {
+      return NextResponse.json(
+        { error: 'Invalid metrics data' },
+        { status: 400 }
+      );
+    }
+
+    const supabase = createClient();
+
+    // Insert performance metrics
+    const metricsToInsert = metrics.map(metric => ({
+      name: metric.name,
+      value: metric.value,
+      rating: metric.rating,
+      timestamp: new Date(metric.timestamp).toISOString(),
+      url: metric.url,
+      metric_id: metric.id,
+      user_agent: userAgent,
+      created_at: new Date().toISOString(),
+    }));
+
+    const { error: insertError } = await supabase
+      .from('performance_metrics')
+      .insert(metricsToInsert);
+
+    if (insertError) {
+      console.error('Error inserting performance metrics:', insertError);
+      return NextResponse.json(
+        { error: 'Failed to store performance metrics' },
+        { status: 500 }
+      );
+    }
+
     return NextResponse.json({
       success: true,
-      message: "Performance monitoring is not yet implemented - database schema incomplete",
-      status: "disabled",
+      message: 'Performance metrics stored successfully',
+      count: metrics.length,
       timestamp: new Date().toISOString(),
     });
 
@@ -39,13 +82,51 @@ export async function POST(request: NextRequest) {
 
 export async function GET(request: NextRequest) {
   try {
-    // TODO: Monitoring tables not yet implemented in database schema
-    // This endpoint is disabled until the required tables are created
+    const { searchParams } = new URL(request.url);
+    const hours = parseInt(searchParams.get('hours') || '24');
+    const limit = parseInt(searchParams.get('limit') || '100');
+    const metric = searchParams.get('metric');
+
+    const supabase = createClient();
+
+    // Calculate time range
+    const startTime = new Date();
+    startTime.setHours(startTime.getHours() - hours);
+
+    let query = supabase
+      .from('performance_metrics')
+      .select('*')
+      .gte('timestamp', startTime.toISOString())
+      .order('timestamp', { ascending: false })
+      .limit(limit);
+
+    if (metric) {
+      query = query.eq('name', metric);
+    }
+
+    const { data: metrics, error } = await query;
+
+    if (error) {
+      console.error('Error fetching performance metrics:', error);
+      return NextResponse.json(
+        { error: 'Failed to fetch performance metrics' },
+        { status: 500 }
+      );
+    }
+
+    // Calculate summary statistics
+    const summary = calculatePerformanceSummary(metrics || []);
+
     return NextResponse.json({
       success: true,
-      message: "Performance data retrieval is not yet implemented - database schema incomplete",
-      status: "disabled",
-      data: [],
+      metrics: metrics || [],
+      summary,
+      count: metrics?.length || 0,
+      timeRange: {
+        start: startTime.toISOString(),
+        end: new Date().toISOString(),
+        hours,
+      },
       timestamp: new Date().toISOString(),
     });
 
@@ -56,4 +137,42 @@ export async function GET(request: NextRequest) {
       { status: 500 }
     );
   }
+}
+
+function calculatePerformanceSummary(metrics: any[]) {
+  if (metrics.length === 0) {
+    return {
+      averageValues: {},
+      ratingDistribution: { good: 0, 'needs-improvement': 0, poor: 0 },
+      totalMetrics: 0,
+    };
+  }
+
+  const metricsByName = metrics.reduce((acc, metric) => {
+    if (!acc[metric.name]) {
+      acc[metric.name] = [];
+    }
+    acc[metric.name].push(metric);
+    return acc;
+  }, {} as Record<string, any[]>);
+
+  const averageValues: Record<string, number> = {};
+  Object.entries(metricsByName).forEach(([name, values]) => {
+    const sum = values.reduce((acc, metric) => acc + metric.value, 0);
+    averageValues[name] = Math.round((sum / values.length) * 100) / 100;
+  });
+
+  const ratingDistribution = metrics.reduce(
+    (acc, metric) => {
+      acc[metric.rating] = (acc[metric.rating] || 0) + 1;
+      return acc;
+    },
+    { good: 0, 'needs-improvement': 0, poor: 0 }
+  );
+
+  return {
+    averageValues,
+    ratingDistribution,
+    totalMetrics: metrics.length,
+  };
 }

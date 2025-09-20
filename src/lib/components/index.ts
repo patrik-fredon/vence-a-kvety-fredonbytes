@@ -5,7 +5,17 @@
  * and performant components following atomic design principles.
  */
 
+// Base component utilities
 export * from "./base";
+
+// Component factory utilities
+export * from "./factory";
+
+// Design token integration
+export { designTokens } from "../design-tokens";
+
+// Re-export component types
+export type * from "@/types/components";
 
 // =============================================================================
 // FUTURE COMPONENT UTILITIES

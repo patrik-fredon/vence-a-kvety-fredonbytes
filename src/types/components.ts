@@ -5,6 +5,7 @@
 
 import type { ReactNode, HTMLAttributes, ComponentPropsWithoutRef } from "react";
 import type { Locale } from "./index";
+import { JSX } from "react/jsx-runtime";
 
 // =============================================================================
 // BASE COMPONENT INTERFACES
@@ -394,9 +395,7 @@ export interface RenderPropComponent<T = any> {
 /**
  * Compound component pattern interface
  */
-export interface CompoundComponent<T extends Record<string, any>> {
-  [K in keyof T]: T[K];
-}
+export type CompoundComponent<T extends Record<string, any>> = T;
 
 /**
  * Polymorphic component props

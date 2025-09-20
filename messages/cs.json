@@ -100,75 +100,24 @@
   "cart": {
     "title": "Nákupní košík",
     "empty": "Váš košík je prázdný",
-    "emptyDescription": "Zatím jste nepřidali žádné produkty do košíku",
-    "continueShopping": "Pokračovat v nákupu",
+    "emptyDescription": "Přidejte si produkty do košíku a pokračujte v nákupu.",
     "item": "položka",
     "items": "položky",
-    "subtotal": "Mezisoučet",
-    "proceedToCheckout": "Pokračovat k pokladně",
+    "quantity": "Množství",
+    "remove": "Odebrat",
     "removeItem": "Odebrat položku",
+    "update": "Aktualizovat",
+    "subtotal": "Mezisoučet",
+    "shipping": "Doprava",
+    "tax": "DPH",
+    "total": "Celkem",
+    "checkout": "Pokračovat k objednávce",
+    "proceedToCheckout": "Pokračovat k objednávce",
+    "continueShopping": "Pokračovat v nákupu",
+    "viewCart": "Zobrazit košík",
     "each": "za kus",
-    "customMessage": "Osobní vzkaz"
-  },
-  "home": {
-    "featuredProducts": {
-      "title": "Naše doporučené věnce",
-      "viewAll": "Zobrazit všechny produkty"
-    },
-    "tryAgain": "Zkusit znovu",
-    "noProducts": "Žádné produkty k zobrazení"
-  },
-  "legal": {
-    "title": "Právní informace",
-    "terms": {
-      "title": "Obchodní podmínky",
-      "content": {
-        "intro": "Tyto obchodní podmínky upravují vztah mezi společností Pohřební věnce s.r.o. a zákazníky při nákupu pohřebních věnců a souvisejících služeb.",
-        "services": "Poskytujeme služby výroby a dodání pohřebních věnců, květinových aranžmá a souvisejících produktů pro pohřební služby.",
-        "orders": "Objednávky jsou přijímány prostřednictvím našeho webového rozhraní nebo telefonicky. Každá objednávka je potvrzena e-mailem.",
-        "payment": "Platby přijímáme kartou, bankovním převodem nebo prostřednictvím platebních bran GoPay a Stripe.",
-        "delivery": "Dodání zajišťujeme vlastní dopravou nebo prostřednictvím smluvních partnerů. Standardní doba dodání je 24-48 hodin.",
-        "returns": "Vzhledem k povaze produktů (čerstvé květiny) nepřijímáme vrácení zboží, kromě případů vadného plnění z naší strany."
-      }
-    },
-    "privacy": {
-      "title": "Ochrana osobních údajů",
-      "content": {
-        "intro": "Respektujeme vaše soukromí a zavazujeme se chránit vaše osobní údaje v souladu s GDPR a českými zákony.",
-        "collection": "Sbíráme pouze údaje nezbytné pro zpracování objednávky: jméno, adresu, telefon, e-mail a platební informace.",
-        "usage": "Vaše údaje používáme výhradně pro zpracování objednávky, komunikaci a zlepšení našich služeb.",
-        "sharing": "Údaje nesdílíme s třetími stranami kromě nezbytných případů (doprava, platby).",
-        "security": "Používáme moderní bezpečnostní opatření pro ochranu vašich dat včetně šifrování a zabezpečených serverů.",
-        "rights": "Máte právo na přístup, opravu, výmaz nebo přenositelnost svých údajů. Kontaktujte nás na info@pohrebni-vence.cz."
-      }
-    },
-    "gdpr": {
-      "title": "GDPR - Vaše práva",
-      "content": {
-        "intro": "V souladu s GDPR máte následující práva ohledně svých osobních údajů:",
-        "rights": "Právo na informace, přístup, opravu, výmaz, omezení zpracování, přenositelnost dat a námitku proti zpracování.",
-        "access": "Můžete požádat o kopii všech údajů, které o vás zpracováváme.",
-        "deletion": "Můžete požádat o smazání svých údajů, pokud již nejsou potřebné pro původní účel.",
-        "contact": "Pro uplatnění svých práv nás kontaktujte na info@pohrebni-vence.cz nebo písemně na naši adresu."
-      }
-    },
-    "cookies": {
-      "title": "Používání cookies",
-      "content": {
-        "intro": "Náš web používá cookies pro zajištění správné funkčnosti a zlepšení uživatelského zážitku.",
-        "types": "Používáme technické cookies (nezbytné), analytické cookies (Google Analytics) a marketingové cookies.",
-        "management": "Cookies můžete spravovat v nastavení vašeho prohlížeče nebo prostřednictvím našeho nástroje pro správu souhlasů.",
-        "thirdParty": "Některé cookies pocházejí od třetích stran (Google, Facebook) pro analytické a marketingové účely."
-      }
-    },
-    "contact": {
-      "title": "Kontakt pro právní záležitosti",
-      "description": "Pro dotazy ohledně ochrany osobních údajů nebo právních záležitostí nás kontaktujte:",
-      "email": "E-mail",
-      "phone": "Telefon",
-      "address": "Adresa",
-      "addressValue": "Květinová 123, 110 00 Praha 1"
-    }
+    "customMessage": "Vlastní vzkaz",
+    "andMore": "a dalších {count} položek"
   },
   "checkout": {
     "title": "Objednávka",
@@ -366,6 +315,58 @@
     "today": "Dnes",
     "tomorrow": "Zítra",
     "dayAfterTomorrow": "Pozítří"
+  },
+  "home": {
+    "hero": {
+      "title": "Důstojné rozloučení s krásou květin",
+      "subtitle": "Pohřební věnce vytvořené s láskou a úctou k vašim blízkým",
+      "description": "V těžkých chvílích rozloučení vám pomůžeme vyjádřit lásku a úctu prostřednictvím nádherných květinových aranžmá. Každý věnec vytváříme s citem, pečlivostí a porozuměním pro vaši ztrátu.",
+      "cta": "Vybrat věnec pro rozloučení"
+    },
+    "philosophy": {
+      "quote": "Život je křehký jako motýlí prach, ale krása a láska zůstávají navždy",
+      "text": "Uvědomujeme si, že život je křehký jako motýlí prach a že v jednom okamžiku se může náš svět změnit. Naše fyzická podoba se pak promění v jinou energii. Každý den je plný těchto proměn, viditelných i neviditelných. Jednou z těchto viditelných proměn je motýl, jehož přirozeným procesem je transformace z housenky na krásného tvora. Stejně tak vnímáme odchod na druhou stranu – jako přirozenou transformaci, která pokračuje v jiné podobě."
+    },
+    "title": "Pohřební věnce",
+    "subtitle": "Prémiové pohřební věnce a květinové aranžmá pro důstojné rozloučení",
+    "description": "Ruční výroba, pečlivý výběr květin a rychlé dodání. Pomáháme vám vyjádřit úctu a lásku v těžkých chvílích.",
+    "browseWreaths": "Prohlédnout věnce",
+    "contactUs": "Kontaktovat nás",
+    "benefits": {
+      "title": "Proč si vybrat naše pohřební věnce",
+      "items": [
+        {
+          "title": "Garance čerstvosti květin",
+          "description": "Květiny objednáváme vždy čerstvé až na základě vaší objednávky. Garantujeme nejvyšší kvalitu a dlouhou výdrž každého květu pro důstojné rozloučení."
+        },
+        {
+          "title": "Spolehlivé doručení na míru",
+          "description": "Produkty doručíme přesně na vámi určené místo v čase, který vám vyhovuje. Rozumíme naléhavosti a zajistíme včasné dodání bez stresu."
+        },
+        {
+          "title": "Pečlivá ruční práce",
+          "description": "Dáváme si záležet na uložení každého jednoho květu tak, aby výsledná práce byla dokonalá. Každý věnec je jedinečné dílo vytvořené s láskou a úctou."
+        },
+        {
+          "title": "Možnost personalizace",
+          "description": "Máte možnost si vybrat tvar, velikost a barevnost vašeho smutečního věnce podle vlastních představ. Pomůžeme vám vytvořit osobní a významné rozloučení."
+        }
+      ]
+    },
+    "features": {
+      "handcrafted": {
+        "title": "Ruční výroba",
+        "description": "Každý věnec je pečlivě vytvořen našimi zkušenými floristy s důrazem na detail a kvalitu."
+      },
+      "fastDelivery": {
+        "title": "Rychlé dodání",
+        "description": "Dodání již následující den. Rozumíme naléhavosti a zajistíme včasné doručení."
+      },
+      "personalApproach": {
+        "title": "Osobní přístup",
+        "description": "Pomůžeme vám vybrat nebo přizpůsobit věnec podle vašich představ a požadavků."
+      }
+    }
   },
   "faq": {
     "title": "Často kladené otázky",
