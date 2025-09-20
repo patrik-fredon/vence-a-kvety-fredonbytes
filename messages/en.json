@@ -9,7 +9,9 @@
     "account": "Account",
     "login": "Login",
     "logout": "Logout",
-    "register": "Register"
+    "register": "Register",
+    "howToOrder": "How to Order",
+    "search": "Search"
   },
   "common": {
     "loading": "Loading...",

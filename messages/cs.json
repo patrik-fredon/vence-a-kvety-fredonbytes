@@ -9,7 +9,9 @@
     "account": "Účet",
     "login": "Přihlášení",
     "logout": "Odhlášení",
-    "register": "Registrace"
+    "register": "Registrace",
+    "howToOrder": "Jak objednat",
+    "search": "Hledat"
   },
   "common": {
     "loading": "Načítání...",
