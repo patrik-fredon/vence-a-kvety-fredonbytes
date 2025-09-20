@@ -8,6 +8,7 @@ describe('Input', () => {
 
     expect(screen.getByLabelText('Test Input')).toBeInTheDocument();
     expect(screen.getByRole('textbox')).toHaveAttribute('id', 'test');
+    expect(screen.getByRole('textbox')).toHaveClass('border-stone-300');
   });
 
   it('associates label with input correctly', () => {
@@ -35,7 +36,9 @@ describe('Input', () => {
 
     expect(input).toHaveAttribute('aria-invalid', 'true');
     expect(input).toHaveAttribute('aria-describedby');
+    expect(input).toHaveClass('border-error-500');
     expect(errorMessage).toHaveTextContent('Invalid email format');
+    expect(errorMessage).toHaveClass('text-error-600');
   });
 
   it('handles value changes', async () => {
@@ -65,7 +68,9 @@ describe('Input', () => {
   it('can be disabled', () => {
     render(<Input label="Disabled Input" disabled />);
 
-    expect(screen.getByRole('textbox')).toBeDisabled();
+    const input = screen.getByRole('textbox');
+    expect(input).toBeDisabled();
+    expect(input).toHaveClass('disabled:bg-stone-50');
   });
 
   it('applies custom className', () => {
@@ -77,7 +82,9 @@ describe('Input', () => {
   it('supports help text', () => {
     render(<Input label="Password" helpText="Must be at least 8 characters" />);
 
-    expect(screen.getByText('Must be at least 8 characters')).toBeInTheDocument();
+    const helpText = screen.getByText('Must be at least 8 characters');
+    expect(helpText).toBeInTheDocument();
+    expect(helpText).toHaveClass('text-stone-600');
   });
 
   it('handles focus and blur events', async () => {
@@ -94,5 +101,44 @@ describe('Input', () => {
 
     await user.tab();
     expect(onBlur).toHaveBeenCalled();
+  });
+
+  it('renders with icons', () => {
+    const TestIcon = () => <span data-testid="test-icon">Icon</span>;
+
+    const { rerender } = render(
+      <Input label="Search" icon={<TestIcon />} iconPosition="left" />
+    );
+
+    expect(screen.getByTestId("test-icon")).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveClass('pl-10');
+
+    rerender(
+      <Input label="Search" icon={<TestIcon />} iconPosition="right" />
+    );
+
+    expect(screen.getByTestId("test-icon")).toBeInTheDocument();
+    expect(screen.getByRole('textbox')).toHaveClass('pr-10');
+  });
+
+  it('has proper accessibility attributes', () => {
+    render(<Input label="Accessible Input" />);
+
+    const input = screen.getByRole('textbox');
+    expect(input).toHaveClass('high-contrast:border-2', 'high-contrast:border-ButtonText');
+  });
+
+  it('generates unique IDs when not provided', () => {
+    render(
+      <div>
+        <Input label="Input 1" />
+        <Input label="Input 2" />
+      </div>
+    );
+
+    const inputs = screen.getAllByRole('textbox');
+    expect(inputs[0]).toHaveAttribute('id');
+    expect(inputs[1]).toHaveAttribute('id');
+    expect(inputs[0].getAttribute('id')).not.toBe(inputs[1].getAttribute('id'));
   });
 });

@@ -9,7 +9,9 @@
     "account": "Account",
     "login": "Login",
     "logout": "Logout",
-    "register": "Register"
+    "register": "Register",
+    "howToOrder": "How to Order",
+    "search": "Search"
   },
   "common": {
     "loading": "Loading...",
@@ -94,6 +96,9 @@
     "allCategories": "All categories",
     "inStockOnly": "In stock only",
     "featuredOnly": "Featured only",
+    "addToFavorites": "Add to favorites",
+    "removeFromFavorites": "Remove from favorites",
+    "tryAgain": "Try again",
     "validation": {
       "title": "Please complete the following:",
       "required": "{option} is required",

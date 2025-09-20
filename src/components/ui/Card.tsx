@@ -3,7 +3,7 @@ import { cn } from '@/lib/utils';
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
   children: ReactNode;
-  variant?: 'default' | 'outlined' | 'elevated' | 'memorial';
+  variant?: 'default' | 'outlined' | 'elevated';
   padding?: 'none' | 'sm' | 'md' | 'lg' | 'xl';
   interactive?: boolean;
   className?: string;
@@ -20,21 +20,16 @@ export function Card({
 }: CardProps) {
   const variants = {
     default: cn(
-      'bg-white border border-neutral-200',
+      'bg-white border border-stone-200',
       'shadow-sm'
     ),
     outlined: cn(
-      'bg-white border-2 border-neutral-300',
+      'bg-white border border-stone-300',
       'shadow-none'
     ),
     elevated: cn(
-      'bg-white border border-neutral-100',
-      'shadow-lg'
-    ),
-    memorial: cn(
-      'bg-gradient-to-br from-white to-neutral-50',
-      'border border-primary-200',
-      'shadow-memorial'
+      'bg-white border border-stone-100',
+      'shadow-md'
     ),
   };
 
@@ -48,9 +43,9 @@ export function Card({
 
   const interactiveStyles = interactive ? cn(
     'cursor-pointer transition-all duration-200',
-    'hover:shadow-lg hover:scale-[1.02]',
-    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-primary-500/20',
-    'active:scale-[0.98]'
+    'hover:shadow-lg hover:-translate-y-0.5',
+    'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20',
+    'active:translate-y-0'
   ) : '';
 
   return (
@@ -67,6 +62,12 @@ export function Card({
       onClick={onClick}
       role={interactive ? 'button' : undefined}
       tabIndex={interactive ? 0 : undefined}
+      onKeyDown={interactive ? (e) => {
+        if (e.key === 'Enter' || e.key === ' ') {
+          e.preventDefault();
+          onClick?.(e as any);
+        }
+      } : undefined}
       {...props}
     >
       {children}
@@ -101,7 +102,7 @@ export function CardTitle({
   return (
     <h3
       className={cn(
-        'text-lg font-semibold leading-none tracking-tight text-neutral-900',
+        'text-lg font-semibold leading-none tracking-tight text-stone-900',
         'high-contrast:text-WindowText',
         className
       )}
@@ -120,7 +121,7 @@ export function CardDescription({
   return (
     <p
       className={cn(
-        'text-sm text-neutral-600 leading-relaxed',
+        'text-sm text-stone-600 leading-relaxed',
         'high-contrast:text-WindowText',
         className
       )}
@@ -154,7 +155,7 @@ export function CardFooter({
   return (
     <div
       className={cn(
-        'flex items-center justify-between pt-4 border-t border-neutral-200',
+        'flex items-center justify-between pt-4 border-t border-stone-200',
         'high-contrast:border-WindowText',
         className
       )}

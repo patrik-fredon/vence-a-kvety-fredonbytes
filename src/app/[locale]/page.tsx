@@ -9,6 +9,7 @@ import {
 } from "@/components/seo/StructuredData";
 import { generateHomepageMetadata } from "@/components/seo/PageMetadata";
 import { RandomProductTeasers } from "@/components/product/RandomProductTeasers";
+import { HeroSection } from "@/components/layout/HeroSection";
 
 interface HomeProps {
   params: Promise<{ locale: string }>;
@@ -59,37 +60,18 @@ export default async function Home({ params }: HomeProps) {
       <StructuredData data={websiteStructuredData} />
       <StructuredData data={localBusinessStructuredData} />
       <StructuredData data={faqStructuredData} />
-      <div className="container mx-auto px-4 py-16">
-        {/* Hero Section */}
-        <div className="text-center max-w-4xl mx-auto">
-          <h1 className="text-elegant text-5xl md:text-6xl font-semibold text-primary-800 mb-6">
-            {t("hero.title")}
-          </h1>
-          <p className="text-xl md:text-2xl text-neutral-700 mb-8 leading-relaxed">{t("hero.subtitle")}</p>
-          <p className="text-lg text-neutral-600 mb-12 max-w-2xl mx-auto">{t("hero.description")}</p>
 
-          <div className="flex flex-col sm:flex-row gap-6 justify-center items-center">
-            <Link
-              href={`/${locale}/products`}
-              className="bg-primary-600 hover:bg-primary-700 text-white px-8 py-4 rounded-lg font-medium text-lg transition-colors shadow-elegant"
-            >
-              {t("hero.cta")}
-            </Link>
-            <Link
-              href={`/${locale}/contact`}
-              className="border-2 border-primary-600 text-primary-700 hover:bg-primary-50 px-8 py-4 rounded-lg font-medium text-lg transition-colors"
-            >
-              {t("contactUs")}
-            </Link>
-          </div>
-        </div>
+      {/* New Hero Section with background image and stone/amber design */}
+      <HeroSection locale={locale} />
+
+      <div className="container mx-auto px-4 py-16">
 
         {/* Philosophy Section */}
         <div className="mt-20 max-w-4xl mx-auto text-center">
           <blockquote className="text-2xl md:text-3xl text-primary-700 font-elegant italic mb-6">
             "{t("philosophy.quote")}"
           </blockquote>
-          <p className="text-lg text-neutral-600 leading-relaxed">
+          <p className="text-lg text-white leading-relaxed">
             {t("philosophy.text")}
           </p>
         </div>

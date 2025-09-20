@@ -14,6 +14,7 @@ export { Footer } from "./Footer";
 export { Navigation } from "./Navigation";
 export { MainLayout } from "./MainLayout";
 export { LanguageToggle } from "./LanguageToggle";
+export { HeroSection } from "./HeroSection";
 
 // =============================================================================
 // FUTURE LAYOUT COMPONENTS

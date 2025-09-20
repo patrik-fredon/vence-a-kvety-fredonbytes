@@ -3,12 +3,13 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
 import { AuthStatus } from "@/components/auth/AuthStatus";
 import { LanguageToggle } from "./LanguageToggle";
 import { Navigation } from "./Navigation";
 import { CartIcon } from "@/components/cart/CartIcon";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { cn } from "@/lib/utils";
 
 interface HeaderProps {
   locale: string;
@@ -54,105 +55,168 @@ export function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="bg-white shadow-sm border-b border-neutral-200 sticky top-0 z-40"
+        className="border-b border-stone-200 bg-white sticky top-0 z-40 shadow-sm"
         role="banner"
       >
-        <div className="container mx-auto px-4">
-          <div className="flex items-center justify-between h-16">
-            {/* Logo */}
-            <Link
-              href={`/${locale}`}
-              className="text-elegant text-xl sm:text-2xl font-semibold text-primary-800 hover:text-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-lg"
-              aria-label={t("home")}
-            >
-              Pohřební věnce
-            </Link>
-
-            {/* Desktop Navigation */}
-            <div className="hidden md:flex items-center">
-              <ErrorBoundary
-                fallback={<div className="text-sm text-neutral-500">Navigace není dostupná</div>}
+        {/* Container with max-width and centered content */}
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Top bar - Quick navigation */}
+          <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b border-stone-100">
+            <div className="hidden md:flex items-center gap-6">
+              <Link
+                href={`/${locale}/products`}
+                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
               >
-                <Navigation locale={locale} />
-              </ErrorBoundary>
+                {t("products")}
+              </Link>
+              <Link
+                href={`/${locale}/contact`}
+                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
+              >
+                {t("contact")}
+              </Link>
+              <Link
+                href={`/${locale}/faq`}
+                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
+              >
+                {t("howToOrder")}
+              </Link>
             </div>
 
             {/* Right side actions */}
-            <div className="flex items-center space-x-2 sm:space-x-4">
-              {/* Desktop language toggle and auth */}
-              <div className="hidden sm:flex items-center space-x-4">
-                <LanguageToggle currentLocale={locale} />
+            <div className="flex items-center gap-3">
+              {/* Search icon */}
+              <button
+                className="p-1.5 hover:text-stone-800 hover:bg-stone-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md"
+                aria-label={t("search")}
+              >
+                <MagnifyingGlassIcon className="h-4 w-4" />
+              </button>
+
+              {/* User/Auth status - Desktop */}
+              <div className="hidden sm:block">
                 <AuthStatus locale={locale} />
               </div>
 
-              {/* Cart icon */}
-              <CartIcon locale={locale} />
-
-              {/* Mobile menu button */}
-              <button
-                onClick={toggleMobileMenu}
-                className="md:hidden p-2 text-neutral-700 hover:text-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-lg"
-                aria-expanded={isMobileMenuOpen}
-                aria-controls="mobile-menu"
-                aria-label={isMobileMenuOpen ? "Zavřít menu" : "Otevřít menu"}
-              >
-                {isMobileMenuOpen ? (
-                  <XMarkIcon className="w-6 h-6" aria-hidden="true" />
-                ) : (
-                  <Bars3Icon className="w-6 h-6" aria-hidden="true" />
-                )}
-              </button>
+              {/* Cart icon with enhanced styling */}
+              <CartIcon locale={locale} className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200" />
             </div>
+          </div>
+
+          {/* Main header */}
+          <div className="flex items-center justify-between py-4">
+            {/* Logo with enhanced typography */}
+            <Link
+              href={`/${locale}`}
+              className="text-2xl font-light tracking-wide text-stone-900 hover:text-stone-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
+              aria-label={t("home")}
+            >
+              POHŘEBNÍ <span className="text-amber-600 font-medium">VĚNCE</span>
+            </Link>
+
+            {/* Desktop Navigation with enhanced styling */}
+            <nav className="hidden md:flex items-center gap-8" role="navigation" aria-label="Hlavní navigace">
+              <Link
+                href={`/${locale}`}
+                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+              >
+                {t("home")}
+              </Link>
+              <Link
+                href={`/${locale}/products`}
+                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+              >
+                {t("products")}
+              </Link>
+              <Link
+                href={`/${locale}/about`}
+                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+              >
+                {t("about")}
+              </Link>
+              <Link
+                href={`/${locale}/contact`}
+                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+              >
+                {t("contact")}
+              </Link>
+            </nav>
+
+            {/* Mobile menu button with enhanced styling */}
+            <button
+              onClick={toggleMobileMenu}
+              className={cn(
+                "md:hidden p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-50",
+                "transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg",
+                isMobileMenuOpen && "bg-stone-100"
+              )}
+              aria-expanded={isMobileMenuOpen}
+              aria-controls="mobile-menu"
+              aria-label={isMobileMenuOpen ? "Zavřít menu" : "Otevřít menu"}
+            >
+              {isMobileMenuOpen ? (
+                <XMarkIcon className="w-5 h-5" aria-hidden="true" />
+              ) : (
+                <Bars3Icon className="w-5 h-5" aria-hidden="true" />
+              )}
+            </button>
           </div>
         </div>
 
-        {/* Mobile menu overlay */}
+        {/* Mobile menu overlay with enhanced backdrop */}
         {isMobileMenuOpen && (
           <div
-            className="fixed inset-0 bg-black bg-opacity-50 z-50 md:hidden"
+            className="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 md:hidden"
             onClick={closeMobileMenu}
             aria-hidden="true"
           />
         )}
 
-        {/* Mobile menu */}
+        {/* Mobile menu with enhanced design */}
         <div
           id="mobile-menu"
-          className={`fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-elegant transform transition-transform duration-300 ease-in-out z-50 md:hidden ${isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
-            }`}
+          className={cn(
+            "fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-xl",
+            "transform transition-transform duration-300 ease-in-out z-50 md:hidden",
+            isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
+          )}
           aria-hidden={!isMobileMenuOpen}
         >
           <div className="flex flex-col h-full">
-            {/* Mobile menu header */}
-            <div className="flex items-center justify-between p-4 border-b border-neutral-200">
-              <span className="text-elegant text-lg font-semibold text-primary-800">Menu</span>
+            {/* Mobile menu header with enhanced styling */}
+            <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-stone-50">
+              <span className="text-lg font-light text-stone-900">Menu</span>
               <button
                 onClick={closeMobileMenu}
-                className="p-2 text-neutral-700 hover:text-primary-700 transition-colors focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded-lg"
+                className="p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg"
                 aria-label="Zavřít menu"
               >
                 <XMarkIcon className="w-6 h-6" aria-hidden="true" />
               </button>
             </div>
 
-            {/* Mobile navigation */}
-            <div className="flex-1 overflow-y-auto p-4">
+            {/* Mobile navigation with enhanced spacing */}
+            <div className="flex-1 overflow-y-auto p-6">
               <ErrorBoundary
                 fallback={
-                  <div className="text-sm text-neutral-500 p-4">Navigace není dostupná</div>
+                  <div className="text-sm text-stone-500 p-4 bg-stone-50 rounded-lg">
+                    Navigace není dostupná
+                  </div>
                 }
               >
                 <Navigation locale={locale} mobile={true} onItemClick={closeMobileMenu} />
               </ErrorBoundary>
             </div>
 
-            {/* Mobile menu footer */}
-            <div className="border-t border-neutral-200 p-4 space-y-4">
+            {/* Mobile menu footer with enhanced styling */}
+            <div className="border-t border-stone-200 p-4 space-y-4 bg-stone-50">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-neutral-600">Jazyk:</span>
+                <span className="text-sm font-medium text-stone-700">Jazyk:</span>
                 <LanguageToggle currentLocale={locale} />
               </div>
-              <AuthStatus locale={locale} />
+              <div className="pt-2 border-t border-stone-200">
+                <AuthStatus locale={locale} />
+              </div>
             </div>
           </div>
         </div>

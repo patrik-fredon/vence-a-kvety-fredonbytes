@@ -5,6 +5,7 @@ import { useTranslations } from "next-intl";
 import { usePathname } from "next/navigation";
 import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { cn } from "@/lib/utils";
 
 interface NavigationProps {
   locale: string;
@@ -90,10 +91,11 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
     { href: `/${locale}/contact`, label: t("contact") },
   ];
 
+  // For mobile navigation, use enhanced stone-based design
   if (mobile) {
     return (
       <nav
-        className="space-y-2"
+        className="space-y-1"
         role="navigation"
         aria-label="Mobilní navigace"
       >
@@ -103,17 +105,19 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
               <div>
                 <button
                   onClick={() => handleDropdownToggle("products")}
-                  className={`w-full flex items-center justify-between p-3 text-left rounded-lg transition-colors ${
+                  className={cn(
+                    "w-full flex items-center justify-between p-4 text-left rounded-lg transition-all duration-200",
                     isActiveLink(item.href)
-                      ? "text-primary-700 bg-primary-50 font-medium"
-                      : "text-neutral-700 hover:text-primary-700 hover:bg-primary-50"
-                  }`}
+                      ? "text-stone-900 bg-stone-100 font-semibold shadow-sm"
+                      : "text-stone-700 hover:text-stone-900 hover:bg-stone-50 font-medium"
+                  )}
                 >
-                  <span>{item.label}</span>
+                  <span className="text-base">{item.label}</span>
                   <ChevronDownIcon
-                    className={`w-4 h-4 transition-transform ${
+                    className={cn(
+                      "w-5 h-5 transition-transform duration-200",
                       openDropdown === "products" ? "rotate-180" : ""
-                    }`}
+                    )}
                   />
                 </button>
 
@@ -121,16 +125,16 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                   <div className="mt-2 ml-4 space-y-1 animate-slide-down">
                     <Link
                       href={`/${locale}/products`}
-                      className="block p-2 text-sm text-neutral-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors"
+                      className="block p-3 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors duration-200 font-medium"
                       onClick={handleLinkClick}
                     >
                       {t("products")} - Všechny
                     </Link>
                     {mockCategories.map((category) => (
-                      <div key={category.id}>
+                      <div key={category.id} className="space-y-1">
                         <Link
                           href={`/${locale}/products/${category.slug}`}
-                          className="block p-2 text-sm font-medium text-neutral-700 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors"
+                          className="block p-3 text-sm font-semibold text-stone-800 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors duration-200"
                           onClick={handleLinkClick}
                         >
                           {category.name[locale as "cs" | "en"]}
@@ -139,7 +143,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                           <Link
                             key={subcategory.id}
                             href={`/${locale}/products/${category.slug}/${subcategory.slug}`}
-                            className="block p-2 pl-6 text-sm text-neutral-600 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors"
+                            className="block p-2 pl-8 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors duration-200"
                             onClick={handleLinkClick}
                           >
                             {subcategory.name[locale as "cs" | "en"]}
@@ -153,11 +157,12 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
             ) : (
               <Link
                 href={item.href}
-                className={`block p-3 rounded-lg transition-colors ${
+                className={cn(
+                  "block p-4 rounded-lg transition-all duration-200 text-base",
                   isActiveLink(item.href)
-                    ? "text-primary-700 bg-primary-50 font-medium"
-                    : "text-neutral-700 hover:text-primary-700 hover:bg-primary-50"
-                }`}
+                    ? "text-stone-900 bg-stone-100 font-semibold shadow-sm"
+                    : "text-stone-700 hover:text-stone-900 hover:bg-stone-50 font-medium"
+                )}
                 onClick={handleLinkClick}
               >
                 {item.label}
@@ -169,6 +174,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
     );
   }
 
+  // Desktop navigation is now handled directly in Header component
+  // This fallback should not be used in the new design
   return (
     <nav
       id="main-navigation"
@@ -184,31 +191,33 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
               <button
                 onClick={() => handleDropdownToggle("products")}
                 onMouseEnter={() => setOpenDropdown("products")}
-                className={`flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+                className={cn(
+                  "flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                   isActiveLink(item.href)
-                    ? "text-primary-700 bg-primary-50"
-                    : "text-neutral-700 hover:text-primary-700 hover:bg-primary-50"
-                }`}
+                    ? "text-stone-900 bg-stone-100"
+                    : "text-stone-700 hover:text-stone-900 hover:bg-stone-50"
+                )}
                 aria-expanded={openDropdown === "products"}
                 aria-haspopup="true"
               >
                 <span>{item.label}</span>
                 <ChevronDownIcon
-                  className={`w-4 h-4 transition-transform ${
+                  className={cn(
+                    "w-4 h-4 transition-transform",
                     openDropdown === "products" ? "rotate-180" : ""
-                  }`}
+                  )}
                 />
               </button>
 
               {openDropdown === "products" && (
                 <div
-                  className="absolute top-full left-0 mt-1 bg-white border border-neutral-200 rounded-lg shadow-elegant min-w-[280px] animate-scale-in z-50"
+                  className="absolute top-full left-0 mt-1 bg-white border border-stone-200 rounded-lg shadow-lg min-w-[280px] animate-scale-in z-50"
                   onMouseLeave={() => setOpenDropdown(null)}
                 >
                   <div className="p-4">
                     <Link
                       href={`/${locale}/products`}
-                      className="block p-2 text-sm font-medium text-primary-700 hover:bg-primary-50 rounded-lg transition-colors mb-2"
+                      className="block p-2 text-sm font-medium text-stone-900 hover:bg-stone-50 rounded-lg transition-colors mb-2"
                       onClick={handleLinkClick}
                     >
                       {t("products")} - Všechny
@@ -219,7 +228,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                         <div key={category.id}>
                           <Link
                             href={`/${locale}/products/${category.slug}`}
-                            className="block p-2 text-sm font-medium text-neutral-800 hover:text-primary-700 hover:bg-primary-50 rounded-lg transition-colors"
+                            className="block p-2 text-sm font-medium text-stone-800 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
                             onClick={handleLinkClick}
                           >
                             {category.name[locale as "cs" | "en"]}
@@ -229,7 +238,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                               <Link
                                 key={subcategory.id}
                                 href={`/${locale}/products/${category.slug}/${subcategory.slug}`}
-                                className="block p-1.5 text-sm text-neutral-600 hover:text-primary-700 hover:bg-primary-50 rounded transition-colors"
+                                className="block p-1.5 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded transition-colors"
                                 onClick={handleLinkClick}
                               >
                                 {subcategory.name[locale as "cs" | "en"]}
@@ -246,11 +255,12 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
           ) : (
             <Link
               href={item.href}
-              className={`px-3 py-2 text-sm font-medium rounded-lg transition-colors ${
+              className={cn(
+                "px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                 isActiveLink(item.href)
-                  ? "text-primary-700 bg-primary-50"
-                  : "text-neutral-700 hover:text-primary-700 hover:bg-primary-50"
-              }`}
+                  ? "text-stone-900 bg-stone-100"
+                  : "text-stone-700 hover:text-stone-900 hover:bg-stone-50"
+              )}
               onClick={handleLinkClick}
             >
               {item.label}

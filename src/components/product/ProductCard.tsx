@@ -4,6 +4,8 @@ import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
+import { HeartIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
 import { Product } from "@/types/product";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
@@ -13,9 +15,20 @@ interface ProductCardProps {
   locale: string;
   onAddToCart?: (product: Product) => void;
   className?: string;
+  featured?: boolean;
+  onToggleFavorite?: (productId: string) => void;
+  isFavorite?: boolean;
 }
 
-export function ProductCard({ product, locale, onAddToCart, className }: ProductCardProps) {
+export function ProductCard({
+  product,
+  locale,
+  onAddToCart,
+  className,
+  featured = false,
+  onToggleFavorite,
+  isFavorite = false
+}: ProductCardProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
@@ -30,22 +43,26 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
     });
   };
 
-  const getAvailabilityStatus = () => {
-    if (!product.availability.inStock) {
-      return { text: t("outOfStock"), className: "text-red-600 bg-red-50" };
-    }
-    if (product.availability.stockQuantity && product.availability.stockQuantity < 5) {
-      return { text: t("limitedStock"), className: "text-orange-600 bg-orange-50" };
-    }
-    return { text: t("inStock"), className: "text-green-600 bg-green-50" };
+  const handleToggleFavorite = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onToggleFavorite?.(product.id);
   };
 
-  const availability = getAvailabilityStatus();
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    onAddToCart?.(product);
+  };
 
   return (
     <article
       className={cn(
-        "group bg-white rounded-lg shadow-soft overflow-hidden transition-all duration-300 hover:shadow-lg hover:-translate-y-1",
+        // Borderless card with subtle hover effects
+        "group bg-white overflow-hidden transition-all duration-300",
+        "hover:shadow-lg hover:-translate-y-1",
+        // Featured product styling - spans 2 columns
+        featured && "md:col-span-2",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -53,8 +70,13 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
       role="article"
       aria-labelledby={`product-${product.id}-title`}
     >
-      {/* Product Image */}
-      <div className="relative aspect-square overflow-hidden bg-neutral-100">
+      {/* Product Image Container - 64 height (16rem = 256px) */}
+      <div className={cn(
+        "relative overflow-hidden bg-stone-50",
+        // Standard card: square aspect ratio, Featured card: different aspect ratio
+        featured ? "aspect-[2/1] md:aspect-[3/2]" : "aspect-square",
+        "h-64" // 64 height as specified
+      )}>
         <Link href={`/${locale}/products/${product.slug}`}>
           {primaryImage && (
             <>
@@ -64,11 +86,16 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
                 fill
                 className={cn(
                   "object-cover transition-all duration-500",
+                  // Scale-on-hover animation
+                  "group-hover:scale-105",
                   imageLoading ? "scale-110 blur-sm" : "scale-100 blur-0",
                   isHovered && secondaryImage ? "opacity-0" : "opacity-100"
                 )}
                 onLoad={() => setImageLoading(false)}
-                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                sizes={featured
+                  ? "(max-width: 768px) 100vw, 66vw"
+                  : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                }
               />
               {secondaryImage && (
                 <Image
@@ -76,115 +103,115 @@ export function ProductCard({ product, locale, onAddToCart, className }: Product
                   alt={secondaryImage.alt}
                   fill
                   className={cn(
-                    "object-cover transition-all duration-500",
+                    "object-cover transition-all duration-500 group-hover:scale-105",
                     isHovered ? "opacity-100" : "opacity-0"
                   )}
-                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                  sizes={featured
+                    ? "(max-width: 768px) 100vw, 66vw"
+                    : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  }
                 />
               )}
             </>
           )}
         </Link>
 
-        {/* Featured Badge */}
-        {product.featured && (
-          <div className="absolute top-3 left-3 bg-primary-600 text-white px-2 py-1 rounded-md text-xs font-medium">
-            ⭐ Featured
+        {/* Heart icon for favorites - appears on hover */}
+        <button
+          onClick={handleToggleFavorite}
+          className={cn(
+            "absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-sm",
+            "transition-all duration-300 hover:bg-white hover:scale-110",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
+            // Show on hover or if favorited
+            isHovered || isFavorite ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+          )}
+          aria-label={isFavorite ? t("removeFromFavorites") : t("addToFavorites")}
+        >
+          {isFavorite ? (
+            <HeartSolidIcon className="h-5 w-5 text-red-500" />
+          ) : (
+            <HeartIcon className="h-5 w-5 text-stone-600 hover:text-red-500 transition-colors" />
+          )}
+        </button>
+
+        {/* Category tag */}
+        {product.category && (
+          <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-sm text-white px-2 py-1 rounded-md text-xs font-medium">
+            {product.category.name[locale as keyof typeof product.category.name]}
           </div>
         )}
 
-        {/* Availability Badge */}
-        <div
-          className={cn(
-            "absolute top-3 right-3 px-2 py-1 rounded-md text-xs font-medium",
-            availability.className
-          )}
-          role="status"
-          aria-label={`Dostupnost: ${availability.text}`}
-        >
-          {availability.text}
-        </div>
-
-        {/* Quick Actions Overlay */}
-        <div
-          className={cn(
-            "absolute inset-0 bg-black/20 flex items-center justify-center transition-opacity duration-300",
-            isHovered ? "opacity-100" : "opacity-0"
-          )}
-        >
-          <div className="flex gap-2">
-            <Link href={`/${locale}/products/${product.slug}`}>
-              <Button
-                size="sm"
-                variant="secondary"
-                className="bg-white text-primary-700 hover:bg-neutral-50"
-              >
-                {t("customize")}
-              </Button>
-            </Link>
-            {onAddToCart && product.availability.inStock && (
-              <Button
-                size="sm"
-                onClick={(e) => {
-                  e.preventDefault();
-                  onAddToCart(product);
-                }}
-              >
-                {t("addToCart")}
-              </Button>
-            )}
+        {/* Featured badge */}
+        {product.featured && (
+          <div className="absolute bottom-3 left-3 bg-amber-600 text-white px-2 py-1 rounded-md text-xs font-medium">
+            {t("featured")}
           </div>
-        </div>
+        )}
       </div>
 
       {/* Product Info */}
-      <div className="p-4">
+      <div className={cn(
+        "p-4",
+        // Featured products get more padding
+        featured && "md:p-6"
+      )}>
         <Link href={`/${locale}/products/${product.slug}`} className="block">
           <h3
             id={`product-${product.id}-title`}
-            className="font-elegant text-lg font-semibold text-primary-800 mb-2 line-clamp-2 group-hover:text-primary-600 transition-colors"
+            className={cn(
+              "font-medium text-stone-900 mb-2 line-clamp-2 group-hover:text-stone-700 transition-colors",
+              // Featured products get larger text
+              featured ? "text-xl md:text-2xl" : "text-lg"
+            )}
           >
             {product.name[locale as keyof typeof product.name]}
           </h3>
         </Link>
 
         {product.description && (
-          <p className="text-sm text-neutral-600 mb-3 line-clamp-2">
+          <p className={cn(
+            "text-stone-600 mb-3 line-clamp-2",
+            featured ? "text-base" : "text-sm"
+          )}>
             {product.description[locale as keyof typeof product.description]}
           </p>
         )}
 
-        {/* Category */}
-        {product.category && (
-          <div className="text-xs text-neutral-500 mb-2">
-            {product.category.name[locale as keyof typeof product.category.name]}
-          </div>
-        )}
-
-        {/* Price */}
+        {/* Price and Add to Cart */}
         <div className="flex items-center justify-between">
-          <div className="text-lg font-semibold text-primary-700">
+          <div className={cn(
+            "font-semibold text-stone-900",
+            featured ? "text-xl" : "text-lg"
+          )}>
             {formatPrice(product.basePrice)}
           </div>
 
-          {/* Mobile Add to Cart */}
-          <div className="sm:hidden">
-            {onAddToCart && product.availability.inStock && (
-              <Button size="sm" onClick={() => onAddToCart(product)} className="px-3">
-                +
-              </Button>
-            )}
-          </div>
-        </div>
-
-        {/* Desktop Add to Cart */}
-        <div className="hidden sm:block mt-3">
+          {/* Add to cart button with shopping cart icon */}
           {onAddToCart && product.availability.inStock && (
-            <Button size="sm" onClick={() => onAddToCart(product)} className="w-full">
-              {t("addToCart")}
+            <Button
+              size={featured ? "default" : "sm"}
+              onClick={handleAddToCart}
+              className={cn(
+                "transition-all duration-300",
+                // Show full button on hover or featured, icon only otherwise
+                isHovered || featured ? "px-4" : "px-3"
+              )}
+              icon={<ShoppingCartIcon className="h-4 w-4" />}
+              iconPosition="left"
+            >
+              {(isHovered || featured) && t("addToCart")}
+              <span className="sr-only">{t("addToCart")}</span>
             </Button>
           )}
         </div>
+
+        {/* Availability status */}
+        {!product.availability.inStock && (
+          <div className="mt-2 text-sm text-red-600 font-medium">
+            {t("outOfStock")}
+          </div>
+        )}
       </div>
     </article>
   );

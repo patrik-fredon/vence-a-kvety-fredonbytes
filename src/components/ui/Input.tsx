@@ -25,13 +25,13 @@ export function Input({
   const helpId = helpText ? `${inputId}-help` : undefined;
 
   const baseStyles = cn(
-    'block w-full rounded-lg border border-neutral-300 px-3 py-2.5',
-    'text-neutral-900 placeholder-neutral-500 bg-white',
-    'focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none',
-    'disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed disabled:border-neutral-200',
+    'block w-full rounded-md border border-stone-300 px-3 py-2',
+    'text-stone-900 placeholder-stone-500 bg-white',
+    'focus:border-stone-500 focus:ring-2 focus:ring-stone-500/20 focus:outline-none',
+    'disabled:bg-stone-50 disabled:text-stone-500 disabled:cursor-not-allowed disabled:border-stone-200',
     'transition-all duration-200 ease-in-out',
     'shadow-sm focus:shadow-md',
-    'font-normal text-base leading-normal',
+    'font-normal text-sm leading-normal',
     // High contrast mode support
     'high-contrast:border-2 high-contrast:border-ButtonText',
     'high-contrast:focus:border-Highlight high-contrast:focus:ring-Highlight'
@@ -53,11 +53,11 @@ export function Input({
       {label && (
         <label
           htmlFor={inputId}
-          className="block text-sm font-medium text-neutral-700"
+          className="block text-sm font-medium text-stone-700"
         >
           {label}
           {required && (
-            <span className="text-red-500 ml-1" aria-label="required">
+            <span className="text-error-500 ml-1" aria-label="required">
               *
             </span>
           )}
@@ -69,7 +69,7 @@ export function Input({
         {/* Left Icon */}
         {icon && iconPosition === 'left' && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-neutral-400" aria-hidden="true">
+            <span className="text-stone-400" aria-hidden="true">
               {icon}
             </span>
           </div>
@@ -88,7 +88,7 @@ export function Input({
         {/* Right Icon */}
         {icon && iconPosition === 'right' && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-neutral-400" aria-hidden="true">
+            <span className="text-stone-400" aria-hidden="true">
               {icon}
             </span>
           </div>
@@ -97,7 +97,7 @@ export function Input({
 
       {/* Help Text */}
       {helpText && (
-        <p id={helpId} className="text-sm text-neutral-600">
+        <p id={helpId} className="text-sm text-stone-600">
           {helpText}
         </p>
       )}

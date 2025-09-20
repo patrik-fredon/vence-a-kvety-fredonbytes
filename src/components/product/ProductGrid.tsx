@@ -17,6 +17,8 @@ interface ProductGridProps {
   locale: string;
   className?: string;
   onAddToCart?: (product: Product) => void;
+  onToggleFavorite?: (productId: string) => void;
+  favoriteProductIds?: string[];
 }
 
 export function ProductGrid({
@@ -25,6 +27,8 @@ export function ProductGrid({
   locale,
   className,
   onAddToCart,
+  onToggleFavorite,
+  favoriteProductIds = [],
 }: ProductGridProps) {
   const t = useTranslations("product");
   const tCommon = useTranslations("common");
@@ -118,7 +122,7 @@ export function ProductGrid({
         setLoading(false);
       }
     },
-    [filters, sortOptions, locale]
+    [filters, sortOptions, locale, announce, t]
   );
 
   // Load initial products or when filters/sort change
@@ -163,116 +167,166 @@ export function ProductGrid({
     }
   };
 
+  // Organize products for grid layout with featured products
+  const organizeProductsForGrid = (products: Product[]) => {
+    const featuredProducts = products.filter(p => p.featured);
+    const regularProducts = products.filter(p => !p.featured);
+
+    // Interleave featured products with regular products
+    // Place featured products at strategic positions (every 6-8 products)
+    const organizedProducts: Array<{ product: Product; featured: boolean }> = [];
+    let regularIndex = 0;
+    let featuredIndex = 0;
+
+    for (let i = 0; i < products.length; i++) {
+      // Place featured product every 6 positions, starting from position 2
+      if (featuredIndex < featuredProducts.length && (i === 1 || (i > 1 && (i - 1) % 6 === 0))) {
+        organizedProducts.push({ product: featuredProducts[featuredIndex], featured: true });
+        featuredIndex++;
+      } else if (regularIndex < regularProducts.length) {
+        organizedProducts.push({ product: regularProducts[regularIndex], featured: false });
+        regularIndex++;
+      }
+    }
+
+    return organizedProducts;
+  };
+
+  const organizedProducts = organizeProductsForGrid(products);
+
   return (
-    <div className={cn("space-y-6", className)}>
-      {/* Filters */}
-      <ProductFiltersComponent
-        categories={categories}
-        filters={filters}
-        sortOptions={sortOptions}
-        onFiltersChange={handleFiltersChange}
-        onSortChange={handleSortChange}
-        locale={locale}
-      />
-
-      {/* Results Summary */}
-      <div className="flex items-center justify-between">
-        <div className="text-sm text-neutral-600">
-          {totalProducts > 0 && (
-            <span>
-              {t("showingResults", {
-                count: products.length,
-                total: totalProducts,
-              })}
-            </span>
-          )}
+    <section className={cn("bg-stone-50 py-8", className)}>
+      <div className="container mx-auto px-4">
+        {/* Filters */}
+        <div className="mb-8">
+          <ProductFiltersComponent
+            categories={categories}
+            filters={filters}
+            sortOptions={sortOptions}
+            onFiltersChange={handleFiltersChange}
+            onSortChange={handleSortChange}
+            locale={locale}
+          />
         </div>
-      </div>
 
-      {/* Error State */}
-      {error && (
-        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-center">
-          <p className="text-red-600 mb-2">{tCommon("error")}</p>
-          <p className="text-sm text-red-500 mb-4">{error}</p>
-          <Button variant="outline" onClick={() => fetchProducts(1, true)} size="sm">
-            Zkusit znovu
-          </Button>
+        {/* Results Summary */}
+        <div className="flex items-center justify-between mb-6">
+          <div className="text-sm text-stone-600">
+            {totalProducts > 0 && (
+              <span>
+                {t("showingResults", {
+                  count: products.length,
+                  total: totalProducts,
+                })}
+              </span>
+            )}
+          </div>
         </div>
-      )}
 
-      {/* Products Grid */}
-      {!error && (
-        <>
-          {products.length > 0 ? (
-            <KeyboardNavigationGrid
-              className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
-              columns={4}
-              orientation="both"
-              ariaLabel={t("title")}
-              onItemActivate={(index, element) => {
-                // Handle Enter/Space key activation
-                const link = element.querySelector('a');
-                if (link) {
-                  link.click();
-                }
-              }}
-            >
-              {products.map((product, index) => (
-                <div key={product.id} data-keyboard-nav-item tabIndex={index === 0 ? 0 : -1}>
-                  <ProductCard
-                    product={product}
-                    locale={locale}
-                    onAddToCart={handleAddToCart}
-                  />
-                </div>
-              ))}
-            </KeyboardNavigationGrid>
-          ) : !loading ? (
-            // No Results State
-            <div className="text-center py-12">
-              <div className="w-16 h-16 bg-neutral-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                <span className="text-2xl">🔍</span>
-              </div>
-              <h3 className="text-lg font-semibold text-neutral-700 mb-2">{t("noResults")}</h3>
-              <p className="text-neutral-500 mb-4">{t("noResultsDescription")}</p>
-              <Button
-                variant="outline"
-                onClick={() => {
-                  setFilters({});
-                  setSortOptions({ field: "created_at", direction: "desc" });
+        {/* Error State */}
+        {error && (
+          <div className="bg-white border border-red-200 rounded-lg p-6 text-center mb-8 shadow-sm">
+            <p className="text-red-600 mb-2 font-medium">{tCommon("error")}</p>
+            <p className="text-sm text-red-500 mb-4">{error}</p>
+            <Button variant="outline" onClick={() => fetchProducts(1, true)} size="sm">
+              {t("tryAgain")}
+            </Button>
+          </div>
+        )}
+
+        {/* Products Grid */}
+        {!error && (
+          <>
+            {organizedProducts.length > 0 ? (
+              <KeyboardNavigationGrid
+                className={cn(
+                  // Responsive grid: 1 col mobile, 2 tablet, 3 desktop
+                  "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8",
+                  // Auto-fit for featured products that span 2 columns
+                  "auto-rows-max"
+                )}
+                columns={3}
+                orientation="both"
+                ariaLabel={t("title")}
+                onItemActivate={(index, element) => {
+                  // Handle Enter/Space key activation
+                  const link = element.querySelector('a');
+                  if (link) {
+                    link.click();
+                  }
                 }}
               >
-                {t("clearFilters")}
-              </Button>
-            </div>
-          ) : null}
-
-          {/* Loading State */}
-          {loading && (
-            <div className="space-y-6">
-              {products.length === 0 ? (
-                <ProductGridSkeleton count={PRODUCTS_PER_PAGE} />
-              ) : (
-                <div className="flex justify-center py-8">
-                  <div className="flex items-center space-x-2">
-                    <div className="w-4 h-4 border-2 border-primary-600 border-t-transparent rounded-full animate-spin"></div>
-                    <span className="text-sm text-neutral-600">{tCommon("loading")}</span>
+                {organizedProducts.map(({ product, featured }, index) => (
+                  <div
+                    key={product.id}
+                    data-keyboard-nav-item
+                    tabIndex={index === 0 ? 0 : -1}
+                    className={cn(
+                      // Featured products span 2 columns on tablet and desktop
+                      featured && "md:col-span-2 lg:col-span-2"
+                    )}
+                  >
+                    <ProductCard
+                      product={product}
+                      locale={locale}
+                      onAddToCart={handleAddToCart}
+                      onToggleFavorite={onToggleFavorite}
+                      isFavorite={favoriteProductIds.includes(product.id)}
+                      featured={featured}
+                      className="h-full" // Ensure cards fill their container height
+                    />
                   </div>
+                ))}
+              </KeyboardNavigationGrid>
+            ) : !loading ? (
+              // No Results State
+              <div className="text-center py-16 bg-white rounded-lg shadow-sm">
+                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <span className="text-2xl">🔍</span>
                 </div>
-              )}
-            </div>
-          )}
+                <h3 className="text-lg font-semibold text-stone-700 mb-2">{t("noResults")}</h3>
+                <p className="text-stone-500 mb-6">{t("noResultsDescription")}</p>
+                <Button
+                  variant="outline"
+                  onClick={() => {
+                    setFilters({});
+                    setSortOptions({ field: "created_at", direction: "desc" });
+                  }}
+                >
+                  {t("clearFilters")}
+                </Button>
+              </div>
+            ) : null}
 
-          {/* Load More Button */}
-          {!loading && hasMore && products.length > 0 && (
-            <div className="text-center pt-6">
-              <Button variant="outline" onClick={loadMore} size="lg">
-                {t("loadMore")}
-              </Button>
-            </div>
-          )}
-        </>
-      )}
-    </div>
+            {/* Loading State */}
+            {loading && (
+              <div className="space-y-6">
+                {products.length === 0 ? (
+                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                    <ProductGridSkeleton count={PRODUCTS_PER_PAGE} />
+                  </div>
+                ) : (
+                  <div className="flex justify-center py-8">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-stone-600 border-t-transparent rounded-full animate-spin"></div>
+                      <span className="text-sm text-stone-600">{tCommon("loading")}</span>
+                    </div>
+                  </div>
+                )}
+              </div>
+            )}
+
+            {/* Load More Button */}
+            {!loading && hasMore && products.length > 0 && (
+              <div className="text-center pt-8">
+                <Button variant="outline" onClick={loadMore} size="lg">
+                  {t("loadMore")}
+                </Button>
+              </div>
+            )}
+          </>
+        )}
+      </div>
+    </section>
   );
 }
