@@ -173,32 +173,14 @@ export default function AdminSidebar({
       </div>
     </>
   );
-})}
-          </nav>
+}
 
-          {/* Alerts section */}
-          {stats?.alerts.unacknowledged && stats.alerts.unacknowledged > 0 && (
-            <div className="p-4 border-t border-gray-200">
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
-                <div className="flex items-center">
-                  <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400 mr-2" />
-                  <div className="text-sm">
-                    <p className="font-medium text-yellow-800">
-                      {stats.alerts.unacknowledged} nepotvrzených upozornění
-                    </p>
-                    <p className="text-yellow-700">Zkontrolujte skladové zásoby</p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-
-          {/* Footer */}
-          <div className="p-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center">Pohřební věnce Admin</p>
-          </div>
-        </div>
-      </div>
+{/* Footer */ }
+<div className="p-4 border-t border-gray-200">
+  <p className="text-xs text-gray-500 text-center">Pohřební věnce Admin</p>
+</div>
+        </div >
+      </div >
     </>
   );
 }

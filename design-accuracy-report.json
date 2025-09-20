@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-09-20T21:36:33.272Z",
+  "score": 50,
+  "summary": {
+    "successes": 17,
+    "warnings": 17,
+    "errors": 0
+  },
+  "details": {
+    "successes": [
+      "Stone color palette found in Tailwind config",
+      "Amber accent colors found in Tailwind config",
+      "Stone-800 color token found",
+      "Header: 2/2 expected classes found",
+      "Header: All expected HTML elements found",
+      "Hero: 2/3 expected classes found",
+      "ProductCard: 3/3 expected classes found",
+      "Button: 2/3 expected classes found",
+      "Button: All expected HTML elements found",
+      "ContactForm: 2/3 expected classes found",
+      "Stone colors used 657 times across components",
+      "Amber colors used 160 times across components",
+      "Typography sizes used 590 times",
+      "Font weights used 446 times",
+      "117 heading elements found",
+      "Responsive breakpoints used 230 times",
+      "Grid columns used 75 times"
+    ],
+    "warnings": [
+      "Custom container configuration not explicitly found",
+      "Stone-50 color token not explicitly found",
+      "Stone-100 color token not explicitly found",
+      "Stone-200 color token not explicitly found",
+      "Stone-300 color token not explicitly found",
+      "Stone-400 color token not explicitly found",
+      "Stone-500 color token not explicitly found",
+      "Stone-600 color token not explicitly found",
+      "Stone-700 color token not explicitly found",
+      "Stone-900 color token not explicitly found",
+      "Amber-200 color token not explicitly found",
+      "Amber-600 color token not explicitly found",
+      "Amber-700 color token not explicitly found",
+      "Hero: 2/3 expected elements found",
+      "ProductCard: 2/3 expected elements found",
+      "ContactForm: 2/4 expected elements found",
+      "881 non-design-system colors found - consider replacing with stone/amber"
+    ],
+    "errors": []
+  }
+}
