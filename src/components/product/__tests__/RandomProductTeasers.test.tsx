@@ -1,7 +1,5 @@
+import React from 'react';
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import { RandomProductTeasers } from '../RandomProductTeasers';
-import { useTranslations } from 'next-intl';
-import { useCart } from '@/lib/cart/context';
 
 // Mock next-intl
 jest.mock('next-intl', () => ({
@@ -37,6 +35,11 @@ jest.mock('@/components/ui/LoadingSpinner', () => {
     return <div data-testid="loading-spinner">Loading...</div>;
   };
 });
+
+// Import after mocks
+import { RandomProductTeasers } from '../RandomProductTeasers';
+import { useTranslations } from 'next-intl';
+import { useCart } from '@/lib/cart/context';
 
 const mockTranslations = {
   'featuredProducts.title': 'Featured Funeral Wreaths',

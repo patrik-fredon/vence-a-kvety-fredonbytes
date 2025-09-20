@@ -143,7 +143,7 @@ const nextConfig: NextConfig = {
   },
 
   // Webpack configuration for better bundle optimization and tree-shaking
-  webpack: (config, { dev, isServer, webpack }) => {
+  webpack: (config, { dev, isServer }) => {
     // Optimize bundle size in production
     if (!dev && !isServer) {
       // Enhanced code splitting configuration
@@ -218,7 +218,7 @@ const nextConfig: NextConfig = {
 
   // Environment variables that should be available on the client
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    CUSTOM_KEY: process.env['CUSTOM_KEY'],
   },
 
   // Redirects for SEO and user experience

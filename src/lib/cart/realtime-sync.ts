@@ -331,7 +331,7 @@ export class CartConflictResolver {
         itemId: localItem.id,
         field: 'customizations',
         localValue: localItem.customizations,
-        serverValuerItem.customiz,
+        serverValue: serverItem.customizations,
         resolution: 'server', // Default to server for customizations
       });
     }

@@ -3,8 +3,16 @@
 import { useEffect, useRef, useState } from 'react';
 import { performanceMonitor } from '@/lib/monitoring/performance-monitor';
 
-// Import performance configuration
-const performanceConfig = require('../../../performance.config.js');
+// Performance configuration - inline to avoid build issues
+const performanceConfig = {
+  webVitals: {
+    LCP: { good: 2500, poor: 4000 }, // Largest Contentful Paint (ms)
+    INP: { good: 200, poor: 500 },   // Interaction to Next Paint (ms)
+    CLS: { good: 0.1, poor: 0.25 },  // Cumulative Layout Shift (unitless)
+    FCP: { good: 1800, poor: 3000 }, // First Contentful Paint (ms)
+    TTFB: { good: 800, poor: 1800 }, // Time to First Byte (ms)
+  },
+};
 
 interface WebVitalsMetric {
   name: string;
