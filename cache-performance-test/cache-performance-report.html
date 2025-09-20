@@ -1,0 +1,226 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cache and API Performance Report - Task 14.2</title>
+    <style>
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; margin: 0; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 1200px; margin: 0 auto; background: white; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .header { background: #059669; color: white; padding: 20px; border-radius: 8px 8px 0 0; }
+        .content { padding: 20px; }
+        .metric { display: inline-block; margin: 10px 20px 10px 0; padding: 15px; background: #f8fafc; border-radius: 6px; border-left: 4px solid #059669; }
+        .metric-value { font-size: 24px; font-weight: bold; color: #047857; }
+        .metric-label { font-size: 14px; color: #64748b; margin-top: 5px; }
+        .section { margin: 30px 0; }
+        .section h2 { color: #1e293b; border-bottom: 2px solid #e2e8f0; padding-bottom: 10px; }
+        .endpoint { display: flex; justify-content: space-between; align-items: center; padding: 10px; margin: 5px 0; background: #f8fafc; border-radius: 4px; }
+        .status { padding: 5px 10px; border-radius: 4px; color: white; font-size: 12px; font-weight: bold; }
+        .status.success { background: #10b981; }
+        .status.error { background: #ef4444; }
+        .status.not_found { background:
+        .recommendation { padding: 15px; margin: 10px 0; border-radius: 6px; border-left: 4px solid #ef4444; background: #fef2f2; }
+        .recommendation.medium { border-left-color: #f59e0b; background: #fffbeb; }
+        .recommendation.low { border-left-color: #10b981; background: #f0fdf4; }
+        .operation { display: flex; justify-content: space-between; padding: 8px; margin: 3px 0; background: #f1f5f9; border-radius: 3px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Cache and API Performance Report - Task 14.2</h1>
+            <p>Redis Caching, API Performance, and Cart Synchronization Analysis</p>
+            <p>Generated on 9/20/2025, 10:17:23 PM</p>
+        </div>
+        <div class="content">
+            <div class="section">
+                <h2>Performance Summary</h2>
+                <div class="metric">
+                    <div class="metric-value">✅</div>
+                    <div class="metric-label">Redis Available</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">0ms</div>
+                    <div class="metric-label">Avg API Response</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">67ms</div>
+                    <div class="metric-label">Avg Cart Operation</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">18.3 MB</div>
+                    <div class="metric-label">Peak Memory Usage</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Redis Caching Performance</h2>
+                <p><strong>Status:</strong> Upstash Redis configuration found</p>
+                
+                    <div class="metric">
+                        <div class="metric-value">38ms</div>
+                        <div class="metric-label">Average SET Time</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">24ms</div>
+                        <div class="metric-label">Average GET Time</div>
+                    </div>
+                    <div class="metric">
+                        <div class="metric-value">20</div>
+                        <div class="metric-label">Total Operations</div>
+                    </div>
+                
+            </div>
+
+            <div class="section">
+                <h2>API Endpoint Performance</h2>
+                
+                    <div class="endpoint">
+                        <div>
+                            <strong>/api/products</strong>
+                            
+                            
+                        </div>
+                        <div>
+                            <span class="status not_found">not_found</span>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="endpoint">
+                        <div>
+                            <strong>/api/cart</strong>
+                            
+                            
+                        </div>
+                        <div>
+                            <span class="status not_found">not_found</span>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="endpoint">
+                        <div>
+                            <strong>/api/categories</strong>
+                            
+                            
+                        </div>
+                        <div>
+                            <span class="status not_found">not_found</span>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="endpoint">
+                        <div>
+                            <strong>/api/health</strong>
+                            
+                            
+                        </div>
+                        <div>
+                            <span class="status not_found">not_found</span>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="endpoint">
+                        <div>
+                            <strong>/api/contact</strong>
+                            
+                            
+                        </div>
+                        <div>
+                            <span class="status not_found">not_found</span>
+                            
+                        </div>
+                    </div>
+                
+                    <div class="endpoint">
+                        <div>
+                            <strong>/api/orders</strong>
+                            
+                            
+                        </div>
+                        <div>
+                            <span class="status not_found">not_found</span>
+                            
+                        </div>
+                    </div>
+                
+            </div>
+
+            
+            <div class="section">
+                <h2>Cart Synchronization Performance</h2>
+                <div class="metric">
+                    <div class="metric-value">❌</div>
+                    <div class="metric-label">Realtime Sync</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">❌</div>
+                    <div class="metric-label">Redis Sync</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">✅</div>
+                    <div class="metric-label">Local Storage</div>
+                </div>
+
+                <h3>Cart Operations</h3>
+                
+                    <div class="operation">
+                        <span>ADD ITEM</span>
+                        <span>53ms</span>
+                    </div>
+                
+                    <div class="operation">
+                        <span>UPDATE QUANTITY</span>
+                        <span>36ms</span>
+                    </div>
+                
+                    <div class="operation">
+                        <span>REMOVE ITEM</span>
+                        <span>55ms</span>
+                    </div>
+                
+                    <div class="operation">
+                        <span>SYNC TO_SERVER</span>
+                        <span>124ms</span>
+                    </div>
+                
+            </div>
+            
+
+            <div class="section">
+                <h2>Memory Usage Analysis</h2>
+                <div class="metric">
+                    <div class="metric-value">4.3 MB</div>
+                    <div class="metric-label">Initial Heap</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">18.3 MB</div>
+                    <div class="metric-label">Peak Heap</div>
+                </div>
+                <div class="metric">
+                    <div class="metric-value">18.31 MB</div>
+                    <div class="metric-label">Final Heap</div>
+                </div>
+            </div>
+
+            
+
+            <div class="section">
+                <h2>Next Steps</h2>
+                <ul>
+                    <li>Implement recommended caching strategies</li>
+                    <li>Set up performance monitoring in production</li>
+                    <li>Add automated performance testing to CI/CD pipeline</li>
+                    <li>Monitor Redis cache hit rates and memory usage</li>
+                    <li>Implement API response time alerting</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+  

@@ -179,9 +179,9 @@ export function SignUpForm() {
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md" 
+            <Button
+              type="submit"
+              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md"
               disabled={loading}
               loading={loading}
               loadingText="Registrování..."
@@ -204,8 +204,8 @@ export function SignUpForm() {
             <div className="mt-6 text-center">
               <span className="text-sm text-stone-600">
                 Již máte účet?{" "}
-                <Link 
-                  href="/auth/signin" 
+                <Link
+                  href="/auth/signin"
                   className="text-amber-600 hover:text-amber-700 font-medium transition-colors duration-200"
                 >
                   Přihlaste se
@@ -213,24 +213,6 @@ export function SignUpForm() {
               </span>
             </div>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Registrování..." : "Zaregistrovat se"}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <span className="text-sm text-gray-600">
-            Již máte účet?{" "}
-            <Link href="/auth/signin" className="text-indigo-600 hover:text-indigo-500 font-medium">
-              Přihlaste se
-            </Link>
-          </span>
         </div>
       </div>
     </div>

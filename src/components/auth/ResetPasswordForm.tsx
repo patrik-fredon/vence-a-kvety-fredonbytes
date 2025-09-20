@@ -119,9 +119,9 @@ export function ResetPasswordForm() {
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md" 
+            <Button
+              type="submit"
+              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md"
               disabled={loading}
               loading={loading}
               loadingText="Ukládání..."
@@ -130,15 +130,6 @@ export function ResetPasswordForm() {
             </Button>
           </form>
         </div>
-      </div>
-    </div>
-  );
-}
-
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Ukládání..." : "Uložit heslo"}
-          </Button>
-        </form>
       </div>
     </div>
   );

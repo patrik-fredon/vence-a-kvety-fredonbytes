@@ -10,6 +10,7 @@ import OrderManagement from "./OrderManagement";
 import InventoryManagement from "./InventoryManagement";
 import AdminActivityLog from "./AdminActivityLog";
 import { MonitoringDashboard } from "./MonitoringDashboard";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 
@@ -32,22 +33,6 @@ interface DashboardStats {
     unacknowledged: number;
   };
 }
-
-"use client";
-
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import AdminSidebar from "./AdminSidebar";
-import AdminHeader from "./AdminHeader";
-import DashboardOverview from "./DashboardOverview";
-import ProductManagement from "./ProductManagement";
-import OrderManagement from "./OrderManagement";
-import InventoryManagement from "./InventoryManagement";
-import AdminActivityLog from "./AdminActivityLog";
-import { MonitoringDashboard } from "./MonitoringDashboard";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-
-type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 
 interface DashboardStats {
   orders: {
@@ -137,34 +122,6 @@ export default function AdminDashboard() {
         <AdminHeader currentView={currentView} onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-stone-50 p-6">
-          {renderCurrentView()}
-        </main>
-      </div>
-    </div>
-  );
-}
-        stats={stats}
-      />
-
-      {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader currentView={currentView} onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
-
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-stone-50 p-6">
-          {renderCurrentView()}
-        </main>
-      </div>
-    </div>
-  );
-}
-        stats={stats}
-      />
-
-      {/* Main content */}
-      <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader currentView={currentView} onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
-
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
           {renderCurrentView()}
         </main>
       </div>

@@ -51,8 +51,8 @@ export function ForgotPasswordForm() {
               <p className="text-sm text-stone-500 mb-8 leading-relaxed">
                 Zkontrolujte svou e-mailovou schránku a klikněte na odkaz pro vytvoření nového hesla.
               </p>
-              <Link 
-                href="/auth/signin" 
+              <Link
+                href="/auth/signin"
                 className="inline-flex items-center px-4 py-2 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors duration-200"
               >
                 ← Zpět na přihlášení
@@ -106,9 +106,9 @@ export function ForgotPasswordForm() {
               </div>
             )}
 
-            <Button 
-              type="submit" 
-              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md" 
+            <Button
+              type="submit"
+              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md"
               disabled={loading || !email}
               loading={loading}
               loadingText="Odesílání..."
@@ -119,38 +119,13 @@ export function ForgotPasswordForm() {
 
           {/* Footer Link */}
           <div className="mt-8 text-center">
-            <Link 
-              href="/auth/signin" 
+            <Link
+              href="/auth/signin"
               className="text-sm text-stone-600 hover:text-amber-600 transition-colors duration-200"
             >
               ← Zpět na přihlášení
             </Link>
           </div>
-        </div>
-      </div>
-    </div>
-  );
-}
-            required
-            autoComplete="email"
-            disabled={loading}
-          />
-
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-3">
-              <p className="text-sm text-red-600">{error}</p>
-            </div>
-          )}
-
-          <Button type="submit" className="w-full" disabled={loading || !email}>
-            {loading ? "Odesílání..." : "Odeslat odkaz"}
-          </Button>
-        </form>
-
-        <div className="mt-6 text-center">
-          <Link href="/auth/signin" className="text-sm text-indigo-600 hover:text-indigo-500">
-            Zpět na přihlášení
-          </Link>
         </div>
       </div>
     </div>
