@@ -1,0 +1,792 @@
+{
+  "components": {
+    "Header": {
+      "component": "Header",
+      "filePath": "src/components/layout/Header.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 73,
+        "totalClasses": 73
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 15,
+        "interactiveCount": 10,
+        "ratio": "1.50"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": true,
+        "hasResponsiveNav": true,
+        "hasMenuToggle": true,
+        "isNavComponent": true
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 9,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 44,
+        "activeStates": 0,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": true,
+        "score": 4,
+        "hasAriaLabels": true,
+        "hasAriaExpanded": true,
+        "hasAriaControls": true,
+        "hasScreenReaderText": false,
+        "hasSemanticHTML": true
+      },
+      "issues": [
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive"
+      ],
+      "score": 70
+    },
+    "Footer": {
+      "component": "Footer",
+      "filePath": "src/components/layout/Footer.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 75,
+        "totalClasses": 75
+      },
+      "responsiveGrid": {
+        "passed": false,
+        "hasGrid": true,
+        "hasResponsiveGrid": false,
+        "gridClasses": [
+          "grid-cols-1",
+          "grid-cols-2",
+          "grid-cols-4"
+        ]
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 4,
+        "interactiveCount": 0,
+        "ratio": "N/A"
+      },
+      "mobileMenu": {
+        "passed": false,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": true
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 9,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": true,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": true
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 60,
+        "activeStates": 0,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": false,
+        "score": 2,
+        "hasAriaLabels": true,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": false,
+        "hasSemanticHTML": true
+      },
+      "issues": [
+        "Grid layout is not responsive",
+        "Navigation component lacks mobile menu implementation",
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Mobile accessibility needs improvement (score: 2/5)"
+      ],
+      "score": 50
+    },
+    "HeroSection": {
+      "component": "HeroSection",
+      "filePath": "src/components/layout/HeroSection.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 6,
+        "totalClasses": 6
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 9,
+        "interactiveCount": 15,
+        "ratio": "0.60"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": false
+      },
+      "responsiveText": {
+        "passed": true,
+        "responsiveCount": 3,
+        "totalTextClasses": 9,
+        "ratio": "0.33"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": true,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": true
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 0,
+        "activeStates": 2,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": true,
+        "score": 3,
+        "hasAriaLabels": true,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": true,
+        "hasSemanticHTML": true
+      },
+      "issues": [
+        "Spacing is not responsive"
+      ],
+      "score": 90
+    },
+    "ProductGrid": {
+      "component": "ProductGrid",
+      "filePath": "src/components/product/ProductGrid.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 32,
+        "totalClasses": 32
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": true,
+        "hasResponsiveGrid": true,
+        "gridClasses": [
+          "grid-cols-1",
+          "grid-cols-2",
+          "grid-cols-3",
+          "grid-cols-1",
+          "grid-cols-2",
+          "grid-cols-3"
+        ]
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 6,
+        "interactiveCount": 12,
+        "ratio": "0.50"
+      },
+      "mobileMenu": {
+        "passed": false,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": true
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 5,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 0,
+        "activeStates": 0,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": false,
+        "score": 1,
+        "hasAriaLabels": false,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": false,
+        "hasSemanticHTML": true
+      },
+      "issues": [
+        "Navigation component lacks mobile menu implementation",
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive",
+        "Mobile accessibility needs improvement (score: 1/5)"
+      ],
+      "score": 50
+    },
+    "ProductCard": {
+      "component": "ProductCard",
+      "filePath": "src/components/product/ProductCard.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 19,
+        "totalClasses": 19
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 6,
+        "interactiveCount": 12,
+        "ratio": "0.50"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": false
+      },
+      "responsiveText": {
+        "passed": true,
+        "responsiveCount": 1,
+        "totalTextClasses": 10,
+        "ratio": "0.10"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": true,
+        "usesNextImage": true,
+        "hasSizes": true,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 0,
+        "activeStates": 0,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": true,
+        "score": 3,
+        "hasAriaLabels": true,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": true,
+        "hasSemanticHTML": true
+      },
+      "issues": [
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive"
+      ],
+      "score": 80
+    },
+    "ContactForm": {
+      "component": "ContactForm",
+      "filePath": "src/components/contact/ContactForm.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 28,
+        "totalClasses": 28
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 3,
+        "interactiveCount": 5,
+        "ratio": "0.60"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": false
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 11,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 14,
+        "activeStates": 0,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": false,
+        "score": 1,
+        "hasAriaLabels": true,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": false,
+        "hasSemanticHTML": false
+      },
+      "issues": [
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive",
+        "Mobile accessibility needs improvement (score: 1/5)"
+      ],
+      "score": 60
+    },
+    "ShoppingCart": {
+      "component": "ShoppingCart",
+      "filePath": "src/components/cart/ShoppingCart.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 69,
+        "totalClasses": 69
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 2,
+        "interactiveCount": 16,
+        "ratio": "0.13"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": false
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 9,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": false,
+        "hasImages": true,
+        "usesNextImage": true,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 0,
+        "activeStates": 0,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": false,
+        "score": 0,
+        "hasAriaLabels": false,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": false,
+        "hasSemanticHTML": false
+      },
+      "issues": [
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive",
+        "Images are not optimized for mobile",
+        "Mobile accessibility needs improvement (score: 0/5)"
+      ],
+      "score": 50
+    },
+    "Button": {
+      "component": "Button",
+      "filePath": "src/components/ui/Button.tsx",
+      "mobileFirst": {
+        "passed": false,
+        "ratio": "0.00",
+        "mobileFirstCount": 0,
+        "totalClasses": 0
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 4,
+        "interactiveCount": 22,
+        "ratio": "0.18"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": false
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 3,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": false,
+        "hoverStates": 11,
+        "focusStates": 0,
+        "activeStates": 6,
+        "touchEvents": false,
+        "focusHoverRatio": "0.00"
+      },
+      "accessibilityMobile": {
+        "passed": false,
+        "score": 1,
+        "hasAriaLabels": false,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": true,
+        "hasSemanticHTML": false
+      },
+      "issues": [
+        "Mobile-first approach: Only 0% mobile-first classes",
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive",
+        "Touch interactions need improvement (focus/hover ratio: 0.00)",
+        "Mobile accessibility needs improvement (score: 1/5)"
+      ],
+      "score": 40
+    },
+    "Card": {
+      "component": "Card",
+      "filePath": "src/components/ui/Card.tsx",
+      "mobileFirst": {
+        "passed": false,
+        "ratio": "0.00",
+        "mobileFirstCount": 0,
+        "totalClasses": 0
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 4,
+        "interactiveCount": 5,
+        "ratio": "0.80"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": false
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 2,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 0,
+        "activeStates": 1,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": false,
+        "score": 0,
+        "hasAriaLabels": false,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": false,
+        "hasSemanticHTML": false
+      },
+      "issues": [
+        "Mobile-first approach: Only 0% mobile-first classes",
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive",
+        "Mobile accessibility needs improvement (score: 0/5)"
+      ],
+      "score": 50
+    },
+    "Input": {
+      "component": "Input",
+      "filePath": "src/components/ui/Input.tsx",
+      "mobileFirst": {
+        "passed": true,
+        "ratio": "1.00",
+        "mobileFirstCount": 9,
+        "totalClasses": 9
+      },
+      "responsiveGrid": {
+        "passed": true,
+        "hasGrid": false,
+        "hasResponsiveGrid": false,
+        "gridClasses": []
+      },
+      "touchTargets": {
+        "passed": true,
+        "touchTargetCount": 1,
+        "interactiveCount": 1,
+        "ratio": "1.00"
+      },
+      "mobileMenu": {
+        "passed": true,
+        "hasMobileMenu": false,
+        "hasResponsiveNav": false,
+        "hasMenuToggle": false,
+        "isNavComponent": false
+      },
+      "responsiveText": {
+        "passed": false,
+        "responsiveCount": 0,
+        "totalTextClasses": 4,
+        "ratio": "0.00"
+      },
+      "responsiveSpacing": {
+        "passed": false,
+        "responsivePadding": 0,
+        "responsiveMargin": 0,
+        "total": 0
+      },
+      "flexboxResponsive": {
+        "passed": false,
+        "hasFlexbox": true,
+        "hasResponsiveFlex": false
+      },
+      "imageOptimization": {
+        "passed": true,
+        "hasImages": false,
+        "usesNextImage": false,
+        "hasSizes": false,
+        "hasPriority": false
+      },
+      "touchInteractions": {
+        "passed": true,
+        "hoverStates": 0,
+        "focusStates": 9,
+        "activeStates": 0,
+        "touchEvents": false,
+        "focusHoverRatio": "N/A"
+      },
+      "accessibilityMobile": {
+        "passed": false,
+        "score": 1,
+        "hasAriaLabels": true,
+        "hasAriaExpanded": false,
+        "hasAriaControls": false,
+        "hasScreenReaderText": false,
+        "hasSemanticHTML": false
+      },
+      "issues": [
+        "Text sizing is not responsive",
+        "Spacing is not responsive",
+        "Flexbox layout is not responsive",
+        "Mobile accessibility needs improvement (score: 1/5)"
+      ],
+      "score": 60
+    }
+  },
+  "summary": {
+    "total": 0,
+    "passed": 0,
+    "failed": 0,
+    "warnings": 0
+  },
+  "issues": []
+}

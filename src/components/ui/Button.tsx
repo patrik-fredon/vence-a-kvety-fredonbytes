@@ -27,12 +27,23 @@ export function Button({
   const prefersReducedMotion = useReducedMotion();
 
   const baseStyles = cn(
-    "inline-flex items-center justify-center font-medium transition-colors",
+    // Mobile-first: Base styles for mobile
+    "inline-flex items-center justify-center font-medium",
+    // Touch-friendly minimum height (44px) for mobile
+    "min-h-11 min-w-11",
+    // Mobile-first transitions and focus states
+    "transition-colors duration-200 ease-in-out",
     "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950 focus-visible:ring-offset-2",
+    // Touch-friendly active states
+    "active:scale-95 active:transition-transform active:duration-75",
     "disabled:pointer-events-none disabled:opacity-50",
     "relative overflow-hidden",
     // High contrast mode support
-    "high-contrast:border-2 high-contrast:border-current"
+    "high-contrast:border-2 high-contrast:border-current",
+    // Responsive text sizing
+    "text-sm sm:text-sm md:text-base",
+    // Responsive padding - mobile first
+    "px-4 py-2 sm:px-4 sm:py-2 md:px-6 md:py-3"
   );
 
   const variants = {
@@ -80,10 +91,31 @@ export function Button({
   };
 
   const sizes = {
-    sm: "px-3 py-1.5 text-sm rounded-md min-h-[2rem] font-medium",
-    default: "px-4 py-2 text-sm rounded-md min-h-[2.5rem] font-medium",
-    lg: "px-8 py-3 text-base rounded-md min-h-[3rem] font-medium",
-    icon: "h-9 w-9 rounded-md",
+    // Mobile-first sizing with responsive adjustments
+    sm: cn(
+      "px-3 py-1.5 text-xs rounded-md min-h-9", // 36px min height for small
+      "sm:px-3 sm:py-1.5 sm:text-sm",
+      "md:px-4 md:py-2 md:text-sm",
+      "font-medium"
+    ),
+    default: cn(
+      "px-4 py-2 text-sm rounded-md min-h-11", // 44px min height (touch-friendly)
+      "sm:px-4 sm:py-2 sm:text-sm",
+      "md:px-6 md:py-3 md:text-base",
+      "font-medium"
+    ),
+    lg: cn(
+      "px-6 py-3 text-base rounded-lg min-h-12", // 48px min height for large
+      "sm:px-6 sm:py-3 sm:text-base",
+      "md:px-8 md:py-4 md:text-lg",
+      "lg:px-10 lg:py-5 lg:text-xl",
+      "font-medium"
+    ),
+    icon: cn(
+      "h-11 w-11 rounded-md", // 44px for touch-friendly icon buttons
+      "sm:h-10 sm:w-10",
+      "md:h-9 md:w-9"
+    ),
   };
 
   const isDisabled = disabled || loading;

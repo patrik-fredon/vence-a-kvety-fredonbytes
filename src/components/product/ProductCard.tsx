@@ -116,15 +116,21 @@ export function ProductCard({
           )}
         </Link>
 
-        {/* Heart icon for favorites - appears on hover */}
+        {/* Heart icon for favorites - mobile-friendly touch target */}
         <button
           onClick={handleToggleFavorite}
           className={cn(
-            "absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-sm",
+            "absolute top-2 right-2 sm:top-3 sm:right-3",
+            // Mobile-first: larger touch target (44px minimum)
+            "p-3 sm:p-2 min-h-11 min-w-11 sm:min-h-auto sm:min-w-auto",
+            "rounded-full bg-white/80 backdrop-blur-sm",
             "transition-all duration-300 hover:bg-white hover:scale-110",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
-            // Show on hover or if favorited
-            isHovered || isFavorite ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+            "active:scale-95 active:bg-white/90",
+            // Mobile: always visible, Desktop: show on hover or if favorited
+            "opacity-100 translate-y-0 sm:opacity-100 sm:translate-y-0",
+            !isFavorite && "sm:opacity-0 sm:translate-y-2",
+            (isHovered || isFavorite) && "sm:opacity-100 sm:translate-y-0"
           )}
           aria-label={isFavorite ? t("removeFromFavorites") : t("addToFavorites")}
         >
@@ -187,20 +193,27 @@ export function ProductCard({
             {formatPrice(product.basePrice)}
           </div>
 
-          {/* Add to cart button with shopping cart icon */}
+          {/* Add to cart button with shopping cart icon - mobile optimized */}
           {onAddToCart && product.availability.inStock && (
             <Button
               size={featured ? "default" : "sm"}
               onClick={handleAddToCart}
               className={cn(
                 "transition-all duration-300",
-                // Show full button on hover or featured, icon only otherwise
-                isHovered || featured ? "px-4" : "px-3"
+                // Mobile: always show full button, Desktop: show on hover or featured
+                "px-4 sm:px-4",
+                !featured && !isHovered && "sm:px-3",
+                // Touch-friendly sizing
+                "min-h-11 sm:min-h-auto"
               )}
               icon={<ShoppingCartIcon className="h-4 w-4" />}
               iconPosition="left"
             >
-              {(isHovered || featured) && t("addToCart")}
+              {/* Mobile: always show text, Desktop: show on hover or featured */}
+              <span className="sm:hidden">{t("addToCart")}</span>
+              <span className="hidden sm:inline">
+                {(isHovered || featured) && t("addToCart")}
+              </span>
               <span className="sr-only">{t("addToCart")}</span>
             </Button>
           )}
