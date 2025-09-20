@@ -10,16 +10,6 @@
       "maxDuration": 30
     }
   },
-  "crons": [
-    {
-      "path": "/api/monitoring/cleanup",
-      "schedule": "0 2 * * *"
-    },
-    {
-      "path": "/api/orders/cleanup-abandoned",
-      "schedule": "0 */6 * * *"
-    }
-  ],
   "headers": [
     {
       "source": "/api/(.*)",

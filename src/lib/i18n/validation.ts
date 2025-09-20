@@ -148,28 +148,27 @@ export function validateTranslationKey(key: string): boolean {
 /**
  * Validate translation value
  */
-export function validateTranslationValue(value: string, key: string): string[] {
+function validateTranslationValue(key: string, value: string): string[] {
   const errors: string[] = [];
 
-  // Check for empty values
   if (!value.trim()) {
     errors.push(`Empty translation value for key: ${key}`);
   }
 
   // Check for placeholder consistency (basic check for {variable} patterns)
-  const placeholderPattern = /\{[a-zA-Z_0-9_]*\
+  const placeholderPattern = /\{[a-zA-Z_0-9_]*\}/g;
   const placeholders = value.match(placeholderPattern) || [];
 
-  // Check for uncloslder
-  unclosePattern = /\{[^}]*$/;
+  // Check for unclosed placeholders
+  const unclosePattern = /\{[^}]*$/;
   if (unclosePattern.test(value)) {
-    errors.push(`Unclosed placeholder in translation: ${key}`);
+    errors.push(`Unclosed placeholder in translation for key: ${key}`);
   }
 
-  // Check for HTML-like tags (might indicate formatting issues)
-  const htmlPattern = /<[^>]*>/g;
-  if (htmlPattern.test(value)) {
-    errors.push(`Potential HTML content in translation: ${key}`);
+  // Check for malformed placeholders
+  const malformedPattern = /\{[^a-zA-Z_0-9_}]/;
+  if (malformedPattern.test(value)) {
+    errors.push(`Malformed placeholder in translation for key: ${key}`);
   }
 
   return errors;
