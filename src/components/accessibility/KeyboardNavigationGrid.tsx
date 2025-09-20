@@ -1,85 +1,149 @@
 /**
- * Keyboard navigation wrapper for product grids and lists
- * Provides arrow key navigation and proper focus management
+ * Keyboard navigation grid component for product listings and other grid layouts
+ * Provides arrow key navigation, focus management, and screen reader support
  */
 
 'use client';
 
-import { useRef, useEffect, useCallback } from 'react';
-import { useKeyboardNavigation } from '@/lib/accessibility/hooks';
+import { useEffect, useRef, useState, useCallback } from 'react';
+import { useTranslations } from 'next-intl';
+import { useKeyboardNavigation, useAnnouncer } from '@/lib/accessibility/hooks';
 
 interface KeyboardNavigationGridProps {
-  children: React.ReactNode;
-  className?: string;
+  children: React.ReactElement[];
   columns?: number;
-  orientation?: 'horizontal' | 'vertical' | 'both';
-  wrap?: boolean;
-  onItemActivate?: (index: number, element: HTMLElement) => void;
-  role?: string;
   ariaLabel?: string;
+  onItemActivate?: (index: number, element: HTMLElement) => void;
+  className?: string;
 }
 
 export function KeyboardNavigationGrid({
   children,
-  className = '',
-  columns = 1,
-  orientation = 'both',
-  wrap = true,
+  columns = 3,
+  ariaLabel,
   onItemActivate,
-  role = 'grid',
-  ariaLabel
+  className = ''
 }: KeyboardNavigationGridProps) {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const itemsRef = useRef<HTMLElement[]>([]);
+  const t = useTranslations('accessibility');
+  const announce = useAnnouncer();
+  const gridRef = useRef<HTMLDivElement>(null);
+  const [gridItems, setGridItems] = useState<HTMLElement[]>([]);
 
-  // Update items when children change
+  // Update grid items when children change
   useEffect(() => {
-    if (containerRef.current) {
-      const focusableElements = containerRef.current.querySelectorAll(
-        '[data-keyboard-nav-item]'
-      ) as NodeListOf<HTMLElement>;
-      itemsRef.current = Array.from(focusableElements);
+    if (gridRef.current) {
+      const items = Array.from(
+        gridRef.current.querySelectorAll('[data-grid-item]')
+      ) as HTMLElement[];
+      setGridItems(items);
     }
   }, [children]);
 
-  const { currentIndex, handleKeyDown, focusItem, resetFocus } = useKeyboardNavigation(
-    itemsRef.current,
+  const handleItemActivate = useCallback((index: number, element: HTMLElement) => {
+    announce(`Aktivován prvek ${index + 1} z ${gridItems.length}`, 'polite');
+    onItemActivate?.(index, element);
+  }, [announce, gridItems.length, onItemActivate]);
+
+  const { currentIndex, handleKeyDown, focusItem } = useKeyboardNavigation(
+    gridItems,
     {
-      orientation,
-      wrap,
+      orientation: 'both',
+      wrap: true,
       columns,
-      onActivate: onItemActivate
+      onActivate: handleItemActivate
     }
   );
 
-  const handleContainerKeyDown = useCallback((event: React.KeyboardEvent) => {
-    handleKeyDown(event.nativeEvent);
+  // Handle grid-level keyboard events
+  const handleGridKeyDown = useCallback((event: React.KeyboardEvent) => {
+    // Convert React event to native event for the hook
+    const nativeEvent = event.nativeEvent;
+    handleKeyDown(nativeEvent);
   }, [handleKeyDown]);
 
-  const handleContainerFocus = useCallback((event: React.FocusEvent) => {
-    // If focus enters the container and no item is focused, focus the first item
-    if (event.target === containerRef.current && itemsRef.current.length > 0) {
+  // Focus first item when grid receives focus
+  const handleGridFocus = useCallback(() => {
+    if (gridItems.length > 0 && currentIndex === -1) {
       focusItem(0);
     }
-  }, [focusItem]);
+  }, [gridItems.length, currentIndex, focusItem]);
 
-  const handleContainerBlur = useCallback((event: React.FocusEvent) => {
-    // If focus leaves the container entirely, reset focus state
-    if (!containerRef.current?.contains(event.relatedTarget as Node)) {
-      resetFocus();
-    }
-  }, [resetFocus]);
+  // Enhanced children with grid item attributes
+  const enhancedChildren = children.map((child, index) => {
+    return React.cloneElement(child, {
+      key: child.key || index,
+      'data-grid-item': true,
+      tabIndex: currentIndex === index ? 0 : -1,
+      role: 'gridcell',
+      'aria-setsize': children.length,
+      'aria-posinset': index + 1,
+      onFocus: () => {
+        if (currentIndex !== index) {
+          focusItem(index);
+        }
+      }
+    });
+  });
 
   return (
     <div
-      ref={containerRef}
-      className={className}
-      role={role}
-      aria-label={ariaLabel}
+      ref={gridRef}
+      className={`grid gap-4 ${className}`}
+      style={{
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
+      }}
+      role="grid"
+      aria-label={ariaLabel || t('productGrid')}
+      aria-rowcount={Math.ceil(children.length / columns)}
+      aria-colcount={columns}
+      tabIndex={gridItems.length > 0 ? 0 : -1}
+      onKeyDown={handleGridKeyDown}
+      onFocus={handleGridFocus}
+    >
+      {enhancedChildren}
+    </div>
+  );
+}
+
+/**
+ * Grid item wrapper component for proper accessibility attributes
+ */
+interface GridItemProps {
+  children: React.ReactNode;
+  onClick?: () => void;
+  className?: string;
+  ariaLabel?: string;
+}
+
+export function GridItem({
+  children,
+  onClick,
+  className = '',
+  ariaLabel
+}: GridItemProps) {
+  const itemRef = useRef<HTMLDivElement>(null);
+
+  const handleClick = useCallback(() => {
+    onClick?.();
+  }, [onClick]);
+
+  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      handleClick();
+    }
+  }, [handleClick]);
+
+  return (
+    <div
+      ref={itemRef}
+      className={`focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg ${className}`}
+      onClick={handleClick}
+      onKeyDown={handleKeyDown}
+      role="gridcell"
       tabIndex={-1}
-      onKeyDown={handleContainerKeyDown}
-      onFocus={handleContainerFocus}
-      onBlur={handleContainerBlur}
+      aria-label={ariaLabel}
+      data-grid-item
     >
       {children}
     </div>

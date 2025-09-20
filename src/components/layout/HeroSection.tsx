@@ -72,7 +72,7 @@ export function HeroSection({
             // Enhanced text shadow
             "drop-shadow-xl",
             "[text-shadow:_1px_1px_3px_rgb(0_0_0_/_70%)]",
-            "text-amber-100",
+            "text-amber-200",
             "mb-6"
           )}>
             {t("hero.subtitle")}

@@ -28,6 +28,8 @@ export { LazyWrapper } from "./LazyWrapper";
 // =============================================================================
 
 export { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "./Card";
+export { FormField, FormGroup, FormSection } from "./FormField";
+export { Modal, ModalFooter, ConfirmModal } from "./Modal";
 
 // =============================================================================
 // TYPE EXPORTS

@@ -60,6 +60,21 @@ export function Header({ locale }: HeaderProps) {
       >
         {/* Container with max-width and centered content */}
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* Skip to main content link for screen readers */}
+          <a
+            href="#main-content"
+            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 bg-stone-900 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+            onClick={(e) => {
+              e.preventDefault();
+              const mainContent = document.getElementById('main-content');
+              if (mainContent) {
+                mainContent.focus();
+                mainContent.scrollIntoView({ behavior: 'smooth' });
+              }
+            }}
+          >
+            Přejít na hlavní obsah
+          </a>
           {/* Top bar - Quick navigation */}
           <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b border-stone-100">
             <div className="hidden md:flex items-center gap-6">
@@ -115,7 +130,12 @@ export function Header({ locale }: HeaderProps) {
             </Link>
 
             {/* Desktop Navigation with enhanced styling */}
-            <nav className="hidden md:flex items-center gap-8" role="navigation" aria-label="Hlavní navigace">
+            <nav
+              id="main-navigation"
+              className="hidden md:flex items-center gap-8"
+              role="navigation"
+              aria-label="Hlavní navigace"
+            >
               <Link
                 href={`/${locale}`}
                 className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"

@@ -1,0 +1,154 @@
+{
+  "timestamp": "2025-09-20T20:11:44.777Z",
+  "buildStatus": "existing",
+  "bundleSize": null,
+  "chunks": [],
+  "recommendations": [
+    {
+      "type": "image-optimization",
+      "severity": "medium",
+      "message": "18 large images found",
+      "suggestions": [
+        "Use Next.js Image component for automatic optimization",
+        "Convert images to WebP format",
+        "Implement responsive images with different sizes",
+        "Use image compression tools"
+      ]
+    }
+  ],
+  "nextJsOptimizations": [
+    {
+      "feature": "Package Import Optimization",
+      "status": "enabled",
+      "description": "Optimizes imports from specified packages"
+    },
+    {
+      "feature": "CSS Optimization",
+      "status": "enabled",
+      "description": "Enables CSS optimization in production builds"
+    },
+    {
+      "feature": "Code Splitting",
+      "status": "enabled",
+      "description": "Custom webpack code splitting configuration"
+    },
+    {
+      "feature": "Tree Shaking",
+      "status": "enabled",
+      "description": "Removes unused code from bundles"
+    }
+  ],
+  "imageOptimizations": {
+    "totalSize": 8685394,
+    "count": 18,
+    "largeImages": [
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-001.png",
+        "size": 264943,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-002.png",
+        "size": 447286,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-003.png",
+        "size": 358245,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-004.png",
+        "size": 545774,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-005.png",
+        "size": 830795,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-006.png",
+        "size": 374563,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-007.png",
+        "size": 250015,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-008.png",
+        "size": 309527,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-009.png",
+        "size": 294812,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-010.png",
+        "size": 685154,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-011.png",
+        "size": 716056,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-012.png",
+        "size": 525884,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-013.png",
+        "size": 803539,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-014.png",
+        "size": 350546,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-015.png",
+        "size": 486174,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-016.png",
+        "size": 625653,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-017.png",
+        "size": 427462,
+        "recommendation": "Consider optimizing this large image"
+      },
+      {
+        "file": "funeral-wreaths-and-floral-arrangement-018.png",
+        "size": 388966,
+        "recommendation": "Consider optimizing this large image"
+      }
+    ]
+  },
+  "coreWebVitals": {
+    "lcp": {
+      "value": 1100,
+      "rating": "good",
+      "description": "Largest Contentful Paint (estimated)"
+    },
+    "cls": {
+      "value": 0.05,
+      "rating": "good",
+      "description": "Cumulative Layout Shift (estimated)"
+    },
+    "fid": {
+      "value": 10,
+      "rating": "good",
+      "description": "First Input Delay (estimated)"
+    }
+  }
+}

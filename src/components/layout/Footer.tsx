@@ -27,20 +27,20 @@ export function Footer({ locale }: FooterProps) {
         className="bg-stone-900 text-stone-100 py-12 mt-20 border-t border-stone-800"
         role="contentinfo"
       >
-        <div className="container mx-auto px-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
+        <div className="container mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
             {/* Company Info Section */}
-            <div className="lg:col-span-2">
-              <h3 className="text-xl font-semibold mb-4 text-white">{t("company")}</h3>
-              <p className="text-stone-300 mb-6 leading-relaxed max-w-md">{t("description")}</p>
+            <div className="sm:col-span-2 lg:col-span-2">
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">{t("company")}</h3>
+              <p className="text-sm sm:text-base text-stone-300 mb-4 sm:mb-6 leading-relaxed max-w-md">{t("description")}</p>
 
               {/* Business Hours */}
-              <div className="mb-6">
-                <h4 className="font-semibold mb-3 text-white flex items-center">
+              <div className="mb-4 sm:mb-6">
+                <h4 className="text-sm sm:text-base font-semibold mb-2 sm:mb-3 text-white flex items-center">
                   <ClockIcon className="w-4 h-4 mr-2" aria-hidden="true" />
                   {t("businessHours")}
                 </h4>
-                <div className="text-stone-300 text-sm space-y-1">
+                <div className="text-stone-300 text-xs sm:text-sm space-y-1">
                   <p>Po - Pá: 8:00 - 18:00</p>
                   <p>So: 9:00 - 15:00</p>
                   <p>Ne: 10:00 - 14:00</p>
@@ -51,8 +51,8 @@ export function Footer({ locale }: FooterProps) {
 
             {/* Contact Information Section */}
             <div>
-              <h4 className="font-semibold mb-4 text-white">{t("contact")}</h4>
-              <div className="space-y-4 text-stone-300">
+              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-white">{t("contact")}</h4>
+              <div className="space-y-3 sm:space-y-4 text-stone-300">
                 <div className="flex items-start space-x-3">
                   <PhoneIcon className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400" aria-hidden="true" />
                   <div>
@@ -125,8 +125,8 @@ export function Footer({ locale }: FooterProps) {
 
             {/* Quick Links Section */}
             <div>
-              <h4 className="font-semibold mb-4 text-white">{t("quickLinks")}</h4>
-              <nav className="space-y-2" aria-label="Rychlé odkazy">
+              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-white">{t("quickLinks")}</h4>
+              <nav className="space-y-1 sm:space-y-2" aria-label="Rychlé odkazy">
                 <Link
                   href={`/${locale}/about`}
                   className="block text-stone-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded px-1 py-0.5"
@@ -154,8 +154,8 @@ export function Footer({ locale }: FooterProps) {
               </nav>
 
               {/* Legal Links Section */}
-              <h4 className="font-semibold mb-4 mt-8 text-white">{t("legal")}</h4>
-              <nav className="space-y-2" aria-label="Právní informace">
+              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-white">{t("legal")}</h4>
+              <nav className="space-y-1 sm:space-y-2" aria-label="Právní informace">
                 <Link
                   href={`/${locale}/privacy`}
                   className="block text-stone-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded px-1 py-0.5"
@@ -185,16 +185,16 @@ export function Footer({ locale }: FooterProps) {
           </div>
 
           {/* Footer Bottom Section */}
-          <div className="border-t border-stone-800 mt-12 pt-8">
-            <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center space-y-6 lg:space-y-0">
-              <div className="text-stone-400 text-sm">
+          <div className="border-t border-stone-800 mt-8 sm:mt-12 pt-6 sm:pt-8">
+            <div className="flex flex-col sm:flex-row lg:flex-row justify-between items-start sm:items-center lg:items-center space-y-4 sm:space-y-0 lg:space-y-0">
+              <div className="text-stone-400 text-xs sm:text-sm">
                 <p>© 2024 {t("company")} • IČO: 12345678 • DIČ: CZ12345678</p>
                 <p className="mt-1">{t("description")} • Všechna práva vyhrazena</p>
               </div>
 
               {/* Emergency Notice */}
-              <div className="text-left lg:text-right">
-                <p className="text-amber-300 text-sm font-medium">{t("emergencyOrders")}: 24/7</p>
+              <div className="text-left sm:text-right lg:text-right">
+                <p className="text-amber-300 text-xs sm:text-sm font-medium">{t("emergencyOrders")}: 24/7</p>
                 <p className="text-stone-400 text-xs mt-1">Rozumíme naléhavosti vašich potřeb</p>
               </div>
             </div>

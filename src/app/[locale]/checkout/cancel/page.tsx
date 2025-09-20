@@ -4,7 +4,6 @@
 
 import React from "react";
 import { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import {
   XCircleIcon,
   ArrowLeftIcon,
@@ -18,10 +17,7 @@ interface PageProps {
   searchParams: Promise<{ orderId?: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "checkout" });
-
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Platba zrušena",
     description: "Platba byla zrušena. Můžete se vrátit a zkusit to znovu.",

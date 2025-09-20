@@ -9,7 +9,6 @@ interface ContactPageProps {
 export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
   const tNav = await getTranslations("navigation");
-  const tFooter = await getTranslations("footer");
 
   const contactInfo = {
     address: {

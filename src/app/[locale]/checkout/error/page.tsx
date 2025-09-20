@@ -4,7 +4,6 @@
 
 import React from "react";
 import { Metadata } from "next";
-import { getTranslations } from "next-intl/server";
 import {
   ExclamationTriangleIcon,
   ArrowPathIcon,
@@ -19,10 +18,7 @@ interface PageProps {
   searchParams: Promise<{ orderId?: string; error?: string }>;
 }
 
-export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "checkout" });
-
+export async function generateMetadata(): Promise<Metadata> {
   return {
     title: "Chyba platby",
     description: "Došlo k chybě při zpracování platby. Zkuste to znovu nebo nás kontaktujte.",
@@ -70,10 +66,10 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
     error && commonErrors[error]
       ? commonErrors[error]
       : {
-          title: "Neočekávaná chyba",
-          description: "Došlo k neočekávané chybě při zpracování platby.",
-          solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
-        };
+        title: "Neočekávaná chyba",
+        description: "Došlo k neočekávané chybě při zpracování platby.",
+        solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
+      };
 
   return (
     <div className="min-h-screen bg-neutral-50 py-12">

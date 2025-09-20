@@ -57,9 +57,9 @@ export async function GET(request: NextRequest) {
 
     // Get orders with filters
     const { data: orders, error } = await orderUtils.getAllOrders({
-      status: status || undefined,
-      dateFrom: dateFrom || undefined,
-      dateTo: dateTo || undefined,
+      ...(status && { status }),
+      ...(dateFrom && { dateFrom }),
+      ...(dateTo && { dateTo }),
       limit,
       offset,
     });

@@ -63,12 +63,15 @@ export function ProductCard({
         "hover:shadow-lg hover:-translate-y-1",
         // Featured product styling - spans 2 columns
         featured && "md:col-span-2",
+        // Focus styles for keyboard navigation
+        "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2 rounded-lg",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       role="article"
       aria-labelledby={`product-${product.id}-title`}
+      aria-describedby={`product-${product.id}-description product-${product.id}-price`}
     >
       {/* Product Image Container - 64 height (16rem = 256px) */}
       <div className={cn(
@@ -77,12 +80,16 @@ export function ProductCard({
         featured ? "aspect-[2/1] md:aspect-[3/2]" : "aspect-square",
         "h-64" // 64 height as specified
       )}>
-        <Link href={`/${locale}/products/${product.slug}`}>
+        <Link
+          href={`/${locale}/products/${product.slug}`}
+          className="block focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg"
+          aria-label={`Zobrazit detail produktu ${product.name[locale as keyof typeof product.name]}`}
+        >
           {primaryImage && (
             <>
               <Image
                 src={primaryImage.url}
-                alt={primaryImage.alt}
+                alt={`${product.name[locale as keyof typeof product.name]} - ${primaryImage.alt}`}
                 fill
                 className={cn(
                   "object-cover transition-all duration-500",
@@ -100,7 +107,7 @@ export function ProductCard({
               {secondaryImage && (
                 <Image
                   src={secondaryImage.url}
-                  alt={secondaryImage.alt}
+                  alt={`${product.name[locale as keyof typeof product.name]} - alternativní pohled`}
                   fill
                   className={cn(
                     "object-cover transition-all duration-500 group-hover:scale-105",
@@ -116,15 +123,21 @@ export function ProductCard({
           )}
         </Link>
 
-        {/* Heart icon for favorites - appears on hover */}
+        {/* Heart icon for favorites - mobile-friendly touch target */}
         <button
           onClick={handleToggleFavorite}
           className={cn(
-            "absolute top-3 right-3 p-2 rounded-full bg-white/80 backdrop-blur-sm",
+            "absolute top-2 right-2 sm:top-3 sm:right-3",
+            // Mobile-first: larger touch target (44px minimum)
+            "p-3 sm:p-2 min-h-11 min-w-11 sm:min-h-auto sm:min-w-auto",
+            "rounded-full bg-white/80 backdrop-blur-sm",
             "transition-all duration-300 hover:bg-white hover:scale-110",
             "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
-            // Show on hover or if favorited
-            isHovered || isFavorite ? "opacity-100 translate-y-0" : "opacity-0 translate-y-2"
+            "active:scale-95 active:bg-white/90",
+            // Mobile: always visible, Desktop: show on hover or if favorited
+            "opacity-100 translate-y-0 sm:opacity-100 sm:translate-y-0",
+            !isFavorite && "sm:opacity-0 sm:translate-y-2",
+            (isHovered || isFavorite) && "sm:opacity-100 sm:translate-y-0"
           )}
           aria-label={isFavorite ? t("removeFromFavorites") : t("addToFavorites")}
         >
@@ -170,37 +183,51 @@ export function ProductCard({
         </Link>
 
         {product.description && (
-          <p className={cn(
-            "text-stone-600 mb-3 line-clamp-2",
-            featured ? "text-base" : "text-sm"
-          )}>
+          <p
+            id={`product-${product.id}-description`}
+            className={cn(
+              "text-stone-600 mb-3 line-clamp-2",
+              featured ? "text-base" : "text-sm"
+            )}
+          >
             {product.description[locale as keyof typeof product.description]}
           </p>
         )}
 
         {/* Price and Add to Cart */}
         <div className="flex items-center justify-between">
-          <div className={cn(
-            "font-semibold text-stone-900",
-            featured ? "text-xl" : "text-lg"
-          )}>
+          <div
+            id={`product-${product.id}-price`}
+            className={cn(
+              "font-semibold text-stone-900",
+              featured ? "text-xl" : "text-lg"
+            )}
+            aria-label={`Cena: ${formatPrice(product.basePrice)}`}
+          >
             {formatPrice(product.basePrice)}
           </div>
 
-          {/* Add to cart button with shopping cart icon */}
+          {/* Add to cart button with shopping cart icon - mobile optimized */}
           {onAddToCart && product.availability.inStock && (
             <Button
               size={featured ? "default" : "sm"}
               onClick={handleAddToCart}
               className={cn(
                 "transition-all duration-300",
-                // Show full button on hover or featured, icon only otherwise
-                isHovered || featured ? "px-4" : "px-3"
+                // Mobile: always show full button, Desktop: show on hover or featured
+                "px-4 sm:px-4",
+                !featured && !isHovered && "sm:px-3",
+                // Touch-friendly sizing
+                "min-h-11 sm:min-h-auto"
               )}
               icon={<ShoppingCartIcon className="h-4 w-4" />}
               iconPosition="left"
             >
-              {(isHovered || featured) && t("addToCart")}
+              {/* Mobile: always show text, Desktop: show on hover or featured */}
+              <span className="sm:hidden">{t("addToCart")}</span>
+              <span className="hidden sm:inline">
+                {(isHovered || featured) && t("addToCart")}
+              </span>
               <span className="sr-only">{t("addToCart")}</span>
             </Button>
           )}

@@ -9,6 +9,9 @@ import {
   MagnifyingGlassIcon,
   FunnelIcon,
 } from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
 import ProductForm from "./ProductForm";
 import DeleteConfirmModal from "./DeleteConfirmModal";
 
@@ -184,36 +187,34 @@ export default function ProductManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Správa produktů</h2>
-        <button
+        <h2 className="text-2xl font-bold text-stone-900">Správa produktů</h2>
+        <Button
           onClick={handleCreateProduct}
-          className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          icon={<PlusIcon className="h-5 w-5" />}
+          iconPosition="left"
         >
-          <PlusIcon className="h-5 w-5 mr-2" />
           Přidat produkt
-        </button>
+        </Button>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <Card padding="lg">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
           {/* Search */}
-          <div className="relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Hledat produkty..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+          <Input
+            type="text"
+            placeholder="Hledat produkty..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+            iconPosition="left"
+          />
 
           {/* Category filter */}
           <select
             value={selectedCategory}
             onChange={(e) => setSelectedCategory(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
           >
             <option value="">Všechny kategorie</option>
             {categories.map((category) => (
@@ -229,94 +230,92 @@ export default function ProductManagement() {
               type="checkbox"
               checked={showActiveOnly}
               onChange={(e) => setShowActiveOnly(e.target.checked)}
-              className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+              className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
             />
-            <span className="ml-2 text-sm text-gray-700">Pouze aktivní</span>
+            <span className="ml-2 text-sm text-stone-700">Pouze aktivní</span>
           </label>
 
           {/* Results count */}
-          <div className="text-sm text-gray-500 flex items-center">
+          <div className="text-sm text-stone-500 flex items-center">
             Zobrazeno: {filteredProducts.length} produktů
           </div>
         </div>
-      </div>
+      </Card>
 
       {/* Products table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <Card padding="none">
         {loading ? (
           <div className="p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-stone-200">
+              <thead className="bg-stone-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Produkt
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Kategorie
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Cena
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Zásoby
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Stav
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Akce
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-stone-200">
                 {filteredProducts.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50">
+                  <tr key={product.id} className="hover:bg-stone-50">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">{product.name_cs}</div>
-                        <div className="text-sm text-gray-500">{product.slug}</div>
+                        <div className="text-sm font-medium text-stone-900">{product.name_cs}</div>
+                        <div className="text-sm text-stone-500">{product.slug}</div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
                       {product.category?.name_cs || "Bez kategorie"}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
                       {formatCurrency(product.base_price)}
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
                       {product.track_inventory ? (
                         <span
-                          className={`${
-                            product.stock_quantity === 0
-                              ? "text-red-600"
-                              : product.stock_quantity <= 5
-                                ? "text-yellow-600"
-                                : "text-green-600"
-                          }`}
+                          className={`${product.stock_quantity === 0
+                            ? "text-red-600"
+                            : product.stock_quantity <= 5
+                              ? "text-amber-600"
+                              : "text-green-600"
+                            }`}
                         >
                           {product.stock_quantity} ks
                         </span>
                       ) : (
-                        <span className="text-gray-500">Nesledováno</span>
+                        <span className="text-stone-500">Nesledováno</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                            product.active
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
-                          }`}
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.active
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
+                            }`}
                         >
                           {product.active ? "Aktivní" : "Neaktivní"}
                         </span>
                         {product.featured && (
-                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-blue-100 text-blue-800">
+                          <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
                             Doporučený
                           </span>
                         )}
@@ -324,27 +323,31 @@ export default function ProductManagement() {
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => window.open(`/products/${product.slug}`, "_blank")}
-                          className="text-blue-600 hover:text-blue-900"
                           title="Zobrazit"
                         >
                           <EyeIcon className="h-4 w-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => handleEditProduct(product)}
-                          className="text-indigo-600 hover:text-indigo-900"
                           title="Upravit"
                         >
                           <PencilIcon className="h-4 w-4" />
-                        </button>
-                        <button
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setDeleteProduct(product)}
-                          className="text-red-600 hover:text-red-900"
                           title="Smazat"
+                          className="text-red-600 hover:text-red-900"
                         >
                           <TrashIcon className="h-4 w-4" />
-                        </button>
+                        </Button>
                       </div>
                     </td>
                   </tr>
@@ -356,29 +359,31 @@ export default function ProductManagement() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-700">
+          <div className="px-6 py-3 border-t border-stone-200 flex items-center justify-between">
+            <div className="text-sm text-stone-700">
               Stránka {currentPage} z {totalPages}
             </div>
             <div className="flex space-x-2">
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1 text-sm border border-gray-300 rounded disabled:opacity-50"
               >
                 Předchozí
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 text-sm border border-gray-300 rounded disabled:opacity-50"
               >
                 Další
-              </button>
+              </Button>
             </div>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Delete confirmation modal */}
       {deleteProduct && (

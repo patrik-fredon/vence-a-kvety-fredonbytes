@@ -2,7 +2,6 @@ import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { transformProductRow, transformCategoryRow } from "@/lib/utils/product-transforms";
-import { Product, ProductRow, CategoryRow } from "@/types/product";
 import { ProductDetail } from "@/components/product/ProductDetail";
 import { getCachedProductBySlug, cacheProductBySlug } from "@/lib/cache/product-cache";
 import {
@@ -92,7 +91,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   // Generate structured data
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
   const productUrl = `${baseUrl}/${locale}/products/${slug}`;
 
   const productName = locale === "cs" ? product.name.cs : product.name.en;
@@ -106,7 +105,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     name: productName,
     description: productDescription || productName,
     price: product.basePrice,
-    image: product.images?.[0]?.url,
+    ...(product.images?.[0]?.url && { image: product.images[0].url }),
     availability: "InStock", // This should be dynamic based on actual availability
     category: categoryName,
     brand: "Ketingmar s.r.o.",
@@ -189,13 +188,12 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 
   // Get first product image
   const productImages = data.images as any[];
-  const firstImage = productImages?.[0]?.url;
 
   // Use the new generateProductMetadata function
   return generateProductMetadata({
     product: {
       name: seoTitle || name,
-      description: seoDescription || description || undefined,
+      ...((seoDescription || description) ? { description: (seoDescription || description)! } : {}),
       price: data.base_price,
       category: categoryName,
       images: productImages?.map(img => ({ url: img.url, alt: img.alt || name })),

@@ -85,7 +85,7 @@ export default function AdminSidebar({
       {/* Mobile overlay */}
       {isOpen && (
         <div
-          className="fixed inset-0 bg-gray-600 bg-opacity-75 z-40 lg:hidden"
+          className="fixed inset-0 bg-stone-600 bg-opacity-75 z-40 lg:hidden"
           onClick={onToggle}
         />
       )}
@@ -94,11 +94,11 @@ export default function AdminSidebar({
       <div className={sidebarClasses}>
         <div className="flex flex-col h-full">
           {/* Header */}
-          <div className="flex items-center justify-between p-4 border-b border-gray-200">
-            <h1 className="text-xl font-semibold text-gray-900">Admin Panel</h1>
+          <div className="flex items-center justify-between p-4 border-b border-stone-200">
+            <h1 className="text-xl font-semibold text-stone-900">Admin Panel</h1>
             <button
               onClick={onToggle}
-              className="lg:hidden p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100"
+              className="lg:hidden p-2 rounded-md text-stone-400 hover:text-stone-500 hover:bg-stone-100 transition-colors"
             >
               <XMarkIcon className="h-6 w-6" />
             </button>
@@ -120,8 +120,8 @@ export default function AdminSidebar({
                   className={`
                     w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
                     ${isActive
-                      ? "bg-blue-100 text-blue-700 border border-blue-200"
-                      : "text-gray-700 hover:bg-gray-100"
+                      ? "bg-amber-100 text-amber-800 border border-amber-200"
+                      : "text-stone-700 hover:bg-stone-100"
                     }
                   `}
                 >
@@ -136,7 +136,7 @@ export default function AdminSidebar({
                       inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full
                       ${item.id === "inventory"
                           ? "bg-red-100 text-red-800"
-                          : "bg-blue-100 text-blue-800"
+                          : "bg-amber-100 text-amber-800"
                         }
                     `}
                     >
@@ -150,15 +150,15 @@ export default function AdminSidebar({
 
           {/* Alerts section */}
           {stats?.alerts.unacknowledged && stats.alerts.unacknowledged > 0 && (
-            <div className="p-4 border-t border-gray-200">
-              <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-3">
+            <div className="p-4 border-t border-stone-200">
+              <div className="bg-amber-50 border border-amber-200 rounded-lg p-3">
                 <div className="flex items-center">
-                  <ExclamationTriangleIcon className="h-5 w-5 text-yellow-400 mr-2" />
+                  <ExclamationTriangleIcon className="h-5 w-5 text-amber-400 mr-2" />
                   <div className="text-sm">
-                    <p className="font-medium text-yellow-800">
+                    <p className="font-medium text-amber-800">
                       {stats.alerts.unacknowledged} nepotvrzených upozornění
                     </p>
-                    <p className="text-yellow-700">Zkontrolujte skladové zásoby</p>
+                    <p className="text-amber-700">Zkontrolujte skladové zásoby</p>
                   </div>
                 </div>
               </div>
@@ -166,8 +166,8 @@ export default function AdminSidebar({
           )}
 
           {/* Footer */}
-          <div className="p-4 border-t border-gray-200">
-            <p className="text-xs text-gray-500 text-center">Pohřební věnce Admin</p>
+          <div className="p-4 border-t border-stone-200">
+            <p className="text-xs text-stone-500 text-center">Pohřební věnce Admin</p>
           </div>
         </div>
       </div>

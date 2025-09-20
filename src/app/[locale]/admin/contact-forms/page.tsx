@@ -1,4 +1,3 @@
-import { getTranslations } from "next-intl/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
@@ -22,7 +21,6 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
   // Check if user is admin (this would need to be implemented based on your user system)
   // For now, we'll assume any authenticated user can access this
 
-  const t = await getTranslations("admin");
   const supabase = createServerClient();
 
   // Build query

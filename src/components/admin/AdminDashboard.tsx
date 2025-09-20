@@ -10,8 +10,29 @@ import OrderManagement from "./OrderManagement";
 import InventoryManagement from "./InventoryManagement";
 import AdminActivityLog from "./AdminActivityLog";
 import { MonitoringDashboard } from "./MonitoringDashboard";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
+
+interface DashboardStats {
+  orders: {
+    total: number;
+    pending: number;
+    today: number;
+  };
+  products: {
+    total: number;
+    low_stock: number;
+    out_of_stock: number;
+  };
+  revenue: {
+    total: number;
+    this_month: number;
+  };
+  alerts: {
+    unacknowledged: number;
+  };
+}
 
 interface DashboardStats {
   orders: {
@@ -79,14 +100,14 @@ export default function AdminDashboard() {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-32 w-32 border-b-2 border-gray-900"></div>
+      <div className="min-h-screen flex items-center justify-center bg-stone-50">
+        <LoadingSpinner size="lg" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-gray-100">
+    <div className="flex h-screen bg-stone-50">
       {/* Sidebar */}
       <AdminSidebar
         currentView={currentView}
@@ -100,7 +121,7 @@ export default function AdminDashboard() {
       <div className="flex-1 flex flex-col overflow-hidden">
         <AdminHeader currentView={currentView} onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
-        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-50 p-6">
+        <main className="flex-1 overflow-x-hidden overflow-y-auto bg-stone-50 p-6">
           {renderCurrentView()}
         </main>
       </div>

@@ -10,8 +10,7 @@ export async function generateMetadata({ params }: LegalProps) {
   return generateLegalMetadata(locale);
 }
 
-export default async function LegalPage({ params }: LegalProps) {
-  const { locale } = await params;
+export default async function LegalPage() {
   const t = await getTranslations("legal");
 
   return (

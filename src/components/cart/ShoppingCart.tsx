@@ -8,6 +8,7 @@ import { CartItem } from "@/types/cart";
 import { formatPrice } from "@/lib/utils";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 import Image from "next/image";
 
 interface ShoppingCartProps {
@@ -34,32 +35,33 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
 
   if (state.isLoading && state.items.length === 0) {
     return (
-      <div className={`bg-white rounded-lg shadow-soft p-8 ${className}`}>
-        <div className="flex items-center justify-center">
+      <Card className={className} variant="default">
+        <CardContent className="flex items-center justify-center py-12">
           <LoadingSpinner size="lg" />
-        </div>
-      </div>
+        </CardContent>
+      </Card>
     );
   }
 
   if (state.items.length === 0) {
     return (
-      <div className={`bg-white rounded-lg shadow-soft p-12 text-center ${className}`}>
-        <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-6">
-          <ShoppingCartIcon className="w-8 h-8 text-primary-600" />
-        </div>
+      <Card className={className} variant="default">
+        <CardContent className="text-center py-16">
+          <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-6">
+            <ShoppingCartIcon className="w-8 h-8 text-stone-600" />
+          </div>
 
-        <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">{t("empty")}</h2>
+          <h2 className="text-2xl font-light text-stone-900 mb-4">{t("empty")}</h2>
 
-        <p className="text-neutral-600 mb-8">{t("emptyDescription")}</p>
+          <p className="text-stone-600 mb-8">{t("emptyDescription")}</p>
 
-        <a
-          href={`/${locale}/products`}
-          className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors"
-        >
-          {t("continueShopping")}
-        </a>
-      </div>
+          <Button variant="default" className="bg-amber-600 hover:bg-amber-700">
+            <a href={`/${locale}/products`}>
+              {t("continueShopping")}
+            </a>
+          </Button>
+        </CardContent>
+      </Card>
     );
   }
 
@@ -67,17 +69,17 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
   const itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
-    <div className={`bg-white rounded-lg shadow-soft ${className}`}>
+    <Card className={className} variant="default">
       {showHeader && (
-        <div className="p-6 border-b border-neutral-200">
-          <h2 className="text-elegant text-2xl font-semibold text-primary-800">{t("title")}</h2>
-          <p className="text-neutral-600 mt-1">
+        <CardHeader>
+          <CardTitle className="text-2xl font-light text-stone-900">{t("title")}</CardTitle>
+          <p className="text-stone-600 mt-1">
             {itemCount} {itemCount === 1 ? t("item") : t("items")}
           </p>
-        </div>
+        </CardHeader>
       )}
 
-      <div className="p-6">
+      <CardContent>
         {/* Cart Items */}
         <div className="space-y-6">
           {state.items.map((item) => (
@@ -92,31 +94,35 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
           ))}
         </div>
 
-        {/* Cart Summary */}
-        <div className="mt-8 pt-6 border-t border-neutral-200">
-          <div className="flex justify-between items-center mb-4">
-            <span className="text-lg font-medium text-neutral-800">{t("subtotal")}</span>
-            <span className="text-lg font-semibold text-primary-800">
-              {formatPrice(subtotal, locale as "cs" | "en")}
-            </span>
-          </div>
-
-          <a
-            href={`/${locale}/checkout`}
-            className={`inline-flex items-center justify-center w-full px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors ${state.isLoading ? "opacity-50 pointer-events-none" : ""}`}
-          >
-            {t("proceedToCheckout")}
-          </a>
-        </div>
-
         {/* Error Message */}
         {state.error && (
-          <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-800 text-sm">{state.error}</p>
           </div>
         )}
-      </div>
-    </div>
+      </CardContent>
+
+      {/* Cart Summary */}
+      <CardFooter className="flex-col space-y-4">
+        <div className="flex justify-between items-center w-full">
+          <span className="text-lg font-medium text-stone-900">{t("subtotal")}</span>
+          <span className="text-lg font-semibold text-stone-900">
+            {formatPrice(subtotal, locale as "cs" | "en")}
+          </span>
+        </div>
+
+        <Button
+          variant="default"
+          size="lg"
+          disabled={state.isLoading}
+          className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+        >
+          <a href={`/${locale}/checkout`} className="w-full">
+            {t("proceedToCheckout")}
+          </a>
+        </Button>
+      </CardFooter>
+    </Card>
   );
 }
 
@@ -141,9 +147,9 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
   const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
 
   return (
-    <div className="flex items-start space-x-4">
+    <div className="flex items-start space-x-4 p-4 border border-stone-200 rounded-lg bg-stone-50/50">
       {/* Product Image */}
-      <div className="flex-shrink-0 w-20 h-20 bg-neutral-100 rounded-lg overflow-hidden">
+      <div className="flex-shrink-0 w-20 h-20 bg-white rounded-lg overflow-hidden shadow-sm">
         {primaryImage ? (
           <Image
             src={primaryImage.url}
@@ -154,20 +160,20 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center">
-            <ShoppingCartIcon className="w-8 h-8 text-neutral-400" />
+            <ShoppingCartIcon className="w-8 h-8 text-stone-400" />
           </div>
         )}
       </div>
 
       {/* Product Details */}
       <div className="flex-1 min-w-0">
-        <h3 className="text-lg font-medium text-neutral-800 truncate">{productName}</h3>
+        <h3 className="text-lg font-medium text-stone-900 truncate">{productName}</h3>
 
         {/* Customizations */}
         {item.customizations && item.customizations.length > 0 && (
           <div className="mt-1 space-y-1">
             {item.customizations.map((customization, index) => (
-              <div key={index} className="text-sm text-neutral-600">
+              <div key={index} className="text-sm text-stone-600">
                 {/* Display customization details */}
                 {customization.customValue && (
                   <span>
@@ -179,33 +185,37 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
           </div>
         )}
 
-        <div className="mt-2 flex items-center justify-between">
+        <div className="mt-3 flex items-center justify-between">
           {/* Quantity Controls */}
-          <div className="flex items-center space-x-2">
-            <button
+          <div className="flex items-center space-x-3">
+            <Button
+              variant="outline"
+              size="icon"
               onClick={() => onQuantityChange(item.id, item.quantity - 1)}
               disabled={isUpdating}
-              className="w-8 h-8 rounded-full border border-neutral-300 flex items-center justify-center hover:bg-neutral-50 disabled:opacity-50"
+              className="w-8 h-8 rounded-full"
             >
               -
-            </button>
-            <span className="w-8 text-center font-medium">{item.quantity}</span>
-            <button
+            </Button>
+            <span className="w-8 text-center font-medium text-stone-900">{item.quantity}</span>
+            <Button
+              variant="outline"
+              size="icon"
               onClick={() => onQuantityChange(item.id, item.quantity + 1)}
               disabled={isUpdating}
-              className="w-8 h-8 rounded-full border border-neutral-300 flex items-center justify-center hover:bg-neutral-50 disabled:opacity-50"
+              className="w-8 h-8 rounded-full"
             >
               +
-            </button>
+            </Button>
           </div>
 
           {/* Price */}
           <div className="text-right">
-            <div className="text-lg font-semibold text-primary-800">
+            <div className="text-lg font-semibold text-stone-900">
               {formatPrice(item.totalPrice || 0, locale as "cs" | "en")}
             </div>
             {item.quantity > 1 && (
-              <div className="text-sm text-neutral-600">
+              <div className="text-sm text-stone-600">
                 {formatPrice(item.unitPrice || 0, locale as "cs" | "en")} {t("each")}
               </div>
             )}
@@ -214,14 +224,16 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
       </div>
 
       {/* Remove Button */}
-      <button
+      <Button
+        variant="ghost"
+        size="icon"
         onClick={() => onRemove(item.id)}
         disabled={isUpdating}
-        className="flex-shrink-0 p-2 text-neutral-400 hover:text-red-600 disabled:opacity-50"
+        className="flex-shrink-0 text-stone-400 hover:text-red-600"
         title={t("removeItem")}
       >
         <TrashIcon className="w-5 h-5" />
-      </button>
+      </Button>
     </div>
   );
 }

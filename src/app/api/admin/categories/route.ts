@@ -5,7 +5,7 @@ import { adminUtils } from "@/lib/supabase/utils";
 /**
  * Get all categories (Admin only)
  */
-export const GET = withAdminAuth(async (request: NextRequest, admin) => {
+export const GET = withAdminAuth(async () => {
   try {
     const { data: categories, error } = await adminUtils.getAllCategories();
 

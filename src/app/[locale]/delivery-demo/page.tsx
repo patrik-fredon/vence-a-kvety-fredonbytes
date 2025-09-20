@@ -6,7 +6,6 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
 import {
   DeliveryCalendar,
   DeliveryCostCalculator,
@@ -16,8 +15,6 @@ import { DeliveryUrgency, DeliveryTimeSlot, DeliveryCostCalculation } from "@/ty
 import type { Address } from "@/types";
 
 export default function DeliveryDemoPage() {
-  const t = useTranslations("delivery");
-
   // State management
   const [selectedDate, setSelectedDate] = useState<Date | undefined>();
   const [selectedUrgency, setSelectedUrgency] = useState<DeliveryUrgency>("standard");
@@ -144,7 +141,7 @@ export default function DeliveryDemoPage() {
               <h2 className="text-xl font-semibold text-gray-900 mb-4">Select Delivery Date</h2>
 
               <DeliveryCalendar
-                selectedDate={selectedDate}
+                {...(selectedDate && { selectedDate })}
                 onDateSelect={handleDateSelect}
                 onTimeSlotSelect={handleTimeSlotSelect}
                 urgency={selectedUrgency}

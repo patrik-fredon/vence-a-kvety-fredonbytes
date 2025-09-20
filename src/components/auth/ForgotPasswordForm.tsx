@@ -24,35 +24,40 @@ export function ForgotPasswordForm() {
 
   if (isSubmitted) {
     return (
-      <div className="max-w-md mx-auto">
-        <div className="bg-white py-8 px-6 shadow rounded-lg">
-          <div className="text-center">
-            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-green-100 mb-4">
-              <svg
-                className="h-6 w-6 text-green-600"
-                fill="none"
-                viewBox="0 0 24 24"
-                stroke="currentColor"
+      <div className="min-h-screen flex items-center justify-center bg-stone-50 py-12 px-4 sm:px-6 lg:px-8">
+        <div className="max-w-md w-full space-y-8">
+          <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
+            <div className="text-center">
+              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-50 border border-green-200 mb-6">
+                <svg
+                  className="h-8 w-8 text-green-600"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 13l4 4L19 7"
+                  />
+                </svg>
+              </div>
+              <h2 className="text-3xl font-light text-stone-900 mb-4">E-mail odeslán</h2>
+              <p className="text-stone-600 mb-6 leading-relaxed">
+                Pokud existuje účet s e-mailem <strong className="text-stone-900">{email}</strong>, odeslali jsme vám odkaz pro
+                obnovení hesla.
+              </p>
+              <p className="text-sm text-stone-500 mb-8 leading-relaxed">
+                Zkontrolujte svou e-mailovou schránku a klikněte na odkaz pro vytvoření nového hesla.
+              </p>
+              <Link
+                href="/auth/signin"
+                className="inline-flex items-center px-4 py-2 text-sm font-medium text-amber-600 hover:text-amber-700 transition-colors duration-200"
               >
-                <path
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                  strokeWidth={2}
-                  d="M5 13l4 4L19 7"
-                />
-              </svg>
+                ← Zpět na přihlášení
+              </Link>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">E-mail odeslán</h2>
-            <p className="text-gray-600 mb-6">
-              Pokud existuje účet s e-mailem <strong>{email}</strong>, odeslali jsme vám odkaz pro
-              obnovení hesla.
-            </p>
-            <p className="text-sm text-gray-500 mb-6">
-              Zkontrolujte svou e-mailovou schránku a klikněte na odkaz pro vytvoření nového hesla.
-            </p>
-            <Link href="/auth/signin" className="text-indigo-600 hover:text-indigo-500 font-medium">
-              Zpět na přihlášení
-            </Link>
           </div>
         </div>
       </div>
@@ -60,43 +65,67 @@ export function ForgotPasswordForm() {
   }
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="bg-white py-8 px-6 shadow rounded-lg">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center">Zapomenuté heslo</h2>
-          <p className="mt-2 text-sm text-gray-600 text-center">
-            Zadejte svůj e-mail a my vám pošleme odkaz pro obnovení hesla
-          </p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-light text-stone-900 mb-2">Zapomenuté heslo</h2>
+            <p className="text-stone-600 leading-relaxed">
+              Zadejte svůj e-mail a my vám pošleme odkaz pro obnovení hesla
+            </p>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            label="E-mail"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-            autoComplete="email"
-            disabled={loading}
-          />
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              label="E-mailová adresa"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              required
+              autoComplete="email"
+              disabled={loading}
+              className="transition-all duration-200"
+            />
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-3">
-              <p className="text-sm text-red-600">{error}</p>
-            </div>
-          )}
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-800">{error}</p>
+                  </div>
+                </div>
+              </div>
+            )}
 
-          <Button type="submit" className="w-full" disabled={loading || !email}>
-            {loading ? "Odesílání..." : "Odeslat odkaz"}
-          </Button>
-        </form>
+            <Button
+              type="submit"
+              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md"
+              disabled={loading || !email}
+              loading={loading}
+              loadingText="Odesílání..."
+            >
+              Odeslat odkaz
+            </Button>
+          </form>
 
-        <div className="mt-6 text-center">
-          <Link href="/auth/signin" className="text-sm text-indigo-600 hover:text-indigo-500">
-            Zpět na přihlášení
-          </Link>
+          {/* Footer Link */}
+          <div className="mt-8 text-center">
+            <Link
+              href="/auth/signin"
+              className="text-sm text-stone-600 hover:text-amber-600 transition-colors duration-200"
+            >
+              ← Zpět na přihlášení
+            </Link>
+          </div>
         </div>
       </div>
     </div>

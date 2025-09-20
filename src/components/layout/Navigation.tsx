@@ -191,14 +191,32 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
               <button
                 onClick={() => handleDropdownToggle("products")}
                 onMouseEnter={() => setOpenDropdown("products")}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    handleDropdownToggle("products");
+                  } else if (e.key === 'Escape') {
+                    setOpenDropdown(null);
+                  } else if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    setOpenDropdown("products");
+                    // Focus first item in dropdown
+                    setTimeout(() => {
+                      const firstItem = dropdownRef.current?.querySelector('a');
+                      firstItem?.focus();
+                    }, 0);
+                  }
+                }}
                 className={cn(
                   "flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
+                  "focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2",
                   isActiveLink(item.href)
                     ? "text-stone-900 bg-stone-100"
                     : "text-stone-700 hover:text-stone-900 hover:bg-stone-50"
                 )}
                 aria-expanded={openDropdown === "products"}
                 aria-haspopup="true"
+                aria-controls="products-dropdown"
               >
                 <span>{item.label}</span>
                 <ChevronDownIcon
@@ -211,8 +229,11 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
 
               {openDropdown === "products" && (
                 <div
+                  id="products-dropdown"
                   className="absolute top-full left-0 mt-1 bg-white border border-stone-200 rounded-lg shadow-lg min-w-[280px] animate-scale-in z-50"
                   onMouseLeave={() => setOpenDropdown(null)}
+                  role="menu"
+                  aria-labelledby="products-button"
                 >
                   <div className="p-4">
                     <Link

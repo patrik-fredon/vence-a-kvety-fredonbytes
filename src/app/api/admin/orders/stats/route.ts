@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import { orderUtils, userUtils } from "@/lib/supabase/utils";
 
 /**
  * Get order statistics (Admin only)
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createServerClient();
     const {

@@ -13,6 +13,7 @@ import { CreditCardIcon, ExclamationTriangleIcon } from "@heroicons/react/24/out
 import { getStripe, stripeElementsOptions } from "@/lib/payments/stripe";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 
 interface StripePaymentFormProps {
   clientSecret: string;
@@ -119,85 +120,91 @@ function PaymentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      {/* Payment Element */}
-      <div className="space-y-4">
-        <div className="flex items-center space-x-2 mb-4">
-          <CreditCardIcon className="w-5 h-5 text-primary-600" />
-          <h3 className="text-lg font-semibold text-neutral-900">Údaje platební karty</h3>
-        </div>
-
-        <div className="p-4 border-2 border-neutral-200 rounded-lg bg-white">
-          <PaymentElement
-            options={{
-              layout: "tabs",
-              defaultValues: {
-                billingDetails: {
-                  email: customerEmail,
-                },
-              },
-            }}
-          />
-        </div>
-      </div>
-
-      {/* Error Message */}
-      {errorMessage && (
-        <div className="flex items-start space-x-3 p-4 bg-red-50 border border-red-200 rounded-lg">
-          <ExclamationTriangleIcon className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
-          <div>
-            <h4 className="text-sm font-medium text-red-800">Chyba platby</h4>
-            <p className="text-sm text-red-700 mt-1">{errorMessage}</p>
+    <Card variant="default">
+      <form onSubmit={handleSubmit}>
+        {/* Payment Element */}
+        <CardHeader>
+          <div className="flex items-center space-x-2">
+            <CreditCardIcon className="w-5 h-5 text-amber-600" />
+            <CardTitle className="text-lg font-light text-stone-900">Údaje platební karty</CardTitle>
           </div>
-        </div>
-      )}
+        </CardHeader>
 
-      {/* Payment Summary */}
-      <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
-        <div className="flex justify-between items-center">
-          <span className="text-sm text-neutral-600">Celková částka:</span>
-          <span className="text-lg font-semibold text-neutral-900">
-            {new Intl.NumberFormat(locale === "cs" ? "cs-CZ" : "en-US", {
-              style: "currency",
-              currency: currency.toUpperCase(),
-            }).format(amount)}
-          </span>
-        </div>
-      </div>
+        <CardContent className="space-y-6">
+          <div className="p-4 border-2 border-stone-200 rounded-lg bg-white">
+            <PaymentElement
+              options={{
+                layout: "tabs",
+                defaultValues: {
+                  billingDetails: {
+                    email: customerEmail,
+                  },
+                },
+              }}
+            />
+          </div>
 
-      {/* Submit Button */}
-      <Button
-        type="submit"
-        disabled={!stripe || !elements || isProcessing}
-        className="w-full flex items-center justify-center"
-        size="lg"
-      >
-        {isProcessing ? (
-          <>
-            <LoadingSpinner size="sm" className="mr-2" />
-            Zpracovává se platba...
-          </>
-        ) : (
-          <>
-            <CreditCardIcon className="w-5 h-5 mr-2" />
-            Zaplatit{" "}
-            {new Intl.NumberFormat(locale === "cs" ? "cs-CZ" : "en-US", {
-              style: "currency",
-              currency: currency.toUpperCase(),
-            }).format(amount)}
-          </>
-        )}
-      </Button>
+          {/* Error Message */}
+          {errorMessage && (
+            <div className="flex items-start space-x-3 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <ExclamationTriangleIcon className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
+              <div>
+                <h4 className="text-sm font-medium text-red-800">Chyba platby</h4>
+                <p className="text-sm text-red-700 mt-1">{errorMessage}</p>
+              </div>
+            </div>
+          )}
 
-      {/* Security Notice */}
-      <div className="text-xs text-neutral-500 text-center">
-        <p>
-          🔒 Vaše platební údaje jsou chráněny 256-bit SSL šifrováním.
-          <br />
-          Údaje karet nejsou ukládány na našich serverech.
-        </p>
-      </div>
-    </form>
+          {/* Payment Summary */}
+          <div className="bg-stone-50 border border-stone-200 rounded-lg p-4">
+            <div className="flex justify-between items-center">
+              <span className="text-sm text-stone-600">Celková částka:</span>
+              <span className="text-lg font-semibold text-stone-900">
+                {new Intl.NumberFormat(locale === "cs" ? "cs-CZ" : "en-US", {
+                  style: "currency",
+                  currency: currency.toUpperCase(),
+                }).format(amount)}
+              </span>
+            </div>
+          </div>
+        </CardContent>
+
+        <CardFooter className="flex-col space-y-4">
+          {/* Submit Button */}
+          <Button
+            type="submit"
+            disabled={!stripe || !elements || isProcessing}
+            className="w-full flex items-center justify-center bg-amber-600 hover:bg-amber-700 text-white"
+            size="lg"
+          >
+            {isProcessing ? (
+              <>
+                <LoadingSpinner size="sm" className="mr-2" />
+                Zpracovává se platba...
+              </>
+            ) : (
+              <>
+                <CreditCardIcon className="w-5 h-5 mr-2" />
+                Zaplatit{" "}
+                {new Intl.NumberFormat(locale === "cs" ? "cs-CZ" : "en-US", {
+                  style: "currency",
+                  currency: currency.toUpperCase(),
+                }).format(amount)}
+              </>
+            )}
+          </Button>
+
+          {/* Security Notice */}
+          <div className="text-xs text-stone-500 text-center">
+            <p>
+              🔒 Vaše platební údaje jsou chráněny 256-bit SSL šifrováním.
+              <br />
+              Údaje karet nejsou ukládány na našich serverech.
+            </p>
+          </div>
+        </CardFooter>
+      </form>
+    </Card>
   );
 }
 
@@ -222,9 +229,9 @@ export function StripePaymentForm({
     appearance: {
       theme: "stripe" as const,
       variables: {
-        colorPrimary: "#059669",
+        colorPrimary: "#D97706", // amber-600
         colorBackground: "#ffffff",
-        colorText: "#1f2937",
+        colorText: "#1C1917", // stone-900
         colorDanger: "#dc2626",
         fontFamily: "Inter, system-ui, sans-serif",
         spacingUnit: "4px",

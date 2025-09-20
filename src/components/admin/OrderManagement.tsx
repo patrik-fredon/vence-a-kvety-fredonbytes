@@ -41,6 +41,10 @@ const statusOptions = [
   { value: "cancelled", label: "Zrušeno" },
 ];
 
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+
 export default function OrderManagement() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,14 +133,14 @@ export default function OrderManagement() {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      pending: "bg-yellow-100 text-yellow-800",
+      pending: "bg-amber-100 text-amber-800",
       confirmed: "bg-blue-100 text-blue-800",
       processing: "bg-purple-100 text-purple-800",
       shipped: "bg-indigo-100 text-indigo-800",
       delivered: "bg-green-100 text-green-800",
       cancelled: "bg-red-100 text-red-800",
     };
-    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[status as keyof typeof colors] || "bg-stone-100 text-stone-800";
   };
 
   const getStatusLabel = (status: string) => {
@@ -204,30 +208,28 @@ export default function OrderManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Správa objednávek</h2>
-        <div className="text-sm text-gray-500">Celkem: {filteredOrders.length} objednávek</div>
+        <h2 className="text-2xl font-bold text-stone-900">Správa objednávek</h2>
+        <div className="text-sm text-stone-500">Celkem: {filteredOrders.length} objednávek</div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <Card padding="lg">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* Search */}
-          <div className="relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Hledat objednávky..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            />
-          </div>
+          <Input
+            type="text"
+            placeholder="Hledat objednávky..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+            iconPosition="left"
+          />
 
           {/* Status filter */}
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
           >
             {statusOptions.map((option) => (
               <option key={option.value} value={option.value}>
@@ -241,7 +243,7 @@ export default function OrderManagement() {
             type="date"
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
             placeholder="Od data"
           />
 
@@ -250,12 +252,13 @@ export default function OrderManagement() {
             type="date"
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
             placeholder="Do data"
           />
 
           {/* Clear filters */}
-          <button
+          <Button
+            variant="outline"
             onClick={() => {
               setSearchTerm("");
               setStatusFilter("");
@@ -263,64 +266,63 @@ export default function OrderManagement() {
               setDateTo("");
               setCurrentPage(1);
             }}
-            className="px-4 py-2 text-sm text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50"
           >
             Vymazat filtry
-          </button>
+          </Button>
         </div>
-      </div>
+      </Card>
 
       {/* Orders table */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
+      <Card padding="none">
         {loading ? (
           <div className="p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto"></div>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-200">
-              <thead className="bg-gray-50">
+            <table className="min-w-full divide-y divide-stone-200">
+              <thead className="bg-stone-50">
                 <tr>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Objednávka
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Zákazník
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Stav
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Částka
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Doručení
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Datum
                   </th>
-                  <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
                     Akce
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-200">
+              <tbody className="bg-white divide-y divide-stone-200">
                 {filteredOrders.map((order) => (
-                  <tr key={order.id} className="hover:bg-gray-50">
+                  <tr key={order.id} className="hover:bg-stone-50">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-stone-900">
                           #{order.orderNumber}
                         </div>
-                        <div className="text-sm text-gray-500">{order.itemCount} položek</div>
+                        <div className="text-sm text-stone-500">{order.itemCount} položek</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-gray-900">
+                        <div className="text-sm font-medium text-stone-900">
                           {order.customerName}
                         </div>
-                        <div className="text-sm text-gray-500">{order.customerEmail}</div>
+                        <div className="text-sm text-stone-500">{order.customerEmail}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -330,37 +332,40 @@ export default function OrderManagement() {
                         {getStatusLabel(order.status)}
                       </span>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
                       {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-gray-900">{order.deliveryAddress}</div>
-                      <div className="text-sm text-gray-500">
+                      <div className="text-sm text-stone-900">{order.deliveryAddress}</div>
+                      <div className="text-sm text-stone-500">
                         {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
                       {new Date(order.createdAt).toLocaleDateString("cs-CZ")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                       <div className="flex items-center space-x-2">
-                        <button
+                        <Button
+                          variant="ghost"
+                          size="icon"
                           onClick={() => setSelectedOrder(order)}
-                          className="text-blue-600 hover:text-blue-900"
                           title="Detail"
                         >
                           <EyeIcon className="h-4 w-4" />
-                        </button>
+                        </Button>
 
                         {getQuickActions(order).map((action, index) => (
-                          <button
+                          <Button
                             key={index}
+                            variant="ghost"
+                            size="icon"
                             onClick={action.action}
                             className={action.color}
                             title={action.label}
                           >
                             <action.icon className="h-4 w-4" />
-                          </button>
+                          </Button>
                         ))}
                       </div>
                     </td>
@@ -373,29 +378,31 @@ export default function OrderManagement() {
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="px-6 py-3 border-t border-gray-200 flex items-center justify-between">
-            <div className="text-sm text-gray-700">
+          <div className="px-6 py-3 border-t border-stone-200 flex items-center justify-between">
+            <div className="text-sm text-stone-700">
               Stránka {currentPage} z {totalPages}
             </div>
             <div className="flex space-x-2">
-              <button
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
-                className="px-3 py-1 text-sm border border-gray-300 rounded disabled:opacity-50"
               >
                 Předchozí
-              </button>
-              <button
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
-                className="px-3 py-1 text-sm border border-gray-300 rounded disabled:opacity-50"
               >
                 Další
-              </button>
+              </Button>
             </div>
           </div>
         )}
-      </div>
+      </Card>
 
       {/* Order detail modal */}
       {selectedOrder && (
