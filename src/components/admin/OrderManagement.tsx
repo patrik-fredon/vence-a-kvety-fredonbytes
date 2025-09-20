@@ -41,6 +41,52 @@ const statusOptions = [
   { value: "cancelled", label: "Zrušeno" },
 ];
 
+"use client";
+
+import { useState, useEffect } from "react";
+import {
+  EyeIcon,
+  PencilIcon,
+  MagnifyingGlassIcon,
+  FunnelIcon,
+  CheckCircleIcon,
+  TruckIcon,
+  XCircleIcon,
+} from "@heroicons/react/24/outline";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import OrderDetailModal from "./OrderDetailModal";
+
+interface Order {
+  id: string;
+  orderNumber: string;
+  customerName: string;
+  customerEmail: string;
+  customerPhone: string;
+  status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
+  totalAmount: number;
+  itemCount: number;
+  paymentMethod: string;
+  paymentStatus: string;
+  deliveryAddress: string;
+  preferredDate: string;
+  createdAt: string;
+  updatedAt: string;
+  notes?: string;
+  internalNotes?: string;
+}
+
+const statusOptions = [
+  { value: "", label: "Všechny stavy" },
+  { value: "pending", label: "Čekající" },
+  { value: "confirmed", label: "Potvrzeno" },
+  { value: "processing", label: "Zpracovává se" },
+  { value: "shipped", label: "Odesláno" },
+  { value: "delivered", label: "Doručeno" },
+  { value: "cancelled", label: "Zrušeno" },
+];
+
 export default function OrderManagement() {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -129,14 +175,14 @@ export default function OrderManagement() {
 
   const getStatusColor = (status: string) => {
     const colors = {
-      pending: "bg-yellow-100 text-yellow-800",
+      pending: "bg-amber-100 text-amber-800",
       confirmed: "bg-blue-100 text-blue-800",
       processing: "bg-purple-100 text-purple-800",
       shipped: "bg-indigo-100 text-indigo-800",
       delivered: "bg-green-100 text-green-800",
       cancelled: "bg-red-100 text-red-800",
     };
-    return colors[status as keyof typeof colors] || "bg-gray-100 text-gray-800";
+    return colors[status as keyof typeof colors] || "bg-stone-100 text-stone-800";
   };
 
   const getStatusLabel = (status: string) => {
@@ -204,21 +250,407 @@ export default function OrderManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Správa objednávek</h2>
-        <div className="text-sm text-gray-500">Celkem: {filteredOrders.length} objednávek</div>
+        <h2 className="text-2xl font-bold text-stone-900">Správa objednávek</h2>
+        <div className="text-sm text-stone-500">Celkem: {filteredOrders.length} objednávek</div>
       </div>
 
       {/* Filters */}
-      <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
+      <Card padding="lg">
         <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
           {/* Search */}
-          <div className="relative">
-            <MagnifyingGlassIcon className="h-5 w-5 absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
-            <input
-              type="text"
-              placeholder="Hledat objednávky..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
+          <Input
+            type="text"
+            placeholder="Hledat objednávky..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+            iconPosition="left"
+          />
+
+          {/* Status filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+          >
+            {statusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Date from */}
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+            placeholder="Od data"
+          />
+
+          {/* Date to */}
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+            placeholder="Do data"
+          />
+
+          {/* Clear filters */}
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSearchTerm("");
+              setStatusFilter("");
+              setDateFrom("");
+              setDateTo("");
+              setCurrentPage(1);
+            }}
+          >
+            Vymazat filtry
+          </Button>
+        </div>
+      </Card>
+
+      {/* Orders table */}
+      <Card padding="none">
+        {loading ? (
+          <div className="p-6 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto"></div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-stone-200">
+              <thead className="bg-stone-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Objednávka
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Zákazník
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Stav
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Částka
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Doručení
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Datum
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Akce
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-stone-200">
+                {filteredOrders.map((order) => (
+                  <tr key={order.id} className="hover:bg-stone-50">
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium text-stone-900">
+                          #{order.orderNumber}
+                        </div>
+                        <div className="text-sm text-stone-500">{order.itemCount} položek</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium text-stone-900">
+                          {order.customerName}
+                        </div>
+                        <div className="text-sm text-stone-500">{order.customerEmail}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}
+                      >
+                        {getStatusLabel(order.status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
+                      {formatCurrency(order.totalAmount)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-stone-900">{order.deliveryAddress}</div>
+                      <div className="text-sm text-stone-500">
+                        {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
+                      {new Date(order.createdAt).toLocaleDateString("cs-CZ")}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setSelectedOrder(order)}
+                          title="Detail"
+                        >
+                          <EyeIcon className="h-4 w-4" />
+                        </Button>
+
+                        {getQuickActions(order).map((action, index) => (
+                          <Button
+                            key={index}
+                            variant="ghost"
+                            size="icon"
+                            onClick={action.action}
+                            className={action.color}
+                            title={action.label}
+                          >
+                            <action.icon className="h-4 w-4" />
+                          </Button>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="px-6 py-3 border-t border-stone-200 flex items-center justify-between">
+            <div className="text-sm text-stone-700">
+              Stránka {currentPage} z {totalPages}
+            </div>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+              >
+                Předchozí
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+              >
+                Další
+              </Button>
+            </div>
+          </div>
+        )}
+      </Card>
+
+      {/* Order detail modal */}
+      {selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onStatusUpdate={handleStatusUpdate}
+        />
+      )}
+    </div>
+  );
+}
+            icon={<MagnifyingGlassIcon className="h-5 w-5" />}
+            iconPosition="left"
+          />
+
+          {/* Status filter */}
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+          >
+            {statusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Date from */}
+          <input
+            type="date"
+            value={dateFrom}
+            onChange={(e) => setDateFrom(e.target.value)}
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+            placeholder="Od data"
+          />
+
+          {/* Date to */}
+          <input
+            type="date"
+            value={dateTo}
+            onChange={(e) => setDateTo(e.target.value)}
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+            placeholder="Do data"
+          />
+
+          {/* Clear filters */}
+          <Button
+            variant="outline"
+            onClick={() => {
+              setSearchTerm("");
+              setStatusFilter("");
+              setDateFrom("");
+              setDateTo("");
+              setCurrentPage(1);
+            }}
+          >
+            Vymazat filtry
+          </Button>
+        </div>
+      </Card>
+
+      {/* Orders table */}
+      <Card padding="none">
+        {loading ? (
+          <div className="p-6 text-center">
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto"></div>
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="min-w-full divide-y divide-stone-200">
+              <thead className="bg-stone-50">
+                <tr>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Objednávka
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Zákazník
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Stav
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Částka
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Doručení
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Datum
+                  </th>
+                  <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
+                    Akce
+                  </th>
+                </tr>
+              </thead>
+              <tbody className="bg-white divide-y divide-stone-200">
+                {filteredOrders.map((order) => (
+                  <tr key={order.id} className="hover:bg-stone-50">
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium text-stone-900">
+                          #{order.orderNumber}
+                        </div>
+                        <div className="text-sm text-stone-500">{order.itemCount} položek</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4">
+                      <div>
+                        <div className="text-sm font-medium text-stone-900">
+                          {order.customerName}
+                        </div>
+                        <div className="text-sm text-stone-500">{order.customerEmail}</div>
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap">
+                      <span
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}
+                      >
+                        {getStatusLabel(order.status)}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
+                      {formatCurrency(order.totalAmount)}
+                    </td>
+                    <td className="px-6 py-4">
+                      <div className="text-sm text-stone-900">{order.deliveryAddress}</div>
+                      <div className="text-sm text-stone-500">
+                        {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
+                      </div>
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
+                      {new Date(order.createdAt).toLocaleDateString("cs-CZ")}
+                    </td>
+                    <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
+                      <div className="flex items-center space-x-2">
+                        <Button
+                          variant="ghost"
+                          size="icon"
+                          onClick={() => setSelectedOrder(order)}
+                          title="Detail"
+                        >
+                          <EyeIcon className="h-4 w-4" />
+                        </Button>
+
+                        {getQuickActions(order).map((action, index) => (
+                          <Button
+                            key={index}
+                            variant="ghost"
+                            size="icon"
+                            onClick={action.action}
+                            className={action.color}
+                            title={action.label}
+                          >
+                            <action.icon className="h-4 w-4" />
+                          </Button>
+                        ))}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+
+        {/* Pagination */}
+        {totalPages > 1 && (
+          <div className="px-6 py-3 border-t border-stone-200 flex items-center justify-between">
+            <div className="text-sm text-stone-700">
+              Stránka {currentPage} z {totalPages}
+            </div>
+            <div className="flex space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
+                disabled={currentPage === 1}
+              >
+                Předchozí
+              </Button>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                disabled={currentPage === totalPages}
+              >
+                Další
+              </Button>
+            </div>
+          </div>
+        )}
+      </Card>
+
+      {/* Order detail modal */}
+      {selectedOrder && (
+        <OrderDetailModal
+          order={selectedOrder}
+          onClose={() => setSelectedOrder(null)}
+          onStatusUpdate={handleStatusUpdate}
+        />
+      )}
+    </div>
+  );
+}
               className="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
             />
           </div>
