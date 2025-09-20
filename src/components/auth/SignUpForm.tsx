@@ -83,84 +83,141 @@ export function SignUpForm() {
   };
 
   return (
-    <div className="max-w-md mx-auto">
-      <div className="bg-white py-8 px-6 shadow rounded-lg">
-        <div className="mb-6">
-          <h2 className="text-2xl font-bold text-gray-900 text-center">Registrace</h2>
-          <p className="mt-2 text-sm text-gray-600 text-center">Vytvořte si nový účet</p>
-        </div>
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h2 className="text-3xl font-light text-stone-900 mb-2">Registrace</h2>
+            <p className="text-stone-600">Vytvořte si nový účet</p>
+          </div>
 
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <Input
-            id="name"
-            name="name"
-            type="text"
-            label="Jméno a příjmení"
-            value={formData.name}
-            onChange={handleChange}
-            error={validationErrors.name}
-            required
-            autoComplete="name"
-            disabled={loading}
-          />
+          {/* Form */}
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              id="name"
+              name="name"
+              type="text"
+              label="Jméno a příjmení"
+              value={formData.name}
+              onChange={handleChange}
+              error={validationErrors.name}
+              required
+              autoComplete="name"
+              disabled={loading}
+              className="transition-all duration-200"
+            />
 
-          <Input
-            id="email"
-            name="email"
-            type="email"
-            label="E-mail"
-            value={formData.email}
-            onChange={handleChange}
-            error={validationErrors.email}
-            required
-            autoComplete="email"
-            disabled={loading}
-          />
+            <Input
+              id="email"
+              name="email"
+              type="email"
+              label="E-mailová adresa"
+              value={formData.email}
+              onChange={handleChange}
+              error={validationErrors.email}
+              required
+              autoComplete="email"
+              disabled={loading}
+              className="transition-all duration-200"
+            />
 
-          <Input
-            id="phone"
-            name="phone"
-            type="tel"
-            label="Telefon (volitelné)"
-            value={formData.phone}
-            onChange={handleChange}
-            autoComplete="tel"
-            disabled={loading}
-            helpText="Telefon použijeme pro komunikaci ohledně objednávky"
-          />
+            <Input
+              id="phone"
+              name="phone"
+              type="tel"
+              label="Telefon (volitelné)"
+              value={formData.phone}
+              onChange={handleChange}
+              autoComplete="tel"
+              disabled={loading}
+              helpText="Telefon použijeme pro komunikaci ohledně objednávky"
+              className="transition-all duration-200"
+            />
 
-          <Input
-            id="password"
-            name="password"
-            type="password"
-            label="Heslo"
-            value={formData.password}
-            onChange={handleChange}
-            error={validationErrors.password}
-            required
-            autoComplete="new-password"
-            disabled={loading}
-            helpText="Minimálně 6 znaků"
-          />
+            <Input
+              id="password"
+              name="password"
+              type="password"
+              label="Heslo"
+              value={formData.password}
+              onChange={handleChange}
+              error={validationErrors.password}
+              required
+              autoComplete="new-password"
+              disabled={loading}
+              helpText="Minimálně 6 znaků"
+              className="transition-all duration-200"
+            />
 
-          <Input
-            id="confirmPassword"
-            name="confirmPassword"
-            type="password"
-            label="Potvrzení hesla"
-            value={formData.confirmPassword}
-            onChange={handleChange}
-            error={validationErrors.confirmPassword}
-            required
-            autoComplete="new-password"
-            disabled={loading}
-          />
+            <Input
+              id="confirmPassword"
+              name="confirmPassword"
+              type="password"
+              label="Potvrzení hesla"
+              value={formData.confirmPassword}
+              onChange={handleChange}
+              error={validationErrors.confirmPassword}
+              required
+              autoComplete="new-password"
+              disabled={loading}
+              className="transition-all duration-200"
+            />
 
-          {error && (
-            <div className="bg-red-50 border border-red-200 rounded-md p-3">
-              <p className="text-sm text-red-600">{error}</p>
+            {error && (
+              <div className="bg-red-50 border border-red-200 rounded-md p-4">
+                <div className="flex">
+                  <div className="flex-shrink-0">
+                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                    </svg>
+                  </div>
+                  <div className="ml-3">
+                    <p className="text-sm text-red-800">{error}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+
+            <Button 
+              type="submit" 
+              className="w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md" 
+              disabled={loading}
+              loading={loading}
+              loadingText="Registrování..."
+            >
+              Zaregistrovat se
+            </Button>
+          </form>
+
+          {/* Footer Links */}
+          <div className="mt-8">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-stone-200" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-stone-500">nebo</span>
+              </div>
             </div>
-          )}
+
+            <div className="mt-6 text-center">
+              <span className="text-sm text-stone-600">
+                Již máte účet?{" "}
+                <Link 
+                  href="/auth/signin" 
+                  className="text-amber-600 hover:text-amber-700 font-medium transition-colors duration-200"
+                >
+                  Přihlaste se
+                </Link>
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
 
           <Button type="submit" className="w-full" disabled={loading}>
             {loading ? "Registrování..." : "Zaregistrovat se"}

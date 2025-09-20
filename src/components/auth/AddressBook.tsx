@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
+import { Card, CardContent } from "@/components/ui/Card";
 
 interface Address {
   id: string;
@@ -92,186 +93,197 @@ export function AddressBook({
   return (
     <div className="space-y-6">
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-medium text-gray-900">
+        <h3 className="text-lg font-medium text-stone-900">
           {locale === "cs" ? "Dodací adresy" : "Delivery Addresses"}
         </h3>
-        <Button type="button" variant="outline" onClick={addAddress} disabled={disabled}>
+        <Button
+          type="button"
+          variant="outline"
+          onClick={addAddress}
+          disabled={disabled}
+          className="border-stone-300 text-stone-700 hover:bg-stone-50"
+        >
           {locale === "cs" ? "Přidat adresu" : "Add Address"}
         </Button>
       </div>
 
       <div className="space-y-4">
         {addresses.map((address) => (
-          <div key={address.id} className="border rounded-lg p-4 bg-gray-50">
-            {editingId === address.id ? (
-              // Edit mode
-              <div className="space-y-4">
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <Input
-                    label={locale === "cs" ? "Název adresy" : "Address Name"}
-                    value={address.name}
-                    onChange={(e) => updateAddress(address.id, "name", e.target.value)}
-                    placeholder={locale === "cs" ? "Domů, Práce, atd." : "Home, Work, etc."}
-                    required
-                  />
-
-                  <Input
-                    label={locale === "cs" ? "Země" : "Country"}
-                    value={address.country}
-                    onChange={(e) => updateAddress(address.id, "country", e.target.value)}
-                    required
-                  />
-
-                  <div className="md:col-span-2">
+          <Card key={address.id} className="bg-stone-50 border-stone-200">
+            <CardContent className="p-4">
+              {editingId === address.id ? (
+                // Edit mode
+                <div className="space-y-4">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
-                      label={locale === "cs" ? "Ulice a číslo popisné" : "Street Address"}
-                      value={address.street}
-                      onChange={(e) => updateAddress(address.id, "street", e.target.value)}
+                      label={locale === "cs" ? "Název adresy" : "Address Name"}
+                      value={address.name}
+                      onChange={(e) => updateAddress(address.id, "name", e.target.value)}
+                      placeholder={locale === "cs" ? "Domů, Práce, atd." : "Home, Work, etc."}
+                      required
+                    />
+
+                    <Input
+                      label={locale === "cs" ? "Země" : "Country"}
+                      value={address.country}
+                      onChange={(e) => updateAddress(address.id, "country", e.target.value)}
+                      required
+                    />
+
+                    <div className="md:col-span-2">
+                      <Input
+                        label={locale === "cs" ? "Ulice a číslo popisné" : "Street Address"}
+                        value={address.street}
+                        onChange={(e) => updateAddress(address.id, "street", e.target.value)}
+                        required
+                      />
+                    </div>
+
+                    <Input
+                      label={locale === "cs" ? "Město" : "City"}
+                      value={address.city}
+                      onChange={(e) => updateAddress(address.id, "city", e.target.value)}
+                      required
+                    />
+
+                    <Input
+                      label={locale === "cs" ? "PSČ" : "Postal Code"}
+                      value={address.postalCode}
+                      onChange={(e) => updateAddress(address.id, "postalCode", e.target.value)}
                       required
                     />
                   </div>
 
-                  <Input
-                    label={locale === "cs" ? "Město" : "City"}
-                    value={address.city}
-                    onChange={(e) => updateAddress(address.id, "city", e.target.value)}
-                    required
-                  />
+                  <div className="flex items-center justify-between">
+                    <label className="flex items-center">
+                      <input
+                        type="checkbox"
+                        checked={address.isDefault}
+                        onChange={(e) => setDefaultAddress(address.id)}
+                        className="mr-2 rounded border-stone-300 text-amber-600 focus:ring-amber-500"
+                      />
+                      <span className="text-sm text-stone-700">
+                        {locale === "cs" ? "Výchozí adresa" : "Default Address"}
+                      </span>
+                    </label>
 
-                  <Input
-                    label={locale === "cs" ? "PSČ" : "Postal Code"}
-                    value={address.postalCode}
-                    onChange={(e) => updateAddress(address.id, "postalCode", e.target.value)}
-                    required
-                  />
-                </div>
-
-                <div className="flex items-center justify-between">
-                  <label className="flex items-center">
-                    <input
-                      type="checkbox"
-                      checked={address.isDefault}
-                      onChange={(e) => setDefaultAddress(address.id)}
-                      className="mr-2 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
-                    />
-                    <span className="text-sm text-gray-700">
-                      {locale === "cs" ? "Výchozí adresa" : "Default Address"}
-                    </span>
-                  </label>
-
-                  <div className="flex space-x-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => cancelEdit(address.id)}
-                      size="sm"
-                    >
-                      {locale === "cs" ? "Zrušit" : "Cancel"}
-                    </Button>
-                    <Button
-                      type="button"
-                      onClick={() => saveAddress(address.id)}
-                      size="sm"
-                      disabled={!validateAddress(address)}
-                    >
-                      {locale === "cs" ? "Uložit" : "Save"}
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            ) : (
-              // View mode
-              <div>
-                <div className="flex items-start justify-between">
-                  <div className="flex-1">
-                    <div className="flex items-center space-x-2">
-                      <h4 className="font-medium text-gray-900">{address.name}</h4>
-                      {address.isDefault && (
-                        <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-indigo-100 text-indigo-800">
-                          {locale === "cs" ? "Výchozí" : "Default"}
-                        </span>
-                      )}
-                    </div>
-                    <div className="mt-1 text-sm text-gray-600">
-                      <p>{address.street}</p>
-                      <p>
-                        {address.city}, {address.postalCode}
-                      </p>
-                      <p>{address.country}</p>
+                    <div className="flex space-x-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => cancelEdit(address.id)}
+                        size="sm"
+                      >
+                        {locale === "cs" ? "Zrušit" : "Cancel"}
+                      </Button>
+                      <Button
+                        type="button"
+                        onClick={() => saveAddress(address.id)}
+                        size="sm"
+                        disabled={!validateAddress(address)}
+                        className="bg-amber-600 hover:bg-amber-700 text-white"
+                      >
+                        {locale === "cs" ? "Uložit" : "Save"}
+                      </Button>
                     </div>
                   </div>
-
-                  <div className="flex space-x-2">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setEditingId(address.id)}
-                      size="sm"
-                      disabled={disabled}
-                    >
-                      {locale === "cs" ? "Upravit" : "Edit"}
-                    </Button>
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => removeAddress(address.id)}
-                      size="sm"
-                      disabled={disabled}
-                      className="text-red-600 hover:text-red-700"
-                    >
-                      {locale === "cs" ? "Odstranit" : "Remove"}
-                    </Button>
-                  </div>
                 </div>
+              ) : (
+                // View mode
+                <div>
+                  <div className="flex items-start justify-between">
+                    <div className="flex-1">
+                      <div className="flex items-center space-x-2">
+                        <h4 className="font-medium text-stone-900">{address.name}</h4>
+                        {address.isDefault && (
+                          <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-amber-100 text-amber-800">
+                            {locale === "cs" ? "Výchozí" : "Default"}
+                          </span>
+                        )}
+                      </div>
+                      <div className="mt-1 text-sm text-stone-600">
+                        <p>{address.street}</p>
+                        <p>
+                          {address.city}, {address.postalCode}
+                        </p>
+                        <p>{address.country}</p>
+                      </div>
+                    </div>
 
-                {!address.isDefault && addresses.length > 1 && (
-                  <div className="mt-3 pt-3 border-t border-gray-200">
-                    <Button
-                      type="button"
-                      variant="outline"
-                      onClick={() => setDefaultAddress(address.id)}
-                      size="sm"
-                      disabled={disabled}
-                    >
-                      {locale === "cs" ? "Nastavit jako výchozí" : "Set as Default"}
-                    </Button>
+                    <div className="flex space-x-2">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setEditingId(address.id)}
+                        size="sm"
+                        disabled={disabled}
+                      >
+                        {locale === "cs" ? "Upravit" : "Edit"}
+                      </Button>
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => removeAddress(address.id)}
+                        size="sm"
+                        disabled={disabled}
+                        className="text-red-600 hover:text-red-700"
+                      >
+                        {locale === "cs" ? "Odstranit" : "Remove"}
+                      </Button>
+                    </div>
                   </div>
-                )}
-              </div>
-            )}
-          </div>
+
+                  {!address.isDefault && addresses.length > 1 && (
+                    <div className="mt-3 pt-3 border-t border-gray-200">
+                      <Button
+                        type="button"
+                        variant="outline"
+                        onClick={() => setDefaultAddress(address.id)}
+                        size="sm"
+                        disabled={disabled}
+                      >
+                        {locale === "cs" ? "Nastavit jako výchozí" : "Set as Default"}
+                      </Button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </CardContent>
+          </Card>
         ))}
 
         {addresses.length === 0 && (
-          <div className="text-center py-8">
-            <svg
-              className="mx-auto h-12 w-12 text-gray-400"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-              />
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-              />
-            </svg>
-            <p className="mt-2 text-sm text-gray-500">
-              {locale === "cs" ? "Žádné adresy nejsou uloženy" : "No addresses saved"}
-            </p>
-            <p className="text-xs text-gray-400 mt-1">
-              {locale === "cs"
-                ? "Přidejte adresu pro rychlejší objednávání"
-                : "Add an address for faster checkout"}
-            </p>
-          </div>
+          <Card className="bg-stone-50 border-stone-200">
+            <CardContent className="text-center py-8">
+              <svg
+                className="mx-auto h-12 w-12 text-stone-400"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              <p className="mt-2 text-sm text-stone-500">
+                {locale === "cs" ? "Žádné adresy nejsou uloženy" : "No addresses saved"}
+              </p>
+              <p className="text-xs text-stone-400 mt-1">
+                {locale === "cs"
+                  ? "Přidejte adresu pro rychlejší objednávání"
+                  : "Add an address for faster checkout"}
+              </p>
+            </CardContent>
+          </Card>
         )}
       </div>
     </div>

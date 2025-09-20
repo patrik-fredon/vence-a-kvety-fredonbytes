@@ -2,13 +2,13 @@ import Link from "next/link";
 
 export default function VerifyEmailPage() {
   return (
-    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="max-w-md mx-auto">
-        <div className="bg-white py-8 px-6 shadow rounded-lg">
+    <div className="min-h-screen flex items-center justify-center bg-stone-50 py-12 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-md w-full space-y-8">
+        <div className="bg-white rounded-lg shadow-sm border border-stone-200 p-8">
           <div className="text-center">
-            <div className="mx-auto flex items-center justify-center h-12 w-12 rounded-full bg-blue-100 mb-4">
+            <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-blue-50 border border-blue-200 mb-6">
               <svg
-                className="h-6 w-6 text-blue-600"
+                className="h-8 w-8 text-blue-600"
                 fill="none"
                 viewBox="0 0 24 24"
                 stroke="currentColor"
@@ -21,21 +21,24 @@ export default function VerifyEmailPage() {
                 />
               </svg>
             </div>
-            <h2 className="text-2xl font-bold text-gray-900 mb-2">Ověřte svůj e-mail</h2>
-            <p className="text-gray-600 mb-6">
+            <h2 className="text-3xl font-light text-stone-900 mb-4">Ověřte svůj e-mail</h2>
+            <p className="text-stone-600 mb-6 leading-relaxed">
               Registrace byla úspěšná! Odeslali jsme vám ověřovací e-mail.
             </p>
-            <p className="text-sm text-gray-500 mb-6">
+            <p className="text-sm text-stone-500 mb-8 leading-relaxed">
               Zkontrolujte svou e-mailovou schránku a klikněte na odkaz pro dokončení registrace.
             </p>
-            <div className="space-y-3">
+            <div className="space-y-4">
               <Link
                 href="/auth/signin"
-                className="block w-full bg-indigo-600 text-white py-2 px-4 rounded-md hover:bg-indigo-700 transition-colors"
+                className="block w-full bg-amber-600 hover:bg-amber-700 text-white font-medium py-3 px-4 rounded-md transition-all duration-200 shadow-sm hover:shadow-md"
               >
                 Přejít na přihlášení
               </Link>
-              <Link href="/" className="block text-indigo-600 hover:text-indigo-500">
+              <Link
+                href="/"
+                className="block text-stone-600 hover:text-amber-600 transition-colors duration-200"
+              >
                 Zpět na hlavní stránku
               </Link>
             </div>
