@@ -4,7 +4,7 @@
   "description": "Monitor changes to localization files (JSON, YAML) and automatically generate translations for all configured target languages. Validates that i18n functionality remains intact and all languages render properly.",
   "version": "1",
   "when": {
-    "type": "fileCreated",
+    "type": "userTriggered",
     "patterns": [
       "messages/*.json",
       "messages/*.yaml",

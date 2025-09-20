@@ -7,7 +7,7 @@ import {
   pluralize,
   getRelativeTime,
 } from "../utils";
-import { locales, defaultLocale, currencyConfig, type Locale } from "@/i18n/config";
+import { locales, defaultLocale, currencyConfig } from "@/i18n/config";
 
 describe("i18n Configuration", () => {
   test("should have correct locale configuration", () => {

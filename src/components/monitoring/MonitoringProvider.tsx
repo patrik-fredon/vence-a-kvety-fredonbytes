@@ -3,6 +3,7 @@
 import { useEffect } from 'react';
 import { performanceMonitor } from '@/lib/monitoring/performance-monitor';
 import { errorLogger } from '@/lib/monitoring/error-logger';
+import { WebVitalsTracker } from './WebVitalsTracker';
 
 interface MonitoringProviderProps {
   children: React.ReactNode;
@@ -73,7 +74,12 @@ export function MonitoringProvider({ children, userId }: MonitoringProviderProps
     };
   }, [userId]);
 
-  return <>{children}</>;
+  return (
+    <>
+      {children}
+      <WebVitalsTracker />
+    </>
+  );
 }
 
 // Hook for manual error reporting

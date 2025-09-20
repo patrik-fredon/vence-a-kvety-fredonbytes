@@ -198,7 +198,7 @@ describe('PerformanceMonitor', () => {
       recordPerformanceMetric('TEST_METRIC', 1000);
       jest.advanceTimersByTime(5000);
 
-      /not throw error
+      // Should not throw error
       expect(() => jest.runAllTimers()).not.toThrow();
     });
   });
@@ -219,11 +219,57 @@ describe('PerformanceMonitor', () => {
     it('should monitor slow resources', () => {
       const mockObserver = {
         observe: jest.fn(),
-
+      };
 
       (global.PerformanceObserver as jest.Mock).mockImplementation((callback) => {
         // Simulate slow resource entry
-k({
+        callback({
           getEntries: () => [
+            {
+              entryType: 'resource',
+              name: 'slow-resource.js',
+              duration: 3000, // 3 seconds
+              transferSize: 500000, // 500KB
+            },
+          ],
+        });
+        return mockObserver;
+      });
 
-         ent
+      // Create new performance monitor instance to trigger observer setup
+      const { performanceMonitor: newMonitor } = require('../performance-monitor');
+
+      expect(mockObserver.observe).toHaveBeenCalledWith({
+        entryTypes: ['resource'],
+      });
+    });
+  });
+
+  describe('long task monitoring', () => {
+    it('should monitor long tasks', () => {
+      const mockObserver = {
+        observe: jest.fn(),
+      };
+
+      (global.PerformanceObserver as jest.Mock).mockImplementation((callback) => {
+        // Simulate long task entry
+        callback({
+          getEntries: () => [
+            {
+              entryType: 'longtask',
+              duration: 100, // 100ms
+            },
+          ],
+        });
+        return mockObserver;
+      });
+
+      // Create new performance monitor instance to trigger observer setup
+      const { performanceMonitor: newMonitor } = require('../performance-monitor');
+
+      expect(mockObserver.observe).toHaveBeenCalledWith({
+        entryTypes: ['longtask'],
+      });
+    });
+  });
+});

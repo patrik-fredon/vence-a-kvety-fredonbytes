@@ -24,7 +24,7 @@ export async function generateLocalizedMetadata({
 }: MetadataParams): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta" });
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
   const fullUrl = `${baseUrl}/${locale}${path}`;
 
   const defaultTitle = t("title");
@@ -83,34 +83,32 @@ export async function generateLocalizedMetadata({
 /**
  * Generate enhanced metadata with SEO optimizations
  */
-export async function generateEnhancedMetadata({
-  locale,
-  title,
-  description,
-  keywords,
-  path = "",
-  image,
-  type = "website",
-  publishedTime,
-  modifiedTime,
-  author,
-}: MetadataParams & {
+export async function generateEnhancedMetadata(params: MetadataParams & {
   type?: "website" | "article" | "product";
   publishedTime?: string;
   modifiedTime?: string;
   author?: string;
 }): Promise<Metadata> {
-  const baseMetadata = await generateLocalizedMetadata({
+  const {
     locale,
     title,
     description,
     keywords,
-    path,
+    path = "",
     image,
+    type = "website",
+    publishedTime,
+    modifiedTime,
+    author,
+  } = params;
+  const baseMetadata = await generateLocalizedMetadata({
+    locale,
+    title: title || undefined,
+    description: description || undefined,
+    keywords: keywords || undefined,
+    path: path || undefined,
+    image: image || undefined,
   });
-
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
-  const fullUrl = `${baseUrl}/${locale}${path}`;
 
   // Enhanced metadata with additional SEO properties
   return {
@@ -145,7 +143,7 @@ export function generateProductStructuredData(
   },
   locale: Locale
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -173,7 +171,7 @@ export function generateBreadcrumbStructuredData(
   breadcrumbs: Array<{ name: string; url: string }>,
   locale: Locale
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
