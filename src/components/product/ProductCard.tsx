@@ -63,12 +63,15 @@ export function ProductCard({
         "hover:shadow-lg hover:-translate-y-1",
         // Featured product styling - spans 2 columns
         featured && "md:col-span-2",
+        // Focus styles for keyboard navigation
+        "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2 rounded-lg",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       role="article"
       aria-labelledby={`product-${product.id}-title`}
+      aria-describedby={`product-${product.id}-description product-${product.id}-price`}
     >
       {/* Product Image Container - 64 height (16rem = 256px) */}
       <div className={cn(
@@ -77,12 +80,16 @@ export function ProductCard({
         featured ? "aspect-[2/1] md:aspect-[3/2]" : "aspect-square",
         "h-64" // 64 height as specified
       )}>
-        <Link href={`/${locale}/products/${product.slug}`}>
+        <Link
+          href={`/${locale}/products/${product.slug}`}
+          className="block focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg"
+          aria-label={`Zobrazit detail produktu ${product.name[locale as keyof typeof product.name]}`}
+        >
           {primaryImage && (
             <>
               <Image
                 src={primaryImage.url}
-                alt={primaryImage.alt}
+                alt={`${product.name[locale as keyof typeof product.name]} - ${primaryImage.alt}`}
                 fill
                 className={cn(
                   "object-cover transition-all duration-500",
@@ -100,7 +107,7 @@ export function ProductCard({
               {secondaryImage && (
                 <Image
                   src={secondaryImage.url}
-                  alt={secondaryImage.alt}
+                  alt={`${product.name[locale as keyof typeof product.name]} - alternativní pohled`}
                   fill
                   className={cn(
                     "object-cover transition-all duration-500 group-hover:scale-105",
@@ -176,20 +183,27 @@ export function ProductCard({
         </Link>
 
         {product.description && (
-          <p className={cn(
-            "text-stone-600 mb-3 line-clamp-2",
-            featured ? "text-base" : "text-sm"
-          )}>
+          <p
+            id={`product-${product.id}-description`}
+            className={cn(
+              "text-stone-600 mb-3 line-clamp-2",
+              featured ? "text-base" : "text-sm"
+            )}
+          >
             {product.description[locale as keyof typeof product.description]}
           </p>
         )}
 
         {/* Price and Add to Cart */}
         <div className="flex items-center justify-between">
-          <div className={cn(
-            "font-semibold text-stone-900",
-            featured ? "text-xl" : "text-lg"
-          )}>
+          <div
+            id={`product-${product.id}-price`}
+            className={cn(
+              "font-semibold text-stone-900",
+              featured ? "text-xl" : "text-lg"
+            )}
+            aria-label={`Cena: ${formatPrice(product.basePrice)}`}
+          >
             {formatPrice(product.basePrice)}
           </div>
 
