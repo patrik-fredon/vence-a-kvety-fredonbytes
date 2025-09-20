@@ -6,11 +6,12 @@ import { locales, defaultLocale } from "./i18n/config";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-// Create the internationalization middleware
+// Create the internationalization middleware with enhanced configuration
 const intlMiddleware = createIntlMiddleware({
   locales,
   defaultLocale,
   localePrefix: "always",
+  localeDetection: true,
 });
 
 // Initialize rate limiting with error handling

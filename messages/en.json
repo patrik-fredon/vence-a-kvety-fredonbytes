@@ -26,7 +26,11 @@
     "next": "Next",
     "previous": "Previous",
     "close": "Close",
-    "open": "Open"
+    "open": "Open",
+    "selectLanguage": "Select language",
+    "switchTo": "Switch to",
+    "languageSwitched": "Language switched successfully",
+    "languageSwitchError": "Failed to switch language"
   },
   "product": {
     "title": "Products",

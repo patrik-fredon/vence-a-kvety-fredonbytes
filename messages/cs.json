@@ -26,7 +26,11 @@
     "next": "Další",
     "previous": "Předchozí",
     "close": "Zavřít",
-    "open": "Otevřít"
+    "open": "Otevřít",
+    "selectLanguage": "Vybrat jazyk",
+    "switchTo": "Přepnout na",
+    "languageSwitched": "Jazyk byl úspěšně změněn",
+    "languageSwitchError": "Nepodařilo se změnit jazyk"
   },
   "product": {
     "title": "Produkty",
