@@ -1,90 +1,63 @@
 /**
- * Design Tokens - Funeral-Appropriate Design System
+ * Design Tokens - Stone/Amber Design System
  *
- * This module defines the design tokens for the funeral wreaths e-commerce platform,
- * providing a respectful, professional, and empathetic visual language.
+ * This module defines the design tokens for the pohrebni-vence layout migration,
+ * providing a modern, professional stone/amber color palette with elegant typography.
  */
 
-import type { FuneralColorScheme, SpacingScale } from "@/types/components";
-
 // =============================================================================
-// COLOR PALETTE - FUNERAL APPROPRIATE
+// COLOR PALETTE - STONE/AMBER DESIGN SYSTEM
 // =============================================================================
 
 /**
- * Primary color palette - Deep forest green
- * Represents nature, growth, and eternal life
+ * Stone color palette - Primary neutral colors
+ * Foundation for backgrounds, text, and borders
  */
-export const primaryColors = {
-  50: "#F0F7ED",
-  100: "#DDECD2",
-  200: "#BDDAA9",
-  300: "#94C176",
-  400: "#6FA64C",
-  500: "#2D5016", // Main primary color
-  600: "#254012",
-  700: "#1E320E",
-  800: "#17240A",
-  900: "#101807",
-  950: "#0A0F04",
+export const stoneColors = {
+  50: "#FAFAF9",
+  100: "#F5F5F4",
+  200: "#E7E5E4",
+  300: "#D6D3D1",
+  400: "#A8A29E",
+  500: "#78716C",
+  600: "#57534E",
+  700: "#44403C",
+  800: "#292524",
+  900: "#1C1917",
+  950: "#0C0A09",
 } as const;
 
 /**
- * Secondary color palette - Muted sage (adjusted for better contrast)
- * Provides subtle contrast and sophistication
+ * Amber color palette - Accent colors
+ * Used for highlights, CTAs, and important elements
  */
-export const secondaryColors = {
-  50: "#F6F7F4",
-  100: "#EBEEE6",
-  200: "#D4DAC9",
-  300: "#B8C2A6",
-  400: "#9BA883",
-  500: "#6F7752", // Main secondary color (darkened for better contrast)
-  600: "#565C42",
-  700: "#3E4230",
-  800: "#2A2D21",
-  900: "#181A15",
-  950: "#0F110D",
+export const amberColors = {
+  50: "#FFFBEB",
+  100: "#FEF3C7",
+  200: "#FDE68A",
+  300: "#FCD34D",
+  400: "#FBBF24",
+  500: "#F59E0B",
+  600: "#D97706",
+  700: "#B45309",
+  800: "#92400E",
+  900: "#78350F",
+  950: "#451A03",
 } as const;
 
 /**
- * Accent color palette - Respectful gold
- * Used sparingly for important highlights
+ * White color for clean backgrounds and text
  */
-export const accentColors = {
-  50: "#FEFBF0",
-  100: "#FDF5D9",
-  200: "#FAEAB3",
-  300: "#F6DC82",
-  400: "#F1CB4F",
-  500: "#D4AF37", // Main accent color
-  600: "#B8942A",
-  700: "#9A7A1F",
-  800: "#7A6118",
-  900: "#5C4912",
-  950: "#3D310C",
-} as const;
+export const whiteColor = "#FFFFFF" as const;
 
 /**
- * Neutral color palette - Professional grays
- * Foundation for text, backgrounds, and borders
+ * Black color for text and high contrast elements
  */
-export const neutralColors = {
-  50: "#F8F9FA",
-  100: "#E9ECEF",
-  200: "#DEE2E6",
-  300: "#CED4DA",
-  400: "#ADB5BD",
-  500: "#6C757D",
-  600: "#495057",
-  700: "#343A40",
-  800: "#212529",
-  900: "#1A1D20",
-  950: "#0F1114",
-} as const;
+export const blackColor = "#000000" as const;
 
 /**
  * Semantic colors for states and feedback
+ * Using green for success, amber for warning, red for error, blue for info
  */
 export const semanticColors = {
   success: {
@@ -100,19 +73,7 @@ export const semanticColors = {
     900: "#14532D",
     950: "#052E16",
   },
-  warning: {
-    50: "#FFFBEB",
-    100: "#FEF3C7",
-    200: "#FDE68A",
-    300: "#FCD34D",
-    400: "#FBBF24",
-    500: "#F59E0B",
-    600: "#D97706",
-    700: "#B45309",
-    800: "#92400E",
-    900: "#78350F",
-    950: "#451A03",
-  },
+  warning: amberColors, // Use amber colors for warnings
   error: {
     50: "#FEF2F2",
     100: "#FEE2E2",
@@ -140,16 +101,6 @@ export const semanticColors = {
     950: "#172554",
   },
 } as const;
-
-/**
- * Complete funeral color scheme
- */
-export const funeralColorScheme: FuneralColorScheme = {
-  primary: primaryColors,
-  secondary: secondaryColors,
-  accent: accentColors,
-  neutral: neutralColors,
-};
 
 // =============================================================================
 // TYPOGRAPHY SCALE
@@ -376,14 +327,14 @@ export const timingFunction = {
 // =============================================================================
 
 /**
- * Complete design token system
+ * Complete design token system for stone/amber design
  */
 export const designTokens = {
   colors: {
-    primary: primaryColors,
-    secondary: secondaryColors,
-    accent: accentColors,
-    neutral: neutralColors,
+    stone: stoneColors,
+    amber: amberColors,
+    white: whiteColor,
+    black: blackColor,
     semantic: semanticColors,
   },
   typography: {

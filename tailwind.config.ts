@@ -10,11 +10,11 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        // Funeral-appropriate color palette from design tokens
-        primary: designTokens.colors.primary,
-        secondary: designTokens.colors.secondary,
-        accent: designTokens.colors.accent,
-        neutral: designTokens.colors.neutral,
+        // Stone/amber color palette from design tokens
+        stone: designTokens.colors.stone,
+        amber: designTokens.colors.amber,
+        white: designTokens.colors.white,
+        black: designTokens.colors.black,
         // Semantic colors
         success: designTokens.colors.semantic.success,
         warning: designTokens.colors.semantic.warning,

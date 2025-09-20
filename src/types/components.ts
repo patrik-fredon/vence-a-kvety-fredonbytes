@@ -115,14 +115,14 @@ export interface TemplateProps extends OrganismProps {
 // =============================================================================
 
 /**
- * Button component variants and sizes
+ * Button component variants and sizes for stone/amber design system
  */
 export type ButtonVariant =
-  | "primary"
-  | "secondary"
-  | "outline"
-  | "ghost"
+  | "default"
   | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
   | "link";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
@@ -432,49 +432,10 @@ export type ColorScale =
   | "600" | "700" | "800" | "900" | "950";
 
 /**
- * Funeral-appropriate color scheme
+ * Stone/Amber design system color scheme
  */
-export interface FuneralColorScheme {
-  primary: {
-    50: string;
-    100: string;
-    200: string;
-    300: string;
-    400: string;
-    500: string; // Deep forest green
-    600: string;
-    700: string;
-    800: string;
-    900: string;
-    950: string;
-  };
-  secondary: {
-    50: string;
-    100: string;
-    200: string;
-    300: string;
-    400: string;
-    500: string; // Muted sage
-    600: string;
-    700: string;
-    800: string;
-    900: string;
-    950: string;
-  };
-  accent: {
-    50: string;
-    100: string;
-    200: string;
-    300: string;
-    400: string;
-    500: string; // Respectful gold
-    600: string;
-    700: string;
-    800: string;
-    900: string;
-    950: string;
-  };
-  neutral: {
+export interface StoneAmberColorScheme {
+  stone: {
     50: string;
     100: string;
     200: string;
@@ -487,6 +448,21 @@ export interface FuneralColorScheme {
     900: string;
     950: string;
   };
+  amber: {
+    50: string;
+    100: string;
+    200: string;
+    300: string;
+    400: string;
+    500: string;
+    600: string;
+    700: string;
+    800: string;
+    900: string;
+    950: string;
+  };
+  white: string;
+  black: string;
 }
 
 // =============================================================================
