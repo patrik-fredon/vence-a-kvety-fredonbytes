@@ -289,7 +289,22 @@ export function generateCacheKey(prefix: string, ...parts: (string | number)[]):
  * Serialize data for caching
  */
 export function serializeForCache(data: any): string {
-  return JSON.stringify(data);
+  try {
+    // Ensure we can serialize the data
+    const serialized = JSON.stringify(data);
+
+    // Validate that it's not "[object Object]"
+    if (serialized === '[object Object]' || serialized.startsWith('[object ')) {
+      console.error("Invalid serialization result:", serialized, "Original data:", data);
+      throw new Error("Invalid serialization result");
+    }
+
+    return serialized;
+  } catch (error) {
+    console.error("Failed to serialize data for cache:", error, "Data:", data);
+    // Return a safe fallback
+    return JSON.stringify({ error: "serialization_failed", timestamp: Date.now() });
+  }
 }
 
 /**
@@ -299,9 +314,21 @@ export function deserializeFromCache<T>(data: string | null): T | null {
   if (!data) return null;
 
   try {
+    // Check if data is already an object (shouldn't happen but let's be safe)
+    if (typeof data === 'object') {
+      console.warn("Cache data is already an object, returning as-is:", data);
+      return data as T;
+    }
+
+    // Check if data looks like "[object Object]" which indicates a serialization issue
+    if (data === '[object Object]' || data.startsWith('[object ')) {
+      console.error("Cache contains invalid serialized object:", data);
+      return null;
+    }
+
     return JSON.parse(data);
   } catch (error) {
-    console.error("Failed to deserialize cache data:", error);
+    console.error("Failed to deserialize cache data:", error, "Data:", data?.substring(0, 100));
     return null;
   }
 }

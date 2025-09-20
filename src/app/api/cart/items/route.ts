@@ -9,12 +9,21 @@ import { randomUUID } from "crypto";
  */
 export async function POST(request: NextRequest) {
   try {
+    console.log("🛒 [API] POST /api/cart/items - Add to cart request received");
+
     const supabase = createServerClient();
     const session = await auth();
     const body: AddToCartRequest = await request.json();
 
+    console.log("📋 [API] Request body:", {
+      productId: body.productId,
+      quantity: body.quantity,
+      customizations: body.customizations?.length || 0,
+    });
+
     // Validate request body
     if (!body.productId || !body.quantity || body.quantity <= 0) {
+      console.log("❌ [API] Invalid request body");
       return NextResponse.json(
         {
           success: false,
@@ -30,10 +39,10 @@ export async function POST(request: NextRequest) {
       sessionId = randomUUID();
     }
 
-    // Check if product exists
+    // Check if product exists and get price
     const { data: product, error: productError } = await supabase
       .from("products")
-      .select("id, active, availability")
+      .select("id, active, availability, base_price")
       .eq("id", body.productId)
       .single();
 
@@ -52,6 +61,16 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "Product is not available",
+        },
+        { status: 400 }
+      );
+    }
+
+    if (!product.base_price) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Product price not available",
         },
         { status: 400 }
       );
@@ -77,13 +96,16 @@ export async function POST(request: NextRequest) {
     let result;
 
     if (existingItem) {
-      // Update existing item quantity
+      // Update existing item quantity and recalculate total price
       const newQuantity = existingItem.quantity + body.quantity;
+      const unitPrice = parseFloat(product.base_price.toString());
+      const newTotalPrice = unitPrice * newQuantity;
 
       const { data, error } = await supabase
         .from("cart_items")
         .update({
           quantity: newQuantity,
+          total_price: newTotalPrice,
           updated_at: new Date().toISOString(),
         })
         .eq("id", existingItem.id)
@@ -103,12 +125,18 @@ export async function POST(request: NextRequest) {
 
       result = data;
     } else {
+      // Calculate prices
+      const unitPrice = parseFloat(product.base_price.toString());
+      const totalPrice = unitPrice * body.quantity;
+
       // Create new cart item
       const cartItemData = {
         user_id: session?.user?.id || null,
         session_id: session?.user?.id ? null : sessionId,
         product_id: body.productId,
         quantity: body.quantity,
+        unit_price: unitPrice,
+        total_price: totalPrice,
         customizations: body.customizations as any,
       };
 
@@ -119,7 +147,12 @@ export async function POST(request: NextRequest) {
         .single();
 
       if (error) {
-        console.error("Error adding cart item:", error);
+        console.error("💥 [API] Error adding cart item:", {
+          error: error.message,
+          code: error.code,
+          details: error.details,
+          hint: error.hint,
+        });
         return NextResponse.json(
           {
             success: false,
@@ -131,6 +164,14 @@ export async function POST(request: NextRequest) {
 
       result = data;
     }
+
+    console.log("✅ [API] Successfully added item to cart:", {
+      itemId: result.id,
+      productId: result.product_id,
+      quantity: result.quantity,
+      unitPrice: result.unit_price,
+      totalPrice: result.total_price,
+    });
 
     // Set session cookie for guest users
     const response = NextResponse.json({
@@ -148,8 +189,9 @@ export async function POST(request: NextRequest) {
     });
 
     if (!session?.user?.id && sessionId) {
+      console.log("🍪 [API] Setting cart-session cookie for guest user:", sessionId);
       response.cookies.set("cart-session", sessionId, {
-        httpOnly: true,
+        httpOnly: false, // Allow JavaScript access for client-side cart management
         secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 30, // 30 days
@@ -158,7 +200,7 @@ export async function POST(request: NextRequest) {
 
     return response;
   } catch (error) {
-    console.error("Add to cart API error:", error);
+    console.error("💥 [API] Add to cart API error:", error);
     return NextResponse.json(
       {
         success: false,

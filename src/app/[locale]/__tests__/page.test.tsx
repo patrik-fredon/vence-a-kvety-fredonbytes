@@ -4,7 +4,6 @@
  */
 
 import { render, screen } from '@testing-library/react';
-import { NextIntlClientProvider } from 'next-intl';
 import Home from '../page';
 
 // Mock next-intl server functions

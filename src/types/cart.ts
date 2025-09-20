@@ -28,12 +28,24 @@ export interface CartSummary {
   estimatedDeliveryDate?: Date;
 }
 
-// Cart state for client-side management
+// Cart state for client-side management with optimistic updates
 export interface CartState {
   items: CartItem[];
   isLoading: boolean;
   error: string | null;
   lastUpdated: Date | null;
+  isSyncing?: boolean;
+  optimisticUpdates?: Map<string, OptimisticUpdate>;
+  version?: number;
+  conflictResolution?: 'auto' | 'manual';
+}
+
+// Optimistic update tracking
+export interface OptimisticUpdate {
+  type: "add" | "update" | "remove";
+  item?: CartItem;
+  originalItem?: CartItem;
+  originalQuantity?: number;
 }
 
 // API request types
@@ -69,4 +81,20 @@ export interface CartItemRow {
   customizations: any; // JSONB
   created_at: string;
   updated_at: string;
+}
+
+// Real-time synchronization types
+export interface CartSyncStatus {
+  isConnected: boolean;
+  lastSync: Date | null;
+  pendingOperations: number;
+  conflictsDetected: number;
+}
+
+export interface CartMetrics {
+  totalItems: number;
+  totalValue: number;
+  averageItemValue: number;
+  lastActivity: Date | null;
+  sessionDuration: number;
 }

@@ -11,6 +11,7 @@ import { LazyProductCustomizer } from "@/components/dynamic";
 import { ProductInfo } from "./ProductInfo";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import { useCart } from "@/lib/cart/context";
 
 interface ProductDetailProps {
   product: Product;
@@ -21,6 +22,7 @@ interface ProductDetailProps {
 export function ProductDetail({ product, locale, className }: ProductDetailProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
+  const { addToCart } = useCart();
 
   const [customizations, setCustomizations] = useState<Customization[]>([]);
   const [finalPrice, setFinalPrice] = useState(product.basePrice);
@@ -103,20 +105,28 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setIsAddingToCart(true);
 
     try {
-      // TODO: Implement actual cart API call in later tasks
-      console.log("Adding to cart:", {
-        product: product.id,
+      console.log("🛒 [ProductDetail] Adding to cart:", {
+        productId: product.id,
         customizations,
         finalPrice,
       });
 
-      // Simulate API call
-      await new Promise((resolve) => setTimeout(resolve, 1000));
+      const success = await addToCart({
+        productId: product.id,
+        quantity: 1,
+        customizations,
+      });
 
-      // Show success message (implement toast/notification in later tasks)
-      alert(t("addedToCart"));
+      if (success) {
+        console.log("✅ [ProductDetail] Successfully added product to cart:", product.id);
+        // Show success message (implement toast/notification in later tasks)
+        alert(t("addedToCart"));
+      } else {
+        console.error("❌ [ProductDetail] Failed to add product to cart:", product.id);
+        alert(t("addToCartError"));
+      }
     } catch (error) {
-      console.error("Error adding to cart:", error);
+      console.error("💥 [ProductDetail] Error adding to cart:", error);
       alert(t("addToCartError"));
     } finally {
       setIsAddingToCart(false);

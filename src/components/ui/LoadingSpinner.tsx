@@ -1,3 +1,5 @@
+import { cn } from '@/lib/utils';
+
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
   className?: string;
@@ -21,8 +23,12 @@ export function LoadingSpinner({ size = "md", className = "", label = "Načítá
       role="status"
       aria-label={label}
     >
-      <div className={`rounded-full border-2 border-primary-200 border-t-primary-600 ${prefersReducedMotion ? '' : 'animate-spin'
-        }`}></div>
+      <div className={cn(
+        'rounded-full border-2 border-primary-200 border-t-primary-600',
+        !prefersReducedMotion && 'animate-spin',
+        // High contrast support
+        'high-contrast:border-WindowText high-contrast:border-t-Highlight'
+      )}></div>
     </div>
   );
 }
@@ -39,9 +45,9 @@ export function LoadingState({
   className = "",
 }: LoadingStateProps) {
   return (
-    <div className={`flex flex-col items-center justify-center space-y-3 ${className}`}>
+    <div className={cn('flex flex-col items-center justify-center space-y-3', className)}>
       <LoadingSpinner size={size} />
-      <p className="text-sm text-neutral-600 animate-pulse">{message}</p>
+      <p className="text-sm text-neutral-600 font-medium animate-gentle-fade">{message}</p>
     </div>
   );
 }

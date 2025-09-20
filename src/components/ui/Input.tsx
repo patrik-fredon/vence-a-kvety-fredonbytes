@@ -25,18 +25,20 @@ export function Input({
   const helpId = helpText ? `${inputId}-help` : undefined;
 
   const baseStyles = cn(
-    'block w-full rounded-lg border border-neutral-300 px-3 py-2',
-    'text-neutral-900 placeholder-neutral-500',
-    'focus:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:ring-opacity-20',
-    'disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed',
-    'transition-colors duration-200',
+    'block w-full rounded-lg border border-neutral-300 px-3 py-2.5',
+    'text-neutral-900 placeholder-neutral-500 bg-white',
+    'focus:border-primary-500 focus:ring-2 focus:ring-primary-500/20 focus:outline-none',
+    'disabled:bg-neutral-50 disabled:text-neutral-500 disabled:cursor-not-allowed disabled:border-neutral-200',
+    'transition-all duration-200 ease-in-out',
+    'shadow-sm focus:shadow-md',
+    'font-normal text-base leading-normal',
     // High contrast mode support
     'high-contrast:border-2 high-contrast:border-ButtonText',
     'high-contrast:focus:border-Highlight high-contrast:focus:ring-Highlight'
   );
 
   const errorStyles = error
-    ? 'border-red-500 focus:border-red-500 focus:ring-red-500'
+    ? 'border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30'
     : '';
 
   const iconStyles = icon
@@ -102,7 +104,7 @@ export function Input({
 
       {/* Error Message */}
       {error && (
-        <p id={errorId} className="text-sm text-red-600" role="alert">
+        <p id={errorId} className="text-sm text-error-600 font-medium" role="alert">
           {error}
         </p>
       )}

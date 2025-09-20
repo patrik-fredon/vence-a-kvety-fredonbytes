@@ -1,78 +1,139 @@
-import { getTranslations } from "next-intl/server";
-import { CurrencyExample } from "@/components/examples/CurrencyExample";
+import { useTranslations } from "next-intl";
+import { LanguageToggle } from "@/components/layout/LanguageToggle";
+import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
+import { type Locale } from "@/i18n/config";
 
-interface TestI18nProps {
+interface TestI18nPageProps {
   params: Promise<{ locale: string }>;
 }
 
-export default async function TestI18n({ params }: TestI18nProps) {
+export async function generateMetadata({ params }: TestI18nPageProps) {
   const { locale } = await params;
-  const t = await getTranslations();
+  return generateLocalizedMetadata({
+    locale: locale as Locale,
+    title: "i18n Test Page",
+    description: "Test page for internationalization functionality",
+  });
+}
+
+export default async function TestI18nPage({ params }: TestI18nPageProps) {
+  const { locale } = await params;
+  const t = useTranslations();
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold mb-8">Internationalization Test Page</h1>
+      <div className="max-w-4xl mx-auto">
+        <h1 className="text-3xl font-bold mb-8 text-center">
+          {locale === "cs" ? "Test internacionalizace" : "Internationalization Test"}
+        </h1>
 
-      <div className="space-y-8">
-        {/* Basic translations */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Basic Translations</h2>
-          <div className="grid md:grid-cols-2 gap-4">
-            <div className="p-4 bg-gray-50 rounded">
-              <h3 className="font-medium mb-2">Navigation</h3>
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">
+            {t("common.selectLanguage")}
+          </h2>
+
+          <div className="space-y-4">
+            <div>
+              <h3 className="font-medium mb-2">Select Variant:</h3>
+              <LanguageToggle currentLocale={locale} />
+            </div>
+
+            <div>
+              <h3 className="font-medium mb-2">Button Variant:</h3>
+              <LanguageToggle currentLocale={locale} variant="buttons" />
+            </div>
+
+            <div>
+              <h3 className="font-medium mb-2">Button Variant (No Labels):</h3>
+              <LanguageToggle
+                currentLocale={locale}
+                variant="buttons"
+                showLabels={false}
+              />
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">
+            {t("navigation.home")} - Translation Test
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-medium mb-2">Navigation:</h3>
               <ul className="space-y-1 text-sm">
-                <li>Home: {t("navigation.home")}</li>
-                <li>Products: {t("navigation.products")}</li>
-                <li>About: {t("navigation.about")}</li>
-                <li>Contact: {t("navigation.contact")}</li>
+                <li>• {t("navigation.home")}</li>
+                <li>• {t("navigation.products")}</li>
+                <li>• {t("navigation.about")}</li>
+                <li>• {t("navigation.contact")}</li>
+                <li>• {t("navigation.cart")}</li>
               </ul>
             </div>
 
-            <div className="p-4 bg-gray-50 rounded">
-              <h3 className="font-medium mb-2">Common</h3>
+            <div>
+              <h3 className="font-medium mb-2">Common:</h3>
               <ul className="space-y-1 text-sm">
-                <li>Loading: {t("common.loading")}</li>
-                <li>Error: {t("common.error")}</li>
-                <li>Success: {t("common.success")}</li>
-                <li>Save: {t("common.save")}</li>
+                <li>• {t("common.loading")}</li>
+                <li>• {t("common.error")}</li>
+                <li>• {t("common.success")}</li>
+                <li>• {t("common.save")}</li>
+                <li>• {t("common.cancel")}</li>
               </ul>
             </div>
           </div>
-        </section>
+        </div>
 
-        {/* Home page translations */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Home Page Content</h2>
-          <div className="p-4 bg-gray-50 rounded">
-            <h3 className="font-medium mb-2">{t("home.title")}</h3>
-            <p className="text-sm text-gray-600 mb-2">{t("home.subtitle")}</p>
-            <p className="text-sm text-gray-600">{t("home.description")}</p>
+        <div className="bg-white rounded-lg shadow-sm border p-6 mb-8">
+          <h2 className="text-xl font-semibold mb-4">
+            Product Translations
+          </h2>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h3 className="font-medium mb-2">Product Actions:</h3>
+              <ul className="space-y-1 text-sm">
+                <li>• {t("product.addToCart")}</li>
+                <li>• {t("product.customize")}</li>
+                <li>• {t("product.price")}</li>
+                <li>• {t("product.availability")}</li>
+              </ul>
+            </div>
+
+            <div>
+              <h3 className="font-medium mb-2">Cart:</h3>
+              <ul className="space-y-1 text-sm">
+                <li>• {t("cart.title")}</li>
+                <li>• {t("cart.empty")}</li>
+                <li>• {t("cart.checkout")}</li>
+                <li>• {t("cart.total")}</li>
+              </ul>
+            </div>
           </div>
-        </section>
+        </div>
 
-        {/* Currency formatting */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Currency Formatting</h2>
-          <CurrencyExample />
-        </section>
+        <div className="bg-white rounded-lg shadow-sm border p-6">
+          <h2 className="text-xl font-semibold mb-4">
+            Current Locale Information
+          </h2>
 
-        {/* Locale info */}
-        <section>
-          <h2 className="text-2xl font-semibold mb-4">Locale Information</h2>
-          <div className="p-4 bg-gray-50 rounded">
-            <p>
-              <strong>Current Locale:</strong> {locale}
-            </p>
-            <p>
-              <strong>Date Format:</strong>{" "}
-              {new Date().toLocaleDateString(locale === "cs" ? "cs-CZ" : "en-US")}
-            </p>
-            <p>
-              <strong>Number Format:</strong>{" "}
-              {(12345.67).toLocaleString(locale === "cs" ? "cs-CZ" : "en-US")}
-            </p>
+          <div className="space-y-2 text-sm">
+            <p><strong>Current Locale:</strong> {locale}</p>
+            <p><strong>Language Name:</strong> {locale === "cs" ? "Čeština" : "English"}</p>
+            <p><strong>Currency:</strong> CZK</p>
+            <p><strong>Date Format:</strong> {new Date().toLocaleDateString(locale === "cs" ? "cs-CZ" : "en-US")}</p>
+            <p><strong>Number Format:</strong> {(1234.56).toLocaleString(locale === "cs" ? "cs-CZ" : "en-US")}</p>
           </div>
-        </section>
+        </div>
+
+        <div className="mt-8 text-center">
+          <p className="text-sm text-neutral-600">
+            {locale === "cs"
+              ? "Tato stránka testuje funkčnost přepínání jazyků a překladů."
+              : "This page tests language switching and translation functionality."
+            }
+          </p>
+        </div>
       </div>
     </div>
   );

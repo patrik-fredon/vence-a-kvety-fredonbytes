@@ -249,6 +249,32 @@ export async function generateFAQPageMetadata(locale: string): Promise<Metadata>
 }
 
 /**
+ * Generate metadata for legal page using i18n content
+ */
+export async function generateLegalMetadata(locale: string): Promise<Metadata> {
+  const title = locale === 'cs'
+    ? 'Právní informace - Obchodní podmínky, GDPR | Pohřební věnce'
+    : 'Legal Information - Terms, GDPR | Funeral Wreaths';
+
+  const description = locale === 'cs'
+    ? 'Obchodní podmínky, ochrana osobních údajů, GDPR a informace o cookies pro pohřební věnce a květinové aranžmá.'
+    : 'Terms and conditions, privacy policy, GDPR and cookie information for funeral wreaths and floral arrangements.';
+
+  const keywords = locale === 'cs'
+    ? ['obchodní podmínky', 'GDPR', 'ochrana údajů', 'cookies', 'pohřební věnce', 'právní informace']
+    : ['terms conditions', 'GDPR', 'privacy policy', 'cookies', 'funeral wreaths', 'legal information'];
+
+  return generatePageMetadata({
+    title,
+    description,
+    keywords,
+    locale,
+    path: '/legal',
+    type: 'website',
+  });
+}
+
+/**
  * Generate metadata for About page using i18n content
  */
 export async function generateAboutPageMetadata(locale: string): Promise<Metadata> {

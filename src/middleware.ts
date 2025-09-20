@@ -6,11 +6,12 @@ import { locales, defaultLocale } from "./i18n/config";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
 
-// Create the internationalization middleware
+// Create the internationalization middleware with enhanced configuration
 const intlMiddleware = createIntlMiddleware({
   locales,
   defaultLocale,
   localePrefix: "always",
+  localeDetection: true,
 });
 
 // Initialize rate limiting with error handling
@@ -170,11 +171,13 @@ export async function middleware(request: NextRequest) {
       const isAdmin = await userUtils.isAdmin(session.user?.id || "");
 
       if (!isAdmin) {
+        console.warn(`Unauthorized admin access attempt by user: ${session.user?.id}`);
         return NextResponse.redirect(new URL(`/${locale}`, request.url));
       }
     } catch (error) {
       console.error("Error checking admin role:", error);
-      return NextResponse.redirect(new URL(`/${locale}`, request.url));
+      // In case of error, deny access for security
+      return NextResponse.redirect(new URL(`/${locale}/auth/signin`, request.url));
     }
   }
 

@@ -1,18 +1,26 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useEffect, useCallback } from "react";
-import { CartState, CartSummary, AddToCartRequest } from "@/types/cart";
+import React, { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState } from "react";
+import { CartState, CartSummary, AddToCartRequest, CartItem } from "@/types/cart";
 import { useAuthContext } from "@/components/auth/AuthProvider";
+import { getCartSessionId, setCartSessionId, generateCartSessionId } from "./utils";
+import { CartSyncManager, CartConflictResolver, CartPersistenceManager, CartSyncEvent } from "./realtime-sync";
 
-// Cart actions
+// Enhanced cart actions with optimistic updates
 type CartAction =
   | { type: "SET_LOADING"; payload: boolean }
   | { type: "SET_ERROR"; payload: string | null }
   | { type: "SET_CART"; payload: CartSummary }
   | { type: "CLEAR_CART" }
-  | { type: "SET_LAST_UPDATED"; payload: Date };
+  | { type: "SET_LAST_UPDATED"; payload: Date }
+  | { type: "OPTIMISTIC_ADD_ITEM"; payload: { item: CartItem; tempId: string } }
+  | { type: "OPTIMISTIC_UPDATE_QUANTITY"; payload: { itemId: string; quantity: number } }
+  | { type: "OPTIMISTIC_REMOVE_ITEM"; payload: { itemId: string } }
+  | { type: "REVERT_OPTIMISTIC"; payload: { tempId?: string; itemId?: string } }
+  | { type: "CONFIRM_OPTIMISTIC"; payload: { tempId?: string; actualItem?: CartItem } }
+  | { type: "SET_SYNCING"; payload: boolean };
 
-// Cart context type
+// Enhanced cart context type
 interface CartContextType {
   state: CartState;
   addToCart: (request: AddToCartRequest) => Promise<boolean>;
@@ -20,17 +28,25 @@ interface CartContextType {
   removeItem: (itemId: string) => Promise<boolean>;
   refreshCart: () => Promise<void>;
   clearCart: () => void;
+  syncWithServer: () => Promise<void>;
+  isOnline: boolean;
+  isRealTimeEnabled: boolean;
+  enableRealTime: () => void;
+  disableRealTime: () => void;
+  getCartVersion: () => number;
 }
 
-// Initial state
+// Enhanced initial state
 const initialState: CartState = {
   items: [],
   isLoading: false,
   error: null,
   lastUpdated: null,
+  isSyncing: false,
+  optimisticUpdates: new Map(),
 };
 
-// Cart reducer
+// Enhanced cart reducer with optimistic updates
 function cartReducer(state: CartState, action: CartAction): CartState {
   switch (action.type) {
     case "SET_LOADING":
@@ -44,11 +60,117 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         isLoading: false,
         error: null,
         lastUpdated: new Date(),
+        optimisticUpdates: new Map(), // Clear optimistic updates when server data arrives
       };
     case "CLEAR_CART":
       return { ...initialState };
     case "SET_LAST_UPDATED":
       return { ...state, lastUpdated: action.payload };
+    case "SET_SYNCING":
+      return { ...state, isSyncing: action.payload };
+    case "OPTIMISTIC_ADD_ITEM": {
+      const newOptimisticUpdates = new Map(state.optimisticUpdates);
+      newOptimisticUpdates.set(action.payload.tempId, {
+        type: "add",
+        item: action.payload.item,
+      });
+      return {
+        ...state,
+        items: [...state.items, action.payload.item],
+        optimisticUpdates: newOptimisticUpdates,
+        lastUpdated: new Date(),
+      };
+    }
+    case "OPTIMISTIC_UPDATE_QUANTITY": {
+      const newOptimisticUpdates = new Map(state.optimisticUpdates);
+      newOptimisticUpdates.set(action.payload.itemId, {
+        type: "update",
+        originalQuantity: state.items.find(item => item.id === action.payload.itemId)?.quantity || 0,
+      });
+      return {
+        ...state,
+        items: state.items.map(item =>
+          item.id === action.payload.itemId
+            ? { ...item, quantity: action.payload.quantity, totalPrice: (item.unitPrice || 0) * action.payload.quantity }
+            : item
+        ),
+        optimisticUpdates: newOptimisticUpdates,
+        lastUpdated: new Date(),
+      };
+    }
+    case "OPTIMISTIC_REMOVE_ITEM": {
+      const newOptimisticUpdates = new Map(state.optimisticUpdates);
+      const itemToRemove = state.items.find(item => item.id === action.payload.itemId);
+      if (itemToRemove) {
+        newOptimisticUpdates.set(action.payload.itemId, {
+          type: "remove",
+          originalItem: itemToRemove,
+        });
+      }
+      return {
+        ...state,
+        items: state.items.filter(item => item.id !== action.payload.itemId),
+        optimisticUpdates: newOptimisticUpdates,
+        lastUpdated: new Date(),
+      };
+    }
+    case "REVERT_OPTIMISTIC": {
+      const newOptimisticUpdates = new Map(state.optimisticUpdates);
+      const updateKey = action.payload.tempId || action.payload.itemId;
+
+      if (updateKey && newOptimisticUpdates.has(updateKey)) {
+        const update = newOptimisticUpdates.get(updateKey);
+        newOptimisticUpdates.delete(updateKey);
+
+        if (update?.type === "add" && action.payload.tempId) {
+          // Remove optimistically added item
+          return {
+            ...state,
+            items: state.items.filter(item => item.id !== action.payload.tempId),
+            optimisticUpdates: newOptimisticUpdates,
+          };
+        } else if (update?.type === "update" && action.payload.itemId) {
+          // Revert quantity update
+          return {
+            ...state,
+            items: state.items.map(item =>
+              item.id === action.payload.itemId
+                ? { ...item, quantity: update.originalQuantity || 0, totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0) }
+                : item
+            ),
+            optimisticUpdates: newOptimisticUpdates,
+          };
+        } else if (update?.type === "remove" && update.originalItem) {
+          // Restore removed item
+          return {
+            ...state,
+            items: [...state.items, update.originalItem],
+            optimisticUpdates: newOptimisticUpdates,
+          };
+        }
+      }
+      return { ...state, optimisticUpdates: newOptimisticUpdates };
+    }
+    case "CONFIRM_OPTIMISTIC": {
+      const newOptimisticUpdates = new Map(state.optimisticUpdates);
+      const updateKey = action.payload.tempId;
+
+      if (updateKey && newOptimisticUpdates.has(updateKey)) {
+        newOptimisticUpdates.delete(updateKey);
+
+        // If we have an actual item from server, replace the optimistic one
+        if (action.payload.actualItem && action.payload.tempId) {
+          return {
+            ...state,
+            items: state.items.map(item =>
+              item.id === action.payload.tempId ? action.payload.actualItem! : item
+            ),
+            optimisticUpdates: newOptimisticUpdates,
+          };
+        }
+      }
+      return { ...state, optimisticUpdates: newOptimisticUpdates };
+    }
     default:
       return state;
   }
@@ -65,9 +187,45 @@ interface CartProviderProps {
 export function CartProvider({ children }: CartProviderProps) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { user, loading } = useAuthContext();
+  const syncTimeoutRef = useRef<NodeJS.Timeout>();
+  const retryCountRef = useRef(0);
+  const maxRetries = 3;
+  const [isOnline, setIsOnline] = useState(true);
+  const [isRealTimeEnabled, setIsRealTimeEnabled] = useState(false);
+  const [cartVersion, setCartVersion] = useState(Date.now());
+  const syncManagerRef = useRef<CartSyncManager | null>(null);
 
-  // Fetch cart data from API
-  const fetchCart = useCallback(async () => {
+  // Online/offline detection
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      // Sync when coming back online
+      syncWithServer();
+      // Reconnect real-time sync if enabled
+      if (isRealTimeEnabled && syncManagerRef.current) {
+        syncManagerRef.current.connect();
+      }
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      // Disconnect real-time sync
+      if (syncManagerRef.current) {
+        syncManagerRef.current.disconnect();
+      }
+    };
+
+    window.addEventListener('online', handleOnline);
+    window.addEventListener('offline', handleOffline);
+    setIsOnline(navigator.onLine);
+
+    return () => {
+      window.removeEventListener('online', handleOnline);
+      window.removeEventListener('offline', handleOffline);
+    };
+  }, [isRealTimeEnabled]);
+
+  // Enhanced fetch cart with retry logic
+  const fetchCart = useCallback(async (retryCount = 0): Promise<boolean> => {
     try {
       dispatch({ type: "SET_LOADING", payload: true });
 
@@ -77,27 +235,71 @@ export function CartProvider({ children }: CartProviderProps) {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to fetch cart");
+        throw new Error(`Failed to fetch cart: ${response.status}`);
       }
 
       const data = await response.json();
 
       if (data.success) {
         dispatch({ type: "SET_CART", payload: data.cart });
+        retryCountRef.current = 0; // Reset retry count on success
+        return true;
       } else {
-        dispatch({ type: "SET_ERROR", payload: data.error || "Failed to fetch cart" });
+        throw new Error(data.error || "Failed to fetch cart");
       }
     } catch (error) {
       console.error("Error fetching cart:", error);
-      dispatch({ type: "SET_ERROR", payload: "Failed to fetch cart" });
-    }
-  }, []);
 
-  // Add item to cart
+      // Retry logic for network errors
+      if (retryCount < maxRetries && isOnline) {
+        const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
+        setTimeout(() => fetchCart(retryCount + 1), delay);
+        return false;
+      }
+
+      dispatch({ type: "SET_ERROR", payload: "Failed to fetch cart" });
+      return false;
+    }
+  }, [isOnline]);
+
+  // Enhanced add item to cart with optimistic updates
   const addToCart = useCallback(
     async (request: AddToCartRequest): Promise<boolean> => {
+      // Generate temporary ID for optimistic update
+      const tempId = `temp_${Date.now()}_${Math.random()}`;
+
+      // Create optimistic cart item
+      const optimisticItem: CartItem = {
+        id: tempId,
+        productId: request.productId,
+        quantity: request.quantity,
+        customizations: request.customizations,
+        unitPrice: 0, // Will be calculated by server
+        totalPrice: 0, // Will be calculated by server
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      };
+
+      // Apply optimistic update immediately
+      dispatch({
+        type: "OPTIMISTIC_ADD_ITEM",
+        payload: { item: optimisticItem, tempId }
+      });
+
       try {
-        dispatch({ type: "SET_LOADING", payload: true });
+        // Ensure we have a session ID for guest users
+        let sessionId = getCartSessionId();
+        if (!user && !sessionId) {
+          sessionId = generateCartSessionId();
+          setCartSessionId(sessionId);
+        }
+
+        console.log("🚀 [CartContext] Making API request to /api/cart/items", {
+          productId: request.productId,
+          quantity: request.quantity,
+          sessionId: sessionId,
+          userId: user?.id,
+        });
 
         const response = await fetch("/api/cart/items", {
           method: "POST",
@@ -108,31 +310,68 @@ export function CartProvider({ children }: CartProviderProps) {
           body: JSON.stringify(request),
         });
 
+        console.log("📡 [CartContext] API response status:", response.status);
+
         const data = await response.json();
+        console.log("📦 [CartContext] API response data:", data);
 
         if (data.success) {
-          // Refresh cart after adding item
+          console.log("✅ [CartContext] Item added successfully, refreshing cart");
+          // Confirm optimistic update with actual server data
+          dispatch({
+            type: "CONFIRM_OPTIMISTIC",
+            payload: { tempId, actualItem: data.item }
+          });
+
+          // Refresh cart to get updated totals and product details
           await fetchCart();
           return true;
         } else {
+          // Revert optimistic update on failure
+          dispatch({
+            type: "REVERT_OPTIMISTIC",
+            payload: { tempId }
+          });
           dispatch({ type: "SET_ERROR", payload: data.error || "Failed to add item to cart" });
           return false;
         }
       } catch (error) {
         console.error("Error adding to cart:", error);
-        dispatch({ type: "SET_ERROR", payload: "Failed to add item to cart" });
+
+        // Revert optimistic update on error
+        dispatch({
+          type: "REVERT_OPTIMISTIC",
+          payload: { tempId }
+        });
+
+        // Store failed operation for retry when online
+        if (!isOnline) {
+          dispatch({ type: "SET_ERROR", payload: "No internet connection. Changes will sync when online." });
+          // TODO: Store in localStorage for offline sync
+        } else {
+          dispatch({ type: "SET_ERROR", payload: "Failed to add item to cart" });
+        }
         return false;
       }
     },
-    [fetchCart]
+    [fetchCart, user, isOnline]
   );
 
-  // Update item quantity
+  // Enhanced update item quantity with optimistic updates
   const updateQuantity = useCallback(
     async (itemId: string, quantity: number): Promise<boolean> => {
-      try {
-        dispatch({ type: "SET_LOADING", payload: true });
+      // Handle removal case
+      if (quantity <= 0) {
+        return removeItem(itemId);
+      }
 
+      // Apply optimistic update immediately
+      dispatch({
+        type: "OPTIMISTIC_UPDATE_QUANTITY",
+        payload: { itemId, quantity }
+      });
+
+      try {
         const response = await fetch(`/api/cart/items/${itemId}`, {
           method: "PUT",
           headers: {
@@ -145,28 +384,54 @@ export function CartProvider({ children }: CartProviderProps) {
         const data = await response.json();
 
         if (data.success) {
-          // Refresh cart after updating
+          // Confirm optimistic update
+          dispatch({
+            type: "CONFIRM_OPTIMISTIC",
+            payload: { tempId: itemId }
+          });
+
+          // Refresh cart to get updated totals
           await fetchCart();
           return true;
         } else {
+          // Revert optimistic update on failure
+          dispatch({
+            type: "REVERT_OPTIMISTIC",
+            payload: { itemId }
+          });
           dispatch({ type: "SET_ERROR", payload: data.error || "Failed to update item" });
           return false;
         }
       } catch (error) {
         console.error("Error updating cart item:", error);
-        dispatch({ type: "SET_ERROR", payload: "Failed to update item" });
+
+        // Revert optimistic update on error
+        dispatch({
+          type: "REVERT_OPTIMISTIC",
+          payload: { itemId }
+        });
+
+        if (!isOnline) {
+          dispatch({ type: "SET_ERROR", payload: "No internet connection. Changes will sync when online." });
+        } else {
+          dispatch({ type: "SET_ERROR", payload: "Failed to update item" });
+        }
         return false;
       }
     },
-    [fetchCart]
+    [fetchCart, isOnline]
   );
 
-  // Remove item from cart
+  // Enhanced remove item from cart with optimistic updates
   const removeItem = useCallback(
     async (itemId: string): Promise<boolean> => {
-      try {
-        dispatch({ type: "SET_LOADING", payload: true });
+      // Apply optimistic update immediately
+      dispatch({
+        type: "OPTIMISTIC_REMOVE_ITEM",
+        payload: { itemId }
+      });
 
+      try {
         const response = await fetch(`/api/cart/items/${itemId}`, {
           method: "DELETE",
           credentials: "include",
@@ -175,20 +440,42 @@ export function CartProvider({ children }: CartProviderProps) {
         const data = await response.json();
 
         if (data.success) {
-          // Refresh cart after removing item
+          // Confirm optimistic update
+          dispatch({
+            type: "CONFIRM_OPTIMISTIC",
+            payload: { tempId: itemId }
+          });
+
+          // Refresh cart to get updated totals
           await fetchCart();
           return true;
         } else {
+          // Revert optimistic update on failure
+          dispatch({
+            type: "REVERT_OPTIMISTIC",
+            payload: { itemId }
+          });
           dispatch({ type: "SET_ERROR", payload: data.error || "Failed to remove item" });
           return false;
         }
       } catch (error) {
         console.error("Error removing cart item:", error);
-        dispatch({ type: "SET_ERROR", payload: "Failed to remove item" });
+
+        // Revert optimistic update on error
+        dispatch({
+          type: "REVERT_OPTIMISTIC",
+          payload: { itemId }
+        });
+
+        if (!isOnline) {
+          dispatch({ type: "SET_ERROR", payload: "No internet connection. Changes will sync when online." });
+        } else {
+          dispatch({ type: "SET_ERROR", payload: "Failed to remove item" });
+        }
         return false;
       }
     },
-    [fetchCart]
+    [fetchCart, isOnline]
   );
 
   // Clear cart
@@ -201,12 +488,144 @@ export function CartProvider({ children }: CartProviderProps) {
     await fetchCart();
   }, [fetchCart]);
 
+  // Sync with server (for conflict resolution and offline sync)
+  const syncWithServer = useCallback(async () => {
+    if (!isOnline) return;
+
+    dispatch({ type: "SET_SYNCING", payload: true });
+
+    try {
+      // Get current server state
+      const response = await fetch("/api/cart", {
+        method: "GET",
+        credentials: "include",
+      });
+
+      if (response.ok) {
+        const data = await response.json();
+        if (data.success) {
+          // Check for conflicts with local state
+          const resolution = CartConflictResolver.resolveConflicts(
+            {
+              items: state.items,
+              itemCount: state.items.length,
+              subtotal: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+              total: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+            },
+            data.cart,
+            'merge'
+          );
+
+          // Apply resolved state
+          dispatch({ type: "SET_CART", payload: resolution.resolvedCart });
+          setCartVersion(Date.now());
+
+          // Save to persistence
+          CartPersistenceManager.saveCartState(resolution.resolvedCart, cartVersion);
+
+          // Log conflicts if any
+          if (resolution.conflicts.length > 0) {
+            console.log('Cart sync conflicts resolved:', resolution.conflicts);
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error syncing with server:", error);
+    } finally {
+      dispatch({ type: "SET_SYNCING", payload: false });
+    }
+  }, [fetchCart, isOnline, state.items, cartVersion]);
+
+  // Periodic sync to detect server-side changes
+  useEffect(() => {
+    if (!isOnline || loading) return;
+
+    const syncInterval = setInterval(() => {
+      // Only sync if no optimistic updates are pending
+      if (state.optimisticUpdates?.size === 0) {
+        syncWithServer();
+      }
+    }, 30000); // Sync every 30 seconds
+
+    return () => clearInterval(syncInterval);
+  }, [syncWithServer, isOnline, loading, state.optimisticUpdates?.size]);
+
   // Load cart on mount and when auth state changes
   useEffect(() => {
     if (!loading) {
       fetchCart();
     }
   }, [loading, user, fetchCart]);
+
+  // Real-time synchronization management
+  const enableRealTime = useCallback(() => {
+    if (!isOnline || isRealTimeEnabled) return;
+
+    const sessionId = getCartSessionId();
+    syncManagerRef.current = new CartSyncManager(user?.id, sessionId || undefined);
+
+    // Handle real-time cart updates
+    syncManagerRef.current.on('sync', (event: CartSyncEvent) => {
+      if (event.source === 'remote') {
+        // Apply remote changes
+        syncWithServer();
+      }
+    });
+
+    syncManagerRef.current.connect().then((connected) => {
+      if (connected) {
+        setIsRealTimeEnabled(true);
+        console.log('Real-time cart sync enabled');
+      }
+    });
+  }, [isOnline, isRealTimeEnabled, user?.id, syncWithServer]);
+
+  const disableRealTime = useCallback(() => {
+    if (syncManagerRef.current) {
+      syncManagerRef.current.disconnect();
+      syncManagerRef.current = null;
+    }
+    setIsRealTimeEnabled(false);
+    console.log('Real-time cart sync disabled');
+  }, []);
+
+  const getCartVersion = useCallback(() => cartVersion, [cartVersion]);
+
+  // Persist cart state to localStorage for offline support with versioning
+  useEffect(() => {
+    if (state.items.length > 0) {
+      const cartSummary: CartSummary = {
+        items: state.items,
+        itemCount: state.items.reduce((sum, item) => sum + item.quantity, 0),
+        subtotal: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+        total: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+      };
+      CartPersistenceManager.saveCartState(cartSummary, cartVersion);
+    }
+  }, [state.items, state.lastUpdated, cartVersion]);
+
+  // Restore cart from localStorage on mount if needed with version checking
+  useEffect(() => {
+    if (state.items.length === 0 && !loading) {
+      const persistedState = CartPersistenceManager.loadCartState();
+      if (persistedState) {
+        dispatch({
+          type: "SET_CART",
+          payload: persistedState.cart
+        });
+        setCartVersion(persistedState.version);
+      }
+    }
+  }, [loading, state.items.length]);
+
+  // Cleanup real-time sync on unmount
+  useEffect(() => {
+    return () => {
+      if (syncManagerRef.current) {
+        syncManagerRef.current.disconnect();
+      }
+    };
+  }, []);
 
   const contextValue: CartContextType = {
     state,
@@ -215,6 +634,12 @@ export function CartProvider({ children }: CartProviderProps) {
     removeItem,
     refreshCart,
     clearCart,
+    syncWithServer,
+    isOnline,
+    isRealTimeEnabled,
+    enableRealTime,
+    disableRealTime,
+    getCartVersion,
   };
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;

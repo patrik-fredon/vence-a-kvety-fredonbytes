@@ -117,11 +117,12 @@ export interface ContactInfo {
   name: string;
 }
 
-// Re-export product types for convenience
+// Re-export all types for convenience
 export * from "./product";
 export * from "./cart";
 export * from "./delivery";
 export * from "./order";
 export * from "./contact";
+export * from "./components";
 
 export default {};
