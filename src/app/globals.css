@@ -73,7 +73,7 @@ h6 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 500;
   line-height: 1.2;
-  color: var(--color-primary-800);
+  color: var(--color-primary-200);
 }
 
 /* Focus styles for accessibility */
