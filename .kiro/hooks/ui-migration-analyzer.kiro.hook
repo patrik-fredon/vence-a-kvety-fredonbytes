@@ -1,5 +1,5 @@
 {
-  "enabled": true,
+  "enabled": false,
   "name": "UI Migration Analyzer",
   "description": "Analyzes the /src folder and all its files and subfolders to check the migration of UI visual elements from https://github.com/patrik-fredon/pohrebni-vence-layout. Ensures all visual elements, components, layouts, color schemes, design patterns, and layout handles are fully implemented and optimized for the funeral wreath theme project.",
   "version": "1",
