@@ -143,6 +143,75 @@ export function useSafeTranslations(namespace?: string) {
 }
 
 /**
+ * Enhanced hook for accessibility translations
+ */
+export function useAccessibilityTranslations() {
+  const t = useTranslations("accessibility");
+  const locale = useLocale() as Locale;
+
+  const getAriaLabel = useCallback((key: string, fallback?: string) => {
+    try {
+      return t(key);
+    } catch (error) {
+      console.warn(`Missing accessibility translation for key "${key}" in locale "${locale}"`);
+      return fallback || key;
+    }
+  }, [t, locale]);
+
+  return {
+    getAriaLabel,
+    t,
+    locale,
+  };
+}
+
+/**
+ * Enhanced hook for admin translations
+ */
+export function useAdminTranslations() {
+  const t = useTranslations("admin");
+  const locale = useLocale() as Locale;
+
+  const getStatusLabel = useCallback((status: string) => {
+    try {
+      return t(status);
+    } catch (error) {
+      console.warn(`Missing admin status translation for "${status}" in locale "${locale}"`);
+      return status;
+    }
+  }, [t, locale]);
+
+  return {
+    getStatusLabel,
+    t,
+    locale,
+  };
+}
+
+/**
+ * Enhanced hook for UI translations
+ */
+export function useUITranslations() {
+  const t = useTranslations("ui");
+  const locale = useLocale() as Locale;
+
+  const getUILabel = useCallback((key: string, fallback?: string) => {
+    try {
+      return t(key);
+    } catch (error) {
+      console.warn(`Missing UI translation for key "${key}" in locale "${locale}"`);
+      return fallback || key;
+    }
+  }, [t, locale]);
+
+  return {
+    getUILabel,
+    t,
+    locale,
+  };
+}
+
+/**
  * Hook for translation validation (development only)
  */
 export function useTranslationValidation() {
