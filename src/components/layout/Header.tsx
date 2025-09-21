@@ -17,6 +17,8 @@ interface HeaderProps {
 
 export function Header({ locale }: HeaderProps) {
   const t = useTranslations("navigation");
+  const tAccessibility = useTranslations("accessibility");
+  const tUI = useTranslations("ui");
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   // Close mobile menu when screen size changes to desktop
@@ -73,7 +75,7 @@ export function Header({ locale }: HeaderProps) {
               }
             }}
           >
-            Přejít na hlavní obsah
+            {tAccessibility('skipToContent')}
           </a>
           {/* Top bar - Quick navigation */}
           <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b border-stone-100">
@@ -134,7 +136,7 @@ export function Header({ locale }: HeaderProps) {
               id="main-navigation"
               className="hidden md:flex items-center gap-8"
               role="navigation"
-              aria-label="Hlavní navigace"
+              aria-label={tAccessibility('mainNavigation')}
             >
               <Link
                 href={`/${locale}`}
@@ -172,7 +174,7 @@ export function Header({ locale }: HeaderProps) {
               )}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
-              aria-label={isMobileMenuOpen ? "Zavřít menu" : "Otevřít menu"}
+              aria-label={isMobileMenuOpen ? tAccessibility('closeMenu') : tAccessibility('openMenu')}
             >
               {isMobileMenuOpen ? (
                 <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -205,11 +207,11 @@ export function Header({ locale }: HeaderProps) {
           <div className="flex flex-col h-full">
             {/* Mobile menu header with enhanced styling */}
             <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-stone-50">
-              <span className="text-lg font-light text-stone-900">Menu</span>
+              <span className="text-lg font-light text-stone-900">{tUI('menu')}</span>
               <button
                 onClick={closeMobileMenu}
                 className="p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg"
-                aria-label="Zavřít menu"
+                aria-label={tAccessibility('closeMenu')}
               >
                 <XMarkIcon className="w-6 h-6" aria-hidden="true" />
               </button>
@@ -220,7 +222,7 @@ export function Header({ locale }: HeaderProps) {
               <ErrorBoundary
                 fallback={
                   <div className="text-sm text-stone-500 p-4 bg-stone-50 rounded-lg">
-                    Navigace není dostupná
+                    {tUI('navigationNotAvailable')}
                   </div>
                 }
               >
@@ -231,7 +233,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Mobile menu footer with enhanced styling */}
             <div className="border-t border-stone-200 p-4 space-y-4 bg-stone-50">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-stone-700">Jazyk:</span>
+                <span className="text-sm font-medium text-stone-700">{tUI('language')}:</span>
                 <LanguageToggle currentLocale={locale} />
               </div>
               <div className="pt-2 border-t border-stone-200">

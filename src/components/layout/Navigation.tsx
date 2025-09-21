@@ -49,6 +49,8 @@ const mockCategories = [
 
 export function Navigation({ locale, mobile = false, onItemClick }: NavigationProps) {
   const t = useTranslations("navigation");
+  const tAccessibility = useTranslations("accessibility");
+  const tProduct = useTranslations("product");
   const pathname = usePathname();
   const [openDropdown, setOpenDropdown] = useState<string | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -97,7 +99,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
       <nav
         className="space-y-1"
         role="navigation"
-        aria-label="Mobilní navigace"
+        aria-label={tAccessibility('mobileNavigation')}
       >
         {navItems.map((item) => (
           <div key={item.href}>
@@ -128,7 +130,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                       className="block p-3 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors duration-200 font-medium"
                       onClick={handleLinkClick}
                     >
-                      {t("products")} - Všechny
+                      {tProduct("allProducts")}
                     </Link>
                     {mockCategories.map((category) => (
                       <div key={category.id} className="space-y-1">
@@ -182,7 +184,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
       className="flex items-center space-x-8"
       ref={dropdownRef}
       role="navigation"
-      aria-label="Hlavní navigace"
+      aria-label={tAccessibility('mainNavigation')}
     >
       {navItems.map((item) => (
         <div key={item.href} className="relative">
@@ -241,7 +243,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                       className="block p-2 text-sm font-medium text-stone-900 hover:bg-stone-50 rounded-lg transition-colors mb-2"
                       onClick={handleLinkClick}
                     >
-                      {t("products")} - Všechny
+                      {tProduct("allProducts")}
                     </Link>
 
                     <div className="space-y-3">

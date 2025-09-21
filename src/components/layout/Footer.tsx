@@ -11,6 +11,7 @@ interface FooterProps {
 
 export function Footer({ locale }: FooterProps) {
   const t = useTranslations("footer");
+  const tAccessibility = useTranslations("accessibility");
 
   return (
     <ErrorBoundary
@@ -59,7 +60,7 @@ export function Footer({ locale }: FooterProps) {
                     <a
                       href="tel:+420123456789"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label="Zavolat na hlavní číslo"
+                      aria-label={tAccessibility('callMainNumber')}
                     >
                       +420 123 456 789
                     </a>
@@ -73,7 +74,7 @@ export function Footer({ locale }: FooterProps) {
                     <a
                       href="tel:+420987654321"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label="Zavolat na nouzové číslo"
+                      aria-label={tAccessibility('callEmergencyNumber')}
                     >
                       +420 987 654 321
                     </a>
@@ -87,7 +88,7 @@ export function Footer({ locale }: FooterProps) {
                     <a
                       href="mailto:info@ketingmar.cz"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label="Poslat email"
+                      aria-label={tAccessibility('sendOrderEmail')}
                     >
                       info@ketingmar.cz
                     </a>
@@ -101,7 +102,7 @@ export function Footer({ locale }: FooterProps) {
                     <a
                       href="mailto:objednavky@ketingmar.cz"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label="Poslat email pro objednávky"
+                      aria-label={tAccessibility('sendOrderEmail')}
                     >
                       objednavky@ketingmar.cz
                     </a>
@@ -126,7 +127,7 @@ export function Footer({ locale }: FooterProps) {
             {/* Quick Links Section */}
             <div>
               <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-white">{t("quickLinks")}</h4>
-              <nav className="space-y-1 sm:space-y-2" aria-label="Rychlé odkazy">
+              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility('quickLinks')}>
                 <Link
                   href={`/${locale}/about`}
                   className="block text-stone-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded px-1 py-0.5"
@@ -155,7 +156,7 @@ export function Footer({ locale }: FooterProps) {
 
               {/* Legal Links Section */}
               <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-white">{t("legal")}</h4>
-              <nav className="space-y-1 sm:space-y-2" aria-label="Právní informace">
+              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility('legalInfo')}>
                 <Link
                   href={`/${locale}/privacy`}
                   className="block text-stone-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded px-1 py-0.5"
