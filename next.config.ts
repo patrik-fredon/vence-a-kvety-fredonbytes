@@ -25,7 +25,7 @@ const nextConfig: NextConfig = {
       "tailwind-merge"
     ],
     // Temporarily disable CSS optimization due to critters module issue
-    // optimizeCss: true,
+    optimizeCss: true,
   },
 
   // Turbopack configuration (replaces experimental.turbo)
