@@ -84,7 +84,7 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
   if (loading) {
     return (
       <div className="mt-20 max-w-6xl mx-auto">
-        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-primary-800 text-center mb-12">
+        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
           {t("featuredProducts.title")}
         </h2>
         <div className="flex justify-center items-center py-12">
@@ -97,19 +97,19 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
   if (error) {
     return (
       <div className="mt-20 max-w-6xl mx-auto">
-        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-primary-800 text-center mb-12">
+        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
           {t("featuredProducts.title")}
         </h2>
-        <div className="text-center py-12">
-          <p className="text-neutral-600 mb-4">{error}</p>
+        <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
+          <p className="text-stone-600 mb-4">{error}</p>
           <button
             onClick={handleRetry}
-            className="text-primary-600 hover:text-primary-700 font-medium transition-colors"
+            className="text-amber-600 hover:text-amber-700 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-md px-2 py-1"
           >
             {t("tryAgain")}
           </button>
           {retryCount > 0 && (
-            <p className="text-sm text-neutral-500 mt-2">
+            <p className="text-sm text-stone-500 mt-2">
               {locale === "cs" ? `Pokus ${retryCount + 1}` : `Attempt ${retryCount + 1}`}
             </p>
           )}
@@ -121,11 +121,11 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
   if (products.length === 0) {
     return (
       <div className="mt-20 max-w-6xl mx-auto">
-        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-primary-800 text-center mb-12">
+        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
           {t("featuredProducts.title")}
         </h2>
-        <div className="text-center py-12">
-          <p className="text-neutral-600">{t("noProducts")}</p>
+        <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
+          <p className="text-stone-600">{t("noProducts")}</p>
         </div>
       </div>
     );
@@ -133,7 +133,7 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
 
   return (
     <div className="mt-20 max-w-6xl mx-auto">
-      <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-primary-800 text-center mb-12">
+      <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
         {t("featuredProducts.title")}
       </h2>
 
@@ -152,7 +152,7 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
       <div className="text-center mt-8">
         <a
           href={`/${locale}/products`}
-          className="inline-flex items-center justify-center px-6 py-3 bg-primary-600 hover:bg-primary-700 text-white rounded-lg font-medium transition-colors shadow-elegant"
+          className="inline-flex items-center justify-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors shadow-soft focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
         >
           {t("featuredProducts.viewAll")}
         </a>

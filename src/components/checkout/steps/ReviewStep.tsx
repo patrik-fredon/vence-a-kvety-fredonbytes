@@ -43,7 +43,7 @@ export function ReviewStep({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-2">
+        <h2 className="text-elegant text-2xl font-semibold text-stone-800 mb-2">
           Kontrola objednávky
         </h2>
         <p className="text-neutral-600">Zkontrolujte všechny údaje před dokončením objednávky.</p>
@@ -208,7 +208,7 @@ export function ReviewStep({
             id="agreeToTerms"
             checked={agreeToTerms}
             onChange={(e) => onAgreeToTermsChange(e.target.checked)}
-            className="mt-1 w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
+            className="mt-1 w-4 h-4 text-amber-600 border-stone-300 rounded focus:ring-amber-500"
             required
           />
           <label htmlFor="agreeToTerms" className="text-sm text-neutral-700">
@@ -238,7 +238,7 @@ export function ReviewStep({
             id="subscribeNewsletter"
             checked={subscribeNewsletter}
             onChange={(e) => onSubscribeNewsletterChange(e.target.checked)}
-            className="mt-1 w-4 h-4 text-primary-600 border-neutral-300 rounded focus:ring-primary-500"
+            className="mt-1 w-4 h-4 text-amber-600 border-stone-300 rounded focus:ring-amber-500"
           />
           <label htmlFor="subscribeNewsletter" className="text-sm text-neutral-700">
             Chci dostávat novinky a speciální nabídky na e-mail (volitelné)

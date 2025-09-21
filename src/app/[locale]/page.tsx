@@ -63,30 +63,30 @@ export default async function Home({ params }: HomeProps) {
       {/* New Hero Section with background image and stone/amber design */}
       <HeroSection locale={locale} />
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-16 bg-stone-50">
 
         {/* Philosophy Section */}
-        <div className="mt-20 max-w-4xl mx-auto text-center">
-          <blockquote className="text-2xl md:text-3xl text-primary-700 font-elegant italic mb-6">
+        <div className="mt-20 max-w-4xl mx-auto text-center bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-soft">
+          <blockquote className="text-2xl md:text-3xl text-stone-700 font-elegant italic mb-6">
             "{t("philosophy.quote")}"
           </blockquote>
-          <p className="text-lg text-white leading-relaxed">
+          <p className="text-lg text-stone-600 leading-relaxed">
             {t("philosophy.text")}
           </p>
         </div>
 
         {/* Benefits Section */}
         <div className="mt-20 max-w-6xl mx-auto">
-          <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-primary-800 text-center mb-12">
+          <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
             {t("benefits.title")}
           </h2>
           <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
             {[0, 1, 2, 3].map((index) => (
-              <div key={index} className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
-                <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
+              <div key={index} className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
+                <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
                   {t(`benefits.items.${index}.title`)}
                 </h3>
-                <p className="text-neutral-600">
+                <p className="text-stone-600">
                   {t(`benefits.items.${index}.description`)}
                 </p>
               </div>
@@ -99,34 +99,34 @@ export default async function Home({ params }: HomeProps) {
 
         {/* Features Section */}
         <div className="mt-20 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
-            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
+            <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">🌹</span>
             </div>
-            <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
+            <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
               {t("features.handcrafted.title")}
             </h3>
-            <p className="text-neutral-600">{t("features.handcrafted.description")}</p>
+            <p className="text-stone-600">{t("features.handcrafted.description")}</p>
           </div>
 
-          <div className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
-            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
+            <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">🚚</span>
             </div>
-            <h3 className="text-elegant text-xl font-semibent text-primary-800 mb-3">
+            <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
               {t("features.fastDelivery.title")}
             </h3>
-            <p className="text-neutral-600">{t("features.fastDelivery.description")}</p>
+            <p className="text-stone-600">{t("features.fastDelivery.description")}</p>
           </div>
 
-          <div className="text-center p-6 bg-white/50 rounded-xl shadow-soft">
-            <div className="w-16 h-16 bg-primary-100 rounded-full flex items-center justify-center mx-auto mb-4">
+          <div className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
+            <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
               <span className="text-2xl">💝</span>
             </div>
-            <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
+            <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
               {t("features.personalApproach.title")}
             </h3>
-            <p className="text-neutral-600">{t("features.personalApproach.description")}</p>
+            <p className="text-stone-600">{t("features.personalApproach.description")}</p>
           </div>
         </div>
       </div>

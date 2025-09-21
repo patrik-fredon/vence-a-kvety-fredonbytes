@@ -64,9 +64,9 @@ export function AccessibilityToolbar({ locale }: AccessibilityToolbarProps) {
           fixed top-4 right-4 z-50 p-3 rounded-full shadow-lg transition-all duration-200
           ${isHighContrast
             ? 'bg-black text-white border-2 border-white'
-            : 'bg-primary-600 text-white hover:bg-primary-700'
+            : 'bg-stone-900 text-white hover:bg-stone-800'
           }
-          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
+          focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2
         `}
         aria-label={isOpen ? t('closeAccessibilityToolbar') : t('openAccessibilityToolbar')}
         aria-expanded={isOpen}
