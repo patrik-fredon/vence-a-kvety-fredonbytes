@@ -18,6 +18,7 @@ interface ProductCardProps {
   featured?: boolean;
   onToggleFavorite?: (productId: string) => void;
   isFavorite?: boolean;
+  viewMode?: 'grid' | 'list';
 }
 
 export function ProductCard({
@@ -27,7 +28,8 @@ export function ProductCard({
   className,
   featured = false,
   onToggleFavorite,
-  isFavorite = false
+  isFavorite = false,
+  viewMode = 'grid'
 }: ProductCardProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
@@ -58,13 +60,18 @@ export function ProductCard({
   return (
     <article
       className={cn(
-        // Borderless card with subtle hover effects
+        // Base card styles
         "group bg-white overflow-hidden transition-all duration-300",
-        "hover:shadow-lg hover:-translate-y-1",
-        // Featured product styling - spans 2 columns
-        featured && "md:col-span-2",
+        "hover:shadow-lg",
         // Focus styles for keyboard navigation
         "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2 rounded-lg",
+        // Layout based on view mode
+        viewMode === 'grid'
+          ? cn(
+            "hover:-translate-y-1",
+            featured && "md:col-span-2"
+          )
+          : "flex flex-row items-center gap-4 p-4",
         className
       )}
       onMouseEnter={() => setIsHovered(true)}
@@ -73,12 +80,19 @@ export function ProductCard({
       aria-labelledby={`product-${product.id}-title`}
       aria-describedby={`product-${product.id}-description product-${product.id}-price`}
     >
-      {/* Product Image Container - 64 height (16rem = 256px) */}
+      {/* Product Image Container */}
       <div className={cn(
         "relative overflow-hidden bg-stone-50",
-        // Standard card: square aspect ratio, Featured card: different aspect ratio
-        featured ? "aspect-[2/1] md:aspect-[3/2]" : "aspect-square",
-        "h-64" // 64 height as specified
+        viewMode === 'grid'
+          ? cn(
+            // Grid view: Standard card aspect ratios
+            featured ? "aspect-[2/1] md:aspect-[3/2]" : "aspect-square",
+            "h-64"
+          )
+          : cn(
+            // List view: Fixed size image
+            "w-24 h-24 flex-shrink-0 rounded-lg"
+          )
       )}>
         <Link
           href={`/${locale}/products/${product.slug}`}
@@ -165,9 +179,12 @@ export function ProductCard({
 
       {/* Product Info */}
       <div className={cn(
-        "p-4",
-        // Featured products get more padding
-        featured && "md:p-6"
+        viewMode === 'grid'
+          ? cn(
+            "p-4",
+            featured && "md:p-6"
+          )
+          : "flex-1 min-w-0" // List view: take remaining space
       )}>
         <Link href={`/${locale}/products/${product.slug}`} className="block">
           <h3
@@ -195,7 +212,10 @@ export function ProductCard({
         )}
 
         {/* Price and Add to Cart */}
-        <div className="flex items-center justify-between">
+        <div className={cn(
+          "flex items-center",
+          viewMode === 'grid' ? "justify-between" : "justify-start gap-4"
+        )}>
           <div
             id={`product-${product.id}-price`}
             className={cn(

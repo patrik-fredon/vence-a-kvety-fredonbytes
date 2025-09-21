@@ -40,6 +40,7 @@ export function ProductGrid({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
+  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
 
   // Filter and sort state
   const [filters, setFilters] = useState<ProductFilters>({});
@@ -52,9 +53,28 @@ export function ProductGrid({
 
   const PRODUCTS_PER_PAGE = 12;
 
+  // Load view mode preference from localStorage
+  useEffect(() => {
+    const savedViewMode = localStorage.getItem('product-view-mode') as 'grid' | 'list' | null;
+    if (savedViewMode) {
+      setViewMode(savedViewMode);
+    }
+  }, []);
+
+  // Save view mode preference to localStorage
+  const handleViewModeChange = (mode: 'grid' | 'list') => {
+    setViewMode(mode);
+    localStorage.setItem('product-view-mode', mode);
+    announce(
+      mode === 'grid' ? t("switchedToGrid") : t("switchedToList"),
+      'polite'
+    );
+  };
+
   // Fetch products from API
   const fetchProducts = useCallback(
     async (page: number = 1, resetProducts: boolean = false) => {
+      console.log('🔍 [ProductGrid] Fetching products with filters:', filters);
       setLoading(true);
       setError(null);
 
@@ -79,6 +99,7 @@ export function ProductGrid({
         // Add sorting
         searchParams.set("sortField", sortOptions.field);
         searchParams.set("sortDirection", sortOptions.direction);
+        console.log('📊 [ProductGrid] API call with sort:', { field: sortOptions.field, direction: sortOptions.direction });
 
         const response = await fetch(`/api/products?${searchParams.toString()}`);
 
@@ -125,18 +146,39 @@ export function ProductGrid({
     [filters, sortOptions, locale, announce, t]
   );
 
-  // Load initial products or when filters/sort change
+  // Check if any filters are active
+  const hasActiveFilters = Object.keys(filters).some(
+    key => filters[key as keyof ProductFilters] !== undefined && filters[key as keyof ProductFilters] !== ""
+  );
+
+  // Load initial products or fetch from API
   useEffect(() => {
-    if (initialProducts.length === 0) {
+    if (initialProducts.length === 0 || hasActiveFilters) {
+      // Use API if no initial products or if filters are active
       fetchProducts(1, true);
     } else {
-      // Use initial products if API fails
+      // Use initial products if available and no filters
+      setProducts(initialProducts);
       setTotalProducts(initialProducts.length);
     }
-  }, [fetchProducts, initialProducts.length]);
+  }, [initialProducts.length, hasActiveFilters]);
+
+  // Fetch products when filters or sort options change
+  useEffect(() => {
+    // Always fetch when filters are active, or when sort options change, or when no initial products
+    if (hasActiveFilters || initialProducts.length === 0) {
+      fetchProducts(1, true);
+    }
+  }, [filters, locale]); // Separate useEffect for filters
+
+  // Fetch products when sort options change (always, regardless of filters)
+  useEffect(() => {
+    fetchProducts(1, true);
+  }, [sortOptions]);
 
   // Handle filter changes
   const handleFiltersChange = (newFilters: ProductFilters) => {
+    console.log('🔍 [ProductGrid] Filter change:', newFilters);
     setFilters(newFilters);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to filters dependency
@@ -144,6 +186,7 @@ export function ProductGrid({
 
   // Handle sort changes
   const handleSortChange = (newSort: ProductSortOptions) => {
+    console.log('📊 [ProductGrid] Sort change:', newSort);
     setSortOptions(newSort);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to sortOptions dependency
@@ -209,7 +252,7 @@ export function ProductGrid({
           />
         </div>
 
-        {/* Results Summary */}
+        {/* Results Summary and View Switcher */}
         <div className="flex items-center justify-between mb-6">
           <div className="text-sm text-stone-600">
             {totalProducts > 0 && (
@@ -220,6 +263,31 @@ export function ProductGrid({
                 })}
               </span>
             )}
+          </div>
+
+          {/* View Mode Switcher */}
+          <div className="flex items-center gap-2">
+            <span className="text-sm text-stone-600 mr-2">{t("viewMode")}:</span>
+            <div className="flex border border-stone-300 rounded-md overflow-hidden">
+              <Button
+                variant={viewMode === 'grid' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => handleViewModeChange('grid')}
+                className="rounded-none border-0 px-3 py-1"
+                aria-label={t("gridView")}
+              >
+                <span className="text-sm">⊞</span>
+              </Button>
+              <Button
+                variant={viewMode === 'list' ? 'primary' : 'ghost'}
+                size="sm"
+                onClick={() => handleViewModeChange('list')}
+                className="rounded-none border-0 px-3 py-1"
+                aria-label={t("listView")}
+              >
+                <span className="text-sm">☰</span>
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -240,12 +308,13 @@ export function ProductGrid({
             {organizedProducts.length > 0 ? (
               <KeyboardNavigationGrid
                 className={cn(
-                  // Responsive grid: 1 col mobile, 2 tablet, 3 desktop
-                  "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8",
-                  // Auto-fit for featured products that span 2 columns
-                  "auto-rows-max"
+                  viewMode === 'grid'
+                    ? // Grid view: Responsive grid with featured products spanning 2 columns
+                    "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 auto-rows-max"
+                    : // List view: Single column layout
+                    "flex flex-col gap-4 mb-8"
                 )}
-                columns={3}
+                columns={viewMode === 'grid' ? 3 : 1}
                 orientation="both"
                 ariaLabel={t("title")}
                 onItemActivate={(index, element) => {
@@ -262,8 +331,7 @@ export function ProductGrid({
                     data-keyboard-nav-item
                     tabIndex={index === 0 ? 0 : -1}
                     className={cn(
-                      // Featured products span 2 columns on tablet and desktop
-                      featured && "md:col-span-2 lg:col-span-2"
+                      viewMode === 'grid' && featured && "md:col-span-2 lg:col-span-2"
                     )}
                   >
                     <ProductCard
@@ -273,7 +341,8 @@ export function ProductGrid({
                       onToggleFavorite={onToggleFavorite}
                       isFavorite={favoriteProductIds.includes(product.id)}
                       featured={featured}
-                      className="h-full" // Ensure cards fill their container height
+                      viewMode={viewMode}
+                      className={viewMode === 'grid' ? "h-full" : "w-full"}
                     />
                   </div>
                 ))}

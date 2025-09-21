@@ -103,10 +103,13 @@ async function getProducts(request: NextRequest) {
 
     // Apply search
     if (params.search) {
-      const searchTerm = `%${params.search}%`;
-      query = query.or(
-        `name_cs.ilike.${searchTerm},name_en.ilike.${searchTerm},description_cs.ilike.${searchTerm},description_en.ilike.${searchTerm}`
-      );
+      const searchTerm = params.search.trim();
+      if (searchTerm) {
+        // Use proper Supabase search syntax
+        query = query.or(
+          `name_cs.ilike.*${searchTerm}*,name_en.ilike.*${searchTerm}*,description_cs.ilike.*${searchTerm}*,description_en.ilike.*${searchTerm}*`
+        );
+      }
     }
 
     // Apply sorting
@@ -150,12 +153,48 @@ async function getProducts(request: NextRequest) {
       }
     );
 
-    // Get total count for pagination
-    const { count: totalCount } = await supabase
+    // Get total count for pagination with same filters applied
+    let countQuery = supabase
       .from("products")
       .select("*", { count: "exact", head: true })
       .eq("active", true);
 
+    // Apply the same filters to count query
+    if (params.categoryId) {
+      countQuery = countQuery.eq("category_id", params.categoryId);
+    }
+
+    if (params.categorySlug) {
+      countQuery = countQuery.eq("categories.slug", params.categorySlug);
+    }
+
+    if (params.minPrice !== undefined) {
+      countQuery = countQuery.gte("base_price", params.minPrice);
+    }
+
+    if (params.maxPrice !== undefined) {
+      countQuery = countQuery.lte("base_price", params.maxPrice);
+    }
+
+    if (params.featured) {
+      countQuery = countQuery.eq("featured", true);
+    }
+
+    if (params.inStock) {
+      countQuery = countQuery.contains("availability", { inStock: true });
+    }
+
+    // Apply search to count query
+    if (params.search) {
+      const searchTerm = params.search.trim();
+      if (searchTerm) {
+        countQuery = countQuery.or(
+          `name_cs.ilike.*${searchTerm}*,name_en.ilike.*${searchTerm}*,description_cs.ilike.*${searchTerm}*,description_en.ilike.*${searchTerm}*`
+        );
+      }
+    }
+
+    const { count: totalCount } = await countQuery;
     const total = totalCount || 0;
     const totalPages = Math.ceil(total / (params.limit || 12));
 

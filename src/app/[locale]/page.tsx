@@ -67,7 +67,7 @@ export default async function Home({ params }: HomeProps) {
 
         {/* Philosophy Section */}
         <div className="mt-20 max-w-4xl mx-auto text-center bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-soft">
-          <blockquote className="text-2xl md:text-3xl text-stone-700 font-elegant italic mb-6">
+          <blockquote className="text-2xl md:text-3xl text-amber-700 font-elegant italic mb-6">
             "{t("philosophy.quote")}"
           </blockquote>
           <p className="text-lg text-stone-600 leading-relaxed">
