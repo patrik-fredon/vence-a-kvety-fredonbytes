@@ -16,18 +16,18 @@
   --color-stone-900: #1c1917;
   --color-stone-950: #0c0a09;
 
-  /* Amber color palette (accent colors) */
-  --color-amber-50: #fffbeb;
-  --color-amber-100: #fef3c7;
-  --color-amber-200: #fde68a;
-  --color-amber-300: #fcd34d;
-  --color-amber-400: #fbbf24;
-  --color-amber-500: #f59e0b;
-  --color-amber-600: #d97706;
-  --color-amber-700: #b45309;
-  --color-amber-800: #92400e;
-  --color-amber-900: #78350f;
-  --color-amber-950: #451a03;
+  /* Teal color palette (accent colors) */
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+  --color-teal-950: #013029;
 
   /* Background and foreground using stone palette */
   --background: var(--color-stone-50);
@@ -40,7 +40,7 @@
 
   /* Semantic colors */
   --success: #22c55e;
-  --warning: var(--color-amber-600);
+  --warning: var(--color-teal-600);
   --error: #ef4444;
   --info: #3b82f6;
 }
@@ -74,7 +74,7 @@ h6 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 500;
   line-height: 1.2;
-  color: var(--color-amber-400);
+  color: var(--color-teal-400);
 }
 
 /* Focus styles for accessibility */
@@ -89,7 +89,7 @@ h6 {
     --color-stone-600: ButtonText;
     --color-stone-700: ButtonText;
     --color-stone-50: ButtonFace;
-    --color-amber-600: ButtonText;
+    --color-teal-600: ButtonText;
     --ring: Highlight;
   }
 }
@@ -103,7 +103,7 @@ h6 {
   --color-stone-900: #000000;
   --color-stone-100: #ffffff;
   --color-stone-200: #000000;
-  --color-amber-600: #000000;
+  --color-teal-600: #000000;
   --ring: #0066cc;
 }
 
@@ -210,11 +210,19 @@ h6 {
 }
 
 .gradient-memorial {
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50) 0%,
+    var(--color-neutral-100) 100%
+  );
 }
 
 .bg-gradient-memorial {
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50) 0%,
+    var(--color-neutral-100) 100%
+  );
 }
 
 /* Line clamp utilities */

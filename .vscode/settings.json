@@ -38,5 +38,11 @@
     "věnce",
     "Zrušit"
   ],
-  "kiroAgent.configureMCP": "Enabled"
+  "kiroAgent.configureMCP": "Enabled",
+  "i18n-ally.localesPaths": [
+    "messages",
+    "src/i18n",
+    "src/components/i18n",
+    "src/lib/i18n"
+  ]
 }

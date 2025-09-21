@@ -126,7 +126,7 @@ export function Header({ locale }: HeaderProps) {
               className="text-2xl font-light tracking-wide text-stone-900 hover:text-stone-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
               aria-label={t("home")}
             >
-              POHŘEBNÍ <span className="text-amber-600 font-medium">VĚNCE</span>
+              POHŘEBNÍ <span className="text-teal-700 font-medium">VĚNCE</span>
             </Link>
 
             {/* Desktop Navigation with enhanced styling */}

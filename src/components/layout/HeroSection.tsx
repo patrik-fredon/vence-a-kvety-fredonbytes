@@ -59,8 +59,6 @@ export function HeroSection({
             "[text-shadow:_2px_2px_4px_rgb(0_0_0_/_80%)]",
             // Margin bottom
             "mb-6",
-            // Bright amber color for maximum visibility and warmth
-            "text-amber-50"
           )}>
             {t("hero.title")}
           </h1>
