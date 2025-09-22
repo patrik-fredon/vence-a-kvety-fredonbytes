@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState } from "react";
 import { CartState, CartSummary, AddToCartRequest, CartItem } from "@/types/cart";
-import { useAuthContext } from "@/components/auth/AuthProvider";
+import { useAuthContext } from "@/components/auth";
 import { getCartSessionId, setCartSessionId, generateCartSessionId } from "./utils";
 import { CartSyncManager, CartConflictResolver, CartPersistenceManager, CartSyncEvent } from "./realtime-sync";
 

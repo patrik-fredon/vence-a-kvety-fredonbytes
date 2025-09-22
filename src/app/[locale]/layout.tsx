@@ -3,7 +3,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locales, type Locale } from "@/i18n/config";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { AuthProvider } from "@/components/auth/AuthProvider";
+import { AuthProvider } from "@/components/auth";
 import { CartProvider } from "@/lib/cart/context";
 import { AccessibilityProvider } from "@/lib/accessibility/context";
 import { MonitoringProvider } from "@/components/monitoring/MonitoringProvider";

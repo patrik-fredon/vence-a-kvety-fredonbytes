@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
 import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
-import { AuthStatus } from "@/components/auth/AuthStatus";
+import { AuthStatus } from "@/components/auth";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { Navigation } from "./Navigation";
 import { CartIcon } from "@/components/cart/CartIcon";

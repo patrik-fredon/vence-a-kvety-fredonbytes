@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server";
 import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from "@heroicons/react/24/outline";
-import { ContactForm } from "@/components/contact/ContactForm";
+import { ContactForm } from "@/components/contact";
 
 interface ContactPageProps {
   params: Promise<{ locale: string }>;

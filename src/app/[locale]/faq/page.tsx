@@ -5,7 +5,7 @@ import {
   generateFAQStructuredData,
   generateOrganizationStructuredData
 } from "@/components/seo/StructuredData";
-import { FAQAccordion } from "@/components/faq/FAQAccordion";
+import { FAQAccordion } from "@/components/faq";
 
 interface FAQPageProps {
   params: Promise<{ locale: string }>;
