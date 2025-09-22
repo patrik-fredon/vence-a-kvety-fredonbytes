@@ -26,8 +26,7 @@ const nextConfig: NextConfig = {
     ],
     // CSS optimization for better performance
     optimizeCss: true,
-    // Enable modern bundling optimizations
-    bundlePagesRouterDependencies: true,
+
   },
 
   // Turbopack configuration (replaces experimental.turbo)

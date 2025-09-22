@@ -71,9 +71,10 @@ export function ProductCard({
       )}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      aria-labelledby={`product-${product.id}-title`}
     >
       <Link
-        href={`/${locale}/products/${product.id}`}
+        href={`/${locale}/products/${product.slug}`}
         className={cn(
           "block",
           viewMode === 'grid'
@@ -186,12 +187,15 @@ export function ProductCard({
             : "flex-1 min-w-0"
         )}>
           {/* Product Name */}
-          <h3 className={cn(
-            "font-medium text-stone-900 group-hover:text-stone-700 transition-colors",
-            viewMode === 'grid'
-              ? "text-sm sm:text-base lg:text-lg mb-1 sm:mb-2 line-clamp-2"
-              : "text-sm sm:text-base mb-1 truncate"
-          )}>
+          <h3
+            id={`product-${product.id}-title`}
+            className={cn(
+              "font-medium text-stone-900 group-hover:text-stone-700 transition-colors",
+              viewMode === 'grid'
+                ? "text-sm sm:text-base lg:text-lg mb-1 sm:mb-2 line-clamp-2"
+                : "text-sm sm:text-base mb-1 truncate"
+            )}
+          >
             {product.name[locale as keyof typeof product.name]}
           </h3>
 
@@ -224,6 +228,32 @@ export function ProductCard({
                 {formatPrice(product.basePrice)}
               </span>
             )}
+          </div>
+
+          {/* Availability Status */}
+          <div className={cn(
+            "flex items-center gap-1.5",
+            viewMode === 'grid' ? "mb-2 sm:mb-4" : "mb-2"
+          )}>
+            <div className={cn(
+              "w-2 h-2 rounded-full",
+              product.availability.inStock ? "bg-green-500" : "bg-red-500"
+            )} />
+            <span
+              className={cn(
+                "text-xs font-medium",
+                product.availability.inStock ? "text-green-700" : "text-red-700"
+              )}
+              role="status"
+              aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
+            >
+              {product.availability.inStock
+                ? (product.availability.stockQuantity && product.availability.stockQuantity <= 5
+                  ? t("limitedStock")
+                  : t("inStock"))
+                : t("outOfStock")
+              }
+            </span>
           </div>
 
           {/* Add to Cart Button - Only in grid view */}
@@ -261,6 +291,27 @@ export function ProductCard({
           </div>
         )}
       </Link>
+
+      {/* Hover Overlay with Quick Actions - Only in grid view */}
+      {viewMode === 'grid' && isHovered && (
+        <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+          <div className="flex gap-2 pointer-events-auto">
+            <Button
+              size="sm"
+              variant="secondary"
+              className="bg-white/90 hover:bg-white text-stone-900 shadow-lg"
+              onClick={(e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                // TODO: Implement quick view functionality
+                console.log("Quick view:", product.id);
+              }}
+            >
+              <span className="text-xs">{t("customize")}</span>
+            </Button>
+          </div>
+        </div>
+      )}
     </article>
   );
 }
