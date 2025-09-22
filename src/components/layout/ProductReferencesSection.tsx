@@ -1,18 +1,18 @@
-'use client';
+"use client";
 
-import { useState, useEffect, useCallback } from 'react';
-import Image from 'next/image';
-import { useTranslations } from 'next-intl';
-import { cn } from '@/lib/utils';
-import { useReducedMotion } from '@/lib/accessibility/hooks';
-import type { ProductReference, ProductReferencesSectionProps } from '@/types/components';
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
+import { useReducedMotion } from "@/lib/accessibility/hooks";
+import { cn } from "@/lib/utils";
 import {
-  safeTranslate,
-  getFallbackImage,
   createDebouncedRetry,
+  getFallbackImage,
+  isRecoverableError,
   logErrorWithContext,
-  isRecoverableError
-} from '@/lib/utils/fallback-utils';
+  safeTranslate,
+} from "@/lib/utils/fallback-utils";
+import type { ProductReference, ProductReferencesSectionProps } from "@/types/components";
 
 // Utility function to transform Product to ProductReference
 const transformProductToReference = (product: any, locale: string): ProductReference => {
@@ -21,25 +21,33 @@ const transformProductToReference = (product: any, locale: string): ProductRefer
 
   // Fallback image for products without images
   const fallbackImage = {
-    src: '/funeral-wreaths-and-floral-arrangement-001.png',
-    alt: locale === 'cs' ? 'Pohřební věnec' : 'Funeral wreath',
+    src: "/funeral-wreaths-and-floral-arrangement-001.png",
+    alt: locale === "cs" ? "Pohřební věnec" : "Funeral wreath",
     width: 400,
     height: 400,
   };
 
   return {
     id: product.id,
-    name: locale === 'cs' ? product.name?.cs || product.nameCs : product.name?.en || product.nameEn,
-    image: primaryImage ? {
-      src: primaryImage.url,
-      alt: primaryImage.alt,
-      width: primaryImage.width || 400,
-      height: primaryImage.height || 400,
-    } : fallbackImage,
-    description: locale === 'cs'
-      ? product.description?.cs || product.descriptionCs || 'Krásný pohřební věnec vyrobený s láskou a péčí'
-      : product.description?.en || product.descriptionEn || 'Beautiful funeral wreath crafted with love and care',
-    category: product.category?.name?.[locale] || (locale === 'cs' ? 'Pohřební věnce' : 'Funeral Wreaths'),
+    name: locale === "cs" ? product.name?.cs || product.nameCs : product.name?.en || product.nameEn,
+    image: primaryImage
+      ? {
+          src: primaryImage.url,
+          alt: primaryImage.alt,
+          width: primaryImage.width || 400,
+          height: primaryImage.height || 400,
+        }
+      : fallbackImage,
+    description:
+      locale === "cs"
+        ? product.description?.cs ||
+          product.descriptionCs ||
+          "Krásný pohřební věnec vyrobený s láskou a péčí"
+        : product.description?.en ||
+          product.descriptionEn ||
+          "Beautiful funeral wreath crafted with love and care",
+    category:
+      product.category?.name?.[locale] || (locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths"),
     slug: product.slug,
   };
 };
@@ -48,30 +56,33 @@ const transformProductToReference = (product: any, locale: string): ProductRefer
 const ProductReferenceCard = ({
   product,
   index = 0,
-  locale = 'en'
+  locale = "en",
 }: {
   product: ProductReference;
   index?: number;
   locale?: string;
 }) => {
-  const t = useTranslations('home.productReferences');
+  const t = useTranslations("home.productReferences");
   const prefersReducedMotion = useReducedMotion();
   const [imageError, setImageError] = useState(false);
   const [currentImageSrc, setCurrentImageSrc] = useState(product.image.src);
 
   // Safe translation function with fallbacks (memoized to prevent re-renders)
-  const safeT = useCallback((key: string) => safeTranslate(t, key, locale), [t, locale]);
+  const safeT = useCallback(
+    (key: string, values?: Record<string, any>) => safeTranslate(t, key, locale, values),
+    [t, locale]
+  );
 
   // Handle image loading error with fallback
   const handleImageError = () => {
     if (!imageError) {
       setImageError(true);
-      const fallbackImage = getFallbackImage('product');
+      const fallbackImage = getFallbackImage("product");
       setCurrentImageSrc(fallbackImage.src);
 
-      logErrorWithContext(new Error('Product image failed to load'), {
-        component: 'ProductReferenceCard',
-        action: 'image_load_error',
+      logErrorWithContext(new Error("Product image failed to load"), {
+        component: "ProductReferenceCard",
+        action: "image_load_error",
         locale,
         productId: product.id,
         timestamp: new Date().toISOString(),
@@ -81,7 +92,7 @@ const ProductReferenceCard = ({
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     // Handle Enter and Space key activation
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       // In a real implementation, this would navigate to product detail
       console.log(`Navigating to product: ${product.name}`);
@@ -116,7 +127,7 @@ const ProductReferenceCard = ({
       <div className="aspect-square relative overflow-hidden">
         <Image
           src={currentImageSrc}
-          alt={`${product.image.alt} - ${safeT('productImageAlt')}`}
+          alt={`${product.image.alt} - ${safeT("productImageAlt")}`}
           width={product.image.width}
           height={product.image.height}
           onError={handleImageError}
@@ -140,21 +151,25 @@ const ProductReferenceCard = ({
           </div>
         )}
         {/* Subtle overlay for better text readability */}
-        <div className={cn(
-          "absolute inset-0 bg-gradient-to-t from-black/20 to-transparent",
-          "transition-opacity duration-300 ease-in-out",
-          "group-hover:from-black/30"
-        )} />
+        <div
+          className={cn(
+            "absolute inset-0 bg-gradient-to-t from-black/20 to-transparent",
+            "transition-opacity duration-300 ease-in-out",
+            "group-hover:from-black/30"
+          )}
+        />
       </div>
 
-      <div className={cn(
-        // Mobile-first responsive padding
-        "p-3", // Compact padding on mobile
-        "xs:p-4", // Slightly more for 375px+
-        "sm:p-5", // Standard padding for 640px+
-        "md:p-6", // Tablet padding
-        "lg:p-7", // Desktop padding
-      )}>
+      <div
+        className={cn(
+          // Mobile-first responsive padding
+          "p-3", // Compact padding on mobile
+          "xs:p-4", // Slightly more for 375px+
+          "sm:p-5", // Standard padding for 640px+
+          "md:p-6", // Tablet padding
+          "lg:p-7" // Desktop padding
+        )}
+      >
         <h3
           id={`product-name-${product.id}`}
           className={cn(
@@ -195,19 +210,23 @@ const ProductReferenceCard = ({
         </p>
 
         {/* Category badge */}
-        <div className={cn(
-          "mt-3", // Mobile spacing
-          "sm:mt-4", // Standard spacing for 640px+
-          "md:mt-5", // Tablet spacing
-        )}>
-          <span className={cn(
-            "inline-block px-2 py-1 rounded-full",
-            "text-xs font-medium", // Mobile typography
-            "xs:text-sm xs:px-3", // 375px+ sizing
-            "bg-white/20 text-teal-800",
-            "transition-all duration-300 ease-in-out",
-            "group-hover:bg-amber-600/80 group-hover:text-teal-800"
-          )}>
+        <div
+          className={cn(
+            "mt-3", // Mobile spacing
+            "sm:mt-4", // Standard spacing for 640px+
+            "md:mt-5" // Tablet spacing
+          )}
+        >
+          <span
+            className={cn(
+              "inline-block px-2 py-1 rounded-full",
+              "text-xs font-medium", // Mobile typography
+              "xs:text-sm xs:px-3", // 375px+ sizing
+              "bg-white/20 text-teal-800",
+              "transition-all duration-300 ease-in-out",
+              "group-hover:bg-amber-600/80 group-hover:text-teal-800"
+            )}
+          >
             {product.category}
           </span>
         </div>
@@ -216,7 +235,6 @@ const ProductReferenceCard = ({
   );
 };
 
-
 // Main ProductReferencesSection component
 export const ProductReferencesSection = ({
   locale,
@@ -224,7 +242,7 @@ export const ProductReferencesSection = ({
   maxProducts = 4,
   className,
 }: ProductReferencesSectionProps) => {
-  const t = useTranslations('home.productReferences');
+  const t = useTranslations("home.productReferences");
   const [products, setProducts] = useState<ProductReference[]>(propProducts || []);
   const [loading, setLoading] = useState(!propProducts);
   const [error, setError] = useState<string | null>(null);
@@ -245,10 +263,13 @@ export const ProductReferencesSection = ({
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
-      const response = await fetch(`/api/products/random?count=${maxProducts}&locale=${locale}&featured=true`, {
-        cache: 'no-store', // Ensure fresh data
-        signal: controller.signal,
-      });
+      const response = await fetch(
+        `/api/products/random?count=${maxProducts}&locale=${locale}&featured=true`,
+        {
+          cache: "no-store", // Ensure fresh data
+          signal: controller.signal,
+        }
+      );
 
       clearTimeout(timeoutId);
 
@@ -265,26 +286,26 @@ export const ProductReferencesSection = ({
         setProducts(transformedProducts);
         setRetryCount(0); // Reset retry count on success
       } else {
-        throw new Error(data.error || 'Failed to load products');
+        throw new Error(data.error || "Failed to load products");
       }
     } catch (err) {
       const error = err as Error;
 
       logErrorWithContext(error, {
-        component: 'ProductReferencesSection',
-        action: 'fetch_products',
+        component: "ProductReferencesSection",
+        action: "fetch_products",
         locale,
         retryCount,
         timestamp: new Date().toISOString(),
       });
 
       // Set user-friendly error message
-      if (error.name === 'AbortError') {
-        setError(safeTranslate(t, 'timeoutError', locale) || 'Request timed out');
+      if (error.name === "AbortError") {
+        setError(safeTranslate(t, "timeoutError", locale) || "Request timed out");
       } else if (isRecoverableError(error)) {
-        setError(safeTranslate(t, 'loadingError', locale));
+        setError(safeTranslate(t, "loadingError", locale));
       } else {
-        setError(safeTranslate(t, 'criticalError', locale) || 'Critical error occurred');
+        setError(safeTranslate(t, "criticalError", locale) || "Critical error occurred");
       }
     } finally {
       setLoading(false);
@@ -293,11 +314,14 @@ export const ProductReferencesSection = ({
   }, [maxProducts, locale, propProducts, retryCount, t]);
 
   // Safe translation function with fallbacks (memoized to prevent infinite loops)
-  const safeT = useCallback((key: string) => safeTranslate(t, key, locale), [t, locale]);
+  const safeT = useCallback(
+    (key: string, values?: Record<string, any>) => safeTranslate(t, key, locale, values),
+    [t, locale]
+  );
 
   // Debounced retry function to prevent rapid retry attempts
   const debouncedRetry = createDebouncedRetry(() => {
-    setRetryCount(prev => prev + 1);
+    setRetryCount((prev) => prev + 1);
     fetchProducts();
   }, 1000);
 
@@ -330,23 +354,27 @@ export const ProductReferencesSection = ({
         aria-describedby="products-loading"
         role="region"
       >
-        <div className={cn(
-          // Mobile-first max-width progression
-          "max-w-sm mx-auto", // 384px for very small screens
-          "xs:max-w-md", // 448px for 375px+ screens
-          "sm:max-w-4xl", // 896px for small screens (640px+)
-          "md:max-w-5xl", // 1024px for tablets
-          "lg:max-w-6xl", // 1152px for desktop
-          "xl:max-w-7xl" // 1280px for large screens
-        )}>
-          <div className={cn(
-            "text-center",
-            // Mobile-first spacing
-            "mb-8", // Compact spacing on mobile
-            "sm:mb-10", // Standard spacing for 640px+
-            "md:mb-12", // Tablet spacing
-            "lg:mb-16" // Desktop spacing
-          )}>
+        <div
+          className={cn(
+            // Mobile-first max-width progression
+            "max-w-sm mx-auto", // 384px for very small screens
+            "xs:max-w-md", // 448px for 375px+ screens
+            "sm:max-w-4xl", // 896px for small screens (640px+)
+            "md:max-w-5xl", // 1024px for tablets
+            "lg:max-w-6xl", // 1152px for desktop
+            "xl:max-w-7xl" // 1280px for large screens
+          )}
+        >
+          <div
+            className={cn(
+              "text-center",
+              // Mobile-first spacing
+              "mb-8", // Compact spacing on mobile
+              "sm:mb-10", // Standard spacing for 640px+
+              "md:mb-12", // Tablet spacing
+              "lg:mb-16" // Desktop spacing
+            )}
+          >
             <h2
               id="products-heading"
               className={cn(
@@ -365,20 +393,16 @@ export const ProductReferencesSection = ({
                 "md:landscape:text-4xl" // Tablet landscape
               )}
             >
-              {t('heading')}
+              {t("heading")}
             </h2>
           </div>
-          <div
-            className="flex justify-center items-center py-12"
-            role="status"
-            aria-live="polite"
-          >
+          <div className="flex justify-center items-center py-12" role="status" aria-live="polite">
             <div
               className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"
               aria-hidden="true"
-            ></div>
+            />
             <span id="products-loading" className="sr-only">
-              {safeT('loading')}
+              {safeT("loading")}
             </span>
           </div>
         </div>
@@ -411,15 +435,17 @@ export const ProductReferencesSection = ({
         aria-describedby="products-error"
         role="region"
       >
-        <div className={cn(
-          // Mobile-first max-width progression
-          "max-w-sm mx-auto", // 384px for very small screens
-          "xs:max-w-md", // 448px for 375px+ screens
-          "sm:max-w-4xl", // 896px for small screens (640px+)
-          "md:max-w-5xl", // 1024px for tablets
-          "lg:max-w-6xl", // 1152px for desktop
-          "xl:max-w-7xl" // 1280px for large screens
-        )}>
+        <div
+          className={cn(
+            // Mobile-first max-width progression
+            "max-w-sm mx-auto", // 384px for very small screens
+            "xs:max-w-md", // 448px for 375px+ screens
+            "sm:max-w-4xl", // 896px for small screens (640px+)
+            "md:max-w-5xl", // 1024px for tablets
+            "lg:max-w-6xl", // 1152px for desktop
+            "xl:max-w-7xl" // 1280px for large screens
+          )}
+        >
           <div className="text-center">
             <h2
               id="products-heading"
@@ -439,13 +465,9 @@ export const ProductReferencesSection = ({
                 "md:landscape:text-4xl" // Tablet landscape
               )}
             >
-              {t('heading')}
+              {t("heading")}
             </h2>
-            <div
-              role="alert"
-              aria-live="assertive"
-              className="text-center py-12"
-            >
+            <div role="alert" aria-live="assertive" className="text-center py-12">
               <p
                 id="products-error"
                 className={cn(
@@ -460,14 +482,12 @@ export const ProductReferencesSection = ({
               >
                 {error}
               </p>
-
               {/* Retry information */}
               {retryCount > 0 && (
                 <p className="text-teal-800/70 text-sm mb-4">
-                  {safeT('retryAttempt')} {retryCount}
+                  {safeT("retryAttempt")} {retryCount}
                 </p>
               )}
-
               <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   onClick={debouncedRetry}
@@ -482,12 +502,12 @@ export const ProductReferencesSection = ({
                   )}
                   aria-describedby="retry-description"
                 >
-                  {isRetrying ? safeT('retrying') || 'Retrying...' : safeT('tryAgain')}
+                  {isRetrying ? safeT("retrying") || "Retrying..." : safeT("tryAgain")}
                 </button>
 
                 {/* Alternative action - go to products page */}
                 <button
-                  onClick={() => window.location.href = `/${locale}/products`}
+                  onClick={() => (window.location.href = `/${locale}/products`)}
                   className={cn(
                     "text-teal-800 hover:text-stone-200 font-medium transition-colors",
                     "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background",
@@ -495,13 +515,14 @@ export const ProductReferencesSection = ({
                     "min-h-[44px]" // WCAG touch target
                   )}
                 >
-                  {safeT('viewAllProducts') || (locale === 'cs' ? 'Zobrazit všechny produkty' : 'View All Products')}
+                  {safeT("viewAllProducts") ||
+                    (locale === "cs" ? "Zobrazit všechny produkty" : "View All Products")}
                 </button>
               </div>
-
               <div id="retry-description" className="sr-only">
-                {safeT('retryDescription')}
-              </div>        </div>
+                {safeT("retryDescription")}
+              </div>{" "}
+            </div>
           </div>
         </div>
       </section>
@@ -537,25 +558,29 @@ export const ProductReferencesSection = ({
       aria-describedby="products-description"
       role="region"
     >
-      <div className={cn(
-        // Mobile-first max-width progression for better space utilization
-        "max-w-sm mx-auto", // 384px for very small screens
-        "xs:max-w-md", // 448px for 375px+ screens
-        "sm:max-w-4xl", // 896px for small screens (640px+)
-        "md:max-w-5xl", // 1024px for tablets
-        "lg:max-w-6xl", // 1152px for desktop
-        "xl:max-w-7xl" // 1280px for large screens
-      )}>
+      <div
+        className={cn(
+          // Mobile-first max-width progression for better space utilization
+          "max-w-sm mx-auto", // 384px for very small screens
+          "xs:max-w-md", // 448px for 375px+ screens
+          "sm:max-w-4xl", // 896px for small screens (640px+)
+          "md:max-w-5xl", // 1024px for tablets
+          "lg:max-w-6xl", // 1152px for desktop
+          "xl:max-w-7xl" // 1280px for large screens
+        )}
+      >
         {/* Section heading with mobile-first responsive design */}
-        <div className={cn(
-          "text-center",
-          // Mobile-first spacing
-          "mb-8", // Compact spacing on mobile
-          "xs:mb-10", // Slightly more for 375px+
-          "sm:mb-12", // Standard spacing for 640px+
-          "md:mb-16", // Tablet spacing
-          "lg:mb-20" // Desktop spacing
-        )}>
+        <div
+          className={cn(
+            "text-center",
+            // Mobile-first spacing
+            "mb-8", // Compact spacing on mobile
+            "xs:mb-10", // Slightly more for 375px+
+            "sm:mb-12", // Standard spacing for 640px+
+            "md:mb-16", // Tablet spacing
+            "lg:mb-20" // Desktop spacing
+          )}
+        >
           <h2
             id="products-heading"
             className={cn(
@@ -584,7 +609,7 @@ export const ProductReferencesSection = ({
             role="heading"
             aria-level={2}
           >
-            {safeT('heading')}
+            {safeT("heading")}
           </h2>
           <p
             id="products-description"
@@ -614,7 +639,7 @@ export const ProductReferencesSection = ({
             )}
             tabIndex={0}
           >
-            {safeT('description')}
+            {safeT("description")}
           </p>
         </div>
 
@@ -644,7 +669,7 @@ export const ProductReferencesSection = ({
             "md:landscape:gap-6" // Tablet landscape gaps
           )}
           role="grid"
-          aria-label={safeT('productGridLabel')}
+          aria-label={safeT("productGridLabel")}
           aria-rowcount={Math.ceil(products.length / 4)}
           aria-colcount={4}
         >
@@ -660,9 +685,7 @@ export const ProductReferencesSection = ({
 
         {/* Screen reader summary */}
         <div className="sr-only" aria-live="polite">
-          <p>
-            {safeT('summaryText').replace('{count}', products.length.toString())}
-          </p>
+          <p>{safeT("summaryText", { count: products.length })}</p>
         </div>
       </div>
     </section>
