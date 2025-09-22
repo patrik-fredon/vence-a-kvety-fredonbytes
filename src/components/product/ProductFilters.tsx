@@ -111,18 +111,18 @@ export function ProductFilters({
   };
 
   return (
-    <div className={cn("bg-white rounded-lg shadow-soft p-4", className)}>
+    <div className={cn("bg-amber-100 rounded-lg ", className)}>
       {/* Search & Filters Toggle Button */}
-      <div className="mb-4">
+      <div className="mb-4 text-amber-100">
         <Button
           variant="outline"
           onClick={toggleSearchAndFilters}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 bg-teal-900 text-amber-100 hover:text-teal-900"
         >
           <span>🔍</span>
           <span>{isSearchAndFiltersVisible ? t("hideSearch") : t("showSearch")}</span>
           {hasActiveFilters && (
-            <span className="ml-2 px-2 py-1 bg-primary-100 text-primary-700 text-xs rounded-full">
+            <span className="ml-2 px-2 py-1 text-amber-100 text-xs rounded-full">
               {Object.keys(localFilters).filter(key =>
                 localFilters[key as keyof ProductFiltersType] !== undefined &&
                 localFilters[key as keyof ProductFiltersType] !== ""
@@ -137,12 +137,12 @@ export function ProductFilters({
         <div className="space-y-6 p-4 bg-stone-50 rounded-lg border border-stone-200">
           {/* Close Button */}
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-neutral-700">{t("searchAndFilters")}</h3>
+            <h3 className="text-sm font-medium text-amber-100">{t("searchAndFilters")}</h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsSearchAndFiltersVisible(false)}
-              className="text-stone-500 hover:text-stone-700"
+              className="text-amber-100 hover:text-stone-700"
             >
               ✕
             </Button>
@@ -168,41 +168,7 @@ export function ProductFilters({
             )}
           </div>
 
-          {/* Sort Options */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">{t("sortBy")}</label>
-            <div className="space-y-2">
-              <select
-                value={sortOptions.field}
-                onChange={(e) => handleSortChange(e.target.value as ProductSortOptions["field"])}
-                className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="created_at">{t("sortByNewest")}</option>
-                <option value="name">{t("sortByName")}</option>
-                <option value="price">{t("sortByPrice")}</option>
-                <option value="popularity">{t("sortByPopular")}</option>
-              </select>
 
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant={sortOptions.direction === "asc" ? "primary" : "outline"}
-                  onClick={() => handleSortChange(sortOptions.field, "asc")}
-                  className="flex-1"
-                >
-                  {t("sortAsc")}
-                </Button>
-                <Button
-                  size="sm"
-                  variant={sortOptions.direction === "desc" ? "primary" : "outline"}
-                  onClick={() => handleSortChange(sortOptions.field, "desc")}
-                  className="flex-1"
-                >
-                  {t("sortDesc")}
-                </Button>
-              </div>
-            </div>
-          </div>
 
           {/* Category Filter */}
           <div>

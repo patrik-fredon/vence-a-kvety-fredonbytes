@@ -61,7 +61,7 @@ export function ProductCard({
     <article
       className={cn(
         // Base card styles
-        "group bg-white overflow-hidden transition-all duration-300",
+        "group bg-stone-200 overflow-hidden transition-all duration-300",
         "hover:shadow-lg",
         // Focus styles for keyboard navigation
         "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2 rounded-lg",

@@ -238,7 +238,7 @@ export function ProductGrid({
   const organizedProducts = organizeProductsForGrid(products);
 
   return (
-    <section className={cn("bg-stone-50 py-8", className)}>
+    <section className={cn("bg-amber-100 py-8", className)}>
       <div className="container mx-auto px-4">
         {/* Filters */}
         <div className="mb-8">
@@ -276,7 +276,7 @@ export function ProductGrid({
                 className="rounded-none border-0 px-3 py-1"
                 aria-label={t("gridView")}
               >
-                <span className="text-sm">⊞</span>
+                <span className="text-2xl">⊞</span>
               </Button>
               <Button
                 variant={viewMode === 'list' ? 'primary' : 'ghost'}
@@ -285,7 +285,7 @@ export function ProductGrid({
                 className="rounded-none border-0 px-3 py-1"
                 aria-label={t("listView")}
               >
-                <span className="text-sm">☰</span>
+                <span className="text-2xl">☰</span>
               </Button>
             </div>
           </div>

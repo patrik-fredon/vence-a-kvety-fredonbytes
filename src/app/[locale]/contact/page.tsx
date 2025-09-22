@@ -8,7 +8,11 @@ interface ContactPageProps {
 
 export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
-  const tContact = await getTranslations("contact");
+
+  // Debug logging to verify locale detection
+  console.log('Contact page locale:', locale);
+
+  const tContact = await getTranslations({ locale, namespace: "contact" });
 
   const contactInfo = {
     address: {
@@ -26,9 +30,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        <h2 className="text-center text-4xl font-semibold mb-12 text-neutral-800">
+        <h1 className="text-center text-4xl font-semibold mb-12 text-neutral-800">
           {tContact("title")}
-        </h2>
+        </h1>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Information - Compact Professional Card */}
