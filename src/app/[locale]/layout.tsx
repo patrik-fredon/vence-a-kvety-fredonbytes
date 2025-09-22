@@ -28,7 +28,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   }
 
   // Providing all messages to the client side is the easiest way to get started
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
 
   // Get user for monitoring context
   const supabase = createClient();
