@@ -18,6 +18,7 @@ export { HeroSection } from "./HeroSection";
 export { RefactoredHeroSection } from "./RefactoredHeroSection";
 export { ProductReferencesSection } from "./ProductReferencesSection";
 export { LazyProductReferencesSection } from "./LazyProductReferencesSection";
+export { RefactoredPageLayout } from "./RefactoredPageLayout";
 
 // =============================================================================
 // FUTURE LAYOUT COMPONENTS
