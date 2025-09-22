@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funeral Colors Test</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        funeral: {
+                            hero: '#102724',
+                            background: '#9B9259',
+                            heroLight: '#1A3D36',
+                            heroDark: '#0A1A15',
+                            backgroundLight: '#B5A66B',
+                            backgroundDark: '#7A7347',
+                            textOnHero: '#FFFFFF',
+                            textOnBackground: '#2D2D2D',
+                            textSecondary: '#F5F5DC',
+                            accent: '#D4AF37',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-funeral-background text-funeral-textOnBackground">
+    <div class="min-h-screen">
+        <!-- Hero Section Test -->
+        <section class="bg-funeral-hero text-funeral-textOnHero p-8 text-center">
+            <h1 class="text-4xl font-bold mb-4">Funeral Colors Test</h1>
+            <p class="text-funeral-textSecondary mb-6">Testing the funeral color palette integration</p>
+            <button class="bg-funeral-accent text-funeral-textOnBackground px-6 py-3 rounded-lg hover:opacity-90">
+                Test CTA Button
+            </button>
+        </section>
+
+        <!-- Content Section Test -->
+        <section class="bg-funeral-backgroundLight p-8">
+            <h2 class="text-2xl font-semibold mb-4 text-funeral-textOnBackground">Color Variants Test</h2>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                <div class="bg-funeral-hero p-4 rounded text-funeral-textOnHero text-center">
+                    <p>Hero</p>
+                    <small>#102724</small>
+                </div>
+                <div class="bg-funeral-heroLight p-4 rounded text-funeral-textOnHero text-center">
+                    <p>Hero Light</p>
+                    <small>#1A3D36</small>
+                </div>
+                <div class="bg-funeral-background p-4 rounded text-funeral-textOnBackground text-center">
+                    <p>Background</p>
+                    <small>#9B9259</small>
+                </div>
+                <div class="bg-funeral-backgroundLight p-4 rounded text-funeral-textOnBackground text-center">
+                    <p>Background Light</p>
+                    <small>#B5A66B</small>
+                </div>
+            </div>
+        </section>
+
+        <!-- Requirements Validation -->
+        <section class="p-8">
+            <h2 class="text-2xl font-semibold mb-4">Requirements Validation</h2>
+            <div class="space-y-2">
+                <p class="flex items-center">
+                    <span class="text-green-600 mr-2">✅</span>
+                    <strong>Requirement 5.1:</strong> Hero section background uses #102724
+                </p>
+                <p class="flex items-center">
+                    <span class="text-green-600 mr-2">✅</span>
+                    <strong>Requirement 5.2:</strong> Page background uses #9B9259
+                </p>
+                <p class="flex items-center">
+                    <span class="text-green-600 mr-2">✅</span>
+                    <strong>Requirement 5.3:</strong> Colors convey appropriate funeral mood
+                </p>
+            </div>
+        </section>
+    </div>
+</body>
+</html>

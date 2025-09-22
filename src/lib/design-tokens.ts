@@ -56,6 +56,27 @@ export const whiteColor = "#FFFFFF" as const;
 export const blackColor = "#000000" as const;
 
 /**
+ * Funeral-specific color palette
+ * Professional colors appropriate for funeral services and memorial products
+ */
+export const funeralColors = {
+  // Hero section background - dark green-gray (#102724)
+  hero: "#102724",
+  // Page background - muted olive-gold (#9B9259)
+  background: "#9B9259",
+  // Complementary shades for the funeral palette
+  heroLight: "#1A3D36", // Lighter variant of hero color
+  heroDark: "#0A1A15",  // Darker variant of hero color
+  backgroundLight: "#B5A66B", // Lighter variant of background color
+  backgroundDark: "#7A7347",  // Darker variant of background color
+  // Text colors that work well with funeral palette
+  textOnHero: "#FFFFFF",      // White text on hero background
+  textOnBackground: "#2D2D2D", // Dark text on page background
+  textSecondary: "#F5F5DC",   // Beige for secondary text
+  accent: "#D4AF37",          // Gold accent for highlights
+} as const;
+
+/**
  * Semantic colors for states and feedback
  * Using green for success, amber for warning, red for error, blue for info
  */
@@ -327,7 +348,7 @@ export const timingFunction = {
 // =============================================================================
 
 /**
- * Complete design token system for stone/amber design
+ * Complete design token system for stone/amber design with funeral-appropriate colors
  */
 export const designTokens = {
   colors: {
@@ -335,6 +356,7 @@ export const designTokens = {
     amber: amberColors,
     white: whiteColor,
     black: blackColor,
+    funeral: funeralColors,
     semantic: semanticColors,
   },
   typography: {
