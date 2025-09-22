@@ -38,37 +38,37 @@ export default function AdminSidebar({
   const navigation = [
     {
       id: "overview" as AdminView,
-      name: "Přehled",
+      name: t("overview"),
       icon: HomeIcon,
       badge: null,
     },
     {
       id: "products" as AdminView,
-      name: "Produkty",
+      name: t("products"),
       icon: ShoppingBagIcon,
       badge: null,
     },
     {
       id: "orders" as AdminView,
-      name: "Objednávky",
+      name: t("orders"),
       icon: ClipboardDocumentListIcon,
       badge: stats?.orders.pending || 0,
     },
     {
       id: "inventory" as AdminView,
-      name: "Skladové zásoby",
+      name: t("inventory"),
       icon: CubeIcon,
       badge: (stats?.products.low_stock || 0) + (stats?.products.out_of_stock || 0),
     },
     {
       id: "activity" as AdminView,
-      name: "Aktivita",
+      name: t("activity"),
       icon: ClockIcon,
       badge: null,
     },
     {
       id: "monitoring" as AdminView,
-      name: "Monitoring",
+      name: t("monitoring"),
       icon: ChartBarIcon,
       badge: null,
     },
@@ -95,7 +95,7 @@ export default function AdminSidebar({
         <div className="flex flex-col h-full">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-stone-200">
-            <h1 className="text-xl font-semibold text-stone-900">Admin Panel</h1>
+            <h1 className="text-xl font-semibold text-stone-900">{t("adminPanel")}</h1>
             <button
               onClick={onToggle}
               className="lg:hidden p-2 rounded-md text-stone-400 hover:text-stone-500 hover:bg-stone-100 transition-colors"
@@ -156,9 +156,9 @@ export default function AdminSidebar({
                   <ExclamationTriangleIcon className="h-5 w-5 text-amber-400 mr-2" />
                   <div className="text-sm">
                     <p className="font-medium text-amber-800">
-                      {stats.alerts.unacknowledged} nepotvrzených upozornění
+                      {stats.alerts.unacknowledged} {t("unacknowledgedAlerts")}
                     </p>
-                    <p className="text-amber-700">Zkontrolujte skladové zásoby</p>
+                    <p className="text-amber-700">{t("checkInventory")}</p>
                   </div>
                 </div>
               </div>
@@ -167,7 +167,7 @@ export default function AdminSidebar({
 
           {/* Footer */}
           <div className="p-4 border-t border-stone-200">
-            <p className="text-xs text-stone-500 text-center">Pohřební věnce Admin</p>
+            <p className="text-xs text-stone-500 text-center">{t("adminFooter")}</p>
           </div>
         </div>
       </div>

@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   PlusIcon,
   PencilIcon,
@@ -42,6 +43,7 @@ interface Category {
 }
 
 export default function ProductManagement() {
+  const t = useTranslations("admin");
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [loading, setLoading] = useState(true);
@@ -187,13 +189,13 @@ export default function ProductManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-stone-900">Správa produktů</h2>
+        <h2 className="text-2xl font-bold text-stone-900">{t("productManagement")}</h2>
         <Button
           onClick={handleCreateProduct}
           icon={<PlusIcon className="h-5 w-5" />}
           iconPosition="left"
         >
-          Přidat produkt
+          {t("addProduct")}
         </Button>
       </div>
 
@@ -203,7 +205,7 @@ export default function ProductManagement() {
           {/* Search */}
           <Input
             type="text"
-            placeholder="Hledat produkty..."
+            placeholder={t("searchProducts")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             icon={<MagnifyingGlassIcon className="h-5 w-5" />}
@@ -216,7 +218,7 @@ export default function ProductManagement() {
             onChange={(e) => setSelectedCategory(e.target.value)}
             className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
           >
-            <option value="">Všechny kategorie</option>
+            <option value="">{t("allCategories")}</option>
             {categories.map((category) => (
               <option key={category.id} value={category.id}>
                 {category.name_cs}
@@ -232,12 +234,12 @@ export default function ProductManagement() {
               onChange={(e) => setShowActiveOnly(e.target.checked)}
               className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
             />
-            <span className="ml-2 text-sm text-stone-700">Pouze aktivní</span>
+            <span className="ml-2 text-sm text-stone-700">{t("onlyActive")}</span>
           </label>
 
           {/* Results count */}
           <div className="text-sm text-stone-500 flex items-center">
-            Zobrazeno: {filteredProducts.length} produktů
+            {t("shown")}: {filteredProducts.length} {t("products")}
           </div>
         </div>
       </Card>
@@ -254,22 +256,22 @@ export default function ProductManagement() {
               <thead className="bg-stone-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Produkt
+                    {t("product")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Kategorie
+                    {t("category")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Cena
+                    {t("price")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Zásoby
+                    {t("stock")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Stav
+                    {t("status")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Akce
+                    {t("actions")}
                   </th>
                 </tr>
               </thead>
@@ -283,7 +285,7 @@ export default function ProductManagement() {
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
-                      {product.category?.name_cs || "Bez kategorie"}
+                      {product.category?.name_cs || t("noCategory")}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
                       {formatCurrency(product.base_price)}
@@ -298,10 +300,10 @@ export default function ProductManagement() {
                               : "text-green-600"
                             }`}
                         >
-                          {product.stock_quantity} ks
+                          {product.stock_quantity} {t("pieces")}
                         </span>
                       ) : (
-                        <span className="text-stone-500">Nesledováno</span>
+                        <span className="text-stone-500">{t("notTracked")}</span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -312,11 +314,11 @@ export default function ProductManagement() {
                             : "bg-red-100 text-red-800"
                             }`}
                         >
-                          {product.active ? "Aktivní" : "Neaktivní"}
+                          {product.active ? t("active") : t("inactive")}
                         </span>
                         {product.featured && (
                           <span className="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-amber-100 text-amber-800">
-                            Doporučený
+                            {t("featured")}
                           </span>
                         )}
                       </div>
@@ -327,7 +329,7 @@ export default function ProductManagement() {
                           variant="ghost"
                           size="icon"
                           onClick={() => window.open(`/products/${product.slug}`, "_blank")}
-                          title="Zobrazit"
+                          title={t("view")}
                         >
                           <EyeIcon className="h-4 w-4" />
                         </Button>
@@ -335,7 +337,7 @@ export default function ProductManagement() {
                           variant="ghost"
                           size="icon"
                           onClick={() => handleEditProduct(product)}
-                          title="Upravit"
+                          title={t("edit")}
                         >
                           <PencilIcon className="h-4 w-4" />
                         </Button>
@@ -343,7 +345,7 @@ export default function ProductManagement() {
                           variant="ghost"
                           size="icon"
                           onClick={() => setDeleteProduct(product)}
-                          title="Smazat"
+                          title={t("delete")}
                           className="text-red-600 hover:text-red-900"
                         >
                           <TrashIcon className="h-4 w-4" />
@@ -361,7 +363,7 @@ export default function ProductManagement() {
         {totalPages > 1 && (
           <div className="px-6 py-3 border-t border-stone-200 flex items-center justify-between">
             <div className="text-sm text-stone-700">
-              Stránka {currentPage} z {totalPages}
+              {t("page")} {currentPage} {t("of")} {totalPages}
             </div>
             <div className="flex space-x-2">
               <Button
@@ -370,7 +372,7 @@ export default function ProductManagement() {
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
               >
-                Předchozí
+                {t("previous")}
               </Button>
               <Button
                 variant="outline"
@@ -378,7 +380,7 @@ export default function ProductManagement() {
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
               >
-                Další
+                {t("next")}
               </Button>
             </div>
           </div>
@@ -388,8 +390,8 @@ export default function ProductManagement() {
       {/* Delete confirmation modal */}
       {deleteProduct && (
         <DeleteConfirmModal
-          title="Smazat produkt"
-          message={`Opravdu chcete smazat produkt "${deleteProduct.name_cs}"? Tato akce je nevratná.`}
+          title={t("deleteProduct")}
+          message={`${t("deleteProductConfirm")} "${deleteProduct.name_cs}"? ${t("actionIrreversible")}`}
           onConfirm={() => handleDeleteProduct(deleteProduct)}
           onCancel={() => setDeleteProduct(null)}
         />

@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { Fragment } from "react";
+import { useTranslations } from "next-intl";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
 
@@ -30,23 +31,26 @@ interface OrderDetailModalProps {
   onStatusUpdate: (orderId: string, status: string, internalNotes?: string) => void;
 }
 
-const statusOptions = [
-  { value: "pending", label: "Čekající" },
-  { value: "confirmed", label: "Potvrzeno" },
-  { value: "processing", label: "Zpracovává se" },
-  { value: "shipped", label: "Odesláno" },
-  { value: "delivered", label: "Doručeno" },
-  { value: "cancelled", label: "Zrušeno" },
-];
+// Status options will be generated using translations
 
 export default function OrderDetailModal({
   order,
   onClose,
   onStatusUpdate,
 }: OrderDetailModalProps) {
+  const t = useTranslations("admin");
   const [selectedStatus, setSelectedStatus] = useState(order.status);
   const [internalNotes, setInternalNotes] = useState(order.internalNotes || "");
   const [loading, setLoading] = useState(false);
+
+  const statusOptions = [
+    { value: "pending", label: t("pending") },
+    { value: "confirmed", label: t("confirmed") },
+    { value: "processing", label: t("processing") },
+    { value: "shipped", label: t("shipped") },
+    { value: "delivered", label: t("delivered") },
+    { value: "cancelled", label: t("cancelled") },
+  ];
 
   const handleStatusUpdate = async () => {
     if (selectedStatus === order.status && internalNotes === (order.internalNotes || "")) {
@@ -109,7 +113,7 @@ export default function OrderDetailModal({
               <Dialog.Panel className="w-full max-w-4xl transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all">
                 <div className="flex items-center justify-between p-6 border-b border-gray-200">
                   <Dialog.Title as="h3" className="text-lg font-medium leading-6 text-gray-900">
-                    Detail objednávky #{order.orderNumber}
+                    {t("orderDetail")} #{order.orderNumber}
                   </Dialog.Title>
                   <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
                     <XMarkIcon className="h-6 w-6" />
@@ -121,15 +125,15 @@ export default function OrderDetailModal({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
                       <h4 className="text-sm font-medium text-gray-900 mb-3">
-                        Informace o objednávce
+                        {t("orderInfo")}
                       </h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Číslo objednávky:</span>
+                          <span className="text-gray-500">{t("orderNumber")}:</span>
                           <span className="font-medium">#{order.orderNumber}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Stav:</span>
+                          <span className="text-gray-500">{t("status")}:</span>
                           <span
                             className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${getStatusColor(order.status)}`}
                           >
@@ -137,37 +141,37 @@ export default function OrderDetailModal({
                           </span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Celková částka:</span>
+                          <span className="text-gray-500">{t("totalAmount")}:</span>
                           <span className="font-medium">{formatCurrency(order.totalAmount)}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Počet položek:</span>
+                          <span className="text-gray-500">{t("itemCount")}:</span>
                           <span>{order.itemCount}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Platební metoda:</span>
+                          <span className="text-gray-500">{t("paymentMethod")}:</span>
                           <span>{order.paymentMethod}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Stav platby:</span>
+                          <span className="text-gray-500">{t("paymentStatus")}:</span>
                           <span>{order.paymentStatus}</span>
                         </div>
                       </div>
                     </div>
 
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900 mb-3">Zákazník</h4>
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">{t("customer")}</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Jméno:</span>
+                          <span className="text-gray-500">{t("name")}:</span>
                           <span className="font-medium">{order.customerName}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Email:</span>
+                          <span className="text-gray-500">{t("email")}:</span>
                           <span>{order.customerEmail}</span>
                         </div>
                         <div className="flex justify-between">
-                          <span className="text-gray-500">Telefon:</span>
+                          <span className="text-gray-500">{t("phone")}:</span>
                           <span>{order.customerPhone}</span>
                         </div>
                       </div>
@@ -176,14 +180,14 @@ export default function OrderDetailModal({
 
                   {/* Delivery information */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Doručení</h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">{t("delivery")}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-500">Adresa:</span>
+                        <span className="text-gray-500">{t("address")}:</span>
                         <p className="font-medium">{order.deliveryAddress}</p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Preferovaný termín:</span>
+                        <span className="text-gray-500">{t("preferredDate")}:</span>
                         <p className="font-medium">
                           {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
                         </p>
@@ -193,14 +197,14 @@ export default function OrderDetailModal({
 
                   {/* Dates */}
                   <div>
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Časové údaje</h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">{t("timeData")}</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
                       <div>
-                        <span className="text-gray-500">Vytvořeno:</span>
+                        <span className="text-gray-500">{t("created")}:</span>
                         <p>{new Date(order.createdAt).toLocaleString("cs-CZ")}</p>
                       </div>
                       <div>
-                        <span className="text-gray-500">Aktualizováno:</span>
+                        <span className="text-gray-500">{t("updated")}:</span>
                         <p>{new Date(order.updatedAt).toLocaleString("cs-CZ")}</p>
                       </div>
                     </div>
@@ -209,7 +213,7 @@ export default function OrderDetailModal({
                   {/* Customer notes */}
                   {order.notes && (
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900 mb-3">Poznámky zákazníka</h4>
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">{t("customerNotes")}</h4>
                       <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                         {order.notes}
                       </p>
@@ -218,11 +222,11 @@ export default function OrderDetailModal({
 
                   {/* Status update section */}
                   <div className="border-t border-gray-200 pt-6">
-                    <h4 className="text-sm font-medium text-gray-900 mb-3">Aktualizace stavu</h4>
+                    <h4 className="text-sm font-medium text-gray-900 mb-3">{t("statusUpdate")}</h4>
                     <div className="space-y-4">
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Nový stav
+                          {t("newStatus")}
                         </label>
                         <select
                           value={selectedStatus}
@@ -239,14 +243,14 @@ export default function OrderDetailModal({
 
                       <div>
                         <label className="block text-sm font-medium text-gray-700 mb-2">
-                          Interní poznámky
+                          {t("internalNotesLabel")}
                         </label>
                         <textarea
                           rows={3}
                           value={internalNotes}
                           onChange={(e) => setInternalNotes(e.target.value)}
                           className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                          placeholder="Interní poznámky pro administrátory..."
+                          placeholder={t("internalNotes")}
                         />
                       </div>
                     </div>
@@ -258,7 +262,7 @@ export default function OrderDetailModal({
                     onClick={onClose}
                     className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50"
                   >
-                    Zavřít
+                    {t("close")}
                   </button>
                   <button
                     onClick={handleStatusUpdate}
@@ -269,7 +273,7 @@ export default function OrderDetailModal({
                     }
                     className="px-4 py-2 text-sm font-medium text-white bg-blue-600 border border-transparent rounded-lg hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    {loading ? "Ukládám..." : "Uložit změny"}
+                    {loading ? t("saving") : t("saveChanges")}
                   </button>
                 </div>
               </Dialog.Panel>
