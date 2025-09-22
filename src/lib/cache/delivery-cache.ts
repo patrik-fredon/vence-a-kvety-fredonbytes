@@ -3,7 +3,7 @@
  * Handles caching of delivery availability, pricing, and calendar data
  */
 
-import { DeliveryAvailability, DeliveryCacheData, DeliveryZone, Holiday } from "@/types/delivery";
+import { DeliveryAvailability, DeliveryZone, Holiday } from "@/types/delivery";
 import {
   getCacheClient,
   CACHE_KEYS,

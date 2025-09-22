@@ -4,7 +4,6 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
-import { User } from "@supabase/supabase-js";
 
 export interface GDPRDataExport {
   user: {

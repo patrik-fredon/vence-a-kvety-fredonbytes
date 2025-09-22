@@ -5,7 +5,6 @@
 import {
   validateEmail,
   validatePhone,
-  validateRequiredString,
   validateUUID,
   validateNumber,
   sanitizeString,

@@ -74,7 +74,7 @@ export function ProductGrid({
   // Fetch products from API
   const fetchProducts = useCallback(
     async (page: number = 1, resetProducts: boolean = false) => {
-      console.log('🔍 [ProductGrid] Fetching products with filters:', filters);
+
       setLoading(true);
       setError(null);
 
@@ -99,7 +99,7 @@ export function ProductGrid({
         // Add sorting
         searchParams.set("sortField", sortOptions.field);
         searchParams.set("sortDirection", sortOptions.direction);
-        console.log('📊 [ProductGrid] API call with sort:', { field: sortOptions.field, direction: sortOptions.direction });
+
 
         const response = await fetch(`/api/products?${searchParams.toString()}`);
 
@@ -178,7 +178,7 @@ export function ProductGrid({
 
   // Handle filter changes
   const handleFiltersChange = (newFilters: ProductFilters) => {
-    console.log('🔍 [ProductGrid] Filter change:', newFilters);
+
     setFilters(newFilters);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to filters dependency
@@ -186,7 +186,7 @@ export function ProductGrid({
 
   // Handle sort changes
   const handleSortChange = (newSort: ProductSortOptions) => {
-    console.log('📊 [ProductGrid] Sort change:', newSort);
+
     setSortOptions(newSort);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to sortOptions dependency
@@ -205,7 +205,7 @@ export function ProductGrid({
       onAddToCart(product);
     } else {
       // Default behavior - TODO: Implement cart functionality in later tasks
-      console.log("Added to cart:", product.name[locale as keyof typeof product.name]);
+
       // Could show a toast notification here
     }
   };

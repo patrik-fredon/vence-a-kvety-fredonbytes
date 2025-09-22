@@ -138,3 +138,10 @@ temp/
 .kiro/steering/byterover-rules.md
 .qoder/rules/byterover-rules.md
 .augment/rules/byterover-rules.md
+.kiro/specs/ui-layout-migration/design.md
+.kiro/specs/ui-layout-migration/requirements.md
+.kiro/specs/ui-layout-migration/tasks.md
+.kiro/steering/structure.md
+.kiro/steering/tech.md
+.serena/project.yml
+.serena/memories/tech_stack.md

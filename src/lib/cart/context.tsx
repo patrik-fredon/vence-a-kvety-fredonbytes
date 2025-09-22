@@ -2,7 +2,7 @@
 
 import React, { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState } from "react";
 import { CartState, CartSummary, AddToCartRequest, CartItem } from "@/types/cart";
-import { useAuthContext } from "@/components/auth/AuthProvider";
+import { useAuthContext } from "@/components/auth";
 import { getCartSessionId, setCartSessionId, generateCartSessionId } from "./utils";
 import { CartSyncManager, CartConflictResolver, CartPersistenceManager, CartSyncEvent } from "./realtime-sync";
 
@@ -294,12 +294,7 @@ export function CartProvider({ children }: CartProviderProps) {
           setCartSessionId(sessionId);
         }
 
-        console.log("🚀 [CartContext] Making API request to /api/cart/items", {
-          productId: request.productId,
-          quantity: request.quantity,
-          sessionId: sessionId,
-          userId: user?.id,
-        });
+
 
         const response = await fetch("/api/cart/items", {
           method: "POST",
@@ -310,13 +305,9 @@ export function CartProvider({ children }: CartProviderProps) {
           body: JSON.stringify(request),
         });
 
-        console.log("📡 [CartContext] API response status:", response.status);
-
         const data = await response.json();
-        console.log("📦 [CartContext] API response data:", data);
 
         if (data.success) {
-          console.log("✅ [CartContext] Item added successfully, refreshing cart");
           // Confirm optimistic update with actual server data
           dispatch({
             type: "CONFIRM_OPTIMISTIC",
@@ -525,7 +516,7 @@ export function CartProvider({ children }: CartProviderProps) {
 
           // Log conflicts if any
           if (resolution.conflicts.length > 0) {
-            console.log('Cart sync conflicts resolved:', resolution.conflicts);
+
           }
         }
       }
@@ -575,7 +566,7 @@ export function CartProvider({ children }: CartProviderProps) {
     syncManagerRef.current.connect().then((connected) => {
       if (connected) {
         setIsRealTimeEnabled(true);
-        console.log('Real-time cart sync enabled');
+
       }
     });
   }, [isOnline, isRealTimeEnabled, user?.id, syncWithServer]);
@@ -586,7 +577,7 @@ export function CartProvider({ children }: CartProviderProps) {
       syncManagerRef.current = null;
     }
     setIsRealTimeEnabled(false);
-    console.log('Real-time cart sync disabled');
+
   }, []);
 
   const getCartVersion = useCallback(() => cartVersion, [cartVersion]);

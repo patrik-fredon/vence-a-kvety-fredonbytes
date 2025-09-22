@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { useTranslations } from "next-intl";
 import {
   EyeIcon,
   PencilIcon,
@@ -31,21 +32,14 @@ interface Order {
   internalNotes?: string;
 }
 
-const statusOptions = [
-  { value: "", label: "Všechny stavy" },
-  { value: "pending", label: "Čekající" },
-  { value: "confirmed", label: "Potvrzeno" },
-  { value: "processing", label: "Zpracovává se" },
-  { value: "shipped", label: "Odesláno" },
-  { value: "delivered", label: "Doručeno" },
-  { value: "cancelled", label: "Zrušeno" },
-];
+// Status options will be generated using translations
 
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 
 export default function OrderManagement() {
+  const t = useTranslations("admin");
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
@@ -55,6 +49,16 @@ export default function OrderManagement() {
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
+
+  const statusOptions = [
+    { value: "", label: t("allStatuses") },
+    { value: "pending", label: t("pending") },
+    { value: "confirmed", label: t("confirmed") },
+    { value: "processing", label: t("processing") },
+    { value: "shipped", label: t("shipped") },
+    { value: "delivered", label: t("delivered") },
+    { value: "cancelled", label: t("cancelled") },
+  ];
 
   useEffect(() => {
     fetchOrders();
@@ -145,12 +149,12 @@ export default function OrderManagement() {
 
   const getStatusLabel = (status: string) => {
     const labels = {
-      pending: "Čekající",
-      confirmed: "Potvrzeno",
-      processing: "Zpracovává se",
-      shipped: "Odesláno",
-      delivered: "Doručeno",
-      cancelled: "Zrušeno",
+      pending: t("pending"),
+      confirmed: t("confirmed"),
+      processing: t("processing"),
+      shipped: t("shipped"),
+      delivered: t("delivered"),
+      cancelled: t("cancelled"),
     };
     return labels[status as keyof typeof labels] || status;
   };
@@ -160,13 +164,13 @@ export default function OrderManagement() {
       case "pending":
         return [
           {
-            label: "Potvrdit",
+            label: t("confirm"),
             action: () => handleStatusUpdate(order.id, "confirmed"),
             icon: CheckCircleIcon,
             color: "text-green-600 hover:text-green-900",
           },
           {
-            label: "Zrušit",
+            label: t("cancel"),
             action: () => handleStatusUpdate(order.id, "cancelled"),
             icon: XCircleIcon,
             color: "text-red-600 hover:text-red-900",
@@ -175,7 +179,7 @@ export default function OrderManagement() {
       case "confirmed":
         return [
           {
-            label: "Zpracovat",
+            label: t("process"),
             action: () => handleStatusUpdate(order.id, "processing"),
             icon: PencilIcon,
             color: "text-purple-600 hover:text-purple-900",
@@ -184,7 +188,7 @@ export default function OrderManagement() {
       case "processing":
         return [
           {
-            label: "Odeslat",
+            label: t("ship"),
             action: () => handleStatusUpdate(order.id, "shipped"),
             icon: TruckIcon,
             color: "text-blue-600 hover:text-blue-900",
@@ -193,7 +197,7 @@ export default function OrderManagement() {
       case "shipped":
         return [
           {
-            label: "Doručeno",
+            label: t("delivered"),
             action: () => handleStatusUpdate(order.id, "delivered"),
             icon: CheckCircleIcon,
             color: "text-green-600 hover:text-green-900",
@@ -208,8 +212,8 @@ export default function OrderManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-stone-900">Správa objednávek</h2>
-        <div className="text-sm text-stone-500">Celkem: {filteredOrders.length} objednávek</div>
+        <h2 className="text-2xl font-bold text-stone-900">{t("orderManagement")}</h2>
+        <div className="text-sm text-stone-500">{t("total")}: {filteredOrders.length} {t("orders")}</div>
       </div>
 
       {/* Filters */}
@@ -218,7 +222,7 @@ export default function OrderManagement() {
           {/* Search */}
           <Input
             type="text"
-            placeholder="Hledat objednávky..."
+            placeholder={t("searchOrders")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             icon={<MagnifyingGlassIcon className="h-5 w-5" />}
@@ -244,7 +248,7 @@ export default function OrderManagement() {
             value={dateFrom}
             onChange={(e) => setDateFrom(e.target.value)}
             className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
-            placeholder="Od data"
+            placeholder={t("fromDate")}
           />
 
           {/* Date to */}
@@ -253,7 +257,7 @@ export default function OrderManagement() {
             value={dateTo}
             onChange={(e) => setDateTo(e.target.value)}
             className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
-            placeholder="Do data"
+            placeholder={t("toDate")}
           />
 
           {/* Clear filters */}
@@ -267,7 +271,7 @@ export default function OrderManagement() {
               setCurrentPage(1);
             }}
           >
-            Vymazat filtry
+            {t("clearFilters")}
           </Button>
         </div>
       </Card>
@@ -284,25 +288,25 @@ export default function OrderManagement() {
               <thead className="bg-stone-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Objednávka
+                    {t("order")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Zákazník
+                    {t("customer")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Stav
+                    {t("status")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Částka
+                    {t("amount")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Doručení
+                    {t("delivery")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Datum
+                    {t("date")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-stone-500 uppercase tracking-wider">
-                    Akce
+                    {t("actions")}
                   </th>
                 </tr>
               </thead>
@@ -314,7 +318,7 @@ export default function OrderManagement() {
                         <div className="text-sm font-medium text-stone-900">
                           #{order.orderNumber}
                         </div>
-                        <div className="text-sm text-stone-500">{order.itemCount} položek</div>
+                        <div className="text-sm text-stone-500">{order.itemCount} {t("items")}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4">
@@ -350,7 +354,7 @@ export default function OrderManagement() {
                           variant="ghost"
                           size="icon"
                           onClick={() => setSelectedOrder(order)}
-                          title="Detail"
+                          title={t("detail")}
                         >
                           <EyeIcon className="h-4 w-4" />
                         </Button>
@@ -380,7 +384,7 @@ export default function OrderManagement() {
         {totalPages > 1 && (
           <div className="px-6 py-3 border-t border-stone-200 flex items-center justify-between">
             <div className="text-sm text-stone-700">
-              Stránka {currentPage} z {totalPages}
+              {t("page")} {currentPage} {t("of")} {totalPages}
             </div>
             <div className="flex space-x-2">
               <Button
@@ -389,7 +393,7 @@ export default function OrderManagement() {
                 onClick={() => setCurrentPage(Math.max(1, currentPage - 1))}
                 disabled={currentPage === 1}
               >
-                Předchozí
+                {t("previous")}
               </Button>
               <Button
                 variant="outline"
@@ -397,7 +401,7 @@ export default function OrderManagement() {
                 onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
               >
-                Další
+                {t("next")}
               </Button>
             </div>
           </div>

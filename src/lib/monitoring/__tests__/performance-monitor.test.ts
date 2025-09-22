@@ -2,7 +2,7 @@
  * @jest-environment jsdom
  */
 
-import { performanceMonitor, recordPerformanceMetric, getPerformanceSummary } from '../performance-monitor';
+import { recordPerformanceMetric, getPerformanceSummary } from '../performance-monitor';
 
 // Mock web-vitals
 jest.mock('web-vitals', () => ({

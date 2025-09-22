@@ -191,9 +191,17 @@ export function getLocaleCookie(): Locale | null {
 }
 
 /**
+ * Enhanced translation utilities with better error handling and fallback support
+ */
+
+/**
  * Check if a translation key exists in messages
  */
 function hasTranslation(messages: Record<string, any>, key: string): boolean {
+  if (!messages || typeof messages !== "object" || !key) {
+    return false;
+  }
+
   const keys = key.split(".");
   let current = messages;
 
@@ -204,75 +212,185 @@ function hasTranslation(messages: Record<string, any>, key: string): boolean {
     current = current[k];
   }
 
-  return typeof current === "string";
+  return typeof current === "string" && (current as string).length > 0;
 }
 
 /**
  * Get missing translation keys
  */
 function getMissingKeys(messages: Record<string, any>, requiredKeys: string[]): string[] {
+  if (!Array.isArray(requiredKeys)) {
+    return [];
+  }
   return requiredKeys.filter((key) => !hasTranslation(messages, key));
 }
 
 /**
- * Translation validation utilities
+ * Log missing translation key with enhanced context
  */
-export const translationValidation = {
-  hasTranslation,
-  getMissingKeys,
-
-  logMissingKey,
-  getTranslationWithFallback,
-};
-
-/**
- * Log missing translation key
- */
-function logMissingKey(key: string, locale: Locale): void {
+function logMissingKey(key: string, locale: Locale, context?: string): void {
   if (i18nConfig.fallback.logMissingKeys) {
-    console.warn(`Missing translation key: "${key}" for locale: "${locale}"`);
+    const contextInfo = context ? ` (context: ${context})` : "";
+    console.warn(`Missing translation key: "${key}" for locale: "${locale}"${contextInfo}`);
+
+    // In development, also log to help with debugging
+    if (process.env.NODE_ENV === "development") {
+      console.trace(`Translation key trace for: ${key}`);
+    }
   }
 }
 
 /**
- * Get translation with fallback
+ * Get translation with enhanced fallback support
  */
 function getTranslationWithFallback(
   messages: Record<string, any>,
   fallbackMessages: Record<string, any>,
   key: string,
-  locale: Locale
-): string | null {
+  locale: Locale,
+  params?: Record<string, any>,
+  context?: string
+): string {
+  // Try primary messages first
   if (hasTranslation(messages, key)) {
     const keys = key.split(".");
     let current = messages;
     for (const k of keys) {
       current = current[k];
     }
-    return current as string;
+    return interpolateParams(String(current), params);
   }
 
   // Try fallback messages
-  if (i18nConfig.fallback.enabled && hasTranslation(fallbackMessages, key)) {
+  if (i18nConfig.fallback.enabled && fallbackMessages && hasTranslation(fallbackMessages, key)) {
     const keys = key.split(".");
     let current = fallbackMessages;
     for (const k of keys) {
       current = current[k];
     }
-    logMissingKey(key, locale);
-    return current as string;
+    logMissingKey(key, locale, context);
+    return interpolateParams(String(current), params);
   }
 
   // Log missing key
-  logMissingKey(key, locale);
+  logMissingKey(key, locale, context);
 
-  // Return key or null based on configuration
+  // Return formatted missing key or fallback based on configuration
   if (i18nConfig.fallback.showMissingKeys) {
     return `[${key}]`;
   }
 
-  return null;
+  // Return the key itself as last resort
+  return key;
 }
+
+/**
+ * Simple parameter interpolation for translations
+ */
+function interpolateParams(text: string, params?: Record<string, any>): string {
+  if (!params || typeof params !== "object") {
+    return text;
+  }
+
+  return text.replace(/\{(\w+)\}/g, (match, key) => {
+    return params[key] !== undefined ? String(params[key]) : match;
+  });
+}
+
+/**
+ * Validate translation key format
+ */
+function isValidTranslationKey(key: string): boolean {
+  if (!key || typeof key !== "string") {
+    return false;
+  }
+
+  // Check for valid key format (alphanumeric, dots, underscores, hyphens)
+  const validKeyPattern = /^[a-zA-Z0-9._-]+$/;
+  return validKeyPattern.test(key) && key.length > 0 && key.length < 200;
+}
+
+/**
+ * Get nested translation keys from an object
+ */
+function getNestedKeys(obj: Record<string, any>, prefix = ""): string[] {
+  const keys: string[] = [];
+
+  for (const [key, value] of Object.entries(obj)) {
+    const fullKey = prefix ? `${prefix}.${key}` : key;
+
+    if (typeof value === "string") {
+      keys.push(fullKey);
+    } else if (typeof value === "object" && value !== null) {
+      keys.push(...getNestedKeys(value, fullKey));
+    }
+  }
+
+  return keys;
+}
+
+/**
+ * Compare two translation objects and find differences
+ */
+function compareTranslations(
+  primary: Record<string, any>,
+  secondary: Record<string, any>
+): {
+  missingInSecondary: string[];
+  missingInPrimary: string[];
+  different: string[];
+} {
+  const primaryKeys = getNestedKeys(primary);
+  const secondaryKeys = getNestedKeys(secondary);
+
+  const missingInSecondary = primaryKeys.filter(key => !hasTranslation(secondary, key));
+  const missingInPrimary = secondaryKeys.filter(key => !hasTranslation(primary, key));
+
+  const commonKeys = primaryKeys.filter(key => hasTranslation(secondary, key));
+  const different = commonKeys.filter(key => {
+    const primaryValue = getNestedValue(primary, key);
+    const secondaryValue = getNestedValue(secondary, key);
+    return primaryValue !== secondaryValue;
+  });
+
+  return {
+    missingInSecondary,
+    missingInPrimary,
+    different,
+  };
+}
+
+/**
+ * Get nested value from object using dot notation
+ */
+function getNestedValue(obj: Record<string, any>, key: string): any {
+  const keys = key.split(".");
+  let current = obj;
+
+  for (const k of keys) {
+    if (typeof current !== "object" || current === null || !(k in current)) {
+      return undefined;
+    }
+    current = current[k];
+  }
+
+  return current;
+}
+
+/**
+ * Enhanced translation validation utilities
+ */
+export const translationValidation = {
+  hasTranslation,
+  getMissingKeys,
+  logMissingKey,
+  getTranslationWithFallback,
+  interpolateParams,
+  isValidTranslationKey,
+  getNestedKeys,
+  compareTranslations,
+  getNestedValue,
+};
 
 /**
  * Detect browser locale
@@ -282,15 +400,17 @@ export function detectBrowserLocale(): Locale {
     const browserLocales = navigator.languages || [navigator.language];
 
     for (const browserLocale of browserLocales) {
-      // Check exact match
-      if (isValidLocale(browserLocale)) {
-        return browserLocale;
-      }
+      if (typeof browserLocale === 'string') {
+        // Check exact match
+        if (isValidLocale(browserLocale)) {
+          return browserLocale;
+        }
 
-      // Check language part (e.g., "cs-CZ" -> "cs")
-      const languageCode = browserLocale.split("-")[0];
-      if (isValidLocale(languageCode)) {
-        return languageCode;
+        // Check language part (e.g., "cs-CZ" -> "cs")
+        const languageCode = browserLocale.split("-")[0];
+        if (languageCode && isValidLocale(languageCode)) {
+          return languageCode;
+        }
       }
     }
   }

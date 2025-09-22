@@ -43,7 +43,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             {/* Company Story */}
             <div className="bg-white rounded-xl shadow-soft p-8">
               <h2 className="text-elegant text-2xl md:text-3xl font-semibold text-primary-800 mb-6">
-                Naše příběh
+                {t("storyTitle")}
               </h2>
               <p className="text-neutral-700 leading-relaxed text-lg">
                 {t("story")}
@@ -53,7 +53,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             {/* Values and Quality */}
             <div className="bg-white rounded-xl shadow-soft p-8">
               <h2 className="text-elegant text-2xl md:text-3xl font-semibold text-primary-800 mb-6">
-                Kvalita a péče
+                {t("valuesTitle")}
               </h2>
               <p className="text-neutral-700 leading-relaxed text-lg">
                 {t("values")}
@@ -63,7 +63,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             {/* Commitment */}
             <div className="bg-white rounded-xl shadow-soft p-8">
               <h2 className="text-elegant text-2xl md:text-3xl font-semibold text-primary-800 mb-6">
-                Náš závazek
+                {t("commitmentTitle")}
               </h2>
               <p className="text-neutral-700 leading-relaxed text-lg">
                 {t("commitment")}
@@ -76,20 +76,20 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 Ketingmar s.r.o.
               </h2>
               <p className="text-neutral-700 mb-6">
-                Rodinná květinová dílnička s tradicí a důrazem na kvalitu
+                {t("companyDescription")}
               </p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href={`/${locale}/products`}
                   className="bg-primary-600 hover:bg-primary-700 text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
-                  Prohlédnout naše věnce
+                  {t("viewWreaths")}
                 </a>
                 <a
                   href={`/${locale}/contact`}
-                  className="border-2 border-primary-600 text-primary-700 hover:bg-primary-50 px-6 py-3 rounded-lg font-medium transition-colors"
+                  className="border border-primary-600 text-primary-600 hover:bg-primary-600 hover:text-white px-6 py-3 rounded-lg font-medium transition-colors"
                 >
-                  Kontaktovat nás
+                  {t("contactUs")}
                 </a>
               </div>
             </div>

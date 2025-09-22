@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useTranslations } from "next-intl";
 import {
   ShoppingBagIcon,
   ClipboardDocumentListIcon,
@@ -36,6 +37,7 @@ interface DashboardOverviewProps {
 }
 
 export default function DashboardOverview({ stats, onRefresh }: DashboardOverviewProps) {
+  const t = useTranslations("admin");
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
@@ -66,36 +68,36 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
 
   const statCards = [
     {
-      title: "Celkové objednávky",
+      title: t("totalOrders"),
       value: stats?.orders.total || 0,
-      subtitle: `${stats?.orders.pending || 0} čekajících`,
+      subtitle: `${stats?.orders.pending || 0} ${t("waiting")}`,
       icon: ClipboardDocumentListIcon,
       color: "blue",
       trend: stats?.orders.today || 0,
-      trendLabel: "dnes",
+      trendLabel: t("today"),
     },
     {
-      title: "Aktivní produkty",
+      title: t("activeProducts"),
       value: stats?.products.total || 0,
-      subtitle: `${(stats?.products.low_stock || 0) + (stats?.products.out_of_stock || 0)} upozornění`,
+      subtitle: `${(stats?.products.low_stock || 0) + (stats?.products.out_of_stock || 0)} ${t("warnings")}`,
       icon: ShoppingBagIcon,
       color: "green",
       trend: null,
       trendLabel: "",
     },
     {
-      title: "Celkové tržby",
+      title: t("totalRevenue"),
       value: formatCurrency(stats?.revenue.total || 0),
-      subtitle: `${formatCurrency(stats?.revenue.this_month || 0)} tento měsíc`,
+      subtitle: `${formatCurrency(stats?.revenue.this_month || 0)} ${t("thisMonth")}`,
       icon: CurrencyDollarIcon,
       color: "purple",
       trend: null,
       trendLabel: "",
     },
     {
-      title: "Upozornění",
+      title: t("alerts"),
       value: stats?.alerts.unacknowledged || 0,
-      subtitle: "nepotvrzených",
+      subtitle: t("unacknowledged"),
       icon: ExclamationTriangleIcon,
       color: stats?.alerts.unacknowledged ? "red" : "gray",
       trend: null,
@@ -118,12 +120,12 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">Přehled</h2>
+        <h2 className="text-2xl font-bold text-gray-900">{t("overview")}</h2>
         <button
           onClick={onRefresh}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
         >
-          Obnovit data
+          {t("refreshData")}
         </button>
       </div>
 
@@ -158,7 +160,7 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
       {/* Recent orders */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">Nejnovější objednávky</h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t("recentOrders")}</h3>
         </div>
 
         <div className="overflow-x-auto">
@@ -171,19 +173,19 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Objednávka
+                    {t("order")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Zákazník
+                    {t("customer")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Stav
+                    {t("status")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Částka
+                    {t("amount")}
                   </th>
                   <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                    Datum
+                    {t("date")}
                   </th>
                 </tr>
               </thead>
@@ -198,27 +200,26 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
-                          order.status === "pending"
-                            ? "bg-yellow-100 text-yellow-800"
-                            : order.status === "confirmed"
-                              ? "bg-blue-100 text-blue-800"
-                              : order.status === "shipped"
-                                ? "bg-purple-100 text-purple-800"
-                                : order.status === "delivered"
-                                  ? "bg-green-100 text-green-800"
-                                  : "bg-red-100 text-red-800"
-                        }`}
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${order.status === "pending"
+                          ? "bg-yellow-100 text-yellow-800"
+                          : order.status === "confirmed"
+                            ? "bg-blue-100 text-blue-800"
+                            : order.status === "shipped"
+                              ? "bg-purple-100 text-purple-800"
+                              : order.status === "delivered"
+                                ? "bg-green-100 text-green-800"
+                                : "bg-red-100 text-red-800"
+                          }`}
                       >
                         {order.status === "pending"
-                          ? "Čekající"
+                          ? t("pending")
                           : order.status === "confirmed"
-                            ? "Potvrzeno"
+                            ? t("confirmed")
                             : order.status === "shipped"
-                              ? "Odesláno"
+                              ? t("shipped")
                               : order.status === "delivered"
-                                ? "Doručeno"
-                                : "Zrušeno"}
+                                ? t("delivered")
+                                : t("cancelled")}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -232,7 +233,7 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
               </tbody>
             </table>
           ) : (
-            <div className="p-6 text-center text-gray-500">Žádné objednávky k zobrazení</div>
+            <div className="p-6 text-center text-gray-500">{t("noOrdersToDisplay")}</div>
           )}
         </div>
       </div>
@@ -240,42 +241,42 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
       {/* Quick actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Rychlé akce</h4>
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">{t("quickActions")}</h4>
           <div className="space-y-3">
             <button className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-              Přidat nový produkt
+              {t("addNewProduct")}
             </button>
             <button className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-              Zobrazit čekající objednávky
+              {t("viewPendingOrders")}
             </button>
             <button className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
-              Zkontrolovat zásoby
+              {t("checkInventory")}
             </button>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Systémové informace</h4>
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">{t("systemInfo")}</h4>
           <div className="space-y-2 text-sm text-gray-600">
-            <p>Verze: 1.0.0</p>
-            <p>Poslední aktualizace: {new Date().toLocaleDateString("cs-CZ")}</p>
+            <p>{t("version")}: 1.0.0</p>
+            <p>{t("lastUpdate")}: {new Date().toLocaleDateString("cs-CZ")}</p>
             <p>
-              Stav systému: <span className="text-green-600 font-medium">Online</span>
+              {t("systemStatus")}: <span className="text-green-600 font-medium">{t("online")}</span>
             </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">Podpora</h4>
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">{t("support")}</h4>
           <div className="space-y-3">
             <a
               href="mailto:support@pohrebni-vence.cz"
               className="block text-sm text-blue-600 hover:text-blue-800"
             >
-              Technická podpora
+              {t("technicalSupport")}
             </a>
             <a href="/admin/help" className="block text-sm text-blue-600 hover:text-blue-800">
-              Dokumentace
+              {t("documentation")}
             </a>
           </div>
         </div>

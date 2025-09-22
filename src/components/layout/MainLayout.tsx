@@ -1,3 +1,4 @@
+import { useTranslations } from 'next-intl';
 import { Header } from "./Header";
 import { Footer } from "./Footer";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
@@ -9,6 +10,8 @@ interface MainLayoutProps {
 }
 
 export function MainLayout({ children, locale }: MainLayoutProps) {
+  const t = useTranslations('accessibility');
+
   return (
     <div className="min-h-screen flex flex-col">
       {/* Skip links for keyboard navigation */}
@@ -24,7 +27,7 @@ export function MainLayout({ children, locale }: MainLayoutProps) {
         className="flex-1"
         tabIndex={-1}
         role="main"
-        aria-label="Hlavní obsah"
+        aria-label={t('mainContent')}
       >
         {children}
       </main>

@@ -3,7 +3,7 @@ import { getMessages } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { locales, type Locale } from "@/i18n/config";
 import { MainLayout } from "@/components/layout/MainLayout";
-import { AuthProvider } from "@/components/auth/AuthProvider";
+import { AuthProvider } from "@/components/auth";
 import { CartProvider } from "@/lib/cart/context";
 import { AccessibilityProvider } from "@/lib/accessibility/context";
 import { MonitoringProvider } from "@/components/monitoring/MonitoringProvider";
@@ -28,7 +28,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   }
 
   // Providing all messages to the client side is the easiest way to get started
-  const messages = await getMessages();
+  const messages = await getMessages({ locale });
 
   // Get user for monitoring context
   const supabase = createClient();
