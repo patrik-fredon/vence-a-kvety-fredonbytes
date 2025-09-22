@@ -25,12 +25,6 @@ interface RefactoredPageLayoutProps {
     width: number;
     height: number;
   };
-  heroContent: {
-    heading: string;
-    description: string;
-    ctaText: string;
-    ctaHref: string;
-  };
   children?: React.ReactNode;
   className?: string;
 }
@@ -42,7 +36,6 @@ interface RefactoredPageLayoutProps {
 export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
   locale,
   companyLogo,
-  heroContent,
   children,
   className = '',
 }) => {
@@ -62,10 +55,6 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
         <RefactoredHeroSection
           locale={locale}
           companyLogo={companyLogo}
-          heading={heroContent.heading}
-          description={heroContent.description}
-          ctaText={heroContent.ctaText}
-          ctaHref={heroContent.ctaHref}
         />
       </section>
 

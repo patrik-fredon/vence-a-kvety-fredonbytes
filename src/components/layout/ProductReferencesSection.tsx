@@ -2,6 +2,7 @@
 
 import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import type { ProductReference, ProductReferencesSectionProps } from '@/types/components';
 
@@ -45,6 +46,7 @@ const ProductReferenceCard = ({
   index?: number;
   locale?: string;
 }) => {
+  const t = useTranslations('home.productReferences');
   const handleKeyDown = (event: React.KeyboardEvent) => {
     // Handle Enter and Space key activation
     if (event.key === 'Enter' || event.key === ' ') {
@@ -79,7 +81,7 @@ const ProductReferenceCard = ({
       <div className="aspect-square relative overflow-hidden">
         <Image
           src={product.image.src}
-          alt={`${product.image.alt} - ${locale === 'cs' ? 'Pohřební věnec z naší kolekce' : 'Funeral wreath from our collection'}`}
+          alt={`${product.image.alt} - ${t('productImageAlt')}`}
           width={product.image.width || 400}
           height={product.image.height || 400}
           className={cn(
@@ -110,7 +112,7 @@ const ProductReferenceCard = ({
           <span
             className="inline-block px-2 py-1 text-xs bg-white/20 text-white rounded-full mb-2"
             role="text"
-            aria-label={locale === 'cs' ? `Kategorie: ${product.category}` : `Category: ${product.category}`}
+            aria-label={t('categoryLabel', { category: product.category })}
           >
             {product.category}
           </span>
@@ -135,10 +137,7 @@ const ProductReferenceCard = ({
       {/* Screen reader only content for additional context */}
       <div className="sr-only">
         <p>
-          {locale === 'cs'
-            ? `Produkt ${index + 1} z kolekce. Stiskněte Enter nebo mezerník pro zobrazení detailů.`
-            : `Product ${index + 1} from collection. Press Enter or Space to view details.`
-          }
+          {t('productIndexLabel', { index: index + 1 })}
         </p>
       </div>
     </article>
@@ -152,6 +151,7 @@ export const ProductReferencesSection = ({
   maxProducts = 4,
   className,
 }: ProductReferencesSectionProps) => {
+  const t = useTranslations('home.productReferences');
   const [products, setProducts] = useState<ProductReference[]>(propProducts || []);
   const [loading, setLoading] = useState(!propProducts);
   const [error, setError] = useState<string | null>(null);
@@ -256,7 +256,7 @@ export const ProductReferencesSection = ({
                 "md:landscape:text-4xl" // Tablet landscape
               )}
             >
-              {locale === 'cs' ? 'Naše produkty' : 'Our Products'}
+              {t('heading')}
             </h2>
           </div>
           <div
@@ -269,7 +269,7 @@ export const ProductReferencesSection = ({
               aria-hidden="true"
             ></div>
             <span id="products-loading" className="sr-only">
-              {locale === 'cs' ? 'Načítání produktů...' : 'Loading products...'}
+              {t('loading')}
             </span>
           </div>
         </div>
@@ -330,7 +330,7 @@ export const ProductReferencesSection = ({
                 "md:landscape:text-4xl" // Tablet landscape
               )}
             >
-              {locale === 'cs' ? 'Naše produkty' : 'Our Products'}
+              {t('heading')}
             </h2>
             <div
               role="alert"
@@ -349,7 +349,7 @@ export const ProductReferencesSection = ({
                   "mb-4"
                 )}
               >
-                {locale === 'cs' ? 'Nepodařilo se načíst produkty' : 'Failed to load products'}
+                {t('loadingError')}
               </p>
               <button
                 onClick={fetchProducts}
@@ -361,13 +361,10 @@ export const ProductReferencesSection = ({
                 )}
                 aria-describedby="retry-description"
               >
-                {locale === 'cs' ? 'Zkusit znovu' : 'Try again'}
+                {t('tryAgain')}
               </button>
               <div id="retry-description" className="sr-only">
-                {locale === 'cs'
-                  ? 'Tlačítko pro opětovné načtení produktů po chybě'
-                  : 'Button to retry loading products after error'
-                }
+                {t('retryDescription')}
               </div>
             </div>
           </div>
@@ -452,7 +449,7 @@ export const ProductReferencesSection = ({
             role="heading"
             aria-level={2}
           >
-            {locale === 'cs' ? 'Naše produkty' : 'Our Products'}
+            {t('heading')}
           </h2>
           <p
             id="products-description"
@@ -482,10 +479,7 @@ export const ProductReferencesSection = ({
             )}
             tabIndex={0}
           >
-            {locale === 'cs'
-              ? 'Objevte naši pečlivě vybranou kolekci pohřebních věnců a květinových aranžmá'
-              : 'Discover our carefully curated collection of funeral wreaths and floral arrangements'
-            }
+            {t('description')}
           </p>
         </div>
 
@@ -515,7 +509,7 @@ export const ProductReferencesSection = ({
             "md:landscape:gap-6" // Tablet landscape gaps
           )}
           role="grid"
-          aria-label={locale === 'cs' ? 'Mřížka produktů' : 'Product grid'}
+          aria-label={t('productGridLabel')}
           aria-rowcount={Math.ceil(products.length / 4)}
           aria-colcount={4}
         >
@@ -532,10 +526,7 @@ export const ProductReferencesSection = ({
         {/* Screen reader summary */}
         <div className="sr-only" aria-live="polite">
           <p>
-            {locale === 'cs'
-              ? `Zobrazeno ${products.length} produktů z naší kolekce pohřebních věnců a květinových aranžmá.`
-              : `Showing ${products.length} products from our funeral wreaths and floral arrangements collection.`
-            }
+            {t('summaryText', { count: products.length })}
           </p>
         </div>
       </div>

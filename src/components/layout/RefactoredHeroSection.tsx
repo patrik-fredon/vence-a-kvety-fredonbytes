@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
 import { CTAButton } from '@/components/ui/CTAButton';
 
@@ -12,22 +13,15 @@ interface RefactoredHeroSectionProps {
     width: number;
     height: number;
   };
-  heading: string;
-  description: string;
-  ctaText: string;
-  ctaHref: string;
   className?: string;
 }
 
 export function RefactoredHeroSection({
   locale,
   companyLogo,
-  heading,
-  description,
-  ctaText,
-  ctaHref,
   className
 }: RefactoredHeroSectionProps) {
+  const t = useTranslations('home.refactoredHero');
 
   return (
     <section
@@ -90,7 +84,7 @@ export function RefactoredHeroSection({
         )}>
           <Image
             src={companyLogo.src}
-            alt={`${companyLogo.alt} - ${locale === 'cs' ? 'Hlavní logo společnosti specializující se na pohřební věnce a květinové aranžmá' : 'Main company logo specializing in funeral wreaths and floral arrangements'}`}
+            alt={`${companyLogo.alt} - ${t('logoAlt')}`}
             width={companyLogo.width}
             height={companyLogo.height}
             sizes="(max-width: 640px) 96px, (max-width: 768px) 128px, (max-width: 1024px) 160px, (max-width: 1280px) 192px, 224px"
@@ -121,10 +115,7 @@ export function RefactoredHeroSection({
           />
           {/* Hidden description for screen readers */}
           <div id="logo-description" className="sr-only">
-            {locale === 'cs'
-              ? 'Logo společnosti specializující se na pohřební věnce a květinové aranžmá. Dominantní prvek stránky umístěný v centru.'
-              : 'Company logo specializing in funeral wreaths and floral arrangements. Dominant page element positioned in the center.'
-            }
+            {t('logoDescription')}
           </div>
         </div>
 
@@ -163,7 +154,7 @@ export function RefactoredHeroSection({
           role="heading"
           aria-level={2}
         >
-          {heading}
+          {t('heading')}
         </h2>
 
         {/* Paragraph - Mobile-first responsive typography */}
@@ -207,13 +198,13 @@ export function RefactoredHeroSection({
           tabIndex={0}
           role="text"
         >
-          {description}
+          {t('description')}
         </p>
 
         {/* CTA Button - Mobile-first responsive sizing */}
         <div className="flex justify-center">
           <CTAButton
-            href={ctaHref}
+            href="/products"
             size="lg"
             className={cn(
               "focus-visible:ring-offset-funeral-hero",
@@ -241,14 +232,11 @@ export function RefactoredHeroSection({
             )}
             aria-describedby="cta-description"
           >
-            {ctaText}
+            {t('ctaText')}
           </CTAButton>
           {/* Hidden description for screen readers */}
           <div id="cta-description" className="sr-only">
-            {locale === 'cs'
-              ? 'Tlačítko pro přechod na stránku s produkty. Otevře se nová stránka s nabídkou pohřebních věnců.'
-              : 'Button to navigate to products page. Opens a new page with funeral wreaths offerings.'
-            }
+            {t('ctaDescription')}
           </div>
         </div>
       </div>
@@ -256,16 +244,13 @@ export function RefactoredHeroSection({
       {/* Enhanced screen reader content for additional context */}
       <div className="sr-only" aria-live="polite">
         <p>
-          {locale === 'cs'
-            ? 'Hlavní sekce stránky s nabídkou pohřebních věnců a květinových aranžmá. Obsahuje logo společnosti, hlavní nadpis, popis služeb a tlačítko pro přechod na produkty.'
-            : 'Main page section offering funeral wreaths and floral arrangements. Contains company logo, main heading, service description, and button to navigate to products.'
-          }
+          {t('sectionDescription')}
         </p>
       </div>
 
       {/* Skip link target for accessibility */}
       <div id="main-content" className="sr-only" tabIndex={-1}>
-        {locale === 'cs' ? 'Začátek hlavního obsahu' : 'Start of main content'}
+        {t('mainContentStart')}
       </div>
     </section>
   );

@@ -351,6 +351,29 @@
       "description": "V těžkých chvílích rozloučení vám pomůžeme vyjádřit lásku a úctu prostřednictvím nádherných květinových aranžmá. Každý věnec vytváříme s citem, pečlivostí a porozuměním pro vaši ztrátu.",
       "cta": "Vybrat věnec pro rozloučení"
     },
+    "refactoredHero": {
+      "heading": "Pohřební věnce s láskou a úctou",
+      "description": "Krásné květinové aranžmá pro důstojné rozloučení",
+      "ctaText": "Prohlédnout věnce",
+      "logoAlt": "Logo společnosti specializující se na pohřební věnce a květinové aranžmá",
+      "logoDescription": "Logo společnosti specializující se na pohřební věnce a květinové aranžmá. Dominantní prvek stránky umístěný v centru.",
+      "ctaDescription": "Tlačítko pro přechod na stránku s produkty. Otevře se nová stránka s nabídkou pohřebních věnců.",
+      "sectionDescription": "Hlavní sekce stránky s nabídkou pohřebních věnců a květinových aranžmá. Obsahuje logo společnosti, hlavní nadpis, popis služeb a tlačítko pro přechod na produkty.",
+      "mainContentStart": "Začátek hlavního obsahu"
+    },
+    "productReferences": {
+      "heading": "Naše produkty",
+      "description": "Objevte naši pečlivě vybranou kolekci pohřebních věnců a květinových aranžmá",
+      "loading": "Načítání produktů...",
+      "loadingError": "Nepodařilo se načíst produkty",
+      "tryAgain": "Zkusit znovu",
+      "retryDescription": "Tlačítko pro opětovné načtení produktů po chybě",
+      "productGridLabel": "Mřížka produktů",
+      "categoryLabel": "Kategorie: {category}",
+      "productIndexLabel": "Produkt {index} z kolekce. Stiskněte Enter nebo mezerník pro zobrazení detailů.",
+      "productImageAlt": "Pohřební věnec z naší kolekce",
+      "summaryText": "Zobrazeno {count} produktů z naší kolekce pohřebních věnců a květinových aranžmá."
+    },
     "philosophy": {
       "quote": "Život je křehký jako motýlí prach, ale krása a láska zůstávají navždy",
       "text": "Uvědomujeme si, že život je křehký jako motýlí prach a že v jednom okamžiku se může náš svět změnit. Naše fyzická podoba se pak promění v jinou energii. Každý den je plný těchto proměn, viditelných i neviditelných. Jednou z těchto viditelných proměn je motýl, jehož přirozeným procesem je transformace z housenky na krásného tvora. Stejně tak vnímáme odchod na druhou stranu – jako přirozenou transformaci, která pokračuje v jiné podobě."

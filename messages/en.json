@@ -351,6 +351,29 @@
       "description": "In the difficult moments of farewell, we help you express love and respect through beautiful floral arrangements. Each wreath is created with sensitivity, care, and understanding for your loss.",
       "cta": "Choose a Wreath for Farewell"
     },
+    "refactoredHero": {
+      "heading": "Funeral wreaths with love and respect",
+      "description": "Beautiful floral arrangements for dignified farewell",
+      "ctaText": "Browse Wreaths",
+      "logoAlt": "Company logo specializing in funeral wreaths and floral arrangements",
+      "logoDescription": "Company logo specializing in funeral wreaths and floral arrangements. Dominant page element positioned in the center.",
+      "ctaDescription": "Button to navigate to products page. Opens a new page with funeral wreaths offerings.",
+      "sectionDescription": "Main page section offering funeral wreaths and floral arrangements. Contains company logo, main heading, service description, and button to navigate to products.",
+      "mainContentStart": "Start of main content"
+    },
+    "productReferences": {
+      "heading": "Our Products",
+      "description": "Discover our carefully curated collection of funeral wreaths and floral arrangements",
+      "loading": "Loading products...",
+      "loadingError": "Failed to load products",
+      "tryAgain": "Try again",
+      "retryDescription": "Button to retry loading products after error",
+      "productGridLabel": "Product grid",
+      "categoryLabel": "Category: {category}",
+      "productIndexLabel": "Product {index} from collection. Press Enter or Space to view details.",
+      "productImageAlt": "Funeral wreath from our collection",
+      "summaryText": "Showing {count} products from our funeral wreaths and floral arrangements collection."
+    },
     "philosophy": {
       "quote": "Life is fragile as butterfly dust, but beauty and love remain forever",
       "text": "We understand that life is fragile as butterfly dust and that in one moment our world can change. Our physical form then transforms into another energy. Every day is full of these transformations, visible and invisible. One of these visible transformations is the butterfly, whose natural process is transformation from caterpillar to beautiful creature. Similarly, we perceive the departure to the other side – as a natural transformation that continues in another form."
