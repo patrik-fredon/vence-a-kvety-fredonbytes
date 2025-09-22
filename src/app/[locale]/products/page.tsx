@@ -171,7 +171,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
 
   const itemListStructuredData = generateItemListStructuredData(
     productItems,
-    locale === "cs" ? "Pohřební věnce a květinové aranžmá" : "Funeral Wreaths and Floral Arrangements",
+    t("collectionTitle"),
     locale
   );
 
@@ -203,9 +203,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
         <div className="mb-8">
           <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-4">{t("title")}</h1>
           <p className="text-lg text-neutral-600">
-            {locale === "cs"
-              ? "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá."
-              : "Browse our collection of funeral wreaths and floral arrangements."}
+            {t("pageDescription")}
           </p>
         </div>
 

@@ -36,6 +36,8 @@
   },
   "product": {
     "title": "Products",
+    "pageDescription": "Browse our collection of funeral wreaths and floral arrangements.",
+    "collectionTitle": "Funeral Wreaths and Floral Arrangements",
     "addToCart": "Add to Cart",
     "addingToCart": "Adding to Cart...",
     "addedToCart": "Added to cart successfully!",
@@ -422,7 +424,13 @@
     "mission": "We help families express love and respect for their loved ones through beautiful floral arrangements in life's most difficult moments.",
     "story": "We are a small family floral workshop that approaches our work with sensitivity and attention to every detail. We have been dedicated to flowers for many years and believe that the sphere of funeral flowers deserves more attention and beauty. We put a piece of our heart into each of your orders, so that this sad event in your lives becomes at least a little more pleasant.",
     "values": "We select each flower with care so that the result of our work meets all your expectations. We always buy flowers fresh, carefully clean and treat them so that they honor the memory of your loved one at the memorial site for as long as possible.",
-    "commitment": "Our commitment is to provide not only beautiful floral arrangements, but also understanding, empathy, and support in difficult times. We believe that quality handwork and personal approach can bring comfort and dignity to the farewell process."
+    "commitment": "Our commitment is to provide not only beautiful floral arrangements, but also understanding, empathy, and support in difficult times. We believe that quality handwork and personal approach can bring comfort and dignity to the farewell process.",
+    "storyTitle": "Our Story",
+    "valuesTitle": "Quality and Care",
+    "commitmentTitle": "Our Commitment",
+    "companyDescription": "Family floral workshop with tradition and emphasis on quality",
+    "viewWreaths": "View Our Wreaths",
+    "contactUs": "Contact Us"
   },
   "gdpr": {
     "consentTitle": "Data Processing Consent",
@@ -635,5 +643,27 @@
     "menu": "Menu",
     "language": "Language",
     "navigationNotAvailable": "Navigation not available"
+  },
+  "contact": {
+    "title": "Contact",
+    "contactInfo": "Contact Information",
+    "address": "Address",
+    "phone": "Phone",
+    "email": "Email",
+    "hours": "Business Hours",
+    "emergencyPhone": "Emergency Phone",
+    "mainLine": "Main line",
+    "emergencyLine": "Emergency line (24/7)",
+    "generalInquiries": "General inquiries",
+    "orders": "Orders",
+    "contactForm": "Contact Form",
+    "name": "Name",
+    "message": "Message",
+    "send": "Send Message",
+    "sending": "Sending...",
+    "messageSent": "Message sent successfully!",
+    "messageError": "Failed to send message. Please try again.",
+    "required": "Required field",
+    "formDescription": "Do you have a question about our funeral wreaths or need advice on selection? Write to us and we will get back to you as soon as possible."
   }
 }

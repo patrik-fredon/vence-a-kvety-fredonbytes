@@ -36,6 +36,8 @@
   },
   "product": {
     "title": "Produkty",
+    "pageDescription": "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá.",
+    "collectionTitle": "Pohřební věnce a květinové aranžmá",
     "addToCart": "Přidat do košíku",
     "addingToCart": "Přidávání do košíku...",
     "addedToCart": "Úspěšně přidáno do košíku!",
@@ -422,7 +424,13 @@
     "mission": "Pomáháme rodinám vyjádřit lásku a úctu k jejich blízkým prostřednictvím krásných květinových aranžmá v nejtěžších chvílích života.",
     "story": "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi, která svou práci dělá s citem a důrazem na každý detail. Květinám se věnujeme řadu let a věříme, že sféra smutečních květin si zaslouží více pozornosti a krásy. Do každé vaší objednávky dáváme kousek svého srdce a profesionální přístup, aby tato smutná událost ve vašich životech byla alespoň trochu příjemnější.",
     "values": "Každý květ vybíráme s odbornou pečlivostí a kvalitou, aby výsledek naší práce splňoval všechna vaša očekávání. Květiny kupujeme vždy čerstvé, pečlivě je čistíme a ošetřujeme s profesionální péčí, aby památku vašeho milovaného uctívaly na pietním místě co nejdéle.",
-    "commitment": "Naším závazkem je poskytovat nejen krásné květinové aranžmá, ale také porozumění, empatie a podporu v těžkých chvílích. Věříme, že kvalitní ruční práce a osobní přístup mohou přinést útěchu a důstojnost do procesu rozloučení."
+    "commitment": "Naším závazkem je poskytovat nejen krásné květinové aranžmá, ale také porozumění, empatie a podporu v těžkých chvílích. Věříme, že kvalitní ruční práce a osobní přístup mohou přinést útěchu a důstojnost do procesu rozloučení.",
+    "storyTitle": "Náš příběh",
+    "valuesTitle": "Kvalita a péče",
+    "commitmentTitle": "Náš závazek",
+    "companyDescription": "Rodinná květinová dílnička s tradicí a důrazem na kvalitu",
+    "viewWreaths": "Prohlédnout naše věnce",
+    "contactUs": "Kontaktovat nás"
   },
   "gdpr": {
     "consentTitle": "Souhlas se zpracováním osobních údajů",
@@ -635,5 +643,27 @@
     "menu": "Menu",
     "language": "Jazyk",
     "navigationNotAvailable": "Navigace není k dispozici"
+  },
+  "contact": {
+    "title": "Kontakt",
+    "contactInfo": "Kontaktní informace",
+    "address": "Adresa",
+    "phone": "Telefon",
+    "email": "Email",
+    "hours": "Otevírací doba",
+    "emergencyPhone": "Nouzový telefon",
+    "mainLine": "Hlavní linka",
+    "emergencyLine": "Nouzová linka (24/7)",
+    "generalInquiries": "Obecné dotazy",
+    "orders": "Objednávky",
+    "contactForm": "Kontaktní formulář",
+    "name": "Jméno",
+    "message": "Zpráva",
+    "send": "Odeslat zprávu",
+    "sending": "Odesílání...",
+    "messageSent": "Zpráva byla úspěšně odeslána!",
+    "messageError": "Nepodařilo se odeslat zprávu. Zkuste to prosím znovu.",
+    "required": "Povinné pole",
+    "formDescription": "Máte dotaz ohledně našich pohřebních věnců nebo potřebujete poradit s výběrem? Napište nám a my se Vám ozveme co nejdříve."
   }
 }
