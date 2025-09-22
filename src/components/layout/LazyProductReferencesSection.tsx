@@ -25,7 +25,7 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
       // Desktop layout with proper space utilization (1024px+)
       "lg:py-24 lg:px-12", // Ample desktop padding
       "xl:py-28 xl:px-16", // Maximum padding for large screens
-      "bg-funeral-background", // funeral background color from design tokens
+      "bg-amber-100", // funeral background color from design tokens
       // Orientation handling
       "landscape:py-8", // Reduced padding in landscape
       "md:landscape:py-16", // Tablet landscape adjustment
@@ -198,7 +198,7 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
   const ErrorFallback = () => (
     <section
       className={cn(
-        "py-12 px-3 bg-funeral-background",
+        "py-12 px-3 bg-amber-100",
         "xs:py-14 xs:px-4",
         "sm:py-16 sm:px-6",
         "md:py-20 md:px-8",
@@ -211,11 +211,11 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
       <div className="max-w-4xl mx-auto text-center">
         <h2
           id="products-error-heading"
-          className="text-2xl font-bold text-white mb-4 sm:text-3xl md:text-4xl"
+          className="text-2xl font-bold text-teal-800 mb-4 sm:text-3xl md:text-4xl"
         >
           {props.locale === 'cs' ? 'Naše produkty' : 'Our Products'}
         </h2>
-        <p className="text-stone-200 text-lg">
+        <p className="text-teal-800 text-lg">
           {props.locale === 'cs'
             ? 'Produkty se momentálně nepodařilo načíst. Zkuste prosím obnovit stránku.'
             : 'Products could not be loaded at this time. Please try refreshing the page.'

@@ -4,7 +4,15 @@ import { useState, useEffect, useCallback } from 'react';
 import Image from 'next/image';
 import { useTranslations } from 'next-intl';
 import { cn } from '@/lib/utils';
+import { useReducedMotion } from '@/lib/accessibility/hooks';
 import type { ProductReference, ProductReferencesSectionProps } from '@/types/components';
+import {
+  safeTranslate,
+  getFallbackImage,
+  createDebouncedRetry,
+  logErrorWithContext,
+  isRecoverableError
+} from '@/lib/utils/fallback-utils';
 
 // Utility function to transform Product to ProductReference
 const transformProductToReference = (product: any, locale: string): ProductReference => {
@@ -47,6 +55,30 @@ const ProductReferenceCard = ({
   locale?: string;
 }) => {
   const t = useTranslations('home.productReferences');
+  const prefersReducedMotion = useReducedMotion();
+  const [imageError, setImageError] = useState(false);
+  const [currentImageSrc, setCurrentImageSrc] = useState(product.image.src);
+
+  // Safe translation function with fallbacks (memoized to prevent re-renders)
+  const safeT = useCallback((key: string) => safeTranslate(t, key, locale), [t, locale]);
+
+  // Handle image loading error with fallback
+  const handleImageError = () => {
+    if (!imageError) {
+      setImageError(true);
+      const fallbackImage = getFallbackImage('product');
+      setCurrentImageSrc(fallbackImage.src);
+
+      logErrorWithContext(new Error('Product image failed to load'), {
+        component: 'ProductReferenceCard',
+        action: 'image_load_error',
+        locale,
+        productId: product.id,
+        timestamp: new Date().toISOString(),
+      });
+    }
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent) => {
     // Handle Enter and Space key activation
     if (event.key === 'Enter' || event.key === ' ') {
@@ -65,7 +97,10 @@ const ProductReferenceCard = ({
     <article
       className={cn(
         "group bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-md",
-        "hover:shadow-lg transition-all duration-300 hover:-translate-y-1",
+        // Enhanced hover effects with motion preference support
+        "transition-all duration-300 ease-in-out",
+        !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
+        prefersReducedMotion && "hover:shadow-lg hover:bg-white/15", // Subtle effect for motion-sensitive users
         "focus-within:ring-2 focus-within:ring-white focus-within:ring-opacity-50",
         "cursor-pointer"
       )}
@@ -80,69 +115,107 @@ const ProductReferenceCard = ({
     >
       <div className="aspect-square relative overflow-hidden">
         <Image
-          src={product.image.src}
-          alt={`${product.image.alt} - ${t('productImageAlt')}`}
-          width={product.image.width || 400}
-          height={product.image.height || 400}
+          src={currentImageSrc}
+          alt={`${product.image.alt} - ${safeT('productImageAlt')}`}
+          width={product.image.width}
+          height={product.image.height}
+          onError={handleImageError}
           className={cn(
-            "object-cover w-full h-full group-hover:scale-105 transition-transform duration-300",
-            "focus:outline-none"
+            "w-full h-full object-cover",
+            // Gentle image hover effect
+            "transition-transform duration-300 ease-in-out",
+            !prefersReducedMotion && "group-hover:scale-110",
+            prefersReducedMotion && "group-hover:brightness-110", // Alternative effect for motion-sensitive users
+            // Error state styling
+            imageError && "opacity-80 grayscale-[0.2]"
           )}
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
           loading="lazy"
-          priority={false}
-          placeholder="blur"
-          blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
-          role="img"
+          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
+
+        {/* Error indicator for images (subtle, for accessibility) */}
+        {imageError && (
+          <div className="sr-only" role="alert">
+            Product image failed to load, showing fallback image
+          </div>
+        )}
+        {/* Subtle overlay for better text readability */}
+        <div className={cn(
+          "absolute inset-0 bg-gradient-to-t from-black/20 to-transparent",
+          "transition-opacity duration-300 ease-in-out",
+          "group-hover:from-black/30"
+        )} />
       </div>
-      <div className="p-4">
+
+      <div className={cn(
+        // Mobile-first responsive padding
+        "p-3", // Compact padding on mobile
+        "xs:p-4", // Slightly more for 375px+
+        "sm:p-5", // Standard padding for 640px+
+        "md:p-6", // Tablet padding
+        "lg:p-7", // Desktop padding
+      )}>
         <h3
           id={`product-name-${product.id}`}
           className={cn(
-            "text-lg font-semibold text-white mb-2 truncate",
-            "focus:outline-none"
+            // Mobile-first typography
+            "text-sm font-semibold text-teal-800", // 14px for mobile
+            "xs:text-base", // 16px for 375px+
+            "sm:text-lg", // 18px for 640px+
+            "md:text-xl", // 20px for tablet
+            "lg:text-2xl", // 24px for desktop
+            // Spacing
+            "mb-2", // Compact on mobile
+            "sm:mb-3", // Standard for 640px+
+            "md:mb-4", // Tablet spacing
+            // Text effects
+            "line-clamp-2", // Limit to 2 lines
+            "transition-colors duration-300 ease-in-out",
+            "group-hover:text-amber-200"
           )}
-          role="heading"
-          aria-level={3}
         >
           {product.name}
         </h3>
-        {product.category && (
-          <span
-            className="inline-block px-2 py-1 text-xs bg-white/20 text-white rounded-full mb-2"
-            role="text"
-            aria-label={t('categoryLabel', { category: product.category })}
-          >
-            {product.category}
-          </span>
-        )}
+
         <p
           id={`product-description-${product.id}`}
           className={cn(
-            "text-stone-200 text-sm leading-relaxed overflow-hidden",
-            "focus:outline-none"
+            // Mobile-first typography
+            "text-xs text-teal-800/80", // 12px for mobile
+            "xs:text-sm", // 14px for 375px+
+            "sm:text-base", // 16px for 640px+
+            "md:text-lg", // 18px for tablet
+            // Text effects
+            "line-clamp-3", // Limit to 3 lines
+            "transition-colors duration-300 ease-in-out",
+            "group-hover:text-teal-800/90"
           )}
-          style={{
-            display: '-webkit-box',
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: 'vertical'
-          }}
-          role="text"
         >
           {product.description}
         </p>
-      </div>
 
-      {/* Screen reader only content for additional context */}
-      <div className="sr-only">
-        <p>
-          {t('productIndexLabel', { index: index + 1 })}
-        </p>
+        {/* Category badge */}
+        <div className={cn(
+          "mt-3", // Mobile spacing
+          "sm:mt-4", // Standard spacing for 640px+
+          "md:mt-5", // Tablet spacing
+        )}>
+          <span className={cn(
+            "inline-block px-2 py-1 rounded-full",
+            "text-xs font-medium", // Mobile typography
+            "xs:text-sm xs:px-3", // 375px+ sizing
+            "bg-white/20 text-teal-800",
+            "transition-all duration-300 ease-in-out",
+            "group-hover:bg-amber-600/80 group-hover:text-teal-800"
+          )}>
+            {product.category}
+          </span>
+        </div>
       </div>
     </article>
   );
 };
+
 
 // Main ProductReferencesSection component
 export const ProductReferencesSection = ({
@@ -155,6 +228,8 @@ export const ProductReferencesSection = ({
   const [products, setProducts] = useState<ProductReference[]>(propProducts || []);
   const [loading, setLoading] = useState(!propProducts);
   const [error, setError] = useState<string | null>(null);
+  const [retryCount, setRetryCount] = useState(0);
+  const [isRetrying, setIsRetrying] = useState(false);
 
   const fetchProducts = useCallback(async () => {
     // Skip fetching if products are provided as props
@@ -165,10 +240,17 @@ export const ProductReferencesSection = ({
     try {
       setLoading(true);
       setError(null);
+      setIsRetrying(retryCount > 0);
+
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
 
       const response = await fetch(`/api/products/random?count=${maxProducts}&locale=${locale}&featured=true`, {
         cache: 'no-store', // Ensure fresh data
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: Failed to fetch products`);
@@ -181,16 +263,43 @@ export const ProductReferencesSection = ({
           transformProductToReference(product, locale)
         );
         setProducts(transformedProducts);
+        setRetryCount(0); // Reset retry count on success
       } else {
-        setError(data.error || 'Failed to load products');
+        throw new Error(data.error || 'Failed to load products');
       }
     } catch (err) {
-      console.error('Error fetching products for ProductReferencesSection:', err);
-      setError('Failed to load products');
+      const error = err as Error;
+
+      logErrorWithContext(error, {
+        component: 'ProductReferencesSection',
+        action: 'fetch_products',
+        locale,
+        retryCount,
+        timestamp: new Date().toISOString(),
+      });
+
+      // Set user-friendly error message
+      if (error.name === 'AbortError') {
+        setError(safeTranslate(t, 'timeoutError', locale) || 'Request timed out');
+      } else if (isRecoverableError(error)) {
+        setError(safeTranslate(t, 'loadingError', locale));
+      } else {
+        setError(safeTranslate(t, 'criticalError', locale) || 'Critical error occurred');
+      }
     } finally {
       setLoading(false);
+      setIsRetrying(false);
     }
-  }, [maxProducts, locale, propProducts]);
+  }, [maxProducts, locale, propProducts, retryCount, t]);
+
+  // Safe translation function with fallbacks (memoized to prevent infinite loops)
+  const safeT = useCallback((key: string) => safeTranslate(t, key, locale), [t, locale]);
+
+  // Debounced retry function to prevent rapid retry attempts
+  const debouncedRetry = createDebouncedRetry(() => {
+    setRetryCount(prev => prev + 1);
+    fetchProducts();
+  }, 1000);
 
   useEffect(() => {
     fetchProducts();
@@ -211,7 +320,7 @@ export const ProductReferencesSection = ({
           // Desktop layout with proper space utilization (1024px+)
           "lg:py-24 lg:px-12", // Ample desktop padding
           "xl:px-16", // Extra padding for large screens
-          "bg-funeral-background",
+          "bg-amber-100",
           // Orientation handling
           "landscape:py-8", // Reduced padding in landscape
           "md:landscape:py-16", // Tablet landscape adjustment
@@ -242,7 +351,7 @@ export const ProductReferencesSection = ({
               id="products-heading"
               className={cn(
                 // Mobile-first typography
-                "text-2xl font-bold text-white", // 24px for mobile
+                "text-2xl font-bold text-teal-800", // 24px for mobile
                 "xs:text-3xl", // 30px for 375px+ screens
                 "sm:text-4xl", // 36px for 640px+ screens
                 "md:text-5xl", // 48px for tablet
@@ -269,7 +378,7 @@ export const ProductReferencesSection = ({
               aria-hidden="true"
             ></div>
             <span id="products-loading" className="sr-only">
-              {t('loading')}
+              {safeT('loading')}
             </span>
           </div>
         </div>
@@ -292,7 +401,7 @@ export const ProductReferencesSection = ({
           // Desktop layout with proper space utilization (1024px+)
           "lg:py-24 lg:px-12", // Ample desktop padding
           "xl:px-16", // Extra padding for large screens
-          "bg-funeral-background",
+          "bg-amber-100",
           // Orientation handling
           "landscape:py-8", // Reduced padding in landscape
           "md:landscape:py-16", // Tablet landscape adjustment
@@ -316,7 +425,7 @@ export const ProductReferencesSection = ({
               id="products-heading"
               className={cn(
                 // Mobile-first typography
-                "text-2xl font-bold text-white", // 24px for mobile
+                "text-2xl font-bold text-teal-800", // 24px for mobile
                 "xs:text-3xl", // 30px for 375px+ screens
                 "sm:text-4xl", // 36px for 640px+ screens
                 "md:text-5xl", // 48px for tablet
@@ -349,24 +458,50 @@ export const ProductReferencesSection = ({
                   "mb-4"
                 )}
               >
-                {t('loadingError')}
+                {error}
               </p>
-              <button
-                onClick={fetchProducts}
-                className={cn(
-                  "text-white hover:text-stone-200 font-medium transition-colors",
-                  "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background",
-                  "rounded-md px-4 py-2 border border-white/30 hover:border-white/50",
-                  "min-h-[44px]" // WCAG touch target
-                )}
-                aria-describedby="retry-description"
-              >
-                {t('tryAgain')}
-              </button>
-              <div id="retry-description" className="sr-only">
-                {t('retryDescription')}
+
+              {/* Retry information */}
+              {retryCount > 0 && (
+                <p className="text-teal-800/70 text-sm mb-4">
+                  {safeT('retryAttempt')} {retryCount}
+                </p>
+              )}
+
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                <button
+                  onClick={debouncedRetry}
+                  disabled={isRetrying}
+                  className={cn(
+                    "text-teal-800 hover:text-stone-200 font-medium transition-colors",
+                    "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background",
+                    "rounded-md px-4 py-2 border border-white/30 hover:border-white/50",
+                    "min-h-[44px]", // WCAG touch targe
+                    "disabled:opacity-50 disabled:cursor-not-allowed",
+                    isRetrying && "animate-pulse"
+                  )}
+                  aria-describedby="retry-description"
+                >
+                  {isRetrying ? safeT('retrying') || 'Retrying...' : safeT('tryAgain')}
+                </button>
+
+                {/* Alternative action - go to products page */}
+                <button
+                  onClick={() => window.location.href = `/${locale}/products`}
+                  className={cn(
+                    "text-teal-800 hover:text-stone-200 font-medium transition-colors",
+                    "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background",
+                    "rounded-md px-4 py-2 bg-white/10 hover:bg-white/20",
+                    "min-h-[44px]" // WCAG touch target
+                  )}
+                >
+                  {safeT('viewAllProducts') || (locale === 'cs' ? 'Zobrazit všechny produkty' : 'View All Products')}
+                </button>
               </div>
-            </div>
+
+              <div id="retry-description" className="sr-only">
+                {safeT('retryDescription')}
+              </div>        </div>
           </div>
         </div>
       </section>
@@ -392,7 +527,7 @@ export const ProductReferencesSection = ({
         // Desktop layout with proper space utilization (1024px+)
         "lg:py-24 lg:px-12", // Ample desktop padding
         "xl:py-28 xl:px-16", // Maximum padding for large screens
-        "bg-funeral-background", // funeral background color from design tokens
+        "bg-amber-100", // funeral background color from design tokens
         // Orientation handling
         "landscape:py-8", // Reduced padding in landscape
         "md:landscape:py-16", // Tablet landscape adjustment
@@ -425,7 +560,7 @@ export const ProductReferencesSection = ({
             id="products-heading"
             className={cn(
               // Mobile-first typography (320px-767px)
-              "text-2xl font-bold text-white", // 24px for mobile
+              "text-2xl font-bold text-teal-800", // 24px for mobile
               "xs:text-3xl", // 30px for 375px+ screens
               "sm:text-4xl", // 36px for 640px+ screens
               // Tablet optimizations (768px-1023px)
@@ -449,12 +584,12 @@ export const ProductReferencesSection = ({
             role="heading"
             aria-level={2}
           >
-            {t('heading')}
+            {safeT('heading')}
           </h2>
           <p
             id="products-description"
             className={cn(
-              "text-stone-200",
+              "text-hero",
               // Mobile-first typography (320px-767px)
               "text-sm", // 14px for very small screens
               "xs:text-base", // 16px for 375px+ screens
@@ -479,7 +614,7 @@ export const ProductReferencesSection = ({
             )}
             tabIndex={0}
           >
-            {t('description')}
+            {safeT('description')}
           </p>
         </div>
 
@@ -509,7 +644,7 @@ export const ProductReferencesSection = ({
             "md:landscape:gap-6" // Tablet landscape gaps
           )}
           role="grid"
-          aria-label={t('productGridLabel')}
+          aria-label={safeT('productGridLabel')}
           aria-rowcount={Math.ceil(products.length / 4)}
           aria-colcount={4}
         >
@@ -526,7 +661,7 @@ export const ProductReferencesSection = ({
         {/* Screen reader summary */}
         <div className="sr-only" aria-live="polite">
           <p>
-            {t('summaryText', { count: products.length })}
+            {safeT('summaryText').replace('{count}', products.length.toString())}
           </p>
         </div>
       </div>

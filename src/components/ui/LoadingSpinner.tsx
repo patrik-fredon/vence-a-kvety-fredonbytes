@@ -1,12 +1,20 @@
+import React from 'react';
 import { cn } from '@/lib/utils';
+import { safeTranslate, getFallbackTranslation } from '@/lib/utils/fallback-utils';
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
   className?: string;
   label?: string;
+  locale?: string;
 }
 
-export function LoadingSpinner({ size = "md", className = "", label = "Načítání..." }: LoadingSpinnerProps) {
+export function LoadingSpinner({
+  size = "md",
+  className = "",
+  label,
+  locale = "en"
+}: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: "w-4 h-4",
     md: "w-6 h-6",
@@ -17,18 +25,25 @@ export function LoadingSpinner({ size = "md", className = "", label = "Načítá
   const prefersReducedMotion = typeof window !== 'undefined' &&
     window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+  // Use fallback translation if label not provided
+  const loadingLabel = label || getFallbackTranslation('common.loading', locale);
+
   return (
     <div
       className={`${sizeClasses[size]} ${className}`}
       role="status"
-      aria-label={label}
+      aria-label={loadingLabel}
+      aria-live="polite"
     >
       <div className={cn(
         'rounded-full border-2 border-primary-200 border-t-primary-600',
         !prefersReducedMotion && 'animate-spin',
+        prefersReducedMotion && 'animate-pulse', // Alternative for reduced motion
         // High contrast support
         'high-contrast:border-WindowText high-contrast:border-t-Highlight'
-      )}></div>
+      )}>
+        <span className="sr-only">{loadingLabel}</span>
+      </div>
     </div>
   );
 }
@@ -37,17 +52,40 @@ interface LoadingStateProps {
   message?: string;
   size?: "sm" | "md" | "lg";
   className?: string;
+  locale?: string;
+  timeout?: number;
+  onTimeout?: () => void;
 }
 
 export function LoadingState({
-  message = "Načítání...",
+  message,
   size = "md",
   className = "",
+  locale = "en",
+  timeout,
+  onTimeout,
 }: LoadingStateProps) {
+  // Use fallback translation if message not provided
+  const loadingMessage = message || getFallbackTranslation('common.loading', locale);
+
+  // Handle timeout if specified
+  React.useEffect(() => {
+    if (timeout && onTimeout) {
+      const timeoutId = setTimeout(onTimeout, timeout);
+      return () => clearTimeout(timeoutId);
+    }
+  }, [timeout, onTimeout]);
+
   return (
-    <div className={cn('flex flex-col items-center justify-center space-y-3', className)}>
-      <LoadingSpinner size={size} />
-      <p className="text-sm text-neutral-600 font-medium animate-gentle-fade">{message}</p>
+    <div
+      className={cn('flex flex-col items-center justify-center space-y-3', className)}
+      role="status"
+      aria-live="polite"
+    >
+      <LoadingSpinner size={size} locale={locale} />
+      <p className="text-sm text-neutral-600 font-medium animate-gentle-fade">
+        {loadingMessage}
+      </p>
     </div>
   );
 }

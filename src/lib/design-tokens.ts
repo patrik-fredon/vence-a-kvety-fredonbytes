@@ -14,9 +14,9 @@
  * Foundation for backgrounds, text, and borders
  */
 export const stoneColors = {
-  50: "#FAFAF9",
-  100: "#F5F5F4",
-  200: "#E7E5E4",
+  50: "#00302D",
+  100: "#00302D",
+  200: "#00302D",
   300: "#D6D3D1",
   400: "#A8A29E",
   500: "#78716C",
@@ -32,17 +32,17 @@ export const stoneColors = {
  * Used for highlights, CTAs, and important elements
  */
 export const amberColors = {
-  50: "#FFFBEB",
-  100: "#FEF3C7",
-  200: "#FDE68A",
-  300: "#FCD34D",
-  400: "#FBBF24",
-  500: "#F59E0B",
-  600: "#D97706",
-  700: "#B45309",
-  800: "#92400E",
-  900: "#78350F",
-  950: "#451A03",
+  50: "#f0fdfa",
+  100: "#FEF3C6",
+  200: "#99f6e4",
+  300: "#5eead4",
+  400: "#2dd4bf",
+  500: "#14b8a6",
+  600: "#0d9488",
+  700: "#0f766e",
+  800: "#115e59",
+  900: "#134e4a",
+  950: "#013029",
 } as const;
 
 /**
@@ -60,10 +60,10 @@ export const blackColor = "#000000" as const;
  * Professional colors appropriate for funeral services and memorial products
  */
 export const funeralColors = {
-  // Hero section background - dark green-gray (#102724)
-  hero: "#102724",
+  // Hero section background - dark green-gray (#00302D)
+  hero: "#C6C7A5",
   // Page background - muted olive-gold (#9B9259)
-  background: "#9B9259",
+  background: "#00302D",
   // Complementary shades for the funeral palette
   heroLight: "#1A3D36", // Lighter variant of hero color
   heroDark: "#0A1A15",  // Darker variant of hero color

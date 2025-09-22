@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import { AuthStatus } from "@/components/auth";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { Navigation } from "./Navigation";
@@ -58,7 +58,7 @@ export function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="border-b border-stone-200 bg-white sticky top-0 z-40 shadow-sm"
+        className="border-b border-stone-200 bg-amber-100 sticky top-0 z-40 shadow-sm"
         role="banner"
       >
         {/* Container with max-width and centered content */}
@@ -80,47 +80,30 @@ export function Header({ locale }: HeaderProps) {
           </a>
 
           {/* Top bar - Quick navigation */}
-          <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b border-stone-100">
-            <div className="hidden md:flex items-center gap-6">
+          <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b ">
+            <div className="flex items-center gap-2">
+
+              {/* Logo with enhanced typography */}
               <Link
-                href={`/${locale}/products`}
-                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
+                href={`/${locale}`}
+                className="text-2xl font-light tracking-wide text-stone-900 hover:text-stone-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
+                aria-label={t("home")}
               >
-                {t("products")}
+                POHŘEBNÍ <span className="text-teal-700 font-medium">VĚNCE</span>
               </Link>
-              <Link
-                href={`/${locale}/contact`}
-                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
-              >
-                {t("contact")}
-              </Link>
-              <Link
-                href={`/${locale}/faq`}
-                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
-              >
-                {t("howToOrder")}
-              </Link>
+
             </div>
 
             {/* Right side actions */}
             <div className="flex items-center gap-3">
-              {/* Search icon */}
-              <button
-                className="p-1.5 hover:text-stone-800 hover:bg-stone-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md"
-                aria-label={t("search")}
-              >
-                <MagnifyingGlassIcon className="h-4 w-4" />
-              </button>
+
+
 
               {/* Language Switcher - Desktop */}
               <div className="hidden sm:block">
                 <LanguageSwitcher currentLocale={locale} />
               </div>
 
-              {/* User/Auth status - Desktop */}
-              <div className="hidden sm:block">
-                <AuthStatus locale={locale} />
-              </div>
 
               {/* Cart icon with enhanced styling */}
               <CartIcon locale={locale} className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200" />
@@ -128,15 +111,9 @@ export function Header({ locale }: HeaderProps) {
           </div>
 
           {/* Main header */}
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-center py-4">
             {/* Logo with enhanced typography */}
-            <Link
-              href={`/${locale}`}
-              className="text-2xl font-light tracking-wide text-stone-900 hover:text-stone-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
-              aria-label={t("home")}
-            >
-              POHŘEBNÍ <span className="text-teal-700 font-medium">VĚNCE</span>
-            </Link>
+
 
             {/* Desktop Navigation with enhanced styling */}
             <nav

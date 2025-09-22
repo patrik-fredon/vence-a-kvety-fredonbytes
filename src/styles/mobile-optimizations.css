@@ -274,8 +274,8 @@
   }
 
   .hero-logo {
-    height: 12rem; /* 192px */
-    margin-bottom: 3rem;
+    height: 24rem; /* 192px */
+    margin-bottom: 1rem;
   }
 
   .hero-title {
@@ -325,7 +325,7 @@
   }
 
   .hero-logo {
-    height: 14rem; /* 224px */
+    height: 32rem; /* 224px */
   }
 
   .hero-title {

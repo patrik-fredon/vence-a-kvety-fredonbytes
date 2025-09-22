@@ -9,6 +9,7 @@
 import Link from "next/link";
 import { Button } from "./Button";
 import { cn } from "@/lib/utils";
+import { useReducedMotion } from "@/lib/accessibility/hooks";
 
 interface CTAButtonProps {
   /** Button text content */
@@ -34,15 +35,20 @@ export function CTAButton({
   onClick,
   ...props
 }: CTAButtonProps) {
+  const prefersReducedMotion = useReducedMotion();
+
   const ctaStyles = cn(
     // Modern design principles - Amber color scheme for funeral context
     "bg-amber-600 hover:bg-amber-700 active:bg-amber-800",
     "text-white font-medium",
 
-    // Enhanced visual feedback and interactions
+    // Enhanced visual feedback and interactions with exact 300ms timing
     "shadow-lg hover:shadow-xl",
     "transition-all duration-300 ease-in-out",
-    "transform hover:scale-105 active:scale-95",
+
+    // Conditional animations based on motion preferences
+    !prefersReducedMotion && "transform hover:scale-105 active:scale-95",
+    prefersReducedMotion && "hover:shadow-md", // Reduced effect for motion-sensitive users
 
     // Accessibility and touch targets (minimum 44px)
     "min-h-[44px] min-w-[44px]",
@@ -88,24 +94,24 @@ export function CTAButton({
   };
 
   return (
-    <Link 
-      href={href} 
+    <Link
+      href={href}
       className="inline-block"
       tabIndex={disabled ? -1 : 0}
       aria-disabled={disabled}
+      {...props}
     >
-      <Button
-        size={size}
+      <button
+        type="button"
         className={ctaStyles}
         disabled={disabled}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
-        role="button"
-        aria-describedby="cta-button-description"
-        {...props}
+        aria-label={typeof children === 'string' ? children : undefined}
       >
         {children}
-      </Button>
+      </button>
     </Link>
   );
 }
+

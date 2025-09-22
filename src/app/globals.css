@@ -14,7 +14,8 @@
   --color-stone-800: #292524;
   --color-stone-900: #1c1917;
   --color-stone-950: #0c0a09;
-
+  --color-amber-100: #fef3c6;
+  --color-amber-200: #b8b676;
   /* Teal color palette (accent colors) */
   --color-teal-50: #f0fdfa;
   --color-teal-100: #ccfbf1;
@@ -24,12 +25,12 @@
   --color-teal-500: #14b8a6;
   --color-teal-600: #0d9488;
   --color-teal-700: #0f766e;
-  --color-teal-800: #115e59;
+  --color-teal-800: #00302d;
   --color-teal-900: #134e4a;
   --color-teal-950: #013029;
 
   /* Background and foreground using stone palette */
-  --background: var(--color-stone-50);
+  --background: var(--color-amber-100);
   --foreground: var(--color-stone-900);
   --muted: var(--color-stone-100);
   --muted-foreground: var(--color-stone-600);
@@ -64,16 +65,22 @@ body {
 }
 
 /* Headings with elegant serif font */
-h1,
+
 h2,
 h3,
 h4,
 h5,
 h6 {
   font-family: "Playfair Display", Georgia, serif;
-  font-weight: 500;
+  font-weight: 700;
   line-height: 1.2;
-  color: var(--color-teal-400);
+  color: var(--color-teal-900);
+}
+h1 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-amber-200);
 }
 
 /* Focus styles for accessibility */
