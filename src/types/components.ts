@@ -504,6 +504,35 @@ export interface PaginationState {
 }
 
 // =============================================================================
+// PRODUCT REFERENCE COMPONENT INTERFACES
+// =============================================================================
+
+/**
+ * Simplified product reference for display in ProductReferencesSection
+ */
+export interface ProductReference {
+  id: string;
+  name: string; // Localized name
+  image: {
+    src: string;
+    alt: string;
+    width?: number;
+    height?: number;
+  };
+  description: string; // Localized description
+  category?: string;
+  slug?: string; // For potential navigation
+}
+
+/**
+ * Props for ProductReferencesSection component
+ */
+export interface ProductReferencesSectionProps extends ComponentWithLocale {
+  products?: ProductReference[]; // Optional since we can fetch data internally
+  maxProducts?: number; // Default to 4 as per design
+}
+
+// =============================================================================
 // EXPORT ALL TYPES
 // =============================================================================
 

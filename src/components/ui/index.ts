@@ -13,6 +13,7 @@
 // =============================================================================
 
 export { Button } from "./Button";
+export { CTAButton } from "./CTAButton";
 export { Input } from "./Input";
 export { Text } from "./Text";
 export { Heading } from "./Heading";

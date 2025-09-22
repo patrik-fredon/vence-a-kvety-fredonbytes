@@ -159,6 +159,8 @@ export function Button({
           {/* Screen reader loading text */}
           <span className="sr-only" id={`${props.id}-loading`}>
             {loadingText || "Načítání..."}
+
+
           </span>
         </>
       )}
