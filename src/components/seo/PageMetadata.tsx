@@ -56,7 +56,7 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       alternateLocale: props.locale === "cs" ? "en_US" : "cs_CZ",
       title: props.openGraph?.title || props.title,
       description: props.openGraph?.description || props.description,
-      siteName: "Pohřební věnce | Ketingmar s.r.o.",
+      siteName: props.locale === "cs" ? "Pohřební věnce | Ketingmar s.r.o." : "Funeral Wreaths | Ketingmar s.r.o.",
       url: fullUrl,
       images: props.image ? [
         {

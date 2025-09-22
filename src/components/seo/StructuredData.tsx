@@ -133,7 +133,9 @@ export function generateWebsiteStructuredData(locale: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: "Pohřební věnce | Ketingmar s.r.o.",
+    name: locale === "cs" 
+      ? "Pohřební věnce | Ketingmar s.r.o."
+      : "Funeral Wreaths | Ketingmar s.r.o.",
     url: baseUrl,
     description: locale === "cs"
       ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
@@ -161,7 +163,7 @@ export function generateLocalBusinessStructuredData(locale: string) {
     "@type": "LocalBusiness",
     "@id": `${baseUrl}/#business`,
     name: "Ketingmar s.r.o.",
-    alternateName: "Pohřební věnce",
+    alternateName: locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths",
     description: locale === "cs"
       ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
       : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",

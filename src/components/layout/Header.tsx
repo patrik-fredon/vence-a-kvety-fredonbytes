@@ -3,16 +3,17 @@
 import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon, UserIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { AuthStatus } from "@/components/auth/AuthStatus";
-import { LanguageToggle } from "./LanguageToggle";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { Navigation } from "./Navigation";
 import { CartIcon } from "@/components/cart/CartIcon";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { cn } from "@/lib/utils";
+import { type Locale } from "@/i18n/config";
 
 interface HeaderProps {
-  locale: string;
+  locale: Locale;
 }
 
 export function Header({ locale }: HeaderProps) {
@@ -77,6 +78,7 @@ export function Header({ locale }: HeaderProps) {
           >
             {tAccessibility('skipToContent')}
           </a>
+
           {/* Top bar - Quick navigation */}
           <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b border-stone-100">
             <div className="hidden md:flex items-center gap-6">
@@ -109,6 +111,11 @@ export function Header({ locale }: HeaderProps) {
               >
                 <MagnifyingGlassIcon className="h-4 w-4" />
               </button>
+
+              {/* Language Switcher - Desktop */}
+              <div className="hidden sm:block">
+                <LanguageSwitcher currentLocale={locale} />
+              </div>
 
               {/* User/Auth status - Desktop */}
               <div className="hidden sm:block">
@@ -234,8 +241,9 @@ export function Header({ locale }: HeaderProps) {
             <div className="border-t border-stone-200 p-4 space-y-4 bg-stone-50">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-700">{tUI('language')}:</span>
-                <LanguageToggle currentLocale={locale} />
+                <LanguageSwitcher currentLocale={locale} />
               </div>
+
               <div className="pt-2 border-t border-stone-200">
                 <AuthStatus locale={locale} />
               </div>
