@@ -7,7 +7,6 @@ import { ProductCard } from "./ProductCard";
 import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
-import { KeyboardNavigationGrid } from "@/components/accessibility/KeyboardNavigationGrid";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
 
@@ -74,7 +73,6 @@ export function ProductGrid({
   // Fetch products from API
   const fetchProducts = useCallback(
     async (page: number = 1, resetProducts: boolean = false) => {
-
       setLoading(true);
       setError(null);
 
@@ -99,7 +97,6 @@ export function ProductGrid({
         // Add sorting
         searchParams.set("sortField", sortOptions.field);
         searchParams.set("sortDirection", sortOptions.direction);
-
 
         const response = await fetch(`/api/products?${searchParams.toString()}`);
 
@@ -178,7 +175,6 @@ export function ProductGrid({
 
   // Handle filter changes
   const handleFiltersChange = (newFilters: ProductFilters) => {
-
     setFilters(newFilters);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to filters dependency
@@ -186,7 +182,6 @@ export function ProductGrid({
 
   // Handle sort changes
   const handleSortChange = (newSort: ProductSortOptions) => {
-
     setSortOptions(newSort);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to sortOptions dependency
@@ -205,37 +200,9 @@ export function ProductGrid({
       onAddToCart(product);
     } else {
       // Default behavior - TODO: Implement cart functionality in later tasks
-
       // Could show a toast notification here
     }
   };
-
-  // Organize products for grid layout with featured products
-  const organizeProductsForGrid = (products: Product[]) => {
-    const featuredProducts = products.filter(p => p.featured);
-    const regularProducts = products.filter(p => !p.featured);
-
-    // Interleave featured products with regular products
-    // Place featured products at strategic positions (every 6-8 products)
-    const organizedProducts: Array<{ product: Product; featured: boolean }> = [];
-    let regularIndex = 0;
-    let featuredIndex = 0;
-
-    for (let i = 0; i < products.length; i++) {
-      // Place featured product every 6 positions, starting from position 2
-      if (featuredIndex < featuredProducts.length && (i === 1 || (i > 1 && (i - 1) % 6 === 0))) {
-        organizedProducts.push({ product: featuredProducts[featuredIndex], featured: true });
-        featuredIndex++;
-      } else if (regularIndex < regularProducts.length) {
-        organizedProducts.push({ product: regularProducts[regularIndex], featured: false });
-        regularIndex++;
-      }
-    }
-
-    return organizedProducts;
-  };
-
-  const organizedProducts = organizeProductsForGrid(products);
 
   return (
     <section className={cn("bg-amber-100 py-8", className)}>
@@ -270,7 +237,7 @@ export function ProductGrid({
             <span className="text-sm text-stone-600 mr-2">{t("viewMode")}:</span>
             <div className="flex border border-stone-300 rounded-md overflow-hidden">
               <Button
-                variant={viewMode === 'grid' ? 'primary' : 'ghost'}
+                variant={viewMode === 'grid' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleViewModeChange('grid')}
                 className="rounded-none border-0 px-3 py-1"
@@ -279,7 +246,7 @@ export function ProductGrid({
                 <span className="text-2xl">⊞</span>
               </Button>
               <Button
-                variant={viewMode === 'list' ? 'primary' : 'ghost'}
+                variant={viewMode === 'list' ? 'default' : 'ghost'}
                 size="sm"
                 onClick={() => handleViewModeChange('list')}
                 className="rounded-none border-0 px-3 py-1"
@@ -305,48 +272,40 @@ export function ProductGrid({
         {/* Products Grid */}
         {!error && (
           <>
-            {organizedProducts.length > 0 ? (
-              <KeyboardNavigationGrid
+            {products.length > 0 ? (
+              <div
                 className={cn(
                   viewMode === 'grid'
-                    ? // Grid view: Responsive grid with featured products spanning 2 columns
-                    "grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8 auto-rows-max"
-                    : // List view: Single column layout
+                    ? // Modern responsive grid with mobile-first approach
+                    "grid mb-8 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5"
+                    : // List view: Single column layout with consistent spacing
                     "flex flex-col gap-4 mb-8"
                 )}
-                columns={viewMode === 'grid' ? 3 : 1}
-                orientation="both"
-                ariaLabel={t("title")}
-                onItemActivate={(index, element) => {
-                  // Handle Enter/Space key activation
-                  const link = element.querySelector('a');
-                  if (link) {
-                    link.click();
-                  }
-                }}
               >
-                {organizedProducts.map(({ product, featured }, index) => (
+                {products.map((product) => (
                   <div
                     key={product.id}
-                    data-keyboard-nav-item
-                    tabIndex={index === 0 ? 0 : -1}
                     className={cn(
-                      viewMode === 'grid' && featured && "md:col-span-2 lg:col-span-2"
+                      "w-full",
+                      // Ensure consistent aspect ratio for grid cards
+                      viewMode === 'grid' && "flex flex-col"
                     )}
                   >
                     <ProductCard
                       product={product}
                       locale={locale}
                       onAddToCart={handleAddToCart}
-                      onToggleFavorite={onToggleFavorite}
-                      isFavorite={favoriteProductIds.includes(product.id)}
-                      featured={featured}
+                      featured={product.featured}
                       viewMode={viewMode}
-                      className={viewMode === 'grid' ? "h-full" : "w-full"}
+                      className={cn(
+                        viewMode === 'grid'
+                          ? "h-full flex flex-col" // Ensure cards fill container height
+                          : "w-full"
+                      )}
                     />
                   </div>
                 ))}
-              </KeyboardNavigationGrid>
+              </div>
             ) : !loading ? (
               // No Results State
               <div className="text-center py-16 bg-white rounded-lg shadow-sm">
@@ -366,34 +325,42 @@ export function ProductGrid({
                 </Button>
               </div>
             ) : null}
-
-            {/* Loading State */}
-            {loading && (
-              <div className="space-y-6">
-                {products.length === 0 ? (
-                  <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                    <ProductGridSkeleton count={PRODUCTS_PER_PAGE} />
-                  </div>
-                ) : (
-                  <div className="flex justify-center py-8">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-4 h-4 border-2 border-stone-600 border-t-transparent rounded-full animate-spin"></div>
-                      <span className="text-sm text-stone-600">{tCommon("loading")}</span>
-                    </div>
-                  </div>
-                )}
-              </div>
-            )}
-
-            {/* Load More Button */}
-            {!loading && hasMore && products.length > 0 && (
-              <div className="text-center pt-8">
-                <Button variant="outline" onClick={loadMore} size="lg">
-                  {t("loadMore")}
-                </Button>
-              </div>
-            )}
           </>
+        )}
+
+        {/* Loading State */}
+        {loading && (
+          <div className="space-y-6">
+            {products.length === 0 ? (
+              <div className={cn(
+                "grid",
+                // Use same responsive grid for loading skeleton
+                "grid-cols-1 gap-4",
+                "sm:grid-cols-2 sm:gap-6",
+                "lg:grid-cols-3 lg:gap-8",
+                "xl:grid-cols-4",
+                "2xl:grid-cols-5"
+              )}>
+                <ProductGridSkeleton count={PRODUCTS_PER_PAGE} />
+              </div>
+            ) : (
+              <div className="flex justify-center py-8">
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-stone-600 border-t-transparent rounded-full animate-spin"></div>
+                  <span className="text-sm text-stone-600">{tCommon("loading")}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        )}
+
+        {/* Load More Button */}
+        {!loading && hasMore && products.length > 0 && (
+          <div className="text-center pt-8">
+            <Button variant="outline" onClick={loadMore} size="lg">
+              {t("loadMore")}
+            </Button>
+          </div>
         )}
       </div>
     </section>

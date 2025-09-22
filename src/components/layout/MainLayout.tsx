@@ -14,10 +14,7 @@ export function MainLayout({ children, locale }: MainLayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      {/* Skip links for keyboard navigation */}
       <SkipLinks locale={locale} />
-
-      {/* Accessibility toolbar */}
       <AccessibilityToolbar locale={locale} />
 
       <Header locale={locale} />

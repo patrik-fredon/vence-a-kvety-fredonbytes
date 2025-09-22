@@ -14,7 +14,6 @@ export { Footer } from "./Footer";
 export { Navigation } from "./Navigation";
 export { MainLayout } from "./MainLayout";
 export { LanguageToggle } from "./LanguageToggle";
-export { HeroSection } from "./HeroSection";
 export { RefactoredHeroSection } from "./RefactoredHeroSection";
 export { ProductReferencesSection } from "./ProductReferencesSection";
 export { LazyProductReferencesSection } from "./LazyProductReferencesSection";
