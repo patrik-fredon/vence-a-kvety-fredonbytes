@@ -10,12 +10,7 @@ import { createHash, randomBytes } from "crypto";
 const CSRF_TOKEN_LENGTH = 32;
 const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 
-interface CSRFTokenData {
-  token: string;
-  expires: number;
-  userId?: string;
-  sessionId?: string;
-}
+
 
 /**
  * Generate a CSRF token for the current session

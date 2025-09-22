@@ -5,7 +5,6 @@ import {
   updateOfflineOperationRetry,
   clearOfflineOperations,
   processOfflineOperations,
-  OfflineOperation,
 } from '../utils';
 
 // Mock localStorage

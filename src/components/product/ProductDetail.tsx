@@ -114,12 +114,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setIsAddingToCart(true);
 
     try {
-      console.log("🛒 [ProductDetail] Adding to cart:", {
-        productId: product.id,
-        customizations,
-        finalPrice,
-        quantity,
-      });
+
 
       const success = await addToCart({
         productId: product.id,
@@ -128,7 +123,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       });
 
       if (success) {
-        console.log("✅ [ProductDetail] Successfully added product to cart:", product.id);
+
         // Show success message (implement toast/notification in later tasks)
         alert(t("addedToCart"));
       } else {

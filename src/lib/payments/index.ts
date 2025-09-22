@@ -12,8 +12,6 @@ import {
 import {
   createGopayClient,
   GopayPaymentRequest,
-  handleGopaySuccess,
-  handleGopayFailure,
 } from "./gopay";
 
 export interface PaymentRequest {

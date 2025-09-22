@@ -14,6 +14,40 @@ export const LazyProductCustomizer = dynamic(
   }
 );
 
+// Admin components with lazy loading
+export const LazyMonitoringDashboard = dynamic(
+  () => import('@/components/admin/MonitoringDashboard').then(mod => ({ default: mod.MonitoringDashboard })),
+  {
+    loading: () => <LoadingSpinner size="md" />,
+    ssr: false,
+  }
+);
+
+export const LazyInventoryManagement = dynamic(
+  () => import('@/components/admin/InventoryManagement'),
+  {
+    loading: () => <LoadingSpinner size="md" />,
+    ssr: false,
+  }
+);
+
+// Payment components with lazy loading
+export const LazyStripePaymentForm = dynamic(
+  () => import('@/components/payments/StripePaymentForm').then(mod => ({ default: mod.StripePaymentForm })),
+  {
+    loading: () => <LoadingSpinner size="md" />,
+    ssr: false,
+  }
+);
+
+export const LazyGopayPaymentForm = dynamic(
+  () => import('@/components/payments/GopayPaymentForm').then(mod => ({ default: mod.GopayPaymentForm })),
+  {
+    loading: () => <LoadingSpinner size="md" />,
+    ssr: false,
+  }
+);
+
 // Utility function to create lazy component with custom loading
 export function createLazyComponent<T extends Record<string, any>>(
   importFn: () => Promise<{ default: React.ComponentType<T> }>,

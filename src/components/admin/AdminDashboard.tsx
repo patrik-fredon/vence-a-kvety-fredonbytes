@@ -7,9 +7,8 @@ import AdminHeader from "./AdminHeader";
 import DashboardOverview from "./DashboardOverview";
 import ProductManagement from "./ProductManagement";
 import OrderManagement from "./OrderManagement";
-import InventoryManagement from "./InventoryManagement";
 import AdminActivityLog from "./AdminActivityLog";
-import { MonitoringDashboard } from "./MonitoringDashboard";
+import { LazyMonitoringDashboard, LazyInventoryManagement } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
@@ -88,11 +87,11 @@ export default function AdminDashboard() {
       case "orders":
         return <OrderManagement />;
       case "inventory":
-        return <InventoryManagement />;
+        return <LazyInventoryManagement />;
       case "activity":
         return <AdminActivityLog />;
       case "monitoring":
-        return <MonitoringDashboard />;
+        return <LazyMonitoringDashboard />;
       default:
         return <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />;
     }
