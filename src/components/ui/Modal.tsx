@@ -11,6 +11,7 @@ import { XMarkIcon } from '@heroicons/react/24/outline';
 import { useFocusTrap, useAnnouncer } from '@/lib/accessibility/hooks';
 import { Button } from './Button';
 import { cn } from '@/lib/utils';
+import { useTranslations } from 'next-intl';
 
 interface ModalProps {
   isOpen: boolean;
@@ -39,6 +40,7 @@ export function Modal({
   className,
   initialFocus
 }: ModalProps) {
+  const t = useTranslations('accessibility');
   const announce = useAnnouncer();
   const modalRef = useFocusTrap(isOpen);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -88,7 +90,7 @@ export function Modal({
       }
 
       // Announce modal opening
-      announce(`Dialog otevřen: ${title}`, 'polite');
+      announce(`${t('openMenu')}: ${title}`, 'polite');
     } else if (!isOpen && previousActiveElement.current) {
       // Return focus to the previously focused element
       previousActiveElement.current.focus();
@@ -103,7 +105,7 @@ export function Modal({
   };
 
   const handleClose = () => {
-    announce('Dialog zavřen', 'polite');
+    announce(t('closeDialog'), 'polite');
     onClose();
   };
 
@@ -172,7 +174,7 @@ export function Modal({
               size="icon"
               onClick={handleClose}
               className="ml-4 flex-shrink-0"
-              aria-label="Zavřít dialog"
+              aria-label={t('closeDialog')}
             >
               <XMarkIcon className="h-5 w-5" aria-hidden="true" />
             </Button>
@@ -231,12 +233,17 @@ export function ConfirmModal({
   onConfirm,
   title,
   message,
-  confirmText = 'Potvrdit',
-  cancelText = 'Zrušit',
+  confirmText,
+  cancelText,
   variant = 'default',
   loading = false
 }: ConfirmModalProps) {
+  const t = useTranslations('common');
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Use translations as defaults if not provided
+  const defaultConfirmText = confirmText || t('confirm');
+  const defaultCancelText = cancelText || t('cancel');
 
   const handleConfirm = () => {
     onConfirm();
@@ -259,7 +266,7 @@ export function ConfirmModal({
             onClick={onClose}
             disabled={loading}
           >
-            {cancelText}
+            {defaultCancelText}
           </Button>
           <Button
             ref={confirmButtonRef}
@@ -267,7 +274,7 @@ export function ConfirmModal({
             onClick={handleConfirm}
             loading={loading}
           >
-            {confirmText}
+            {defaultConfirmText}
           </Button>
         </ModalFooter>
       </div>

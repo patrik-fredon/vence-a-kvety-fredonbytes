@@ -70,6 +70,7 @@ export function DeliveryCalendar({
   disabled = false,
 }: DeliveryCalendarProps) {
   const t = useTranslations("delivery");
+  const tAccessibility = useTranslations("accessibility");
   const [currentMonth, setCurrentMonth] = useState(new Date().getMonth());
   const [currentYear, setCurrentYear] = useState(new Date().getFullYear());
   const [availableDates, setAvailableDates] = useState<DeliveryAvailability[]>([]);
@@ -187,7 +188,7 @@ export function DeliveryCalendar({
           onClick={goToPreviousMonth}
           disabled={disabled}
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Předchozí měsíc"
+          aria-label={tAccessibility('previousMonth')}
         >
           <ChevronLeftIcon className="w-5 h-5" />
         </button>
@@ -201,7 +202,7 @@ export function DeliveryCalendar({
           onClick={goToNextMonth}
           disabled={disabled}
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label="Následující měsíc"
+          aria-label={tAccessibility('nextMonth')}
         >
           <ChevronRightIcon className="w-5 h-5" />
         </button>
@@ -258,7 +259,7 @@ export function DeliveryCalendar({
                   "bg-gray-100": availability?.isWeekend && !availability.isHoliday && !isSelected,
                 }
               )}
-              title={availability?.reason || (isAvailable ? "Dostupné" : "Nedostupné")}
+              title={availability?.reason || (isAvailable ? t('calendar.available') : t('calendar.unavailable'))}
             >
               {date.getDate()}
 
@@ -282,7 +283,7 @@ export function DeliveryCalendar({
       {/* Time Slot Selection */}
       {selectedDate && (
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-3">Čas doručení</h4>
+          <h4 className="text-sm font-medium text-gray-900 mb-3">{t('calendar.timeSlot')}</h4>
           <div className="grid grid-cols-2 gap-2">
             {["morning", "afternoon", "anytime"].map((slot) => (
               <button
@@ -299,9 +300,9 @@ export function DeliveryCalendar({
                   }
                 )}
               >
-                {slot === "morning" && "Dopoledne (8-12)"}
-                {slot === "afternoon" && "Odpoledne (12-18)"}
-                {slot === "anytime" && "Kdykoliv"}
+                {slot === "morning" && t('calendar.morning')}
+                {slot === "afternoon" && t('calendar.afternoon')}
+                {slot === "anytime" && t('calendar.anytime')}
               </button>
             ))}
           </div>
@@ -319,15 +320,15 @@ export function DeliveryCalendar({
       <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-600">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 bg-green-500 rounded-full" />
-          <span>Dostupné</span>
+          <span>{t('calendar.available')}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 bg-red-500 rounded-full" />
-          <span>Svátek</span>
+          <span>{t('calendar.holiday')}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 bg-gray-400 rounded-full" />
-          <span>Nedostupné</span>
+          <span>{t('calendar.unavailable')}</span>
         </div>
       </div>
     </div>

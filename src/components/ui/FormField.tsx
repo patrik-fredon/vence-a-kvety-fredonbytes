@@ -6,6 +6,7 @@
 import type { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode } from 'react';
 import { cn } from '@/lib/utils';
 import { useId } from '@/lib/accessibility/hooks';
+import { useTranslations } from 'next-intl';
 
 interface BaseFieldProps {
   label?: string;
@@ -46,6 +47,7 @@ export function FormField(props: FormFieldProps) {
     ...fieldProps
   } = props;
 
+  const t = useTranslations('accessibility');
   const fieldId = useId('field');
   const errorId = error ? `${fieldId}-error` : undefined;
   const helpId = helpText ? `${fieldId}-help` : undefined;
@@ -153,8 +155,8 @@ export function FormField(props: FormFieldProps) {
           {required && (
             <span
               className="text-red-500 ml-1"
-              aria-label="povinné pole"
-              title="Toto pole je povinné"
+              aria-label={t('requiredField')}
+              title={t('requiredField')}
             >
               *
             </span>
