@@ -17,6 +17,7 @@ export { LanguageToggle } from "./LanguageToggle";
 export { HeroSection } from "./HeroSection";
 export { RefactoredHeroSection } from "./RefactoredHeroSection";
 export { ProductReferencesSection } from "./ProductReferencesSection";
+export { LazyProductReferencesSection } from "./LazyProductReferencesSection";
 
 // =============================================================================
 // FUTURE LAYOUT COMPONENTS

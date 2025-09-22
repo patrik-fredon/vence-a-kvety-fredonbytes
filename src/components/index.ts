@@ -49,6 +49,7 @@ export * from "./admin";
 // Utility organisms
 export * from "./accessibility";
 export * from "./monitoring";
+export * from "./performance";
 export * from "./gdpr";
 export * from "./faq";
 

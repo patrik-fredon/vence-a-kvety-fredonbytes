@@ -47,10 +47,18 @@ export function CTAButton({
     // Accessibility and touch targets (minimum 44px)
     "min-h-[44px] min-w-[44px]",
     "focus-visible:ring-2 focus-visible:ring-amber-500 focus-visible:ring-offset-2",
+    "focus:outline-none",
+
+    // Enhanced keyboard navigation
+    "focus-visible:ring-4 focus-visible:ring-amber-300 focus-visible:ring-opacity-75",
 
     // High contrast mode support
     "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
     "high-contrast:border-2 high-contrast:border-ButtonText",
+
+    // Disabled state accessibility
+    disabled && "opacity-50 cursor-not-allowed focus:ring-0",
+    disabled && "hover:scale-100 hover:shadow-lg", // Disable hover effects when disabled
 
     // Responsive enhancements
     size === "lg" && "px-8 py-4 text-lg",
@@ -59,19 +67,41 @@ export function CTAButton({
     className
   );
 
-  const handleClick = () => {
+  const handleClick = (event: React.MouseEvent) => {
+    if (disabled) {
+      event.preventDefault();
+      return;
+    }
     if (onClick) {
       onClick();
     }
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Enhanced keyboard interaction
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      if (!disabled && onClick) {
+        onClick();
+      }
+    }
+  };
+
   return (
-    <Link href={href} className="inline-block">
+    <Link 
+      href={href} 
+      className="inline-block"
+      tabIndex={disabled ? -1 : 0}
+      aria-disabled={disabled}
+    >
       <Button
         size={size}
         className={ctaStyles}
         disabled={disabled}
         onClick={handleClick}
+        onKeyDown={handleKeyDown}
+        role="button"
+        aria-describedby="cta-button-description"
         {...props}
       >
         {children}

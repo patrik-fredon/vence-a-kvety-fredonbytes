@@ -9,6 +9,11 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // Custom responsive breakpoints for mobile-first design
+      screens: {
+        'xs': '475px', // Extra small screens (larger phones)
+        // Default breakpoints are still available: sm, md, lg, xl, 2xl
+      },
       colors: {
         // Stone/amber color palette from design tokens
         stone: designTokens.colors.stone,

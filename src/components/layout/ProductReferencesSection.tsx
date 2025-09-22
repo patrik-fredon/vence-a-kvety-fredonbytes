@@ -36,37 +36,109 @@ const transformProductToReference = (product: any, locale: string): ProductRefer
 };
 
 // Individual product reference card component
-const ProductReferenceCard = ({ product }: { product: ProductReference }) => {
+const ProductReferenceCard = ({
+  product,
+  index = 0,
+  locale = 'en'
+}: {
+  product: ProductReference;
+  index?: number;
+  locale?: string;
+}) => {
+  const handleKeyDown = (event: React.KeyboardEvent) => {
+    // Handle Enter and Space key activation
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      // In a real implementation, this would navigate to product detail
+      console.log(`Navigating to product: ${product.name}`);
+    }
+  };
+
+  const handleClick = () => {
+    // In a real implementation, this would navigate to product detail
+    console.log(`Navigating to product: ${product.name}`);
+  };
+
   return (
-    <article className="group bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-md hover:shadow-lg transition-all duration-300 hover:-translate-y-1">
+    <article
+      className={cn(
+        "group bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-md",
+        "hover:shadow-lg transition-all duration-300 hover:-translate-y-1",
+        "focus-within:ring-2 focus-within:ring-white focus-within:ring-opacity-50",
+        "cursor-pointer"
+      )}
+      role="gridcell"
+      aria-rowindex={Math.floor(index / 4) + 1}
+      aria-colindex={(index % 4) + 1}
+      tabIndex={0}
+      onKeyDown={handleKeyDown}
+      onClick={handleClick}
+      aria-labelledby={`product-name-${product.id}`}
+      aria-describedby={`product-description-${product.id}`}
+    >
       <div className="aspect-square relative overflow-hidden">
         <Image
           src={product.image.src}
-          alt={product.image.alt}
+          alt={`${product.image.alt} - ${locale === 'cs' ? 'Pohřební věnec z naší kolekce' : 'Funeral wreath from our collection'}`}
           width={product.image.width || 400}
           height={product.image.height || 400}
-          className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+          className={cn(
+            "object-cover w-full h-full group-hover:scale-105 transition-transform duration-300",
+            "focus:outline-none"
+          )}
           sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+          loading="lazy"
           priority={false}
           placeholder="blur"
           blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+          role="img"
         />
       </div>
       <div className="p-4">
-        <h3 className="text-lg font-semibold text-white mb-2 truncate">
+        <h3
+          id={`product-name-${product.id}`}
+          className={cn(
+            "text-lg font-semibold text-white mb-2 truncate",
+            "focus:outline-none"
+          )}
+          role="heading"
+          aria-level={3}
+        >
           {product.name}
         </h3>
         {product.category && (
-          <span className="inline-block px-2 py-1 text-xs bg-white/20 text-white rounded-full mb-2">
+          <span
+            className="inline-block px-2 py-1 text-xs bg-white/20 text-white rounded-full mb-2"
+            role="text"
+            aria-label={locale === 'cs' ? `Kategorie: ${product.category}` : `Category: ${product.category}`}
+          >
             {product.category}
           </span>
         )}
-        <p className="text-stone-200 text-sm leading-relaxed overflow-hidden" style={{
-          display: '-webkit-box',
-          WebkitLineClamp: 2,
-          WebkitBoxOrient: 'vertical'
-        }}>
+        <p
+          id={`product-description-${product.id}`}
+          className={cn(
+            "text-stone-200 text-sm leading-relaxed overflow-hidden",
+            "focus:outline-none"
+          )}
+          style={{
+            display: '-webkit-box',
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: 'vertical'
+          }}
+          role="text"
+        >
           {product.description}
+        </p>
+      </div>
+
+      {/* Screen reader only content for additional context */}
+      <div className="sr-only">
+        <p>
+          {locale === 'cs'
+            ? `Produkt ${index + 1} z kolekce. Stiskněte Enter nebo mezerník pro zobrazení detailů.`
+            : `Product ${index + 1} from collection. Press Enter or Space to view details.`
+          }
         </p>
       </div>
     </article>
@@ -124,54 +196,180 @@ export const ProductReferencesSection = ({
     fetchProducts();
   }, [fetchProducts]);
 
-  // Loading state
+  // Loading state with accessibility improvements
   if (loading) {
     return (
       <section
+        id="products-section"
         className={cn(
-          "py-16 px-4 sm:px-6 lg:px-8",
+          // Mobile-first responsive padding (320px-767px)
+          "py-12 px-3", // Compact padding for very small screens
+          "xs:py-14 xs:px-4", // Slightly more for 375px+
+          "sm:py-16 sm:px-6", // Standard mobile padding (640px+)
+          // Tablet optimizations (768px-1023px)
+          "md:py-20 md:px-8", // More generous tablet padding
+          // Desktop layout with proper space utilization (1024px+)
+          "lg:py-24 lg:px-12", // Ample desktop padding
+          "xl:px-16", // Extra padding for large screens
           "bg-funeral-background",
+          // Orientation handling
+          "landscape:py-8", // Reduced padding in landscape
+          "md:landscape:py-16", // Tablet landscape adjustment
           className
         )}
+        aria-labelledby="products-heading"
+        aria-describedby="products-loading"
+        role="region"
       >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
+        <div className={cn(
+          // Mobile-first max-width progression
+          "max-w-sm mx-auto", // 384px for very small screens
+          "xs:max-w-md", // 448px for 375px+ screens
+          "sm:max-w-4xl", // 896px for small screens (640px+)
+          "md:max-w-5xl", // 1024px for tablets
+          "lg:max-w-6xl", // 1152px for desktop
+          "xl:max-w-7xl" // 1280px for large screens
+        )}>
+          <div className={cn(
+            "text-center",
+            // Mobile-first spacing
+            "mb-8", // Compact spacing on mobile
+            "sm:mb-10", // Standard spacing for 640px+
+            "md:mb-12", // Tablet spacing
+            "lg:mb-16" // Desktop spacing
+          )}>
+            <h2
+              id="products-heading"
+              className={cn(
+                // Mobile-first typography
+                "text-2xl font-bold text-white", // 24px for mobile
+                "xs:text-3xl", // 30px for 375px+ screens
+                "sm:text-4xl", // 36px for 640px+ screens
+                "md:text-5xl", // 48px for tablet
+                "lg:text-6xl", // 60px for desktop
+                // Spacing
+                "mb-3", // Compact on mobile
+                "sm:mb-4", // Standard for 640px+
+                "md:mb-6", // Tablet spacing
+                // Orientation adjustments
+                "landscape:text-xl landscape:sm:text-3xl", // Smaller in landscape
+                "md:landscape:text-4xl" // Tablet landscape
+              )}
+            >
               {locale === 'cs' ? 'Naše produkty' : 'Our Products'}
             </h2>
           </div>
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"></div>
+          <div
+            className="flex justify-center items-center py-12"
+            role="status"
+            aria-live="polite"
+          >
+            <div
+              className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"
+              aria-hidden="true"
+            ></div>
+            <span id="products-loading" className="sr-only">
+              {locale === 'cs' ? 'Načítání produktů...' : 'Loading products...'}
+            </span>
           </div>
         </div>
       </section>
     );
   }
 
-  // Error state
+  // Error state with accessibility improvements
   if (error) {
     return (
       <section
+        id="products-section"
         className={cn(
-          "py-16 px-4 sm:px-6 lg:px-8",
+          // Mobile-first responsive padding (320px-767px)
+          "py-12 px-3", // Compact padding for very small screens
+          "xs:py-14 xs:px-4", // Slightly more for 375px+
+          "sm:py-16 sm:px-6", // Standard mobile padding (640px+)
+          // Tablet optimizations (768px-1023px)
+          "md:py-20 md:px-8", // More generous tablet padding
+          // Desktop layout with proper space utilization (1024px+)
+          "lg:py-24 lg:px-12", // Ample desktop padding
+          "xl:px-16", // Extra padding for large screens
           "bg-funeral-background",
+          // Orientation handling
+          "landscape:py-8", // Reduced padding in landscape
+          "md:landscape:py-16", // Tablet landscape adjustment
           className
         )}
+        aria-labelledby="products-heading"
+        aria-describedby="products-error"
+        role="region"
       >
-        <div className="max-w-7xl mx-auto">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-bold text-white mb-4">
+        <div className={cn(
+          // Mobile-first max-width progression
+          "max-w-sm mx-auto", // 384px for very small screens
+          "xs:max-w-md", // 448px for 375px+ screens
+          "sm:max-w-4xl", // 896px for small screens (640px+)
+          "md:max-w-5xl", // 1024px for tablets
+          "lg:max-w-6xl", // 1152px for desktop
+          "xl:max-w-7xl" // 1280px for large screens
+        )}>
+          <div className="text-center">
+            <h2
+              id="products-heading"
+              className={cn(
+                // Mobile-first typography
+                "text-2xl font-bold text-white", // 24px for mobile
+                "xs:text-3xl", // 30px for 375px+ screens
+                "sm:text-4xl", // 36px for 640px+ screens
+                "md:text-5xl", // 48px for tablet
+                "lg:text-6xl", // 60px for desktop
+                // Spacing
+                "mb-3", // Compact on mobile
+                "sm:mb-4", // Standard for 640px+
+                "md:mb-6", // Tablet spacing
+                // Orientation adjustments
+                "landscape:text-xl landscape:sm:text-3xl", // Smaller in landscape
+                "md:landscape:text-4xl" // Tablet landscape
+              )}
+            >
               {locale === 'cs' ? 'Naše produkty' : 'Our Products'}
             </h2>
-          </div>
-          <div className="text-center py-12">
-            <p className="text-stone-200 mb-4">{error}</p>
-            <button
-              onClick={fetchProducts}
-              className="text-white hover:text-stone-200 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background rounded-md px-4 py-2 border border-white/30 hover:border-white/50"
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="text-center py-12"
             >
-              {locale === 'cs' ? 'Zkusit znovu' : 'Try again'}
-            </button>
+              <p
+                id="products-error"
+                className={cn(
+                  "text-red-300", // Error color
+                  // Mobile-first typography
+                  "text-base", // 16px for mobile
+                  "sm:text-lg", // 18px for 640px+
+                  "md:text-xl", // 20px for tablet
+                  "lg:text-2xl", // 24px for desktop
+                  "mb-4"
+                )}
+              >
+                {locale === 'cs' ? 'Nepodařilo se načíst produkty' : 'Failed to load products'}
+              </p>
+              <button
+                onClick={fetchProducts}
+                className={cn(
+                  "text-white hover:text-stone-200 font-medium transition-colors",
+                  "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background",
+                  "rounded-md px-4 py-2 border border-white/30 hover:border-white/50",
+                  "min-h-[44px]" // WCAG touch target
+                )}
+                aria-describedby="retry-description"
+              >
+                {locale === 'cs' ? 'Zkusit znovu' : 'Try again'}
+              </button>
+              <div id="retry-description" className="sr-only">
+                {locale === 'cs'
+                  ? 'Tlačítko pro opětovné načtení produktů po chybě'
+                  : 'Button to retry loading products after error'
+                }
+              </div>
+            </div>
           </div>
         </div>
       </section>
@@ -183,25 +381,107 @@ export const ProductReferencesSection = ({
     return null;
   }
 
+  // Main render with enhanced accessibility
   return (
     <section
+      id="products-section"
       className={cn(
-        "py-16 px-4 sm:px-6 lg:px-8",
+        // Mobile-first responsive padding (320px-767px)
+        "py-12 px-3", // Compact padding for very small screens
+        "xs:py-14 xs:px-4", // Slightly more for 375px+
+        "sm:py-16 sm:px-6", // Standard mobile padding (640px+)
+        // Tablet optimizations (768px-1023px)
+        "md:py-20 md:px-8", // More generous tablet padding
+        // Desktop layout with proper space utilization (1024px+)
+        "lg:py-24 lg:px-12", // Ample desktop padding
+        "xl:py-28 xl:px-16", // Maximum padding for large screens
         "bg-funeral-background", // funeral background color from design tokens
+        // Orientation handling
+        "landscape:py-8", // Reduced padding in landscape
+        "md:landscape:py-16", // Tablet landscape adjustment
         className
       )}
-      aria-labelledby="product-references-heading"
+      aria-labelledby="products-heading"
+      aria-describedby="products-description"
+      role="region"
     >
-      <div className="max-w-7xl mx-auto">
-        {/* Section heading */}
-        <div className="text-center mb-12">
+      <div className={cn(
+        // Mobile-first max-width progression for better space utilization
+        "max-w-sm mx-auto", // 384px for very small screens
+        "xs:max-w-md", // 448px for 375px+ screens
+        "sm:max-w-4xl", // 896px for small screens (640px+)
+        "md:max-w-5xl", // 1024px for tablets
+        "lg:max-w-6xl", // 1152px for desktop
+        "xl:max-w-7xl" // 1280px for large screens
+      )}>
+        {/* Section heading with mobile-first responsive design */}
+        <div className={cn(
+          "text-center",
+          // Mobile-first spacing
+          "mb-8", // Compact spacing on mobile
+          "xs:mb-10", // Slightly more for 375px+
+          "sm:mb-12", // Standard spacing for 640px+
+          "md:mb-16", // Tablet spacing
+          "lg:mb-20" // Desktop spacing
+        )}>
           <h2
-            id="product-references-heading"
-            className="text-3xl font-bold text-white mb-4"
+            id="products-heading"
+            className={cn(
+              // Mobile-first typography (320px-767px)
+              "text-2xl font-bold text-white", // 24px for mobile
+              "xs:text-3xl", // 30px for 375px+ screens
+              "sm:text-4xl", // 36px for 640px+ screens
+              // Tablet optimizations (768px-1023px)
+              "md:text-5xl", // 48px for tablet - strong hierarchy
+              // Desktop layout with proper space utilization (1024px+)
+              "lg:text-6xl", // 60px for desktop - prominent display
+              "xl:text-7xl", // 72px for large screens
+              // Spacing
+              "mb-3", // Compact on mobile
+              "xs:mb-4", // Slightly more for 375px+
+              "sm:mb-5", // Standard for 640px+
+              "md:mb-6", // Tablet spacing
+              "lg:mb-8", // Desktop spacing
+              // Orientation adjustments
+              "landscape:text-xl landscape:xs:text-2xl landscape:sm:text-3xl", // Smaller in landscape
+              "md:landscape:text-4xl", // Tablet landscape
+              // Accessibility
+              "focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+            )}
+            tabIndex={0}
+            role="heading"
+            aria-level={2}
           >
             {locale === 'cs' ? 'Naše produkty' : 'Our Products'}
           </h2>
-          <p className="text-stone-200 text-lg max-w-2xl mx-auto">
+          <p
+            id="products-description"
+            className={cn(
+              "text-stone-200",
+              // Mobile-first typography (320px-767px)
+              "text-sm", // 14px for very small screens
+              "xs:text-base", // 16px for 375px+ screens
+              "sm:text-lg", // 18px for 640px+ screens
+              // Tablet optimizations (768px-1023px)
+              "md:text-xl", // 20px for tablet
+              // Desktop layout with proper space utilization (1024px+)
+              "lg:text-2xl", // 24px for desktop
+              "xl:text-3xl", // 30px for large screens
+              // Responsive max-width for better readability
+              "max-w-xs mx-auto", // Very narrow on small screens
+              "xs:max-w-sm", // 384px for 375px+ screens
+              "sm:max-w-lg", // 512px for 640px+ screens
+              "md:max-w-xl", // 576px for tablet
+              "lg:max-w-2xl", // 672px for desktop
+              "xl:max-w-3xl", // 768px for large screens
+              // Orientation adjustments
+              "landscape:text-xs landscape:xs:text-sm landscape:sm:text-base", // Smaller in landscape
+              "md:landscape:text-lg", // Tablet landscape
+              // Accessibility
+              "focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
+            )}
+            tabIndex={0}
+          >
             {locale === 'cs'
               ? 'Objevte naši pečlivě vybranou kolekci pohřebních věnců a květinových aranžmá'
               : 'Discover our carefully curated collection of funeral wreaths and floral arrangements'
@@ -209,14 +489,54 @@ export const ProductReferencesSection = ({
           </p>
         </div>
 
-        {/* Responsive product grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 lg:gap-8">
-          {products.map((product) => (
+        {/* Mobile-first responsive product grid with keyboard navigation */}
+        <div
+          className={cn(
+            "grid",
+            // Mobile-first grid layout (320px-767px)
+            "grid-cols-1", // Single column for very small screens
+            "xs:grid-cols-1", // Still single column for 375px+ (better for mobile UX)
+            "sm:grid-cols-2", // Two columns for 640px+ screens
+            // Tablet optimizations (768px-1023px)
+            "md:grid-cols-2", // Two columns for tablet portrait
+            // Desktop layout with proper space utilization (1024px+)
+            "lg:grid-cols-3", // Three columns for desktop
+            "xl:grid-cols-4", // Four columns for large screens
+            "2xl:grid-cols-4", // Maintain four columns for very large screens
+            // Mobile-first gap spacing
+            "gap-4", // Compact gaps on mobile
+            "xs:gap-5", // Slightly more for 375px+
+            "sm:gap-6", // Standard gaps for 640px+
+            "md:gap-7", // Tablet gaps
+            "lg:gap-8", // Desktop gaps
+            "xl:gap-10", // Large screen gaps
+            // Orientation adjustments
+            "landscape:gap-3 landscape:sm:gap-4", // Smaller gaps in landscape
+            "md:landscape:gap-6" // Tablet landscape gaps
+          )}
+          role="grid"
+          aria-label={locale === 'cs' ? 'Mřížka produktů' : 'Product grid'}
+          aria-rowcount={Math.ceil(products.length / 4)}
+          aria-colcount={4}
+        >
+          {products.map((product, index) => (
             <ProductReferenceCard
               key={product.id}
               product={product}
+              index={index}
+              locale={locale}
             />
           ))}
+        </div>
+
+        {/* Screen reader summary */}
+        <div className="sr-only" aria-live="polite">
+          <p>
+            {locale === 'cs'
+              ? `Zobrazeno ${products.length} produktů z naší kolekce pohřebních věnců a květinových aranžmá.`
+              : `Showing ${products.length} products from our funeral wreaths and floral arrangements collection.`
+            }
+          </p>
         </div>
       </div>
     </section>

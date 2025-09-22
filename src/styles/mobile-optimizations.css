@@ -72,8 +72,8 @@
   }
 }
 
-/* Mobile-specific layout improvements */
-@media (max-width: 640px) {
+/* Mobile-first responsive design (320px-767px) */
+@media (max-width: 767px) {
   /* Ensure proper spacing on mobile */
   .container {
     padding-left: 1rem;
@@ -124,41 +124,234 @@
     border-radius: 0.5rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   }
-}
 
-/* Tablet-specific optimizations */
-@media (min-width: 641px) and (max-width: 1024px) {
-  .product-grid {
-    grid-template-columns: repeat(2, 1fr);
-    gap: 1.5rem;
+  /* Home page hero section mobile optimizations */
+  .hero-section {
+    min-height: 100vh;
+    padding: 3rem 0.75rem;
   }
 
-  .hero-section {
-    height: 60vh;
-    min-height: 400px;
+  .hero-logo {
+    height: 6rem; /* 96px */
+    margin-bottom: 1.5rem;
   }
 
   .hero-title {
-    font-size: 2.5rem;
-    line-height: 1.2;
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.3;
+    margin-bottom: 1rem;
+  }
+
+  .hero-description {
+    font-size: 1rem; /* 16px */
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+  }
+
+  /* Product references section mobile optimizations */
+  .product-references {
+    padding: 3rem 0.75rem;
+  }
+
+  .product-references-title {
+    font-size: 1.5rem; /* 24px */
+    margin-bottom: 0.75rem;
+  }
+
+  .product-references-description {
+    font-size: 0.875rem; /* 14px */
+    line-height: 1.5;
+    margin-bottom: 2rem;
   }
 }
 
-/* Desktop optimizations */
-@media (min-width: 1025px) {
+/* Very small screens (320px-374px) */
+@media (max-width: 374px) {
+  .hero-section {
+    padding: 2.5rem 0.5rem;
+  }
+
+  .hero-logo {
+    height: 5rem; /* 80px */
+  }
+
+  .hero-title {
+    font-size: 1.125rem; /* 18px */
+  }
+
+  .hero-description {
+    font-size: 0.875rem; /* 14px */
+  }
+
+  .product-references {
+    padding: 2.5rem 0.5rem;
+  }
+}
+
+/* Larger mobile screens (475px-639px) */
+@media (min-width: 475px) and (max-width: 639px) {
+  .hero-logo {
+    height: 7rem; /* 112px */
+  }
+
+  .hero-title {
+    font-size: 1.5rem; /* 24px */
+  }
+
+  .hero-description {
+    font-size: 1.125rem; /* 18px */
+  }
+
+  .product-references-title {
+    font-size: 1.875rem; /* 30px */
+  }
+}
+
+/* Tablet layout optimizations (768px-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  .product-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+
+  /* Hero section tablet optimizations */
+  .hero-section {
+    min-height: 85vh;
+    padding: 5rem 2rem;
+  }
+
+  .hero-logo {
+    height: 10rem; /* 160px */
+    margin-bottom: 2.5rem;
+  }
+
+  .hero-title {
+    font-size: 2.25rem; /* 36px */
+    line-height: 1.2;
+    margin-bottom: 1.75rem;
+  }
+
+  .hero-description {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.4;
+    margin-bottom: 2.5rem;
+  }
+
+  /* Product references section tablet optimizations */
+  .product-references {
+    padding: 5rem 2rem;
+  }
+
+  .product-references-title {
+    font-size: 3rem; /* 48px */
+    margin-bottom: 1.5rem;
+  }
+
+  .product-references-description {
+    font-size: 1.25rem; /* 20px */
+    line-height: 1.4;
+    margin-bottom: 4rem;
+  }
+
+  /* Tablet grid layout for product references */
+  .product-references-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 1.75rem;
+  }
+}
+
+/* Desktop layout with proper space utilization (1024px+) */
+@media (min-width: 1024px) {
   .product-grid {
     grid-template-columns: repeat(3, 1fr);
     gap: 2rem;
   }
 
+  /* Hero section desktop optimizations */
   .hero-section {
-    height: 70vh;
-    min-height: 500px;
+    min-height: 80vh;
+    padding: 6rem 3rem;
+  }
+
+  .hero-logo {
+    height: 12rem; /* 192px */
+    margin-bottom: 3rem;
   }
 
   .hero-title {
-    font-size: 3rem;
+    font-size: 3rem; /* 48px */
     line-height: 1.1;
+    margin-bottom: 2rem;
+  }
+
+  .hero-description {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.3;
+    margin-bottom: 3rem;
+  }
+
+  /* Product references section desktop optimizations */
+  .product-references {
+    padding: 6rem 3rem;
+  }
+
+  .product-references-title {
+    font-size: 3.75rem; /* 60px */
+    margin-bottom: 2rem;
+  }
+
+  .product-references-description {
+    font-size: 1.5rem; /* 24px */
+    line-height: 1.3;
+    margin-bottom: 5rem;
+  }
+
+  /* Desktop grid layout for product references */
+  .product-references-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2rem;
+  }
+}
+
+/* Large desktop screens (1280px+) */
+@media (min-width: 1280px) {
+  .product-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
+  }
+
+  .hero-section {
+    padding: 7rem 4rem;
+  }
+
+  .hero-logo {
+    height: 14rem; /* 224px */
+  }
+
+  .hero-title {
+    font-size: 3.75rem; /* 60px */
+  }
+
+  .hero-description {
+    font-size: 1.875rem; /* 30px */
+  }
+
+  .product-references {
+    padding: 7rem 4rem;
+  }
+
+  .product-references-title {
+    font-size: 4.5rem; /* 72px */
+  }
+
+  .product-references-description {
+    font-size: 1.875rem; /* 30px */
+  }
+
+  /* Large desktop grid layout */
+  .product-references-grid {
+    grid-template-columns: repeat(4, 1fr);
+    gap: 2.5rem;
   }
 }
 
@@ -212,6 +405,138 @@
 
   .safe-area-inset-right {
     padding-right: max(1rem, env(safe-area-inset-right));
+  }
+}
+
+/* Orientation change handling */
+/* Mobile landscape orientation (320px-767px) */
+@media (max-width: 767px) and (orientation: landscape) {
+  .hero-section {
+    min-height: 100vh;
+    padding: 2rem 1rem;
+  }
+
+  .hero-logo {
+    height: 4rem; /* 64px - smaller in landscape */
+    margin-bottom: 1rem;
+  }
+
+  .hero-title {
+    font-size: 1rem; /* 16px - compact in landscape */
+    margin-bottom: 0.75rem;
+  }
+
+  .hero-description {
+    font-size: 0.875rem; /* 14px - compact in landscape */
+    margin-bottom: 1rem;
+  }
+
+  .product-references {
+    padding: 2rem 1rem;
+  }
+
+  .product-references-title {
+    font-size: 1.25rem; /* 20px */
+    margin-bottom: 0.5rem;
+  }
+
+  .product-references-description {
+    font-size: 0.75rem; /* 12px */
+    margin-bottom: 1.5rem;
+  }
+
+  /* Landscape mobile grid adjustments */
+  .product-references-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+}
+
+/* Tablet landscape orientation (768px-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: landscape) {
+  .hero-section {
+    min-height: 90vh;
+    padding: 3rem 2rem;
+  }
+
+  .hero-logo {
+    height: 8rem; /* 128px - adjusted for landscape */
+    margin-bottom: 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.875rem; /* 30px */
+    margin-bottom: 1rem;
+  }
+
+  .hero-description {
+    font-size: 1rem; /* 16px */
+    margin-bottom: 1.5rem;
+  }
+
+  .product-references {
+    padding: 3rem 2rem;
+  }
+
+  .product-references-title {
+    font-size: 2.25rem; /* 36px */
+    margin-bottom: 1rem;
+  }
+
+  .product-references-description {
+    font-size: 1rem; /* 16px */
+    margin-bottom: 2rem;
+  }
+
+  /* Tablet landscape grid adjustments */
+  .product-references-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.5rem;
+  }
+}
+
+/* Desktop landscape (already optimized for landscape by default) */
+@media (min-width: 1024px) and (orientation: landscape) {
+  /* Desktop is already optimized for landscape viewing */
+  /* Additional fine-tuning if needed */
+  .hero-section {
+    min-height: 75vh; /* Slightly reduced for wide screens */
+  }
+}
+
+/* Portrait orientation adjustments for tablets */
+@media (min-width: 768px) and (max-width: 1023px) and (orientation: portrait) {
+  .hero-section {
+    min-height: 80vh; /* Taller in portrait */
+    padding: 4rem 2rem;
+  }
+
+  .hero-logo {
+    height: 12rem; /* 192px - larger in portrait */
+    margin-bottom: 2rem;
+  }
+
+  .product-references-grid {
+    grid-template-columns: repeat(2, 1fr); /* Two columns in portrait */
+    gap: 2rem;
+  }
+}
+
+/* Very wide screens (ultra-wide monitors) */
+@media (min-width: 1920px) {
+  .hero-section,
+  .product-references {
+    max-width: 1600px;
+    margin: 0 auto;
+  }
+}
+
+/* High DPI displays */
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  .hero-logo,
+  .product-card img {
+    image-rendering: -webkit-optimize-contrast;
+    image-rendering: crisp-edges;
   }
 }
 
