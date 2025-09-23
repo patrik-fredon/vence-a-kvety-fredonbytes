@@ -234,3 +234,119 @@ CREATE TRIGGER order_status_change_trigger
   FOR EACH ROW
   WHEN (OLD.status IS DISTINCT FROM NEW.status)
   EXECUTE FUNCTION notify_order_status_change();
+
+-- Function to perform customization integrity checks
+CREATE OR REPLACE FUNCTION check_customization_integrity()
+RETURNS JSONB AS $$
+DECLARE
+  result JSONB := '{"issues": [], "summary": {}}'::jsonb;
+  cart_count INTEGER;
+  customization_count INTEGER;
+  invalid_count INTEGER;
+  item_record RECORD;
+BEGIN
+  -- Count total cart items with customizations
+  SELECT COUNT(*) INTO cart_count
+  FROM cart_items
+  WHERE customizations IS NOT NULL
+    AND jsonb_array_length(customizations) > 0;
+
+  -- Count total customizations
+  SELECT COALESCE(SUM(jsonb_array_length(customizations)), 0) INTO customization_count
+  FROM cart_items
+  WHERE customizations IS NOT NULL;
+
+  -- Check for invalid customization formats
+  invalid_count := 0;
+  FOR item_record IN
+    SELECT id, customizations, product_id
+    FROM cart_items
+    WHERE customizations IS NOT NULL
+      AND jsonb_array_length(customizations) > 0
+  LOOP
+    -- Basic validation: check if customizations have required fields
+    IF NOT (
+      SELECT bool_and(
+        customization ? 'optionId' AND
+        customization ? 'choiceIds' AND
+        jsonb_typeof(customization->'choiceIds') = 'array'
+      )
+      FROM jsonb_array_elements(item_record.customizations) AS customization
+    ) THEN
+      invalid_count := invalid_count + 1;
+    END IF;
+  END LOOP;
+
+  -- Build result
+  result := jsonb_build_object(
+    'summary', jsonb_build_object(
+      'total_cart_items', cart_count,
+      'total_customizations', customization_count,
+      'invalid_items', invalid_count,
+      'checked_at', NOW()
+    ),
+    'issues', CASE
+      WHEN invalid_count > 0 THEN
+        jsonb_build_array(
+          jsonb_build_object(
+            'type', 'invalid_format',
+            'count', invalid_count,
+            'severity', 'medium'
+          )
+        )
+      ELSE '[]'::jsonb
+    END
+  );
+
+  RETURN result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;
+
+-- Function to cleanup customizations with integrity issues
+CREATE OR REPLACE FUNCTION cleanup_invalid_customizations()
+RETURNS JSONB AS $$
+DECLARE
+  result JSONB;
+  cleaned_count INTEGER := 0;
+  item_record RECORD;
+  fixed_customizations JSONB;
+BEGIN
+  -- Find and fix items with invalid customizations
+  FOR item_record IN
+    SELECT id, customizations
+    FROM cart_items
+    WHERE customizations IS NOT NULL
+      AND jsonb_array_length(customizations) > 0
+  LOOP
+    -- Clean up customizations by removing invalid entries
+    SELECT jsonb_agg(customization)
+    INTO fixed_customizations
+    FROM jsonb_array_elements(item_record.customizations) AS customization
+    WHERE customization ? 'optionId'
+      AND customization ? 'choiceIds'
+      AND jsonb_typeof(customization->'choiceIds') = 'array'
+      AND jsonb_array_length(customization->'choiceIds') > 0;
+
+    -- Update if we removed any invalid customizations
+    IF fixed_customizations IS NULL THEN
+      fixed_customizations := '[]'::jsonb;
+    END IF;
+
+    IF fixed_customizations != item_record.customizations THEN
+      UPDATE cart_items
+      SET customizations = fixed_customizations,
+          updated_at = NOW()
+      WHERE id = item_record.id;
+
+      cleaned_count := cleaned_count + 1;
+    END IF;
+  END LOOP;
+
+  result := jsonb_build_object(
+    'cleaned_items', cleaned_count,
+    'cleaned_at', NOW()
+  );
+
+  RETURN result;
+END;
+$$ LANGUAGE plpgsql SECURITY DEFINER;

@@ -10,6 +10,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCart } from "@/lib/cart/context";
 import { formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/types/cart";
+import type { Product, Customization } from "@/types/product";
 
 interface ShoppingCartProps {
   locale: string;
@@ -31,6 +32,37 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
 
   const handleRemoveItem = async (itemId: string) => {
     await removeItem(itemId);
+  };
+
+  // Helper function to format customization display
+  const formatCustomizationDisplay = (customization: Customization, product?: Product) => {
+    if (!product?.customizationOptions) return null;
+
+    const option = product.customizationOptions.find(opt => opt.id === customization.optionId);
+    if (!option) return null;
+
+    const optionName = option.name[locale] || option.name.en || option.name.cs;
+
+    // Handle different customization types
+    if (customization.customValue) {
+      // Custom text input (like ribbon text)
+      return `${optionName}: ${customization.customValue}`;
+    }
+
+    if (customization.choiceIds && customization.choiceIds.length > 0) {
+      const selectedChoices = customization.choiceIds
+        .map(choiceId => {
+          const choice = option.choices.find(c => c.id === choiceId);
+          return choice ? (choice.label[locale] || choice.label.en || choice.label.cs) : null;
+        })
+        .filter(Boolean);
+
+      if (selectedChoices.length > 0) {
+        return `${optionName}: ${selectedChoices.join(", ")}`;
+      }
+    }
+
+    return null;
   };
 
   if (state.isLoading && state.items.length === 0) {
@@ -144,6 +176,37 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
   const productName = locale === "cs" ? product.name.cs : product.name.en;
   const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
 
+  // Helper function to format customization display
+  const formatCustomizationDisplay = (customization: Customization) => {
+    if (!product?.customizationOptions) return null;
+
+    const option = product.customizationOptions.find(opt => opt.id === customization.optionId);
+    if (!option) return null;
+
+    const optionName = option.name[locale] || option.name.en || option.name.cs;
+
+    // Handle different customization types
+    if (customization.customValue) {
+      // Custom text input (like ribbon text)
+      return `${optionName}: ${customization.customValue}`;
+    }
+
+    if (customization.choiceIds && customization.choiceIds.length > 0) {
+      const selectedChoices = customization.choiceIds
+        .map(choiceId => {
+          const choice = option.choices.find(c => c.id === choiceId);
+          return choice ? (choice.label[locale] || choice.label.en || choice.label.cs) : null;
+        })
+        .filter(Boolean);
+
+      if (selectedChoices.length > 0) {
+        return `${optionName}: ${selectedChoices.join(", ")}`;
+      }
+    }
+
+    return null;
+  };
+
   return (
     <div className="flex items-start space-x-4 p-4 border border-stone-200 rounded-lg bg-stone-50/50">
       {/* Product Image */}
@@ -167,19 +230,19 @@ function CartItemRow({ item, locale, onQuantityChange, onRemove, isUpdating }: C
       <div className="flex-1 min-w-0">
         <h3 className="text-lg font-medium text-stone-900 truncate">{productName}</h3>
 
-        {/* Customizations */}
+        {/* Enhanced Customizations Display */}
         {item.customizations && item.customizations.length > 0 && (
-          <div className="mt-1 space-y-1">
-            {item.customizations.map((customization, index) => (
-              <div key={index} className="text-sm text-stone-600">
-                {/* Display customization details */}
-                {customization.customValue && (
-                  <span>
-                    {t("customMessage")}: {customization.customValue}
-                  </span>
-                )}
-              </div>
-            ))}
+          <div className="mt-2 space-y-1">
+            {item.customizations.map((customization, index) => {
+              const displayText = formatCustomizationDisplay(customization);
+              if (!displayText) return null;
+
+              return (
+                <div key={index} className="text-sm text-stone-600 bg-stone-100 px-2 py-1 rounded">
+                  {displayText}
+                </div>
+              );
+            })}
           </div>
         )}
 

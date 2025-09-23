@@ -48,6 +48,7 @@
     "basePrice": "Základní cena",
     "totalPrice": "Celková cena",
     "priceWillUpdate": "Cena se aktualizuje podle vašeho přizpůsobení",
+    "customizations": "Přizpůsobení",
     "availability": "Dostupnost",
     "inStock": "Skladem",
     "outOfStock": "Není skladem",
@@ -117,14 +118,35 @@
     "increaseQuantity": "Zvýšit množství",
     "unitPrice": "Cena za kus",
     "secureCheckout": "Bezpečná objednávka",
+    "noSizesAvailable": "Žádné velikosti nejsou k dispozici",
     "freeShippingOver": "Doprava zdarma nad {amount}",
     "pricing": "Ceník",
     "validation": {
       "title": "Prosím dokončete následující:",
+      "warnings": "Upozornění:",
       "required": "{option} je povinné",
       "minSelections": "{option} vyžaduje alespoň {min} výběrů (aktuálně {current})",
-      "maxSelections": "{option} umožňuje maximálně {max} výběrů"
-    }
+      "maxSelections": "{option} umožňuje maximálně {max} výběrů",
+      "conditionalRequired": "{option} je povinné při výběru stuhy",
+      "sizeRequired": "Prosím vyberte velikost před přidáním do košíku",
+      "sizeInvalid": "Vybraná velikost není dostupná",
+      "ribbonColorRequired": "Při výběru stuhy je nutné zvolit barvu",
+      "ribbonTextRequired": "Při výběru stuhy je nutné zvolit text",
+      "customTextEmpty": "Vlastní text nemůže být prázdný",
+      "customTextTooLong": "Vlastní text může mít maximálně 50 znaků",
+      "customTextTooShort": "Vlastní text musí mít alespoň 2 znaky",
+      "customTextInvalid": "Text obsahuje nepovolené znaky nebo obsah",
+      "customTextWarning": "Text se blíží maximální délce",
+      "networkError": "Chyba připojení, zkontrolujte internetové připojení",
+      "sessionExpired": "Relace vypršela, obnovte prosím stránku",
+      "fallbackApplied": "použita bezpečná konfigurace"
+    },
+    "customTextPlaceholder": "Zadejte vlastní text...",
+    "customTextHelp": "Vlastní text na stuhu",
+    "customTextAriaLabel": "Vstupní pole pro vlastní text na stuhu",
+    "ribbonConfiguration": "Konfigurace stuhy",
+    "required": "Povinné",
+    "sizeOption": "Velikost: {size}, Cena: {price} {modifier}"
   },
   "cart": {
     "title": "Nákupní košík",
@@ -557,7 +579,10 @@
     "quickLinks": "Rychlé odkazy",
     "legalInfo": "Právní informace",
     "mainNavigation": "Hlavní navigace",
-    "mobileNavigation": "Mobilní navigace"
+    "mobileNavigation": "Mobilní navigace",
+    "selected": "vybráno",
+    "unavailable": "nedostupné",
+    "charactersOf": "znaků z"
   },
   "admin": {
     "overview": "Přehled",

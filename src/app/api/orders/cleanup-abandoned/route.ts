@@ -67,7 +67,20 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    // Clean up abandoned cart items (older than 7 days)
+    // Clean up abandoned cart items with customizations (older than 7 days)
+    const { cleanupAbandonedCustomizations } = await import('@/lib/cart/utils');
+
+    const customizationCleanup = await cleanupAbandonedCustomizations(supabase, 7);
+
+    // Also run database-level cleanup for any remaining issues
+    const { data: dbCleanupResult, error: dbCleanupError } = await supabase
+      .rpc('cleanup_invalid_customizations');
+
+    if (dbCleanupError) {
+      console.error("Failed to run database customization cleanup:", dbCleanupError);
+    }
+
+    // Clean up remaining abandoned cart items (fallback)
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
 
@@ -79,7 +92,7 @@ export async function POST(request: NextRequest) {
       .select("*");
 
     if (cartError) {
-      console.error("Failed to clean up cart items:", cartError);
+      console.error("Failed to clean up remaining cart items:", cartError);
     }
 
     return NextResponse.json({
@@ -89,6 +102,16 @@ export async function POST(request: NextRequest) {
         abandonedOrders: cleanedCount,
         restoredInventoryItems: restoredInventory,
         cleanedCartItems: cartCount || 0,
+        customizationCleanup: {
+          cleanedItems: customizationCleanup.cleanedItems,
+          customizationsRemoved: customizationCleanup.customizationsRemoved,
+          success: customizationCleanup.success,
+          error: customizationCleanup.error || null,
+        },
+        databaseCleanup: {
+          result: dbCleanupResult || null,
+          error: dbCleanupError?.message || null,
+        },
       },
     });
   } catch (error) {

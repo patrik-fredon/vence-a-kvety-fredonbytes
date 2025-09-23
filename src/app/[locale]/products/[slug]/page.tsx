@@ -18,6 +18,9 @@ interface ProductDetailPageProps {
   }>;
 }
 
+// Force dynamic rendering to avoid static generation issues
+export const dynamic = 'force-dynamic';
+
 // Enable ISR with 1 hour revalidation
 export const revalidate = 3600;
 
@@ -50,6 +53,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
   // Try to get product from cache first
   let product = await getCachedProductBySlug(slug);
+
+  // Ensure cached product has required arrays
+  if (product) {
+    if (!product.images) product.images = [];
+    if (!product.customizationOptions) product.customizationOptions = [];
+    if (!product.availability) product.availability = { inStock: true };
+  }
 
   if (!product) {
     // If not in cache, fetch from database
@@ -85,6 +95,11 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     // Transform the data
     const category = data.categories ? transformCategoryRow(data.categories) : undefined;
     product = transformProductRow(data, category);
+
+    // Ensure product has required arrays to prevent map errors
+    if (!product.images) product.images = [];
+    if (!product.customizationOptions) product.customizationOptions = [];
+    if (!product.availability) product.availability = { inStock: true };
 
     // Cache the product for future requests
     await cacheProductBySlug(slug, product);
@@ -194,7 +209,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   const seoDescription = seoMetadata?.description?.[locale] as string;
 
   // Get first product image
-  const productImages = data.images as any[];
+  const productImages = Array.isArray(data.images) ? data.images : [];
 
   // Use the new generateProductMetadata function
   return generateProductMetadata({
@@ -203,7 +218,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       ...(seoDescription || description ? { description: (seoDescription || description)! } : {}),
       price: data.base_price,
       category: categoryName,
-      images: productImages?.map((img) => ({ url: img.url, alt: img.alt || name })),
+      images: productImages.length > 0 ? productImages.map((img) => ({ url: img.url, alt: img.alt || name })) : [],
       availability: "InStock", // This should be dynamic based on actual availability
       brand: "Ketingmar s.r.o.",
     },

@@ -303,3 +303,85 @@ export async function warmUpProductCache(): Promise<void> {
     console.error("Error warming up product cache:", error);
   }
 }
+
+/**
+ * Cache product customization options specifically for performance
+ */
+export async function cacheProductCustomizations(productId: string) {
+  const cacheKey = `product:customizations:${productId}`;
+  
+  try {
+    const supabase = createClient();
+    
+    // Optimized query for just customization options
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, customization_options")
+      .eq("id", productId)
+      .single();
+
+    if (error) {
+      console.error("Error fetching product customizations:", error);
+      return null;
+    }
+
+    if (data) {
+      await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(data.customization_options));
+      return data.customization_options;
+    }
+
+    return null;
+  } catch (error) {
+    console.error("Error caching product customizations:", error);
+    return null;
+  }
+}
+
+/**
+ * Get cached product customization options
+ */
+export async function getCachedProductCustomizations(productId: string) {
+  const cacheKey = `product:customizations:${productId}`;
+  
+  try {
+    const cached = await redis.get(cacheKey);
+    if (cached) {
+      return JSON.parse(cached);
+    }
+    
+    // If not cached, fetch and cache
+    return await cacheProductCustomizations(productId);
+  } catch (error) {
+    console.error("Error getting cached product customizations:", error);
+    return null;
+  }
+}
+
+/**
+ * Batch cache customization options for multiple products
+ */
+export async function batchCacheProductCustomizations(productIds: string[]) {
+  const supabase = createClient();
+  
+  try {
+    const { data, error } = await supabase
+      .from("products")
+      .select("id, customization_options")
+      .in("id", productIds);
+
+    if (error) {
+      console.error("Error batch fetching product customizations:", error);
+      return;
+    }
+
+    // Cache each product's customizations
+    const cachePromises = (data || []).map(async (product) => {
+      const cacheKey = `product:customizations:${product.id}`;
+      await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(product.customization_options));
+    });
+
+    await Promise.all(cachePromises);
+  } catch (error) {
+    console.error("Error batch caching product customizations:", error);
+  }
+}

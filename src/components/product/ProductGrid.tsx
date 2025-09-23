@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
+import { hasRequiredCustomizations, hasCustomizations } from "@/lib/utils/productCustomization";
 import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
 import { ProductCard } from "./ProductCard";
 import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
@@ -191,13 +192,21 @@ export function ProductGrid({
 
   // Handle add to cart
   const handleAddToCart = (product: Product) => {
+    // If product has customization options, redirect to product detail page instead of adding to cart
+    if (hasRequiredCustomizations(product) || hasCustomizations(product)) {
+      // Use window.location to navigate to product detail page
+      window.location.href = `/${locale}/products/${product.slug}`;
+      return;
+    }
+
+    // Only add directly to cart if no customization is needed
     if (onAddToCart) {
       onAddToCart(product);
     } else {
-      // Default behavior - TODO: Implement cart functionality in later tasks
-      // Could show a toast notification here
+      // Default behavior - redirect to product detail page for safety
+      window.location.href = `/${locale}/products/${product.slug}`;
     }
-  };
+  };;;
 
   return (
     <section className={cn("bg-amber-100 py-8", className)}>
@@ -272,9 +281,9 @@ export function ProductGrid({
                 className={cn(
                   viewMode === "grid"
                     ? // Modern responsive grid with mobile-first approach
-                      "grid mb-8 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5"
+                    "grid mb-8 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5"
                     : // List view: Single column layout with consistent spacing
-                      "flex flex-col gap-4 mb-8"
+                    "flex flex-col gap-4 mb-8"
                 )}
               >
                 {products.map((product) => (

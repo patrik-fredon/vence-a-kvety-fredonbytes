@@ -18,7 +18,14 @@ import {
   type CartSyncEvent,
   CartSyncManager,
 } from "./realtime-sync";
-import { generateCartSessionId, getCartSessionId, setCartSessionId } from "./utils";
+import {
+  generateCartSessionId,
+  getCartSessionId,
+  setCartSessionId,
+  validateConditionalCustomizations,
+  calculateCustomizationPriceModifier
+} from "./utils";
+import { supabase } from "@/lib/supabase/client";
 
 // Enhanced cart actions with optimistic updates
 type CartAction =
@@ -48,6 +55,7 @@ interface CartContextType {
   enableRealTime: () => void;
   disableRealTime: () => void;
   getCartVersion: () => number;
+  runIntegrityCheck: () => Promise<any>;
 }
 
 // Enhanced initial state
@@ -107,10 +115,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items: state.items.map((item) =>
           item.id === action.payload.itemId
             ? {
-                ...item,
-                quantity: action.payload.quantity,
-                totalPrice: (item.unitPrice || 0) * action.payload.quantity,
-              }
+              ...item,
+              quantity: action.payload.quantity,
+              totalPrice: (item.unitPrice || 0) * action.payload.quantity,
+            }
             : item
         ),
         optimisticUpdates: newOptimisticUpdates,
@@ -155,10 +163,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
             items: state.items.map((item) =>
               item.id === action.payload.itemId
                 ? {
-                    ...item,
-                    quantity: update.originalQuantity || 0,
-                    totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
-                  }
+                  ...item,
+                  quantity: update.originalQuantity || 0,
+                  totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
+                }
                 : item
             ),
             optimisticUpdates: newOptimisticUpdates,
@@ -291,6 +299,24 @@ export function CartProvider({ children }: CartProviderProps) {
   // Enhanced add item to cart with optimistic updates
   const addToCart = useCallback(
     async (request: AddToCartRequest): Promise<boolean> => {
+      // Validate conditional customizations before processing
+      if (request.customizations && request.customizations.length > 0) {
+        // Note: We would need product customization options for full validation
+        // This is a basic validation that ensures customizations are properly structured
+        const basicValidation = validateConditionalCustomizations(
+          request.customizations,
+          [] // We don't have customization options here, but the function handles empty array
+        );
+
+        if (!basicValidation.isValid) {
+          dispatch({
+            type: "SET_ERROR",
+            payload: "Invalid customization configuration"
+          });
+          return false;
+        }
+      }
+
       // Generate temporary ID for optimistic update
       const tempId = `temp_${Date.now()}_${Math.random()}`;
 
@@ -611,6 +637,33 @@ export function CartProvider({ children }: CartProviderProps) {
   }, []);
 
   const getCartVersion = useCallback(() => cartVersion, [cartVersion]);
+  const runIntegrityCheck = useCallback(async (): Promise<any> => {
+    try {
+      const { performCustomizationIntegrityCheck } = await import('@/lib/cart/utils');
+      const supabaseClient = supabase;
+
+      const result = await performCustomizationIntegrityCheck(supabaseClient);
+
+      // Log integrity check results
+      console.log('Cart integrity check completed:', result);
+
+      return result;
+    } catch (error) {
+      console.error('Cart integrity check failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        issues: [],
+        fixedItems: [],
+        summary: {
+          totalCartItems: 0,
+          itemsWithCustomizations: 0,
+          issuesFound: 1,
+          issuesFixed: 0,
+        },
+      };
+    }
+  }, []);
 
   // Persist cart state to localStorage for offline support with versioning
   useEffect(() => {
@@ -661,6 +714,7 @@ export function CartProvider({ children }: CartProviderProps) {
     enableRealTime,
     disableRealTime,
     getCartVersion,
+    runIntegrityCheck,
   };
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;
