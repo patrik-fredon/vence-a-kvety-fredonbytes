@@ -1,5 +1,6 @@
 "use client";
 
+import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { useCallback, useState, useMemo } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
@@ -18,7 +19,7 @@ import type { Customization, Product } from "@/types/product";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ProductInfo } from "./ProductInfo";
 import { PriceBreakdown } from "./PriceBreakdown";
-import { RibbonConfigurator } from "./RibbonConfigurator";
+import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 import { SizeSelector } from "./SizeSelector";
 
 interface ProductDetailProps {
@@ -101,8 +102,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     ), [customizationOptions]
   );
 
-
-
   // Handle size selection changes
   const handleSizeChange = useCallback(
     (sizeId: string) => {
@@ -143,6 +142,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
     return validationResult;
   }, [customizations, customizationOptions, selectedSize, locale]);
+
   // Handle error recovery with graceful fallbacks
   const handleErrorRecovery = useCallback((errorType: string) => {
     // Clear current errors
@@ -151,8 +151,11 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
     // Apply recovery strategies based on error type
     if (errorType === 'size' && sizeOption?.choices && sizeOption.choices.length > 0) {
-      // Auto-select first available size
-      setSelectedSize(sizeOption.choices[0].id);
+      // Auto-select first available size with proper null checking
+      const firstChoice = sizeOption.choices[0];
+      if (firstChoice?.id) {
+        setSelectedSize(firstChoice.id);
+      }
     } else if (errorType === 'ribbon') {
       // Remove all ribbon-related customizations
       setCustomizations(prev => prev.filter(c => !c.optionId.includes('ribbon')));
@@ -162,7 +165,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setTimeout(() => {
       validateCustomizations();
     }, 100);
-  }, [sizeOption, validateCustomizations]);
+  }, [sizeOption, validateCustomizations]);;
 
   // Retry validation
   const handleRetryValidation = useCallback(() => {
@@ -306,7 +309,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                   />
 
                   {/* Ribbon Configuration - appears when ribbon is selected */}
-                  <RibbonConfigurator
+                  <LazyRibbonConfigurator
                     isVisible={isRibbonSelected}
                     colorOption={ribbonColorOption}
                     textOption={ribbonTextOption}
@@ -411,104 +414,102 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                     <h4 className="text-sm font-medium text-amber-800 mb-2">
                       {t("validation.warnings")}
                     </h4>
-                    <ul className="text-sm text-amber-700 space-y-1">
+                    <div className="space-y-1">
                       {validationWarnings.map((warning, index) => (
-                        <li key={index}>• {warning}</li>
+                        <p key={index} className="text-sm text-amber-700">• {warning}</p>
                       ))}
-                    </ul>
+                    </div>
                   </div>
                 </div>
               </CardContent>
             </Card>
           )}
 
-          {/* Quantity and Add to Cart */}
-          <Card className="bg-stone-50">
+          {/* Quantity and Price */}
+          <Card>
             <CardContent className="py-6">
-              <div className="space-y-6">
+              <div className="space-y-4">
                 {/* Quantity Selector */}
                 <div className="flex items-center justify-between">
-                  <label htmlFor="quantity" className="text-sm font-medium text-stone-700">
+                  <label className="text-sm font-medium text-stone-700">
                     {t("quantity")}
                   </label>
                   <div className="flex items-center gap-3">
                     <Button
                       variant="outline"
-                      size="icon"
+                      size="sm"
                       onClick={() => handleQuantityChange(quantity - 1)}
                       disabled={quantity <= 1}
-                      aria-label={t("decreaseQuantity")}
+                      className="w-8 h-8 p-0"
                     >
-                      <span className="text-lg">−</span>
+                      -
                     </Button>
-                    <input
-                      id="quantity"
-                      type="number"
-                      min="1"
-                      max={product.availability.maxOrderQuantity || 10}
-                      value={quantity}
-                      onChange={(e) => handleQuantityChange(Number.parseInt(e.target.value) || 1)}
-                      className="w-16 text-center border border-stone-300 rounded-md py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
-                    />
+                    <span className="w-8 text-center font-medium">{quantity}</span>
                     <Button
                       variant="outline"
-                      size="icon"
+                      size="sm"
                       onClick={() => handleQuantityChange(quantity + 1)}
                       disabled={quantity >= (product.availability.maxOrderQuantity || 10)}
-                      aria-label={t("increaseQuantity")}
+                      className="w-8 h-8 p-0"
                     >
-                      <span className="text-lg">+</span>
+                      +
                     </Button>
                   </div>
                 </div>
 
                 {/* Price Breakdown */}
-                <div className="border-t border-stone-200 pt-4">
-                  <PriceBreakdown
-                    basePrice={product.basePrice}
-                    breakdown={priceCalculation.breakdown}
-                    totalPrice={priceCalculation.totalPrice}
-                    locale={locale}
-                    showDetails={priceCalculation.breakdown.length > 0}
-                  />
+                <PriceBreakdown
+                  basePrice={product.basePrice}
+                  breakdown={priceCalculation.breakdown}
+                  totalPrice={priceCalculation.totalPrice}
+                  locale={locale}
+                />
 
-                  {/* Quantity Total */}
-                  {quantity > 1 && (
-                    <div className="mt-4 pt-4 border-t border-stone-200">
-                      <div className="flex items-center justify-between">
-                        <span className="text-lg font-medium text-stone-900">
-                          {t("totalPrice")} × {quantity}
-                        </span>
-                        <span className="text-2xl font-semibold text-amber-700">
-                          {formatPrice(totalPrice)}
-                        </span>
-                      </div>
-                    </div>
-                  )}
+                {/* Total Price */}
+                <div className="flex items-center justify-between pt-4 border-t border-stone-200">
+                  <span className="text-lg font-semibold text-stone-800">
+                    {t("totalPrice")}
+                  </span>
+                  <span className="text-2xl font-bold text-stone-800">
+                    {formatPrice(totalPrice)}
+                  </span>
                 </div>
+              </div>
+            </CardContent>
+          </Card>
 
-                {/* Add to Cart Button */}
-                <Button
-                  onClick={handleAddToCart}
-                  disabled={!product.availability.inStock || isAddingToCart}
-                  loading={isAddingToCart}
-                  className="w-full"
-                  size="lg"
-                  variant={product.availability.inStock ? "default" : "secondary"}
-                >
-                  {!product.availability.inStock
-                    ? t("outOfStock")
-                    : isAddingToCart
-                      ? t("addingToCart")
-                      : t("addToCart")}
-                </Button>
+          {/* Add to Cart Button */}
+          <Button
+            onClick={handleAddToCart}
+            disabled={!product.availability?.inStock || isAddingToCart || validationErrors.length > 0}
+            loading={isAddingToCart}
+            className="w-full py-4 text-lg"
+            size="lg"
+            icon={<ShoppingCartIcon className="w-5 h-5" />}
+            iconPosition="left"
+          >
+            {isAddingToCart ? t("addingToCart") : t("addToCart")}
+          </Button>
 
-                {/* Additional Info */}
-                <div className="text-xs text-stone-500 text-center space-y-1">
-                  <div>{t("secureCheckout")}</div>
-                  {product.availability.inStock && (
-                    <div>{t("freeShippingOver", { amount: "2000" })}</div>
-                  )}
+          {/* Delivery Information */}
+          <Card className="bg-stone-50">
+            <CardContent className="py-4">
+              <div className="flex items-center gap-3">
+                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
+                  <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                </div>
+                <div>
+                  <p className="text-sm font-medium text-stone-800">
+                    {(product.availability?.leadTimeHours || 24) <= 12
+                      ? (locale === "cs" ? "Dodání tentýž den" : "Same-day delivery")
+                      : (locale === "cs" ? "Dodání následující den" : "Next-day delivery")
+                    }
+                  </p>
+                  <p className="text-xs text-stone-600">
+                    {locale === "cs" ? "Pro objednávky do 14:00" : "For orders before 2 PM"}
+                  </p>
                 </div>
               </div>
             </CardContent>

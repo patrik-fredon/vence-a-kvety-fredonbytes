@@ -94,9 +94,10 @@ INSERT INTO products (
       "id": "ribbon",
       "type": "ribbon",
       "name": {"cs": "Stuha", "en": "Ribbon"},
-      "required": false,
+      "required": true,
       "choices": [
         {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0}
+        {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
       ]
     },
     {

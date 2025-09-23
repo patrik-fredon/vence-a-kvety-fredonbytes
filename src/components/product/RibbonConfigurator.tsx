@@ -12,7 +12,7 @@ import type {
   CustomizationOption,
 } from "@/types/product";
 
-interface RibbonConfiguratorProps {
+export interface RibbonConfiguratorProps {
   /** Whether the ribbon configurator should be visible */
   isVisible: boolean;
   /** Ribbon color customization option */

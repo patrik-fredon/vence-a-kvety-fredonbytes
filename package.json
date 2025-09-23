@@ -18,7 +18,7 @@
     "optimize:exports": "node scripts/optimize-exports.js",
     "db:migrate": "node scripts/migrate.js",
     "db:seed:production": "node scripts/seed-production.js",
-    "db:seed:funeral": "node scripts/seed-funeral-data.js"
+    "db:seed:funeral": "node scripts/seed-enhanced-data.js"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",
