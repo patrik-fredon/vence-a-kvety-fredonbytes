@@ -20,9 +20,9 @@ export * from "./ui";
 // MOLECULES - Simple Component Combinations
 // =============================================================================
 
+export * from "./auth";
 // Form molecules
 export * from "./contact";
-export * from "./auth";
 
 // Display molecules
 export * from "./i18n";
@@ -32,25 +32,24 @@ export * from "./seo";
 // ORGANISMS - Complex UI Sections
 // =============================================================================
 
-// Layout organisms
-export * from "./layout";
-
-// Feature organisms
-export * from "./product";
-export * from "./cart";
-export * from "./checkout";
-export * from "./order";
-export * from "./delivery";
-export * from "./payments";
-
-// Admin organisms
-export * from "./admin";
 
 // Utility organisms
 export * from "./accessibility";
-export * from "./monitoring";
-export * from "./gdpr";
+// Admin organisms
+export * from "./admin";
+export * from "./cart";
+export * from "./checkout";
+export * from "./delivery";
 export * from "./faq";
+export * from "./gdpr";
+// Layout organisms
+export * from "./layout";
+export * from "./monitoring";
+export * from "./order";
+export * from "./payments";
+export * from "./performance";
+// Feature organisms
+export * from "./product";
 
 // =============================================================================
 // TEMPLATES - Page Layouts

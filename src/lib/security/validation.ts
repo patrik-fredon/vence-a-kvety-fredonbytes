@@ -3,8 +3,8 @@
  * Provides CSRF protection, input validation, and data sanitization
  */
 
-import { NextRequest } from "next/server";
 import { headers } from "next/headers";
+import type { NextRequest } from "next/server";
 
 // Common validation patterns
 export const VALIDATION_PATTERNS = {
@@ -60,7 +60,7 @@ export async function validateCSRFToken(request: NextRequest): Promise<boolean> 
     const csrfToken = headersList.get("x-csrf-token");
     const sessionToken = headersList.get("authorization");
 
-    if (!csrfToken || !sessionToken) {
+    if (!(csrfToken && sessionToken)) {
       return false;
     }
 
@@ -181,7 +181,9 @@ export function validateRequiredString(
   if (pattern && !pattern.test(sanitized)) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `Invalid ${fieldName} format`, code: "INVALID_FORMAT" }],
+      errors: [
+        { field: fieldName, message: `Invalid ${fieldName} format`, code: "INVALID_FORMAT" },
+      ],
     };
   }
 
@@ -228,7 +230,9 @@ export function validateUUID(uuid: string, fieldName: string = "id"): Validation
   if (!VALIDATION_PATTERNS.uuid.test(sanitized)) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `Invalid ${fieldName} format`, code: "INVALID_FORMAT" }],
+      errors: [
+        { field: fieldName, message: `Invalid ${fieldName} format`, code: "INVALID_FORMAT" },
+      ],
     };
   }
 
@@ -253,21 +257,27 @@ export function validateNumber(
   if (isNaN(num)) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must be a number`, code: "INVALID_TYPE" }],
+      errors: [
+        { field: fieldName, message: `${fieldName} must be a number`, code: "INVALID_TYPE" },
+      ],
     };
   }
 
   if (min !== undefined && num < min) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must be at least ${min}`, code: "MIN_VALUE" }],
+      errors: [
+        { field: fieldName, message: `${fieldName} must be at least ${min}`, code: "MIN_VALUE" },
+      ],
     };
   }
 
   if (max !== undefined && num > max) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must be at most ${max}`, code: "MAX_VALUE" }],
+      errors: [
+        { field: fieldName, message: `${fieldName} must be at most ${max}`, code: "MAX_VALUE" },
+      ],
     };
   }
 
@@ -292,21 +302,35 @@ export function validateDate(
   if (isNaN(date.getTime())) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must be a valid date`, code: "INVALID_DATE" }],
+      errors: [
+        { field: fieldName, message: `${fieldName} must be a valid date`, code: "INVALID_DATE" },
+      ],
     };
   }
 
   if (minDate && date < minDate) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must be after ${minDate.toISOString()}`, code: "MIN_DATE" }],
+      errors: [
+        {
+          field: fieldName,
+          message: `${fieldName} must be after ${minDate.toISOString()}`,
+          code: "MIN_DATE",
+        },
+      ],
     };
   }
 
   if (maxDate && date > maxDate) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must be before ${maxDate.toISOString()}`, code: "MAX_DATE" }],
+      errors: [
+        {
+          field: fieldName,
+          message: `${fieldName} must be before ${maxDate.toISOString()}`,
+          code: "MAX_DATE",
+        },
+      ],
     };
   }
 
@@ -330,21 +354,35 @@ export function validateArray<T>(
   if (!Array.isArray(value)) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must be an array`, code: "INVALID_TYPE" }],
+      errors: [
+        { field: fieldName, message: `${fieldName} must be an array`, code: "INVALID_TYPE" },
+      ],
     };
   }
 
   if (minLength !== undefined && value.length < minLength) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must have at least ${minLength} items`, code: "MIN_LENGTH" }],
+      errors: [
+        {
+          field: fieldName,
+          message: `${fieldName} must have at least ${minLength} items`,
+          code: "MIN_LENGTH",
+        },
+      ],
     };
   }
 
   if (maxLength !== undefined && value.length > maxLength) {
     return {
       isValid: false,
-      errors: [{ field: fieldName, message: `${fieldName} must have at most ${maxLength} items`, code: "MAX_LENGTH" }],
+      errors: [
+        {
+          field: fieldName,
+          message: `${fieldName} must have at most ${maxLength} items`,
+          code: "MAX_LENGTH",
+        },
+      ],
     };
   }
 
@@ -356,10 +394,12 @@ export function validateArray<T>(
     if (itemResult.isValid && itemResult.data !== undefined) {
       validatedItems.push(itemResult.data);
     } else {
-      errors.push(...itemResult.errors.map(error => ({
-        ...error,
-        field: `${fieldName}[${i}].${error.field}`,
-      })));
+      errors.push(
+        ...itemResult.errors.map((error) => ({
+          ...error,
+          field: `${fieldName}[${i}].${error.field}`,
+        }))
+      );
     }
   }
 

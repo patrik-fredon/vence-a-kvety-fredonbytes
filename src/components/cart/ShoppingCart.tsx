@@ -1,15 +1,15 @@
 "use client";
 
-import React from "react";
-import { useTranslations } from "next-intl";
 import { ShoppingCartIcon, TrashIcon } from "@heroicons/react/24/outline";
-import { useCart } from "@/lib/cart/context";
-import { CartItem } from "@/types/cart";
-import { formatPrice } from "@/lib/utils";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Button } from "@/components/ui/Button";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 import Image from "next/image";
+import { useTranslations } from "next-intl";
+import React from "react";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useCart } from "@/lib/cart/context";
+import { formatPrice } from "@/lib/utils";
+import type { CartItem } from "@/types/cart";
 
 interface ShoppingCartProps {
   locale: string;
@@ -48,17 +48,15 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
       <Card className={className} variant="default">
         <CardContent className="text-center py-16">
           <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-6">
-            <ShoppingCartIcon className="w-8 h-8 text-stone-600" />
+            <ShoppingCartIcon className="w-8 h-8 text-teal-900" />
           </div>
 
           <h2 className="text-2xl font-light text-stone-900 mb-4">{t("empty")}</h2>
 
           <p className="text-stone-600 mb-8">{t("emptyDescription")}</p>
 
-          <Button variant="default" className="bg-amber-600 hover:bg-amber-700">
-            <a href={`/${locale}/products`}>
-              {t("continueShopping")}
-            </a>
+          <Button variant="default" className="bg-teal-900 hover:bg-amber-700">
+            <a href={`/${locale}/products`}>{t("continueShopping")}</a>
           </Button>
         </CardContent>
       </Card>
@@ -115,7 +113,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
           variant="default"
           size="lg"
           disabled={state.isLoading}
-          className="w-full bg-amber-600 hover:bg-amber-700 text-white"
+          className="w-full bg-teal-900 hover:bg-amber-700 text-white"
         >
           <a href={`/${locale}/checkout`} className="w-full">
             {t("proceedToCheckout")}

@@ -1,5 +1,5 @@
-import { NextRequest, NextResponse } from "next/server";
-import { withAdminAuth, logAdminAction } from "@/lib/auth/admin-middleware";
+import { type NextRequest, NextResponse } from "next/server";
+import { logAdminAction, withAdminAuth } from "@/lib/auth/admin-middleware";
 import { adminUtils } from "@/lib/supabase/utils";
 
 /**
@@ -12,8 +12,8 @@ export const GET = withAdminAuth(async (request: NextRequest, admin) => {
     const active = searchParams.get("active");
     const featured = searchParams.get("featured");
     const lowStock = searchParams.get("lowStock");
-    const limit = parseInt(searchParams.get("limit") || "20");
-    const page = parseInt(searchParams.get("page") || "1");
+    const limit = Number.parseInt(searchParams.get("limit") || "20");
+    const page = Number.parseInt(searchParams.get("page") || "1");
     const offset = (page - 1) * limit;
 
     const filters = {

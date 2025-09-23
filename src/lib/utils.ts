@@ -57,7 +57,9 @@ export function getSpacing(spacingKey: string, fallback = "0"): string {
  */
 export function getFontSize(sizeKey: string, fallback = "1rem"): string {
   if (sizeKey in designTokens.typography.fontSize) {
-    return designTokens.typography.fontSize[sizeKey as keyof typeof designTokens.typography.fontSize];
+    return designTokens.typography.fontSize[
+      sizeKey as keyof typeof designTokens.typography.fontSize
+    ];
   }
   return fallback;
 }

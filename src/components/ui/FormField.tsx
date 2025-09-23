@@ -3,10 +3,15 @@
  * Provides proper ARIA attributes, error handling, and keyboard navigation
  */
 
-import type { InputHTMLAttributes, TextareaHTMLAttributes, SelectHTMLAttributes, ReactNode } from 'react';
-import { cn } from '@/lib/utils';
-import { useId } from '@/lib/accessibility/hooks';
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
+import type {
+  InputHTMLAttributes,
+  ReactNode,
+  SelectHTMLAttributes,
+  TextareaHTMLAttributes,
+} from "react";
+import { useId } from "@/lib/accessibility/hooks";
+import { cn } from "@/lib/utils";
 
 interface BaseFieldProps {
   label?: string;
@@ -14,21 +19,27 @@ interface BaseFieldProps {
   helpText?: string;
   required?: boolean;
   icon?: ReactNode;
-  iconPosition?: 'left' | 'right';
+  iconPosition?: "left" | "right";
   className?: string;
 }
 
-interface InputFieldProps extends BaseFieldProps, Omit<InputHTMLAttributes<HTMLInputElement>, 'id'> {
-  type?: 'text' | 'email' | 'password' | 'tel' | 'url' | 'search' | 'number';
+interface InputFieldProps
+  extends BaseFieldProps,
+    Omit<InputHTMLAttributes<HTMLInputElement>, "id"> {
+  type?: "text" | "email" | "password" | "tel" | "url" | "search" | "number";
 }
 
-interface TextareaFieldProps extends BaseFieldProps, Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, 'id'> {
-  type: 'textarea';
+interface TextareaFieldProps
+  extends BaseFieldProps,
+    Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "id"> {
+  type: "textarea";
   rows?: number;
 }
 
-interface SelectFieldProps extends BaseFieldProps, Omit<SelectHTMLAttributes<HTMLSelectElement>, 'id'> {
-  type: 'select';
+interface SelectFieldProps
+  extends BaseFieldProps,
+    Omit<SelectHTMLAttributes<HTMLSelectElement>, "id"> {
+  type: "select";
   options: Array<{ value: string; label: string; disabled?: boolean }>;
   placeholder?: string;
 }
@@ -42,90 +53,66 @@ export function FormField(props: FormFieldProps) {
     helpText,
     required,
     icon,
-    iconPosition = 'left',
+    iconPosition = "left",
     className,
     ...fieldProps
   } = props;
 
-  const t = useTranslations('accessibility');
-  const fieldId = useId('field');
+  const t = useTranslations("accessibility");
+  const fieldId = useId("field");
   const errorId = error ? `${fieldId}-error` : undefined;
   const helpId = helpText ? `${fieldId}-help` : undefined;
-  const describedBy = [errorId, helpId].filter(Boolean).join(' ') || undefined;
+  const describedBy = [errorId, helpId].filter(Boolean).join(" ") || undefined;
 
   const baseStyles = cn(
-    'block w-full rounded-md border px-3 py-2',
-    'text-stone-900 placeholder-stone-500 bg-white',
-    'focus:outline-none focus:ring-2 focus:ring-offset-2',
-    'disabled:bg-stone-50 disabled:text-stone-500 disabled:cursor-not-allowed disabled:border-stone-200',
-    'transition-all duration-200 ease-in-out',
-    'shadow-sm focus:shadow-md',
-    'font-normal text-sm leading-normal',
+    "block w-full rounded-md border px-3 py-2",
+    "text-stone-900 placeholder-stone-500 bg-white",
+    "focus:outline-none focus:ring-2 focus:ring-offset-2",
+    "disabled:bg-stone-50 disabled:text-stone-500 disabled:cursor-not-allowed disabled:border-stone-200",
+    "transition-all duration-200 ease-in-out",
+    "shadow-sm focus:shadow-md",
+    "font-normal text-sm leading-normal",
     // High contrast mode support
-    'high-contrast:border-2 high-contrast:border-ButtonText',
-    'high-contrast:focus:border-Highlight high-contrast:focus:ring-Highlight'
+    "high-contrast:border-2 high-contrast:border-ButtonText",
+    "high-contrast:focus:border-Highlight high-contrast:focus:ring-Highlight"
   );
 
-  const validStyles = cn(
-    'border-stone-300 focus:border-stone-500 focus:ring-stone-500/20'
-  );
+  const validStyles = cn("border-stone-300 focus:border-stone-500 focus:ring-stone-500/20");
 
   const errorStyles = cn(
-    'border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/30',
-    'high-contrast:border-red-600 high-contrast:focus:border-red-600'
+    "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/30",
+    "high-contrast:border-red-600 high-contrast:focus:border-red-600"
   );
 
-  const iconStyles = icon
-    ? iconPosition === 'left'
-      ? 'pl-10'
-      : 'pr-10'
-    : '';
+  const iconStyles = icon ? (iconPosition === "left" ? "pl-10" : "pr-10") : "";
 
-  const fieldStyles = cn(
-    baseStyles,
-    error ? errorStyles : validStyles,
-    iconStyles,
-    className
-  );
+  const fieldStyles = cn(baseStyles, error ? errorStyles : validStyles, iconStyles, className);
 
   const commonProps = {
     id: fieldId,
     className: fieldStyles,
-    'aria-invalid': error ? 'true' as const : 'false' as const,
-    'aria-describedby': describedBy,
-    'aria-required': required,
+    "aria-invalid": error ? ("true" as const) : ("false" as const),
+    "aria-describedby": describedBy,
+    "aria-required": required,
   };
 
   const renderField = () => {
-    if (props.type === 'textarea') {
+    if (props.type === "textarea") {
       const { type, ...textareaProps } = props as TextareaFieldProps;
-      return (
-        <textarea
-          {...commonProps}
-          {...textareaProps}
-          rows={textareaProps.rows || 4}
-        />
-      );
+      return <textarea {...commonProps} {...textareaProps} rows={textareaProps.rows || 4} />;
     }
 
-    if (props.type === 'select') {
+    if (props.type === "select") {
       const { type, options, placeholder, ...selectProps } = props as SelectFieldProps;
       return (
-        <select
-          {...commonProps}
-          {...selectProps}
-        >
+        <select {...commonProps} {...selectProps}>
           {placeholder && (
             <option value="" disabled>
               {placeholder}
             </option>
           )}
           {options.map((option) => (
-            <option
-              key={option.value}
-              value={option.value}
-              disabled={option.disabled}
-            >
+            <option key={option.value} value={option.value} disabled={option.disabled}>
               {option.label}
             </option>
           ))}
@@ -133,30 +120,21 @@ export function FormField(props: FormFieldProps) {
       );
     }
 
-    const { type = 'text', ...inputProps } = props as InputFieldProps;
-    return (
-      <input
-        {...commonProps}
-        {...inputProps}
-        type={type}
-      />
-    );
+    const { type = "text", ...inputProps } = props as InputFieldProps;
+    return <input {...commonProps} {...inputProps} type={type} />;
   };
 
   return (
     <div className="space-y-1">
       {/* Label */}
       {label && (
-        <label
-          htmlFor={fieldId}
-          className="block text-sm font-medium text-stone-700"
-        >
+        <label htmlFor={fieldId} className="block text-sm font-medium text-stone-700">
           {label}
           {required && (
             <span
               className="text-red-500 ml-1"
-              aria-label={t('requiredField')}
-              title={t('requiredField')}
+              aria-label={t("requiredField")}
+              title={t("requiredField")}
             >
               *
             </span>
@@ -167,7 +145,7 @@ export function FormField(props: FormFieldProps) {
       {/* Field Container */}
       <div className="relative">
         {/* Left Icon */}
-        {icon && iconPosition === 'left' && (
+        {icon && iconPosition === "left" && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
             <span className="text-stone-400" aria-hidden="true">
               {icon}
@@ -179,7 +157,7 @@ export function FormField(props: FormFieldProps) {
         {renderField()}
 
         {/* Right Icon */}
-        {icon && iconPosition === 'right' && (
+        {icon && iconPosition === "right" && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
             <span className="text-stone-400" aria-hidden="true">
               {icon}
@@ -203,7 +181,9 @@ export function FormField(props: FormFieldProps) {
           role="alert"
           aria-live="polite"
         >
-          <span className="text-red-500 mt-0.5" aria-hidden="true">⚠</span>
+          <span className="text-red-500 mt-0.5" aria-hidden="true">
+            ⚠
+          </span>
           {error}
         </p>
       )}
@@ -221,25 +201,13 @@ interface FormGroupProps {
   className?: string;
 }
 
-export function FormGroup({
-  children,
-  legend,
-  description,
-  className
-}: FormGroupProps) {
-  const groupId = useId('group');
+export function FormGroup({ children, legend, description, className }: FormGroupProps) {
+  const groupId = useId("group");
   const descriptionId = description ? `${groupId}-description` : undefined;
 
   return (
-    <fieldset
-      className={cn('space-y-4', className)}
-      aria-describedby={descriptionId}
-    >
-      {legend && (
-        <legend className="text-base font-semibold text-stone-900 mb-2">
-          {legend}
-        </legend>
-      )}
+    <fieldset className={cn("space-y-4", className)} aria-describedby={descriptionId}>
+      {legend && <legend className="text-base font-semibold text-stone-900 mb-2">{legend}</legend>}
 
       {description && (
         <p id={descriptionId} className="text-sm text-stone-600 mb-4">
@@ -262,19 +230,14 @@ interface FormSectionProps {
   className?: string;
 }
 
-export function FormSection({
-  children,
-  title,
-  description,
-  className
-}: FormSectionProps) {
-  const sectionId = useId('section');
+export function FormSection({ children, title, description, className }: FormSectionProps) {
+  const sectionId = useId("section");
   const titleId = title ? `${sectionId}-title` : undefined;
   const descriptionId = description ? `${sectionId}-description` : undefined;
 
   return (
     <section
-      className={cn('space-y-6', className)}
+      className={cn("space-y-6", className)}
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
     >

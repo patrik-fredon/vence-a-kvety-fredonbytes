@@ -294,7 +294,7 @@ export function serializeForCache(data: any): string {
     const serialized = JSON.stringify(data);
 
     // Validate that it's not "[object Object]"
-    if (serialized === '[object Object]' || serialized.startsWith('[object ')) {
+    if (serialized === "[object Object]" || serialized.startsWith("[object ")) {
       console.error("Invalid serialization result:", serialized, "Original data:", data);
       throw new Error("Invalid serialization result");
     }
@@ -315,13 +315,13 @@ export function deserializeFromCache<T>(data: string | null): T | null {
 
   try {
     // Check if data is already an object (shouldn't happen but let's be safe)
-    if (typeof data === 'object') {
+    if (typeof data === "object") {
       console.warn("Cache data is already an object, returning as-is:", data);
       return data as T;
     }
 
     // Check if data looks like "[object Object]" which indicates a serialization issue
-    if (data === '[object Object]' || data.startsWith('[object ')) {
+    if (data === "[object Object]" || data.startsWith("[object ")) {
       console.error("Cache contains invalid serialized object:", data);
       return null;
     }

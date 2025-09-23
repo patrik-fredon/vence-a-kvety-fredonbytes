@@ -1,9 +1,9 @@
 import { getTranslations } from "next-intl/server";
 import { generateAboutPageMetadata } from "@/components/seo/PageMetadata";
 import {
-  StructuredData,
+  generateLocalBusinessStructuredData,
   generateOrganizationStructuredData,
-  generateLocalBusinessStructuredData
+  StructuredData,
 } from "@/components/seo/StructuredData";
 
 interface AboutPageProps {
@@ -45,9 +45,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <h2 className="text-elegant text-2xl md:text-3xl font-semibold text-primary-800 mb-6">
                 {t("storyTitle")}
               </h2>
-              <p className="text-neutral-700 leading-relaxed text-lg">
-                {t("story")}
-              </p>
+              <p className="text-neutral-700 leading-relaxed text-lg">{t("story")}</p>
             </div>
 
             {/* Values and Quality */}
@@ -55,9 +53,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <h2 className="text-elegant text-2xl md:text-3xl font-semibold text-primary-800 mb-6">
                 {t("valuesTitle")}
               </h2>
-              <p className="text-neutral-700 leading-relaxed text-lg">
-                {t("values")}
-              </p>
+              <p className="text-neutral-700 leading-relaxed text-lg">{t("values")}</p>
             </div>
 
             {/* Commitment */}
@@ -65,9 +61,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <h2 className="text-elegant text-2xl md:text-3xl font-semibold text-primary-800 mb-6">
                 {t("commitmentTitle")}
               </h2>
-              <p className="text-neutral-700 leading-relaxed text-lg">
-                {t("commitment")}
-              </p>
+              <p className="text-neutral-700 leading-relaxed text-lg">{t("commitment")}</p>
             </div>
 
             {/* Company Information */}
@@ -75,9 +69,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <h2 className="text-elegant text-2xl md:text-3xl font-semibold text-primary-800 mb-4">
                 Ketingmar s.r.o.
               </h2>
-              <p className="text-neutral-700 mb-6">
-                {t("companyDescription")}
-              </p>
+              <p className="text-neutral-700 mb-6">{t("companyDescription")}</p>
               <div className="flex flex-col sm:flex-row gap-4 justify-center">
                 <a
                   href={`/${locale}/products`}

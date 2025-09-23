@@ -3,15 +3,15 @@
  * Implements ARIA dialog pattern with proper focus trapping
  */
 
-'use client';
+"use client";
 
-import { useEffect, useRef } from 'react';
-import { createPortal } from 'react-dom';
-import { XMarkIcon } from '@heroicons/react/24/outline';
-import { useFocusTrap, useAnnouncer } from '@/lib/accessibility/hooks';
-import { Button } from './Button';
-import { cn } from '@/lib/utils';
-import { useTranslations } from 'next-intl';
+import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef } from "react";
+import { createPortal } from "react-dom";
+import { useAnnouncer, useFocusTrap } from "@/lib/accessibility/hooks";
+import { cn } from "@/lib/utils";
+import { Button } from "./Button";
 
 interface ModalProps {
   isOpen: boolean;
@@ -19,7 +19,7 @@ interface ModalProps {
   title: string;
   description?: string;
   children: React.ReactNode;
-  size?: 'sm' | 'md' | 'lg' | 'xl' | 'full';
+  size?: "sm" | "md" | "lg" | "xl" | "full";
   closeOnOverlayClick?: boolean;
   closeOnEscape?: boolean;
   showCloseButton?: boolean;
@@ -33,14 +33,14 @@ export function Modal({
   title,
   description,
   children,
-  size = 'md',
+  size = "md",
   closeOnOverlayClick = true,
   closeOnEscape = true,
   showCloseButton = true,
   className,
-  initialFocus
+  initialFocus,
 }: ModalProps) {
-  const t = useTranslations('accessibility');
+  const t = useTranslations("accessibility");
   const announce = useAnnouncer();
   const modalRef = useFocusTrap(isOpen);
   const titleRef = useRef<HTMLHeadingElement>(null);
@@ -55,24 +55,24 @@ export function Modal({
 
   // Handle escape key
   useEffect(() => {
-    if (!isOpen || !closeOnEscape) return;
+    if (!(isOpen && closeOnEscape)) return;
 
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         event.preventDefault();
         onClose();
       }
     };
 
-    document.addEventListener('keydown', handleEscape);
-    return () => document.removeEventListener('keydown', handleEscape);
+    document.addEventListener("keydown", handleEscape);
+    return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, closeOnEscape, onClose]);
 
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
       const originalStyle = window.getComputedStyle(document.body).overflow;
-      document.body.style.overflow = 'hidden';
+      document.body.style.overflow = "hidden";
 
       return () => {
         document.body.style.overflow = originalStyle;
@@ -90,7 +90,7 @@ export function Modal({
       }
 
       // Announce modal opening
-      announce(`${t('openMenu')}: ${title}`, 'polite');
+      announce(`${t("openMenu")}: ${title}`, "polite");
     } else if (!isOpen && previousActiveElement.current) {
       // Return focus to the previously focused element
       previousActiveElement.current.focus();
@@ -105,16 +105,16 @@ export function Modal({
   };
 
   const handleClose = () => {
-    announce(t('closeDialog'), 'polite');
+    announce(t("closeDialog"), "polite");
     onClose();
   };
 
   const sizeClasses = {
-    sm: 'max-w-md',
-    md: 'max-w-lg',
-    lg: 'max-w-2xl',
-    xl: 'max-w-4xl',
-    full: 'max-w-full mx-4'
+    sm: "max-w-md",
+    md: "max-w-lg",
+    lg: "max-w-2xl",
+    xl: "max-w-4xl",
+    full: "max-w-full mx-4",
   };
 
   if (!isOpen) return null;
@@ -125,21 +125,18 @@ export function Modal({
       onClick={handleOverlayClick}
     >
       {/* Backdrop */}
-      <div
-        className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm"
-        aria-hidden="true"
-      />
+      <div className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm" aria-hidden="true" />
 
       {/* Modal */}
       <div
         ref={modalRef}
         className={cn(
-          'relative bg-white rounded-lg shadow-xl w-full',
+          "relative bg-white rounded-lg shadow-xl w-full",
           sizeClasses[size],
-          'max-h-[90vh] overflow-hidden',
-          'focus:outline-none',
+          "max-h-[90vh] overflow-hidden",
+          "focus:outline-none",
           // High contrast support
-          'high-contrast:border-2 high-contrast:border-WindowText',
+          "high-contrast:border-2 high-contrast:border-WindowText",
           className
         )}
         role="dialog"
@@ -159,10 +156,7 @@ export function Modal({
               {title}
             </h2>
             {description && (
-              <p
-                id="modal-description"
-                className="mt-1 text-sm text-stone-600"
-              >
+              <p id="modal-description" className="mt-1 text-sm text-stone-600">
                 {description}
               </p>
             )}
@@ -174,7 +168,7 @@ export function Modal({
               size="icon"
               onClick={handleClose}
               className="ml-4 flex-shrink-0"
-              aria-label={t('closeDialog')}
+              aria-label={t("closeDialog")}
             >
               <XMarkIcon className="h-5 w-5" aria-hidden="true" />
             </Button>
@@ -182,9 +176,7 @@ export function Modal({
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">
-          {children}
-        </div>
+        <div className="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">{children}</div>
       </div>
     </div>
   );
@@ -203,10 +195,12 @@ interface ModalFooterProps {
 
 export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
-    <div className={cn(
-      'flex items-center justify-end gap-3 px-6 py-4 border-t border-stone-200 bg-stone-50',
-      className
-    )}>
+    <div
+      className={cn(
+        "flex items-center justify-end gap-3 px-6 py-4 border-t border-stone-200 bg-stone-50",
+        className
+      )}
+    >
       {children}
     </div>
   );
@@ -223,7 +217,7 @@ interface ConfirmModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  variant?: 'default' | 'destructive';
+  variant?: "default" | "destructive";
   loading?: boolean;
 }
 
@@ -235,15 +229,15 @@ export function ConfirmModal({
   message,
   confirmText,
   cancelText,
-  variant = 'default',
-  loading = false
+  variant = "default",
+  loading = false,
 }: ConfirmModalProps) {
-  const t = useTranslations('common');
+  const t = useTranslations("common");
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
   // Use translations as defaults if not provided
-  const defaultConfirmText = confirmText || t('confirm');
-  const defaultCancelText = cancelText || t('cancel');
+  const defaultConfirmText = confirmText || t("confirm");
+  const defaultCancelText = cancelText || t("cancel");
 
   const handleConfirm = () => {
     onConfirm();
@@ -261,16 +255,12 @@ export function ConfirmModal({
         <p className="text-stone-700">{message}</p>
 
         <ModalFooter>
-          <Button
-            variant="outline"
-            onClick={onClose}
-            disabled={loading}
-          >
+          <Button variant="outline" onClick={onClose} disabled={loading}>
             {defaultCancelText}
           </Button>
           <Button
             ref={confirmButtonRef}
-            variant={variant === 'destructive' ? 'destructive' : 'default'}
+            variant={variant === "destructive" ? "destructive" : "default"}
             onClick={handleConfirm}
             loading={loading}
           >

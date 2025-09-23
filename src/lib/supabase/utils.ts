@@ -1,6 +1,6 @@
 import { supabase } from "./client";
-import { supabaseAdmin } from "./server";
 import type { Database } from "./database.types";
+import { supabaseAdmin } from "./server";
 
 type Tables = Database["public"]["Tables"];
 type Product = Tables["products"]["Row"];
@@ -112,7 +112,7 @@ export const categoryUtils = {
 // Cart utilities
 export const cartUtils = {
   async getCartItems(userId?: string, sessionId?: string) {
-    if (!userId && !sessionId) {
+    if (!(userId || sessionId)) {
       throw new Error("Either userId or sessionId must be provided");
     }
 
@@ -137,7 +137,7 @@ export const cartUtils = {
     userId?: string,
     sessionId?: string
   ) {
-    if (!userId && !sessionId) {
+    if (!(userId || sessionId)) {
       throw new Error("Either userId or sessionId must be provided");
     }
 
@@ -187,7 +187,7 @@ export const cartUtils = {
   },
 
   async clearCart(userId?: string, sessionId?: string) {
-    if (!userId && !sessionId) {
+    if (!(userId || sessionId)) {
       throw new Error("Either userId or sessionId must be provided");
     }
 
@@ -254,7 +254,6 @@ export const orderUtils = {
         break;
     }
 
-
     if (internalNotes) {
       updateData.notes = internalNotes; // Use notes field instead of internal_notes
     }
@@ -286,7 +285,7 @@ export const orderUtils = {
     }
 
     // Generate status history based on current status
-    if (order.status !== 'pending') {
+    if (order.status !== "pending") {
       statusHistory.push({
         status: "confirmed",
         timestamp: order.confirmed_at || order.updated_at,
@@ -294,15 +293,15 @@ export const orderUtils = {
       });
     }
 
-    if (['processing', 'ready', 'shipped', 'delivered'].includes(order.status)) {
+    if (["processing", "ready", "shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
-        status: 'processing',
+        status: "processing",
         timestamp: order.updated_at,
-        description: 'Objednávka se zpracovává'
+        description: "Objednávka se zpracovává",
       });
     }
 
-    if (['shipped', 'delivered'].includes(order.status)) {
+    if (["shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
         status: "shipped",
         timestamp: order.shipped_at || order.updated_at,
@@ -310,7 +309,7 @@ export const orderUtils = {
       });
     }
 
-    if (order.status === 'delivered') {
+    if (order.status === "delivered") {
       statusHistory.push({
         status: "delivered",
         timestamp: order.delivered_at || order.updated_at,
@@ -318,7 +317,7 @@ export const orderUtils = {
       });
     }
 
-    if (order.status === 'cancelled') {
+    if (order.status === "cancelled") {
       statusHistory.push({
         status: "cancelled",
         timestamp: order.cancelled_at || order.updated_at,

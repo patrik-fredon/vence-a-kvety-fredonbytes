@@ -1,14 +1,12 @@
-import { getTranslations } from "next-intl/server";
+import { RefactoredPageLayout } from "@/components/layout/RefactoredPageLayout";
+import { generateHomepageMetadata } from "@/components/seo/PageMetadata";
 import {
-  StructuredData,
+  generateFAQStructuredData,
+  generateLocalBusinessStructuredData,
   generateOrganizationStructuredData,
   generateWebsiteStructuredData,
-  generateLocalBusinessStructuredData,
-  generateFAQStructuredData
+  StructuredData,
 } from "@/components/seo/StructuredData";
-import { generateHomepageMetadata } from "@/components/seo/PageMetadata";
-import { RandomProductTeasers } from "@/components/product/RandomProductTeasers";
-import { HeroSection } from "@/components/layout/HeroSection";
 
 interface HomeProps {
   params: Promise<{ locale: string }>;
@@ -22,7 +20,6 @@ export async function generateMetadata({ params }: HomeProps) {
 
 export default async function Home({ params }: HomeProps) {
   const { locale } = await params;
-  const t = await getTranslations("home");
 
   // Generate structured data for home page
   const organizationStructuredData = generateOrganizationStructuredData(locale);
@@ -32,104 +29,58 @@ export default async function Home({ params }: HomeProps) {
   // Generate FAQ structured data for common questions
   const faqs = [
     {
-      question: locale === 'cs' ? 'Jak rychle dokážete dodat pohřební věnec?' : 'How quickly can you deliver a funeral wreath?',
-      answer: locale === 'cs'
-        ? 'Standardně dodáváme následující pracovní den. V naléhavých případech nabízíme expresní dodání do 12 hodin nebo dodání tentýž den do 4 hodin.'
-        : 'We typically deliver the next business day. For urgent cases, we offer express delivery within 12 hours or same-day delivery within 4 hours.'
+      question:
+        locale === "cs"
+          ? "Jak rychle dokážete dodat pohřební věnec?"
+          : "How quickly can you deliver a funeral wreath?",
+      answer:
+        locale === "cs"
+          ? "Standardně dodáváme následující pracovní den. V naléhavých případech nabízíme expresní dodání do 12 hodin nebo dodání tentýž den do 4 hodin."
+          : "We typically deliver the next business day. For urgent cases, we offer express delivery within 12 hours or same-day delivery within 4 hours.",
     },
     {
-      question: locale === 'cs' ? 'Můžu si přizpůsobit věnec podle svých představ?' : 'Can I customize the wreath according to my preferences?',
-      answer: locale === 'cs'
-        ? 'Ano, nabízíme široké možnosti přizpůsobení včetně velikosti, druhů květin, barev stuh a osobního vzkazu. Naši floristé vám pomohou vytvořit jedinečný věnec.'
-        : 'Yes, we offer extensive customization options including size, flower types, ribbon colors, and personal messages. Our florists will help you create a unique wreath.'
+      question:
+        locale === "cs"
+          ? "Můžu si přizpůsobit věnec podle svých představ?"
+          : "Can I customize the wreath according to my preferences?",
+      answer:
+        locale === "cs"
+          ? "Ano, nabízíme široké možnosti přizpůsobení včetně velikosti, druhů květin, barev stuh a osobního vzkazu. Naši floristé vám pomohou vytvořit jedinečný věnec."
+          : "Yes, we offer extensive customization options including size, flower types, ribbon colors, and personal messages. Our florists will help you create a unique wreath.",
     },
     {
-      question: locale === 'cs' ? 'Jaké způsoby platby přijímáte?' : 'What payment methods do you accept?',
-      answer: locale === 'cs'
-        ? 'Přijímáme platby kartou přes Stripe, bankovní převody a české platební metody přes GoPay včetně platby kartou, bankovním převodem nebo mobilními peněženkami.'
-        : 'We accept card payments via Stripe, bank transfers, and Czech payment methods via GoPay including card payments, bank transfers, or mobile wallets.'
-    }
+      question:
+        locale === "cs" ? "Jaké způsoby platby přijímáte?" : "What payment methods do you accept?",
+      answer:
+        locale === "cs"
+          ? "Přijímáme platby kartou přes Stripe, bankovní převody a české platební metody přes GoPay včetně platby kartou, bankovním převodem nebo mobilními peněženkami."
+          : "We accept card payments via Stripe, bank transfers, and Czech payment methods via GoPay including card payments, bank transfers, or mobile wallets.",
+    },
   ];
 
   const faqStructuredData = generateFAQStructuredData(faqs, locale);
 
+  // Company logo configuration for RefactoredPageLayout
+  const companyLogo = {
+    src: "/logo.svg",
+    alt:
+      locale === "cs"
+        ? "Logo společnosti specializující se na pohřební věnce a květinové aranžmá"
+        : "Company logo specializing in funeral wreaths and floral arrangements",
+    width: 300,
+    height: 200,
+  };
+
   return (
     <>
+      {/* SEO and Structured Data - maintained from original implementation */}
       <StructuredData data={organizationStructuredData} />
       <StructuredData data={websiteStructuredData} />
       <StructuredData data={localBusinessStructuredData} />
       <StructuredData data={faqStructuredData} />
 
-      {/* New Hero Section with background image and stone/amber design */}
-      <HeroSection locale={locale} />
-
-      <div className="container mx-auto px-4 py-16 bg-stone-50">
-
-        {/* Philosophy Section */}
-        <div className="mt-20 max-w-4xl mx-auto text-center bg-white/90 backdrop-blur-sm rounded-2xl p-8 shadow-soft">
-          <blockquote className="text-2xl md:text-3xl text-amber-700 font-elegant italic mb-6">
-            "{t("philosophy.quote")}"
-          </blockquote>
-          <p className="text-lg text-stone-600 leading-relaxed">
-            {t("philosophy.text")}
-          </p>
-        </div>
-
-        {/* Benefits Section */}
-        <div className="mt-20 max-w-6xl mx-auto">
-          <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
-            {t("benefits.title")}
-          </h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-8">
-            {[0, 1, 2, 3].map((index) => (
-              <div key={index} className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
-                <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
-                  {t(`benefits.items.${index}.title`)}
-                </h3>
-                <p className="text-stone-600">
-                  {t(`benefits.items.${index}.description`)}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Featured Products Section */}
-        <RandomProductTeasers locale={locale} count={3} />
-
-        {/* Features Section */}
-        <div className="mt-20 grid md:grid-cols-3 gap-8 max-w-6xl mx-auto">
-          <div className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
-            <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🌹</span>
-            </div>
-            <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
-              {t("features.handcrafted.title")}
-            </h3>
-            <p className="text-stone-600">{t("features.handcrafted.description")}</p>
-          </div>
-
-          <div className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
-            <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">🚚</span>
-            </div>
-            <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
-              {t("features.fastDelivery.title")}
-            </h3>
-            <p className="text-stone-600">{t("features.fastDelivery.description")}</p>
-          </div>
-
-          <div className="text-center p-6 bg-white rounded-xl shadow-soft border border-stone-200 hover:shadow-md transition-all duration-300">
-            <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-2xl">💝</span>
-            </div>
-            <h3 className="text-elegant text-xl font-semibold text-stone-800 mb-3">
-              {t("features.personalApproach.title")}
-            </h3>
-            <p className="text-stone-600">{t("features.personalApproach.description")}</p>
-          </div>
-        </div>
-      </div>
+      {/* New RefactoredPageLayout with integrated hero and product sections */}
+      <RefactoredPageLayout locale={locale} companyLogo={companyLogo} />
     </>
   );
 }

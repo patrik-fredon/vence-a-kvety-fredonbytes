@@ -3,13 +3,13 @@
  * Provides Redis-based caching for API responses
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import {
-  getCacheClient,
   CACHE_TTL,
-  generateCacheKey,
-  serializeForCache,
   deserializeFromCache,
+  generateCacheKey,
+  getCacheClient,
+  serializeForCache,
 } from "./redis";
 
 interface CacheOptions {

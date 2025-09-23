@@ -1,12 +1,12 @@
 "use client";
 
-import Link from "next/link";
-import Image from "next/image";
-import { useTranslations } from "next-intl";
-import { Product } from "@/types/product";
-import { formatPrice } from "@/lib/utils";
-import { Button } from "@/components/ui/Button";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
+import { Button } from "@/components/ui/Button";
+import { formatPrice } from "@/lib/utils";
+import type { Product } from "@/types/product";
 
 interface ProductTeaserProps {
   product: Product;
@@ -74,10 +74,13 @@ export function ProductTeaser({ product, locale, onAddToCart, loading }: Product
 
         {/* Availability */}
         <div className="mb-4">
-          <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${product.availability?.inStock
-            ? "bg-green-100 text-green-800"
-            : "bg-red-100 text-red-800"
-            }`}>
+          <span
+            className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
+              product.availability?.inStock
+                ? "bg-green-100 text-green-800"
+                : "bg-red-100 text-red-800"
+            }`}
+          >
             {product.availability?.inStock ? t("inStock") : t("outOfStock")}
           </span>
         </div>
@@ -98,4 +101,3 @@ export function ProductTeaser({ product, locale, onAddToCart, loading }: Product
     </div>
   );
 }
-

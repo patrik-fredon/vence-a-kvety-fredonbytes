@@ -2,11 +2,8 @@
  * Advanced translation utilities with enhanced functionality
  */
 
-import type {
-  TranslationParams,
-  TranslationKeyValidation,
-} from "./types";
 import type { Locale } from "@/i18n/config";
+import type { TranslationKeyValidation, TranslationParams } from "./types";
 import { translationValidation } from "./utils";
 
 /**
@@ -113,15 +110,15 @@ export function validateTranslationKey(key: string): TranslationKeyValidation {
 
   // Check for empty segments
   const segments = key.split(".");
-  const emptySegments = segments.filter(segment => segment.length === 0);
+  const emptySegments = segments.filter((segment) => segment.length === 0);
   if (emptySegments.length > 0) {
     errors.push("Empty segments found in key");
     suggestions.push("Ensure all segments between dots have content");
   }
 
   // Suggest camelCase for segments
-  const nonCamelCaseSegments = segments.filter(segment =>
-    segment.length > 0 && !/^[a-z][a-zA-Z0-9]*$/.test(segment)
+  const nonCamelCaseSegments = segments.filter(
+    (segment) => segment.length > 0 && !/^[a-z][a-zA-Z0-9]*$/.test(segment)
   );
   if (nonCamelCaseSegments.length > 0) {
     suggestions.push("Consider using camelCase for key segments");
@@ -287,12 +284,12 @@ export function suggestTranslationKeys(
   availableKeys: string[],
   maxSuggestions = 5
 ): string[] {
-  if (!partialKey || !Array.isArray(availableKeys)) {
+  if (!(partialKey && Array.isArray(availableKeys))) {
     return [];
   }
 
   const suggestions = availableKeys
-    .filter(key => key.toLowerCase().includes(partialKey.toLowerCase()))
+    .filter((key) => key.toLowerCase().includes(partialKey.toLowerCase()))
     .sort((a, b) => {
       // Prioritize exact matches and prefix matches
       const aStartsWith = a.toLowerCase().startsWith(partialKey.toLowerCase());
@@ -326,11 +323,12 @@ export function checkTranslationCompleteness(
   const primaryKeys = translationValidation.getNestedKeys(primaryMessages);
   const secondaryKeys = translationValidation.getNestedKeys(secondaryMessages);
 
-  const completeness = secondaryKeys.length > 0
-    ? ((secondaryKeys.length - comparison.missingInSecondary.length) / primaryKeys.length) * 100
-    : 0;
+  const completeness =
+    secondaryKeys.length > 0
+      ? ((secondaryKeys.length - comparison.missingInSecondary.length) / primaryKeys.length) * 100
+      : 0;
 
-  const suggestions = comparison.missingInSecondary.map(key => {
+  const suggestions = comparison.missingInSecondary.map((key) => {
     const suggested = suggestTranslationKeys(key, secondaryKeys, 1);
     return suggested.length > 0 ? `${key} -> ${suggested[0]}` : key;
   });
@@ -356,14 +354,15 @@ export function exportTranslations(
     case "json":
       return JSON.stringify(messages, null, 2);
 
-    case "csv":
+    case "csv": {
       const csvRows = ["Key,Value"];
-      flattenedKeys.forEach(key => {
+      flattenedKeys.forEach((key) => {
         const value = translationValidation.getNestedValue(messages, key);
         const escapedValue = String(value).replace(/"/g, '""');
         csvRows.push(`"${key}","${escapedValue}"`);
       });
       return csvRows.join("\n");
+    }
 
     case "xlsx":
       // This would require a library like xlsx
@@ -386,10 +385,12 @@ export function importTranslations(
       try {
         return JSON.parse(data);
       } catch (error) {
-        throw new Error(`Invalid JSON format: ${error instanceof Error ? error.message : "Unknown error"}`);
+        throw new Error(
+          `Invalid JSON format: ${error instanceof Error ? error.message : "Unknown error"}`
+        );
       }
 
-    case "csv":
+    case "csv": {
       const lines = data.split("\n");
       const result: Record<string, any> = {};
 
@@ -409,6 +410,7 @@ export function importTranslations(
       }
 
       return result;
+    }
 
     default:
       throw new Error(`Unsupported format: ${format}`);
@@ -465,7 +467,7 @@ export async function preloadTranslations(
     // If specific namespaces are requested, filter the messages
     if (namespaces.length > 0) {
       const filtered: Record<string, any> = {};
-      namespaces.forEach(namespace => {
+      namespaces.forEach((namespace) => {
         if (messages.default[namespace]) {
           filtered[namespace] = messages.default[namespace];
         }

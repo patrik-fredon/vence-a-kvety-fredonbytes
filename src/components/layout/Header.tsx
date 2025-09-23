@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
+import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { Bars3Icon, XMarkIcon, MagnifyingGlassIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { AuthStatus } from "@/components/auth";
-import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
-import { Navigation } from "./Navigation";
 import { CartIcon } from "@/components/cart/CartIcon";
+import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import type { Locale } from "@/i18n/config";
 import { cn } from "@/lib/utils";
-import { type Locale } from "@/i18n/config";
+import { Navigation } from "./Navigation";
 
 interface HeaderProps {
   locale: Locale;
@@ -58,7 +58,7 @@ export function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="border-b border-stone-200 bg-white sticky top-0 z-40 shadow-sm"
+        className="border-b border-stone-200 bg-amber-100 sticky top-0 z-40 shadow-sm"
         role="banner"
       >
         {/* Container with max-width and centered content */}
@@ -69,81 +69,54 @@ export function Header({ locale }: HeaderProps) {
             className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 bg-stone-900 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
             onClick={(e) => {
               e.preventDefault();
-              const mainContent = document.getElementById('main-content');
+              const mainContent = document.getElementById("main-content");
               if (mainContent) {
                 mainContent.focus();
-                mainContent.scrollIntoView({ behavior: 'smooth' });
+                mainContent.scrollIntoView({ behavior: "smooth" });
               }
             }}
           >
-            {tAccessibility('skipToContent')}
+            {tAccessibility("skipToContent")}
           </a>
 
           {/* Top bar - Quick navigation */}
-          <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b border-stone-100">
-            <div className="hidden md:flex items-center gap-6">
+          <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b ">
+            <div className="flex items-center gap-2">
+              {/* Logo with enhanced typography */}
               <Link
-                href={`/${locale}/products`}
-                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
+                href={`/${locale}`}
+                className="text-2xl font-light tracking-wide text-stone-900 hover:text-stone-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
+                aria-label={t("home")}
               >
-                {t("products")}
-              </Link>
-              <Link
-                href={`/${locale}/contact`}
-                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
-              >
-                {t("contact")}
-              </Link>
-              <Link
-                href={`/${locale}/faq`}
-                className="hover:text-stone-800 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded px-1 py-0.5"
-              >
-                {t("howToOrder")}
+                POHŘEBNÍ <span className="text-teal-700 font-medium">VĚNCE</span>
               </Link>
             </div>
 
             {/* Right side actions */}
             <div className="flex items-center gap-3">
-              {/* Search icon */}
-              <button
-                className="p-1.5 hover:text-stone-800 hover:bg-stone-50 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md"
-                aria-label={t("search")}
-              >
-                <MagnifyingGlassIcon className="h-4 w-4" />
-              </button>
-
               {/* Language Switcher - Desktop */}
               <div className="hidden sm:block">
                 <LanguageSwitcher currentLocale={locale} />
               </div>
 
-              {/* User/Auth status - Desktop */}
-              <div className="hidden sm:block">
-                <AuthStatus locale={locale} />
-              </div>
-
               {/* Cart icon with enhanced styling */}
-              <CartIcon locale={locale} className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200" />
+              <CartIcon
+                locale={locale}
+                className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200"
+              />
             </div>
           </div>
 
           {/* Main header */}
-          <div className="flex items-center justify-between py-4">
+          <div className="flex items-center justify-center py-4">
             {/* Logo with enhanced typography */}
-            <Link
-              href={`/${locale}`}
-              className="text-2xl font-light tracking-wide text-stone-900 hover:text-stone-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
-              aria-label={t("home")}
-            >
-              POHŘEBNÍ <span className="text-teal-700 font-medium">VĚNCE</span>
-            </Link>
 
             {/* Desktop Navigation with enhanced styling */}
             <nav
               id="main-navigation"
               className="hidden md:flex items-center gap-8"
               role="navigation"
-              aria-label={tAccessibility('mainNavigation')}
+              aria-label={tAccessibility("mainNavigation")}
             >
               <Link
                 href={`/${locale}`}
@@ -181,7 +154,9 @@ export function Header({ locale }: HeaderProps) {
               )}
               aria-expanded={isMobileMenuOpen}
               aria-controls="mobile-menu"
-              aria-label={isMobileMenuOpen ? tAccessibility('closeMenu') : tAccessibility('openMenu')}
+              aria-label={
+                isMobileMenuOpen ? tAccessibility("closeMenu") : tAccessibility("openMenu")
+              }
             >
               {isMobileMenuOpen ? (
                 <XMarkIcon className="w-5 h-5" aria-hidden="true" />
@@ -214,11 +189,11 @@ export function Header({ locale }: HeaderProps) {
           <div className="flex flex-col h-full">
             {/* Mobile menu header with enhanced styling */}
             <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-stone-50">
-              <span className="text-lg font-light text-stone-900">{tUI('menu')}</span>
+              <span className="text-lg font-light text-stone-900">{tUI("menu")}</span>
               <button
                 onClick={closeMobileMenu}
                 className="p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg"
-                aria-label={tAccessibility('closeMenu')}
+                aria-label={tAccessibility("closeMenu")}
               >
                 <XMarkIcon className="w-6 h-6" aria-hidden="true" />
               </button>
@@ -229,7 +204,7 @@ export function Header({ locale }: HeaderProps) {
               <ErrorBoundary
                 fallback={
                   <div className="text-sm text-stone-500 p-4 bg-stone-50 rounded-lg">
-                    {tUI('navigationNotAvailable')}
+                    {tUI("navigationNotAvailable")}
                   </div>
                 }
               >
@@ -240,7 +215,7 @@ export function Header({ locale }: HeaderProps) {
             {/* Mobile menu footer with enhanced styling */}
             <div className="border-t border-stone-200 p-4 space-y-4 bg-stone-50">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-stone-700">{tUI('language')}:</span>
+                <span className="text-sm font-medium text-stone-700">{tUI("language")}:</span>
                 <LanguageSwitcher currentLocale={locale} />
               </div>
 

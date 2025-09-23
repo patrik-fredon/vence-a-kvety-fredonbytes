@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
-import { currencyConfig, type Locale } from '../../i18n/config';
+import { useTranslations } from "next-intl";
+import { currencyConfig, type Locale } from "../../i18n/config";
 
 interface CurrencyDisplayProps {
   amount: number | null | undefined;
@@ -12,17 +12,17 @@ interface CurrencyDisplayProps {
 
 export function CurrencyDisplay({
   amount,
-  locale = 'cs',
-  className = '',
-  showSymbol = true
+  locale = "cs",
+  className = "",
+  showSymbol = true,
 }: CurrencyDisplayProps) {
-  const t = useTranslations('currency');
+  const t = useTranslations("currency");
 
   // Handle invalid amounts
   if (amount === null || amount === undefined || isNaN(amount)) {
     return (
       <span className={className} data-testid="currency-display">
-        {showSymbol ? (locale === 'cs' ? '0 Kč' : '0 CZK') : '0'}
+        {showSymbol ? (locale === "cs" ? "0 Kč" : "0 CZK") : "0"}
       </span>
     );
   }
@@ -36,9 +36,7 @@ export function CurrencyDisplay({
   });
 
   // Apply currency symbol based on locale
-  const displayValue = showSymbol
-    ? t('format', { amount: formattedAmount })
-    : formattedAmount;
+  const displayValue = showSymbol ? t("format", { amount: formattedAmount }) : formattedAmount;
 
   return (
     <span className={className} data-testid="currency-display">
@@ -50,10 +48,10 @@ export function CurrencyDisplay({
 // Utility function for formatting currency without component
 export function formatCurrency(
   amount: number,
-  locale: Locale = 'cs',
+  locale: Locale = "cs",
   showSymbol: boolean = true
 ): string {
-  if (isNaN(amount)) return showSymbol ? (locale === 'cs' ? '0 Kč' : '0 CZK') : '0';
+  if (isNaN(amount)) return showSymbol ? (locale === "cs" ? "0 Kč" : "0 CZK") : "0";
 
   const config = currencyConfig[locale];
   const formattedAmount = amount.toLocaleString(config.locale, {
@@ -64,7 +62,5 @@ export function formatCurrency(
   if (!showSymbol) return formattedAmount;
 
   // Use the translation format
-  return locale === 'cs'
-    ? `${formattedAmount} Kč`
-    : `${formattedAmount} CZK`;
+  return locale === "cs" ? `${formattedAmount} Kč` : `${formattedAmount} CZK`;
 }

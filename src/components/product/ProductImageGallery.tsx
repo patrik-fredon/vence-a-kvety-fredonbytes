@@ -1,11 +1,16 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import {
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MagnifyingGlassIcon,
+  XMarkIcon,
+} from "@heroicons/react/24/outline";
 import Image from "next/image";
-import { ProductImage, Customization } from "@/types/product";
-import { cn } from "@/lib/utils";
-import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/Card";
+import { cn } from "@/lib/utils";
+import type { Customization, ProductImage } from "@/types/product";
 
 interface ProductImageGalleryProps {
   images: ProductImage[];
@@ -94,7 +99,7 @@ export function ProductImageGallery({
   };
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
-    if (!isZoomed || !imageRef.current) return;
+    if (!(isZoomed && imageRef.current)) return;
 
     const rect = imageRef.current.getBoundingClientRect();
     const x = ((event.clientX - rect.left) / rect.width) * 100;
@@ -102,7 +107,7 @@ export function ProductImageGallery({
 
     setZoomPosition({
       x: Math.max(0, Math.min(100, x)),
-      y: Math.max(0, Math.min(100, y))
+      y: Math.max(0, Math.min(100, y)),
     });
   };
 
@@ -157,8 +162,8 @@ export function ProductImageGallery({
                 style={
                   isZoomed
                     ? {
-                      transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                    }
+                        transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                      }
                     : undefined
                 }
                 onClick={toggleZoom}
@@ -167,9 +172,7 @@ export function ProductImageGallery({
               />
 
               {/* Zoom overlay */}
-              {isZoomed && (
-                <div className="absolute inset-0 bg-black/10 pointer-events-none" />
-              )}
+              {isZoomed && <div className="absolute inset-0 bg-black/10 pointer-events-none" />}
 
               {/* Navigation Arrows */}
               {relevantImages.length > 1 && (
@@ -240,7 +243,9 @@ export function ProductImageGallery({
         {/* Zoom Instructions */}
         {selectedImage && (
           <div className="text-xs text-stone-500 text-center">
-            {isZoomed ? "Move mouse to pan • Click to zoom out" : "Click image to zoom • Click magnifying glass for fullscreen"}
+            {isZoomed
+              ? "Move mouse to pan • Click to zoom out"
+              : "Click image to zoom • Click magnifying glass for fullscreen"}
           </div>
         )}
       </div>

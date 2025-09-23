@@ -16,15 +16,15 @@ export { AuthStatus } from "./AuthStatus";
 // AUTHENTICATION FORMS
 // =============================================================================
 
-export { SignInForm } from "./SignInForm";
-export { SignUpForm } from "./SignUpForm";
 export { ForgotPasswordForm } from "./ForgotPasswordForm";
 export { ResetPasswordForm } from "./ResetPasswordForm";
+export { SignInForm } from "./SignInForm";
+export { SignUpForm } from "./SignUpForm";
 
 // =============================================================================
 // USER PROFILE & PREFERENCES
 // =============================================================================
 
-export { UserProfile } from "./UserProfile";
-export { UserPreferencesComponent } from "./UserPreferences";
 export { AddressBook } from "./AddressBook";
+export { UserPreferencesComponent } from "./UserPreferences";
+export { UserProfile } from "./UserProfile";

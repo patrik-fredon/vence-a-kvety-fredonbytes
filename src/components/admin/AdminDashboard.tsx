@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { useTranslations } from "next-intl";
-import AdminSidebar from "./AdminSidebar";
-import AdminHeader from "./AdminHeader";
-import DashboardOverview from "./DashboardOverview";
-import ProductManagement from "./ProductManagement";
-import OrderManagement from "./OrderManagement";
-import AdminActivityLog from "./AdminActivityLog";
-import { LazyMonitoringDashboard, LazyInventoryManagement } from "@/components/dynamic";
+import { useEffect, useState } from "react";
+import { LazyInventoryManagement, LazyMonitoringDashboard } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import AdminActivityLog from "./AdminActivityLog";
+import AdminHeader from "./AdminHeader";
+import AdminSidebar from "./AdminSidebar";
+import DashboardOverview from "./DashboardOverview";
+import OrderManagement from "./OrderManagement";
+import ProductManagement from "./ProductManagement";
 
 type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 

@@ -1,17 +1,17 @@
 "use client";
 
-import React, { useState } from "react";
-import { useTranslations } from "next-intl";
 import {
+  ArrowTopRightOnSquareIcon,
   BanknotesIcon,
   CreditCardIcon,
   DevicePhoneMobileIcon,
   ExclamationTriangleIcon,
-  ArrowTopRightOnSquareIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
 
 interface GopayPaymentFormProps {
   redirectUrl: string;
@@ -137,7 +137,6 @@ export function GopayPaymentForm({
             </div>
           </div>
         </div>
-
       </CardContent>
 
       <CardFooter className="flex-col space-y-4">

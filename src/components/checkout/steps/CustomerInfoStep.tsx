@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
+import { BuildingOfficeIcon, EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { UserIcon, EnvelopeIcon, PhoneIcon, BuildingOfficeIcon } from "@heroicons/react/24/outline";
-import { CustomerInfo } from "@/types/order";
+import React from "react";
 import { Input } from "@/components/ui/Input";
+import type { CustomerInfo } from "@/types/order";
 
 interface CustomerInfoStepProps {
   customerInfo: Partial<CustomerInfo>;

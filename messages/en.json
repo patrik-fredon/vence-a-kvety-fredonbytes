@@ -43,6 +43,7 @@
     "addedToCart": "Added to cart successfully!",
     "addToCartError": "Failed to add to cart. Please try again.",
     "customize": "Customize",
+    "quickView": "Quick View",
     "price": "Price",
     "basePrice": "Base Price",
     "totalPrice": "Total Price",
@@ -350,6 +351,35 @@
       "subtitle": "Funeral wreaths created with love and respect for your loved ones",
       "description": "In the difficult moments of farewell, we help you express love and respect through beautiful floral arrangements. Each wreath is created with sensitivity, care, and understanding for your loss.",
       "cta": "Choose a Wreath for Farewell"
+    },
+    "refactoredHero": {
+      "heading": "Funeral wreaths with love and respect",
+      "description": "Beautiful floral arrangements for dignified farewell",
+      "ctaText": "Browse Wreaths",
+      "ctaButton": "Browse Wreaths",
+      "logoAlt": "Company logo specializing in funeral wreaths and floral arrangements",
+      "logoDescription": "Company logo specializing in funeral wreaths and floral arrangements. Dominant page element positioned in the center.",
+      "ctaDescription": "Button to navigate to products page. Opens a new page with funeral wreaths offerings.",
+      "sectionDescription": "Main page section offering funeral wreaths and floral arrangements. Contains company logo, main heading, service description, and button to navigate to products.",
+      "mainContentStart": "Start of main content"
+    },
+    "productReferences": {
+      "heading": "Our Products",
+      "description": "Discover our carefully curated collection of funeral wreaths and floral arrangements",
+      "loading": "Loading products...",
+      "loadingError": "Failed to load products",
+      "timeoutError": "Request timed out",
+      "criticalError": "Critical error occurred",
+      "tryAgain": "Try again",
+      "retrying": "Retrying...",
+      "retryAttempt": "Retry attempt:",
+      "viewAllProducts": "View All Products",
+      "retryDescription": "Button to retry loading products after error",
+      "productGridLabel": "Product grid",
+      "categoryLabel": "Category: {category}",
+      "productIndexLabel": "Product {index} from collection. Press Enter or Space to view details.",
+      "productImageAlt": "Funeral wreath from our collection",
+      "summaryText": "Showing {count} products from our funeral wreaths and floral arrangements collection."
     },
     "philosophy": {
       "quote": "Life is fragile as butterfly dust, but beauty and love remain forever",

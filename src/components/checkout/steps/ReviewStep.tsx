@@ -1,11 +1,11 @@
 "use client";
 
-import React from "react";
+import { CheckCircleIcon, CreditCardIcon, MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { UserIcon, MapPinIcon, CreditCardIcon, CheckCircleIcon } from "@heroicons/react/24/outline";
-import { CheckoutFormData } from "@/types/order";
-import { CartItem } from "@/types/cart";
+import React from "react";
 import { formatPrice } from "@/lib/utils";
+import type { CartItem } from "@/types/cart";
+import type { CheckoutFormData } from "@/types/order";
 import { OrderSummary } from "../OrderSummary";
 
 interface ReviewStepProps {
@@ -217,6 +217,7 @@ export function ReviewStep({
               href="/terms"
               target="_blank"
               className="text-primary-600 hover:text-primary-700 underline"
+              rel="noopener"
             >
               obchodními podmínkami
             </a>{" "}
@@ -225,6 +226,7 @@ export function ReviewStep({
               href="/privacy"
               target="_blank"
               className="text-primary-600 hover:text-primary-700 underline"
+              rel="noopener"
             >
               zásadami ochrany osobních údajů
             </a>

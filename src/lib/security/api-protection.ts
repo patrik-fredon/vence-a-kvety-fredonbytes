@@ -3,10 +3,10 @@
  * Provides middleware functions for securing API routes
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import { validateCSRFToken } from "./validation";
 import { logUserActivity } from "./gdpr";
+import { validateCSRFToken } from "./validation";
 
 export interface SecurityOptions {
   requireAuth?: boolean;
@@ -65,7 +65,8 @@ export function withSecurity(
       }
 
       // Get client information
-      const clientIP = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
+      const clientIP =
+        request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
       const userAgent = request.headers.get("user-agent") ?? "unknown";
 
       // Check authentication if required
@@ -172,7 +173,6 @@ export function withSecurity(
 
       // Call the actual handler
       return await handler(request, context);
-
     } catch (error) {
       console.error("Security middleware error:", error);
 
@@ -286,7 +286,7 @@ export function validateOrigin(request: NextRequest, allowedOrigins: string[]): 
   const origin = request.headers.get("origin");
   const referer = request.headers.get("referer");
 
-  if (!origin && !referer) {
+  if (!(origin || referer)) {
     return false; // Reject requests without origin/referer
   }
 
@@ -318,22 +318,14 @@ export function detectSuspiciousActivity(request: NextRequest, context: Security
   const userAgent = context.userAgent.toLowerCase();
 
   // Check URL for suspicious patterns
-  if (suspiciousPatterns.some(pattern => pattern.test(url))) {
+  if (suspiciousPatterns.some((pattern) => pattern.test(url))) {
     return true;
   }
 
   // Check for suspicious user agents
-  const suspiciousUserAgents = [
-    "sqlmap",
-    "nikto",
-    "nessus",
-    "burp",
-    "nmap",
-    "masscan",
-    "zap",
-  ];
+  const suspiciousUserAgents = ["sqlmap", "nikto", "nessus", "burp", "nmap", "masscan", "zap"];
 
-  if (suspiciousUserAgents.some(agent => userAgent.includes(agent))) {
+  if (suspiciousUserAgents.some((agent) => userAgent.includes(agent))) {
     return true;
   }
 

@@ -1,16 +1,16 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import {
+  ChartBarIcon,
+  ClipboardDocumentListIcon,
+  ClockIcon,
+  CubeIcon,
+  ExclamationTriangleIcon,
   HomeIcon,
   ShoppingBagIcon,
-  ClipboardDocumentListIcon,
-  CubeIcon,
-  ClockIcon,
-  ExclamationTriangleIcon,
   XMarkIcon,
-  ChartBarIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 
 type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 
@@ -119,9 +119,10 @@ export default function AdminSidebar({
                   }}
                   className={`
                     w-full flex items-center justify-between px-3 py-2 rounded-lg text-sm font-medium transition-colors
-                    ${isActive
-                      ? "bg-amber-100 text-amber-800 border border-amber-200"
-                      : "text-stone-700 hover:bg-stone-100"
+                    ${
+                      isActive
+                        ? "bg-amber-100 text-amber-800 border border-amber-200"
+                        : "text-stone-700 hover:bg-stone-100"
                     }
                   `}
                 >
@@ -134,10 +135,11 @@ export default function AdminSidebar({
                     <span
                       className={`
                       inline-flex items-center justify-center px-2 py-1 text-xs font-bold rounded-full
-                      ${item.id === "inventory"
+                      ${
+                        item.id === "inventory"
                           ? "bg-red-100 text-red-800"
                           : "bg-amber-100 text-amber-800"
-                        }
+                      }
                     `}
                     >
                       {item.badge}

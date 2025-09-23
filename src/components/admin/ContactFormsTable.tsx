@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ContactForm } from '@/types/contact';
-import { Button } from '@/components/ui/Button';
-import { Card } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline';
+import { MagnifyingGlassIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Card } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { ContactForm } from "@/types/contact";
 
 interface ContactFormsTableProps {
   contactForms: any[];
@@ -23,7 +23,7 @@ export function ContactFormsTable({
   totalPages,
   currentStatus,
   currentSearch,
-  locale
+  locale,
 }: ContactFormsTableProps) {
   const router = useRouter();
   const [selectedForm, setSelectedForm] = useState<any | null>(null);
@@ -31,16 +31,18 @@ export function ContactFormsTable({
 
   const getStatusBadge = (status: string) => {
     const statusConfig = {
-      new: { color: 'bg-amber-100 text-amber-800', label: 'Nová' },
-      read: { color: 'bg-blue-100 text-blue-800', label: 'Přečtená' },
-      replied: { color: 'bg-green-100 text-green-800', label: 'Zodpovězená' },
-      archived: { color: 'bg-stone-100 text-stone-800', label: 'Archivovaná' }
+      new: { color: "bg-amber-100 text-amber-800", label: "Nová" },
+      read: { color: "bg-blue-100 text-blue-800", label: "Přečtená" },
+      replied: { color: "bg-green-100 text-green-800", label: "Zodpovězená" },
+      archived: { color: "bg-stone-100 text-stone-800", label: "Archivovaná" },
     };
 
     const config = statusConfig[status as keyof typeof statusConfig] || statusConfig.new;
 
     return (
-      <span className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}>
+      <span
+        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${config.color}`}
+      >
         {config.label}
       </span>
     );
@@ -57,21 +59,21 @@ export function ContactFormsTable({
   };
 
   const formatDate = (dateString: string) => {
-    return new Date(dateString).toLocaleDateString('cs-CZ', {
-      year: 'numeric',
-      month: 'short',
-      day: 'numeric',
-      hour: '2-digit',
-      minute: '2-digit'
+    return new Date(dateString).toLocaleDateString("cs-CZ", {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "2-digit",
+      minute: "2-digit",
     });
   };
 
   const handleStatusChange = async (formId: string, newStatus: string) => {
     try {
       const response = await fetch(`/api/admin/contact-forms/${formId}/status`, {
-        method: 'PATCH',
+        method: "PATCH",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
         body: JSON.stringify({ status: newStatus }),
       });
@@ -79,10 +81,10 @@ export function ContactFormsTable({
       if (response.ok) {
         router.refresh();
       } else {
-        console.error('Failed to update status');
+        console.error("Failed to update status");
       }
     } catch (error) {
-      console.error('Error updating status:', error);
+      console.error("Error updating status:", error);
     }
   };
 
@@ -102,11 +104,11 @@ export function ContactFormsTable({
                 onChange={(e) => {
                   const params = new URLSearchParams(window.location.search);
                   if (e.target.value) {
-                    params.set('search', e.target.value);
+                    params.set("search", e.target.value);
                   } else {
-                    params.delete('search');
+                    params.delete("search");
                   }
-                  params.set('page', '1');
+                  params.set("page", "1");
                   router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
                 }}
               />
@@ -119,12 +121,12 @@ export function ContactFormsTable({
                 value={currentStatus}
                 onChange={(e) => {
                   const params = new URLSearchParams(window.location.search);
-                  if (e.target.value !== 'all') {
-                    params.set('status', e.target.value);
+                  if (e.target.value !== "all") {
+                    params.set("status", e.target.value);
                   } else {
-                    params.delete('status');
+                    params.delete("status");
                   }
-                  params.set('page', '1');
+                  params.set("page", "1");
                   router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
                 }}
                 className="px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
@@ -168,29 +170,19 @@ export function ContactFormsTable({
                     <div>
                       <div className="text-sm font-medium text-stone-900">{form.name}</div>
                       <div className="text-sm text-stone-500">{form.email}</div>
-                      {form.phone && (
-                        <div className="text-sm text-stone-500">{form.phone}</div>
-                      )}
+                      {form.phone && <div className="text-sm text-stone-500">{form.phone}</div>}
                     </div>
                   </td>
                   <td className="px-6 py-4">
-                    <div className="text-sm text-stone-900 max-w-xs truncate">
-                      {form.subject}
-                    </div>
+                    <div className="text-sm text-stone-900 max-w-xs truncate">{form.subject}</div>
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap">
-                    {getStatusBadge(form.status)}
-                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">{getStatusBadge(form.status)}</td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
                     {formatDate(form.created_at)}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-sm font-medium">
                     <div className="flex items-center gap-2">
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => openModal(form)}
-                      >
+                      <Button variant="ghost" size="sm" onClick={() => openModal(form)}>
                         Zobrazit
                       </Button>
                       <select
@@ -225,7 +217,7 @@ export function ContactFormsTable({
                     size="sm"
                     onClick={() => {
                       const params = new URLSearchParams(window.location.search);
-                      params.set('page', (currentPage - 1).toString());
+                      params.set("page", (currentPage - 1).toString());
                       router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
                     }}
                   >
@@ -238,7 +230,7 @@ export function ContactFormsTable({
                     size="sm"
                     onClick={() => {
                       const params = new URLSearchParams(window.location.search);
-                      params.set('page', (currentPage + 1).toString());
+                      params.set("page", (currentPage + 1).toString());
                       router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
                     }}
                   >
@@ -256,32 +248,25 @@ export function ContactFormsTable({
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <Card className="max-w-2xl w-full max-h-[90vh] overflow-y-auto" padding="lg">
             <div className="flex items-center justify-between mb-4">
-              <h3 className="text-lg font-semibold text-stone-900">
-                Detail zprávy
-              </h3>
-              <Button
-                variant="ghost"
-                size="icon"
-                onClick={closeModal}
-              >
+              <h3 className="text-lg font-semibold text-stone-900">Detail zprávy</h3>
+              <Button variant="ghost" size="icon" onClick={closeModal}>
                 <XMarkIcon className="w-6 h-6" />
               </Button>
             </div>
 
             <div className="space-y-4">
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
-                  Jméno
-                </label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Jméno</label>
                 <p className="text-sm text-stone-900">{selectedForm.name}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
-                  E-mail
-                </label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">E-mail</label>
                 <p className="text-sm text-stone-900">
-                  <a href={`mailto:${selectedForm.email}`} className="text-amber-600 hover:text-amber-800">
+                  <a
+                    href={`mailto:${selectedForm.email}`}
+                    className="text-amber-600 hover:text-amber-800"
+                  >
                     {selectedForm.email}
                   </a>
                 </p>
@@ -289,11 +274,12 @@ export function ContactFormsTable({
 
               {selectedForm.phone && (
                 <div>
-                  <label className="block text-sm font-medium text-stone-700 mb-1">
-                    Telefon
-                  </label>
+                  <label className="block text-sm font-medium text-stone-700 mb-1">Telefon</label>
                   <p className="text-sm text-stone-900">
-                    <a href={`tel:${selectedForm.phone}`} className="text-amber-600 hover:text-amber-800">
+                    <a
+                      href={`tel:${selectedForm.phone}`}
+                      className="text-amber-600 hover:text-amber-800"
+                    >
                       {selectedForm.phone}
                     </a>
                   </p>
@@ -301,16 +287,12 @@ export function ContactFormsTable({
               )}
 
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
-                  Předmět
-                </label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Předmět</label>
                 <p className="text-sm text-stone-900">{selectedForm.subject}</p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-stone-700 mb-1">
-                  Zpráva
-                </label>
+                <label className="block text-sm font-medium text-stone-700 mb-1">Zpráva</label>
                 <div className="bg-stone-50 rounded-lg p-4">
                   <p className="text-sm text-stone-900 whitespace-pre-wrap">
                     {selectedForm.message}
@@ -330,14 +312,16 @@ export function ContactFormsTable({
               </div>
 
               <div className="flex justify-end gap-3 pt-4 border-t border-stone-200">
-                <Button
-                  variant="outline"
-                  onClick={closeModal}
-                >
+                <Button variant="outline" onClick={closeModal}>
                   Zavřít
                 </Button>
                 <Button
-                  onClick={() => window.open(`mailto:${selectedForm.email}?subject=Re: ${selectedForm.subject}`, '_blank')}
+                  onClick={() =>
+                    window.open(
+                      `mailto:${selectedForm.email}?subject=Re: ${selectedForm.subject}`,
+                      "_blank"
+                    )
+                  }
                 >
                   Odpovědět
                 </Button>

@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
-import {
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { cn } from "@/lib/utils";
+import type {
   Category,
   ProductFilters as ProductFiltersType,
   ProductSortOptions,
 } from "@/types/product";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { cn } from "@/lib/utils";
 
 interface ProductFiltersProps {
   categories: Category[];
@@ -46,20 +46,23 @@ export function ProductFilters({
   // Debounced search function with useRef to avoid stale closures
   const timeoutRef = useRef<NodeJS.Timeout>();
 
-  const debouncedSearch = useCallback((searchTerm: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+  const debouncedSearch = useCallback(
+    (searchTerm: string) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
 
-    timeoutRef.current = setTimeout(() => {
-      // Use functional update to get the latest localFilters
-      setLocalFilters(currentFilters => {
-        const newFilters = { ...currentFilters, search: searchTerm || undefined };
-        onFiltersChange(newFilters);
-        return newFilters;
-      });
-    }, 300); // 300ms debounce
-  }, [onFiltersChange]);
+      timeoutRef.current = setTimeout(() => {
+        // Use functional update to get the latest localFilters
+        setLocalFilters((currentFilters) => {
+          const newFilters = { ...currentFilters, search: searchTerm || undefined };
+          onFiltersChange(newFilters);
+          return newFilters;
+        });
+      }, 300); // 300ms debounce
+    },
+    [onFiltersChange]
+  );
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -89,7 +92,7 @@ export function ProductFilters({
       field,
       direction: direction || sortOptions.direction,
     };
-    console.log('📊 [ProductFilters] Sort change:', newSort);
+    console.log("📊 [ProductFilters] Sort change:", newSort);
     onSortChange(newSort);
   };
 
@@ -111,22 +114,25 @@ export function ProductFilters({
   };
 
   return (
-    <div className={cn("bg-white rounded-lg shadow-soft p-4", className)}>
+    <div className={cn("bg-amber-100 rounded-lg ", className)}>
       {/* Search & Filters Toggle Button */}
-      <div className="mb-4">
+      <div className="mb-4 text-amber-100">
         <Button
           variant="outline"
           onClick={toggleSearchAndFilters}
-          className="flex items-center gap-2"
+          className="flex items-center gap-2 bg-teal-900 text-amber-100 hover:text-teal-900"
         >
           <span>🔍</span>
           <span>{isSearchAndFiltersVisible ? t("hideSearch") : t("showSearch")}</span>
           {hasActiveFilters && (
-            <span className="ml-2 px-2 py-1 bg-primary-100 text-primary-700 text-xs rounded-full">
-              {Object.keys(localFilters).filter(key =>
-                localFilters[key as keyof ProductFiltersType] !== undefined &&
-                localFilters[key as keyof ProductFiltersType] !== ""
-              ).length}
+            <span className="ml-2 px-2 py-1 text-amber-100 text-xs rounded-full">
+              {
+                Object.keys(localFilters).filter(
+                  (key) =>
+                    localFilters[key as keyof ProductFiltersType] !== undefined &&
+                    localFilters[key as keyof ProductFiltersType] !== ""
+                ).length
+              }
             </span>
           )}
         </Button>
@@ -137,12 +143,12 @@ export function ProductFilters({
         <div className="space-y-6 p-4 bg-stone-50 rounded-lg border border-stone-200">
           {/* Close Button */}
           <div className="flex items-center justify-between">
-            <h3 className="text-sm font-medium text-neutral-700">{t("searchAndFilters")}</h3>
+            <h3 className="text-sm font-medium text-amber-100">{t("searchAndFilters")}</h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsSearchAndFiltersVisible(false)}
-              className="text-stone-500 hover:text-stone-700"
+              className="text-amber-100 hover:text-stone-700"
             >
               ✕
             </Button>
@@ -166,42 +172,6 @@ export function ProductFilters({
                 {t("searchingFor", { query: searchValue })}
               </div>
             )}
-          </div>
-
-          {/* Sort Options */}
-          <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">{t("sortBy")}</label>
-            <div className="space-y-2">
-              <select
-                value={sortOptions.field}
-                onChange={(e) => handleSortChange(e.target.value as ProductSortOptions["field"])}
-                className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
-              >
-                <option value="created_at">{t("sortByNewest")}</option>
-                <option value="name">{t("sortByName")}</option>
-                <option value="price">{t("sortByPrice")}</option>
-                <option value="popularity">{t("sortByPopular")}</option>
-              </select>
-
-              <div className="flex gap-2">
-                <Button
-                  size="sm"
-                  variant={sortOptions.direction === "asc" ? "primary" : "outline"}
-                  onClick={() => handleSortChange(sortOptions.field, "asc")}
-                  className="flex-1"
-                >
-                  {t("sortAsc")}
-                </Button>
-                <Button
-                  size="sm"
-                  variant={sortOptions.direction === "desc" ? "primary" : "outline"}
-                  onClick={() => handleSortChange(sortOptions.field, "desc")}
-                  className="flex-1"
-                >
-                  {t("sortDesc")}
-                </Button>
-              </div>
-            </div>
           </div>
 
           {/* Category Filter */}
@@ -236,7 +206,7 @@ export function ProductFilters({
                 onChange={(e) =>
                   handleFilterChange(
                     "minPrice",
-                    e.target.value ? parseFloat(e.target.value) : undefined
+                    e.target.value ? Number.parseFloat(e.target.value) : undefined
                   )
                 }
                 min="0"
@@ -248,7 +218,7 @@ export function ProductFilters({
                 onChange={(e) =>
                   handleFilterChange(
                     "maxPrice",
-                    e.target.value ? parseFloat(e.target.value) : undefined
+                    e.target.value ? Number.parseFloat(e.target.value) : undefined
                   )
                 }
                 min="0"
@@ -265,7 +235,7 @@ export function ProductFilters({
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={localFilters.inStock || false}
+                  checked={localFilters.inStock}
                   onChange={(e) => handleFilterChange("inStock", e.target.checked || undefined)}
                   className="mr-2 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />
@@ -274,7 +244,7 @@ export function ProductFilters({
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={localFilters.featured || false}
+                  checked={localFilters.featured}
                   onChange={(e) => handleFilterChange("featured", e.target.checked || undefined)}
                   className="mr-2 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import { ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 interface Product {
   id: string;
@@ -272,7 +272,9 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                 min="0"
                 step="0.01"
                 value={formData.base_price}
-                onChange={(e) => handleInputChange("base_price", parseFloat(e.target.value) || 0)}
+                onChange={(e) =>
+                  handleInputChange("base_price", Number.parseFloat(e.target.value) || 0)
+                }
                 className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                   errors.base_price ? "border-red-300" : "border-gray-300"
                 }`}
@@ -340,7 +342,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                     min="0"
                     value={formData.stock_quantity}
                     onChange={(e) =>
-                      handleInputChange("stock_quantity", parseInt(e.target.value) || 0)
+                      handleInputChange("stock_quantity", Number.parseInt(e.target.value) || 0)
                     }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                       errors.stock_quantity ? "border-red-300" : "border-gray-300"
@@ -360,7 +362,7 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                     min="0"
                     value={formData.low_stock_threshold}
                     onChange={(e) =>
-                      handleInputChange("low_stock_threshold", parseInt(e.target.value) || 0)
+                      handleInputChange("low_stock_threshold", Number.parseInt(e.target.value) || 0)
                     }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
                       errors.low_stock_threshold ? "border-red-300" : "border-gray-300"

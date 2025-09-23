@@ -1,18 +1,18 @@
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { ProductCard } from '../ProductCard';
-import { Product } from '@/types/product';
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import type { Product } from "@/types/product";
+import { ProductCard } from "../ProductCard";
 
 // Mock next-intl
-jest.mock('next-intl', () => ({
+jest.mock("next-intl", () => ({
   useTranslations: (namespace: string) => (key: string, params?: any) => {
     const translations: Record<string, Record<string, string>> = {
       product: {
-        addToCart: 'Přidat do košíku',
-        customize: 'Přizpůsobit',
-        outOfStock: 'Vyprodáno',
-        limitedStock: 'Omezená zásoba',
-        inStock: 'Skladem',
+        addToCart: "Přidat do košíku",
+        customize: "Přizpůsobit",
+        outOfStock: "Vyprodáno",
+        limitedStock: "Omezená zásoba",
+        inStock: "Skladem",
       },
       currency: {
         format: `${params?.amount} Kč`,
@@ -23,22 +23,15 @@ jest.mock('next-intl', () => ({
 }));
 
 // Mock Next.js Image
-jest.mock('next/image', () => ({
+jest.mock("next/image", () => ({
   __esModule: true,
   default: ({ src, alt, onLoad, ...props }: any) => {
-    return (
-      <img
-        src={src}
-        alt={alt}
-        onLoad={onLoad}
-        {...props}
-      />
-    );
+    return <img src={src} alt={alt} onLoad={onLoad} {...props} />;
   },
 }));
 
 // Mock Next.js Link
-jest.mock('next/link', () => ({
+jest.mock("next/link", () => ({
   __esModule: true,
   default: ({ children, href, ...props }: any) => (
     <a href={href} {...props}>
@@ -48,20 +41,20 @@ jest.mock('next/link', () => ({
 }));
 
 const mockProduct: Product = {
-  id: '1',
-  nameCs: 'Pohřební věnec',
-  nameEn: 'Funeral Wreath',
-  name: { cs: 'Pohřební věnec', en: 'Funeral Wreath' },
-  description: { cs: 'Krásný pohřební věnec', en: 'Beautiful funeral wreath' },
-  slug: 'funeral-wreath',
+  id: "1",
+  nameCs: "Pohřební věnec",
+  nameEn: "Funeral Wreath",
+  name: { cs: "Pohřební věnec", en: "Funeral Wreath" },
+  description: { cs: "Krásný pohřební věnec", en: "Beautiful funeral wreath" },
+  slug: "funeral-wreath",
   basePrice: 1500,
   category: {
-    id: 'cat1',
-    nameCs: 'Věnce',
-    nameEn: 'Wreaths',
-    name: { cs: 'Věnce', en: 'Wreaths' },
-    slug: 'wreaths',
-    description: { cs: '', en: '' },
+    id: "cat1",
+    nameCs: "Věnce",
+    nameEn: "Wreaths",
+    name: { cs: "Věnce", en: "Wreaths" },
+    slug: "wreaths",
+    description: { cs: "", en: "" },
     parentId: undefined,
     sortOrder: 0,
     active: true,
@@ -70,16 +63,16 @@ const mockProduct: Product = {
   },
   images: [
     {
-      id: 'img1',
-      url: '/test-image.jpg',
-      alt: 'Test image',
+      id: "img1",
+      url: "/test-image.jpg",
+      alt: "Test image",
       isPrimary: true,
       sortOrder: 0,
     },
     {
-      id: 'img2',
-      url: '/test-image-2.jpg',
-      alt: 'Test image 2',
+      id: "img2",
+      url: "/test-image-2.jpg",
+      alt: "Test image 2",
       isPrimary: false,
       sortOrder: 1,
     },
@@ -91,8 +84,8 @@ const mockProduct: Product = {
     estimatedRestockDate: new Date(),
   },
   seoMetadata: {
-    title: { cs: '', en: '' },
-    description: { cs: '', en: '' },
+    title: { cs: "", en: "" },
+    description: { cs: "", en: "" },
     keywords: { cs: [], en: [] },
   },
   active: true,
@@ -101,138 +94,132 @@ const mockProduct: Product = {
   updatedAt: new Date(),
 };
 
-describe('ProductCard', () => {
+describe("ProductCard", () => {
   const defaultProps = {
     product: mockProduct,
-    locale: 'cs',
+    locale: "cs",
   };
 
   beforeEach(() => {
     jest.clearAllMocks();
   });
 
-  it('renders product information correctly', () => {
+  it("renders product information correctly", () => {
     render(<ProductCard {...defaultProps} />);
 
-    expect(screen.getByText('Pohřební věnec')).toBeInTheDocument();
-    expect(screen.getByText('Krásný pohřební věnec')).toBeInTheDocument();
-    expect(screen.getByText('1 500 Kč')).toBeInTheDocument();
-    expect(screen.getByText('Věnce')).toBeInTheDocument();
+    expect(screen.getByText("Pohřební věnec")).toBeInTheDocument();
+    expect(screen.getByText("Krásný pohřební věnec")).toBeInTheDocument();
+    expect(screen.getByText("1 500 Kč")).toBeInTheDocument();
+    expect(screen.getByText("Věnce")).toBeInTheDocument();
   });
 
-  it('displays English content when locale is en', () => {
+  it("displays English content when locale is en", () => {
     render(<ProductCard {...defaultProps} locale="en" />);
 
-    expect(screen.getByText('Funeral Wreath')).toBeInTheDocument();
-    expect(screen.getByText('Beautiful funeral wreath')).toBeInTheDocument();
+    expect(screen.getByText("Funeral Wreath")).toBeInTheDocument();
+    expect(screen.getByText("Beautiful funeral wreath")).toBeInTheDocument();
   });
 
-  it('shows availability status correctly', () => {
+  it("shows availability status correctly", () => {
     render(<ProductCard {...defaultProps} />);
-    expect(screen.getByText('Skladem')).toBeInTheDocument();
+    expect(screen.getByText("Skladem")).toBeInTheDocument();
   });
 
-  it('shows limited stock when quantity is low', () => {
+  it("shows limited stock when quantity is low", () => {
     const lowStockProduct = {
       ...mockProduct,
       availability: { ...mockProduct.availability, stockQuantity: 3 },
     };
 
     render(<ProductCard {...defaultProps} product={lowStockProduct} />);
-    expect(screen.getByText('Omezená zásoba')).toBeInTheDocument();
+    expect(screen.getByText("Omezená zásoba")).toBeInTheDocument();
   });
 
-  it('shows out of stock when not available', () => {
+  it("shows out of stock when not available", () => {
     const outOfStockProduct = {
       ...mockProduct,
       availability: { ...mockProduct.availability, inStock: false },
     };
 
     render(<ProductCard {...defaultProps} product={outOfStockProduct} />);
-    expect(screen.getByText('Vyprodáno')).toBeInTheDocument();
+    expect(screen.getByText("Vyprodáno")).toBeInTheDocument();
   });
 
-  it('displays featured badge when product is featured', () => {
+  it("displays featured badge when product is featured", () => {
     const featuredProduct = { ...mockProduct, featured: true };
 
     render(<ProductCard {...defaultProps} product={featuredProduct} />);
-    expect(screen.getByText('⭐ Featured')).toBeInTheDocument();
+    expect(screen.getByText("⭐ Featured")).toBeInTheDocument();
   });
 
-  it('calls onAddToCart when add to cart button is clicked', async () => {
+  it("calls onAddToCart when add to cart button is clicked", async () => {
     const user = userEvent.setup();
     const onAddToCart = jest.fn();
 
     render(<ProductCard {...defaultProps} onAddToCart={onAddToCart} />);
 
-    const addToCartButton = screen.getByText('Přidat do košíku');
+    const addToCartButton = screen.getByText("Přidat do košíku");
     await user.click(addToCartButton);
 
     expect(onAddToCart).toHaveBeenCalledWith(mockProduct);
   });
 
-  it('does not show add to cart button when product is out of stock', () => {
+  it("does not show add to cart button when product is out of stock", () => {
     const outOfStockProduct = {
       ...mockProduct,
       availability: { ...mockProduct.availability, inStock: false },
     };
 
-    render(
-      <ProductCard
-        {...defaultProps}
-        product={outOfStockProduct}
-        onAddToCart={jest.fn()}
-      />
-    );
+    render(<ProductCard {...defaultProps} product={outOfStockProduct} onAddToCart={jest.fn()} />);
 
-    expect(screen.queryByText('Přidat do košíku')).not.toBeInTheDocument();
+    expect(screen.queryByText("Přidat do košíku")).not.toBeInTheDocument();
   });
 
-  it('shows hover overlay with quick actions on mouse enter', async () => {
+  it("shows hover overlay with quick actions on mouse enter", async () => {
     const user = userEvent.setup();
     const onAddToCart = jest.fn();
 
     render(<ProductCard {...defaultProps} onAddToCart={onAddToCart} />);
 
-    const productCard = screen.getByRole('article');
+    const productCard = screen.getByRole("article");
     await user.hover(productCard);
 
-    expect(screen.getByText('Přizpůsobit')).toBeInTheDocument();
+    expect(screen.getByText("Přizpůsobit")).toBeInTheDocument();
   });
 
-  it('has proper accessibility attributes', () => {
+  it("has proper accessibility attributes", () => {
     render(<ProductCard {...defaultProps} />);
 
-    const article = screen.getByRole('article');
-    expect(article).toHaveAttribute('aria-labelledby', 'product-1-title');
+    const article = screen.getByRole("article");
+    expect(article).toHaveAttribute("aria-labelledby", "product-1-title");
 
-    const title = screen.getByRole('heading', { level: 3 });
-    expect(title).toHaveAttribute('id', 'product-1-title');
+    const title = screen.getByRole("heading", { level: 3 });
+    expect(title).toHaveAttribute("id", "product-1-title");
 
-    const availabilityStatus = screen.getByRole('status');
-    expect(availabilityStatus).toHaveAttribute('aria-label', 'Dostupnost: Skladem');
+    const availabilityStatus = screen.getByRole("status");
+    expect(availabilityStatus).toHaveAttribute("aria-label", "Dostupnost: Skladem");
   });
 
-  it('handles image loading states', async () => {
+  it("handles image loading states", async () => {
     render(<ProductCard {...defaultProps} />);
 
-    const image = screen.getByAltText('Test image');
+    const image = screen.getByAltText("Test image");
     expect(image).toBeInTheDocument();
 
     // Simulate image load
     fireEvent.load(image);
 
     await waitFor(() => {
-      expect(image).not.toHaveClass('blur-sm');
+      expect(image).not.toHaveClass("blur-sm");
     });
   });
 
-  it('links to product detail page', () => {
+  it("links to product detail page", () => {
     render(<ProductCard {...defaultProps} />);
 
-    const productLinks = screen.getAllByRole('link');
-    const detailLink = productLinks.find(link =>
-      link.getAttribute('href') === '/cs/products/funeral-wreath'
+    const productLinks = screen.getAllByRole("link");
+    const detailLink = productLinks.find(
+      (link) => link.getAttribute("href") === "/cs/products/funeral-wreath"
     );
 
     expect(detailLink).toBeInTheDocument();

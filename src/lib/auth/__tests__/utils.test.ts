@@ -29,8 +29,8 @@ Object.defineProperty(window, "location", {
   writable: true,
 });
 
-import { authUtils } from "../utils";
 import { supabase } from "@/lib/supabase/client";
+import { authUtils } from "../utils";
 
 // Type the mocked supabase
 const mockSupabase = jest.mocked(supabase);

@@ -3,7 +3,7 @@
  * Tests the complete language switching flow
  */
 
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
 
@@ -73,7 +73,7 @@ describe("i18n Integration Tests", () => {
     expect(buttons).toHaveLength(2);
 
     // Current locale button should be disabled
-    const csButton = buttons.find(btn => btn.textContent?.includes("Čeština"));
+    const csButton = buttons.find((btn) => btn.textContent?.includes("Čeština"));
     expect(csButton).toBeDisabled();
   });
 
@@ -92,26 +92,16 @@ describe("i18n Integration Tests", () => {
 
 describe("Translation Validation", () => {
   test("should validate translation keys format", () => {
-    const validKeys = [
-      "common.loading",
-      "navigation.home",
-      "product.addToCart",
-      "seo.home.title",
-    ];
+    const validKeys = ["common.loading", "navigation.home", "product.addToCart", "seo.home.title"];
 
-    const invalidKeys = [
-      "123invalid",
-      "invalid-key",
-      "invalid key",
-      "",
-    ];
+    const invalidKeys = ["123invalid", "invalid-key", "invalid key", ""];
 
     // This would use the validation utilities
-    validKeys.forEach(key => {
+    validKeys.forEach((key) => {
       expect(key).toMatch(/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*$/);
     });
 
-    invalidKeys.forEach(key => {
+    invalidKeys.forEach((key) => {
       expect(key).not.toMatch(/^[a-zA-Z][a-zA-Z0-9_]*(\.[a-zA-Z0-9_]+)*$/);
     });
   });

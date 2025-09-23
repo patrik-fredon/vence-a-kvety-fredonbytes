@@ -1,18 +1,16 @@
 "use client";
 
-import { useState, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Product, Customization } from "@/types/product";
-import {
-  calculateFinalPrice,
-} from "@/lib/utils/price-calculator";
-import { ProductImageGallery } from "./ProductImageGallery";
+import { useCallback, useState } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
-import { ProductInfo } from "./ProductInfo";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { cn } from "@/lib/utils";
 import { useCart } from "@/lib/cart/context";
+import { cn } from "@/lib/utils";
+import { calculateFinalPrice } from "@/lib/utils/price-calculator";
+import type { Customization, Product } from "@/types/product";
+import { ProductImageGallery } from "./ProductImageGallery";
+import { ProductInfo } from "./ProductInfo";
 
 interface ProductDetailProps {
   product: Product;
@@ -114,8 +112,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setIsAddingToCart(true);
 
     try {
-
-
       const success = await addToCart({
         productId: product.id,
         quantity,
@@ -123,7 +119,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       });
 
       if (success) {
-
         // Show success message (implement toast/notification in later tasks)
         alert(t("addedToCart"));
       } else {
@@ -169,9 +164,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("customize")}</span>
-                  <span className="text-sm font-normal text-stone-500">
-                    ({t("optional")})
-                  </span>
+                  <span className="text-sm font-normal text-stone-500">({t("optional")})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -233,7 +226,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                       min="1"
                       max={product.availability.maxOrderQuantity || 10}
                       value={quantity}
-                      onChange={(e) => handleQuantityChange(parseInt(e.target.value) || 1)}
+                      onChange={(e) => handleQuantityChange(Number.parseInt(e.target.value) || 1)}
                       className="w-16 text-center border border-stone-300 rounded-md py-2 text-sm font-medium focus:ring-2 focus:ring-amber-500 focus:border-amber-500"
                     />
                     <Button

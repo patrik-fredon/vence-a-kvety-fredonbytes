@@ -3,18 +3,18 @@
  * Handles CRUD operations for categories
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
-import { Category, CreateCategoryRequest, CategoryRow } from "@/types/product";
-import { ApiResponse } from "@/types";
-import {
-  transformCategoryRow,
-  categoryToRow,
-  validateCategoryData,
-  createSlug,
-} from "@/lib/utils/product-transforms";
-import { withCache, setCacheHeaders, invalidateApiCache } from "@/lib/cache/api-cache";
+import { type NextRequest, NextResponse } from "next/server";
+import { invalidateApiCache, setCacheHeaders, withCache } from "@/lib/cache/api-cache";
 import { CACHE_TTL } from "@/lib/cache/redis";
+import { createServerClient } from "@/lib/supabase/server";
+import {
+  categoryToRow,
+  createSlug,
+  transformCategoryRow,
+  validateCategoryData,
+} from "@/lib/utils/product-transforms";
+import type { ApiResponse } from "@/types";
+import { type Category, CategoryRow, type CreateCategoryRequest } from "@/types/product";
 
 /**
  * GET /api/categories

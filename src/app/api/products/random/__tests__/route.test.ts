@@ -1,9 +1,9 @@
-import { GET } from '../route';
-import { NextRequest } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
+import { NextRequest } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { GET } from "../route";
 
 // Mock Supabase client
-jest.mock('@/lib/supabase/server', () => ({
+jest.mock("@/lib/supabase/server", () => ({
   createServerClient: jest.fn(),
 }));
 
@@ -18,7 +18,7 @@ const mockQuery = {
   limit: jest.fn().mockReturnThis(),
 };
 
-describe('/api/products/random', () => {
+describe("/api/products/random", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (createServerClient as jest.Mock).mockReturnValue(mockSupabaseClient);
@@ -26,7 +26,7 @@ describe('/api/products/random', () => {
   });
 
   const createMockRequest = (searchParams: Record<string, string> = {}) => {
-    const url = new URL('http://localhost/api/products/random');
+    const url = new URL("http://localhost/api/products/random");
     Object.entries(searchParams).forEach(([key, value]) => {
       url.searchParams.set(key, value);
     });
@@ -35,32 +35,32 @@ describe('/api/products/random', () => {
 
   const mockProducts = [
     {
-      id: 'product-1',
-      name_cs: 'Věnec 1',
-      name_en: 'Wreath 1',
-      slug: 'wreath-1',
+      id: "product-1",
+      name_cs: "Věnec 1",
+      name_en: "Wreath 1",
+      slug: "wreath-1",
       base_price: 1500,
-      images: [{ url: '/image1.jpg', alt: 'Wreath 1' }],
+      images: [{ url: "/image1.jpg", alt: "Wreath 1" }],
       availability: { inStock: true },
       active: true,
       featured: false,
     },
     {
-      id: 'product-2',
-      name_cs: 'Věnec 2',
-      name_en: 'Wreath 2',
-      slug: 'wreath-2',
+      id: "product-2",
+      name_cs: "Věnec 2",
+      name_en: "Wreath 2",
+      slug: "wreath-2",
       base_price: 2000,
-      images: [{ url: '/image2.jpg', alt: 'Wreath 2' }],
+      images: [{ url: "/image2.jpg", alt: "Wreath 2" }],
       availability: { inStock: true },
       active: true,
       featured: true,
     },
     {
-      id: 'product-3',
-      name_cs: 'Věnec 3',
-      name_en: 'Wreath 3',
-      slug: 'wreath-3',
+      id: "product-3",
+      name_cs: "Věnec 3",
+      name_en: "Wreath 3",
+      slug: "wreath-3",
       base_price: 2500,
       images: [],
       availability: { inStock: false },
@@ -69,7 +69,7 @@ describe('/api/products/random', () => {
     },
   ];
 
-  it('returns random products with default parameters', async () => {
+  it("returns random products with default parameters", async () => {
     mockQuery.mockResolvedValue({
       data: mockProducts,
       error: null,
@@ -82,42 +82,44 @@ describe('/api/products/random', () => {
     expect(response.status).toBe(200);
     expect(data.success).toBe(true);
     expect(data.products).toHaveLength(2); // Only in-stock products
-    expect(mockSupabaseClient.from).toHaveBeenCalledWith('products');
-    expect(mockQuery.eq).toHaveBeenCalledWith('active', true);
+    expect(mockSupabaseClient.from).toHaveBeenCalledWith("products");
+    expect(mockQuery.eq).toHaveBeenCalledWith("active", true);
     expect(mockQuery.limit).toHaveBeenCalledWith(50);
   });
 
-  it('respects count parameter', async () => {
+  it("respects count parameter", async () => {
     mockQuery.mockResolvedValue({
       data: mockProducts,
       error: null,
     });
 
-    const request = createMockRequest({ count: '1' });
+    const request = createMockRequest({ count: "1" });
     response = await GET(request);
     const data = await response.json();
 
     expect(data.products).toHaveLength(1);
   });
 
-  it('limits count to maximum of 10', async () => {
+  it("limits count to maximum of 10", async () => {
     mockQuery.mockResolvedValue({
-      data: Array(15).fill(null).map((_, i) => ({
-        ...mockProducts[0],
-        id: `product-${i}`,
-        availability: { inStock: true },
-      })),
+      data: Array(15)
+        .fill(null)
+        .map((_, i) => ({
+          ...mockProducts[0],
+          id: `product-${i}`,
+          availability: { inStock: true },
+        })),
       error: null,
     });
 
-    const request = createMockRequest({ count: '15' });
+    const request = createMockRequest({ count: "15" });
     const response = await GET(request);
     const data = await response.json();
 
     expect(data.products.length).toBeLessThanOrEqual(10);
   });
 
-  it('uses default locale when not specified', async () => {
+  it("uses default locale when not specified", async () => {
     mockQuery.mockResolvedValue({
       data: mockProducts,
       error: null,
@@ -130,7 +132,7 @@ describe('/api/products/random', () => {
     // The locale parameter doesn't affect the query but is used for response formatting
   });
 
-  it('filters out products that are not in stock', async () => {
+  it("filters out products that are not in stock", async () => {
     const allProducts = [
       { ...mockProducts[0], availability: { inStock: true } },
       { ...mockProducts[1], availability: { inStock: false } },
@@ -142,7 +144,7 @@ describe('/api/products/random', () => {
       error: null,
     });
 
-    const request = createMockRequest({ count: '3' });
+    const request = createMockRequest({ count: "3" });
     const response = await GET(request);
     const data = await response.json();
 
@@ -150,26 +152,26 @@ describe('/api/products/random', () => {
     expect(data.products.every((p: any) => p.availability.inStock)).toBe(true);
   });
 
-  it('transforms database format to Product interface', async () => {
+  it("transforms database format to Product interface", async () => {
     mockQuery.mockResolvedValue({
       data: [mockProducts[0]],
       error: null,
     });
 
-    const request = createMockRequest({ count: '1' });
+    const request = createMockRequest({ count: "1" });
     const response = await GET(request);
     const data = await response.json();
 
     const product = data.products[0];
     expect(product).toMatchObject({
-      id: 'product-1',
+      id: "product-1",
       name: {
-        cs: 'Věnec 1',
-        en: 'Wreath 1',
+        cs: "Věnec 1",
+        en: "Wreath 1",
       },
-      slug: 'wreath-1',
+      slug: "wreath-1",
       basePrice: 1500,
-      images: [{ url: '/image1.jpg', alt: 'Wreath 1' }],
+      images: [{ url: "/image1.jpg", alt: "Wreath 1" }],
       availability: { inStock: true },
       active: true,
       featured: false,
@@ -179,10 +181,10 @@ describe('/api/products/random', () => {
     expect(product.updatedAt).toBeDefined();
   });
 
-  it('handles database errors gracefully', async () => {
+  it("handles database errors gracefully", async () => {
     mockQuery.mockResolvedValue({
       data: null,
-      error: { message: 'Database connection failed' },
+      error: { message: "Database connection failed" },
     });
 
     const request = createMockRequest();
@@ -191,10 +193,10 @@ describe('/api/products/random', () => {
 
     expect(response.status).toBe(500);
     expect(data.success).toBe(false);
-    expect(data.error).toBe('Failed to fetch products');
+    expect(data.error).toBe("Failed to fetch products");
   });
 
-  it('returns empty array when no products found', async () => {
+  it("returns empty array when no products found", async () => {
     mockQuery.mockResolvedValue({
       data: [],
       error: null,
@@ -209,8 +211,8 @@ describe('/api/products/random', () => {
     expect(data.products).toEqual([]);
   });
 
-  it('returns empty array when no products are in stock', async () => {
-    const outOfStockProducts = mockProducts.map(p => ({
+  it("returns empty array when no products are in stock", async () => {
+    const outOfStockProducts = mockProducts.map((p) => ({
       ...p,
       availability: { inStock: false },
     }));
@@ -220,7 +222,7 @@ describe('/api/products/random', () => {
       error: null,
     });
 
-    const request = createMockRequest({ count: '3' });
+    const request = createMockRequest({ count: "3" });
     const response = await GET(request);
     const data = await response.json();
 
@@ -229,7 +231,7 @@ describe('/api/products/random', () => {
     expect(data.products).toEqual([]);
   });
 
-  it('handles products with missing availability gracefully', async () => {
+  it("handles products with missing availability gracefully", async () => {
     const productsWithMissingAvailability = [
       { ...mockProducts[0], availability: null },
       { ...mockProducts[1], availability: undefined },
@@ -241,7 +243,7 @@ describe('/api/products/random', () => {
       error: null,
     });
 
-    const request = createMockRequest({ count: '3' });
+    const request = createMockRequest({ count: "3" });
     const response = await GET(request);
     const data = await response.json();
 
@@ -251,9 +253,9 @@ describe('/api/products/random', () => {
     expect(data.products[1].availability).toEqual({ inStock: true });
   });
 
-  it('handles unexpected errors gracefully', async () => {
+  it("handles unexpected errors gracefully", async () => {
     mockSupabaseClient.from.mockImplementation(() => {
-      throw new Error('Unexpected error');
+      throw new Error("Unexpected error");
     });
 
     const request = createMockRequest();
@@ -262,25 +264,27 @@ describe('/api/products/random', () => {
 
     expect(response.status).toBe(500);
     expect(data.success).toBe(false);
-    expect(data.error).toBe('Internal server error');
+    expect(data.error).toBe("Internal server error");
   });
 
-  it('randomizes product selection', async () => {
+  it("randomizes product selection", async () => {
     // Create a larger set of products to test randomization
-    const manyProducts = Array(20).fill(null).map((_, i) => ({
-      ...mockProducts[0],
-      id: `product-${i}`,
-      name_cs: `Věnec ${i}`,
-      name_en: `Wreath ${i}`,
-      availability: { inStock: true },
-    }));
+    const manyProducts = Array(20)
+      .fill(null)
+      .map((_, i) => ({
+        ...mockProducts[0],
+        id: `product-${i}`,
+        name_cs: `Věnec ${i}`,
+        name_en: `Wreath ${i}`,
+        availability: { inStock: true },
+      }));
 
     mockQuery.mockResolvedValue({
       data: manyProducts,
       error: null,
     });
 
-    const request = createMockRequest({ count: '3' });
+    const request = createMockRequest({ count: "3" });
 
     // Make multiple requests to test randomization
     const results = [];
@@ -291,7 +295,7 @@ describe('/api/products/random', () => {
     }
 
     // Check that we get different combinations (not a perfect test but reasonable)
-    const uniqueResults = new Set(results.map(r => r.join(',')));
+    const uniqueResults = new Set(results.map((r) => r.join(",")));
     expect(uniqueResults.size).toBeGreaterThan(1);
   });
 });

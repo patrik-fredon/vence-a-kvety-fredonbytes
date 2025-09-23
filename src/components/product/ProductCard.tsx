@@ -1,14 +1,13 @@
 "use client";
 
-import { useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { HeartIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { HeartIcon as HeartSolidIcon } from "@heroicons/react/24/solid";
-import { Product } from "@/types/product";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
+import type { Product } from "@/types/product";
+import { ProductQuickView } from "./ProductQuickView";
 
 interface ProductCardProps {
   product: Product;
@@ -18,7 +17,7 @@ interface ProductCardProps {
   featured?: boolean;
   onToggleFavorite?: (productId: string) => void;
   isFavorite?: boolean;
-  viewMode?: 'grid' | 'list';
+  viewMode?: "grid" | "list";
 }
 
 export function ProductCard({
@@ -29,12 +28,13 @@ export function ProductCard({
   featured = false,
   onToggleFavorite,
   isFavorite = false,
-  viewMode = 'grid'
+  viewMode = "grid",
 }: ProductCardProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
   const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
@@ -57,209 +57,274 @@ export function ProductCard({
     onAddToCart?.(product);
   };
 
+  const handleQuickView = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    setIsQuickViewOpen(true);
+  };
+
   return (
-    <article
-      className={cn(
-        // Base card styles
-        "group bg-white overflow-hidden transition-all duration-300",
-        "hover:shadow-lg",
-        // Focus styles for keyboard navigation
-        "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2 rounded-lg",
-        // Layout based on view mode
-        viewMode === 'grid'
-          ? cn(
-            "hover:-translate-y-1",
-            featured && "md:col-span-2"
-          )
-          : "flex flex-row items-center gap-4 p-4",
-        className
-      )}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      role="article"
-      aria-labelledby={`product-${product.id}-title`}
-      aria-describedby={`product-${product.id}-description product-${product.id}-price`}
-    >
-      {/* Product Image Container */}
-      <div className={cn(
-        "relative overflow-hidden bg-stone-50",
-        viewMode === 'grid'
-          ? cn(
-            // Grid view: Standard card aspect ratios
-            featured ? "aspect-[2/1] md:aspect-[3/2]" : "aspect-square",
-            "h-64"
-          )
-          : cn(
-            // List view: Fixed size image
-            "w-24 h-24 flex-shrink-0 rounded-lg"
-          )
-      )}>
+    <>
+      <article
+        className={cn(
+          // Base card styles with improved responsive design
+          "group bg-stone-200 overflow-hidden transition-all duration-300",
+          "hover:shadow-lg rounded-lg",
+          // Focus styles for keyboard navigation
+          "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
+          // Layout based on view mode with better responsive handling
+          viewMode === "grid"
+            ? "flex flex-col h-full hover:-translate-y-1"
+            : "flex flex-row items-center gap-4 p-4",
+          className
+        )}
+        onMouseEnter={() => setIsHovered(true)}
+        onMouseLeave={() => setIsHovered(false)}
+        aria-labelledby={`product-${product.id}-title`}
+      >
         <Link
           href={`/${locale}/products/${product.slug}`}
-          className="block focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg"
-          aria-label={`Zobrazit detail produktu ${product.name[locale as keyof typeof product.name]}`}
+          className={cn(
+            "block",
+            viewMode === "grid" ? "h-full flex flex-col" : "flex-1 flex items-center gap-4"
+          )}
         >
-          {primaryImage && (
-            <>
-              <Image
-                src={primaryImage.url}
-                alt={`${product.name[locale as keyof typeof product.name]} - ${primaryImage.alt}`}
-                fill
-                className={cn(
-                  "object-cover transition-all duration-500",
-                  // Scale-on-hover animation
-                  "group-hover:scale-105",
-                  imageLoading ? "scale-110 blur-sm" : "scale-100 blur-0",
-                  isHovered && secondaryImage ? "opacity-0" : "opacity-100"
-                )}
-                onLoad={() => setImageLoading(false)}
-                sizes={featured
-                  ? "(max-width: 768px) 100vw, 66vw"
-                  : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
-                }
-              />
+          {/* Product Image */}
+          <div
+            className={cn(
+              "relative overflow-hidden bg-stone-100",
+              viewMode === "grid"
+                ? // Grid view: responsive aspect ratio
+                "aspect-square w-full"
+                : // List view: fixed size
+                "w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md"
+            )}
+          >
+
+
+            {/* Featured Badge */}
+            {featured && (
+              <div className="absolute top-2 left-2 z-10">
+                <span
+                  className={cn(
+                    "inline-flex items-center px-1.5 py-0.5 sm:px-2 sm:py-1 rounded-full font-medium",
+                    "bg-amber-100 text-amber-800 border border-amber-200",
+                    viewMode === "grid" ? "text-xs" : "text-xs"
+                  )}
+                >
+                  {t("featured")}
+                </span>
+              </div>
+            )}
+
+            {/* Product Images */}
+            <div className="relative w-full h-full">
+              {primaryImage && (
+                <Image
+                  src={primaryImage.url}
+                  alt={primaryImage.alt || product.name[locale as keyof typeof product.name]}
+                  fill
+                  sizes={
+                    viewMode === "grid"
+                      ? // Responsive sizes for grid view
+                      "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
+                      : // Fixed size for list view
+                      "96px"
+                  }
+                  className={cn(
+                    "object-cover transition-all duration-500",
+                    imageLoading && "blur-sm",
+                    isHovered && secondaryImage && "opacity-0"
+                  )}
+                  onLoad={() => setImageLoading(false)}
+                  priority={featured}
+                />
+              )}
+
+              {/* Secondary image on hover */}
               {secondaryImage && (
                 <Image
                   src={secondaryImage.url}
-                  alt={`${product.name[locale as keyof typeof product.name]} - alternativní pohled`}
+                  alt={secondaryImage.alt || product.name[locale as keyof typeof product.name]}
                   fill
-                  className={cn(
-                    "object-cover transition-all duration-500 group-hover:scale-105",
-                    isHovered ? "opacity-100" : "opacity-0"
-                  )}
-                  sizes={featured
-                    ? "(max-width: 768px) 100vw, 66vw"
-                    : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  sizes={
+                    viewMode === "grid"
+                      ? "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
+                      : "96px"
                   }
+                  className={cn(
+                    "object-cover transition-all duration-500 absolute inset-0",
+                    !isHovered && "opacity-0"
+                  )}
+                  priority={false}
                 />
               )}
-            </>
-          )}
-        </Link>
+            </div>
 
-        {/* Heart icon for favorites - mobile-friendly touch target */}
-        <button
-          onClick={handleToggleFavorite}
-          className={cn(
-            "absolute top-2 right-2 sm:top-3 sm:right-3",
-            // Mobile-first: larger touch target (44px minimum)
-            "p-3 sm:p-2 min-h-11 min-w-11 sm:min-h-auto sm:min-w-auto",
-            "rounded-full bg-white/80 backdrop-blur-sm",
-            "transition-all duration-300 hover:bg-white hover:scale-110",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
-            "active:scale-95 active:bg-white/90",
-            // Mobile: always visible, Desktop: show on hover or if favorited
-            "opacity-100 translate-y-0 sm:opacity-100 sm:translate-y-0",
-            !isFavorite && "sm:opacity-0 sm:translate-y-2",
-            (isHovered || isFavorite) && "sm:opacity-100 sm:translate-y-0"
-          )}
-          aria-label={isFavorite ? t("removeFromFavorites") : t("addToFavorites")}
-        >
-          {isFavorite ? (
-            <HeartSolidIcon className="h-5 w-5 text-red-500" />
-          ) : (
-            <HeartIcon className="h-5 w-5 text-stone-600 hover:text-red-500 transition-colors" />
-          )}
-        </button>
-
-        {/* Category tag */}
-        {product.category && (
-          <div className="absolute top-3 left-3 bg-stone-900/80 backdrop-blur-sm text-white px-2 py-1 rounded-md text-xs font-medium">
-            {product.category.name[locale as keyof typeof product.category.name]}
-          </div>
-        )}
-
-        {/* Featured badge */}
-        {product.featured && (
-          <div className="absolute bottom-3 left-3 bg-amber-600 text-white px-2 py-1 rounded-md text-xs font-medium">
-            {t("featured")}
-          </div>
-        )}
-      </div>
-
-      {/* Product Info */}
-      <div className={cn(
-        viewMode === 'grid'
-          ? cn(
-            "p-4",
-            featured && "md:p-6"
-          )
-          : "flex-1 min-w-0" // List view: take remaining space
-      )}>
-        <Link href={`/${locale}/products/${product.slug}`} className="block">
-          <h3
-            id={`product-${product.id}-title`}
-            className={cn(
-              "font-medium text-stone-900 mb-2 line-clamp-2 group-hover:text-stone-700 transition-colors",
-              // Featured products get larger text
-              featured ? "text-xl md:text-2xl" : "text-lg"
+            {/* Stock Status Overlay */}
+            {!product.availability.inStock && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                <span
+                  className={cn(
+                    "text-white font-medium px-2 py-1 bg-red-600 rounded-full",
+                    viewMode === "grid" ? "text-xs sm:text-sm" : "text-xs"
+                  )}
+                >
+                  {t("outOfStock")}
+                </span>
+              </div>
             )}
-          >
-            {product.name[locale as keyof typeof product.name]}
-          </h3>
-        </Link>
+          </div>
 
-        {product.description && (
-          <p
-            id={`product-${product.id}-description`}
-            className={cn(
-              "text-stone-600 mb-3 line-clamp-2",
-              featured ? "text-base" : "text-sm"
-            )}
-          >
-            {product.description[locale as keyof typeof product.description]}
-          </p>
-        )}
-
-        {/* Price and Add to Cart */}
-        <div className={cn(
-          "flex items-center",
-          viewMode === 'grid' ? "justify-between" : "justify-start gap-4"
-        )}>
+          {/* Product Info */}
           <div
-            id={`product-${product.id}-price`}
             className={cn(
-              "font-semibold text-stone-900",
-              featured ? "text-xl" : "text-lg"
+              "flex flex-col",
+              viewMode === "grid" ? "p-3 sm:p-4 flex-1 min-h-0" : "flex-1 min-w-0"
             )}
-            aria-label={`Cena: ${formatPrice(product.basePrice)}`}
           >
-            {formatPrice(product.basePrice)}
+            {/* Product Name */}
+            <h3
+              id={`product-${product.id}-title`}
+              className={cn(
+                "font-medium text-stone-900 group-hover:text-stone-700 transition-colors",
+                viewMode === "grid"
+                  ? "text-sm sm:text-base lg:text-lg mb-1 sm:mb-2 line-clamp-2"
+                  : "text-sm sm:text-base mb-1 truncate"
+              )}
+            >
+              {product.name[locale as keyof typeof product.name]}
+            </h3>
+
+            {/* Category */}
+            {product.category && (
+              <p
+                className={cn(
+                  "text-stone-500 mb-1 sm:mb-2",
+                  viewMode === "grid" ? "text-xs sm:text-sm" : "text-xs"
+                )}
+              >
+                {product.category.name[locale as keyof typeof product.category.name]}
+              </p>
+            )}
+
+            {/* Price */}
+            <div
+              className={cn(
+                "flex items-center gap-2",
+                viewMode === "grid" ? "mb-2 sm:mb-4" : "mb-2"
+              )}
+            >
+              <span
+                className={cn(
+                  "font-semibold text-stone-900",
+                  viewMode === "grid" ? "text-base sm:text-lg lg:text-xl" : "text-sm sm:text-base"
+                )}
+              >
+                {formatPrice(product.basePrice)}
+              </span>
+              {product.finalPrice && product.finalPrice < product.basePrice && (
+                <span
+                  className={cn(
+                    "text-stone-500 line-through",
+                    viewMode === "grid" ? "text-xs sm:text-sm" : "text-xs"
+                  )}
+                >
+                  {formatPrice(product.basePrice)}
+                </span>
+              )}
+            </div>
+
+            {/* Availability Status */}
+            <div
+              className={cn(
+                "flex items-center gap-1.5",
+                viewMode === "grid" ? "mb-2 sm:mb-4" : "mb-2"
+              )}
+            >
+              <div
+                className={cn(
+                  "w-2 h-2 rounded-full",
+                  product.availability.inStock ? "bg-green-500" : "bg-red-500"
+                )}
+              />
+              <span
+                className={cn(
+                  "text-xs font-medium",
+                  product.availability.inStock ? "text-green-700" : "text-red-700"
+                )}
+                role="status"
+                aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
+              >
+                {product.availability.inStock
+                  ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
+                    ? t("limitedStock")
+                    : t("inStock")
+                  : t("outOfStock")}
+              </span>
+            </div>
+
+            {/* Add to Cart Button - Only in grid view */}
+            {viewMode === "grid" && (
+              <Button
+                onClick={handleAddToCart}
+                disabled={!product.availability.inStock}
+                className={cn(
+                  "w-full mt-auto transition-all duration-200",
+                  !product.availability.inStock && "opacity-50 cursor-not-allowed"
+                )}
+                variant={product.availability.inStock ? "default" : "secondary"}
+                size="sm"
+              >
+                <span className="text-xs sm:text-sm">
+                  {product.availability.inStock ? t("addToCart") : t("outOfStock")}
+                </span>
+              </Button>
+            )}
           </div>
 
-          {/* Add to cart button with shopping cart icon - mobile optimized */}
-          {onAddToCart && product.availability.inStock && (
-            <Button
-              size={featured ? "default" : "sm"}
-              onClick={handleAddToCart}
-              className={cn(
-                "transition-all duration-300",
-                // Mobile: always show full button, Desktop: show on hover or featured
-                "px-4 sm:px-4",
-                !featured && !isHovered && "sm:px-3",
-                // Touch-friendly sizing
-                "min-h-11 sm:min-h-auto"
-              )}
-              icon={<ShoppingCartIcon className="h-4 w-4" />}
-              iconPosition="left"
-            >
-              {/* Mobile: always show text, Desktop: show on hover or featured */}
-              <span className="sm:hidden">{t("addToCart")}</span>
-              <span className="hidden sm:inline">
-                {(isHovered || featured) && t("addToCart")}
-              </span>
-              <span className="sr-only">{t("addToCart")}</span>
-            </Button>
+          {/* List View Add to Cart Button */}
+          {viewMode === "list" && (
+            <div className="flex-shrink-0">
+              <Button
+                onClick={handleAddToCart}
+                disabled={!product.availability.inStock}
+                variant={product.availability.inStock ? "default" : "secondary"}
+                size="sm"
+              >
+                <span className="text-xs sm:text-sm">
+                  {product.availability.inStock ? t("addToCart") : t("outOfStock")}
+                </span>
+              </Button>
+            </div>
           )}
-        </div>
+        </Link>
 
-        {/* Availability status */}
-        {!product.availability.inStock && (
-          <div className="mt-2 text-sm text-red-600 font-medium">
-            {t("outOfStock")}
+        {/* Hover Overlay with Quick Actions - Only in grid view */}
+        {viewMode === "grid" && isHovered && (
+          <div className="absolute inset-0 bg-black/20 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
+            <div className="flex gap-2 pointer-events-auto">
+              <Button
+                size="sm"
+                variant="secondary"
+                className="bg-white/90 hover:bg-white text-stone-900 shadow-lg"
+                onClick={handleQuickView}
+              >
+                <span className="text-xs">{t("quickView")}</span>
+              </Button>
+            </div>
           </div>
         )}
-      </div>
-    </article>
+      </article>
+
+      {/* Quick View Modal */}
+      <ProductQuickView
+        product={product}
+        locale={locale}
+        isOpen={isQuickViewOpen}
+        onClose={() => setIsQuickViewOpen(false)}
+        onAddToCart={onAddToCart}
+      />
+    </>
   );
 }

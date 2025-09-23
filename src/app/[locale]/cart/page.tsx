@@ -10,9 +10,9 @@ export default async function CartPage({ params }: CartPageProps) {
   const t = await getTranslations("cart");
 
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto px-4 py-8 min-h-screen">
       <div className="max-w-4xl mx-auto">
-        <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-8">{t("title")}</h1>
+        <h2 className="text-elegant text-4xl font-semibold mb-8">{t("title")}</h2>
 
         <ShoppingCart locale={locale} showHeader={false} />
       </div>

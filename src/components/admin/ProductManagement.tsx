@@ -1,20 +1,20 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import {
-  PlusIcon,
-  PencilIcon,
-  TrashIcon,
   EyeIcon,
-  MagnifyingGlassIcon,
   FunnelIcon,
+  MagnifyingGlassIcon,
+  PencilIcon,
+  PlusIcon,
+  TrashIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import ProductForm from "./ProductForm";
 import DeleteConfirmModal from "./DeleteConfirmModal";
+import ProductForm from "./ProductForm";
 
 interface Product {
   id: string;
@@ -248,7 +248,7 @@ export default function ProductManagement() {
       <Card padding="none">
         {loading ? (
           <div className="p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto" />
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -293,12 +293,13 @@ export default function ProductManagement() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
                       {product.track_inventory ? (
                         <span
-                          className={`${product.stock_quantity === 0
-                            ? "text-red-600"
-                            : product.stock_quantity <= 5
-                              ? "text-amber-600"
-                              : "text-green-600"
-                            }`}
+                          className={`${
+                            product.stock_quantity === 0
+                              ? "text-red-600"
+                              : product.stock_quantity <= 5
+                                ? "text-amber-600"
+                                : "text-green-600"
+                          }`}
                         >
                           {product.stock_quantity} {t("pieces")}
                         </span>
@@ -309,10 +310,11 @@ export default function ProductManagement() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.active
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                            }`}
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            product.active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
                         >
                           {product.active ? t("active") : t("inactive")}
                         </span>

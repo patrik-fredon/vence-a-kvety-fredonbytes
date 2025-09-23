@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
   ClockIcon,
-  UserIcon,
   EyeIcon,
   PencilIcon,
-  TrashIcon,
   PlusIcon,
+  TrashIcon,
+  UserIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 interface ActivityLogEntry {
   id: string;
@@ -109,7 +109,7 @@ export default function AdminActivityLog() {
     oldValues: any,
     newValues: any
   ): Array<{ field: string; from: any; to: any }> | null => {
-    if (!oldValues && !newValues) return null;
+    if (!(oldValues || newValues)) return null;
 
     const changes: Array<{ field: string; from: any; to: any }> = [];
 
@@ -169,7 +169,7 @@ export default function AdminActivityLog() {
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         {loading ? (
           <div className="p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto" />
           </div>
         ) : activities.length === 0 ? (
           <div className="p-6 text-center text-gray-500">Žádná aktivita k zobrazení</div>

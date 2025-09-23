@@ -4,5 +4,5 @@
  */
 
 export { ConsentManager } from "./ConsentManager";
-export { DataExportButton } from "./DataExportButton";
 export { DataDeletionButton } from "./DataDeletionButton";
+export { DataExportButton } from "./DataExportButton";

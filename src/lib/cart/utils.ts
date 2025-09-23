@@ -3,7 +3,7 @@
  * Uses crypto.randomUUID if available, falls back to timestamp + random
  */
 export function generateCartSessionId(): string {
-  if (typeof crypto !== 'undefined' && crypto.randomUUID) {
+  if (typeof crypto !== "undefined" && crypto.randomUUID) {
     return crypto.randomUUID();
   }
 
@@ -84,22 +84,24 @@ export async function mergeGuestCartWithUserCart(userId: string): Promise<boolea
  */
 export interface OfflineOperation {
   id: string;
-  type: 'add' | 'update' | 'remove';
+  type: "add" | "update" | "remove";
   data: any;
   timestamp: number;
   retryCount: number;
   maxRetries: number;
-  priority: 'high' | 'medium' | 'low';
+  priority: "high" | "medium" | "low";
 }
 
 /**
  * Store cart operations for offline sync with enhanced metadata
  */
-export function storeOfflineOperation(operation: Omit<OfflineOperation, 'id' | 'retryCount'>): void {
-  if (typeof window === 'undefined') return;
+export function storeOfflineOperation(
+  operation: Omit<OfflineOperation, "id" | "retryCount">
+): void {
+  if (typeof window === "undefined") return;
 
   try {
-    const existing = localStorage.getItem('cart_offline_operations_v2');
+    const existing = localStorage.getItem("cart_offline_operations_v2");
     const operations: OfflineOperation[] = existing ? JSON.parse(existing) : [];
 
     const enhancedOperation: OfflineOperation = {
@@ -109,9 +111,9 @@ export function storeOfflineOperation(operation: Omit<OfflineOperation, 'id' | '
     };
 
     operations.push(enhancedOperation);
-    localStorage.setItem('cart_offline_operations_v2', JSON.stringify(operations));
+    localStorage.setItem("cart_offline_operations_v2", JSON.stringify(operations));
   } catch (error) {
-    console.warn('Failed to store offline operation:', error);
+    console.warn("Failed to store offline operation:", error);
   }
 }
 
@@ -119,13 +121,13 @@ export function storeOfflineOperation(operation: Omit<OfflineOperation, 'id' | '
  * Get offline operations without clearing (for retry logic)
  */
 export function getOfflineOperations(): OfflineOperation[] {
-  if (typeof window === 'undefined') return [];
+  if (typeof window === "undefined") return [];
 
   try {
-    const operations = localStorage.getItem('cart_offline_operations_v2');
+    const operations = localStorage.getItem("cart_offline_operations_v2");
     return operations ? JSON.parse(operations) : [];
   } catch (error) {
-    console.warn('Failed to get offline operations:', error);
+    console.warn("Failed to get offline operations:", error);
     return [];
   }
 }
@@ -134,14 +136,14 @@ export function getOfflineOperations(): OfflineOperation[] {
  * Remove specific offline operation after successful sync
  */
 export function removeOfflineOperation(operationId: string): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
   try {
     const operations = getOfflineOperations();
-    const filtered = operations.filter(op => op.id !== operationId);
-    localStorage.setItem('cart_offline_operations_v2', JSON.stringify(filtered));
+    const filtered = operations.filter((op) => op.id !== operationId);
+    localStorage.setItem("cart_offline_operations_v2", JSON.stringify(filtered));
   } catch (error) {
-    console.warn('Failed to remove offline operation:', error);
+    console.warn("Failed to remove offline operation:", error);
   }
 }
 
@@ -149,18 +151,16 @@ export function removeOfflineOperation(operationId: string): void {
  * Update retry count for failed operation
  */
 export function updateOfflineOperationRetry(operationId: string): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
   try {
     const operations = getOfflineOperations();
-    const updated = operations.map(op =>
-      op.id === operationId
-        ? { ...op, retryCount: op.retryCount + 1 }
-        : op
+    const updated = operations.map((op) =>
+      op.id === operationId ? { ...op, retryCount: op.retryCount + 1 } : op
     );
-    localStorage.setItem('cart_offline_operations_v2', JSON.stringify(updated));
+    localStorage.setItem("cart_offline_operations_v2", JSON.stringify(updated));
   } catch (error) {
-    console.warn('Failed to update offline operation retry count:', error);
+    console.warn("Failed to update offline operation retry count:", error);
   }
 }
 
@@ -168,12 +168,12 @@ export function updateOfflineOperationRetry(operationId: string): void {
  * Clear all offline operations (use with caution)
  */
 export function clearOfflineOperations(): void {
-  if (typeof window === 'undefined') return;
+  if (typeof window === "undefined") return;
 
   try {
-    localStorage.removeItem('cart_offline_operations_v2');
+    localStorage.removeItem("cart_offline_operations_v2");
   } catch (error) {
-    console.warn('Failed to clear offline operations:', error);
+    console.warn("Failed to clear offline operations:", error);
   }
 }
 
@@ -207,7 +207,9 @@ export async function processOfflineOperations(): Promise<{
       }
     } catch (error) {
       results.failed++;
-      results.errors.push(`Operation ${operation.id} failed: ${error instanceof Error ? error.message : String(error)}`);
+      results.errors.push(
+        `Operation ${operation.id} failed: ${error instanceof Error ? error.message : String(error)}`
+      );
       updateOfflineOperationRetry(operation.id);
     }
   }
@@ -223,28 +225,28 @@ async function executeOfflineOperation(operation: OfflineOperation): Promise<boo
     let response: Response;
 
     switch (operation.type) {
-      case 'add':
-        response = await fetch('/api/cart/items', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+      case "add":
+        response = await fetch("/api/cart/items", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify(operation.data),
         });
         break;
 
-      case 'update':
+      case "update":
         response = await fetch(`/api/cart/items/${operation.data.itemId}`, {
-          method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
-          credentials: 'include',
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          credentials: "include",
           body: JSON.stringify({ quantity: operation.data.quantity }),
         });
         break;
 
-      case 'remove':
+      case "remove":
         response = await fetch(`/api/cart/items/${operation.data.itemId}`, {
-          method: 'DELETE',
-          credentials: 'include',
+          method: "DELETE",
+          credentials: "include",
         });
         break;
 
@@ -255,7 +257,7 @@ async function executeOfflineOperation(operation: OfflineOperation): Promise<boo
     const data = await response.json();
     return data.success;
   } catch (error) {
-    console.error('Failed to execute offline operation:', error);
+    console.error("Failed to execute offline operation:", error);
     return false;
   }
 }

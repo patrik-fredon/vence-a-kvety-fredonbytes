@@ -3,14 +3,12 @@
  * Provides utilities for generating and validating CSRF tokens
  */
 
-import { NextRequest } from "next/server";
-import { auth } from "@/lib/auth/config";
 import { createHash, randomBytes } from "crypto";
+import type { NextRequest } from "next/server";
+import { auth } from "@/lib/auth/config";
 
 const CSRF_TOKEN_LENGTH = 32;
 const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
-
-
 
 /**
  * Generate a CSRF token for the current session
@@ -18,21 +16,21 @@ const CSRF_TOKEN_EXPIRY = 60 * 60 * 1000; // 1 hour in milliseconds
 export async function generateCSRFToken(): Promise<string> {
   try {
     const session = await auth();
-    const randomToken = randomBytes(CSRF_TOKEN_LENGTH).toString('hex');
+    const randomToken = randomBytes(CSRF_TOKEN_LENGTH).toString("hex");
     const timestamp = Date.now();
-    const userId = session?.user?.id || 'anonymous';
+    const userId = session?.user?.id || "anonymous";
 
     // Create a hash that includes user context
     const tokenData = `${randomToken}:${timestamp}:${userId}`;
-    const hash = createHash('sha256').update(tokenData).digest('hex');
+    const hash = createHash("sha256").update(tokenData).digest("hex");
 
     // Combine random token with hash for verification
     const csrfToken = `${randomToken}.${hash}.${timestamp}`;
 
-    return Buffer.from(csrfToken).toString('base64url');
+    return Buffer.from(csrfToken).toString("base64url");
   } catch (error) {
-    console.error('Error generating CSRF token:', error);
-    throw new Error('Failed to generate CSRF token');
+    console.error("Error generating CSRF token:", error);
+    throw new Error("Failed to generate CSRF token");
   }
 }
 
@@ -46,14 +44,14 @@ export async function validateCSRFToken(token: string, request?: NextRequest): P
     }
 
     // Decode the token
-    const decodedToken = Buffer.from(token, 'base64url').toString();
-    const [randomToken, hash, timestampStr] = decodedToken.split('.');
+    const decodedToken = Buffer.from(token, "base64url").toString();
+    const [randomToken, hash, timestampStr] = decodedToken.split(".");
 
-    if (!randomToken || !hash || !timestampStr) {
+    if (!(randomToken && hash && timestampStr)) {
       return false;
     }
 
-    const timestamp = parseInt(timestampStr, 10);
+    const timestamp = Number.parseInt(timestampStr, 10);
 
     // Check if token has expired
     if (Date.now() - timestamp > CSRF_TOKEN_EXPIRY) {
@@ -62,11 +60,11 @@ export async function validateCSRFToken(token: string, request?: NextRequest): P
 
     // Get current session
     const session = await auth();
-    const userId = session?.user?.id || 'anonymous';
+    const userId = session?.user?.id || "anonymous";
 
     // Recreate the token data and verify hash
     const tokenData = `${randomToken}:${timestamp}:${userId}`;
-    const expectedHash = createHash('sha256').update(tokenData).digest('hex');
+    const expectedHash = createHash("sha256").update(tokenData).digest("hex");
 
     if (hash !== expectedHash) {
       return false;
@@ -74,11 +72,11 @@ export async function validateCSRFToken(token: string, request?: NextRequest): P
 
     // Additional validation: check if request comes from same origin
     if (request) {
-      const origin = request.headers.get('origin');
-      const referer = request.headers.get('referer');
-      const host = request.headers.get('host');
+      const origin = request.headers.get("origin");
+      const referer = request.headers.get("referer");
+      const host = request.headers.get("host");
 
-      if (!origin && !referer) {
+      if (!(origin || referer)) {
         return false; // Reject requests without origin/referer
       }
 
@@ -92,7 +90,7 @@ export async function validateCSRFToken(token: string, request?: NextRequest): P
 
     return true;
   } catch (error) {
-    console.error('Error validating CSRF token:', error);
+    console.error("Error validating CSRF token:", error);
     return false;
   }
 }
@@ -102,12 +100,7 @@ export async function validateCSRFToken(token: string, request?: NextRequest): P
  */
 export function getCSRFTokenFromRequest(request: NextRequest): string | null {
   // Check multiple possible header names
-  const tokenHeaders = [
-    'x-csrf-token',
-    'x-xsrf-token',
-    'csrf-token',
-    'xsrf-token'
-  ];
+  const tokenHeaders = ["x-csrf-token", "x-xsrf-token", "csrf-token", "xsrf-token"];
 
   for (const header of tokenHeaders) {
     const token = request.headers.get(header);
@@ -126,7 +119,7 @@ export async function validateCSRFMiddleware(request: NextRequest): Promise<bool
   const method = request.method.toUpperCase();
 
   // Only validate CSRF for state-changing methods
-  if (!['POST', 'PUT', 'DELETE', 'PATCH'].includes(method)) {
+  if (!["POST", "PUT", "DELETE", "PATCH"].includes(method)) {
     return true;
   }
 
@@ -144,22 +137,20 @@ export async function validateCSRFMiddleware(request: NextRequest): Promise<bool
  */
 export function createCSRFHeaders(token: string): Record<string, string> {
   return {
-    'X-CSRF-Token': token,
-    'X-CSRF-Token-Expires': (Date.now() + CSRF_TOKEN_EXPIRY).toString(),
+    "X-CSRF-Token": token,
+    "X-CSRF-Token-Expires": (Date.now() + CSRF_TOKEN_EXPIRY).toString(),
   };
 }
 
 /**
  * CSRF protection for API routes
  */
-export function withCSRFProtection<T extends any[]>(
-  handler: (...args: T) => Promise<Response>
-) {
+export function withCSRFProtection<T extends any[]>(handler: (...args: T) => Promise<Response>) {
   return async (...args: T): Promise<Response> => {
     const request = args[0] as NextRequest;
 
     // Generate and return CSRF token for GET requests
-    if (request.method === 'GET') {
+    if (request.method === "GET") {
       const token = await generateCSRFToken();
       const response = await handler(...args);
 
@@ -179,15 +170,15 @@ export function withCSRFProtection<T extends any[]>(
       return new Response(
         JSON.stringify({
           error: {
-            code: 'INVALID_CSRF_TOKEN',
-            message: 'Invalid or missing CSRF token',
+            code: "INVALID_CSRF_TOKEN",
+            message: "Invalid or missing CSRF token",
             timestamp: new Date().toISOString(),
           },
         }),
         {
           status: 403,
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
         }
       );
@@ -205,10 +196,10 @@ export const clientCSRFUtils = {
    * Get CSRF token from meta tag
    */
   getTokenFromMeta(): string | null {
-    if (typeof document === 'undefined') return null;
+    if (typeof document === "undefined") return null;
 
     const metaTag = document.querySelector('meta[name="csrf-token"]');
-    return metaTag?.getAttribute('content') || null;
+    return metaTag?.getAttribute("content") || null;
   },
 
   /**
@@ -216,13 +207,13 @@ export const clientCSRFUtils = {
    */
   async fetchToken(): Promise<string | null> {
     try {
-      const response = await fetch('/api/csrf-token');
+      const response = await fetch("/api/csrf-token");
       if (response.ok) {
-        const token = response.headers.get('X-CSRF-Token');
+        const token = response.headers.get("X-CSRF-Token");
         return token;
       }
     } catch (error) {
-      console.error('Failed to fetch CSRF token:', error);
+      console.error("Failed to fetch CSRF token:", error);
     }
     return null;
   },
@@ -246,7 +237,7 @@ export const clientCSRFUtils = {
     if (token) {
       options.headers = {
         ...options.headers,
-        'X-CSRF-Token': token,
+        "X-CSRF-Token": token,
       };
     }
     return options;

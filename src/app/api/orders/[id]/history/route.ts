@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createServerClient } from '@/lib/supabase/server';
-import { orderUtils } from '@/lib/supabase/utils';
-import { OrderStatus } from '@/types/order';
+import { type NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { orderUtils } from "@/lib/supabase/utils";
+import type { OrderStatus } from "@/types/order";
 
 interface StatusHistoryItem {
   status: OrderStatus;
@@ -27,11 +27,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     );
 
     if (error) {
-      console.error('Error fetching order:', error);
-      return NextResponse.json({
-        success: false,
-        error: 'Objednávka nebyla nalezena'
-      }, { status: 404 });
+      console.error("Error fetching order:", error);
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Objednávka nebyla nalezena",
+        },
+        { status: 404 }
+      );
     }
 
     // Generate status history based on order timestamps
@@ -39,53 +42,53 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
 
     // Always add created status
     statusHistory.push({
-      status: 'pending',
+      status: "pending",
       timestamp: order.created_at,
-      description: 'Objednávka byla vytvořena a čeká na zpracování'
+      description: "Objednávka byla vytvořena a čeká na zpracování",
     });
 
     // Generate status history based on current status
-    if (order.status !== 'pending') {
+    if (order.status !== "pending") {
       statusHistory.push({
-        status: 'confirmed',
+        status: "confirmed",
         timestamp: order.updated_at,
-        description: 'Objednávka byla potvrzena a přijata ke zpracování'
+        description: "Objednávka byla potvrzena a přijata ke zpracování",
       });
     }
 
     // Add processing status if current status is processing or later
-    if (['processing', 'ready', 'shipped', 'delivered'].includes(order.status)) {
+    if (["processing", "ready", "shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
-        status: 'processing',
+        status: "processing",
         timestamp: order.updated_at,
-        description: 'Objednávka se zpracovává a připravuje k odeslání'
+        description: "Objednávka se zpracovává a připravuje k odeslání",
       });
     }
 
     // Add shipped status if current status is shipped or delivered
-    if (['shipped', 'delivered'].includes(order.status)) {
+    if (["shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
-        status: 'shipped',
+        status: "shipped",
         timestamp: order.updated_at,
-        description: 'Objednávka byla odeslána a je na cestě'
+        description: "Objednávka byla odeslána a je na cestě",
       });
     }
 
     // Add delivered status if current status is delivered
-    if (order.status === 'delivered') {
+    if (order.status === "delivered") {
       statusHistory.push({
-        status: 'delivered',
+        status: "delivered",
         timestamp: order.updated_at,
-        description: 'Objednávka byla úspěšně doručena'
+        description: "Objednávka byla úspěšně doručena",
       });
     }
 
     // Add cancelled status if current status is cancelled
-    if (order.status === 'cancelled') {
+    if (order.status === "cancelled") {
       statusHistory.push({
-        status: 'cancelled',
+        status: "cancelled",
         timestamp: order.updated_at,
-        description: 'Objednávka byla zrušena'
+        description: "Objednávka byla zrušena",
       });
     }
 
@@ -99,13 +102,13 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
       orderNumber: customerInfo.orderNumber || order.id.slice(-8).toUpperCase(),
       status: order.status as OrderStatus,
       totalAmount: order.total_amount,
-      createdAt: order.created_at
+      createdAt: order.created_at,
     };
 
     return NextResponse.json({
       success: true,
       order: orderSummary,
-      statusHistory
+      statusHistory,
     });
   } catch (error) {
     console.error("Error in GET /api/orders/[id]/history:", error);

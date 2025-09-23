@@ -3,17 +3,22 @@
  * Handles GET, PUT, DELETE for specific products by slug
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import { Product, UpdateProductRequest, ProductRow, CategoryRow } from "@/types/product";
-import { ApiResponse } from "@/types";
 import {
-  transformProductRow,
-  transformCategoryRow,
-  productToRow,
-  validateProductData,
   createSlug,
+  productToRow,
+  transformCategoryRow,
+  transformProductRow,
+  validateProductData,
 } from "@/lib/utils/product-transforms";
+import type { ApiResponse } from "@/types";
+import {
+  CategoryRow,
+  type Product,
+  type ProductRow,
+  type UpdateProductRequest,
+} from "@/types/product";
 
 interface RouteContext {
   params: Promise<{

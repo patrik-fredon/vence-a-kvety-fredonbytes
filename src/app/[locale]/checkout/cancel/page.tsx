@@ -2,14 +2,14 @@
  * Payment cancellation page
  */
 
-import React from "react";
-import { Metadata } from "next";
 import {
-  XCircleIcon,
   ArrowLeftIcon,
-  ShoppingCartIcon,
   ExclamationTriangleIcon,
+  ShoppingCartIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
+import type { Metadata } from "next";
+import React from "react";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {

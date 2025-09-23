@@ -9,20 +9,39 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      // Custom responsive breakpoints for mobile-first design
+      screens: {
+        xs: "475px", // Extra small screens (larger phones)
+        // Default breakpoints are still available: sm, md, lg, xl, 2xl
+      },
       colors: {
         // Stone/amber color palette from design tokens
         stone: designTokens.colors.stone,
         amber: designTokens.colors.amber,
         white: designTokens.colors.white,
         black: designTokens.colors.black,
+        // Funeral-specific color palette
+        funeral: {
+          hero: designTokens.colors.funeral.hero,
+          background: designTokens.colors.funeral.background,
+          heroLight: designTokens.colors.funeral.heroLight,
+          heroDark: designTokens.colors.funeral.heroDark,
+          backgroundLight: designTokens.colors.funeral.backgroundLight,
+          backgroundDark: designTokens.colors.funeral.backgroundDark,
+          textOnHero: designTokens.colors.funeral.textOnHero,
+          textOnBackground: designTokens.colors.funeral.textOnBackground,
+          textSecondary: designTokens.colors.funeral.textSecondary,
+          accent: designTokens.colors.funeral.accent,
+        },
         // Semantic colors
         success: designTokens.colors.semantic.success,
         warning: designTokens.colors.semantic.warning,
         error: designTokens.colors.semantic.error,
         info: designTokens.colors.semantic.info,
-        'funeral-green': '#102724',
-        'funeral-gold': '#9B9259',
-        'funeral-light-gold': '#C9BD7E',
+        // Legacy funeral colors (maintained for backward compatibility)
+        "funeral-green": designTokens.colors.funeral.hero,
+        "funeral-gold": designTokens.colors.funeral.background,
+        "funeral-light-gold": designTokens.colors.funeral.backgroundLight,
       },
       fontFamily: designTokens.typography.fontFamily,
       fontSize: designTokens.typography.fontSize,

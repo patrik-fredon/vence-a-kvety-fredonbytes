@@ -43,6 +43,7 @@
     "addedToCart": "Úspěšně přidáno do košíku!",
     "addToCartError": "Nepodařilo se přidat do košíku. Zkuste to znovu.",
     "customize": "Přizpůsobit",
+    "quickView": "Rychlý náhled",
     "price": "Cena",
     "basePrice": "Základní cena",
     "totalPrice": "Celková cena",
@@ -350,6 +351,35 @@
       "subtitle": "Pohřební věnce vytvořené s láskou a úctou k vašim blízkým",
       "description": "V těžkých chvílích rozloučení vám pomůžeme vyjádřit lásku a úctu prostřednictvím nádherných květinových aranžmá. Každý věnec vytváříme s citem, pečlivostí a porozuměním pro vaši ztrátu.",
       "cta": "Vybrat věnec pro rozloučení"
+    },
+    "refactoredHero": {
+      "heading": "Pohřební věnce s láskou a úctou",
+      "description": "Krásné květinové aranžmá pro důstojné rozloučení",
+      "ctaText": "Prohlédnout věnce",
+      "ctaButton": "Prohlédnout věnce",
+      "logoAlt": "Logo společnosti specializující se na pohřební věnce a květinové aranžmá",
+      "logoDescription": "Logo společnosti specializující se na pohřební věnce a květinové aranžmá. Dominantní prvek stránky umístěný v centru.",
+      "ctaDescription": "Tlačítko pro přechod na stránku s produkty. Otevře se nová stránka s nabídkou pohřebních věnců.",
+      "sectionDescription": "Hlavní sekce stránky s nabídkou pohřebních věnců a květinových aranžmá. Obsahuje logo společnosti, hlavní nadpis, popis služeb a tlačítko pro přechod na produkty.",
+      "mainContentStart": "Začátek hlavního obsahu"
+    },
+    "productReferences": {
+      "heading": "Naše produkty",
+      "description": "Objevte naši pečlivě vybranou kolekci pohřebních věnců a květinových aranžmá",
+      "loading": "Načítání produktů...",
+      "loadingError": "Nepodařilo se načíst produkty",
+      "timeoutError": "Požadavek vypršel",
+      "criticalError": "Došlo ke kritické chybě",
+      "tryAgain": "Zkusit znovu",
+      "retrying": "Opakování...",
+      "retryAttempt": "Pokus o opakování:",
+      "viewAllProducts": "Zobrazit všechny produkty",
+      "retryDescription": "Tlačítko pro opětovné načtení produktů po chybě",
+      "productGridLabel": "Mřížka produktů",
+      "categoryLabel": "Kategorie: {category}",
+      "productIndexLabel": "Produkt {index} z kolekce. Stiskněte Enter nebo mezerník pro zobrazení detailů.",
+      "productImageAlt": "Pohřební věnec z naší kolekce",
+      "summaryText": "Zobrazeno {count} produktů z naší kolekce pohřebních věnců a květinových aranžmá."
     },
     "philosophy": {
       "quote": "Život je křehký jako motýlí prach, ale krása a láska zůstávají navždy",

@@ -2,12 +2,15 @@
  * Dynamic imports for heavy components to enable code splitting and lazy loading
  */
 
-import dynamic from 'next/dynamic';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
+import dynamic from "next/dynamic";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Product components with lazy loading
 export const LazyProductCustomizer = dynamic(
-  () => import('@/components/product/ProductCustomizer').then(mod => ({ default: mod.ProductCustomizer })),
+  () =>
+    import("@/components/product/ProductCustomizer").then((mod) => ({
+      default: mod.ProductCustomizer,
+    })),
   {
     loading: () => <LoadingSpinner size="md" />,
     ssr: false,
@@ -16,7 +19,10 @@ export const LazyProductCustomizer = dynamic(
 
 // Admin components with lazy loading
 export const LazyMonitoringDashboard = dynamic(
-  () => import('@/components/admin/MonitoringDashboard').then(mod => ({ default: mod.MonitoringDashboard })),
+  () =>
+    import("@/components/admin/MonitoringDashboard").then((mod) => ({
+      default: mod.MonitoringDashboard,
+    })),
   {
     loading: () => <LoadingSpinner size="md" />,
     ssr: false,
@@ -24,7 +30,7 @@ export const LazyMonitoringDashboard = dynamic(
 );
 
 export const LazyInventoryManagement = dynamic(
-  () => import('@/components/admin/InventoryManagement'),
+  () => import("@/components/admin/InventoryManagement"),
   {
     loading: () => <LoadingSpinner size="md" />,
     ssr: false,
@@ -33,7 +39,10 @@ export const LazyInventoryManagement = dynamic(
 
 // Payment components with lazy loading
 export const LazyStripePaymentForm = dynamic(
-  () => import('@/components/payments/StripePaymentForm').then(mod => ({ default: mod.StripePaymentForm })),
+  () =>
+    import("@/components/payments/StripePaymentForm").then((mod) => ({
+      default: mod.StripePaymentForm,
+    })),
   {
     loading: () => <LoadingSpinner size="md" />,
     ssr: false,
@@ -41,7 +50,10 @@ export const LazyStripePaymentForm = dynamic(
 );
 
 export const LazyGopayPaymentForm = dynamic(
-  () => import('@/components/payments/GopayPaymentForm').then(mod => ({ default: mod.GopayPaymentForm })),
+  () =>
+    import("@/components/payments/GopayPaymentForm").then((mod) => ({
+      default: mod.GopayPaymentForm,
+    })),
   {
     loading: () => <LoadingSpinner size="md" />,
     ssr: false,

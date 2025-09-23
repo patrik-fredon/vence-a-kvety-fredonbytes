@@ -1,7 +1,7 @@
-import { createServerClient } from "@/lib/supabase/server";
-import { auth } from "@/lib/auth/config";
 import { redirect } from "next/navigation";
 import { ContactFormsTable } from "@/components/admin/ContactFormsTable";
+import { auth } from "@/lib/auth/config";
+import { createServerClient } from "@/lib/supabase/server";
 
 interface ContactFormsPageProps {
   params: Promise<{ locale: string }>;
@@ -40,7 +40,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
 
   // Pagination
   const pageSize = 20;
-  const offset = (parseInt(page) - 1) * pageSize;
+  const offset = (Number.parseInt(page) - 1) * pageSize;
   query = query.range(offset, offset + pageSize - 1);
 
   const { data: contactForms, error, count } = await query;
@@ -58,9 +58,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
           <h1 className="text-elegant text-3xl font-semibold text-primary-800 mb-2">
             Správa kontaktních formulářů
           </h1>
-          <p className="text-neutral-600">
-            Přehled a správa zpráv od zákazníků
-          </p>
+          <p className="text-neutral-600">Přehled a správa zpráv od zákazníků</p>
         </div>
 
         {/* Stats Cards */}
@@ -69,7 +67,12 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m0 0V9a2 2 0 012-2h2m0 0V6a2 2 0 012-2h2.09M15 13h2m-2 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m0 0V9a2 2 0 012-2h2m0 0V6a2 2 0 012-2h2.09M15 13h2m-2 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                  />
                 </svg>
               </div>
               <div>
@@ -83,13 +86,18 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <div>
                 <p className="text-sm font-medium text-neutral-600">Nové</p>
                 <p className="text-2xl font-semibold text-neutral-900">
-                  {contactForms?.filter(form => form.status === 'new').length || 0}
+                  {contactForms?.filter((form) => form.status === "new").length || 0}
                 </p>
               </div>
             </div>
@@ -99,13 +107,18 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
                 </svg>
               </div>
               <div>
                 <p className="text-sm font-medium text-neutral-600">Zodpovězené</p>
                 <p className="text-2xl font-semibold text-neutral-900">
-                  {contactForms?.filter(form => form.status === 'replied').length || 0}
+                  {contactForms?.filter((form) => form.status === "replied").length || 0}
                 </p>
               </div>
             </div>
@@ -115,13 +128,18 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4" />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                  />
                 </svg>
               </div>
               <div>
                 <p className="text-sm font-medium text-neutral-600">Archivované</p>
                 <p className="text-2xl font-semibold text-neutral-900">
-                  {contactForms?.filter(form => form.status === 'archived').length || 0}
+                  {contactForms?.filter((form) => form.status === "archived").length || 0}
                 </p>
               </div>
             </div>
@@ -132,7 +150,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
         <div className="bg-white rounded-lg shadow-soft">
           <ContactFormsTable
             contactForms={contactForms || []}
-            currentPage={parseInt(page)}
+            currentPage={Number.parseInt(page)}
             totalPages={totalPages}
             currentStatus={status}
             currentSearch={search}

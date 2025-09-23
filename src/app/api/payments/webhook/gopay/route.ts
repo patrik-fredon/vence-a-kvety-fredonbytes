@@ -2,8 +2,8 @@
  * GoPay webhook handler for payment status updates
  */
 
-import { NextRequest, NextResponse } from "next/server";
 import { headers } from "next/headers";
+import { type NextRequest, NextResponse } from "next/server";
 import { PaymentService } from "@/lib/payments";
 import { createServerClient } from "@/lib/supabase/server";
 
@@ -55,7 +55,7 @@ export async function GET(request: NextRequest) {
     const orderId = searchParams.get("order_id");
     const paymentId = searchParams.get("id");
 
-    if (!orderId || !paymentId) {
+    if (!(orderId && paymentId)) {
       return NextResponse.redirect(new URL("/checkout/error", request.url));
     }
 

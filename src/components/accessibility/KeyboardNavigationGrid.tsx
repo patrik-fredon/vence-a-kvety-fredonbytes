@@ -3,11 +3,11 @@
  * Provides arrow key navigation, focus management, and screen reader support
  */
 
-'use client';
+"use client";
 
-import React, { useEffect, useRef, useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { useKeyboardNavigation, useAnnouncer } from '@/lib/accessibility/hooks';
+import { useTranslations } from "next-intl";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { useAnnouncer, useKeyboardNavigation } from "@/lib/accessibility/hooks";
 
 interface KeyboardNavigationGridProps {
   children: React.ReactElement[];
@@ -22,9 +22,9 @@ export function KeyboardNavigationGrid({
   columns = 3,
   ariaLabel,
   onItemActivate,
-  className = ''
+  className = "",
 }: KeyboardNavigationGridProps) {
-  const t = useTranslations('accessibility');
+  const t = useTranslations("accessibility");
   const announce = useAnnouncer();
   const gridRef = useRef<HTMLDivElement>(null);
   const [gridItems, setGridItems] = useState<HTMLElement[]>([]);
@@ -33,33 +33,36 @@ export function KeyboardNavigationGrid({
   useEffect(() => {
     if (gridRef.current) {
       const items = Array.from(
-        gridRef.current.querySelectorAll('[data-grid-item]')
+        gridRef.current.querySelectorAll("[data-grid-item]")
       ) as HTMLElement[];
       setGridItems(items);
     }
   }, [children]);
 
-  const handleItemActivate = useCallback((index: number, element: HTMLElement) => {
-    announce(`Aktivován prvek ${index + 1} z ${gridItems.length}`, 'polite');
-    onItemActivate?.(index, element);
-  }, [announce, gridItems.length, onItemActivate]);
-
-  const { currentIndex, handleKeyDown, focusItem } = useKeyboardNavigation(
-    gridItems,
-    {
-      orientation: 'both',
-      wrap: true,
-      columns,
-      onActivate: handleItemActivate
-    }
+  const handleItemActivate = useCallback(
+    (index: number, element: HTMLElement) => {
+      announce(`Aktivován prvek ${index + 1} z ${gridItems.length}`, "polite");
+      onItemActivate?.(index, element);
+    },
+    [announce, gridItems.length, onItemActivate]
   );
 
+  const { currentIndex, handleKeyDown, focusItem } = useKeyboardNavigation(gridItems, {
+    orientation: "both",
+    wrap: true,
+    columns,
+    onActivate: handleItemActivate,
+  });
+
   // Handle grid-level keyboard events
-  const handleGridKeyDown = useCallback((event: React.KeyboardEvent) => {
-    // Convert React event to native event for the hook
-    const nativeEvent = event.nativeEvent;
-    handleKeyDown(nativeEvent);
-  }, [handleKeyDown]);
+  const handleGridKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      // Convert React event to native event for the hook
+      const nativeEvent = event.nativeEvent;
+      handleKeyDown(nativeEvent);
+    },
+    [handleKeyDown]
+  );
 
   // Focus first item when grid receives focus
   const handleGridFocus = useCallback(() => {
@@ -72,16 +75,16 @@ export function KeyboardNavigationGrid({
   const enhancedChildren = children.map((child, index) => {
     return React.cloneElement(child, {
       key: child.key || index,
-      'data-grid-item': true,
+      "data-grid-item": true,
       tabIndex: currentIndex === index ? 0 : -1,
-      role: 'gridcell',
-      'aria-setsize': children.length,
-      'aria-posinset': index + 1,
+      role: "gridcell",
+      "aria-setsize": children.length,
+      "aria-posinset": index + 1,
       onFocus: () => {
         if (currentIndex !== index) {
           focusItem(index);
         }
-      }
+      },
     });
   });
 
@@ -90,10 +93,10 @@ export function KeyboardNavigationGrid({
       ref={gridRef}
       className={`grid gap-4 ${className}`}
       style={{
-        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`
+        gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))`,
       }}
       role="grid"
-      aria-label={ariaLabel || t('productGrid')}
+      aria-label={ariaLabel || t("productGrid")}
       aria-rowcount={Math.ceil(children.length / columns)}
       aria-colcount={columns}
       tabIndex={gridItems.length > 0 ? 0 : -1}
@@ -115,24 +118,22 @@ interface GridItemProps {
   ariaLabel?: string;
 }
 
-export function GridItem({
-  children,
-  onClick,
-  className = '',
-  ariaLabel
-}: GridItemProps) {
+export function GridItem({ children, onClick, className = "", ariaLabel }: GridItemProps) {
   const itemRef = useRef<HTMLDivElement>(null);
 
   const handleClick = useCallback(() => {
     onClick?.();
   }, [onClick]);
 
-  const handleKeyDown = useCallback((event: React.KeyboardEvent) => {
-    if (event.key === 'Enter' || event.key === ' ') {
-      event.preventDefault();
-      handleClick();
-    }
-  }, [handleClick]);
+  const handleKeyDown = useCallback(
+    (event: React.KeyboardEvent) => {
+      if (event.key === "Enter" || event.key === " ") {
+        event.preventDefault();
+        handleClick();
+      }
+    },
+    [handleClick]
+  );
 
   return (
     <div

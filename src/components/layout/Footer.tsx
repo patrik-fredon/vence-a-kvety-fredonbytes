@@ -1,8 +1,8 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import Link from "next/link";
-import { PhoneIcon, EnvelopeIcon, MapPinIcon, ClockIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 
 interface FooterProps {
@@ -32,8 +32,12 @@ export function Footer({ locale }: FooterProps) {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8 lg:gap-12">
             {/* Company Info Section */}
             <div className="sm:col-span-2 lg:col-span-2">
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">{t("company")}</h3>
-              <p className="text-sm sm:text-base text-stone-300 mb-4 sm:mb-6 leading-relaxed max-w-md">{t("description")}</p>
+              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-white">
+                {t("company")}
+              </h3>
+              <p className="text-sm sm:text-base text-stone-300 mb-4 sm:mb-6 leading-relaxed max-w-md">
+                {t("description")}
+              </p>
 
               {/* Business Hours */}
               <div className="mb-4 sm:mb-6">
@@ -52,15 +56,20 @@ export function Footer({ locale }: FooterProps) {
 
             {/* Contact Information Section */}
             <div>
-              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-white">{t("contact")}</h4>
+              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-white">
+                {t("contact")}
+              </h4>
               <div className="space-y-3 sm:space-y-4 text-stone-300">
                 <div className="flex items-start space-x-3">
-                  <PhoneIcon className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400" aria-hidden="true" />
+                  <PhoneIcon
+                    className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400"
+                    aria-hidden="true"
+                  />
                   <div>
                     <a
                       href="tel:+420123456789"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label={tAccessibility('callMainNumber')}
+                      aria-label={tAccessibility("callMainNumber")}
                     >
                       +420 123 456 789
                     </a>
@@ -69,12 +78,15 @@ export function Footer({ locale }: FooterProps) {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <PhoneIcon className="w-5 h-5 mt-0.5 flex-shrink-0 text-amber-400" aria-hidden="true" />
+                  <PhoneIcon
+                    className="w-5 h-5 mt-0.5 flex-shrink-0 text-amber-400"
+                    aria-hidden="true"
+                  />
                   <div>
                     <a
                       href="tel:+420987654321"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label={tAccessibility('callEmergencyNumber')}
+                      aria-label={tAccessibility("callEmergencyNumber")}
                     >
                       +420 987 654 321
                     </a>
@@ -83,12 +95,15 @@ export function Footer({ locale }: FooterProps) {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <EnvelopeIcon className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400" aria-hidden="true" />
+                  <EnvelopeIcon
+                    className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400"
+                    aria-hidden="true"
+                  />
                   <div>
                     <a
                       href="mailto:info@ketingmar.cz"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label={tAccessibility('sendOrderEmail')}
+                      aria-label={tAccessibility("sendOrderEmail")}
                     >
                       info@ketingmar.cz
                     </a>
@@ -97,12 +112,15 @@ export function Footer({ locale }: FooterProps) {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <EnvelopeIcon className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400" aria-hidden="true" />
+                  <EnvelopeIcon
+                    className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400"
+                    aria-hidden="true"
+                  />
                   <div>
                     <a
                       href="mailto:objednavky@ketingmar.cz"
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
-                      aria-label={tAccessibility('sendOrderEmail')}
+                      aria-label={tAccessibility("sendOrderEmail")}
                     >
                       objednavky@ketingmar.cz
                     </a>
@@ -111,7 +129,10 @@ export function Footer({ locale }: FooterProps) {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <MapPinIcon className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400" aria-hidden="true" />
+                  <MapPinIcon
+                    className="w-5 h-5 mt-0.5 flex-shrink-0 text-stone-400"
+                    aria-hidden="true"
+                  />
                   <div>
                     <address className="not-italic text-stone-300">
                       Květinová 123
@@ -126,8 +147,10 @@ export function Footer({ locale }: FooterProps) {
 
             {/* Quick Links Section */}
             <div>
-              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-white">{t("quickLinks")}</h4>
-              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility('quickLinks')}>
+              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-white">
+                {t("quickLinks")}
+              </h4>
+              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility("quickLinks")}>
                 <Link
                   href={`/${locale}/about`}
                   className="block text-stone-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded px-1 py-0.5"
@@ -155,8 +178,10 @@ export function Footer({ locale }: FooterProps) {
               </nav>
 
               {/* Legal Links Section */}
-              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-white">{t("legal")}</h4>
-              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility('legalInfo')}>
+              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-white">
+                {t("legal")}
+              </h4>
+              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility("legalInfo")}>
                 <Link
                   href={`/${locale}/privacy`}
                   className="block text-stone-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded px-1 py-0.5"
@@ -195,7 +220,9 @@ export function Footer({ locale }: FooterProps) {
 
               {/* Emergency Notice */}
               <div className="text-left sm:text-right lg:text-right">
-                <p className="text-amber-300 text-xs sm:text-sm font-medium">{t("emergencyOrders")}: 24/7</p>
+                <p className="text-amber-300 text-xs sm:text-sm font-medium">
+                  {t("emergencyOrders")}: 24/7
+                </p>
                 <p className="text-stone-400 text-xs mt-1">Rozumíme naléhavosti vašich potřeb</p>
               </div>
             </div>

@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from 'next/server';
-import { createClient } from '@/lib/supabase/server';
-import { rateLimit } from '@/lib/utils/rate-limit';
+import { type NextRequest, NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
+import { rateLimit } from "@/lib/utils/rate-limit";
 
 interface ErrorLogRequest {
   id: string;
@@ -27,13 +27,9 @@ export async function POST(request: NextRequest) {
       status: "disabled",
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
-    console.error('Error in error logging endpoint:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error("Error in error logging endpoint:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -48,12 +44,8 @@ export async function GET(request: NextRequest) {
       data: [],
       timestamp: new Date().toISOString(),
     });
-
   } catch (error) {
-    console.error('Error in error logs fetch:', error);
-    return NextResponse.json(
-      { error: 'Internal server error' },
-      { status: 500 }
-    );
+    console.error("Error in error logs fetch:", error);
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
@@ -63,12 +63,7 @@ export function DataExportButton({ className }: DataExportButtonProps) {
   };
 
   return (
-    <Button
-      onClick={handleExport}
-      disabled={isExporting}
-      variant="outline"
-      className={className}
-    >
+    <Button onClick={handleExport} disabled={isExporting} variant="outline" className={className}>
       {isExporting ? (
         <>
           <LoadingSpinner size="sm" className="mr-2" />
@@ -82,23 +77,13 @@ export function DataExportButton({ className }: DataExportButtonProps) {
             stroke="currentColor"
             viewBox="0 0 24 24"
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M5 13l4 4L19 7"
-            />
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
           </svg>
           {t("exportComplete")}
         </>
       ) : (
         <>
-          <svg
-            className="w-4 h-4 mr-2"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
+          <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path
               strokeLinecap="round"
               strokeLinejoin="round"

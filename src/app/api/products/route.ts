@@ -3,25 +3,25 @@
  * Handles CRUD operations for products with search and filtering
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { invalidateApiCache, setCacheHeaders, withCache } from "@/lib/cache/api-cache";
+import { CACHE_TTL } from "@/lib/cache/redis";
 import { createServerClient } from "@/lib/supabase/server";
 import {
-  Product,
-  ProductSearchParams,
-  CreateProductRequest,
-  ProductRow,
-  CategoryRow,
-} from "@/types/product";
-import { ApiResponse } from "@/types";
-import {
-  transformProductRow,
-  transformCategoryRow,
-  productToRow,
-  validateProductData,
   createSlug,
+  productToRow,
+  transformCategoryRow,
+  transformProductRow,
+  validateProductData,
 } from "@/lib/utils/product-transforms";
-import { withCache, setCacheHeaders, invalidateApiCache } from "@/lib/cache/api-cache";
-import { CACHE_TTL } from "@/lib/cache/redis";
+import type { ApiResponse } from "@/types";
+import type {
+  CategoryRow,
+  CreateProductRequest,
+  Product,
+  ProductRow,
+  ProductSearchParams,
+} from "@/types/product";
 
 /**
  * GET /api/products
@@ -34,15 +34,15 @@ async function getProducts(request: NextRequest) {
 
     // Parse query parameters
     const params: ProductSearchParams = {
-      page: parseInt(searchParams.get("page") || "1"),
-      limit: Math.min(parseInt(searchParams.get("limit") || "12"), 100), // Max 100 items per page
+      page: Number.parseInt(searchParams.get("page") || "1"),
+      limit: Math.min(Number.parseInt(searchParams.get("limit") || "12"), 100), // Max 100 items per page
       categoryId: searchParams.get("categoryId") || undefined,
       categorySlug: searchParams.get("categorySlug") || undefined,
       minPrice: searchParams.get("minPrice")
-        ? parseFloat(searchParams.get("minPrice")!)
+        ? Number.parseFloat(searchParams.get("minPrice")!)
         : undefined,
       maxPrice: searchParams.get("maxPrice")
-        ? parseFloat(searchParams.get("maxPrice")!)
+        ? Number.parseFloat(searchParams.get("maxPrice")!)
         : undefined,
       inStock: searchParams.get("inStock") === "true" ? true : undefined,
       featured: searchParams.get("featured") === "true" ? true : undefined,
@@ -322,7 +322,7 @@ export async function POST(request: NextRequest) {
         },
       },
       active: body.active !== undefined ? body.active : true,
-      featured: body.featured || false,
+      featured: body.featured,
     });
 
     const { data, error } = await supabase

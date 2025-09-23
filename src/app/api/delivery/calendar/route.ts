@@ -3,19 +3,19 @@
  * Handles delivery date availability and calendar data
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { ApiResponse } from "@/types";
+import { type NextRequest, NextResponse } from "next/server";
+import { cacheDeliveryCalendar, getCachedDeliveryCalendar } from "@/lib/cache/delivery-cache";
 import {
-  DeliveryCalendarData,
-  DeliveryCalendarRequest,
-  DeliveryCalendarResponse,
-} from "@/types/delivery";
-import {
-  generateAvailableDeliveryDates,
   CZECH_HOLIDAYS_2024,
   CZECH_HOLIDAYS_2025,
+  generateAvailableDeliveryDates,
 } from "@/lib/utils/delivery-calculator";
-import { getCachedDeliveryCalendar, cacheDeliveryCalendar } from "@/lib/cache/delivery-cache";
+import type { ApiResponse } from "@/types";
+import {
+  type DeliveryCalendarData,
+  DeliveryCalendarRequest,
+  type DeliveryCalendarResponse,
+} from "@/types/delivery";
 
 /**
  * GET /api/delivery/calendar
@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // Parse query parameters
-    const month = parseInt(searchParams.get("month") || new Date().getMonth().toString());
-    const year = parseInt(searchParams.get("year") || new Date().getFullYear().toString());
+    const month = Number.parseInt(searchParams.get("month") || new Date().getMonth().toString());
+    const year = Number.parseInt(searchParams.get("year") || new Date().getFullYear().toString());
     const postalCode = searchParams.get("postalCode") || undefined;
 
     // Validate parameters

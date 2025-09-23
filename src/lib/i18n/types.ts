@@ -7,9 +7,11 @@ import type { Locale } from "@/i18n/config";
 /**
  * Translation function signature with enhanced parameters
  */
-export interface TranslationFunction {
-  (key: string, params?: Record<string, any>, fallback?: string): string;
-}
+export type TranslationFunction = (
+  key: string,
+  params?: Record<string, any>,
+  fallback?: string
+) => string;
 
 /**
  * Safe translation hook return type

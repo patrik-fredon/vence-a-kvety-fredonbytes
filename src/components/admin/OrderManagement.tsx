@@ -1,16 +1,16 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import {
-  EyeIcon,
-  PencilIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
   CheckCircleIcon,
+  EyeIcon,
+  FunnelIcon,
+  MagnifyingGlassIcon,
+  PencilIcon,
   TruckIcon,
   XCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import OrderDetailModal from "./OrderDetailModal";
 
 interface Order {
@@ -213,7 +213,9 @@ export default function OrderManagement() {
       {/* Header */}
       <div className="flex items-center justify-between">
         <h2 className="text-2xl font-bold text-stone-900">{t("orderManagement")}</h2>
-        <div className="text-sm text-stone-500">{t("total")}: {filteredOrders.length} {t("orders")}</div>
+        <div className="text-sm text-stone-500">
+          {t("total")}: {filteredOrders.length} {t("orders")}
+        </div>
       </div>
 
       {/* Filters */}
@@ -280,7 +282,7 @@ export default function OrderManagement() {
       <Card padding="none">
         {loading ? (
           <div className="p-6 text-center">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto"></div>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-stone-900 mx-auto" />
           </div>
         ) : (
           <div className="overflow-x-auto">
@@ -318,7 +320,9 @@ export default function OrderManagement() {
                         <div className="text-sm font-medium text-stone-900">
                           #{order.orderNumber}
                         </div>
-                        <div className="text-sm text-stone-500">{order.itemCount} {t("items")}</div>
+                        <div className="text-sm text-stone-500">
+                          {order.itemCount} {t("items")}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4">

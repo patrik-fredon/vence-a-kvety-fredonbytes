@@ -5,7 +5,7 @@
 
 "use client";
 
-import { useState, useEffect, useRef, ReactNode, ComponentType } from "react";
+import { type ComponentType, type ReactNode, useEffect, useRef, useState } from "react";
 import { LoadingSpinner } from "./LoadingSpinner";
 
 interface LazyWrapperProps {

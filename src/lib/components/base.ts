@@ -2,11 +2,11 @@
  * Base component utilities and interfaces
  */
 
+import type { ComponentPropsWithoutRef } from "react";
 import * as React from "react";
 import { forwardRef } from "react";
-import type { ComponentPropsWithoutRef } from "react";
 import { cn } from "@/lib/utils";
-import type { BaseComponentProps, AccessibilityProps } from "@/types/components";
+import type { AccessibilityProps, BaseComponentProps } from "@/types/components";
 
 /**
  * Creates a base component with consistent props and behavior
@@ -28,7 +28,7 @@ export function createBaseComponent<T extends keyof React.JSX.IntrinsicElements>
       ref,
       className: cn(defaultClassName, className),
       "data-testid": testId,
-      ...props
+      ...props,
     });
   });
 }
@@ -36,27 +36,32 @@ export function createBaseComponent<T extends keyof React.JSX.IntrinsicElements>
 /**
  * Higher-order component for adding loading states
  */
-export function withLoading<P extends object>(
-  Component: React.ComponentType<P>
-) {
-  return function LoadingComponent(
-    props: P & { loading?: boolean; loadingText?: string }
-  ) {
+export function withLoading<P extends object>(Component: React.ComponentType<P>) {
+  return function LoadingComponent(props: P & { loading?: boolean; loadingText?: string }) {
     const { loading, loadingText, ...componentProps } = props;
 
     if (loading) {
-      return React.createElement("div", {
-        className: "flex items-center justify-center p-4"
-      }, [
-        React.createElement("div", {
-          key: "spinner",
-          className: "animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600"
-        }),
-        loadingText && React.createElement("span", {
-          key: "text",
-          className: "ml-2 text-sm text-neutral-600"
-        }, loadingText)
-      ]);
+      return React.createElement(
+        "div",
+        {
+          className: "flex items-center justify-center p-4",
+        },
+        [
+          React.createElement("div", {
+            key: "spinner",
+            className: "animate-spin rounded-full h-6 w-6 border-b-2 border-primary-600",
+          }),
+          loadingText &&
+            React.createElement(
+              "span",
+              {
+                key: "text",
+                className: "ml-2 text-sm text-neutral-600",
+              },
+              loadingText
+            ),
+        ]
+      );
     }
 
     return React.createElement(Component, componentProps as P);

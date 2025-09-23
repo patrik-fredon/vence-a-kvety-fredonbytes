@@ -2,9 +2,9 @@
  * Order-related type definitions for the funeral wreaths e-commerce platform
  */
 
-import { BaseEntity, Address, ContactInfo } from "./index";
-import { CartItem } from "./cart";
-import { DeliveryUrgency, DeliveryTimeSlot } from "./delivery";
+import type { CartItem } from "./cart";
+import type { DeliveryTimeSlot, DeliveryUrgency } from "./delivery";
+import type { Address, BaseEntity, ContactInfo } from "./index";
 
 // Order status types
 export type OrderStatus =

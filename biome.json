@@ -7,22 +7,7 @@
   },
   "files": {
     "ignoreUnknown": true,
-    "includes": [
-      "src/**/*",
-      "*.ts",
-      "*.tsx",
-      "*.js",
-      "*.jsx",
-      "*.json"
-    ],
-    "ignore": [
-      "node_modules/**",
-      ".next/**",
-      "dist/**",
-      "build/**",
-      "coverage/**",
-      "*.d.ts"
-    ]
+    "includes": ["src/**/*", "*.ts", "*.tsx", "*.js", "*.jsx", "*.json"]
   },
   "formatter": {
     "enabled": true,
@@ -43,7 +28,6 @@
         "noAsyncPromiseExecutor": "error",
         "noCommentText": "error",
         "noCompareNegZero": "error",
-        "noConsoleLog": "warn",
         "noConstEnum": "error",
         "noControlCharactersInRegex": "error",
         "noDebugger": "error",
@@ -54,7 +38,6 @@
         "noEmptyBlockStatements": "error",
         "noFallthroughSwitchClause": "error",
         "noFunctionAssign": "error",
-        "noGlobalObjectCalls": "error",
         "noImportAssign": "error",
         "noMisleadingCharacterClass": "error",
         "noPrototypeBuiltins": "error",
@@ -74,9 +57,7 @@
         "useLiteralEnumMembers": "error",
         "useNodejsImportProtocol": "error",
         "useNumberNamespace": "error",
-        "useNumericLiterals": "error",
         "useSelfClosingElements": "error",
-        "useShorthandArrayType": "error",
         "useShorthandAssign": "error",
         "useSingleVarDeclarator": "error",
         "useTemplate": "error"
@@ -91,7 +72,6 @@
         "noEmptyPattern": "error",
         "noGlobalObjectCalls": "error",
         "noInvalidConstructorSuper": "error",
-        "noInvalidNewBuiltin": "error",
         "noNonoctalDecimalEscape": "error",
         "noPrecisionLoss": "error",
         "noSelfAssign": "error",
@@ -133,7 +113,6 @@
         "noAccessKey": "error",
         "noAriaUnsupportedElements": "error",
         "noAutofocus": "error",
-        "noBlankTarget": "error",
         "noDistractingElements": "error",
         "noHeaderScope": "error",
         "noNoninteractiveElementToInteractiveRole": "error",

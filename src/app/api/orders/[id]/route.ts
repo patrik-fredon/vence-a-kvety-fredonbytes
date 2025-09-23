@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { sendOrderStatusUpdateEmail } from "@/lib/email/service";
 import { createServerClient } from "@/lib/supabase/server";
 import { orderUtils } from "@/lib/supabase/utils";
-import { Order, OrderStatus } from "@/types/order";
-import { sendOrderStatusUpdateEmail } from "@/lib/email/service";
+import type { Order, OrderStatus } from "@/types/order";
 
 /**
  * Get order by ID

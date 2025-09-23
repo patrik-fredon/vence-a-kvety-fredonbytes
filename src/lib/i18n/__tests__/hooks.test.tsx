@@ -1,11 +1,7 @@
-import { renderHook, act } from "@testing-library/react";
-import { useRouter, usePathname } from "next/navigation";
+import { act, renderHook } from "@testing-library/react";
+import { usePathname, useRouter } from "next/navigation";
 import { useLocale } from "next-intl";
-import {
-  useLocaleSwitch,
-  useSafeTranslations,
-  useLocalePersistence,
-} from "../hooks";
+import { useLocalePersistence, useLocaleSwitch, useSafeTranslations } from "../hooks";
 
 // Mock next/navigation
 jest.mock("next/navigation", () => ({
@@ -150,7 +146,8 @@ describe("useSafeTranslations", () => {
 
 describe("useLocalePersistence", () => {
   const mockUseLocale = useLocale as jest.MockedFunction<typeof useLocale>;
-  const mockSetLocalePreference = require("../utils").setLocalePreference as jest.MockedFunction<any>;
+  const mockSetLocalePreference = require("../utils")
+    .setLocalePreference as jest.MockedFunction<any>;
   const mockSetLocaleCookie = require("../utils").setLocaleCookie as jest.MockedFunction<any>;
 
   beforeEach(() => {

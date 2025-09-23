@@ -1,7 +1,7 @@
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
-import { type Locale } from '../../i18n/config';
+import { useTranslations } from "next-intl";
+import type { Locale } from "../../i18n/config";
 
 interface DateDisplayProps {
   date: Date | string | null | undefined;
@@ -9,18 +9,18 @@ interface DateDisplayProps {
   className?: string;
   includeTime?: boolean;
   relative?: boolean;
-  format?: 'short' | 'medium' | 'long' | 'full';
+  format?: "short" | "medium" | "long" | "full";
 }
 
 export function DateDisplay({
   date,
-  locale = 'cs',
-  className = '',
+  locale = "cs",
+  className = "",
   includeTime = false,
   relative = false,
-  format = 'short'
+  format = "short",
 }: DateDisplayProps) {
-  const t = useTranslations('date');
+  const t = useTranslations("date");
 
   // Handle invalid dates
   if (!date) {
@@ -31,7 +31,7 @@ export function DateDisplay({
     );
   }
 
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
 
   if (isNaN(dateObj.getTime())) {
     return (
@@ -56,7 +56,7 @@ export function DateDisplay({
     if (isToday) {
       return (
         <span className={className} data-testid="date-display">
-          {t('today')}
+          {t("today")}
         </span>
       );
     }
@@ -64,7 +64,7 @@ export function DateDisplay({
     if (isTomorrow) {
       return (
         <span className={className} data-testid="date-display">
-          {t('tomorrow')}
+          {t("tomorrow")}
         </span>
       );
     }
@@ -72,55 +72,55 @@ export function DateDisplay({
     if (isDayAfterTomorrow) {
       return (
         <span className={className} data-testid="date-display">
-          {t('dayAfterTomorrow')}
+          {t("dayAfterTomorrow")}
         </span>
       );
     }
   }
 
   // Format options based on locale
-  const localeString = locale === 'cs' ? 'cs-CZ' : 'en-US';
+  const localeString = locale === "cs" ? "cs-CZ" : "en-US";
 
   let formatOptions: Intl.DateTimeFormatOptions = {};
 
   switch (format) {
-    case 'short':
+    case "short":
       formatOptions = {
-        year: 'numeric',
-        month: 'numeric',
-        day: 'numeric',
+        year: "numeric",
+        month: "numeric",
+        day: "numeric",
       };
       break;
-    case 'medium':
+    case "medium":
       formatOptions = {
-        year: 'numeric',
-        month: 'short',
-        day: 'numeric',
+        year: "numeric",
+        month: "short",
+        day: "numeric",
       };
       break;
-    case 'long':
+    case "long":
       formatOptions = {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       };
       break;
-    case 'full':
+    case "full":
       formatOptions = {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
+        weekday: "long",
+        year: "numeric",
+        month: "long",
+        day: "numeric",
       };
       break;
   }
 
   if (includeTime) {
-    formatOptions.hour = '2-digit';
-    formatOptions.minute = '2-digit';
+    formatOptions.hour = "2-digit";
+    formatOptions.minute = "2-digit";
 
     // Czech uses 24-hour format, English uses 12-hour format
-    if (locale === 'en') {
+    if (locale === "en") {
       formatOptions.hour12 = true;
     }
   }
@@ -128,9 +128,10 @@ export function DateDisplay({
   const formattedDate = dateObj.toLocaleDateString(localeString, formatOptions);
 
   // For Czech locale with time, we might need to adjust the format
-  const displayValue = includeTime && locale === 'cs'
-    ? formattedDate.replace(',', '') // Remove comma between date and time in Czech
-    : formattedDate;
+  const displayValue =
+    includeTime && locale === "cs"
+      ? formattedDate.replace(",", "") // Remove comma between date and time in Czech
+      : formattedDate;
 
   return (
     <span className={className} data-testid="date-display">
@@ -142,18 +143,18 @@ export function DateDisplay({
 // Utility function for formatting dates without component
 export function formatDate(
   date: Date | string,
-  locale: Locale = 'cs',
+  locale: Locale = "cs",
   options: {
     includeTime?: boolean;
     relative?: boolean;
-    format?: 'short' | 'medium' | 'long' | 'full';
+    format?: "short" | "medium" | "long" | "full";
   } = {}
 ): string {
-  const { includeTime = false, relative = false, format = 'short' } = options;
+  const { includeTime = false, relative = false, format = "short" } = options;
 
-  const dateObj = typeof date === 'string' ? new Date(date) : date;
+  const dateObj = typeof date === "string" ? new Date(date) : date;
 
-  if (isNaN(dateObj.getTime())) return '-';
+  if (isNaN(dateObj.getTime())) return "-";
 
   // Handle relative dates
   if (relative) {
@@ -164,33 +165,33 @@ export function formatDate(
     const isToday = dateObj.toDateString() === today.toDateString();
     const isTomorrow = dateObj.toDateString() === tomorrow.toDateString();
 
-    if (isToday) return locale === 'cs' ? 'Dnes' : 'Today';
-    if (isTomorrow) return locale === 'cs' ? 'Zítra' : 'Tomorrow';
+    if (isToday) return locale === "cs" ? "Dnes" : "Today";
+    if (isTomorrow) return locale === "cs" ? "Zítra" : "Tomorrow";
   }
 
-  const localeString = locale === 'cs' ? 'cs-CZ' : 'en-US';
+  const localeString = locale === "cs" ? "cs-CZ" : "en-US";
 
   let formatOptions: Intl.DateTimeFormatOptions = {};
 
   switch (format) {
-    case 'short':
-      formatOptions = { year: 'numeric', month: 'numeric', day: 'numeric' };
+    case "short":
+      formatOptions = { year: "numeric", month: "numeric", day: "numeric" };
       break;
-    case 'medium':
-      formatOptions = { year: 'numeric', month: 'short', day: 'numeric' };
+    case "medium":
+      formatOptions = { year: "numeric", month: "short", day: "numeric" };
       break;
-    case 'long':
-      formatOptions = { year: 'numeric', month: 'long', day: 'numeric' };
+    case "long":
+      formatOptions = { year: "numeric", month: "long", day: "numeric" };
       break;
-    case 'full':
-      formatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+    case "full":
+      formatOptions = { weekday: "long", year: "numeric", month: "long", day: "numeric" };
       break;
   }
 
   if (includeTime) {
-    formatOptions.hour = '2-digit';
-    formatOptions.minute = '2-digit';
-    if (locale === 'en') {
+    formatOptions.hour = "2-digit";
+    formatOptions.minute = "2-digit";
+    if (locale === "en") {
       formatOptions.hour12 = true;
     }
   }

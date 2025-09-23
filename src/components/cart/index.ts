@@ -1,3 +1,2 @@
-export { ShoppingCart } from "./ShoppingCart";
 export { CartIcon } from "./CartIcon";
-export { MiniCart } from "./MiniCart";
+export { ShoppingCart } from "./ShoppingCart";

@@ -1,8 +1,8 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
-import { auth } from "@/lib/auth/config";
-import { AddToCartRequest } from "@/types/cart";
 import { randomUUID } from "crypto";
+import { type NextRequest, NextResponse } from "next/server";
+import { auth } from "@/lib/auth/config";
+import { createServerClient } from "@/lib/supabase/server";
+import type { AddToCartRequest } from "@/types/cart";
 
 /**
  * POST /api/cart/items - Add item to cart
@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
     });
 
     // Validate request body
-    if (!body.productId || !body.quantity || body.quantity <= 0) {
+    if (!(body.productId && body.quantity) || body.quantity <= 0) {
       console.log("❌ [API] Invalid request body");
       return NextResponse.json(
         {
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
 
     // Get or create session ID for guest users
     let sessionId = request.cookies.get("cart-session")?.value;
-    if (!session?.user?.id && !sessionId) {
+    if (!(session?.user?.id || sessionId)) {
       sessionId = randomUUID();
     }
 
@@ -98,7 +98,7 @@ export async function POST(request: NextRequest) {
     if (existingItem) {
       // Update existing item quantity and recalculate total price
       const newQuantity = existingItem.quantity + body.quantity;
-      const unitPrice = parseFloat(product.base_price.toString());
+      const unitPrice = Number.parseFloat(product.base_price.toString());
       const newTotalPrice = unitPrice * newQuantity;
 
       const { data, error } = await supabase
@@ -126,7 +126,7 @@ export async function POST(request: NextRequest) {
       result = data;
     } else {
       // Calculate prices
-      const unitPrice = parseFloat(product.base_price.toString());
+      const unitPrice = Number.parseFloat(product.base_price.toString());
       const totalPrice = unitPrice * body.quantity;
 
       // Create new cart item

@@ -22,9 +22,9 @@ const nextConfig: NextConfig = {
       "@headlessui/react",
       "@heroicons/react",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
     ],
-    // Temporarily disable CSS optimization due to critters module issue
+    // CSS optimization for better performance
     optimizeCss: true,
   },
 
@@ -41,15 +41,18 @@ const nextConfig: NextConfig = {
   // Output file tracing configuration to silence workspace warning
   outputFileTracingRoot: __dirname,
 
-  // Image optimization configuration
+  // Enhanced image optimization configuration
   images: {
-    formats: ["image/webp", "image/avif"],
+    formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
+    // Optimize image loading
+    unoptimized: false,
+    loader: "default",
     // Enable image optimization for external domains
     remotePatterns: [
       {
@@ -163,7 +166,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size in production
-    if (!dev && !isServer) {
+    if (!(dev || isServer)) {
       // Enhanced code splitting configuration
       config.optimization.splitChunks = {
         chunks: "all",
@@ -236,7 +239,7 @@ const nextConfig: NextConfig = {
 
   // Environment variables that should be available on the client
   env: {
-    CUSTOM_KEY: process.env['CUSTOM_KEY'],
+    CUSTOM_KEY: process.env["CUSTOM_KEY"],
   },
 
   // Redirects for SEO and user experience

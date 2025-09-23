@@ -3,8 +3,8 @@
  * Provides CSRF tokens for client-side requests
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { generateCSRFToken, createCSRFHeaders } from "@/lib/security/csrf";
+import { type NextRequest, NextResponse } from "next/server";
+import { createCSRFHeaders, generateCSRFToken } from "@/lib/security/csrf";
 
 export async function GET(request: NextRequest) {
   try {
@@ -25,9 +25,9 @@ export async function GET(request: NextRequest) {
     });
 
     // Set cache control to prevent caching of tokens
-    response.headers.set('Cache-Control', 'no-store, no-cache, must-revalidate, proxy-revalidate');
-    response.headers.set('Pragma', 'no-cache');
-    response.headers.set('Expires', '0');
+    response.headers.set("Cache-Control", "no-store, no-cache, must-revalidate, proxy-revalidate");
+    response.headers.set("Pragma", "no-cache");
+    response.headers.set("Expires", "0");
 
     return response;
   } catch (error) {

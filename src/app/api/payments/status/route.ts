@@ -2,9 +2,9 @@
  * API route for checking payment status
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { PaymentService } from "@/lib/payments";
-import { PaymentMethod } from "@/types/order";
+import type { PaymentMethod } from "@/types/order";
 
 export async function GET(request: NextRequest) {
   try {
@@ -13,7 +13,7 @@ export async function GET(request: NextRequest) {
     const paymentMethod = searchParams.get("paymentMethod") as PaymentMethod;
 
     // Validate required parameters
-    if (!paymentId || !paymentMethod) {
+    if (!(paymentId && paymentMethod)) {
       return NextResponse.json(
         {
           success: false,
@@ -78,7 +78,7 @@ export async function POST(request: NextRequest) {
     const { paymentId, paymentMethod } = body;
 
     // Validate required fields
-    if (!paymentId || !paymentMethod) {
+    if (!(paymentId && paymentMethod)) {
       return NextResponse.json(
         {
           success: false,

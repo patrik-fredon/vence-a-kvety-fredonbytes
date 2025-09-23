@@ -1,10 +1,24 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useEffect, useCallback, useRef, useState } from "react";
-import { CartState, CartSummary, AddToCartRequest, CartItem } from "@/types/cart";
+import type React from "react";
+import {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useReducer,
+  useRef,
+  useState,
+} from "react";
 import { useAuthContext } from "@/components/auth";
-import { getCartSessionId, setCartSessionId, generateCartSessionId } from "./utils";
-import { CartSyncManager, CartConflictResolver, CartPersistenceManager, CartSyncEvent } from "./realtime-sync";
+import type { AddToCartRequest, CartItem, CartState, CartSummary } from "@/types/cart";
+import {
+  CartConflictResolver,
+  CartPersistenceManager,
+  type CartSyncEvent,
+  CartSyncManager,
+} from "./realtime-sync";
+import { generateCartSessionId, getCartSessionId, setCartSessionId } from "./utils";
 
 // Enhanced cart actions with optimistic updates
 type CartAction =
@@ -85,13 +99,18 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       const newOptimisticUpdates = new Map(state.optimisticUpdates);
       newOptimisticUpdates.set(action.payload.itemId, {
         type: "update",
-        originalQuantity: state.items.find(item => item.id === action.payload.itemId)?.quantity || 0,
+        originalQuantity:
+          state.items.find((item) => item.id === action.payload.itemId)?.quantity || 0,
       });
       return {
         ...state,
-        items: state.items.map(item =>
+        items: state.items.map((item) =>
           item.id === action.payload.itemId
-            ? { ...item, quantity: action.payload.quantity, totalPrice: (item.unitPrice || 0) * action.payload.quantity }
+            ? {
+                ...item,
+                quantity: action.payload.quantity,
+                totalPrice: (item.unitPrice || 0) * action.payload.quantity,
+              }
             : item
         ),
         optimisticUpdates: newOptimisticUpdates,
@@ -100,7 +119,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
     case "OPTIMISTIC_REMOVE_ITEM": {
       const newOptimisticUpdates = new Map(state.optimisticUpdates);
-      const itemToRemove = state.items.find(item => item.id === action.payload.itemId);
+      const itemToRemove = state.items.find((item) => item.id === action.payload.itemId);
       if (itemToRemove) {
         newOptimisticUpdates.set(action.payload.itemId, {
           type: "remove",
@@ -109,7 +128,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       }
       return {
         ...state,
-        items: state.items.filter(item => item.id !== action.payload.itemId),
+        items: state.items.filter((item) => item.id !== action.payload.itemId),
         optimisticUpdates: newOptimisticUpdates,
         lastUpdated: new Date(),
       };
@@ -126,16 +145,20 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           // Remove optimistically added item
           return {
             ...state,
-            items: state.items.filter(item => item.id !== action.payload.tempId),
+            items: state.items.filter((item) => item.id !== action.payload.tempId),
             optimisticUpdates: newOptimisticUpdates,
           };
         } else if (update?.type === "update" && action.payload.itemId) {
           // Revert quantity update
           return {
             ...state,
-            items: state.items.map(item =>
+            items: state.items.map((item) =>
               item.id === action.payload.itemId
-                ? { ...item, quantity: update.originalQuantity || 0, totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0) }
+                ? {
+                    ...item,
+                    quantity: update.originalQuantity || 0,
+                    totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
+                  }
                 : item
             ),
             optimisticUpdates: newOptimisticUpdates,
@@ -162,7 +185,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         if (action.payload.actualItem && action.payload.tempId) {
           return {
             ...state,
-            items: state.items.map(item =>
+            items: state.items.map((item) =>
               item.id === action.payload.tempId ? action.payload.actualItem! : item
             ),
             optimisticUpdates: newOptimisticUpdates,
@@ -214,53 +237,56 @@ export function CartProvider({ children }: CartProviderProps) {
       }
     };
 
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
     setIsOnline(navigator.onLine);
 
     return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
     };
   }, [isRealTimeEnabled]);
 
   // Enhanced fetch cart with retry logic
-  const fetchCart = useCallback(async (retryCount = 0): Promise<boolean> => {
-    try {
-      dispatch({ type: "SET_LOADING", payload: true });
+  const fetchCart = useCallback(
+    async (retryCount = 0): Promise<boolean> => {
+      try {
+        dispatch({ type: "SET_LOADING", payload: true });
 
-      const response = await fetch("/api/cart", {
-        method: "GET",
-        credentials: "include",
-      });
+        const response = await fetch("/api/cart", {
+          method: "GET",
+          credentials: "include",
+        });
 
-      if (!response.ok) {
-        throw new Error(`Failed to fetch cart: ${response.status}`);
-      }
+        if (!response.ok) {
+          throw new Error(`Failed to fetch cart: ${response.status}`);
+        }
 
-      const data = await response.json();
+        const data = await response.json();
 
-      if (data.success) {
-        dispatch({ type: "SET_CART", payload: data.cart });
-        retryCountRef.current = 0; // Reset retry count on success
-        return true;
-      } else {
-        throw new Error(data.error || "Failed to fetch cart");
-      }
-    } catch (error) {
-      console.error("Error fetching cart:", error);
+        if (data.success) {
+          dispatch({ type: "SET_CART", payload: data.cart });
+          retryCountRef.current = 0; // Reset retry count on success
+          return true;
+        } else {
+          throw new Error(data.error || "Failed to fetch cart");
+        }
+      } catch (error) {
+        console.error("Error fetching cart:", error);
 
-      // Retry logic for network errors
-      if (retryCount < maxRetries && isOnline) {
-        const delay = Math.pow(2, retryCount) * 1000; // Exponential backoff
-        setTimeout(() => fetchCart(retryCount + 1), delay);
+        // Retry logic for network errors
+        if (retryCount < maxRetries && isOnline) {
+          const delay = 2 ** retryCount * 1000; // Exponential backoff
+          setTimeout(() => fetchCart(retryCount + 1), delay);
+          return false;
+        }
+
+        dispatch({ type: "SET_ERROR", payload: "Failed to fetch cart" });
         return false;
       }
-
-      dispatch({ type: "SET_ERROR", payload: "Failed to fetch cart" });
-      return false;
-    }
-  }, [isOnline]);
+    },
+    [isOnline]
+  );
 
   // Enhanced add item to cart with optimistic updates
   const addToCart = useCallback(
@@ -283,18 +309,16 @@ export function CartProvider({ children }: CartProviderProps) {
       // Apply optimistic update immediately
       dispatch({
         type: "OPTIMISTIC_ADD_ITEM",
-        payload: { item: optimisticItem, tempId }
+        payload: { item: optimisticItem, tempId },
       });
 
       try {
         // Ensure we have a session ID for guest users
         let sessionId = getCartSessionId();
-        if (!user && !sessionId) {
+        if (!(user || sessionId)) {
           sessionId = generateCartSessionId();
           setCartSessionId(sessionId);
         }
-
-
 
         const response = await fetch("/api/cart/items", {
           method: "POST",
@@ -311,7 +335,7 @@ export function CartProvider({ children }: CartProviderProps) {
           // Confirm optimistic update with actual server data
           dispatch({
             type: "CONFIRM_OPTIMISTIC",
-            payload: { tempId, actualItem: data.item }
+            payload: { tempId, actualItem: data.item },
           });
 
           // Refresh cart to get updated totals and product details
@@ -321,7 +345,7 @@ export function CartProvider({ children }: CartProviderProps) {
           // Revert optimistic update on failure
           dispatch({
             type: "REVERT_OPTIMISTIC",
-            payload: { tempId }
+            payload: { tempId },
           });
           dispatch({ type: "SET_ERROR", payload: data.error || "Failed to add item to cart" });
           return false;
@@ -332,12 +356,15 @@ export function CartProvider({ children }: CartProviderProps) {
         // Revert optimistic update on error
         dispatch({
           type: "REVERT_OPTIMISTIC",
-          payload: { tempId }
+          payload: { tempId },
         });
 
         // Store failed operation for retry when online
         if (!isOnline) {
-          dispatch({ type: "SET_ERROR", payload: "No internet connection. Changes will sync when online." });
+          dispatch({
+            type: "SET_ERROR",
+            payload: "No internet connection. Changes will sync when online.",
+          });
           // TODO: Store in localStorage for offline sync
         } else {
           dispatch({ type: "SET_ERROR", payload: "Failed to add item to cart" });
@@ -359,7 +386,7 @@ export function CartProvider({ children }: CartProviderProps) {
       // Apply optimistic update immediately
       dispatch({
         type: "OPTIMISTIC_UPDATE_QUANTITY",
-        payload: { itemId, quantity }
+        payload: { itemId, quantity },
       });
 
       try {
@@ -378,7 +405,7 @@ export function CartProvider({ children }: CartProviderProps) {
           // Confirm optimistic update
           dispatch({
             type: "CONFIRM_OPTIMISTIC",
-            payload: { tempId: itemId }
+            payload: { tempId: itemId },
           });
 
           // Refresh cart to get updated totals
@@ -388,7 +415,7 @@ export function CartProvider({ children }: CartProviderProps) {
           // Revert optimistic update on failure
           dispatch({
             type: "REVERT_OPTIMISTIC",
-            payload: { itemId }
+            payload: { itemId },
           });
           dispatch({ type: "SET_ERROR", payload: data.error || "Failed to update item" });
           return false;
@@ -399,11 +426,14 @@ export function CartProvider({ children }: CartProviderProps) {
         // Revert optimistic update on error
         dispatch({
           type: "REVERT_OPTIMISTIC",
-          payload: { itemId }
+          payload: { itemId },
         });
 
         if (!isOnline) {
-          dispatch({ type: "SET_ERROR", payload: "No internet connection. Changes will sync when online." });
+          dispatch({
+            type: "SET_ERROR",
+            payload: "No internet connection. Changes will sync when online.",
+          });
         } else {
           dispatch({ type: "SET_ERROR", payload: "Failed to update item" });
         }
@@ -419,7 +449,7 @@ export function CartProvider({ children }: CartProviderProps) {
       // Apply optimistic update immediately
       dispatch({
         type: "OPTIMISTIC_REMOVE_ITEM",
-        payload: { itemId }
+        payload: { itemId },
       });
 
       try {
@@ -434,7 +464,7 @@ export function CartProvider({ children }: CartProviderProps) {
           // Confirm optimistic update
           dispatch({
             type: "CONFIRM_OPTIMISTIC",
-            payload: { tempId: itemId }
+            payload: { tempId: itemId },
           });
 
           // Refresh cart to get updated totals
@@ -444,7 +474,7 @@ export function CartProvider({ children }: CartProviderProps) {
           // Revert optimistic update on failure
           dispatch({
             type: "REVERT_OPTIMISTIC",
-            payload: { itemId }
+            payload: { itemId },
           });
           dispatch({ type: "SET_ERROR", payload: data.error || "Failed to remove item" });
           return false;
@@ -455,11 +485,14 @@ export function CartProvider({ children }: CartProviderProps) {
         // Revert optimistic update on error
         dispatch({
           type: "REVERT_OPTIMISTIC",
-          payload: { itemId }
+          payload: { itemId },
         });
 
         if (!isOnline) {
-          dispatch({ type: "SET_ERROR", payload: "No internet connection. Changes will sync when online." });
+          dispatch({
+            type: "SET_ERROR",
+            payload: "No internet connection. Changes will sync when online.",
+          });
         } else {
           dispatch({ type: "SET_ERROR", payload: "Failed to remove item" });
         }
@@ -504,7 +537,7 @@ export function CartProvider({ children }: CartProviderProps) {
               total: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
             },
             data.cart,
-            'merge'
+            "merge"
           );
 
           // Apply resolved state
@@ -516,7 +549,6 @@ export function CartProvider({ children }: CartProviderProps) {
 
           // Log conflicts if any
           if (resolution.conflicts.length > 0) {
-
           }
         }
       }
@@ -556,8 +588,8 @@ export function CartProvider({ children }: CartProviderProps) {
     syncManagerRef.current = new CartSyncManager(user?.id, sessionId || undefined);
 
     // Handle real-time cart updates
-    syncManagerRef.current.on('sync', (event: CartSyncEvent) => {
-      if (event.source === 'remote') {
+    syncManagerRef.current.on("sync", (event: CartSyncEvent) => {
+      if (event.source === "remote") {
         // Apply remote changes
         syncWithServer();
       }
@@ -566,7 +598,6 @@ export function CartProvider({ children }: CartProviderProps) {
     syncManagerRef.current.connect().then((connected) => {
       if (connected) {
         setIsRealTimeEnabled(true);
-
       }
     });
   }, [isOnline, isRealTimeEnabled, user?.id, syncWithServer]);
@@ -577,7 +608,6 @@ export function CartProvider({ children }: CartProviderProps) {
       syncManagerRef.current = null;
     }
     setIsRealTimeEnabled(false);
-
   }, []);
 
   const getCartVersion = useCallback(() => cartVersion, [cartVersion]);
@@ -602,7 +632,7 @@ export function CartProvider({ children }: CartProviderProps) {
       if (persistedState) {
         dispatch({
           type: "SET_CART",
-          payload: persistedState.cart
+          payload: persistedState.cart,
         });
         setCartVersion(persistedState.version);
       }

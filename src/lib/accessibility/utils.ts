@@ -6,7 +6,7 @@
 /**
  * Generates a unique ID for form elements and ARIA relationships
  */
-export function generateId(prefix: string = 'element'): string {
+export function generateId(prefix: string = "element"): string {
   return `${prefix}-${Math.random().toString(36).substr(2, 9)}`;
 }
 
@@ -28,14 +28,14 @@ export class FocusTrap {
 
   private getFocusableElements(): HTMLElement[] {
     const focusableSelectors = [
-      'a[href]',
-      'button:not([disabled])',
-      'input:not([disabled])',
-      'select:not([disabled])',
-      'textarea:not([disabled])',
+      "a[href]",
+      "button:not([disabled])",
+      "input:not([disabled])",
+      "select:not([disabled])",
+      "textarea:not([disabled])",
       '[tabindex]:not([tabindex="-1"])',
-      '[contenteditable="true"]'
-    ].join(', ');
+      '[contenteditable="true"]',
+    ].join(", ");
 
     return Array.from(this.element.querySelectorAll(focusableSelectors)) as HTMLElement[];
   }
@@ -54,19 +54,19 @@ export class FocusTrap {
       this.firstFocusableElement.focus();
     }
 
-    document.addEventListener('keydown', this.handleKeyDown);
+    document.addEventListener("keydown", this.handleKeyDown);
   }
 
   public deactivate(): void {
-    document.removeEventListener('keydown', this.handleKeyDown);
+    document.removeEventListener("keydown", this.handleKeyDown);
 
-    if (this.previousActiveElement && 'focus' in this.previousActiveElement) {
+    if (this.previousActiveElement && "focus" in this.previousActiveElement) {
       (this.previousActiveElement as HTMLElement).focus();
     }
   }
 
   private handleKeyDown = (event: KeyboardEvent): void => {
-    if (event.key !== 'Tab') return;
+    if (event.key !== "Tab") return;
 
     this.updateFocusableElements();
 
@@ -94,11 +94,14 @@ export class FocusTrap {
 /**
  * Announces messages to screen readers
  */
-export function announceToScreenReader(message: string, priority: 'polite' | 'assertive' = 'polite'): void {
-  const announcement = document.createElement('div');
-  announcement.setAttribute('aria-live', priority);
-  announcement.setAttribute('aria-atomic', 'true');
-  announcement.className = 'sr-only';
+export function announceToScreenReader(
+  message: string,
+  priority: "polite" | "assertive" = "polite"
+): void {
+  const announcement = document.createElement("div");
+  announcement.setAttribute("aria-live", priority);
+  announcement.setAttribute("aria-atomic", "true");
+  announcement.className = "sr-only";
   announcement.textContent = message;
 
   document.body.appendChild(announcement);
@@ -115,10 +118,10 @@ export function announceToScreenReader(message: string, priority: 'polite' | 'as
 export function isElementVisible(element: HTMLElement): boolean {
   const style = window.getComputedStyle(element);
   return (
-    style.display !== 'none' &&
-    style.visibility !== 'hidden' &&
-    style.opacity !== '0' &&
-    element.getAttribute('aria-hidden') !== 'true'
+    style.display !== "none" &&
+    style.visibility !== "hidden" &&
+    style.opacity !== "0" &&
+    element.getAttribute("aria-hidden") !== "true"
   );
 }
 
@@ -127,27 +130,31 @@ export function isElementVisible(element: HTMLElement): boolean {
  */
 export function getAccessibleName(element: HTMLElement): string {
   // Check aria-label first
-  const ariaLabel = element.getAttribute('aria-label');
+  const ariaLabel = element.getAttribute("aria-label");
   if (ariaLabel) return ariaLabel;
 
   // Check aria-labelledby
-  const ariaLabelledBy = element.getAttribute('aria-labelledby');
+  const ariaLabelledBy = element.getAttribute("aria-labelledby");
   if (ariaLabelledBy) {
     const labelElement = document.getElementById(ariaLabelledBy);
-    if (labelElement) return labelElement.textContent || '';
+    if (labelElement) return labelElement.textContent || "";
   }
 
   // Check associated label for form elements
-  if (element.tagName === 'INPUT' || element.tagName === 'TEXTAREA' || element.tagName === 'SELECT') {
-    const id = element.getAttribute('id');
+  if (
+    element.tagName === "INPUT" ||
+    element.tagName === "TEXTAREA" ||
+    element.tagName === "SELECT"
+  ) {
+    const id = element.getAttribute("id");
     if (id) {
       const label = document.querySelector(`label[for="${id}"]`);
-      if (label) return label.textContent || '';
+      if (label) return label.textContent || "";
     }
   }
 
   // Fall back to text content
-  return element.textContent || '';
+  return element.textContent || "";
 }
 
 /**
@@ -162,17 +169,17 @@ export const KeyboardNavigation = {
     elements: HTMLElement[],
     currentIndex: number,
     options: {
-      orientation?: 'horizontal' | 'vertical' | 'both';
+      orientation?: "horizontal" | "vertical" | "both";
       wrap?: boolean;
       columns?: number;
     } = {}
   ): number {
-    const { orientation = 'vertical', wrap = true, columns = 1 } = options;
+    const { orientation = "vertical", wrap = true, columns = 1 } = options;
     let newIndex = currentIndex;
 
     switch (event.key) {
-      case 'ArrowUp':
-        if (orientation === 'vertical' || orientation === 'both') {
+      case "ArrowUp":
+        if (orientation === "vertical" || orientation === "both") {
           event.preventDefault();
           newIndex = currentIndex - columns;
           if (newIndex < 0 && wrap) {
@@ -183,8 +190,8 @@ export const KeyboardNavigation = {
         }
         break;
 
-      case 'ArrowDown':
-        if (orientation === 'vertical' || orientation === 'both') {
+      case "ArrowDown":
+        if (orientation === "vertical" || orientation === "both") {
           event.preventDefault();
           newIndex = currentIndex + columns;
           if (newIndex >= elements.length && wrap) {
@@ -195,8 +202,8 @@ export const KeyboardNavigation = {
         }
         break;
 
-      case 'ArrowLeft':
-        if (orientation === 'horizontal' || orientation === 'both') {
+      case "ArrowLeft":
+        if (orientation === "horizontal" || orientation === "both") {
           event.preventDefault();
           newIndex = currentIndex - 1;
           if (newIndex < 0 && wrap) {
@@ -207,8 +214,8 @@ export const KeyboardNavigation = {
         }
         break;
 
-      case 'ArrowRight':
-        if (orientation === 'horizontal' || orientation === 'both') {
+      case "ArrowRight":
+        if (orientation === "horizontal" || orientation === "both") {
           event.preventDefault();
           newIndex = currentIndex + 1;
           if (newIndex >= elements.length && wrap) {
@@ -219,12 +226,12 @@ export const KeyboardNavigation = {
         }
         break;
 
-      case 'Home':
+      case "Home":
         event.preventDefault();
         newIndex = 0;
         break;
 
-      case 'End':
+      case "End":
         event.preventDefault();
         newIndex = elements.length - 1;
         break;
@@ -241,11 +248,11 @@ export const KeyboardNavigation = {
    * Handles escape key to close modals/dropdowns
    */
   handleEscape(event: KeyboardEvent, callback: () => void): void {
-    if (event.key === 'Escape') {
+    if (event.key === "Escape") {
       event.preventDefault();
       callback();
     }
-  }
+  },
 };
 
 /**
@@ -257,30 +264,30 @@ export const HighContrast = {
    */
   isEnabled(): boolean {
     // Check for Windows high contrast mode
-    if (window.matchMedia('(prefers-contrast: high)').matches) {
+    if (window.matchMedia("(prefers-contrast: high)").matches) {
       return true;
     }
 
     // Check for forced colors (Windows high contrast)
-    if (window.matchMedia('(forced-colors: active)').matches) {
+    if (window.matchMedia("(forced-colors: active)").matches) {
       return true;
     }
 
     // Check for custom high contrast setting
-    return document.documentElement.classList.contains('high-contrast');
+    return document.documentElement.classList.contains("high-contrast");
   },
 
   /**
    * Toggles high contrast mode
    */
   toggle(): void {
-    document.documentElement.classList.toggle('high-contrast');
-    localStorage.setItem('high-contrast', this.isEnabled().toString());
+    document.documentElement.classList.toggle("high-contrast");
+    localStorage.setItem("high-contrast", this.isEnabled().toString());
 
     // Announce the change
     announceToScreenReader(
-      this.isEnabled() ? 'Vysoký kontrast zapnut' : 'Vysoký kontrast vypnut',
-      'assertive'
+      this.isEnabled() ? "Vysoký kontrast zapnut" : "Vysoký kontrast vypnut",
+      "assertive"
     );
   },
 
@@ -288,13 +295,13 @@ export const HighContrast = {
    * Initializes high contrast mode from user preferences
    */
   initialize(): void {
-    const saved = localStorage.getItem('high-contrast');
-    const systemPreference = window.matchMedia('(prefers-contrast: high)').matches;
+    const saved = localStorage.getItem("high-contrast");
+    const systemPreference = window.matchMedia("(prefers-contrast: high)").matches;
 
-    if (saved === 'true' || (saved === null && systemPreference)) {
-      document.documentElement.classList.add('high-contrast');
+    if (saved === "true" || (saved === null && systemPreference)) {
+      document.documentElement.classList.add("high-contrast");
     }
-  }
+  },
 };
 
 /**
@@ -305,7 +312,7 @@ export const ReducedMotion = {
    * Checks if user prefers reduced motion
    */
   isPreferred(): boolean {
-    return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   },
 
   /**
@@ -315,5 +322,5 @@ export const ReducedMotion = {
     if (!this.isPreferred()) {
       element.classList.add(animationClass);
     }
-  }
+  },
 };
