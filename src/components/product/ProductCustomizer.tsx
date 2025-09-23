@@ -3,7 +3,7 @@
 import { CheckIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils/price-calculator";
 import type {
@@ -34,6 +34,59 @@ export function ProductCustomizer({
   const formatPriceModifier = (price: number) => {
     return formatPrice(price, locale as "cs" | "en", true);
   };
+
+  // Check if a conditional option should be visible
+  const isOptionVisible = useCallback(
+    (option: CustomizationOption) => {
+      if (!option.dependsOn) {
+        return true;
+      }
+
+      const dependentCustomization = customizations.find(
+        (c) => c.optionId === option.dependsOn!.optionId
+      );
+
+      if (!dependentCustomization) {
+        return false;
+      }
+
+      return option.dependsOn.requiredChoiceIds.some((requiredId) =>
+        dependentCustomization.choiceIds.includes(requiredId)
+      );
+    },
+    [customizations]
+  );
+
+  // Clean up dependent customizations when parent option changes
+  const cleanupDependentCustomizations = useCallback(
+    (customizations: Customization[], changedOptionId: string) => {
+      const dependentOptions = product.customizationOptions.filter(
+        (option) => option.dependsOn?.optionId === changedOptionId
+      );
+
+      let cleanedCustomizations = [...customizations];
+
+      for (const dependentOption of dependentOptions) {
+        // Check if the dependent option should still be visible
+        const shouldBeVisible = dependentOption.dependsOn?.requiredChoiceIds.some((requiredId) => {
+          const parentCustomization = cleanedCustomizations.find(
+            (c) => c.optionId === dependentOption.dependsOn!.optionId
+          );
+          return parentCustomization?.choiceIds.includes(requiredId);
+        });
+
+        if (!shouldBeVisible) {
+          // Remove customizations for options that are no longer visible
+          cleanedCustomizations = cleanedCustomizations.filter(
+            (c) => c.optionId !== dependentOption.id
+          );
+        }
+      }
+
+      return cleanedCustomizations;
+    },
+    [product.customizationOptions]
+  );
 
   // Handle choice selection for an option
   const handleChoiceSelection = useCallback(
@@ -66,9 +119,11 @@ export function ProductCustomizer({
         });
       }
 
-      onCustomizationChange(newCustomizations);
+      // Clean up dependent customizations when parent option changes
+      const updatedCustomizations = cleanupDependentCustomizations(newCustomizations, optionId);
+      onCustomizationChange(updatedCustomizations);
     },
-    [customizations, onCustomizationChange]
+    [customizations, onCustomizationChange, cleanupDependentCustomizations]
   );
 
   // Handle custom value change (for text inputs)
@@ -145,6 +200,34 @@ export function ProductCustomizer({
     );
   };
 
+  // Render custom text input for choices that allow custom input
+  const renderCustomTextInput = (option: CustomizationOption, choice: CustomizationChoice) => {
+    const currentCustomization = getCurrentCustomization(option.id);
+    const isSelected = currentCustomization?.choiceIds.includes(choice.id);
+    const value = currentCustomization?.customValue || "";
+
+    if (!isSelected) {
+      return null;
+    }
+
+    return (
+      <div className="mt-3 space-y-2">
+        <textarea
+          value={value}
+          onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
+          placeholder={t("customTextPlaceholder")}
+          className="w-full p-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 resize-none"
+          rows={2}
+          maxLength={choice.maxLength || 50}
+        />
+        <div className="flex justify-between text-xs text-neutral-500">
+          <span>{t("customTextHelp")}</span>
+          <span>{value.length}/{choice.maxLength || 50}</span>
+        </div>
+      </div>
+    );
+  };
+
   // Render text input for message options
   const renderTextInput = (option: CustomizationOption) => {
     const currentCustomization = getCurrentCustomization(option.id);
@@ -172,9 +255,12 @@ export function ProductCustomizer({
     return null;
   }
 
+  // Filter visible options
+  const visibleOptions = product.customizationOptions.filter(isOptionVisible);
+
   return (
     <div className={cn("space-y-6", className)}>
-      {product.customizationOptions.map((option) => {
+      {visibleOptions.map((option) => {
         const currentCustomization = getCurrentCustomization(option.id);
         const selectionCount = currentCustomization?.choiceIds.length || 0;
 
@@ -206,8 +292,15 @@ export function ProductCustomizer({
             {option.type === "message" ? (
               renderTextInput(option)
             ) : (
-              <div className="grid grid-cols-1 gap-2">
-                {(option.choices || []).map((choice) => renderChoice(option, choice))}
+              <div className="space-y-2">
+                <div className="grid grid-cols-1 gap-2">
+                  {(option.choices || []).map((choice) => (
+                    <div key={choice.id}>
+                      {renderChoice(option, choice)}
+                      {choice.allowCustomInput && renderCustomTextInput(option, choice)}
+                    </div>
+                  ))}
+                </div>
               </div>
             )}
 

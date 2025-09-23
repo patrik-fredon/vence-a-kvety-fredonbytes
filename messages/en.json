@@ -123,8 +123,11 @@
       "title": "Please complete the following:",
       "required": "{option} is required",
       "minSelections": "{option} requires at least {min} selections (currently {current})",
-      "maxSelections": "{option} allows maximum {max} selections"
-    }
+      "maxSelections": "{option} allows maximum {max} selections",
+      "conditionalRequired": "{option} is required when ribbon is selected"
+    },
+    "customTextPlaceholder": "Enter your custom text...",
+    "customTextHelp": "Custom text for ribbon"
   },
   "cart": {
     "title": "Shopping Cart",

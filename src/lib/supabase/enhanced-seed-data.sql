@@ -82,11 +82,12 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "options": [
-        {"id": "small", "label": {"cs": "Malý (40cm)", "en": "Small (40cm)"}, "priceModifier": 0, "description": {"cs": "Ideální pro menší prostory", "en": "Ideal for smaller spaces"}},
-        {"id": "medium", "label": {"cs": "Střední (60cm)", "en": "Medium (60cm)"}, "priceModifier": 300, "description": {"cs": "Nejpopulárnější velikost", "en": "Most popular size"}},
-        {"id": "large", "label": {"cs": "Velký (80cm)", "en": "Large (80cm)"}, "priceModifier": 600, "description": {"cs": "Pro velké ceremonie", "en": "For large ceremonies"}},
-        {"id": "extra-large", "label": {"cs": "Extra velký (100cm)", "en": "Extra Large (100cm)"}, "priceModifier": 1000, "description": {"cs": "Nejimpozantnější velikost", "en": "Most impressive size"}}
+      "minSelections": 1,
+      "maxSelections": 1,
+      "choices": [
+        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
+        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
+        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
       ]
     },
     {
@@ -94,28 +95,47 @@ INSERT INTO products (
       "type": "ribbon",
       "name": {"cs": "Stuha", "en": "Ribbon"},
       "required": false,
-      "options": [
-        {"id": "white", "label": {"cs": "Bílá stuha", "en": "White ribbon"}, "priceModifier": 0},
-        {"id": "black", "label": {"cs": "Černá stuha", "en": "Black ribbon"}, "priceModifier": 0},
-        {"id": "gold", "label": {"cs": "Zlatá stuha", "en": "Gold ribbon"}, "priceModifier": 50},
-        {"id": "silver", "label": {"cs": "Stříbrná stuha", "en": "Silver ribbon"}, "priceModifier": 50}
+      "choices": [
+        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0}
       ]
     },
     {
-      "id": "message",
-      "type": "message",
-      "name": {"cs": "Věnování", "en": "Dedication"},
+      "id": "ribbon_color",
+      "type": "ribbon_color",
+      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
       "required": false,
-      "maxLength": 100,
-      "priceModifier": 100,
-      "placeholder": {"cs": "Např. \"S láskou vzpomínáme\"", "en": "E.g. \"With love we remember\""}
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
+        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_text",
+      "type": "ribbon_text",
+      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
+        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
+        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
+        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
+        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
+      ]
     },
     {
       "id": "delivery_time",
       "type": "delivery",
       "name": {"cs": "Čas dodání", "en": "Delivery Time"},
       "required": true,
-      "options": [
+      "choices": [
         {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
         {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
         {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
@@ -147,9 +167,52 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "options": [
-        {"id": "medium", "label": {"cs": "Střední (60cm)", "en": "Medium (60cm)"}, "priceModifier": 0},
-        {"id": "large", "label": {"cs": "Velký (80cm)", "en": "Large (80cm)"}, "priceModifier": 400}
+      "minSelections": 1,
+      "maxSelections": 1,
+      "choices": [
+        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
+        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
+        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
+      ]
+    },
+    {
+      "id": "ribbon",
+      "type": "ribbon",
+      "name": {"cs": "Stuha", "en": "Ribbon"},
+      "required": false,
+      "choices": [
+        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_color",
+      "type": "ribbon_color",
+      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
+        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_text",
+      "type": "ribbon_text",
+      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
+        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
+        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
+        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
+        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
       ]
     },
     {
@@ -157,7 +220,7 @@ INSERT INTO products (
       "type": "style",
       "name": {"cs": "Intenzita barev", "en": "Color Intensity"},
       "required": false,
-      "options": [
+      "choices": [
         {"id": "soft", "label": {"cs": "Jemné tóny", "en": "Soft tones"}, "priceModifier": 0},
         {"id": "vibrant", "label": {"cs": "Výrazné barvy", "en": "Vibrant colors"}, "priceModifier": 100}
       ]
@@ -184,11 +247,64 @@ INSERT INTO products (
   ]'::jsonb,
   '[
     {
+      "id": "size",
+      "type": "size",
+      "name": {"cs": "Velikost", "en": "Size"},
+      "required": true,
+      "minSelections": 1,
+      "maxSelections": 1,
+      "choices": [
+        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
+        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
+        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
+      ]
+    },
+    {
+      "id": "ribbon",
+      "type": "ribbon",
+      "name": {"cs": "Stuha", "en": "Ribbon"},
+      "required": false,
+      "choices": [
+        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_color",
+      "type": "ribbon_color",
+      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
+        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_text",
+      "type": "ribbon_text",
+      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
+        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
+        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
+        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
+        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
+      ]
+    },
+    {
       "id": "style",
       "type": "design",
       "name": {"cs": "Styl kompozice", "en": "Composition Style"},
       "required": true,
-      "options": [
+      "choices": [
         {"id": "minimal", "label": {"cs": "Minimalistický", "en": "Minimalist"}, "priceModifier": 0},
         {"id": "artistic", "label": {"cs": "Umělecký", "en": "Artistic"}, "priceModifier": 200},
         {"id": "avant-garde", "label": {"cs": "Avantgardní", "en": "Avant-garde"}, "priceModifier": 400}
@@ -220,9 +336,52 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "options": [
-        {"id": "medium", "label": {"cs": "Střední (50cm)", "en": "Medium (50cm)"}, "priceModifier": 0},
-        {"id": "large", "label": {"cs": "Velký (70cm)", "en": "Large (70cm)"}, "priceModifier": 500}
+      "minSelections": 1,
+      "maxSelections": 1,
+      "choices": [
+        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
+        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
+        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
+      ]
+    },
+    {
+      "id": "ribbon",
+      "type": "ribbon",
+      "name": {"cs": "Stuha", "en": "Ribbon"},
+      "required": false,
+      "choices": [
+        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_color",
+      "type": "ribbon_color",
+      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
+        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_text",
+      "type": "ribbon_text",
+      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
+        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
+        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
+        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
+        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
       ]
     },
     {
@@ -230,7 +389,7 @@ INSERT INTO products (
       "type": "flower",
       "name": {"cs": "Typ růží", "en": "Rose Type"},
       "required": false,
-      "options": [
+      "choices": [
         {"id": "standard", "label": {"cs": "Standardní růže", "en": "Standard roses"}, "priceModifier": 0},
         {"id": "premium", "label": {"cs": "Prémiové růže", "en": "Premium roses"}, "priceModifier": 300},
         {"id": "garden", "label": {"cs": "Zahradní růže", "en": "Garden roses"}, "priceModifier": 200}

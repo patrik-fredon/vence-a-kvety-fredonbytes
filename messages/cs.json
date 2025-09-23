@@ -123,8 +123,11 @@
       "title": "Prosím dokončete následující:",
       "required": "{option} je povinné",
       "minSelections": "{option} vyžaduje alespoň {min} výběrů (aktuálně {current})",
-      "maxSelections": "{option} umožňuje maximálně {max} výběrů"
-    }
+      "maxSelections": "{option} umožňuje maximálně {max} výběrů",
+      "conditionalRequired": "{option} je povinné při výběru stuhy"
+    },
+    "customTextPlaceholder": "Zadejte vlastní text...",
+    "customTextHelp": "Vlastní text na stuhu"
   },
   "cart": {
     "title": "Nákupní košík",

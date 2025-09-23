@@ -5,7 +5,7 @@
 import type { BaseEntity, ImageData, LocalizedContent, SEOMetadata } from "./index";
 
 // Customization option types
-export type CustomizationType = "size" | "flowers" | "ribbon" | "message";
+export type CustomizationType = "size" | "flowers" | "ribbon" | "ribbon_color" | "ribbon_text" | "message" | "delivery";
 
 export interface CustomizationChoice {
   id: string;
@@ -14,6 +14,8 @@ export interface CustomizationChoice {
   priceModifier: number;
   available: boolean;
   imageUrl?: string;
+  allowCustomInput?: boolean;
+  maxLength?: number;
 }
 
 export interface CustomizationOption {
@@ -25,6 +27,10 @@ export interface CustomizationOption {
   required: boolean;
   maxSelections?: number;
   minSelections?: number;
+  dependsOn?: {
+    optionId: string;
+    requiredChoiceIds: string[];
+  };
 }
 
 // Product availability
