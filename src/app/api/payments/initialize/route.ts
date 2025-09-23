@@ -2,9 +2,9 @@
  * API route for initializing payments (Stripe and GoPay)
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { PaymentService, PaymentRequest } from "@/lib/payments";
-import { PaymentMethod } from "@/types/order";
+import { type NextRequest, NextResponse } from "next/server";
+import { type PaymentRequest, PaymentService } from "@/lib/payments";
+import type { PaymentMethod } from "@/types/order";
 
 export async function POST(request: NextRequest) {
   try {
@@ -21,7 +21,7 @@ export async function POST(request: NextRequest) {
     } = body;
 
     // Validate required fields
-    if (!orderId || !amount || !customerEmail || !customerName || !paymentMethod) {
+    if (!(orderId && amount && customerEmail && customerName && paymentMethod)) {
       return NextResponse.json(
         {
           success: false,

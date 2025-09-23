@@ -1,15 +1,15 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
 import { useTranslations } from "next-intl";
-import {
+import { useCallback, useEffect, useRef, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Input } from "@/components/ui/Input";
+import { cn } from "@/lib/utils";
+import type {
   Category,
   ProductFilters as ProductFiltersType,
   ProductSortOptions,
 } from "@/types/product";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { cn } from "@/lib/utils";
 
 interface ProductFiltersProps {
   categories: Category[];
@@ -46,20 +46,23 @@ export function ProductFilters({
   // Debounced search function with useRef to avoid stale closures
   const timeoutRef = useRef<NodeJS.Timeout>();
 
-  const debouncedSearch = useCallback((searchTerm: string) => {
-    if (timeoutRef.current) {
-      clearTimeout(timeoutRef.current);
-    }
+  const debouncedSearch = useCallback(
+    (searchTerm: string) => {
+      if (timeoutRef.current) {
+        clearTimeout(timeoutRef.current);
+      }
 
-    timeoutRef.current = setTimeout(() => {
-      // Use functional update to get the latest localFilters
-      setLocalFilters(currentFilters => {
-        const newFilters = { ...currentFilters, search: searchTerm || undefined };
-        onFiltersChange(newFilters);
-        return newFilters;
-      });
-    }, 300); // 300ms debounce
-  }, [onFiltersChange]);
+      timeoutRef.current = setTimeout(() => {
+        // Use functional update to get the latest localFilters
+        setLocalFilters((currentFilters) => {
+          const newFilters = { ...currentFilters, search: searchTerm || undefined };
+          onFiltersChange(newFilters);
+          return newFilters;
+        });
+      }, 300); // 300ms debounce
+    },
+    [onFiltersChange]
+  );
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -89,7 +92,7 @@ export function ProductFilters({
       field,
       direction: direction || sortOptions.direction,
     };
-    console.log('📊 [ProductFilters] Sort change:', newSort);
+    console.log("📊 [ProductFilters] Sort change:", newSort);
     onSortChange(newSort);
   };
 
@@ -123,10 +126,13 @@ export function ProductFilters({
           <span>{isSearchAndFiltersVisible ? t("hideSearch") : t("showSearch")}</span>
           {hasActiveFilters && (
             <span className="ml-2 px-2 py-1 text-amber-100 text-xs rounded-full">
-              {Object.keys(localFilters).filter(key =>
-                localFilters[key as keyof ProductFiltersType] !== undefined &&
-                localFilters[key as keyof ProductFiltersType] !== ""
-              ).length}
+              {
+                Object.keys(localFilters).filter(
+                  (key) =>
+                    localFilters[key as keyof ProductFiltersType] !== undefined &&
+                    localFilters[key as keyof ProductFiltersType] !== ""
+                ).length
+              }
             </span>
           )}
         </Button>
@@ -168,8 +174,6 @@ export function ProductFilters({
             )}
           </div>
 
-
-
           {/* Category Filter */}
           <div>
             <label className="block text-sm font-medium text-neutral-700 mb-2">
@@ -202,7 +206,7 @@ export function ProductFilters({
                 onChange={(e) =>
                   handleFilterChange(
                     "minPrice",
-                    e.target.value ? parseFloat(e.target.value) : undefined
+                    e.target.value ? Number.parseFloat(e.target.value) : undefined
                   )
                 }
                 min="0"
@@ -214,7 +218,7 @@ export function ProductFilters({
                 onChange={(e) =>
                   handleFilterChange(
                     "maxPrice",
-                    e.target.value ? parseFloat(e.target.value) : undefined
+                    e.target.value ? Number.parseFloat(e.target.value) : undefined
                   )
                 }
                 min="0"
@@ -231,7 +235,7 @@ export function ProductFilters({
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={localFilters.inStock || false}
+                  checked={localFilters.inStock}
                   onChange={(e) => handleFilterChange("inStock", e.target.checked || undefined)}
                   className="mr-2 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />
@@ -240,7 +244,7 @@ export function ProductFilters({
               <label className="flex items-center">
                 <input
                   type="checkbox"
-                  checked={localFilters.featured || false}
+                  checked={localFilters.featured}
                   onChange={(e) => handleFilterChange("featured", e.target.checked || undefined)}
                   className="mr-2 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
                 />

@@ -1,9 +1,9 @@
-import { calculateTotalPrice, calculateDeliveryFee, applyDiscounts } from '../price-calculator';
-import { Customization } from '@/types/product';
+import type { Customization } from "@/types/product";
+import { applyDiscounts, calculateDeliveryFee, calculateTotalPrice } from "../price-calculator";
 
-describe('Price Calculator', () => {
-  describe('calculateTotalPrice', () => {
-    it('calculates base price correctly', () => {
+describe("Price Calculator", () => {
+  describe("calculateTotalPrice", () => {
+    it("calculates base price correctly", () => {
       const basePrice = 1500;
       const customizations: Customization[] = [];
 
@@ -11,19 +11,19 @@ describe('Price Calculator', () => {
       expect(result).toBe(1500);
     });
 
-    it('applies customization price modifiers', () => {
+    it("applies customization price modifiers", () => {
       const basePrice = 1500;
       const customizations: Customization[] = [
         {
-          optionId: 'size',
-          choiceIds: ['large'],
-          customValue: 'large',
+          optionId: "size",
+          choiceIds: ["large"],
+          customValue: "large",
           priceModifier: 500,
         },
         {
-          optionId: 'ribbon',
-          choiceIds: ['gold'],
-          customValue: 'gold',
+          optionId: "ribbon",
+          choiceIds: ["gold"],
+          customValue: "gold",
           priceModifier: 200,
         },
       ];
@@ -32,13 +32,13 @@ describe('Price Calculator', () => {
       expect(result).toBe(2200); // 1500 + 500 + 200
     });
 
-    it('handles negative price modifiers', () => {
+    it("handles negative price modifiers", () => {
       const basePrice = 1500;
       const customizations: Customization[] = [
         {
-          optionId: 'discount',
-          choiceIds: ['simple'],
-          customValue: 'simple',
+          optionId: "discount",
+          choiceIds: ["simple"],
+          customValue: "simple",
           priceModifier: -300,
         },
       ];
@@ -47,13 +47,13 @@ describe('Price Calculator', () => {
       expect(result).toBe(1200); // 1500 - 300
     });
 
-    it('ensures minimum price is not negative', () => {
+    it("ensures minimum price is not negative", () => {
       const basePrice = 100;
       const customizations: Customization[] = [
         {
-          optionId: 'discount',
-          choiceIds: ['huge'],
-          customValue: 'huge',
+          optionId: "discount",
+          choiceIds: ["huge"],
+          customValue: "huge",
           priceModifier: -200,
         },
       ];
@@ -62,7 +62,7 @@ describe('Price Calculator', () => {
       expect(result).toBe(0); // Should not go below 0
     });
 
-    it('handles empty customizations array', () => {
+    it("handles empty customizations array", () => {
       const basePrice = 1500;
       const customizations: Customization[] = [];
 
@@ -70,13 +70,13 @@ describe('Price Calculator', () => {
       expect(result).toBe(1500);
     });
 
-    it('handles customizations without price modifiers', () => {
+    it("handles customizations without price modifiers", () => {
       const basePrice = 1500;
       const customizations: Customization[] = [
         {
-          optionId: 'message',
+          optionId: "message",
           choiceIds: [],
-          customValue: 'In loving memory',
+          customValue: "In loving memory",
           // No priceModifier
         },
       ];
@@ -86,30 +86,30 @@ describe('Price Calculator', () => {
     });
   });
 
-  describe('calculateDeliveryFee', () => {
-    it('calculates standard delivery fee', () => {
+  describe("calculateDeliveryFee", () => {
+    it("calculates standard delivery fee", () => {
       const address = {
-        street: 'Václavské náměstí 1',
-        city: 'Praha',
-        postalCode: '11000',
-        country: 'CZ',
+        street: "Václavské náměstí 1",
+        city: "Praha",
+        postalCode: "11000",
+        country: "CZ",
       };
-      const deliveryDate = new Date('2024-12-25');
+      const deliveryDate = new Date("2024-12-25");
       const isExpress = false;
 
       const result = calculateDeliveryFee(address, deliveryDate, isExpress);
       expect(result).toBeGreaterThan(0);
-      expect(typeof result).toBe('number');
+      expect(typeof result).toBe("number");
     });
 
-    it('calculates express delivery fee', () => {
+    it("calculates express delivery fee", () => {
       const address = {
-        street: 'Václavské náměstí 1',
-        city: 'Praha',
-        postalCode: '11000',
-        country: 'CZ',
+        street: "Václavské náměstí 1",
+        city: "Praha",
+        postalCode: "11000",
+        country: "CZ",
       };
-      const deliveryDate = new Date('2024-12-25');
+      const deliveryDate = new Date("2024-12-25");
       const isExpress = true;
 
       const standardFee = calculateDeliveryFee(address, deliveryDate, false);
@@ -118,22 +118,22 @@ describe('Price Calculator', () => {
       expect(expressFee).toBeGreaterThan(standardFee);
     });
 
-    it('handles different cities with different rates', () => {
+    it("handles different cities with different rates", () => {
       const pragueAddress = {
-        street: 'Václavské náměstí 1',
-        city: 'Praha',
-        postalCode: '11000',
-        country: 'CZ',
+        street: "Václavské náměstí 1",
+        city: "Praha",
+        postalCode: "11000",
+        country: "CZ",
       };
 
       const brnoAddress = {
-        street: 'Náměstí Svobody 1',
-        city: 'Brno',
-        postalCode: '60200',
-        country: 'CZ',
+        street: "Náměstí Svobody 1",
+        city: "Brno",
+        postalCode: "60200",
+        country: "CZ",
       };
 
-      const deliveryDate = new Date('2024-12-25');
+      const deliveryDate = new Date("2024-12-25");
 
       const pragueFee = calculateDeliveryFee(pragueAddress, deliveryDate, false);
       const brnoFee = calculateDeliveryFee(brnoAddress, deliveryDate, false);
@@ -143,16 +143,16 @@ describe('Price Calculator', () => {
       // Brno might have different rates than Prague
     });
 
-    it('handles weekend delivery surcharge', () => {
+    it("handles weekend delivery surcharge", () => {
       const address = {
-        street: 'Václavské náměstí 1',
-        city: 'Praha',
-        postalCode: '11000',
-        country: 'CZ',
+        street: "Václavské náměstí 1",
+        city: "Praha",
+        postalCode: "11000",
+        country: "CZ",
       };
 
-      const weekdayDate = new Date('2024-12-23'); // Monday
-      const weekendDate = new Date('2024-12-28'); // Saturday
+      const weekdayDate = new Date("2024-12-23"); // Monday
+      const weekendDate = new Date("2024-12-28"); // Saturday
 
       const weekdayFee = calculateDeliveryFee(address, weekdayDate, false);
       const weekendFee = calculateDeliveryFee(address, weekendDate, false);
@@ -162,13 +162,13 @@ describe('Price Calculator', () => {
     });
   });
 
-  describe('applyDiscounts', () => {
-    it('applies percentage discount', () => {
+  describe("applyDiscounts", () => {
+    it("applies percentage discount", () => {
       const originalPrice = 1000;
       const discount = {
-        type: 'percentage' as const,
+        type: "percentage" as const,
         value: 10, // 10%
-        code: 'SAVE10',
+        code: "SAVE10",
       };
 
       const result = applyDiscounts(originalPrice, [discount]);
@@ -176,12 +176,12 @@ describe('Price Calculator', () => {
       expect(result.totalDiscount).toBe(100);
     });
 
-    it('applies fixed amount discount', () => {
+    it("applies fixed amount discount", () => {
       const originalPrice = 1000;
       const discount = {
-        type: 'fixed' as const,
+        type: "fixed" as const,
         value: 150,
-        code: 'SAVE150',
+        code: "SAVE150",
       };
 
       const result = applyDiscounts(originalPrice, [discount]);
@@ -189,18 +189,18 @@ describe('Price Calculator', () => {
       expect(result.totalDiscount).toBe(150);
     });
 
-    it('applies multiple discounts', () => {
+    it("applies multiple discounts", () => {
       const originalPrice = 1000;
       const discounts = [
         {
-          type: 'percentage' as const,
+          type: "percentage" as const,
           value: 10, // 10%
-          code: 'SAVE10',
+          code: "SAVE10",
         },
         {
-          type: 'fixed' as const,
+          type: "fixed" as const,
           value: 50,
-          code: 'EXTRA50',
+          code: "EXTRA50",
         },
       ];
 
@@ -209,12 +209,12 @@ describe('Price Calculator', () => {
       expect(result.totalDiscount).toBe(200);
     });
 
-    it('ensures final price is not negative', () => {
+    it("ensures final price is not negative", () => {
       const originalPrice = 100;
       const discount = {
-        type: 'fixed' as const,
+        type: "fixed" as const,
         value: 200,
-        code: 'HUGE_DISCOUNT',
+        code: "HUGE_DISCOUNT",
       };
 
       const result = applyDiscounts(originalPrice, [discount]);
@@ -222,7 +222,7 @@ describe('Price Calculator', () => {
       expect(result.totalDiscount).toBe(100); // Only actual discount applied
     });
 
-    it('handles empty discounts array', () => {
+    it("handles empty discounts array", () => {
       const originalPrice = 1000;
       const discounts: any[] = [];
 
@@ -231,12 +231,12 @@ describe('Price Calculator', () => {
       expect(result.totalDiscount).toBe(0);
     });
 
-    it('handles invalid discount values', () => {
+    it("handles invalid discount values", () => {
       const originalPrice = 1000;
       const discount = {
-        type: 'percentage' as const,
+        type: "percentage" as const,
         value: -10, // Negative percentage
-        code: 'INVALID',
+        code: "INVALID",
       };
 
       const result = applyDiscounts(originalPrice, [discount]);

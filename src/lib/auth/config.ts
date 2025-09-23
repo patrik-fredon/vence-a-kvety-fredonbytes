@@ -1,12 +1,12 @@
-import NextAuth from "next-auth";
 import { SupabaseAdapter } from "@auth/supabase-adapter";
 import type { NextAuthConfig } from "next-auth";
+import NextAuth from "next-auth";
 
 function getSupabaseConfig() {
   const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
   const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-  if (!supabaseUrl || !supabaseServiceKey) {
+  if (!(supabaseUrl && supabaseServiceKey)) {
     console.warn("Supabase environment variables not found, auth will not work properly");
     return null;
   }
@@ -31,7 +31,7 @@ export const config = {
         password: { label: "Password", type: "password" },
       },
       async authorize(credentials) {
-        if (!credentials?.email || !credentials?.password) {
+        if (!(credentials?.email && credentials?.password)) {
           return null;
         }
 
@@ -39,7 +39,7 @@ export const config = {
           const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
           const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 
-          if (!supabaseUrl || !supabaseAnonKey) {
+          if (!(supabaseUrl && supabaseAnonKey)) {
             return null;
           }
 

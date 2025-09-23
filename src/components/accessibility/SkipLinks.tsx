@@ -3,45 +3,45 @@
  * Provides quick navigation to main content areas
  */
 
-'use client';
+"use client";
 
-import { useTranslations } from 'next-intl';
+import { useTranslations } from "next-intl";
 
 interface SkipLinksProps {
   locale: string;
 }
 
 export function SkipLinks({ locale }: SkipLinksProps) {
-  const t = useTranslations('accessibility');
+  const t = useTranslations("accessibility");
 
   const skipLinks = [
     {
-      href: '#main-content',
-      label: t('skipToContent'),
-      key: 'content'
+      href: "#main-content",
+      label: t("skipToContent"),
+      key: "content",
     },
     {
-      href: '#main-navigation',
-      label: t('skipToNavigation'),
-      key: 'navigation'
+      href: "#main-navigation",
+      label: t("skipToNavigation"),
+      key: "navigation",
     },
     {
-      href: '#search',
-      label: t('skipToSearch'),
-      key: 'search'
+      href: "#search",
+      label: t("skipToSearch"),
+      key: "search",
     },
     {
-      href: '#footer',
-      label: t('skipToFooter'),
-      key: 'footer'
-    }
+      href: "#footer",
+      label: t("skipToFooter"),
+      key: "footer",
+    },
   ];
 
   return (
     <div className="sr-only focus-within:not-sr-only">
       <div className="fixed top-0 left-0 right-0 z-50 bg-stone-900 text-white p-2">
         <div className="container mx-auto">
-          <nav aria-label={t('skipNavigation')}>
+          <nav aria-label={t("skipNavigation")}>
             <ul className="flex flex-wrap gap-4">
               {skipLinks.map((link) => (
                 <li key={link.key}>
@@ -57,11 +57,11 @@ export function SkipLinks({ locale }: SkipLinksProps) {
                       const target = document.querySelector(link.href);
                       if (target) {
                         // Make the target focusable if it isn't already
-                        if (!target.hasAttribute('tabindex')) {
-                          target.setAttribute('tabindex', '-1');
+                        if (!target.hasAttribute("tabindex")) {
+                          target.setAttribute("tabindex", "-1");
                         }
                         (target as HTMLElement).focus();
-                        target.scrollIntoView({ behavior: 'smooth' });
+                        target.scrollIntoView({ behavior: "smooth" });
                       }
                     }}
                   >

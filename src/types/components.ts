@@ -3,9 +3,9 @@
  * Following atomic design principles: Atoms -> Molecules -> Organisms -> Templates -> Pages
  */
 
-import type { ReactNode, HTMLAttributes, ComponentPropsWithoutRef } from "react";
+import type { ComponentPropsWithoutRef, HTMLAttributes, ReactNode } from "react";
+import type { JSX } from "react/jsx-runtime";
 import type { Locale } from "./index";
-import { JSX } from "react/jsx-runtime";
 
 // =============================================================================
 // BASE COMPONENT INTERFACES
@@ -117,19 +117,11 @@ export interface TemplateProps extends OrganismProps {
 /**
  * Button component variants and sizes for stone/amber design system
  */
-export type ButtonVariant =
-  | "default"
-  | "destructive"
-  | "outline"
-  | "secondary"
-  | "ghost"
-  | "link";
+export type ButtonVariant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-export interface ButtonProps extends
-  Omit<ComponentPropsWithoutRef<"button">, "size">,
-  AtomProps {
+export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "size">, AtomProps {
   variant?: ButtonVariant;
   size?: ButtonSize;
   loading?: boolean;
@@ -142,20 +134,13 @@ export interface ButtonProps extends
 /**
  * Input component types and variants
  */
-export type InputType =
-  | "text"
-  | "email"
-  | "password"
-  | "number"
-  | "tel"
-  | "url"
-  | "search";
+export type InputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search";
 
 export type InputVariant = "default" | "filled" | "outline";
 
-export interface InputProps extends
-  Omit<ComponentPropsWithoutRef<"input">, "size" | "type">,
-  AtomProps {
+export interface InputProps
+  extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type">,
+    AtomProps {
   type?: InputType;
   variant?: InputVariant;
   label?: string;
@@ -419,17 +404,57 @@ export type ForwardRefComponent<T, P = {}> = React.ForwardRefExoticComponent<
  * Design system spacing scale
  */
 export type SpacingScale =
-  | "0" | "px" | "0.5" | "1" | "1.5" | "2" | "2.5" | "3" | "3.5" | "4"
-  | "5" | "6" | "7" | "8" | "9" | "10" | "11" | "12" | "14" | "16"
-  | "20" | "24" | "28" | "32" | "36" | "40" | "44" | "48" | "52" | "56"
-  | "60" | "64" | "72" | "80" | "96";
+  | "0"
+  | "px"
+  | "0.5"
+  | "1"
+  | "1.5"
+  | "2"
+  | "2.5"
+  | "3"
+  | "3.5"
+  | "4"
+  | "5"
+  | "6"
+  | "7"
+  | "8"
+  | "9"
+  | "10"
+  | "11"
+  | "12"
+  | "14"
+  | "16"
+  | "20"
+  | "24"
+  | "28"
+  | "32"
+  | "36"
+  | "40"
+  | "44"
+  | "48"
+  | "52"
+  | "56"
+  | "60"
+  | "64"
+  | "72"
+  | "80"
+  | "96";
 
 /**
  * Design system color palette
  */
 export type ColorScale =
-  | "50" | "100" | "200" | "300" | "400" | "500"
-  | "600" | "700" | "800" | "900" | "950";
+  | "50"
+  | "100"
+  | "200"
+  | "300"
+  | "400"
+  | "500"
+  | "600"
+  | "700"
+  | "800"
+  | "900"
+  | "950";
 
 /**
  * Stone/Amber design system color scheme

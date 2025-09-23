@@ -1,22 +1,22 @@
+import { currencyConfig, defaultLocale, i18nConfig, locales } from "@/i18n/config";
 import {
+  detectBrowserLocale,
   formatCurrency,
   formatCurrencyCustom,
   formatDate,
   formatDeliveryDate,
-  getLocalizedContent,
-  pluralize,
-  getRelativeTime,
-  isValidLocale,
-  getValidLocale,
-  setLocalePreference,
-  getLocalePreference,
-  setLocaleCookie,
-  getLocaleCookie,
-  translationValidation,
-  detectBrowserLocale,
   getBestLocale,
+  getLocaleCookie,
+  getLocalePreference,
+  getLocalizedContent,
+  getRelativeTime,
+  getValidLocale,
+  isValidLocale,
+  pluralize,
+  setLocaleCookie,
+  setLocalePreference,
+  translationValidation,
 } from "../utils";
-import { locales, defaultLocale, currencyConfig, i18nConfig } from "@/i18n/config";
 
 describe("i18n Configuration", () => {
   test("should have correct locale configuration", () => {

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import Link from "next/link";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useResetPassword } from "@/lib/auth/hooks";
@@ -45,11 +45,12 @@ export function ForgotPasswordForm() {
               </div>
               <h2 className="text-3xl font-light text-stone-900 mb-4">E-mail odeslán</h2>
               <p className="text-stone-600 mb-6 leading-relaxed">
-                Pokud existuje účet s e-mailem <strong className="text-stone-900">{email}</strong>, odeslali jsme vám odkaz pro
-                obnovení hesla.
+                Pokud existuje účet s e-mailem <strong className="text-stone-900">{email}</strong>,
+                odeslali jsme vám odkaz pro obnovení hesla.
               </p>
               <p className="text-sm text-stone-500 mb-8 leading-relaxed">
-                Zkontrolujte svou e-mailovou schránku a klikněte na odkaz pro vytvoření nového hesla.
+                Zkontrolujte svou e-mailovou schránku a klikněte na odkaz pro vytvoření nového
+                hesla.
               </p>
               <Link
                 href="/auth/signin"
@@ -96,7 +97,11 @@ export function ForgotPasswordForm() {
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </div>
                   <div className="ml-3">

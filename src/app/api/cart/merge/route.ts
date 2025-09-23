@@ -1,6 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
+import { createServerClient } from "@/lib/supabase/server";
 
 interface MergeCartRequest {
   sessionId: string;

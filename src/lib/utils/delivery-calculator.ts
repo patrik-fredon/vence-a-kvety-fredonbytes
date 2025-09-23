@@ -3,17 +3,17 @@
  * Handles business logic for delivery scheduling, holidays, and cost calculation
  */
 
-import {
-  DeliveryAvailability,
-  DeliveryOption,
-  DeliveryCostCalculation,
-  DeliveryUrgency,
-  DeliveryTimeSlot,
-  Holiday,
-  DeliveryZone,
-  DeliverySettings,
-} from "@/types/delivery";
 import type { Address } from "@/types";
+import type {
+  DeliveryAvailability,
+  DeliveryCostCalculation,
+  DeliveryOption,
+  DeliverySettings,
+  DeliveryTimeSlot,
+  DeliveryUrgency,
+  DeliveryZone,
+  Holiday,
+} from "@/types/delivery";
 
 // Czech public holidays (fixed dates and calculated dates)
 export const CZECH_HOLIDAYS_2024: Holiday[] = [
@@ -176,7 +176,7 @@ export function calculateEarliestDeliveryDate(
 
   // For same-day delivery, check if it's still possible today
   if (urgency === "same-day") {
-    const endOfWorkingHours = parseInt(settings.workingHours.end.split(":")[0] || "18");
+    const endOfWorkingHours = Number.parseInt(settings.workingHours.end.split(":")[0] || "18");
     if (currentHour >= endOfWorkingHours - settings.sameDayDeliveryHours) {
       // Too late for same-day, move to next working day
       return getNextWorkingDay(now, settings);

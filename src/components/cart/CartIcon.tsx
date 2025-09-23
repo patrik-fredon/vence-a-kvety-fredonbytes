@@ -1,10 +1,10 @@
 "use client";
 
-import React from "react";
-import Link from "next/link";
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
-import { useCart } from "@/lib/cart/context";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
+import React from "react";
+import { useCart } from "@/lib/cart/context";
 import { cn } from "@/lib/utils";
 
 interface CartIconProps {
@@ -32,12 +32,14 @@ export function CartIcon({ locale, className = "" }: CartIconProps) {
       <ShoppingCartIcon className="w-5 h-5" />
 
       {itemCount > 0 && (
-        <span className={cn(
-          "absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-semibold rounded-full",
-          "w-5 h-5 flex items-center justify-center min-w-[1.25rem] px-1",
-          "shadow-sm border border-white",
-          "high-contrast:bg-Highlight high-contrast:text-HighlightText high-contrast:border-HighlightText"
-        )}>
+        <span
+          className={cn(
+            "absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-semibold rounded-full",
+            "w-5 h-5 flex items-center justify-center min-w-[1.25rem] px-1",
+            "shadow-sm border border-white",
+            "high-contrast:bg-Highlight high-contrast:text-HighlightText high-contrast:border-HighlightText"
+          )}
+        >
           {itemCount > 99 ? "99+" : itemCount}
         </span>
       )}

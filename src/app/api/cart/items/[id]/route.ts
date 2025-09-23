@@ -1,7 +1,7 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import { UpdateCartItemRequest } from "@/types/cart";
+import { createServerClient } from "@/lib/supabase/server";
+import type { UpdateCartItemRequest } from "@/types/cart";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -31,7 +31,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     // Get session ID for guest users
     const sessionId = request.cookies.get("cart-session")?.value;
 
-    if (!session?.user?.id && !sessionId) {
+    if (!(session?.user?.id || sessionId)) {
       return NextResponse.json(
         {
           success: false,
@@ -129,7 +129,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     // Get session ID for guest users
     const sessionId = request.cookies.get("cart-session")?.value;
 
-    if (!session?.user?.id && !sessionId) {
+    if (!(session?.user?.id || sessionId)) {
       return NextResponse.json(
         {
           success: false,

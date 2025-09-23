@@ -1,10 +1,10 @@
 "use client";
 
-import Link from "next/link";
-import { useTranslations } from "next-intl";
-import { usePathname } from "next/navigation";
-import { useState, useRef, useEffect } from "react";
 import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
@@ -96,11 +96,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
   // For mobile navigation, use enhanced stone-based design
   if (mobile) {
     return (
-      <nav
-        className="space-y-1"
-        role="navigation"
-        aria-label={tAccessibility('mobileNavigation')}
-      >
+      <nav className="space-y-1" role="navigation" aria-label={tAccessibility("mobileNavigation")}>
         {navItems.map((item) => (
           <div key={item.href}>
             {item.hasDropdown ? (
@@ -132,7 +128,6 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                     >
                       {tProduct("allProducts")}
                     </Link>
-
                   </div>
                 )}
               </div>
@@ -164,7 +159,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
       className="flex items-center space-x-8"
       ref={dropdownRef}
       role="navigation"
-      aria-label={tAccessibility('mainNavigation')}
+      aria-label={tAccessibility("mainNavigation")}
     >
       {navItems.map((item) => (
         <div key={item.href} className="relative">
@@ -174,17 +169,17 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                 onClick={() => handleDropdownToggle("products")}
                 onMouseEnter={() => setOpenDropdown("products")}
                 onKeyDown={(e) => {
-                  if (e.key === 'Enter' || e.key === ' ') {
+                  if (e.key === "Enter" || e.key === " ") {
                     e.preventDefault();
                     handleDropdownToggle("products");
-                  } else if (e.key === 'Escape') {
+                  } else if (e.key === "Escape") {
                     setOpenDropdown(null);
-                  } else if (e.key === 'ArrowDown') {
+                  } else if (e.key === "ArrowDown") {
                     e.preventDefault();
                     setOpenDropdown("products");
                     // Focus first item in dropdown
                     setTimeout(() => {
-                      const firstItem = dropdownRef.current?.querySelector('a');
+                      const firstItem = dropdownRef.current?.querySelector("a");
                       firstItem?.focus();
                     }, 0);
                   }

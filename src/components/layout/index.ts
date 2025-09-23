@@ -9,14 +9,14 @@
 // LAYOUT ORGANISMS
 // =============================================================================
 
-export { Header } from "./Header";
 export { Footer } from "./Footer";
-export { Navigation } from "./Navigation";
-export { MainLayout } from "./MainLayout";
+export { Header } from "./Header";
 export { LanguageToggle } from "./LanguageToggle";
-export { RefactoredHeroSection } from "./RefactoredHeroSection";
-export { ProductReferencesSection } from "./ProductReferencesSection";
 export { LazyProductReferencesSection } from "./LazyProductReferencesSection";
+export { MainLayout } from "./MainLayout";
+export { Navigation } from "./Navigation";
+export { ProductReferencesSection } from "./ProductReferencesSection";
+export { RefactoredHeroSection } from "./RefactoredHeroSection";
 export { RefactoredPageLayout } from "./RefactoredPageLayout";
 
 // =============================================================================

@@ -3,14 +3,14 @@
  * Handles caching of product data, categories, and search results
  */
 
-import { Product, Category } from "@/types/product";
+import type { Category, Product } from "@/types/product";
 import {
-  getCacheClient,
   CACHE_KEYS,
   CACHE_TTL,
-  generateCacheKey,
-  serializeForCache,
   deserializeFromCache,
+  generateCacheKey,
+  getCacheClient,
+  serializeForCache,
 } from "./redis";
 
 /**
@@ -104,9 +104,7 @@ export async function cacheProductsList(
 /**
  * Get cached products list
  */
-export async function getCachedProductsList(
-  filters: Record<string, any>
-): Promise<{
+export async function getCachedProductsList(filters: Record<string, any>): Promise<{
   products: Product[];
   pagination?: { page: number; limit: number; total: number };
 } | null> {

@@ -1,4 +1,4 @@
-import { render, screen, fireEvent, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 import { LanguageToggle } from "../LanguageToggle";
 
 // Mock the i18n hooks
@@ -39,8 +39,8 @@ describe("LanguageToggle", () => {
 
     mockT.mockImplementation((key: string) => {
       const translations: Record<string, string> = {
-        "selectLanguage": "Select language",
-        "switchTo": "Switch to",
+        selectLanguage: "Select language",
+        switchTo: "Switch to",
       };
       return translations[key] || key;
     });
@@ -145,13 +145,7 @@ describe("LanguageToggle", () => {
     });
 
     test("should not show labels when showLabels is false", () => {
-      render(
-        <LanguageToggle
-          currentLocale="cs"
-          variant="buttons"
-          showLabels={false}
-        />
-      );
+      render(<LanguageToggle currentLocale="cs" variant="buttons" showLabels={false} />);
 
       expect(screen.getByText("CS")).toBeInTheDocument();
       expect(screen.getByText("EN")).toBeInTheDocument();
@@ -173,7 +167,7 @@ describe("LanguageToggle", () => {
     });
 
     test("should handle switch locale errors gracefully", async () => {
-      const consoleSpy = jest.spyOn(console, 'error').mockImplementation();
+      const consoleSpy = jest.spyOn(console, "error").mockImplementation();
       mockSwitchLocale.mockRejectedValue(new Error("Network error"));
 
       render(<LanguageToggle currentLocale="cs" />);

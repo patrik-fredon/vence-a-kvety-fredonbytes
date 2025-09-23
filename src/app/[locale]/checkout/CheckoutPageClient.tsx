@@ -1,15 +1,15 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import { ArrowLeftIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { ShoppingCartIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
-import { useCart } from "@/lib/cart/context";
-import { CartItem } from "@/types/cart";
+import React, { useEffect, useState } from "react";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { CompactOrderSummary } from "@/components/checkout/OrderSummary";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { Button } from "@/components/ui/Button";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useCart } from "@/lib/cart/context";
+import type { CartItem } from "@/types/cart";
 
 interface CheckoutPageClientProps {
   locale: string;
@@ -157,7 +157,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                           key={item.id}
                           className="flex items-start space-x-3 pb-4 border-b border-neutral-100 last:border-b-0 last:pb-0"
                         >
-                          <div className="flex-shrink-0 w-12 h-12 bg-neutral-100 rounded-lg"></div>
+                          <div className="flex-shrink-0 w-12 h-12 bg-neutral-100 rounded-lg" />
                           <div className="flex-1 min-w-0">
                             <h4 className="text-sm font-medium text-neutral-900 truncate">
                               {productName}

@@ -3,29 +3,29 @@
  * Provides WebSocket-based real-time updates and enhanced conflict resolution
  */
 
-import { CartSummary, CartItem } from "@/types/cart";
+import type { CartItem, CartSummary } from "@/types/cart";
 
 export interface CartSyncEvent {
-  type: 'cart_updated' | 'item_added' | 'item_removed' | 'item_updated';
+  type: "cart_updated" | "item_added" | "item_removed" | "item_updated";
   userId?: string;
   sessionId?: string;
   data: CartSummary | CartItem;
   timestamp: number;
-  source: 'local' | 'remote';
+  source: "local" | "remote";
 }
 
 export interface ConflictResolution {
-  strategy: 'server_wins' | 'client_wins' | 'merge' | 'prompt_user';
+  strategy: "server_wins" | "client_wins" | "merge" | "prompt_user";
   resolvedCart: CartSummary;
   conflicts: CartConflict[];
 }
 
 export interface CartConflict {
   itemId: string;
-  field: 'quantity' | 'customizations';
+  field: "quantity" | "customizations";
   localValue: any;
   serverValue: any;
-  resolution: 'local' | 'server' | 'merged';
+  resolution: "local" | "server" | "merged";
 }
 
 /**
@@ -42,28 +42,28 @@ export class CartSyncManager {
   constructor(
     private userId?: string,
     private sessionId?: string
-  ) { }
+  ) {}
 
   /**
    * Initialize WebSocket connection for real-time updates
    */
   async connect(): Promise<boolean> {
-    if (typeof window === 'undefined') return false;
+    if (typeof window === "undefined") return false;
 
     try {
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const protocol = window.location.protocol === "https:" ? "wss:" : "ws:";
       const wsUrl = `${protocol}//${window.location.host}/api/cart/ws`;
 
       this.ws = new WebSocket(wsUrl);
 
       this.ws.onopen = () => {
-        console.log('Cart sync WebSocket connected');
+        console.log("Cart sync WebSocket connected");
         this.reconnectAttempts = 0;
         this.startHeartbeat();
 
         // Send authentication
         this.send({
-          type: 'auth',
+          type: "auth",
           userId: this.userId,
           sessionId: this.sessionId,
         });
@@ -74,23 +74,23 @@ export class CartSyncManager {
           const data = JSON.parse(event.data);
           this.handleMessage(data);
         } catch (error) {
-          console.error('Error parsing WebSocket message:', error);
+          console.error("Error parsing WebSocket message:", error);
         }
       };
 
       this.ws.onclose = () => {
-        console.log('Cart sync WebSocket disconnected');
+        console.log("Cart sync WebSocket disconnected");
         this.stopHeartbeat();
         this.attemptReconnect();
       };
 
       this.ws.onerror = (error) => {
-        console.error('Cart sync WebSocket error:', error);
+        console.error("Cart sync WebSocket error:", error);
       };
 
       return true;
     } catch (error) {
-      console.error('Failed to connect to cart sync WebSocket:', error);
+      console.error("Failed to connect to cart sync WebSocket:", error);
       return false;
     }
   }
@@ -119,13 +119,13 @@ export class CartSyncManager {
    * Handle incoming WebSocket messages
    */
   private handleMessage(data: any): void {
-    if (data.type === 'cart_sync') {
+    if (data.type === "cart_sync") {
       const event: CartSyncEvent = {
         ...data,
-        e: 'remote'
+        e: "remote",
       };
-      this.emit('sync', event);
-    } else if (data.type === 'pong') {
+      this.emit("sync", event);
+    } else if (data.type === "pong") {
       // Heartbeat response
     }
   }
@@ -135,7 +135,7 @@ export class CartSyncManager {
    */
   private startHeartbeat(): void {
     this.heartbeatInterval = setInterval(() => {
-      this.send({ type: 'ping' });
+      this.send({ type: "ping" });
     }, 30000);
   }
 
@@ -154,15 +154,17 @@ export class CartSyncManager {
    */
   private attemptReconnect(): void {
     if (this.reconnectAttempts >= this.maxReconnectAttempts) {
-      console.error('Max reconnection attempts reached');
+      console.error("Max reconnection attempts reached");
       return;
     }
 
-    const delay = this.reconnectDelay * Math.pow(2, this.reconnectAttempts);
+    const delay = this.reconnectDelay * 2 ** this.reconnectAttempts;
     this.reconnectAttempts++;
 
     setTimeout(() => {
-      console.log(`Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})`);
+      console.log(
+        `Attempting to reconnect (${this.reconnectAttempts}/${this.maxReconnectAttempts})`
+      );
       this.connect();
     }, delay);
   }
@@ -196,7 +198,7 @@ export class CartSyncManager {
   private emit(event: string, data: CartSyncEvent): void {
     const listeners = this.eventListeners.get(event);
     if (listeners) {
-      listeners.forEach(listener => listener(data));
+      listeners.forEach((listener) => listener(data));
     }
   }
 
@@ -205,9 +207,9 @@ export class CartSyncManager {
    */
   broadcastCartChange(event: CartSyncEvent): void {
     this.send({
-      type: 'cart_change',
+      type: "cart_change",
       ...event,
-      source: 'local',
+      source: "local",
     });
   }
 }
@@ -222,22 +224,22 @@ export class CartConflictResolver {
   static resolveConflicts(
     localCart: CartSummary,
     serverCart: CartSummary,
-    strategy: ConflictResolution['strategy'] = 'merge'
+    strategy: ConflictResolution["strategy"] = "merge"
   ): ConflictResolution {
     const conflicts: CartConflict[] = [];
     let resolvedCart: CartSummary;
 
     switch (strategy) {
-      case 'server_wins':
+      case "server_wins":
         resolvedCart = serverCart;
         break;
 
-      case 'client_wins':
+      case "client_wins":
         resolvedCart = localCart;
         break;
 
-      case 'merge':
-        resolvedCart = this.mergeCartStates(localCart, serverCart, conflicts);
+      case "merge":
+        resolvedCart = CartConflictResolver.mergeCartStates(localCart, serverCart, conflicts);
         break;
 
       default:
@@ -264,11 +266,11 @@ export class CartConflictResolver {
 
     // Process server items first
     for (const serverItem of serverCart.items) {
-      const localItem = localCart.items.find(item => item.id === serverItem.id);
+      const localItem = localCart.items.find((item) => item.id === serverItem.id);
 
       if (localItem) {
         // Item exists in both - check for conflicts
-        const mergedItem = this.mergeCartItems(localItem, serverItem, conflicts);
+        const mergedItem = CartConflictResolver.mergeCartItems(localItem, serverItem, conflicts);
         mergedItems.push(mergedItem);
       } else {
         // Item only exists on server
@@ -282,7 +284,7 @@ export class CartConflictResolver {
     for (const localItem of localCart.items) {
       if (!processedIds.has(localItem.id)) {
         // Check if this is a temporary optimistic item
-        if (localItem.id.startsWith('temp_')) {
+        if (localItem.id.startsWith("temp_")) {
           // Keep optimistic items for now
           mergedItems.push(localItem);
         }
@@ -309,16 +311,16 @@ export class CartConflictResolver {
     serverItem: CartItem,
     conflicts: CartConflict[]
   ): CartItem {
-    let mergedItem = { ...serverItem }; // Start with server version
+    const mergedItem = { ...serverItem }; // Start with server version
 
     // Check quantity conflict
     if (localItem.quantity !== serverItem.quantity) {
       conflicts.push({
         itemId: localItem.id,
-        field: 'quantity',
+        field: "quantity",
         localValue: localItem.quantity,
         serverValue: serverItem.quantity,
-        resolution: 'server', // Default to server for quantity
+        resolution: "server", // Default to server for quantity
       });
     }
 
@@ -329,10 +331,10 @@ export class CartConflictResolver {
     if (localCustomizations !== serverCustomizations) {
       conflicts.push({
         itemId: localItem.id,
-        field: 'customizations',
+        field: "customizations",
         localValue: localItem.customizations,
         serverValue: serverItem.customizations,
-        resolution: 'server', // Default to server for customizations
+        resolution: "server", // Default to server for customizations
       });
     }
 
@@ -344,26 +346,26 @@ export class CartConflictResolver {
  * Enhanced cart persistence with versioning
  */
 export class CartPersistenceManager {
-  private static readonly STORAGE_KEY = 'cart_state_v2';
+  private static readonly STORAGE_KEY = "cart_state_v2";
   private static readonly VERSION = 2;
 
   /**
    * Save cart state with version and timestamp
    */
   static saveCartState(cart: CartSummary, version: number = Date.now()): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
       const stateData = {
-        version: this.VERSION,
+        version: CartPersistenceManager.VERSION,
         timestamp: Date.now(),
         cartVersion: version,
         cart,
       };
 
-      localStorage.setItem(this.STORAGE_KEY, JSON.stringify(stateData));
+      localStorage.setItem(CartPersistenceManager.STORAGE_KEY, JSON.stringify(stateData));
     } catch (error) {
-      console.warn('Failed to save cart state:', error);
+      console.warn("Failed to save cart state:", error);
     }
   }
 
@@ -371,26 +373,26 @@ export class CartPersistenceManager {
    * Load cart state with version checking
    */
   static loadCartState(): { cart: CartSummary; version: number } | null {
-    if (typeof window === 'undefined') return null;
+    if (typeof window === "undefined") return null;
 
     try {
-      const stored = localStorage.getItem(this.STORAGE_KEY);
+      const stored = localStorage.getItem(CartPersistenceManager.STORAGE_KEY);
       if (!stored) return null;
 
       const stateData = JSON.parse(stored);
 
       // Check version compatibility
-      if (stateData.version !== this.VERSION) {
-        console.warn('Cart state version mismatch, clearing storage');
-        this.clearCartState();
+      if (stateData.version !== CartPersistenceManager.VERSION) {
+        console.warn("Cart state version mismatch, clearing storage");
+        CartPersistenceManager.clearCartState();
         return null;
       }
 
       // Check if data is too old (24 hours)
       const age = Date.now() - stateData.timestamp;
       if (age > 24 * 60 * 60 * 1000) {
-        console.warn('Cart state too old, clearing storage');
-        this.clearCartState();
+        console.warn("Cart state too old, clearing storage");
+        CartPersistenceManager.clearCartState();
         return null;
       }
 
@@ -399,8 +401,8 @@ export class CartPersistenceManager {
         version: stateData.cartVersion,
       };
     } catch (error) {
-      console.warn('Failed to load cart state:', error);
-      this.clearCartState();
+      console.warn("Failed to load cart state:", error);
+      CartPersistenceManager.clearCartState();
       return null;
     }
   }
@@ -409,12 +411,12 @@ export class CartPersistenceManager {
    * Clear stored cart state
    */
   static clearCartState(): void {
-    if (typeof window === 'undefined') return;
+    if (typeof window === "undefined") return;
 
     try {
-      localStorage.removeItem(this.STORAGE_KEY);
+      localStorage.removeItem(CartPersistenceManager.STORAGE_KEY);
     } catch (error) {
-      console.warn('Failed to clear cart state:', error);
+      console.warn("Failed to clear cart state:", error);
     }
   }
 }

@@ -3,7 +3,11 @@
  * Addresses requirements 8.4 and 8.5 for critical resource prioritization
  */
 
-import { getCriticalResourceHints, getHeroResourceHints, getBelowFoldResourceHints } from '@/lib/performance/resource-hints';
+import {
+  getBelowFoldResourceHints,
+  getCriticalResourceHints,
+  getHeroResourceHints,
+} from "@/lib/performance/resource-hints";
 
 interface ResourceHintsProps {
   /** Locale for localized resource hints */
@@ -18,9 +22,9 @@ interface ResourceHintsProps {
  * Resource hints component that should be included in the document head
  */
 export function ResourceHints({
-  locale = 'en',
+  locale = "en",
   heroLogoSrc,
-  includeBelowFold = false
+  includeBelowFold = false,
 }: ResourceHintsProps) {
   const criticalHints = getCriticalResourceHints(locale);
   const heroHints = getHeroResourceHints(heroLogoSrc);

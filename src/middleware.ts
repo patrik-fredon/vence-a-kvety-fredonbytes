@@ -1,10 +1,10 @@
-import { NextResponse } from "next/server";
-import type { NextRequest } from "next/server";
-import { auth } from "@/lib/auth/config";
-import createIntlMiddleware from "next-intl/middleware";
-import { locales, defaultLocale } from "./i18n/config";
 import { Ratelimit } from "@upstash/ratelimit";
 import { Redis } from "@upstash/redis";
+import type { NextRequest } from "next/server";
+import { NextResponse } from "next/server";
+import createIntlMiddleware from "next-intl/middleware";
+import { auth } from "@/lib/auth/config";
+import { defaultLocale, locales } from "./i18n/config";
 
 // Create the internationalization middleware with enhanced configuration
 const intlMiddleware = createIntlMiddleware({
@@ -71,7 +71,8 @@ export async function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
   // Get client IP for rate limiting
-  const ip = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "127.0.0.1";
+  const ip =
+    request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "127.0.0.1";
 
   // Apply rate limiting based on route type (only if rate limiting is enabled)
   let rateLimitResult;

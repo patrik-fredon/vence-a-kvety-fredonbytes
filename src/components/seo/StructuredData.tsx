@@ -43,7 +43,11 @@ export function generateProductStructuredData(
     "@type": "Product",
     name: product.name,
     description: product.description,
-    image: product.image ? (product.image.startsWith('http') ? product.image : `${baseUrl}${product.image}`) : undefined,
+    image: product.image
+      ? product.image.startsWith("http")
+        ? product.image
+        : `${baseUrl}${product.image}`
+      : undefined,
     url: product.url,
     sku: product.sku,
     brand: {
@@ -87,7 +91,7 @@ export function generateBreadcrumbStructuredData(
       "@type": "ListItem",
       position: index + 1,
       name: crumb.name,
-      item: crumb.url.startsWith('http') ? crumb.url : `${baseUrl}/${locale}${crumb.url}`,
+      item: crumb.url.startsWith("http") ? crumb.url : `${baseUrl}/${locale}${crumb.url}`,
     })),
   };
 }
@@ -104,9 +108,10 @@ export function generateOrganizationStructuredData(locale: string) {
     name: "Ketingmar s.r.o.",
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
-    description: locale === "cs"
-      ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
-      : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
+    description:
+      locale === "cs"
+        ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
+        : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
     address: {
       "@type": "PostalAddress",
       addressCountry: "CZ",
@@ -133,13 +138,13 @@ export function generateWebsiteStructuredData(locale: string) {
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
-    name: locale === "cs" 
-      ? "Pohřební věnce | Ketingmar s.r.o."
-      : "Funeral Wreaths | Ketingmar s.r.o.",
+    name:
+      locale === "cs" ? "Pohřební věnce | Ketingmar s.r.o." : "Funeral Wreaths | Ketingmar s.r.o.",
     url: baseUrl,
-    description: locale === "cs"
-      ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
-      : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
+    description:
+      locale === "cs"
+        ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
+        : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
     inLanguage: locale === "cs" ? "cs-CZ" : "en-US",
     potentialAction: {
       "@type": "SearchAction",
@@ -164,9 +169,10 @@ export function generateLocalBusinessStructuredData(locale: string) {
     "@id": `${baseUrl}/#business`,
     name: "Ketingmar s.r.o.",
     alternateName: locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths",
-    description: locale === "cs"
-      ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
-      : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
+    description:
+      locale === "cs"
+        ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
+        : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
     url: baseUrl,
     logo: `${baseUrl}/logo.png`,
     image: `${baseUrl}/og-image.jpg`,
@@ -209,16 +215,20 @@ export function generateLocalBusinessStructuredData(locale: string) {
     serviceType: locale === "cs" ? "Pohřební služby" : "Funeral Services",
     hasOfferCatalog: {
       "@type": "OfferCatalog",
-      name: locale === "cs" ? "Pohřební věnce a květinové aranžmá" : "Funeral Wreaths and Floral Arrangements",
+      name:
+        locale === "cs"
+          ? "Pohřební věnce a květinové aranžmá"
+          : "Funeral Wreaths and Floral Arrangements",
       itemListElement: [
         {
           "@type": "Offer",
           itemOffered: {
             "@type": "Service",
             name: locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths",
-            description: locale === "cs"
-              ? "Ruční výroba pohřebních věnců s možností přizpůsobení"
-              : "Handcrafted funeral wreaths with customization options",
+            description:
+              locale === "cs"
+                ? "Ruční výroba pohřebních věnců s možností přizpůsobení"
+                : "Handcrafted funeral wreaths with customization options",
           },
         },
         {
@@ -226,9 +236,10 @@ export function generateLocalBusinessStructuredData(locale: string) {
           itemOffered: {
             "@type": "Service",
             name: locale === "cs" ? "Květinové aranžmá" : "Floral Arrangements",
-            description: locale === "cs"
-              ? "Profesionální květinové aranžmá pro pohřební služby"
-              : "Professional floral arrangements for funeral services",
+            description:
+              locale === "cs"
+                ? "Profesionální květinové aranžmá pro pohřební služby"
+                : "Professional floral arrangements for funeral services",
           },
         },
       ],
@@ -296,15 +307,21 @@ export function generateItemListStructuredData(
       item: {
         "@type": "Product",
         name: item.name,
-        url: item.url.startsWith('http') ? item.url : `${baseUrl}${item.url}`,
-        image: item.image ? (item.image.startsWith('http') ? item.image : `${baseUrl}${item.image}`) : undefined,
+        url: item.url.startsWith("http") ? item.url : `${baseUrl}${item.url}`,
+        image: item.image
+          ? item.image.startsWith("http")
+            ? item.image
+            : `${baseUrl}${item.image}`
+          : undefined,
         description: item.description,
-        offers: item.price ? {
-          "@type": "Offer",
-          price: item.price,
-          priceCurrency: "CZK",
-          availability: "https://schema.org/InStock",
-        } : undefined,
+        offers: item.price
+          ? {
+              "@type": "Offer",
+              price: item.price,
+              priceCurrency: "CZK",
+              availability: "https://schema.org/InStock",
+            }
+          : undefined,
       },
     })),
   };
@@ -329,7 +346,7 @@ export function generateCollectionPageStructuredData(
     "@type": "CollectionPage",
     name: category.name,
     description: category.description,
-    url: category.url.startsWith('http') ? category.url : `${baseUrl}${category.url}`,
+    url: category.url.startsWith("http") ? category.url : `${baseUrl}${category.url}`,
     mainEntity: {
       "@type": "ItemList",
       name: category.name,
@@ -354,7 +371,7 @@ export function generateCollectionPageStructuredData(
           "@type": "ListItem",
           position: 3,
           name: category.name,
-          item: category.url.startsWith('http') ? category.url : `${baseUrl}${category.url}`,
+          item: category.url.startsWith("http") ? category.url : `${baseUrl}${category.url}`,
         },
       ],
     },

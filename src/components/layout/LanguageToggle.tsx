@@ -1,9 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useLocaleSwitch, useSafeTranslations } from "@/lib/i18n/hooks";
-import { type Locale } from "@/i18n/config";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import type { Locale } from "@/i18n/config";
+import { useLocaleSwitch, useSafeTranslations } from "@/lib/i18n/hooks";
 
 interface LanguageToggleProps {
   currentLocale: string;
@@ -16,16 +16,10 @@ export function LanguageToggle({
   currentLocale,
   variant = "select",
   showLabels = true,
-  className = ""
+  className = "",
 }: LanguageToggleProps) {
-  const {
-    switchLocale,
-    isLoading,
-    error,
-    clearError,
-    availableLocales,
-    localeNames
-  } = useLocaleSwitch();
+  const { switchLocale, isLoading, error, clearError, availableLocales, localeNames } =
+    useLocaleSwitch();
   const { t } = useSafeTranslations("common");
   const [showError, setShowError] = useState(false);
 
@@ -52,9 +46,10 @@ export function LanguageToggle({
             disabled={isLoading || locale === currentLocale}
             className={`
               px-3 py-1 text-sm font-medium rounded-md transition-colors
-              ${locale === currentLocale
-                ? "bg-primary-100 text-primary-700 cursor-default"
-                : "bg-white text-neutral-700 hover:bg-primary-50 hover:text-primary-700 border border-neutral-300"
+              ${
+                locale === currentLocale
+                  ? "bg-primary-100 text-primary-700 cursor-default"
+                  : "bg-white text-neutral-700 hover:bg-primary-50 hover:text-primary-700 border border-neutral-300"
               }
               ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
@@ -65,17 +60,13 @@ export function LanguageToggle({
             {isLoading && locale !== currentLocale ? (
               <LoadingSpinner size="sm" />
             ) : (
-              <>
-                {showLabels ? localeNames[locale] : locale.toUpperCase()}
-              </>
+              <>{showLabels ? localeNames[locale] : locale.toUpperCase()}</>
             )}
           </button>
         ))}
 
         {showError && error && (
-          <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">
-            {error}
-          </div>
+          <div className="text-xs text-red-600 bg-red-50 px-2 py-1 rounded">{error}</div>
         )}
       </div>
     );

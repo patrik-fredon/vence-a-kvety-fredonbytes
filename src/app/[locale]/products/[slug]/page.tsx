@@ -1,15 +1,15 @@
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { createServerClient } from "@/lib/supabase/server";
-import { transformProductRow, transformCategoryRow } from "@/lib/utils/product-transforms";
 import { ProductDetail } from "@/components/product/ProductDetail";
-import { getCachedProductBySlug, cacheProductBySlug } from "@/lib/cache/product-cache";
-import {
-  StructuredData,
-  generateProductStructuredData,
-  generateBreadcrumbStructuredData
-} from "@/components/seo/StructuredData";
 import { generateProductMetadata } from "@/components/seo/PageMetadata";
+import {
+  generateBreadcrumbStructuredData,
+  generateProductStructuredData,
+  StructuredData,
+} from "@/components/seo/StructuredData";
+import { cacheProductBySlug, getCachedProductBySlug } from "@/lib/cache/product-cache";
+import { createServerClient } from "@/lib/supabase/server";
+import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
 
 interface ProductDetailPageProps {
   params: Promise<{
@@ -91,27 +91,32 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   // Generate structured data
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const productUrl = `${baseUrl}/${locale}/products/${slug}`;
 
   const productName = locale === "cs" ? product.name.cs : product.name.en;
   const productDescription = locale === "cs" ? product.description?.cs : product.description?.en;
   const categoryName = product.category
-    ? (locale === "cs" ? product.category.name.cs : product.category.name.en)
+    ? locale === "cs"
+      ? product.category.name.cs
+      : product.category.name.en
     : "";
 
   // Product structured data
-  const productStructuredData = generateProductStructuredData({
-    name: productName,
-    description: productDescription || productName,
-    price: product.basePrice,
-    ...(product.images?.[0]?.url && { image: product.images[0].url }),
-    availability: "InStock", // This should be dynamic based on actual availability
-    category: categoryName,
-    brand: "Ketingmar s.r.o.",
-    sku: product.id,
-    url: productUrl,
-  }, locale);
+  const productStructuredData = generateProductStructuredData(
+    {
+      name: productName,
+      description: productDescription || productName,
+      price: product.basePrice,
+      ...(product.images?.[0]?.url && { image: product.images[0].url }),
+      availability: "InStock", // This should be dynamic based on actual availability
+      category: categoryName,
+      brand: "Ketingmar s.r.o.",
+      sku: product.id,
+      url: productUrl,
+    },
+    locale
+  );
 
   // Breadcrumb structured data
   const breadcrumbs = [
@@ -178,7 +183,9 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   const name = locale === "cs" ? data.name_cs : data.name_en;
   const description = locale === "cs" ? data.description_cs : data.description_en;
   const categoryName = data.categories
-    ? (locale === "cs" ? data.categories.name_cs : data.categories.name_en)
+    ? locale === "cs"
+      ? data.categories.name_cs
+      : data.categories.name_en
     : "";
 
   // Type-safe handling of seo_metadata
@@ -193,12 +200,12 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   return generateProductMetadata({
     product: {
       name: seoTitle || name,
-      ...((seoDescription || description) ? { description: (seoDescription || description)! } : {}),
+      ...(seoDescription || description ? { description: (seoDescription || description)! } : {}),
       price: data.base_price,
       category: categoryName,
-      images: productImages?.map(img => ({ url: img.url, alt: img.alt || name })),
-      availability: 'InStock', // This should be dynamic based on actual availability
-      brand: 'Ketingmar s.r.o.',
+      images: productImages?.map((img) => ({ url: img.url, alt: img.alt || name })),
+      availability: "InStock", // This should be dynamic based on actual availability
+      brand: "Ketingmar s.r.o.",
     },
     locale,
     slug,
@@ -210,7 +217,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       "pohřeb",
       "rozloučení",
       "věnce",
-      "ketingmar"
+      "ketingmar",
     ].filter(Boolean),
   });
 }

@@ -36,10 +36,10 @@ export function validateTranslationCompleteness(
     const secondaryKeys = extractAllKeys(secondaryMessages);
 
     // Find missing keys in secondary locale
-    result.missingKeys = primaryKeys.filter(key => !secondaryKeys.includes(key));
+    result.missingKeys = primaryKeys.filter((key) => !secondaryKeys.includes(key));
 
     // Find extra keys in secondary locale
-    result.extraKeys = secondaryKeys.filter(key => !primaryKeys.includes(key));
+    result.extraKeys = secondaryKeys.filter((key) => !primaryKeys.includes(key));
 
     // Validate structure consistency
     const structureErrors = validateStructureConsistency(primaryMessages, secondaryMessages);
@@ -56,7 +56,9 @@ export function validateTranslationCompleteness(
     }
   } catch (error) {
     result.isValid = false;
-    result.errors.push(`Validation error: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    result.errors.push(
+      `Validation error: ${error instanceof Error ? error.message : "Unknown error"}`
+    );
   }
 
   return result;
@@ -245,7 +247,7 @@ export async function generateTranslationReport(): Promise<{
       // Aggregate results
       if (!comparison.isValid) {
         report.overall.isValid = false;
-        report.overall.missingKeys.push(...comparison.missingKeys.map(key => `${locale}.${key}`));
+        report.overall.missingKeys.push(...comparison.missingKeys.map((key) => `${locale}.${key}`));
         report.overall.errors.push(...comparison.errors);
       }
     }
@@ -275,7 +277,7 @@ export function createTranslationChecker() {
     checkKey: (key: string, locale: Locale, value?: string) => {
       checkedKeys.add(`${locale}.${key}`);
 
-      if (!value || value === key || value.startsWith('[') && value.endsWith(']')) {
+      if (!value || value === key || (value.startsWith("[") && value.endsWith("]"))) {
         missingKeys.add(`${locale}.${key}`);
 
         if (i18nConfig.fallback.logMissingKeys) {

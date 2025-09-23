@@ -1,35 +1,35 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { useRouter } from "next/navigation";
 import {
   CheckIcon,
   ChevronLeftIcon,
   ChevronRightIcon,
   ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
-import {
-  CheckoutFormData,
-  CheckoutStep,
-  CheckoutState,
-  CustomerInfo,
-  DeliveryInfo,
-  PaymentMethod,
-} from "@/types/order";
-import { CartItem } from "@/types/cart";
-import { DeliveryUrgency } from "@/types/delivery";
-import {
-  validateCheckoutForm,
-  hasValidationErrors,
-  formatValidationErrors,
-  sanitizeCustomerInfo,
-  sanitizeDeliveryInfo,
-} from "@/lib/validation/checkout";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Card, CardContent } from "@/components/ui/Card";
+import {
+  formatValidationErrors,
+  hasValidationErrors,
+  sanitizeCustomerInfo,
+  sanitizeDeliveryInfo,
+  validateCheckoutForm,
+} from "@/lib/validation/checkout";
+import type { CartItem } from "@/types/cart";
+import { DeliveryUrgency } from "@/types/delivery";
+import {
+  type CheckoutFormData,
+  type CheckoutState,
+  type CheckoutStep,
+  type CustomerInfo,
+  type DeliveryInfo,
+  PaymentMethod,
+} from "@/types/order";
 import { CustomerInfoStep } from "./steps/CustomerInfoStep";
 import { DeliveryInfoStep } from "./steps/DeliveryInfoStep";
 import { PaymentStep } from "./steps/PaymentStep";
@@ -142,21 +142,23 @@ export function CheckoutForm({
     const { customerInfo, deliveryInfo, agreeToTerms } = state.formData;
 
     switch (state.currentStep) {
-      case "customer":
+      case "customer": {
         const customerErrors = validateCheckoutForm(customerInfo, {}, false);
         if (hasValidationErrors(customerErrors)) {
           setState((prev) => ({ ...prev, errors: customerErrors }));
           return false;
         }
         break;
+      }
 
-      case "delivery":
+      case "delivery": {
         const deliveryErrors = validateCheckoutForm({}, deliveryInfo, false);
         if (hasValidationErrors(deliveryErrors)) {
           setState((prev) => ({ ...prev, errors: deliveryErrors }));
           return false;
         }
         break;
+      }
 
       case "payment":
         if (!state.formData.paymentMethod) {
@@ -168,13 +170,14 @@ export function CheckoutForm({
         }
         break;
 
-      case "review":
+      case "review": {
         const allErrors = validateCheckoutForm(customerInfo, deliveryInfo, agreeToTerms);
         if (hasValidationErrors(allErrors)) {
           setState((prev) => ({ ...prev, errors: allErrors }));
           return false;
         }
         break;
+      }
     }
 
     setState((prev) => ({ ...prev, errors: {} }));
@@ -261,11 +264,12 @@ export function CheckoutForm({
                     disabled={!isClickable}
                     className={`
                       flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200
-                      ${isActive
-                        ? "border-amber-600 bg-amber-600 text-white shadow-md"
-                        : isCompleted
-                          ? "border-green-500 bg-green-500 text-white shadow-sm"
-                          : "border-stone-300 bg-white text-stone-400"
+                      ${
+                        isActive
+                          ? "border-amber-600 bg-amber-600 text-white shadow-md"
+                          : isCompleted
+                            ? "border-green-500 bg-green-500 text-white shadow-sm"
+                            : "border-stone-300 bg-white text-stone-400"
                       }
                       ${isClickable ? "cursor-pointer hover:border-amber-500 hover:shadow-md" : "cursor-not-allowed"}
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20

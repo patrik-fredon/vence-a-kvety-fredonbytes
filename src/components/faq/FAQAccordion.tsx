@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import { useState } from "react";
 
 interface FAQItem {
   question: string;
@@ -26,7 +26,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
   };
 
   const handleKeyDown = (event: React.KeyboardEvent, index: number) => {
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       toggleItem(index);
     }
@@ -50,9 +50,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
               aria-controls={`faq-answer-${index}`}
               id={`faq-question-${index}`}
             >
-              <h3 className="text-lg font-semibold text-stone-800 pr-4">
-                {item.question}
-              </h3>
+              <h3 className="text-lg font-semibold text-stone-800 pr-4">{item.question}</h3>
               <div className="flex-shrink-0">
                 {isOpen ? (
                   <ChevronUpIcon className="w-5 h-5 text-stone-600" />
@@ -66,15 +64,12 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
               id={`faq-answer-${index}`}
               role="region"
               aria-labelledby={`faq-question-${index}`}
-              className={`transition-all duration-300 ease-in-out ${isOpen
-                ? 'max-h-96 opacity-100'
-                : 'max-h-0 opacity-0 overflow-hidden'
-                }`}
+              className={`transition-all duration-300 ease-in-out ${
+                isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+              }`}
             >
               <div className="px-6 pb-4">
-                <p className="text-neutral-700 leading-relaxed">
-                  {item.answer}
-                </p>
+                <p className="text-neutral-700 leading-relaxed">{item.answer}</p>
               </div>
             </div>
           </div>

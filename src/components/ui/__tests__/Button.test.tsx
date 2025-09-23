@@ -1,4 +1,4 @@
-import { render, screen, fireEvent } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { Button } from "../Button";
 
 describe("Button", () => {
@@ -99,7 +99,11 @@ describe("Button", () => {
   });
 
   it("shows loading text when provided", () => {
-    render(<Button loading loadingText="Processing...">Submit</Button>);
+    render(
+      <Button loading loadingText="Processing...">
+        Submit
+      </Button>
+    );
 
     // Check that the loading text appears in the visible content
     expect(screen.getAllByText("Processing...")).toHaveLength(2); // One visible, one for screen readers

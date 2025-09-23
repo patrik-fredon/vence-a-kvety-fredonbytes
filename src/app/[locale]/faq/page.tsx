@@ -1,11 +1,11 @@
 import { getTranslations } from "next-intl/server";
+import { FAQAccordion } from "@/components/faq";
 import { generateFAQPageMetadata } from "@/components/seo/PageMetadata";
 import {
-  StructuredData,
   generateFAQStructuredData,
-  generateOrganizationStructuredData
+  generateOrganizationStructuredData,
+  StructuredData,
 } from "@/components/seo/StructuredData";
-import { FAQAccordion } from "@/components/faq";
 
 interface FAQPageProps {
   params: Promise<{ locale: string }>;
@@ -25,16 +25,16 @@ export default async function FAQPage({ params }: FAQPageProps) {
   const faqItems = [
     {
       question: t("items.0.question"),
-      answer: t("items.0.answer")
+      answer: t("items.0.answer"),
     },
     {
       question: t("items.1.question"),
-      answer: t("items.1.answer")
+      answer: t("items.1.answer"),
     },
     {
       question: t("items.2.question"),
-      answer: t("items.2.answer")
-    }
+      answer: t("items.2.answer"),
+    },
   ];
 
   // Generate structured data

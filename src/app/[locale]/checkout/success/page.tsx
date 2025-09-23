@@ -2,15 +2,11 @@
  * Payment success page
  */
 
-import React from "react";
-import { Metadata } from "next";
+import { CheckCircleIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import {
-  CheckCircleIcon,
-  EnvelopeIcon,
-  PhoneIcon,
-} from "@heroicons/react/24/outline";
+import React from "react";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {

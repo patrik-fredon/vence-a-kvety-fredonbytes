@@ -1,6 +1,6 @@
-import React from 'react';
-import { cn } from '@/lib/utils';
-import { safeTranslate, getFallbackTranslation } from '@/lib/utils/fallback-utils';
+import React from "react";
+import { cn } from "@/lib/utils";
+import { getFallbackTranslation, safeTranslate } from "@/lib/utils/fallback-utils";
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
@@ -13,7 +13,7 @@ export function LoadingSpinner({
   size = "md",
   className = "",
   label,
-  locale = "en"
+  locale = "en",
 }: LoadingSpinnerProps) {
   const sizeClasses = {
     sm: "w-4 h-4",
@@ -22,11 +22,11 @@ export function LoadingSpinner({
   };
 
   // Check for reduced motion preference
-  const prefersReducedMotion = typeof window !== 'undefined' &&
-    window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const prefersReducedMotion =
+    typeof window !== "undefined" && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   // Use fallback translation if label not provided
-  const loadingLabel = label || getFallbackTranslation('common.loading', locale);
+  const loadingLabel = label || getFallbackTranslation("common.loading", locale);
 
   return (
     <div
@@ -35,13 +35,15 @@ export function LoadingSpinner({
       aria-label={loadingLabel}
       aria-live="polite"
     >
-      <div className={cn(
-        'rounded-full border-2 border-primary-200 border-t-primary-600',
-        !prefersReducedMotion && 'animate-spin',
-        prefersReducedMotion && 'animate-pulse', // Alternative for reduced motion
-        // High contrast support
-        'high-contrast:border-WindowText high-contrast:border-t-Highlight'
-      )}>
+      <div
+        className={cn(
+          "rounded-full border-2 border-primary-200 border-t-primary-600",
+          !prefersReducedMotion && "animate-spin",
+          prefersReducedMotion && "animate-pulse", // Alternative for reduced motion
+          // High contrast support
+          "high-contrast:border-WindowText high-contrast:border-t-Highlight"
+        )}
+      >
         <span className="sr-only">{loadingLabel}</span>
       </div>
     </div>
@@ -66,7 +68,7 @@ export function LoadingState({
   onTimeout,
 }: LoadingStateProps) {
   // Use fallback translation if message not provided
-  const loadingMessage = message || getFallbackTranslation('common.loading', locale);
+  const loadingMessage = message || getFallbackTranslation("common.loading", locale);
 
   // Handle timeout if specified
   React.useEffect(() => {
@@ -78,14 +80,12 @@ export function LoadingState({
 
   return (
     <div
-      className={cn('flex flex-col items-center justify-center space-y-3', className)}
+      className={cn("flex flex-col items-center justify-center space-y-3", className)}
       role="status"
       aria-live="polite"
     >
       <LoadingSpinner size={size} locale={locale} />
-      <p className="text-sm text-neutral-600 font-medium animate-gentle-fade">
-        {loadingMessage}
-      </p>
+      <p className="text-sm text-neutral-600 font-medium animate-gentle-fade">{loadingMessage}</p>
     </div>
   );
 }
@@ -115,11 +115,11 @@ export function ComponentLoadingState({ className = "" }: { className?: string }
 export function ProductCardSkeleton() {
   return (
     <div className="bg-white rounded-lg shadow-soft overflow-hidden animate-pulse">
-      <div className="aspect-square bg-neutral-200"></div>
+      <div className="aspect-square bg-neutral-200" />
       <div className="p-4 space-y-3">
-        <div className="h-4 bg-neutral-200 rounded w-3/4"></div>
-        <div className="h-3 bg-neutral-200 rounded w-1/2"></div>
-        <div className="h-8 bg-neutral-200 rounded w-full"></div>
+        <div className="h-4 bg-neutral-200 rounded w-3/4" />
+        <div className="h-3 bg-neutral-200 rounded w-1/2" />
+        <div className="h-8 bg-neutral-200 rounded w-full" />
       </div>
     </div>
   );

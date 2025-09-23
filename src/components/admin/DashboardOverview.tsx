@@ -1,15 +1,15 @@
 "use client";
 
-import { useEffect, useState } from "react";
-import { useTranslations } from "next-intl";
 import {
-  ShoppingBagIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
   ClipboardDocumentListIcon,
   CurrencyDollarIcon,
   ExclamationTriangleIcon,
-  ArrowUpIcon,
-  ArrowDownIcon,
+  ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 
 interface DashboardStats {
   orders: {
@@ -166,7 +166,7 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
         <div className="overflow-x-auto">
           {loading ? (
             <div className="p-6 text-center">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto" />
             </div>
           ) : recentOrders.length > 0 ? (
             <table className="min-w-full divide-y divide-gray-200">
@@ -200,16 +200,17 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <span
-                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${order.status === "pending"
-                          ? "bg-yellow-100 text-yellow-800"
-                          : order.status === "confirmed"
-                            ? "bg-blue-100 text-blue-800"
-                            : order.status === "shipped"
-                              ? "bg-purple-100 text-purple-800"
-                              : order.status === "delivered"
-                                ? "bg-green-100 text-green-800"
-                                : "bg-red-100 text-red-800"
-                          }`}
+                        className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                          order.status === "pending"
+                            ? "bg-yellow-100 text-yellow-800"
+                            : order.status === "confirmed"
+                              ? "bg-blue-100 text-blue-800"
+                              : order.status === "shipped"
+                                ? "bg-purple-100 text-purple-800"
+                                : order.status === "delivered"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
+                        }`}
                       >
                         {order.status === "pending"
                           ? t("pending")
@@ -259,7 +260,9 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
           <h4 className="text-lg font-semibold text-gray-900 mb-4">{t("systemInfo")}</h4>
           <div className="space-y-2 text-sm text-gray-600">
             <p>{t("version")}: 1.0.0</p>
-            <p>{t("lastUpdate")}: {new Date().toLocaleDateString("cs-CZ")}</p>
+            <p>
+              {t("lastUpdate")}: {new Date().toLocaleDateString("cs-CZ")}
+            </p>
             <p>
               {t("systemStatus")}: <span className="text-green-600 font-medium">{t("online")}</span>
             </p>

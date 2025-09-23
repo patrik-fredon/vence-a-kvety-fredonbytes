@@ -10,20 +10,22 @@
  * - 8.5: Critical resource prioritization
  */
 
-export { PerformanceMonitor, usePerformanceMetrics, PerformanceSummary } from './PerformanceMonitor';
-export { ResourceHints, CriticalCSS } from './ResourceHints';
-
+// Re-export lazy loading component
+export { LazyProductReferencesSection } from "@/components/layout/LazyProductReferencesSection";
 // Re-export performance utilities
 export {
-  getCriticalResourceHints,
-  getHeroResourceHints,
-  getBelowFoldResourceHints,
   generateResourceHintTags,
+  getBelowFoldResourceHints,
   getCriticalCSSOptimizations,
+  getCriticalResourceHints,
   getFontOptimizations,
+  getHeroResourceHints,
   getImageOptimizations,
   getPerformanceConfig,
-} from '@/lib/performance/resource-hints';
-
-// Re-export lazy loading component
-export { LazyProductReferencesSection } from '@/components/layout/LazyProductReferencesSection';
+} from "@/lib/performance/resource-hints";
+export {
+  PerformanceMonitor,
+  PerformanceSummary,
+  usePerformanceMetrics,
+} from "./PerformanceMonitor";
+export { CriticalCSS, ResourceHints } from "./ResourceHints";

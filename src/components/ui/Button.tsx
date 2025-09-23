@@ -1,6 +1,6 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
-import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
+import { cn } from "@/lib/utils";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   children: ReactNode;
@@ -159,8 +159,6 @@ export function Button({
           {/* Screen reader loading text */}
           <span className="sr-only" id={`${props.id}-loading`}>
             {loadingText || "Načítání..."}
-
-
           </span>
         </>
       )}

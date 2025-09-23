@@ -2,9 +2,9 @@
  * Optimized Image component with lazy loading, proper sizing, and performance optimizations
  */
 
+import { clsx } from "clsx";
 import Image from "next/image";
 import { useState } from "react";
-import { clsx } from "clsx";
 
 interface OptimizedImageProps {
   src: string;

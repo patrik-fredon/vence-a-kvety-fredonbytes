@@ -5,12 +5,12 @@
  * Allows users to select delivery urgency and view available options
  */
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import { clsx } from "clsx";
 import { ClockIcon, TruckIcon } from "@heroicons/react/24/outline";
-import { DeliveryOption, DeliveryUrgency } from "@/types/delivery";
+import { clsx } from "clsx";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import type { Address } from "@/types";
+import type { DeliveryOption, DeliveryUrgency } from "@/types/delivery";
 
 interface DeliveryOptionsSelectorProps {
   address?: Address;

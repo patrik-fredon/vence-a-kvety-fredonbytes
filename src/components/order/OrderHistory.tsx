@@ -1,10 +1,10 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
 import Link from "next/link";
-import { Order, OrderStatus } from "@/types/order";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { Order, type OrderStatus } from "@/types/order";
 
 interface OrderHistoryProps {
   locale: string;
@@ -73,8 +73,9 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
           itemCount: order.items?.itemCount || 0,
           createdAt: order.created_at,
           deliveryAddress: `${order.delivery_info?.address?.city || ""}, ${order.delivery_info?.address?.postalCode || ""}`,
-          customerName: `${order.customer_info?.firstName || ""} ${order.customer_info?.lastName || ""}`.trim(),
-          items: order.items?.items || []
+          customerName:
+            `${order.customer_info?.firstName || ""} ${order.customer_info?.lastName || ""}`.trim(),
+          items: order.items?.items || [],
         }));
         setAllOrders(transformedOrders);
       } else {
@@ -491,15 +492,13 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                         />
                       </svg>
                     </div>
-                  </div >
-                </Link >
-              </li >
-            ))
-            }
-          </ul >
-        </div >
-      )
-      }
-    </div >
+                  </div>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
+    </div>
   );
 }

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
@@ -58,17 +58,8 @@ export function DataDeletionButton({ className, onDeletionComplete }: DataDeleti
 
   if (!showConfirmation) {
     return (
-      <Button
-        onClick={() => setShowConfirmation(true)}
-        variant="destructive"
-        className={className}
-      >
-        <svg
-          className="w-4 h-4 mr-2"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
+      <Button onClick={() => setShowConfirmation(true)} variant="destructive" className={className}>
+        <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path
             strokeLinecap="round"
             strokeLinejoin="round"
@@ -98,15 +89,11 @@ export function DataDeletionButton({ className, onDeletionComplete }: DataDeleti
               d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L4.082 16.5c-.77.833.192 2.5 1.732 2.5z"
             />
           </svg>
-          <h3 className="text-lg font-semibold text-gray-900">
-            {t("deletionConfirmationTitle")}
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t("deletionConfirmationTitle")}</h3>
         </div>
 
         <div className="mb-6">
-          <p className="text-sm text-gray-600 mb-4">
-            {t("deletionWarning")}
-          </p>
+          <p className="text-sm text-gray-600 mb-4">{t("deletionWarning")}</p>
 
           <div className="space-y-4">
             <div>
@@ -134,9 +121,7 @@ export function DataDeletionButton({ className, onDeletionComplete }: DataDeleti
                 placeholder="DELETE_MY_DATA"
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent font-mono"
               />
-              <p className="text-xs text-gray-500 mt-1">
-                {t("confirmationHint")}
-              </p>
+              <p className="text-xs text-gray-500 mt-1">{t("confirmationHint")}</p>
             </div>
           </div>
         </div>

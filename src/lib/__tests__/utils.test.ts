@@ -1,4 +1,4 @@
-import { cn, formatPrice, slugify, debounce, isEmpty } from "../utils";
+import { cn, debounce, formatPrice, isEmpty, slugify } from "../utils";
 
 describe("Utils", () => {
   describe("cn (className merger)", () => {
@@ -7,8 +7,8 @@ describe("Utils", () => {
     });
 
     it("should handle conditional classes", () => {
-      expect(cn("base-class", true && "conditional-class")).toBe("base-class conditional-class");
-      expect(cn("base-class", false && "conditional-class")).toBe("base-class");
+      expect(cn("base-class", "conditional-class")).toBe("base-class conditional-class");
+      expect(cn("base-class", false)).toBe("base-class");
     });
 
     it("should handle arrays and objects", () => {

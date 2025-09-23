@@ -15,9 +15,7 @@ export default async function LegalPage() {
 
   return (
     <div className="container mx-auto px-4 py-16 max-w-4xl">
-      <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-8">
-        {t("title")}
-      </h1>
+      <h1 className="text-elegant text-4xl font-semibold text-primary-800 mb-8">{t("title")}</h1>
 
       <div className="prose prose-lg max-w-none">
         <section className="mb-12">
@@ -80,9 +78,15 @@ export default async function LegalPage() {
         </h3>
         <p className="text-neutral-700 mb-4">{t("contact.description")}</p>
         <div className="space-y-2 text-neutral-700">
-          <p><strong>{t("contact.email")}:</strong> info@pohrebni-vence.cz</p>
-          <p><strong>{t("contact.phone")}:</strong> +420 123 456 789</p>
-          <p><strong>{t("contact.address")}:</strong> {t("contact.addressValue")}</p>
+          <p>
+            <strong>{t("contact.email")}:</strong> info@pohrebni-vence.cz
+          </p>
+          <p>
+            <strong>{t("contact.phone")}:</strong> +420 123 456 789
+          </p>
+          <p>
+            <strong>{t("contact.address")}:</strong> {t("contact.addressValue")}
+          </p>
         </div>
       </div>
     </div>

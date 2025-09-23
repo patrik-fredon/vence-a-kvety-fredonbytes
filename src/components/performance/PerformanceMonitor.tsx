@@ -1,6 +1,6 @@
-'use client';
+"use client";
 
-import { useEffect } from 'react';
+import { useEffect } from "react";
 
 /**
  * Performance monitoring component for tracking Core Web Vitals
@@ -8,9 +8,9 @@ import { useEffect } from 'react';
  */
 
 interface WebVitalsMetric {
-  name: 'CLS' | 'FID' | 'FCP' | 'LCP' | 'TTFB';
+  name: "CLS" | "FID" | "FCP" | "LCP" | "TTFB";
   value: number;
-  rating: 'good' | 'needs-improvement' | 'poor';
+  rating: "good" | "needs-improvement" | "poor";
   delta: number;
   id: string;
 }
@@ -38,11 +38,11 @@ const VITALS_THRESHOLDS = {
 /**
  * Get rating based on metric value and thresholds
  */
-function getMetricRating(name: WebVitalsMetric['name'], value: number): WebVitalsMetric['rating'] {
+function getMetricRating(name: WebVitalsMetric["name"], value: number): WebVitalsMetric["rating"] {
   const thresholds = VITALS_THRESHOLDS[name];
-  if (value <= thresholds.good) return 'good';
-  if (value <= thresholds.poor) return 'needs-improvement';
-  return 'poor';
+  if (value <= thresholds.good) return "good";
+  if (value <= thresholds.poor) return "needs-improvement";
+  return "poor";
 }
 
 /**
@@ -51,14 +51,14 @@ function getMetricRating(name: WebVitalsMetric['name'], value: number): WebVital
 function sendToAnalytics(metric: WebVitalsMetric) {
   // In a real implementation, this would send to your analytics service
   // For now, we'll just store in sessionStorage for debugging
-  if (typeof window !== 'undefined') {
-    const metrics = JSON.parse(sessionStorage.getItem('webVitals') || '[]');
+  if (typeof window !== "undefined") {
+    const metrics = JSON.parse(sessionStorage.getItem("webVitals") || "[]");
     metrics.push({
       ...metric,
       timestamp: Date.now(),
       url: window.location.pathname,
     });
-    sessionStorage.setItem('webVitals', JSON.stringify(metrics));
+    sessionStorage.setItem("webVitals", JSON.stringify(metrics));
   }
 }
 
@@ -68,47 +68,49 @@ function sendToAnalytics(metric: WebVitalsMetric) {
 export function PerformanceMonitor({
   enabled = true,
   onMetric,
-  debug = process.env.NODE_ENV === 'development'
+  debug = process.env.NODE_ENV === "development",
 }: PerformanceMonitorProps) {
   useEffect(() => {
-    if (!enabled || typeof window === 'undefined') return;
+    if (!enabled || typeof window === "undefined") return;
 
     // Dynamic import of web-vitals to avoid SSR issues
-    import('web-vitals').then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
-      const handleMetric = (metric: any) => {
-        const webVitalsMetric: WebVitalsMetric = {
-          name: metric.name,
-          value: metric.value,
-          rating: getMetricRating(metric.name, metric.value),
-          delta: metric.delta,
-          id: metric.id,
+    import("web-vitals")
+      .then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
+        const handleMetric = (metric: any) => {
+          const webVitalsMetric: WebVitalsMetric = {
+            name: metric.name,
+            value: metric.value,
+            rating: getMetricRating(metric.name, metric.value),
+            delta: metric.delta,
+            id: metric.id,
+          };
+
+          // Log to console in debug mode
+          if (debug) {
+            console.log(`[Performance] ${metric.name}:`, {
+              value: `${Math.round(metric.value)}${metric.name === "CLS" ? "" : "ms"}`,
+              rating: webVitalsMetric.rating,
+              delta: metric.delta,
+            });
+          }
+
+          // Send to analytics
+          sendToAnalytics(webVitalsMetric);
+
+          // Call custom handler if provided
+          onMetric?.(webVitalsMetric);
         };
 
-        // Log to console in debug mode
-        if (debug) {
-          console.log(`[Performance] ${metric.name}:`, {
-            value: `${Math.round(metric.value)}${metric.name === 'CLS' ? '' : 'ms'}`,
-            rating: webVitalsMetric.rating,
-            delta: metric.delta,
-          });
-        }
-
-        // Send to analytics
-        sendToAnalytics(webVitalsMetric);
-
-        // Call custom handler if provided
-        onMetric?.(webVitalsMetric);
-      };
-
-      // Register metric observers
-      onCLS(handleMetric);
-      onFID(handleMetric);
-      onFCP(handleMetric);
-      onLCP(handleMetric);
-      onTTFB(handleMetric);
-    }).catch(error => {
-      console.warn('Failed to load web-vitals:', error);
-    });
+        // Register metric observers
+        onCLS(handleMetric);
+        onFID(handleMetric);
+        onFCP(handleMetric);
+        onLCP(handleMetric);
+        onTTFB(handleMetric);
+      })
+      .catch((error) => {
+        console.warn("Failed to load web-vitals:", error);
+      });
   }, [enabled, onMetric, debug]);
 
   // This component doesn't render anything
@@ -120,27 +122,27 @@ export function PerformanceMonitor({
  */
 export function usePerformanceMetrics() {
   const getMetrics = (): WebVitalsMetric[] => {
-    if (typeof window === 'undefined') return [];
+    if (typeof window === "undefined") return [];
 
     try {
-      return JSON.parse(sessionStorage.getItem('webVitals') || '[]');
+      return JSON.parse(sessionStorage.getItem("webVitals") || "[]");
     } catch {
       return [];
     }
   };
 
   const clearMetrics = () => {
-    if (typeof window !== 'undefined') {
-      sessionStorage.removeItem('webVitals');
+    if (typeof window !== "undefined") {
+      sessionStorage.removeItem("webVitals");
     }
   };
 
   const getLatestMetrics = () => {
     const metrics = getMetrics();
-    const latest: Partial<Record<WebVitalsMetric['name'], WebVitalsMetric>> = {};
+    const latest: Partial<Record<WebVitalsMetric["name"], WebVitalsMetric>> = {};
 
     // Get the most recent metric for each type
-    metrics.forEach(metric => {
+    metrics.forEach((metric) => {
       if (!latest[metric.name] || metric.timestamp > latest[metric.name]!.timestamp) {
         latest[metric.name] = metric;
       }
@@ -163,7 +165,7 @@ export function PerformanceSummary() {
   const { getLatestMetrics } = usePerformanceMetrics();
   const metrics = getLatestMetrics();
 
-  if (process.env.NODE_ENV !== 'development') {
+  if (process.env.NODE_ENV !== "development") {
     return null;
   }
 
@@ -173,12 +175,17 @@ export function PerformanceSummary() {
       {Object.entries(metrics).map(([name, metric]) => (
         <div key={name} className="flex justify-between gap-4">
           <span>{name}:</span>
-          <span className={
-            metric.rating === 'good' ? 'text-green-400' :
-              metric.rating === 'needs-improvement' ? 'text-yellow-400' :
-                'text-red-400'
-          }>
-            {Math.round(metric.value)}{name === 'CLS' ? '' : 'ms'}
+          <span
+            className={
+              metric.rating === "good"
+                ? "text-green-400"
+                : metric.rating === "needs-improvement"
+                  ? "text-yellow-400"
+                  : "text-red-400"
+            }
+          >
+            {Math.round(metric.value)}
+            {name === "CLS" ? "" : "ms"}
           </span>
         </div>
       ))}

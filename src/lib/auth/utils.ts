@@ -1,14 +1,14 @@
-import { supabase } from '@/lib/supabase/client'
-import type { User } from '@supabase/supabase-js'
-import { Address, UserPreferences, defaultUserPreferences } from '@/types/user'
+import type { User } from "@supabase/supabase-js";
+import { supabase } from "@/lib/supabase/client";
+import { type Address, defaultUserPreferences, type UserPreferences } from "@/types/user";
 
 export interface AuthUser {
-  id: string
-  email: string
-  name?: string | null
-  phone?: string | null
-  addresses?: Address[]
-  preferences?: UserPreferences
+  id: string;
+  email: string;
+  name?: string | null;
+  phone?: string | null;
+  addresses?: Address[];
+  preferences?: UserPreferences;
 }
 
 export interface SignUpData {

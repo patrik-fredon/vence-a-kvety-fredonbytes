@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { Fragment } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
-import { CheckCircleIcon, XMarkIcon } from '@heroicons/react/24/outline';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { Dialog, Transition } from "@headlessui/react";
+import { CheckCircleIcon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Fragment } from "react";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
 
 interface SuccessModalProps {
   isOpen: boolean;
@@ -13,34 +13,37 @@ interface SuccessModalProps {
   locale?: string;
 }
 
-export function SuccessModal({ isOpen, onClose, customerName, locale = 'cs' }: SuccessModalProps) {
-  const content = locale === 'cs' ? {
-    title: 'Zpráva odeslána',
-    successTitle: 'Úspěšně odesláno!',
-    thankYou: customerName ? `Děkujeme, ${customerName.split(' ')[0]}!` : 'Děkujeme!',
-    successMessage: 'Vaše zpráva byla úspěšně odeslána.',
-    confirmationSent: 'Na Vaši e-mailovou adresu jsme odeslali potvrzení o přijetí zprávy',
-    responseTime: 'Odpovíme Vám obvykle do 24 hodin',
-    urgentContact: 'V naléhavých případech nás kontaktujte telefonicky na',
-    importantInfo: 'Důležité informace',
-    openingHours: 'Otevírací doba: Po-Pá: 8:00-17:00, So: 9:00-14:00',
-    address: 'Adresa: Hlavní 123, 110 00 Praha 1',
-    closeButton: 'Zavřít',
-    browseProducts: 'Prohlédnout věnce'
-  } : {
-    title: 'Message Sent',
-    successTitle: 'Successfully sent!',
-    thankYou: customerName ? `Thank you, ${customerName.split(' ')[0]}!` : 'Thank you!',
-    successMessage: 'Your message has been sent successfully.',
-    confirmationSent: 'We have sent a confirmation of receipt to your email address',
-    responseTime: 'We usually respond within 24 hours',
-    urgentContact: 'For urgent cases, contact us by phone at',
-    importantInfo: 'Important Information',
-    openingHours: 'Opening hours: Mon-Fri: 8:00-17:00, Sat: 9:00-14:00',
-    address: 'Address: Hlavní 123, 110 00 Praha 1',
-    closeButton: 'Close',
-    browseProducts: 'Browse Wreaths'
-  };
+export function SuccessModal({ isOpen, onClose, customerName, locale = "cs" }: SuccessModalProps) {
+  const content =
+    locale === "cs"
+      ? {
+          title: "Zpráva odeslána",
+          successTitle: "Úspěšně odesláno!",
+          thankYou: customerName ? `Děkujeme, ${customerName.split(" ")[0]}!` : "Děkujeme!",
+          successMessage: "Vaše zpráva byla úspěšně odeslána.",
+          confirmationSent: "Na Vaši e-mailovou adresu jsme odeslali potvrzení o přijetí zprávy",
+          responseTime: "Odpovíme Vám obvykle do 24 hodin",
+          urgentContact: "V naléhavých případech nás kontaktujte telefonicky na",
+          importantInfo: "Důležité informace",
+          openingHours: "Otevírací doba: Po-Pá: 8:00-17:00, So: 9:00-14:00",
+          address: "Adresa: Hlavní 123, 110 00 Praha 1",
+          closeButton: "Zavřít",
+          browseProducts: "Prohlédnout věnce",
+        }
+      : {
+          title: "Message Sent",
+          successTitle: "Successfully sent!",
+          thankYou: customerName ? `Thank you, ${customerName.split(" ")[0]}!` : "Thank you!",
+          successMessage: "Your message has been sent successfully.",
+          confirmationSent: "We have sent a confirmation of receipt to your email address",
+          responseTime: "We usually respond within 24 hours",
+          urgentContact: "For urgent cases, contact us by phone at",
+          importantInfo: "Important Information",
+          openingHours: "Opening hours: Mon-Fri: 8:00-17:00, Sat: 9:00-14:00",
+          address: "Address: Hlavní 123, 110 00 Praha 1",
+          closeButton: "Close",
+          browseProducts: "Browse Wreaths",
+        };
 
   return (
     <Transition appear show={isOpen} as={Fragment}>
@@ -111,19 +114,20 @@ export function SuccessModal({ isOpen, onClose, customerName, locale = 'cs' }: S
                     {/* Information List */}
                     <div className="space-y-3 text-sm text-stone-600 mb-6">
                       <div className="flex items-start">
-                        <span className="inline-block w-2 h-2 bg-stone-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span className="inline-block w-2 h-2 bg-stone-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                         <p>{content.confirmationSent}</p>
                       </div>
 
                       <div className="flex items-start">
-                        <span className="inline-block w-2 h-2 bg-stone-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span className="inline-block w-2 h-2 bg-stone-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                         <p>{content.responseTime}</p>
                       </div>
 
                       <div className="flex items-start">
-                        <span className="inline-block w-2 h-2 bg-stone-500 rounded-full mt-2 mr-3 flex-shrink-0"></span>
+                        <span className="inline-block w-2 h-2 bg-stone-500 rounded-full mt-2 mr-3 flex-shrink-0" />
                         <p>
-                          {content.urgentContact} <strong className="text-stone-900">+420 123 456 789</strong>
+                          {content.urgentContact}{" "}
+                          <strong className="text-stone-900">+420 123 456 789</strong>
                         </p>
                       </div>
                     </div>
@@ -133,8 +137,16 @@ export function SuccessModal({ isOpen, onClose, customerName, locale = 'cs' }: S
                       <CardContent className="p-4">
                         <div className="flex">
                           <div className="flex-shrink-0">
-                            <svg className="h-5 w-5 text-amber-500" viewBox="0 0 20 20" fill="currentColor">
-                              <path fillRule="evenodd" d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z" clipRule="evenodd" />
+                            <svg
+                              className="h-5 w-5 text-amber-500"
+                              viewBox="0 0 20 20"
+                              fill="currentColor"
+                            >
+                              <path
+                                fillRule="evenodd"
+                                d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                                clipRule="evenodd"
+                              />
                             </svg>
                           </div>
                           <div className="ml-3">
@@ -142,8 +154,12 @@ export function SuccessModal({ isOpen, onClose, customerName, locale = 'cs' }: S
                               {content.importantInfo}
                             </h4>
                             <div className="text-sm text-amber-700 mt-1 space-y-1">
-                              <p><strong>{content.openingHours}</strong></p>
-                              <p><strong>{content.address}</strong></p>
+                              <p>
+                                <strong>{content.openingHours}</strong>
+                              </p>
+                              <p>
+                                <strong>{content.address}</strong>
+                              </p>
                             </div>
                           </div>
                         </div>
@@ -152,12 +168,7 @@ export function SuccessModal({ isOpen, onClose, customerName, locale = 'cs' }: S
 
                     {/* Action Buttons */}
                     <div className="flex space-x-3">
-                      <Button
-                        type="button"
-                        variant="outline"
-                        onClick={onClose}
-                        className="flex-1"
-                      >
+                      <Button type="button" variant="outline" onClick={onClose} className="flex-1">
                         {content.closeButton}
                       </Button>
                       <Button

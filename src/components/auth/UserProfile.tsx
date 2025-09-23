@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Button } from "@/components/ui/Button";
-import { Input } from "@/components/ui/Input";
-import { Card, CardHeader, CardTitle, CardContent } from "@/components/ui/Card";
-import { useAuth, useSignOut, useUpdateProfile } from "@/lib/auth/hooks";
-import { OrderHistory } from "@/components/order/OrderHistory";
-import { AddressBook } from "./AddressBook";
 import { useParams } from "next/navigation";
-import { Address, UserPreferences, defaultUserPreferences } from "@/types/user";
+import { useEffect, useState } from "react";
+import { OrderHistory } from "@/components/order/OrderHistory";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Input } from "@/components/ui/Input";
+import { useAuth, useSignOut, useUpdateProfile } from "@/lib/auth/hooks";
+import { type Address, defaultUserPreferences, type UserPreferences } from "@/types/user";
+import { AddressBook } from "./AddressBook";
 
 export function UserProfile() {
   const { user } = useAuth();
@@ -152,10 +152,11 @@ export function UserProfile() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${activeTab === tab
-                    ? "border-amber-600 text-amber-600"
-                    : "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
-                    }`}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
+                    activeTab === tab
+                      ? "border-amber-600 text-amber-600"
+                      : "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
+                  }`}
                 >
                   {getTabLabel(tab)}
                 </button>
@@ -172,7 +173,11 @@ export function UserProfile() {
                 <div className="flex">
                   <div className="flex-shrink-0">
                     <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
-                      <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clipRule="evenodd" />
+                      <path
+                        fillRule="evenodd"
+                        d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                        clipRule="evenodd"
+                      />
                     </svg>
                   </div>
                   <div className="ml-3">
@@ -222,8 +227,16 @@ export function UserProfile() {
                   <div className="bg-red-50 border border-red-200 rounded-md p-4">
                     <div className="flex">
                       <div className="flex-shrink-0">
-                        <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                          <path fillRule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clipRule="evenodd" />
+                        <svg
+                          className="h-5 w-5 text-red-400"
+                          viewBox="0 0 20 20"
+                          fill="currentColor"
+                        >
+                          <path
+                            fillRule="evenodd"
+                            d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
+                            clipRule="evenodd"
+                          />
                         </svg>
                       </div>
                       <div className="ml-3">
@@ -354,11 +367,7 @@ export function UserProfile() {
                         type="checkbox"
                         checked={preferences.notifications.email}
                         onChange={(e) =>
-                          handlePreferenceChange(
-                            "notifications",
-                            "email",
-                            e.target.checked
-                          )
+                          handlePreferenceChange("notifications", "email", e.target.checked)
                         }
                         className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />

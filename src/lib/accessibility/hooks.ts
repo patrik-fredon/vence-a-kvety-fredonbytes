@@ -4,8 +4,8 @@
  * React hooks for accessibility features
  */
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { FocusTrap, generateId, announceToScreenReader, KeyboardNavigation } from './utils';
+import { useCallback, useEffect, useRef, useState } from "react";
+import { announceToScreenReader, FocusTrap, generateId, KeyboardNavigation } from "./utils";
 
 /**
  * Hook for managing focus trap in modals and dropdowns
@@ -45,7 +45,7 @@ export function useId(prefix?: string): string {
  * Hook for managing ARIA live regions
  */
 export function useAnnouncer() {
-  const announce = useCallback((message: string, priority: 'polite' | 'assertive' = 'polite') => {
+  const announce = useCallback((message: string, priority: "polite" | "assertive" = "polite") => {
     announceToScreenReader(message, priority);
   }, []);
 
@@ -58,42 +58,51 @@ export function useAnnouncer() {
 export function useKeyboardNavigation<T extends HTMLElement>(
   items: T[],
   options: {
-    orientation?: 'horizontal' | 'vertical' | 'both';
+    orientation?: "horizontal" | "vertical" | "both";
     wrap?: boolean;
     columns?: number;
     onActivate?: (index: number, element: T) => void;
   } = {}
 ) {
   const [currentIndex, setCurrentIndex] = useState(-1);
-  const { orientation = 'vertical', wrap = true, columns = 1, onActivate } = options;
+  const { orientation = "vertical", wrap = true, columns = 1, onActivate } = options;
 
-  const handleKeyDown = useCallback((event: KeyboardEvent) => {
-    if (items.length === 0) return;
+  const handleKeyDown = useCallback(
+    (event: KeyboardEvent) => {
+      if (items.length === 0) return;
 
-    const newIndex = KeyboardNavigation.handleArrowKeys(
-      event,
-      items,
-      currentIndex,
-      { orientation, wrap, columns }
-    );
+      const newIndex = KeyboardNavigation.handleArrowKeys(event, items, currentIndex, {
+        orientation,
+        wrap,
+        columns,
+      });
 
-    if (newIndex !== currentIndex) {
-      setCurrentIndex(newIndex);
-    }
+      if (newIndex !== currentIndex) {
+        setCurrentIndex(newIndex);
+      }
 
-    // Handle Enter and Space for activation
-    if ((event.key === 'Enter' || event.key === ' ') && currentIndex >= 0 && items[currentIndex]) {
-      event.preventDefault();
-      onActivate?.(currentIndex, items[currentIndex]);
-    }
-  }, [items, currentIndex, orientation, wrap, columns, onActivate]);
+      // Handle Enter and Space for activation
+      if (
+        (event.key === "Enter" || event.key === " ") &&
+        currentIndex >= 0 &&
+        items[currentIndex]
+      ) {
+        event.preventDefault();
+        onActivate?.(currentIndex, items[currentIndex]);
+      }
+    },
+    [items, currentIndex, orientation, wrap, columns, onActivate]
+  );
 
-  const focusItem = useCallback((index: number) => {
-    if (index >= 0 && index < items.length && items[index]) {
-      setCurrentIndex(index);
-      items[index].focus();
-    }
-  }, [items]);
+  const focusItem = useCallback(
+    (index: number) => {
+      if (index >= 0 && index < items.length && items[index]) {
+        setCurrentIndex(index);
+        items[index].focus();
+      }
+    },
+    [items]
+  );
 
   const resetFocus = useCallback(() => {
     setCurrentIndex(-1);
@@ -103,7 +112,7 @@ export function useKeyboardNavigation<T extends HTMLElement>(
     currentIndex,
     handleKeyDown,
     focusItem,
-    resetFocus
+    resetFocus,
   };
 }
 
@@ -126,23 +135,23 @@ export function useDisclosure(initialState = false) {
   }, []);
 
   const toggle = useCallback(() => {
-    setIsOpen(prev => !prev);
+    setIsOpen((prev) => !prev);
   }, []);
 
   // Handle escape key
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (isOpen && event.key === 'Escape') {
+      if (isOpen && event.key === "Escape") {
         close();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleKeyDown);
+      document.addEventListener("keydown", handleKeyDown);
     }
 
     return () => {
-      document.removeEventListener('keydown', handleKeyDown);
+      document.removeEventListener("keydown", handleKeyDown);
     };
   }, [isOpen, close]);
 
@@ -161,11 +170,11 @@ export function useDisclosure(initialState = false) {
     };
 
     if (isOpen) {
-      document.addEventListener('mousedown', handleClickOutside);
+      document.addEventListener("mousedown", handleClickOutside);
     }
 
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [isOpen, close]);
 
@@ -175,7 +184,7 @@ export function useDisclosure(initialState = false) {
     close,
     toggle,
     triggerRef,
-    contentRef
+    contentRef,
   };
 }
 
@@ -188,9 +197,9 @@ export function useHighContrast() {
   useEffect(() => {
     // Check initial state
     const checkHighContrast = () => {
-      const hasClass = document.documentElement.classList.contains('high-contrast');
-      const systemPreference = window.matchMedia('(prefers-contrast: high)').matches;
-      const forcedColors = window.matchMedia('(forced-colors: active)').matches;
+      const hasClass = document.documentElement.classList.contains("high-contrast");
+      const systemPreference = window.matchMedia("(prefers-contrast: high)").matches;
+      const forcedColors = window.matchMedia("(forced-colors: active)").matches;
 
       setIsHighContrast(hasClass || systemPreference || forcedColors);
     };
@@ -198,39 +207,39 @@ export function useHighContrast() {
     checkHighContrast();
 
     // Listen for changes
-    const mediaQuery = window.matchMedia('(prefers-contrast: high)');
-    const forcedColorsQuery = window.matchMedia('(forced-colors: active)');
+    const mediaQuery = window.matchMedia("(prefers-contrast: high)");
+    const forcedColorsQuery = window.matchMedia("(forced-colors: active)");
 
-    mediaQuery.addEventListener('change', checkHighContrast);
-    forcedColorsQuery.addEventListener('change', checkHighContrast);
+    mediaQuery.addEventListener("change", checkHighContrast);
+    forcedColorsQuery.addEventListener("change", checkHighContrast);
 
     // Listen for class changes
     const observer = new MutationObserver(checkHighContrast);
     observer.observe(document.documentElement, {
       attributes: true,
-      attributeFilter: ['class']
+      attributeFilter: ["class"],
     });
 
     return () => {
-      mediaQuery.removeEventListener('change', checkHighContrast);
-      forcedColorsQuery.removeEventListener('change', checkHighContrast);
+      mediaQuery.removeEventListener("change", checkHighContrast);
+      forcedColorsQuery.removeEventListener("change", checkHighContrast);
       observer.disconnect();
     };
   }, []);
 
   const toggleHighContrast = useCallback(() => {
-    document.documentElement.classList.toggle('high-contrast');
-    localStorage.setItem('high-contrast', (!isHighContrast).toString());
+    document.documentElement.classList.toggle("high-contrast");
+    localStorage.setItem("high-contrast", (!isHighContrast).toString());
 
     announceToScreenReader(
-      !isHighContrast ? 'Vysoký kontrast zapnut' : 'Vysoký kontrast vypnut',
-      'assertive'
+      !isHighContrast ? "Vysoký kontrast zapnut" : "Vysoký kontrast vypnut",
+      "assertive"
     );
   }, [isHighContrast]);
 
   return {
     isHighContrast,
-    toggleHighContrast
+    toggleHighContrast,
   };
 }
 
@@ -241,15 +250,15 @@ export function useReducedMotion() {
   const [prefersReducedMotion, setPrefersReducedMotion] = useState(false);
 
   useEffect(() => {
-    const mediaQuery = window.matchMedia('(prefers-reduced-motion: reduce)');
+    const mediaQuery = window.matchMedia("(prefers-reduced-motion: reduce)");
     setPrefersReducedMotion(mediaQuery.matches);
 
     const handleChange = (event: MediaQueryListEvent) => {
       setPrefersReducedMotion(event.matches);
     };
 
-    mediaQuery.addEventListener('change', handleChange);
-    return () => mediaQuery.removeEventListener('change', handleChange);
+    mediaQuery.addEventListener("change", handleChange);
+    return () => mediaQuery.removeEventListener("change", handleChange);
   }, []);
 
   return prefersReducedMotion;
@@ -260,24 +269,24 @@ export function useReducedMotion() {
  */
 export function useSkipLinks() {
   const skipToContent = useCallback(() => {
-    const mainContent = document.getElementById('main-content');
+    const mainContent = document.getElementById("main-content");
     if (mainContent) {
       mainContent.focus();
-      mainContent.scrollIntoView({ behavior: 'smooth' });
+      mainContent.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
 
   const skipToNavigation = useCallback(() => {
-    const navigation = document.getElementById('main-navigation');
+    const navigation = document.getElementById("main-navigation");
     if (navigation) {
       navigation.focus();
-      navigation.scrollIntoView({ behavior: 'smooth' });
+      navigation.scrollIntoView({ behavior: "smooth" });
     }
   }, []);
 
   return {
     skipToContent,
-    skipToNavigation
+    skipToNavigation,
   };
 }
 
@@ -288,13 +297,16 @@ export function useFormAccessibility() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const announce = useAnnouncer();
 
-  const setFieldError = useCallback((fieldName: string, error: string) => {
-    setErrors(prev => ({ ...prev, [fieldName]: error }));
-    announce(`Chyba v poli ${fieldName}: ${error}`, 'assertive');
-  }, [announce]);
+  const setFieldError = useCallback(
+    (fieldName: string, error: string) => {
+      setErrors((prev) => ({ ...prev, [fieldName]: error }));
+      announce(`Chyba v poli ${fieldName}: ${error}`, "assertive");
+    },
+    [announce]
+  );
 
   const clearFieldError = useCallback((fieldName: string) => {
-    setErrors(prev => {
+    setErrors((prev) => {
       const newErrors = { ...prev };
       delete newErrors[fieldName];
       return newErrors;
@@ -305,22 +317,25 @@ export function useFormAccessibility() {
     setErrors({});
   }, []);
 
-  const getFieldProps = useCallback((fieldName: string) => {
-    const hasError = fieldName in errors;
-    const errorId = hasError ? `${fieldName}-error` : undefined;
+  const getFieldProps = useCallback(
+    (fieldName: string) => {
+      const hasError = fieldName in errors;
+      const errorId = hasError ? `${fieldName}-error` : undefined;
 
-    return {
-      'aria-invalid': hasError,
-      'aria-describedby': errorId,
-      error: errors[fieldName]
-    };
-  }, [errors]);
+      return {
+        "aria-invalid": hasError,
+        "aria-describedby": errorId,
+        error: errors[fieldName],
+      };
+    },
+    [errors]
+  );
 
   return {
     errors,
     setFieldError,
     clearFieldError,
     clearAllErrors,
-    getFieldProps
+    getFieldProps,
   };
 }

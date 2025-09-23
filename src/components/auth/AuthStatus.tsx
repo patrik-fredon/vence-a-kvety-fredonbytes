@@ -21,7 +21,7 @@ export function AuthStatus({ locale }: AuthStatusProps) {
   if (loading) {
     return (
       <div className="flex items-center space-x-2">
-        <div className="animate-pulse bg-gray-200 h-8 w-20 rounded"></div>
+        <div className="animate-pulse bg-gray-200 h-8 w-20 rounded" />
       </div>
     );
   }

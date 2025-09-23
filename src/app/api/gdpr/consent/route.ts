@@ -3,9 +3,9 @@
  * Allows users to view and update their consent preferences
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import { checkUserConsent, updateUserConsent, logUserActivity } from "@/lib/security/gdpr";
+import { checkUserConsent, logUserActivity, updateUserConsent } from "@/lib/security/gdpr";
 import { validateCSRFToken, validateRequestBody } from "@/lib/security/validation";
 
 interface ConsentUpdateBody {
@@ -40,7 +40,6 @@ export async function GET(request: NextRequest) {
       success: true,
       consent,
     });
-
   } catch (error) {
     console.error("Error fetching consent:", error);
 
@@ -97,7 +96,7 @@ export async function POST(request: NextRequest) {
         errors.push({
           field: "marketing",
           message: "Marketing consent must be a boolean",
-          code: "INVALID_TYPE"
+          code: "INVALID_TYPE",
         });
       }
 
@@ -105,7 +104,7 @@ export async function POST(request: NextRequest) {
         errors.push({
           field: "analytics",
           message: "Analytics consent must be a boolean",
-          code: "INVALID_TYPE"
+          code: "INVALID_TYPE",
         });
       }
 
@@ -113,7 +112,7 @@ export async function POST(request: NextRequest) {
         errors.push({
           field: "functional",
           message: "Functional consent must be a boolean",
-          code: "INVALID_TYPE"
+          code: "INVALID_TYPE",
         });
       }
 
@@ -147,7 +146,8 @@ export async function POST(request: NextRequest) {
     }
 
     const userId = session.user.id;
-    const clientIP = request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
+    const clientIP =
+      request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
     const consentData = bodyValidation.data!;
 
     // Update consent preferences
@@ -175,7 +175,6 @@ export async function POST(request: NextRequest) {
       consent: consentData,
       updatedAt: new Date().toISOString(),
     });
-
   } catch (error) {
     console.error("Error updating consent:", error);
 

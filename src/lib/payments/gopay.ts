@@ -128,7 +128,7 @@ export class GopayClient {
         },
         target: {
           type: "ACCOUNT",
-          goid: parseInt(this.config.clientId),
+          goid: Number.parseInt(this.config.clientId),
         },
         amount: Math.round(paymentRequest.amount * 100), // Convert to cents
         currency: paymentRequest.currency.toUpperCase(),
@@ -230,7 +230,7 @@ export function createGopayClient(): GopayClient {
   const clientId = process.env.GOPAY_CLIENT_ID;
   const clientSecret = process.env.GOPAY_CLIENT_SECRET;
 
-  if (!clientId || !clientSecret) {
+  if (!(clientId && clientSecret)) {
     throw new Error(
       "GoPay configuration is missing. Please set GOPAY_CLIENT_ID and GOPAY_CLIENT_SECRET environment variables."
     );

@@ -3,7 +3,7 @@
  */
 
 export { CheckoutForm } from "./CheckoutForm";
-export { OrderSummary, CompactOrderSummary } from "./OrderSummary";
+export { CompactOrderSummary, OrderSummary } from "./OrderSummary";
 
 // Step components
 export { CustomerInfoStep } from "./steps/CustomerInfoStep";

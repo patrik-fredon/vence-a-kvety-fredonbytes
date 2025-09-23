@@ -1,19 +1,20 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useTranslations } from "next-intl";
-import {
-  Elements,
-  CardElement,
-  useStripe,
-  useElements,
-  PaymentElement,
-} from "@stripe/react-stripe-js";
 import { CreditCardIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
-import { getStripe, stripeElementsOptions } from "@/lib/payments/stripe";
+import {
+  CardElement,
+  Elements,
+  PaymentElement,
+  useElements,
+  useStripe,
+} from "@stripe/react-stripe-js";
+import { useTranslations } from "next-intl";
+import type React from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Card, CardHeader, CardTitle, CardContent, CardFooter } from "@/components/ui/Card";
+import { getStripe, stripeElementsOptions } from "@/lib/payments/stripe";
 
 interface StripePaymentFormProps {
   clientSecret: string;
@@ -58,7 +59,7 @@ function PaymentForm({
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
-    if (!stripe || !elements) {
+    if (!(stripe && elements)) {
       onError("Stripe není připraven. Zkuste to znovu.");
       return;
     }
@@ -126,7 +127,9 @@ function PaymentForm({
         <CardHeader>
           <div className="flex items-center space-x-2">
             <CreditCardIcon className="w-5 h-5 text-amber-600" />
-            <CardTitle className="text-lg font-light text-stone-900">Údaje platební karty</CardTitle>
+            <CardTitle className="text-lg font-light text-stone-900">
+              Údaje platební karty
+            </CardTitle>
           </div>
         </CardHeader>
 
@@ -173,7 +176,7 @@ function PaymentForm({
           {/* Submit Button */}
           <Button
             type="submit"
-            disabled={!stripe || !elements || isProcessing}
+            disabled={!(stripe && elements) || isProcessing}
             className="w-full flex items-center justify-center bg-amber-600 hover:bg-amber-700 text-white"
             size="lg"
           >

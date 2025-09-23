@@ -1,4 +1,4 @@
-import { Metadata } from "next";
+import type { Metadata } from "next";
 import { generateEnhancedMetaTags, generateHreflangAttributes } from "@/lib/seo/utils";
 
 interface PageMetadataProps {
@@ -7,7 +7,7 @@ interface PageMetadataProps {
   keywords?: string[];
   locale: string;
   path: string;
-  type?: 'website' | 'product' | 'article' | 'profile';
+  type?: "website" | "product" | "article" | "profile";
   image?: string;
   price?: number;
   availability?: string;
@@ -21,7 +21,7 @@ interface PageMetadataProps {
   openGraph?: {
     title?: string;
     description?: string;
-    type?: 'website' | 'article' | 'profile' | 'book';
+    type?: "website" | "article" | "profile" | "book";
   };
 }
 
@@ -51,27 +51,34 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       languages: hreflangUrls,
     },
     openGraph: {
-      type: (props.openGraph?.type as any) || 'website',
+      type: (props.openGraph?.type as any) || "website",
       locale: props.locale === "cs" ? "cs_CZ" : "en_US",
       alternateLocale: props.locale === "cs" ? "en_US" : "cs_CZ",
       title: props.openGraph?.title || props.title,
       description: props.openGraph?.description || props.description,
-      siteName: props.locale === "cs" ? "Pohřební věnce | Ketingmar s.r.o." : "Funeral Wreaths | Ketingmar s.r.o.",
+      siteName:
+        props.locale === "cs"
+          ? "Pohřební věnce | Ketingmar s.r.o."
+          : "Funeral Wreaths | Ketingmar s.r.o.",
       url: fullUrl,
-      images: props.image ? [
-        {
-          url: props.image.startsWith('http') ? props.image : `${baseUrl}${props.image}`,
-          width: 1200,
-          height: 630,
-          alt: props.openGraph?.title || props.title,
-        }
-      ] : [],
+      images: props.image
+        ? [
+            {
+              url: props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`,
+              width: 1200,
+              height: 630,
+              alt: props.openGraph?.title || props.title,
+            },
+          ]
+        : [],
     },
     twitter: {
       card: "summary_large_image",
       title: props.title,
       description: props.description,
-      images: props.image ? [props.image.startsWith('http') ? props.image : `${baseUrl}${props.image}`] : [],
+      images: props.image
+        ? [props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`]
+        : [],
       site: "@ketingmar", // Add when Twitter account is available
       creator: "@ketingmar",
     },
@@ -84,30 +91,37 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       "format-detection": "telephone=no",
 
       // Product-specific meta tags
-      ...(props.type === 'product' && props.price && {
-        "product:price:amount": props.price.toString(),
-        "product:price:currency": "CZK",
-      }),
-      ...(props.type === 'product' && props.availability && {
-        "product:availability": props.availability,
-      }),
-      ...(props.type === 'product' && props.brand && {
-        "product:brand": props.brand,
-      }),
-      ...(props.type === 'product' && props.category && {
-        "product:category": props.category,
-      }),
+      ...(props.type === "product" &&
+        props.price && {
+          "product:price:amount": props.price.toString(),
+          "product:price:currency": "CZK",
+        }),
+      ...(props.type === "product" &&
+        props.availability && {
+          "product:availability": props.availability,
+        }),
+      ...(props.type === "product" &&
+        props.brand && {
+          "product:brand": props.brand,
+        }),
+      ...(props.type === "product" &&
+        props.category && {
+          "product:category": props.category,
+        }),
 
       // Article-specific meta tags
-      ...(props.type === 'article' && props.publishedTime && {
-        "article:published_time": props.publishedTime,
-      }),
-      ...(props.type === 'article' && props.modifiedTime && {
-        "article:modified_time": props.modifiedTime,
-      }),
-      ...(props.type === 'article' && props.author && {
-        "article:author": props.author,
-      }),
+      ...(props.type === "article" &&
+        props.publishedTime && {
+          "article:published_time": props.publishedTime,
+        }),
+      ...(props.type === "article" &&
+        props.modifiedTime && {
+          "article:modified_time": props.modifiedTime,
+        }),
+      ...(props.type === "article" &&
+        props.author && {
+          "article:author": props.author,
+        }),
     },
   };
 
@@ -124,7 +138,7 @@ export function generateProductMetadata(params: {
     price: number;
     category?: string;
     images?: Array<{ url: string; alt?: string }>;
-    availability?: 'InStock' | 'OutOfStock' | 'PreOrder';
+    availability?: "InStock" | "OutOfStock" | "PreOrder";
     sku?: string;
     brand?: string;
   };
@@ -135,11 +149,12 @@ export function generateProductMetadata(params: {
   const { product, locale, slug, keywords } = params;
 
   // Enhanced title with category context
-  const categoryText = product.category ? ` | ${product.category}` : '';
+  const categoryText = product.category ? ` | ${product.category}` : "";
   const title = `${product.name}${categoryText} | Pohřební věnce`;
 
   // Enhanced description
-  const description = product.description ||
+  const description =
+    product.description ||
     `${product.name} - prémiové pohřební věnce a květinové aranžmá od Ketingmar s.r.o. Ruční výroba, rychlé dodání.`;
 
   // Generate product-specific keywords
@@ -152,7 +167,7 @@ export function generateProductMetadata(params: {
     "rozloučení",
     "věnce",
     "ketingmar",
-    ...(keywords || [])
+    ...(keywords || []),
   ].filter(Boolean);
 
   return generatePageMetadata({
@@ -161,12 +176,16 @@ export function generateProductMetadata(params: {
     keywords: productKeywords,
     locale,
     path: `/products/${slug}`,
-    type: 'product',
+    type: "product",
     image: product.images?.[0]?.url,
     price: product.price,
-    availability: product.availability === 'InStock' ? 'in stock' :
-      product.availability === 'OutOfStock' ? 'out of stock' : 'preorder',
-    brand: product.brand || 'Ketingmar s.r.o.',
+    availability:
+      product.availability === "InStock"
+        ? "in stock"
+        : product.availability === "OutOfStock"
+          ? "out of stock"
+          : "preorder",
+    brand: product.brand || "Ketingmar s.r.o.",
     category: product.category,
   });
 }
@@ -187,7 +206,8 @@ export function generateCategoryMetadata(params: {
   const { category, locale, slug, keywords } = params;
 
   const title = `${category.name} | Pohřební věnce | Ketingmar s.r.o.`;
-  const description = category.description ||
+  const description =
+    category.description ||
     `Prohlédněte si naši kolekci ${category.name.toLowerCase()}. ${category.productCount} produktů k dispozici. Ruční výroba, rychlé dodání.`;
 
   const categoryKeywords = [
@@ -196,7 +216,7 @@ export function generateCategoryMetadata(params: {
     "květinové aranžmá",
     "kategorie",
     "kolekce",
-    ...(keywords || [])
+    ...(keywords || []),
   ].filter(Boolean);
 
   return generatePageMetadata({
@@ -205,7 +225,7 @@ export function generateCategoryMetadata(params: {
     keywords: categoryKeywords,
     locale,
     path: `/products?category=${slug}`,
-    type: 'website',
+    type: "website",
   });
 }
 
@@ -222,9 +242,9 @@ export async function generateHomepageMetadata(locale: string): Promise<Metadata
     description: seoData.description,
     keywords: seoData.keywords,
     locale,
-    path: '',
-    type: 'website',
-    image: '/og-homepage.jpg',
+    path: "",
+    type: "website",
+    image: "/og-homepage.jpg",
     openGraph: seoData.openGraph,
   });
 }
@@ -242,8 +262,8 @@ export async function generateFAQPageMetadata(locale: string): Promise<Metadata>
     description: seoData.description,
     keywords: seoData.keywords,
     locale,
-    path: '/faq',
-    type: 'website',
+    path: "/faq",
+    type: "website",
     openGraph: seoData.openGraph,
   });
 }
@@ -252,25 +272,42 @@ export async function generateFAQPageMetadata(locale: string): Promise<Metadata>
  * Generate metadata for legal page using i18n content
  */
 export async function generateLegalMetadata(locale: string): Promise<Metadata> {
-  const title = locale === 'cs'
-    ? 'Právní informace - Obchodní podmínky, GDPR | Pohřební věnce'
-    : 'Legal Information - Terms, GDPR | Funeral Wreaths';
+  const title =
+    locale === "cs"
+      ? "Právní informace - Obchodní podmínky, GDPR | Pohřební věnce"
+      : "Legal Information - Terms, GDPR | Funeral Wreaths";
 
-  const description = locale === 'cs'
-    ? 'Obchodní podmínky, ochrana osobních údajů, GDPR a informace o cookies pro pohřební věnce a květinové aranžmá.'
-    : 'Terms and conditions, privacy policy, GDPR and cookie information for funeral wreaths and floral arrangements.';
+  const description =
+    locale === "cs"
+      ? "Obchodní podmínky, ochrana osobních údajů, GDPR a informace o cookies pro pohřební věnce a květinové aranžmá."
+      : "Terms and conditions, privacy policy, GDPR and cookie information for funeral wreaths and floral arrangements.";
 
-  const keywords = locale === 'cs'
-    ? ['obchodní podmínky', 'GDPR', 'ochrana údajů', 'cookies', 'pohřební věnce', 'právní informace']
-    : ['terms conditions', 'GDPR', 'privacy policy', 'cookies', 'funeral wreaths', 'legal information'];
+  const keywords =
+    locale === "cs"
+      ? [
+          "obchodní podmínky",
+          "GDPR",
+          "ochrana údajů",
+          "cookies",
+          "pohřební věnce",
+          "právní informace",
+        ]
+      : [
+          "terms conditions",
+          "GDPR",
+          "privacy policy",
+          "cookies",
+          "funeral wreaths",
+          "legal information",
+        ];
 
   return generatePageMetadata({
     title,
     description,
     keywords,
     locale,
-    path: '/legal',
-    type: 'website',
+    path: "/legal",
+    type: "website",
   });
 }
 
@@ -287,8 +324,8 @@ export async function generateAboutPageMetadata(locale: string): Promise<Metadat
     description: seoData.description,
     keywords: seoData.keywords,
     locale,
-    path: '/about',
-    type: 'website',
+    path: "/about",
+    type: "website",
     openGraph: seoData.openGraph,
   });
 }

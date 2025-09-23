@@ -9,8 +9,8 @@ export interface Address {
 }
 
 export interface UserPreferences {
-  language: 'cs' | 'en';
-  currency: 'CZK';
+  language: "cs" | "en";
+  currency: "CZK";
   notifications: {
     email: boolean;
     sms: boolean;
@@ -23,7 +23,7 @@ export interface UserPreferences {
   };
   delivery: {
     defaultAddressId?: string;
-    preferredTimeSlot?: 'morning' | 'afternoon' | 'evening';
+    preferredTimeSlot?: "morning" | "afternoon" | "evening";
     specialInstructions?: string;
   };
 }
@@ -40,8 +40,8 @@ export interface UserProfile {
 }
 
 export const defaultUserPreferences: UserPreferences = {
-  language: 'cs',
-  currency: 'CZK',
+  language: "cs",
+  currency: "CZK",
   notifications: {
     email: true,
     sms: false,
@@ -53,6 +53,6 @@ export const defaultUserPreferences: UserPreferences = {
     analytics: true,
   },
   delivery: {
-    preferredTimeSlot: 'morning',
+    preferredTimeSlot: "morning",
   },
 };

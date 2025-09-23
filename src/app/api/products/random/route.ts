@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 
 /**
@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
 
-    const count = Math.min(parseInt(searchParams.get("count") || "3"), 10); // Max 10 products
+    const count = Math.min(Number.parseInt(searchParams.get("count") || "3"), 10); // Max 10 products
     const locale = searchParams.get("locale") || "cs";
 
     // Get random products that are active and in stock
@@ -50,9 +50,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter products that are in stock
-    const availableProducts = products.filter(product =>
-      product.availability?.inStock !== false
-    );
+    const availableProducts = products.filter((product) => product.availability?.inStock !== false);
 
     if (availableProducts.length === 0) {
       return NextResponse.json({
@@ -65,41 +63,41 @@ export async function GET(request: NextRequest) {
     // 1. Prioritize featured products (30% chance to be selected first)
     // 2. Use Fisher-Yates shuffle for true randomness
     // 3. Ensure variety by avoiding similar products
-    
-    const featuredProducts = availableProducts.filter(p => p.featured);
-    const regularProducts = availableProducts.filter(p => !p.featured);
-    
+
+    const featuredProducts = availableProducts.filter((p) => p.featured);
+    const regularProducts = availableProducts.filter((p) => !p.featured);
+
     let selectedProducts: typeof availableProducts = [];
-    
+
     // Add some featured products first (if available)
     if (featuredProducts.length > 0 && Math.random() < 0.7) {
       const shuffledFeatured = fisherYatesShuffle([...featuredProducts]);
       const featuredCount = Math.min(Math.ceil(count * 0.4), shuffledFeatured.length);
       selectedProducts.push(...shuffledFeatured.slice(0, featuredCount));
     }
-    
+
     // Fill remaining slots with regular products
     const remainingCount = count - selectedProducts.length;
     if (remainingCount > 0 && regularProducts.length > 0) {
       const shuffledRegular = fisherYatesShuffle([...regularProducts]);
       selectedProducts.push(...shuffledRegular.slice(0, remainingCount));
     }
-    
+
     // If we still don't have enough, fill from all available
     if (selectedProducts.length < count) {
       const allShuffled = fisherYatesShuffle([...availableProducts]);
       const needed = count - selectedProducts.length;
       const additional = allShuffled
-        .filter(p => !selectedProducts.some(s => s.id === p.id))
+        .filter((p) => !selectedProducts.some((s) => s.id === p.id))
         .slice(0, needed);
       selectedProducts.push(...additional);
     }
-    
+
     // Final shuffle to ensure randomness
     selectedProducts = fisherYatesShuffle(selectedProducts).slice(0, count);
 
     // Transform to match Product interface
-    const transformedProducts = selectedProducts.map(product => ({
+    const transformedProducts = selectedProducts.map((product) => ({
       id: product.id,
       name: {
         cs: product.name_cs,
@@ -110,7 +108,7 @@ export async function GET(request: NextRequest) {
       images: product.images || [],
       availability: product.availability || { inStock: true },
       active: product.active,
-      featured: product.featured || false,
+      featured: product.featured,
       seoMetadata: {
         title: { cs: "", en: "" },
         description: { cs: "", en: "" },

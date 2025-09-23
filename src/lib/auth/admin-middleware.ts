@@ -1,4 +1,4 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { userUtils } from "@/lib/supabase/utils";
 
@@ -28,7 +28,7 @@ export async function requireAdmin(request: NextRequest): Promise<AdminUser | Ne
 
     const role = await userUtils.getUserRole(session.user.id);
 
-    if (!role || !["admin", "super_admin"].includes(role)) {
+    if (!(role && ["admin", "super_admin"].includes(role))) {
       return NextResponse.json(
         {
           success: false,

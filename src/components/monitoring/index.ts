@@ -4,5 +4,9 @@
  * Performance monitoring, error tracking, and Web Vitals collection components.
  */
 
-export { MonitoringProvider, useErrorReporting, usePerformanceReporting } from './MonitoringProvider';
-export { WebVitalsTracker, useWebVitals } from './WebVitalsTracker';
+export {
+  MonitoringProvider,
+  useErrorReporting,
+  usePerformanceReporting,
+} from "./MonitoringProvider";
+export { useWebVitals, WebVitalsTracker } from "./WebVitalsTracker";

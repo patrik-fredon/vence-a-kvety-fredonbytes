@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import Image from 'next/image';
-import { useTranslations } from 'next-intl';
-import { useState, useEffect } from 'react';
-import { cn } from '@/lib/utils';
-import { CTAButton } from '@/components/ui/CTAButton';
-import { useReducedMotion } from '@/lib/accessibility/hooks';
+import Image from "next/image";
+import { useTranslations } from "next-intl";
+import { useEffect, useState } from "react";
+import { CTAButton } from "@/components/ui/CTAButton";
+import { useReducedMotion } from "@/lib/accessibility/hooks";
+import { cn } from "@/lib/utils";
 import {
-  safeTranslate,
-  getFallbackImage,
   createImageErrorHandler,
-  logErrorWithContext
-} from '@/lib/utils/fallback-utils';
+  getFallbackImage,
+  logErrorWithContext,
+  safeTranslate,
+} from "@/lib/utils/fallback-utils";
 
 interface RefactoredHeroSectionProps {
   locale: string;
@@ -27,9 +27,9 @@ interface RefactoredHeroSectionProps {
 export function RefactoredHeroSection({
   locale,
   companyLogo,
-  className
+  className,
 }: RefactoredHeroSectionProps) {
-  const t = useTranslations('home.refactoredHero');
+  const t = useTranslations("home.refactoredHero");
   const prefersReducedMotion = useReducedMotion();
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [logoError, setLogoError] = useState(false);
@@ -42,12 +42,12 @@ export function RefactoredHeroSection({
   const handleLogoError = () => {
     if (!logoError) {
       setLogoError(true);
-      const fallbackLogo = getFallbackImage('logo');
+      const fallbackLogo = getFallbackImage("logo");
       setCurrentLogoSrc(fallbackLogo.src);
 
-      logErrorWithContext(new Error('Logo failed to load'), {
-        component: 'RefactoredHeroSection',
-        action: 'logo_load_error',
+      logErrorWithContext(new Error("Logo failed to load"), {
+        component: "RefactoredHeroSection",
+        action: "logo_load_error",
         locale,
         timestamp: new Date().toISOString(),
       });
@@ -105,34 +105,37 @@ export function RefactoredHeroSection({
       role="banner"
     >
       {/* Centered content container with responsive max-width */}
-      <div className={cn(
-        "w-full text-center",
-        // Mobile-first max-width progression
-        "max-w-sm", // 384px for very small screens
-        "xs:max-w-md", // 448px for 375px+ screens
-        "sm:max-w-2xl", // 672px for small screens (640px+)
-        "md:max-w-3xl", // 768px for tablets
-        "lg:max-w-4xl", // 896px for desktop
-        "xl:max-w-5xl", // 1024px for large screens
-        "mx-auto"
-      )}>
-
+      <div
+        className={cn(
+          "w-full text-center",
+          // Mobile-first max-width progression
+          "max-w-sm", // 384px for very small screens
+          "xs:max-w-md", // 448px for 375px+ screens
+          "sm:max-w-2xl", // 672px for small screens (640px+)
+          "md:max-w-3xl", // 768px for tablets
+          "lg:max-w-4xl", // 896px for desktop
+          "xl:max-w-5xl", // 1024px for large screens
+          "mx-auto"
+        )}
+      >
         {/* Company Logo - Mobile-first responsive sizing with fade-in animation */}
-        <div className={cn(
-          "relative", // For loading state positioning
-          // Mobile spacing (320px-767px)
-          "mb-6", // Compact spacing on mobile
-          "xs:mb-7", // Slightly more for 375px+
-          "sm:mb-8", // Standard spacing for 640px+
-          // Tablet spacing (768px-1023px)
-          "md:mb-10", // More generous spacing on tablet
-          // Desktop spacing (1024px+)
-          "lg:mb-12", // Ample spacing on desktop
-          "xl:mb-14" // Maximum spacing for large screens
-        )}>
+        <div
+          className={cn(
+            "relative", // For loading state positioning
+            // Mobile spacing (320px-767px)
+            "mb-6", // Compact spacing on mobile
+            "xs:mb-7", // Slightly more for 375px+
+            "sm:mb-8", // Standard spacing for 640px+
+            // Tablet spacing (768px-1023px)
+            "md:mb-10", // More generous spacing on tablet
+            // Desktop spacing (1024px+)
+            "lg:mb-12", // Ample spacing on desktop
+            "xl:mb-14" // Maximum spacing for large screens
+          )}
+        >
           <Image
             src={currentLogoSrc}
-            alt={`${companyLogo.alt} - ${safeT('logoAlt')}`}
+            alt={`${companyLogo.alt} - ${safeT("logoAlt")}`}
             width={companyLogo.width}
             height={companyLogo.height}
             priority={true} // Logo is above the fold and critical
@@ -152,7 +155,11 @@ export function RefactoredHeroSection({
               "mx-auto",
               // Fade-in animation that respects motion preferences
               "transition-opacity duration-700 ease-in-out",
-              logoLoaded && !prefersReducedMotion ? "opacity-100" : logoLoaded ? "opacity-100" : "opacity-0",
+              logoLoaded && !prefersReducedMotion
+                ? "opacity-100"
+                : logoLoaded
+                  ? "opacity-100"
+                  : "opacity-0",
               // Additional gentle animation for non-reduced motion users
               !prefersReducedMotion && logoLoaded && "animate-gentle-fade",
               // Error state styling
@@ -160,11 +167,11 @@ export function RefactoredHeroSection({
             )}
             // Accessibility improvements
             role="img"
-            aria-label={`${companyLogo.alt} - ${safeT('logoAlt')}`}
+            aria-label={`${companyLogo.alt} - ${safeT("logoAlt")}`}
           />
 
           {/* Loading state for logo */}
-          {!logoLoaded && !logoError && (
+          {!(logoLoaded || logoError) && (
             <div
               className={cn(
                 "absolute inset-0 flex items-center justify-center",
@@ -211,7 +218,7 @@ export function RefactoredHeroSection({
             "md:landscape:text-4xl" // Tablet landscape
           )}
         >
-          {safeT('heading')}
+          {safeT("heading")}
         </h1>
 
         {/* Paragraph - Single line with responsive typography */}
@@ -242,7 +249,7 @@ export function RefactoredHeroSection({
             "md:landscape:text-xl" // Tablet landscape
           )}
         >
-          {safeT('description')}
+          {safeT("description")}
         </p>
 
         {/* Call-to-Action Button */}
@@ -260,7 +267,7 @@ export function RefactoredHeroSection({
             "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4" // Tablet landscape
           )}
         >
-          {safeT('ctaButton')}
+          {safeT("ctaButton")}
         </CTAButton>
       </div>
     </section>

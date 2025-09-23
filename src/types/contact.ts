@@ -2,7 +2,7 @@
  * Contact form related type definitions
  */
 
-import { BaseEntity } from "./index";
+import type { BaseEntity } from "./index";
 
 // Contact form submission data
 export interface ContactFormData {

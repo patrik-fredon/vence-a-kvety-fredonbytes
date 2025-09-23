@@ -1,13 +1,13 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import {
+import type { CartItem } from "@/types/cart";
+import type {
   CreateOrderRequest,
   CreateOrderResponse,
   Order,
   OrderItem,
   OrderStatus,
 } from "@/types/order";
-import { CartItem } from "@/types/cart";
 
 /**
  * Create a new order
@@ -28,7 +28,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!body.customerInfo || !body.deliveryInfo || !body.paymentMethod) {
+    if (!(body.customerInfo && body.deliveryInfo && body.paymentMethod)) {
       return NextResponse.json(
         {
           success: false,

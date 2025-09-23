@@ -343,11 +343,11 @@ function compareTranslations(
   const primaryKeys = getNestedKeys(primary);
   const secondaryKeys = getNestedKeys(secondary);
 
-  const missingInSecondary = primaryKeys.filter(key => !hasTranslation(secondary, key));
-  const missingInPrimary = secondaryKeys.filter(key => !hasTranslation(primary, key));
+  const missingInSecondary = primaryKeys.filter((key) => !hasTranslation(secondary, key));
+  const missingInPrimary = secondaryKeys.filter((key) => !hasTranslation(primary, key));
 
-  const commonKeys = primaryKeys.filter(key => hasTranslation(secondary, key));
-  const different = commonKeys.filter(key => {
+  const commonKeys = primaryKeys.filter((key) => hasTranslation(secondary, key));
+  const different = commonKeys.filter((key) => {
     const primaryValue = getNestedValue(primary, key);
     const secondaryValue = getNestedValue(secondary, key);
     return primaryValue !== secondaryValue;
@@ -400,7 +400,7 @@ export function detectBrowserLocale(): Locale {
     const browserLocales = navigator.languages || [navigator.language];
 
     for (const browserLocale of browserLocales) {
-      if (typeof browserLocale === 'string') {
+      if (typeof browserLocale === "string") {
         // Check exact match
         if (isValidLocale(browserLocale)) {
           return browserLocale;

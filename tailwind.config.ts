@@ -11,7 +11,7 @@ const config: Config = {
     extend: {
       // Custom responsive breakpoints for mobile-first design
       screens: {
-        'xs': '475px', // Extra small screens (larger phones)
+        xs: "475px", // Extra small screens (larger phones)
         // Default breakpoints are still available: sm, md, lg, xl, 2xl
       },
       colors: {
@@ -39,9 +39,9 @@ const config: Config = {
         error: designTokens.colors.semantic.error,
         info: designTokens.colors.semantic.info,
         // Legacy funeral colors (maintained for backward compatibility)
-        'funeral-green': designTokens.colors.funeral.hero,
-        'funeral-gold': designTokens.colors.funeral.background,
-        'funeral-light-gold': designTokens.colors.funeral.backgroundLight,
+        "funeral-green": designTokens.colors.funeral.hero,
+        "funeral-gold": designTokens.colors.funeral.background,
+        "funeral-light-gold": designTokens.colors.funeral.backgroundLight,
       },
       fontFamily: designTokens.typography.fontFamily,
       fontSize: designTokens.typography.fontSize,

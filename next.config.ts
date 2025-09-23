@@ -22,11 +22,10 @@ const nextConfig: NextConfig = {
       "@headlessui/react",
       "@heroicons/react",
       "clsx",
-      "tailwind-merge"
+      "tailwind-merge",
     ],
     // CSS optimization for better performance
     optimizeCss: true,
-
   },
 
   // Turbopack configuration (replaces experimental.turbo)
@@ -53,7 +52,7 @@ const nextConfig: NextConfig = {
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     // Optimize image loading
     unoptimized: false,
-    loader: 'default',
+    loader: "default",
     // Enable image optimization for external domains
     remotePatterns: [
       {
@@ -167,7 +166,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
     // Optimize bundle size in production
-    if (!dev && !isServer) {
+    if (!(dev || isServer)) {
       // Enhanced code splitting configuration
       config.optimization.splitChunks = {
         chunks: "all",
@@ -240,7 +239,7 @@ const nextConfig: NextConfig = {
 
   // Environment variables that should be available on the client
   env: {
-    CUSTOM_KEY: process.env['CUSTOM_KEY'],
+    CUSTOM_KEY: process.env["CUSTOM_KEY"],
   },
 
   // Redirects for SEO and user experience

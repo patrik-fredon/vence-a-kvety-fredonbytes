@@ -11,8 +11,8 @@ import {
   DeliveryCostCalculator,
   DeliveryOptionsSelector,
 } from "@/components/delivery";
-import { DeliveryUrgency, DeliveryTimeSlot, DeliveryCostCalculation } from "@/types/delivery";
 import type { Address } from "@/types";
+import type { DeliveryCostCalculation, DeliveryTimeSlot, DeliveryUrgency } from "@/types/delivery";
 
 export default function DeliveryDemoPage() {
   // State management

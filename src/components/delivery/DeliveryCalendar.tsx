@@ -5,17 +5,17 @@
  * Displays available delivery dates with visual indicators for holidays and weekends
  */
 
-import { useState, useEffect, useCallback } from "react";
 import { ChevronLeftIcon, ChevronRightIcon } from "@heroicons/react/24/outline";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
-import {
-  DeliveryAvailability,
-  DeliveryCalendarData,
-  DeliveryUrgency,
-  DeliveryTimeSlot,
-} from "@/types/delivery";
+import { useCallback, useEffect, useState } from "react";
 import { generateAvailableDeliveryDates } from "@/lib/utils/delivery-calculator";
+import {
+  type DeliveryAvailability,
+  DeliveryCalendarData,
+  type DeliveryTimeSlot,
+  type DeliveryUrgency,
+} from "@/types/delivery";
 
 interface DeliveryCalendarProps {
   selectedDate?: Date;
@@ -188,7 +188,7 @@ export function DeliveryCalendar({
           onClick={goToPreviousMonth}
           disabled={disabled}
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label={tAccessibility('previousMonth')}
+          aria-label={tAccessibility("previousMonth")}
         >
           <ChevronLeftIcon className="w-5 h-5" />
         </button>
@@ -202,7 +202,7 @@ export function DeliveryCalendar({
           onClick={goToNextMonth}
           disabled={disabled}
           className="p-2 rounded-lg hover:bg-gray-100 disabled:opacity-50 disabled:cursor-not-allowed"
-          aria-label={tAccessibility('nextMonth')}
+          aria-label={tAccessibility("nextMonth")}
         >
           <ChevronRightIcon className="w-5 h-5" />
         </button>
@@ -259,7 +259,10 @@ export function DeliveryCalendar({
                   "bg-gray-100": availability?.isWeekend && !availability.isHoliday && !isSelected,
                 }
               )}
-              title={availability?.reason || (isAvailable ? t('calendar.available') : t('calendar.unavailable'))}
+              title={
+                availability?.reason ||
+                (isAvailable ? t("calendar.available") : t("calendar.unavailable"))
+              }
             >
               {date.getDate()}
 
@@ -270,7 +273,7 @@ export function DeliveryCalendar({
                     className={clsx("w-1 h-1 rounded-full", {
                       "bg-green-500": availability.available,
                       "bg-red-500": !availability.available && availability.isHoliday,
-                      "bg-gray-400": !availability.available && !availability.isHoliday,
+                      "bg-gray-400": !(availability.available || availability.isHoliday),
                     })}
                   />
                 </div>
@@ -283,7 +286,7 @@ export function DeliveryCalendar({
       {/* Time Slot Selection */}
       {selectedDate && (
         <div className="mt-6 p-4 bg-gray-50 rounded-lg">
-          <h4 className="text-sm font-medium text-gray-900 mb-3">{t('calendar.timeSlot')}</h4>
+          <h4 className="text-sm font-medium text-gray-900 mb-3">{t("calendar.timeSlot")}</h4>
           <div className="grid grid-cols-2 gap-2">
             {["morning", "afternoon", "anytime"].map((slot) => (
               <button
@@ -300,9 +303,9 @@ export function DeliveryCalendar({
                   }
                 )}
               >
-                {slot === "morning" && t('calendar.morning')}
-                {slot === "afternoon" && t('calendar.afternoon')}
-                {slot === "anytime" && t('calendar.anytime')}
+                {slot === "morning" && t("calendar.morning")}
+                {slot === "afternoon" && t("calendar.afternoon")}
+                {slot === "anytime" && t("calendar.anytime")}
               </button>
             ))}
           </div>
@@ -320,15 +323,15 @@ export function DeliveryCalendar({
       <div className="mt-4 flex flex-wrap gap-4 text-xs text-gray-600">
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 bg-green-500 rounded-full" />
-          <span>{t('calendar.available')}</span>
+          <span>{t("calendar.available")}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 bg-red-500 rounded-full" />
-          <span>{t('calendar.holiday')}</span>
+          <span>{t("calendar.holiday")}</span>
         </div>
         <div className="flex items-center gap-1">
           <div className="w-3 h-3 bg-gray-400 rounded-full" />
-          <span>{t('calendar.unavailable')}</span>
+          <span>{t("calendar.unavailable")}</span>
         </div>
       </div>
     </div>

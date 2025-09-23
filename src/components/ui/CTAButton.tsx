@@ -7,9 +7,9 @@
  */
 
 import Link from "next/link";
-import { Button } from "./Button";
-import { cn } from "@/lib/utils";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
+import { cn } from "@/lib/utils";
+import { Button } from "./Button";
 
 interface CTAButtonProps {
   /** Button text content */
@@ -85,7 +85,7 @@ export function CTAButton({
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     // Enhanced keyboard interaction
-    if (event.key === 'Enter' || event.key === ' ') {
+    if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
       if (!disabled && onClick) {
         onClick();
@@ -107,11 +107,10 @@ export function CTAButton({
         disabled={disabled}
         onClick={handleClick}
         onKeyDown={handleKeyDown}
-        aria-label={typeof children === 'string' ? children : undefined}
+        aria-label={typeof children === "string" ? children : undefined}
       >
         {children}
       </button>
     </Link>
   );
 }
-

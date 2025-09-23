@@ -2,7 +2,7 @@
  * Checkout form validation utilities
  */
 
-import { CustomerInfo, DeliveryInfo, CheckoutValidationErrors } from "@/types/order";
+import type { CheckoutValidationErrors, CustomerInfo, DeliveryInfo } from "@/types/order";
 
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

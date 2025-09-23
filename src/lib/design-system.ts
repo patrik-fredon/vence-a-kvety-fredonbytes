@@ -6,7 +6,7 @@
  * colors and professional aesthetics.
  */
 
-import { designTokens } from './design-tokens';
+import { designTokens } from "./design-tokens";
 
 // =============================================================================
 // COLOR USAGE GUIDELINES
@@ -21,59 +21,59 @@ import { designTokens } from './design-tokens';
 export const funeralColorUsage = {
   // Primary backgrounds
   heroSection: {
-    className: 'bg-funeral-hero',
+    className: "bg-funeral-hero",
     cssValue: designTokens.colors.funeral.hero,
-    description: 'Dark green-gray background for hero sections',
-    textColor: 'text-funeral-textOnHero',
+    description: "Dark green-gray background for hero sections",
+    textColor: "text-funeral-textOnHero",
   },
   pageBackground: {
-    className: 'bg-funeral-background',
+    className: "bg-funeral-background",
     cssValue: designTokens.colors.funeral.background,
-    description: 'Muted olive-gold for main page background',
-    textColor: 'text-funeral-textOnBackground',
+    description: "Muted olive-gold for main page background",
+    textColor: "text-funeral-textOnBackground",
   },
 
   // Text colors
   primaryText: {
-    className: 'text-funeral-textOnHero',
+    className: "text-funeral-textOnHero",
     cssValue: designTokens.colors.funeral.textOnHero,
-    description: 'White text for use on dark backgrounds',
-    usage: 'Use on hero sections and dark backgrounds',
+    description: "White text for use on dark backgrounds",
+    usage: "Use on hero sections and dark backgrounds",
   },
   secondaryText: {
-    className: 'text-funeral-textOnBackground',
+    className: "text-funeral-textOnBackground",
     cssValue: designTokens.colors.funeral.textOnBackground,
-    description: 'Dark text for use on light backgrounds',
-    usage: 'Use on page background and light sections',
+    description: "Dark text for use on light backgrounds",
+    usage: "Use on page background and light sections",
   },
   accentText: {
-    className: 'text-funeral-accent',
+    className: "text-funeral-accent",
     cssValue: designTokens.colors.funeral.accent,
-    description: 'Gold accent for highlights and important elements',
-    usage: 'Use sparingly for emphasis and CTAs',
+    description: "Gold accent for highlights and important elements",
+    usage: "Use sparingly for emphasis and CTAs",
   },
 
   // Variants for different contexts
   variants: {
     heroLight: {
-      className: 'bg-funeral-heroLight',
+      className: "bg-funeral-heroLight",
       cssValue: designTokens.colors.funeral.heroLight,
-      description: 'Lighter variant of hero color for hover states',
+      description: "Lighter variant of hero color for hover states",
     },
     heroDark: {
-      className: 'bg-funeral-heroDark',
+      className: "bg-funeral-heroDark",
       cssValue: designTokens.colors.funeral.heroDark,
-      description: 'Darker variant of hero color for pressed states',
+      description: "Darker variant of hero color for pressed states",
     },
     backgroundLight: {
-      className: 'bg-funeral-backgroundLight',
+      className: "bg-funeral-backgroundLight",
       cssValue: designTokens.colors.funeral.backgroundLight,
-      description: 'Lighter variant of background for cards and sections',
+      description: "Lighter variant of background for cards and sections",
     },
     backgroundDark: {
-      className: 'bg-funeral-backgroundDark',
+      className: "bg-funeral-backgroundDark",
       cssValue: designTokens.colors.funeral.backgroundDark,
-      description: 'Darker variant of background for borders and dividers',
+      description: "Darker variant of background for borders and dividers",
     },
   },
 } as const;
@@ -88,17 +88,17 @@ export const colorContrast = {
     {
       background: designTokens.colors.funeral.hero,
       text: designTokens.colors.funeral.textOnHero,
-      ratio: '12.6:1', // Exceeds WCAG AA requirement of 4.5:1
+      ratio: "12.6:1", // Exceeds WCAG AA requirement of 4.5:1
     },
     {
       background: designTokens.colors.funeral.background,
       text: designTokens.colors.funeral.textOnBackground,
-      ratio: '8.2:1', // Exceeds WCAG AA requirement of 4.5:1
+      ratio: "8.2:1", // Exceeds WCAG AA requirement of 4.5:1
     },
     {
       background: designTokens.colors.funeral.background,
       text: designTokens.colors.funeral.accent,
-      ratio: '5.1:1', // Meets WCAG AA requirement
+      ratio: "5.1:1", // Meets WCAG AA requirement
     },
   ],
 } as const;
@@ -113,32 +113,34 @@ export const colorContrast = {
 export const componentPatterns = {
   // Hero section pattern
   heroSection: {
-    container: 'bg-funeral-hero text-funeral-textOnHero',
-    heading: 'text-funeral-textOnHero font-bold',
-    subheading: 'text-funeral-textSecondary font-medium',
-    cta: 'bg-funeral-accent text-funeral-textOnBackground hover:bg-funeral-accent/90',
+    container: "bg-funeral-hero text-funeral-textOnHero",
+    heading: "text-funeral-textOnHero font-bold",
+    subheading: "text-funeral-textSecondary font-medium",
+    cta: "bg-funeral-accent text-funeral-textOnBackground hover:bg-funeral-accent/90",
   },
 
   // Product card pattern
   productCard: {
-    container: 'bg-funeral-backgroundLight border border-funeral-backgroundDark',
-    title: 'text-funeral-textOnBackground font-semibold',
-    description: 'text-funeral-textOnBackground/80',
-    price: 'text-funeral-accent font-bold',
+    container: "bg-funeral-backgroundLight border border-funeral-backgroundDark",
+    title: "text-funeral-textOnBackground font-semibold",
+    description: "text-funeral-textOnBackground/80",
+    price: "text-funeral-accent font-bold",
   },
 
   // Navigation pattern
   navigation: {
-    container: 'bg-funeral-background border-b border-funeral-backgroundDark',
-    link: 'text-funeral-textOnBackground hover:text-funeral-accent',
-    activeLink: 'text-funeral-accent font-medium',
+    container: "bg-funeral-background border-b border-funeral-backgroundDark",
+    link: "text-funeral-textOnBackground hover:text-funeral-accent",
+    activeLink: "text-funeral-accent font-medium",
   },
 
   // Button patterns
   buttons: {
-    primary: 'bg-funeral-accent text-funeral-textOnBackground hover:bg-funeral-accent/90 focus:ring-funeral-accent/50',
-    secondary: 'bg-funeral-backgroundLight text-funeral-textOnBackground border border-funeral-backgroundDark hover:bg-funeral-backgroundDark',
-    ghost: 'text-funeral-accent hover:bg-funeral-accent/10',
+    primary:
+      "bg-funeral-accent text-funeral-textOnBackground hover:bg-funeral-accent/90 focus:ring-funeral-accent/50",
+    secondary:
+      "bg-funeral-backgroundLight text-funeral-textOnBackground border border-funeral-backgroundDark hover:bg-funeral-backgroundDark",
+    ghost: "text-funeral-accent hover:bg-funeral-accent/10",
   },
 } as const;
 
@@ -168,16 +170,16 @@ export function getTextColorForBackground(backgroundColor: string): string {
  */
 export function generateFuneralColorProperties(): Record<string, string> {
   return {
-    '--funeral-hero': designTokens.colors.funeral.hero,
-    '--funeral-background': designTokens.colors.funeral.background,
-    '--funeral-hero-light': designTokens.colors.funeral.heroLight,
-    '--funeral-hero-dark': designTokens.colors.funeral.heroDark,
-    '--funeral-background-light': designTokens.colors.funeral.backgroundLight,
-    '--funeral-background-dark': designTokens.colors.funeral.backgroundDark,
-    '--funeral-text-on-hero': designTokens.colors.funeral.textOnHero,
-    '--funeral-text-on-background': designTokens.colors.funeral.textOnBackground,
-    '--funeral-text-secondary': designTokens.colors.funeral.textSecondary,
-    '--funeral-accent': designTokens.colors.funeral.accent,
+    "--funeral-hero": designTokens.colors.funeral.hero,
+    "--funeral-background": designTokens.colors.funeral.background,
+    "--funeral-hero-light": designTokens.colors.funeral.heroLight,
+    "--funeral-hero-dark": designTokens.colors.funeral.heroDark,
+    "--funeral-background-light": designTokens.colors.funeral.backgroundLight,
+    "--funeral-background-dark": designTokens.colors.funeral.backgroundDark,
+    "--funeral-text-on-hero": designTokens.colors.funeral.textOnHero,
+    "--funeral-text-on-background": designTokens.colors.funeral.textOnBackground,
+    "--funeral-text-secondary": designTokens.colors.funeral.textSecondary,
+    "--funeral-accent": designTokens.colors.funeral.accent,
   };
 }
 
@@ -193,9 +195,10 @@ export function validateColorAccessibility(
   // This is a simplified check - in production, you'd use a proper contrast calculation library
   const validCombinations = colorContrast.validCombinations;
   return validCombinations.some(
-    combo => combo.background === backgroundColor &&
+    (combo) =>
+      combo.background === backgroundColor &&
       combo.text === textColor &&
-      parseFloat(combo.ratio) >= minimumRatio
+      Number.parseFloat(combo.ratio) >= minimumRatio
   );
 }
 

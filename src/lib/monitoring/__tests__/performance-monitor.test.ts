@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-import { recordPerformanceMetric, getPerformanceSummary } from '../performance-monitor';
+import { getPerformanceSummary, recordPerformanceMetric } from "../performance-monitor";
 
 // Mock web-vitals
-jest.mock('web-vitals', () => ({
+jest.mock("web-vitals", () => ({
   onCLS: jest.fn(),
   onINP: jest.fn(),
   onFCP: jest.fn(),
@@ -18,12 +18,12 @@ jest.mock('web-vitals', () => ({
 global.fetch = jest.fn();
 
 // Mock performance API
-Object.defineProperty(window, 'performance', {
+Object.defineProperty(window, "performance", {
   value: {
     now: jest.fn(() => 1000),
     getEntriesByType: jest.fn(() => [
       {
-        entryType: 'navigation',
+        entryType: "navigation",
         domainLookupStart: 0,
         domainLookupEnd: 50,
         connectStart: 50,
@@ -45,7 +45,7 @@ global.PerformanceObserver = jest.fn().mockImplementation((callback) => ({
   disconnect: jest.fn(),
 }));
 
-describe('PerformanceMonitor', () => {
+describe("PerformanceMonitor", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (fetch as jest.Mock).mockResolvedValue({
@@ -60,19 +60,19 @@ describe('PerformanceMonitor', () => {
     jest.useRealTimers();
   });
 
-  describe('recordMetric', () => {
-    it('should record a performance metric', () => {
-      recordPerformanceMetric('TEST_METRIC', 1500, 'Test context');
+  describe("recordMetric", () => {
+    it("should record a performance metric", () => {
+      recordPerformanceMetric("TEST_METRIC", 1500, "Test context");
 
       const summary = getPerformanceSummary();
       expect(summary.totalMetrics).toBe(1);
       expect(summary.averageValues.TEST_METRIC).toBe(1500);
     });
 
-    it('should categorize metrics by rating', () => {
-      recordPerformanceMetric('LCP', 1000); // good
-      recordPerformanceMetric('LCP', 3000); // needs-improvement
-      recordPerformanceMetric('LCP', 5000); // poor
+    it("should categorize metrics by rating", () => {
+      recordPerformanceMetric("LCP", 1000); // good
+      recordPerformanceMetric("LCP", 3000); // needs-improvement
+      recordPerformanceMetric("LCP", 5000); // poor
 
       const summary = getPerformanceSummary();
       expect(summary.totalMetrics).toBe(3);
@@ -81,11 +81,11 @@ describe('PerformanceMonitor', () => {
       expect(summary.poorMetrics).toBe(1);
     });
 
-    it('should calculate correct ratings for Web Vitals', () => {
+    it("should calculate correct ratings for Web Vitals", () => {
       // Test LCP ratings
-      recordPerformanceMetric('LCP', 2000); // good
-      recordPerformanceMetric('LCP', 3000); // needs-improvement
-      recordPerformanceMetric('LCP', 5000); // poor
+      recordPerformanceMetric("LCP", 2000); // good
+      recordPerformanceMetric("LCP", 3000); // needs-improvement
+      recordPerformanceMetric("LCP", 5000); // poor
 
       const summary = getPerformanceSummary();
       expect(summary.goodMetrics).toBeGreaterThan(0);
@@ -94,11 +94,11 @@ describe('PerformanceMonitor', () => {
     });
   });
 
-  describe('getPerformanceSummary', () => {
-    it('should return correct summary statistics', () => {
-      recordPerformanceMetric('LCP', 2000);
-      recordPerformanceMetric('LCP', 3000);
-      recordPerformanceMetric('FCP', 1500);
+  describe("getPerformanceSummary", () => {
+    it("should return correct summary statistics", () => {
+      recordPerformanceMetric("LCP", 2000);
+      recordPerformanceMetric("LCP", 3000);
+      recordPerformanceMetric("FCP", 1500);
 
       const summary = getPerformanceSummary();
       expect(summary.totalMetrics).toBe(3);
@@ -106,7 +106,7 @@ describe('PerformanceMonitor', () => {
       expect(summary.averageValues.FCP).toBe(1500);
     });
 
-    it('should handle empty metrics', () => {
+    it("should handle empty metrics", () => {
       const summary = getPerformanceSummary();
       expect(summary.totalMetrics).toBe(0);
       expect(summary.goodMetrics).toBe(0);
@@ -115,11 +115,11 @@ describe('PerformanceMonitor', () => {
     });
   });
 
-  describe('metric rating calculation', () => {
-    it('should correctly rate LCP metrics', () => {
-      recordPerformanceMetric('LCP', 2000); // good
-      recordPerformanceMetric('LCP', 3500); // needs-improvement
-      recordPerformanceMetric('LCP', 5000); // poor
+  describe("metric rating calculation", () => {
+    it("should correctly rate LCP metrics", () => {
+      recordPerformanceMetric("LCP", 2000); // good
+      recordPerformanceMetric("LCP", 3500); // needs-improvement
+      recordPerformanceMetric("LCP", 5000); // poor
 
       const summary = getPerformanceSummary();
       expect(summary.goodMetrics).toBe(1);
@@ -127,10 +127,10 @@ describe('PerformanceMonitor', () => {
       expect(summary.poorMetrics).toBe(1);
     });
 
-    it('should correctly rate CLS metrics', () => {
-      recordPerformanceMetric('CLS', 0.05); // good
-      recordPerformanceMetric('CLS', 0.15); // needs-improvement
-      recordPerformanceMetric('CLS', 0.3);  // poor
+    it("should correctly rate CLS metrics", () => {
+      recordPerformanceMetric("CLS", 0.05); // good
+      recordPerformanceMetric("CLS", 0.15); // needs-improvement
+      recordPerformanceMetric("CLS", 0.3); // poor
 
       const summary = getPerformanceSummary();
       expect(summary.goodMetrics).toBe(1);
@@ -138,10 +138,10 @@ describe('PerformanceMonitor', () => {
       expect(summary.poorMetrics).toBe(1);
     });
 
-    it('should correctly rate custom metrics', () => {
-      recordPerformanceMetric('CUSTOM_METRIC', 500);  // good (< 1000)
-      recordPerformanceMetric('CUSTOM_METRIC', 2000); // needs-improvement (< 3000)
-      recordPerformanceMetric('CUSTOM_METRIC', 4000); // poor (> 3000)
+    it("should correctly rate custom metrics", () => {
+      recordPerformanceMetric("CUSTOM_METRIC", 500); // good (< 1000)
+      recordPerformanceMetric("CUSTOM_METRIC", 2000); // needs-improvement (< 3000)
+      recordPerformanceMetric("CUSTOM_METRIC", 4000); // poor (> 3000)
 
       const summary = getPerformanceSummary();
       expect(summary.goodMetrics).toBe(1);
@@ -150,15 +150,15 @@ describe('PerformanceMonitor', () => {
     });
   });
 
-  describe('server reporting', () => {
+  describe("server reporting", () => {
     beforeEach(() => {
       jest.useFakeTimers();
     });
 
-    it('should debounce server requests', () => {
-      recordPerformanceMetric('TEST_METRIC_1', 1000);
-      recordPerformanceMetric('TEST_METRIC_2', 2000);
-      recordPerformanceMetric('TEST_METRIC_3', 3000);
+    it("should debounce server requests", () => {
+      recordPerformanceMetric("TEST_METRIC_1", 1000);
+      recordPerformanceMetric("TEST_METRIC_2", 2000);
+      recordPerformanceMetric("TEST_METRIC_3", 3000);
 
       // Should not have sent any requests yet
       expect(fetch).not.toHaveBeenCalled();
@@ -169,22 +169,22 @@ describe('PerformanceMonitor', () => {
       // Should have sent one batched request
       expect(fetch).toHaveBeenCalledTimes(1);
       expect(fetch).toHaveBeenCalledWith(
-        '/api/monitoring/performance',
+        "/api/monitoring/performance",
         expect.objectContaining({
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: expect.stringContaining('TEST_METRIC'),
+          body: expect.stringContaining("TEST_METRIC"),
         })
       );
     });
 
-    it('should not send requests in development mode', () => {
+    it("should not send requests in development mode", () => {
       const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = 'development';
+      process.env.NODE_ENV = "development";
 
-      recordPerformanceMetric('TEST_METRIC', 1000);
+      recordPerformanceMetric("TEST_METRIC", 1000);
       jest.advanceTimersByTime(5000);
 
       expect(fetch).not.toHaveBeenCalled();
@@ -192,10 +192,10 @@ describe('PerformanceMonitor', () => {
       process.env.NODE_ENV = originalEnv;
     });
 
-    it('should handle server errors gracefully', async () => {
-      (fetch as jest.Mock).mockRejectedValue(new Error('Network error'));
+    it("should handle server errors gracefully", async () => {
+      (fetch as jest.Mock).mockRejectedValue(new Error("Network error"));
 
-      recordPerformanceMetric('TEST_METRIC', 1000);
+      recordPerformanceMetric("TEST_METRIC", 1000);
       jest.advanceTimersByTime(5000);
 
       // Should not throw error
@@ -203,9 +203,9 @@ describe('PerformanceMonitor', () => {
     });
   });
 
-  describe('Web Vitals integration', () => {
-    it('should initialize Web Vitals listeners', async () => {
-      const webVitals = await import('web-vitals');
+  describe("Web Vitals integration", () => {
+    it("should initialize Web Vitals listeners", async () => {
+      const webVitals = await import("web-vitals");
 
       expect(webVitals.onCLS).toHaveBeenCalled();
       expect(webVitals.onINP).toHaveBeenCalled();
@@ -215,8 +215,8 @@ describe('PerformanceMonitor', () => {
     });
   });
 
-  describe('resource timing monitoring', () => {
-    it('should monitor slow resources', () => {
+  describe("resource timing monitoring", () => {
+    it("should monitor slow resources", () => {
       const mockObserver = {
         observe: jest.fn(),
       };
@@ -226,8 +226,8 @@ describe('PerformanceMonitor', () => {
         callback({
           getEntries: () => [
             {
-              entryType: 'resource',
-              name: 'slow-resource.js',
+              entryType: "resource",
+              name: "slow-resource.js",
               duration: 3000, // 3 seconds
               transferSize: 500000, // 500KB
             },
@@ -237,16 +237,16 @@ describe('PerformanceMonitor', () => {
       });
 
       // Create new performance monitor instance to trigger observer setup
-      const { performanceMonitor: newMonitor } = require('../performance-monitor');
+      const { performanceMonitor: newMonitor } = require("../performance-monitor");
 
       expect(mockObserver.observe).toHaveBeenCalledWith({
-        entryTypes: ['resource'],
+        entryTypes: ["resource"],
       });
     });
   });
 
-  describe('long task monitoring', () => {
-    it('should monitor long tasks', () => {
+  describe("long task monitoring", () => {
+    it("should monitor long tasks", () => {
       const mockObserver = {
         observe: jest.fn(),
       };
@@ -256,7 +256,7 @@ describe('PerformanceMonitor', () => {
         callback({
           getEntries: () => [
             {
-              entryType: 'longtask',
+              entryType: "longtask",
               duration: 100, // 100ms
             },
           ],
@@ -265,10 +265,10 @@ describe('PerformanceMonitor', () => {
       });
 
       // Create new performance monitor instance to trigger observer setup
-      const { performanceMonitor: newMonitor } = require('../performance-monitor');
+      const { performanceMonitor: newMonitor } = require("../performance-monitor");
 
       expect(mockObserver.observe).toHaveBeenCalledWith({
-        entryTypes: ['longtask'],
+        entryTypes: ["longtask"],
       });
     });
   });

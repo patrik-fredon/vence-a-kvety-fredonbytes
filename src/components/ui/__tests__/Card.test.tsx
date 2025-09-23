@@ -1,5 +1,5 @@
-import { render, screen, fireEvent } from "@testing-library/react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from "../Card";
+import { fireEvent, render, screen } from "@testing-library/react";
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "../Card";
 
 describe("Card", () => {
   it("renders with default props", () => {
@@ -55,10 +55,10 @@ describe("Card", () => {
 
     const card = screen.getByRole("button");
 
-    fireEvent.keyDown(card, { key: 'Enter' });
+    fireEvent.keyDown(card, { key: "Enter" });
     expect(handleClick).toHaveBeenCalledTimes(1);
 
-    fireEvent.keyDown(card, { key: ' ' });
+    fireEvent.keyDown(card, { key: " " });
     expect(handleClick).toHaveBeenCalledTimes(2);
   });
 
@@ -134,7 +134,14 @@ describe("Card sub-components", () => {
 
     const footer = screen.getByText("Footer content");
     expect(footer).toBeInTheDocument();
-    expect(footer).toHaveClass("flex", "items-center", "justify-between", "pt-4", "border-t", "border-stone-200");
+    expect(footer).toHaveClass(
+      "flex",
+      "items-center",
+      "justify-between",
+      "pt-4",
+      "border-t",
+      "border-stone-200"
+    );
   });
 
   it("renders complete card with all sub-components", () => {

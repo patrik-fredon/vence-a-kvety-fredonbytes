@@ -1,13 +1,12 @@
 "use client";
 
-import { useTranslations } from "next-intl";
-import Link from "next/link";
-import { Product } from "@/types/product";
-import { cn } from "@/lib/utils";
-import { StarIcon, HeartIcon, ShareIcon } from "@heroicons/react/24/outline";
+import { StarIcon } from "@heroicons/react/24/outline";
 import { StarIcon as StarIconSolid } from "@heroicons/react/24/solid";
+import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Button } from "@/components/ui/Button";
+import { cn } from "@/lib/utils";
+import type { Product } from "@/types/product";
 
 interface ProductInfoProps {
   product: Product;
@@ -29,31 +28,6 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
   // Mock rating data (implement in later tasks)
   const rating = 4.8;
   const reviewCount = 127;
-
-  const handleShare = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: product.name[locale as keyof typeof product.name],
-          text: product.description?.[locale as keyof typeof product.description],
-          url: window.location.href,
-        });
-      } catch (error) {
-        console.log("Error sharing:", error);
-      }
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(window.location.href);
-      // TODO: Show toast notification in later tasks
-      alert(t("linkCopied"));
-    }
-  };
-
-  const handleAddToWishlist = () => {
-    // TODO: Implement wishlist functionality in later tasks
-    console.log("Added to wishlist:", product.id);
-    alert(t("addedToWishlist"));
-  };
 
   return (
     <div className={cn("space-y-6", className)}>
@@ -91,26 +65,6 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
           <h1 className="text-3xl font-light text-stone-900 leading-tight">
             {product.name[locale as keyof typeof product.name]}
           </h1>
-
-          {/* Action Buttons */}
-          <div className="flex gap-2 flex-shrink-0">
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleAddToWishlist}
-              aria-label={t("addToWishlist")}
-            >
-              <HeartIcon className="w-5 h-5" />
-            </Button>
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={handleShare}
-              aria-label={t("share")}
-            >
-              <ShareIcon className="w-5 h-5" />
-            </Button>
-          </div>
         </div>
 
         {/* Featured Badge */}
@@ -224,22 +178,26 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
       </Card>
 
       {/* Availability Status */}
-      <Card className={cn(
-        product.availability.inStock
-          ? "bg-green-50 border-green-200"
-          : "bg-red-50 border-red-200"
-      )}>
+      <Card
+        className={cn(
+          product.availability.inStock ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+        )}
+      >
         <CardContent className="py-3">
           <div className="flex items-center gap-3">
-            <div className={cn(
-              "w-3 h-3 rounded-full",
-              product.availability.inStock ? "bg-green-500" : "bg-red-500"
-            )} />
+            <div
+              className={cn(
+                "w-3 h-3 rounded-full",
+                product.availability.inStock ? "bg-green-500" : "bg-red-500"
+              )}
+            />
             <div className="flex-1">
-              <div className={cn(
-                "font-medium text-sm",
-                product.availability.inStock ? "text-green-800" : "text-red-800"
-              )}>
+              <div
+                className={cn(
+                  "font-medium text-sm",
+                  product.availability.inStock ? "text-green-800" : "text-red-800"
+                )}
+              >
                 {product.availability.inStock ? t("inStock") : t("outOfStock")}
               </div>
               {product.availability.inStock && product.availability.leadTimeHours && (

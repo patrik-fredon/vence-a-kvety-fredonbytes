@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Product } from "@/types/product";
-import { ProductTeaser } from "./ProductTeaser";
+import { useCallback, useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCart } from "@/lib/cart/context";
+import type { Product } from "@/types/product";
+import { ProductTeaser } from "./ProductTeaser";
 
 interface RandomProductTeasersProps {
   locale: string;
@@ -27,7 +27,7 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
       setError(null);
 
       const response = await fetch(`/api/products/random?count=${count}&locale=${locale}`, {
-        cache: 'no-store', // Ensure fresh data on each request for rotation
+        cache: "no-store", // Ensure fresh data on each request for rotation
       });
 
       if (!response.ok) {
@@ -77,7 +77,7 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
   };
 
   const handleRetry = () => {
-    setRetryCount(prev => prev + 1);
+    setRetryCount((prev) => prev + 1);
     fetchRandomProducts();
   };
 
@@ -160,5 +160,3 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
     </div>
   );
 }
-
-

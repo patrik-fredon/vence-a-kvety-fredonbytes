@@ -7,7 +7,7 @@ const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || "placeholder
 // Only warn in development, not during build
 if (
   process.env.NODE_ENV === "development" &&
-  (!process.env.NEXT_PUBLIC_SUPABASE_URL || !process.env.SUPABASE_SERVICE_ROLE_KEY)
+  !(process.env.NEXT_PUBLIC_SUPABASE_URL && process.env.SUPABASE_SERVICE_ROLE_KEY)
 ) {
   console.warn("Missing Supabase server environment variables");
 }

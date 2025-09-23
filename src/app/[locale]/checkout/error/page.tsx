@@ -2,15 +2,15 @@
  * Payment error page
  */
 
-import React from "react";
-import { Metadata } from "next";
 import {
-  ExclamationTriangleIcon,
   ArrowPathIcon,
-  PhoneIcon,
   EnvelopeIcon,
+  ExclamationTriangleIcon,
+  PhoneIcon,
   ShoppingCartIcon,
 } from "@heroicons/react/24/outline";
+import type { Metadata } from "next";
+import React from "react";
 import { Button } from "@/components/ui/Button";
 
 interface PageProps {
@@ -66,10 +66,10 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
     error && commonErrors[error]
       ? commonErrors[error]
       : {
-        title: "Neočekávaná chyba",
-        description: "Došlo k neočekávané chybě při zpracování platby.",
-        solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
-      };
+          title: "Neočekávaná chyba",
+          description: "Došlo k neočekávané chybě při zpracování platby.",
+          solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
+        };
 
   return (
     <div className="min-h-screen bg-neutral-50 py-12">

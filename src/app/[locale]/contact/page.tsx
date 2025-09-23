@@ -1,5 +1,5 @@
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
 import { getTranslations } from "next-intl/server";
-import { MapPinIcon, PhoneIcon, EnvelopeIcon, ClockIcon } from "@heroicons/react/24/outline";
 import { ContactForm } from "@/components/contact";
 
 interface ContactPageProps {
@@ -10,7 +10,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
   const { locale } = await params;
 
   // Debug logging to verify locale detection
-  console.log('Contact page locale:', locale);
+  console.log("Contact page locale:", locale);
 
   const tContact = await getTranslations({ locale, namespace: "contact" });
 
@@ -46,15 +46,21 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 <div className="flex items-start space-x-3">
                   <MapPinIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-neutral-800 text-sm mb-1">{tContact("address")}</h3>
-                    <p className="text-neutral-600 text-sm leading-relaxed">{contactInfo.address[locale as "cs" | "en"]}</p>
+                    <h3 className="font-medium text-neutral-800 text-sm mb-1">
+                      {tContact("address")}
+                    </h3>
+                    <p className="text-neutral-600 text-sm leading-relaxed">
+                      {contactInfo.address[locale as "cs" | "en"]}
+                    </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3">
                   <PhoneIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-neutral-800 text-sm mb-1">{tContact("phone")}</h3>
+                    <h3 className="font-medium text-neutral-800 text-sm mb-1">
+                      {tContact("phone")}
+                    </h3>
                     <a
                       href={`tel:${contactInfo.phone}`}
                       className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium"
@@ -67,7 +73,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 <div className="flex items-start space-x-3">
                   <EnvelopeIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-neutral-800 text-sm mb-1">{tContact("email")}</h3>
+                    <h3 className="font-medium text-neutral-800 text-sm mb-1">
+                      {tContact("email")}
+                    </h3>
                     <a
                       href={`mailto:${contactInfo.email}`}
                       className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium break-all"
@@ -80,8 +88,12 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 <div className="flex items-start space-x-3">
                   <ClockIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-neutral-800 text-sm mb-1">{tContact("hours")}</h3>
-                    <p className="text-neutral-600 text-sm leading-relaxed">{contactInfo.hours[locale as "cs" | "en"]}</p>
+                    <h3 className="font-medium text-neutral-800 text-sm mb-1">
+                      {tContact("hours")}
+                    </h3>
+                    <p className="text-neutral-600 text-sm leading-relaxed">
+                      {contactInfo.hours[locale as "cs" | "en"]}
+                    </p>
                   </div>
                 </div>
               </div>
@@ -95,9 +107,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 {tContact("contactForm")}
               </h2>
 
-              <p className="text-neutral-600 mb-6">
-                {tContact("formDescription")}
-              </p>
+              <p className="text-neutral-600 mb-6">{tContact("formDescription")}</p>
 
               <ContactForm locale={locale} />
             </div>

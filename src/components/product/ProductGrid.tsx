@@ -1,14 +1,14 @@
 "use client";
 
-import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
-import { Product, Category, ProductFilters, ProductSortOptions, ApiResponse } from "@/types";
-import { ProductCard } from "./ProductCard";
-import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
-import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
+import { useCallback, useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
+import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
+import { ProductCard } from "./ProductCard";
+import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
 
 interface ProductGridProps {
   initialProducts?: Product[];
@@ -16,8 +16,6 @@ interface ProductGridProps {
   locale: string;
   className?: string;
   onAddToCart?: (product: Product) => void;
-  onToggleFavorite?: (productId: string) => void;
-  favoriteProductIds?: string[];
 }
 
 export function ProductGrid({
@@ -26,8 +24,6 @@ export function ProductGrid({
   locale,
   className,
   onAddToCart,
-  onToggleFavorite,
-  favoriteProductIds = [],
 }: ProductGridProps) {
   const t = useTranslations("product");
   const tCommon = useTranslations("common");
@@ -39,7 +35,7 @@ export function ProductGrid({
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [hasMore, setHasMore] = useState(true);
-  const [viewMode, setViewMode] = useState<'grid' | 'list'>('grid');
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
 
   // Filter and sort state
   const [filters, setFilters] = useState<ProductFilters>({});
@@ -54,20 +50,17 @@ export function ProductGrid({
 
   // Load view mode preference from localStorage
   useEffect(() => {
-    const savedViewMode = localStorage.getItem('product-view-mode') as 'grid' | 'list' | null;
+    const savedViewMode = localStorage.getItem("product-view-mode") as "grid" | "list" | null;
     if (savedViewMode) {
       setViewMode(savedViewMode);
     }
   }, []);
 
   // Save view mode preference to localStorage
-  const handleViewModeChange = (mode: 'grid' | 'list') => {
+  const handleViewModeChange = (mode: "grid" | "list") => {
     setViewMode(mode);
-    localStorage.setItem('product-view-mode', mode);
-    announce(
-      mode === 'grid' ? t("switchedToGrid") : t("switchedToList"),
-      'polite'
-    );
+    localStorage.setItem("product-view-mode", mode);
+    announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
   };
 
   // Fetch products from API
@@ -130,7 +123,7 @@ export function ProductGrid({
               count: newProducts.length,
               total: pagination?.total || 0,
             }),
-            'polite'
+            "polite"
           );
         }
       } catch (err) {
@@ -145,7 +138,9 @@ export function ProductGrid({
 
   // Check if any filters are active
   const hasActiveFilters = Object.keys(filters).some(
-    key => filters[key as keyof ProductFilters] !== undefined && filters[key as keyof ProductFilters] !== ""
+    (key) =>
+      filters[key as keyof ProductFilters] !== undefined &&
+      filters[key as keyof ProductFilters] !== ""
   );
 
   // Load initial products or fetch from API
@@ -237,18 +232,18 @@ export function ProductGrid({
             <span className="text-sm text-stone-600 mr-2">{t("viewMode")}:</span>
             <div className="flex border border-stone-300 rounded-md overflow-hidden">
               <Button
-                variant={viewMode === 'grid' ? 'default' : 'ghost'}
+                variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
-                onClick={() => handleViewModeChange('grid')}
+                onClick={() => handleViewModeChange("grid")}
                 className="rounded-none border-0 px-3 py-1"
                 aria-label={t("gridView")}
               >
                 <span className="text-2xl">⊞</span>
               </Button>
               <Button
-                variant={viewMode === 'list' ? 'default' : 'ghost'}
+                variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
-                onClick={() => handleViewModeChange('list')}
+                onClick={() => handleViewModeChange("list")}
                 className="rounded-none border-0 px-3 py-1"
                 aria-label={t("listView")}
               >
@@ -275,11 +270,11 @@ export function ProductGrid({
             {products.length > 0 ? (
               <div
                 className={cn(
-                  viewMode === 'grid'
+                  viewMode === "grid"
                     ? // Modern responsive grid with mobile-first approach
-                    "grid mb-8 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5"
+                      "grid mb-8 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5"
                     : // List view: Single column layout with consistent spacing
-                    "flex flex-col gap-4 mb-8"
+                      "flex flex-col gap-4 mb-8"
                 )}
               >
                 {products.map((product) => (
@@ -288,7 +283,7 @@ export function ProductGrid({
                     className={cn(
                       "w-full",
                       // Ensure consistent aspect ratio for grid cards
-                      viewMode === 'grid' && "flex flex-col"
+                      viewMode === "grid" && "flex flex-col"
                     )}
                   >
                     <ProductCard
@@ -298,7 +293,7 @@ export function ProductGrid({
                       featured={product.featured}
                       viewMode={viewMode}
                       className={cn(
-                        viewMode === 'grid'
+                        viewMode === "grid"
                           ? "h-full flex flex-col" // Ensure cards fill container height
                           : "w-full"
                       )}
@@ -332,21 +327,23 @@ export function ProductGrid({
         {loading && (
           <div className="space-y-6">
             {products.length === 0 ? (
-              <div className={cn(
-                "grid",
-                // Use same responsive grid for loading skeleton
-                "grid-cols-1 gap-4",
-                "sm:grid-cols-2 sm:gap-6",
-                "lg:grid-cols-3 lg:gap-8",
-                "xl:grid-cols-4",
-                "2xl:grid-cols-5"
-              )}>
+              <div
+                className={cn(
+                  "grid",
+                  // Use same responsive grid for loading skeleton
+                  "grid-cols-1 gap-4",
+                  "sm:grid-cols-2 sm:gap-6",
+                  "lg:grid-cols-3 lg:gap-8",
+                  "xl:grid-cols-4",
+                  "2xl:grid-cols-5"
+                )}
+              >
                 <ProductGridSkeleton count={PRODUCTS_PER_PAGE} />
               </div>
             ) : (
               <div className="flex justify-center py-8">
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-stone-600 border-t-transparent rounded-full animate-spin"></div>
+                  <div className="w-4 h-4 border-2 border-stone-600 border-t-transparent rounded-full animate-spin" />
                   <span className="text-sm text-stone-600">{tCommon("loading")}</span>
                 </div>
               </div>

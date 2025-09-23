@@ -1,8 +1,8 @@
 "use client";
 
-import React from "react";
 import { useLocale } from "next-intl";
-import { type Locale, type LocalizedContent } from "@/types";
+import type React from "react";
+import type { Locale, LocalizedContent } from "@/types";
 
 interface LocalizedContentProps {
   content: LocalizedContent;

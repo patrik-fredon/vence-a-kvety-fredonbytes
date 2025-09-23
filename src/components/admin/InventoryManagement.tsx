@@ -1,12 +1,12 @@
 "use client";
 
-import { useState, useEffect } from "react";
 import {
-  ExclamationTriangleIcon,
   CheckCircleIcon,
-  XCircleIcon,
+  ExclamationTriangleIcon,
   MagnifyingGlassIcon,
+  XCircleIcon,
 } from "@heroicons/react/24/outline";
+import { useEffect, useState } from "react";
 
 interface InventoryAlert {
   id: string;
@@ -254,7 +254,7 @@ export default function InventoryManagement() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200 overflow-hidden">
             {loading ? (
               <div className="p-6 text-center">
-                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto"></div>
+                <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto" />
               </div>
             ) : (
               <div className="overflow-x-auto">
@@ -303,7 +303,7 @@ export default function InventoryManagement() {
                               min="0"
                               value={product.stock_quantity}
                               onChange={(e) => {
-                                const newValue = parseInt(e.target.value) || 0;
+                                const newValue = Number.parseInt(e.target.value) || 0;
                                 if (newValue !== product.stock_quantity) {
                                   handleUpdateStock(product.id, newValue);
                                 }

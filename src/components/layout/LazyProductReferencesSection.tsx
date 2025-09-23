@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React, { Suspense, lazy, useEffect, useRef, useState } from 'react';
-import { cn } from '@/lib/utils';
-import type { ProductReferencesSectionProps } from '@/types/components';
+import React, { lazy, Suspense, useEffect, useRef, useState } from "react";
+import { cn } from "@/lib/utils";
+import type { ProductReferencesSectionProps } from "@/types/components";
 
 // Lazy load the ProductReferencesSection component
 const ProductReferencesSection = lazy(() =>
-  import('./ProductReferencesSection').then(module => ({
-    default: module.ProductReferencesSection
+  import("./ProductReferencesSection").then((module) => ({
+    default: module.ProductReferencesSection,
   }))
 );
 
@@ -28,31 +28,35 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
       "bg-amber-100", // funeral background color from design tokens
       // Orientation handling
       "landscape:py-8", // Reduced padding in landscape
-      "md:landscape:py-16", // Tablet landscape adjustment
+      "md:landscape:py-16" // Tablet landscape adjustment
     )}
     aria-labelledby="products-heading"
     aria-describedby="products-loading"
     role="region"
   >
-    <div className={cn(
-      // Mobile-first max-width progression for better space utilization
-      "max-w-sm mx-auto", // 384px for very small screens
-      "xs:max-w-md", // 448px for 375px+ screens
-      "sm:max-w-4xl", // 896px for small screens (640px+)
-      "md:max-w-5xl", // 1024px for tablets
-      "lg:max-w-6xl", // 1152px for desktop
-      "xl:max-w-7xl" // 1280px for large screens
-    )}>
+    <div
+      className={cn(
+        // Mobile-first max-width progression for better space utilization
+        "max-w-sm mx-auto", // 384px for very small screens
+        "xs:max-w-md", // 448px for 375px+ screens
+        "sm:max-w-4xl", // 896px for small screens (640px+)
+        "md:max-w-5xl", // 1024px for tablets
+        "lg:max-w-6xl", // 1152px for desktop
+        "xl:max-w-7xl" // 1280px for large screens
+      )}
+    >
       {/* Section heading skeleton */}
-      <div className={cn(
-        "text-center",
-        // Mobile-first spacing
-        "mb-8", // Compact spacing on mobile
-        "xs:mb-10", // Slightly more for 375px+
-        "sm:mb-12", // Standard spacing for 640px+
-        "md:mb-16", // Tablet spacing
-        "lg:mb-20" // Desktop spacing
-      )}>
+      <div
+        className={cn(
+          "text-center",
+          // Mobile-first spacing
+          "mb-8", // Compact spacing on mobile
+          "xs:mb-10", // Slightly more for 375px+
+          "sm:mb-12", // Standard spacing for 640px+
+          "md:mb-16", // Tablet spacing
+          "lg:mb-20" // Desktop spacing
+        )}
+      >
         <div
           className={cn(
             "bg-white/10 rounded-lg animate-pulse",
@@ -61,7 +65,7 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
             "xs:h-10 xs:w-56", // 30px for 375px+ screens
             "sm:h-12 sm:w-64", // 36px for 640px+ screens
             "md:h-16 md:w-72", // 48px for tablet
-            "lg:h-20 lg:w-80", // 60px for desktop
+            "lg:h-20 lg:w-80" // 60px for desktop
           )}
           aria-hidden="true"
         />
@@ -72,7 +76,7 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
             "xs:h-5 xs:w-72", // 375px+
             "sm:h-6 sm:w-80", // 640px+
             "md:h-7 md:w-96", // Tablet
-            "lg:h-8 lg:w-[28rem]", // Desktop
+            "lg:h-8 lg:w-[28rem]" // Desktop
           )}
           aria-hidden="true"
         />
@@ -98,7 +102,7 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
           "sm:gap-6", // Standard gaps for 640px+
           "md:gap-7", // Tablet gaps
           "lg:gap-8", // Desktop gaps
-          "xl:gap-10", // Large screen gaps
+          "xl:gap-10" // Large screen gaps
         )}
         aria-hidden="true"
       >
@@ -127,7 +131,7 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
       {/* Loading announcement for screen readers */}
       <div className="sr-only" aria-live="polite">
         <span id="products-loading">
-          {locale === 'cs' ? 'Načítání produktů...' : 'Loading products...'}
+          {locale === "cs" ? "Načítání produktů..." : "Loading products..."}
         </span>
       </div>
     </div>
@@ -149,7 +153,7 @@ class LazyLoadErrorBoundary extends React.Component<
   }
 
   componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
-    console.error('LazyProductReferencesSection failed to load:', error, errorInfo);
+    console.error("LazyProductReferencesSection failed to load:", error, errorInfo);
   }
 
   render() {
@@ -179,7 +183,7 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
       },
       {
         // Load when section is 100px away from viewport
-        rootMargin: '100px 0px',
+        rootMargin: "100px 0px",
         // Trigger when at least 10% of the section is visible
         threshold: 0.1,
       }
@@ -203,7 +207,7 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
         "sm:py-16 sm:px-6",
         "md:py-20 md:px-8",
         "lg:py-24 lg:px-12",
-        "xl:py-28 xl:px-16",
+        "xl:py-28 xl:px-16"
       )}
       role="region"
       aria-labelledby="products-error-heading"
@@ -213,13 +217,12 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
           id="products-error-heading"
           className="text-2xl font-bold text-teal-800 mb-4 sm:text-3xl md:text-4xl"
         >
-          {props.locale === 'cs' ? 'Naše produkty' : 'Our Products'}
+          {props.locale === "cs" ? "Naše produkty" : "Our Products"}
         </h2>
         <p className="text-teal-800 text-lg">
-          {props.locale === 'cs'
-            ? 'Produkty se momentálně nepodařilo načíst. Zkuste prosím obnovit stránku.'
-            : 'Products could not be loaded at this time. Please try refreshing the page.'
-          }
+          {props.locale === "cs"
+            ? "Produkty se momentálně nepodařilo načíst. Zkuste prosím obnovit stránku."
+            : "Products could not be loaded at this time. Please try refreshing the page."}
         </p>
       </div>
     </section>

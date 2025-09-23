@@ -2,10 +2,10 @@
  * @jest-environment jsdom
  */
 
-import React from 'react';
-import { render, screen, waitFor } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import { WebVitalsTracker, useWebVitals } from '../WebVitalsTracker';
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
+import React from "react";
+import { useWebVitals, WebVitalsTracker } from "../WebVitalsTracker";
 
 // Mock web-vitals
 const mockOnCLS = jest.fn();
@@ -15,7 +15,7 @@ const mockOnLCP = jest.fn();
 const mockOnTTFB = jest.fn();
 const mockOnFID = jest.fn();
 
-jest.mock('web-vitals', () => ({
+jest.mock("web-vitals", () => ({
   onCLS: mockOnCLS,
   onINP: mockOnINP,
   onFCP: mockOnFCP,
@@ -25,14 +25,14 @@ jest.mock('web-vitals', () => ({
 }));
 
 // Mock performance monitor
-jest.mock('@/lib/monitoring/performance-monitor', () => ({
+jest.mock("@/lib/monitoring/performance-monitor", () => ({
   performanceMonitor: {
     recordMetric: jest.fn(),
   },
 }));
 
 // Mock performance config
-jest.mock('../../../performance.config.js', () => ({
+jest.mock("../../../performance.config.js", () => ({
   development: {
     debug: {
       showWebVitalsOverlay: false,
@@ -40,7 +40,7 @@ jest.mock('../../../performance.config.js', () => ({
   },
   monitoring: {
     webVitalsTracking: {
-      endpoint: '/api/monitoring/performance',
+      endpoint: "/api/monitoring/performance",
       sampleRate: 1.0,
       autoReport: true,
     },
@@ -55,37 +55,37 @@ const mockSessionStorage = {
   getItem: jest.fn(),
   setItem: jest.fn(),
 };
-Object.defineProperty(window, 'sessionStorage', {
+Object.defineProperty(window, "sessionStorage", {
   value: mockSessionStorage,
 });
 
 // Mock sendBeacon
-Object.defineProperty(navigator, 'sendBeacon', {
+Object.defineProperty(navigator, "sendBeacon", {
   value: jest.fn(),
   writable: true,
 });
 
-describe('WebVitalsTracker', () => {
+describe("WebVitalsTracker", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     (fetch as jest.Mock).mockResolvedValue({
       ok: true,
       json: () => Promise.resolve({ success: true }),
     });
-    mockSessionStorage.getItem.mockReturnValue('test-session-id');
+    mockSessionStorage.getItem.mockReturnValue("test-session-id");
   });
 
-  it('should render nothing in production mode', () => {
+  it("should render nothing in production mode", () => {
     const { container } = render(<WebVitalsTracker />);
     expect(container.firstChild).toBeNull();
   });
 
-  it('should render debug overlay when debug is enabled', () => {
+  it("should render debug overlay when debug is enabled", () => {
     render(<WebVitalsTracker debug={true} />);
-    expect(screen.getByText('Web Vitals')).toBeInTheDocument();
+    expect(screen.getByText("Web Vitals")).toBeInTheDocument();
   });
 
-  it('should initialize Web Vitals listeners', async () => {
+  it("should initialize Web Vitals listeners", async () => {
     render(<WebVitalsTracker />);
 
     await waitFor(() => {
@@ -97,18 +97,18 @@ describe('WebVitalsTracker', () => {
     });
   });
 
-  it('should call onMetric callback when metric is received', async () => {
+  it("should call onMetric callback when metric is received", async () => {
     const onMetric = jest.fn();
     render(<WebVitalsTracker onMetric={onMetric} />);
 
     // Simulate Web Vitals metric
     const mockMetric = {
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     };
 
     // Get the callback passed to onLCP and call it
@@ -116,98 +116,98 @@ describe('WebVitalsTracker', () => {
     lcpCallback(mockMetric);
 
     expect(onMetric).toHaveBeenCalledWith({
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     });
   });
 
-  it('should display metrics in debug overlay', async () => {
+  it("should display metrics in debug overlay", async () => {
     render(<WebVitalsTracker debug={true} />);
 
     // Simulate Web Vitals metric
     const mockMetric = {
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     };
 
     const lcpCallback = mockOnLCP.mock.calls[0][0];
     lcpCallback(mockMetric);
 
     await waitFor(() => {
-      expect(screen.getByText('LCP:')).toBeInTheDocument();
-      expect(screen.getByText('2500ms')).toBeInTheDocument();
+      expect(screen.getByText("LCP:")).toBeInTheDocument();
+      expect(screen.getByText("2500ms")).toBeInTheDocument();
     });
   });
 
-  it('should format CLS values correctly', async () => {
+  it("should format CLS values correctly", async () => {
     render(<WebVitalsTracker debug={true} />);
 
     const mockMetric = {
-      name: 'CLS',
+      name: "CLS",
       value: 0.123,
-      rating: 'good',
+      rating: "good",
       delta: 0.01,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     };
 
     const clsCallback = mockOnCLS.mock.calls[0][0];
     clsCallback(mockMetric);
 
     await waitFor(() => {
-      expect(screen.getByText('CLS:')).toBeInTheDocument();
-      expect(screen.getByText('0.123')).toBeInTheDocument();
+      expect(screen.getByText("CLS:")).toBeInTheDocument();
+      expect(screen.getByText("0.123")).toBeInTheDocument();
     });
   });
 
-  it('should hide debug overlay when close button is clicked', async () => {
+  it("should hide debug overlay when close button is clicked", async () => {
     const user = userEvent.setup();
     render(<WebVitalsTracker debug={true} />);
 
-    expect(screen.getByText('Web Vitals')).toBeInTheDocument();
+    expect(screen.getByText("Web Vitals")).toBeInTheDocument();
 
-    const closeButton = screen.getByText('×');
+    const closeButton = screen.getByText("×");
     await user.click(closeButton);
 
-    expect(screen.queryByText('Web Vitals')).not.toBeInTheDocument();
-    expect(screen.getByTitle('Show Web Vitals')).toBeInTheDocument();
+    expect(screen.queryByText("Web Vitals")).not.toBeInTheDocument();
+    expect(screen.getByTitle("Show Web Vitals")).toBeInTheDocument();
   });
 
-  it('should show debug overlay when toggle button is clicked', async () => {
+  it("should show debug overlay when toggle button is clicked", async () => {
     const user = userEvent.setup();
     render(<WebVitalsTracker debug={true} />);
 
     // Close the overlay first
-    const closeButton = screen.getByText('×');
+    const closeButton = screen.getByText("×");
     await user.click(closeButton);
 
     // Click the toggle button
-    const toggleButton = screen.getByTitle('Show Web Vitals');
+    const toggleButton = screen.getByTitle("Show Web Vitals");
     await user.click(toggleButton);
 
-    expect(screen.getByText('Web Vitals')).toBeInTheDocument();
+    expect(screen.getByText("Web Vitals")).toBeInTheDocument();
   });
 
-  it('should send metrics to server when autoReport is enabled', async () => {
+  it("should send metrics to server when autoReport is enabled", async () => {
     jest.useFakeTimers();
 
     render(<WebVitalsTracker autoReport={true} sampleRate={1.0} />);
 
     const mockMetric = {
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     };
 
     const lcpCallback = mockOnLCP.mock.calls[0][0];
@@ -218,13 +218,13 @@ describe('WebVitalsTracker', () => {
 
     await waitFor(() => {
       expect(fetch).toHaveBeenCalledWith(
-        '/api/monitoring/performance',
+        "/api/monitoring/performance",
         expect.objectContaining({
-          method: 'POST',
+          method: "POST",
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
           },
-          body: expect.stringContaining('LCP'),
+          body: expect.stringContaining("LCP"),
         })
       );
     });
@@ -232,29 +232,29 @@ describe('WebVitalsTracker', () => {
     jest.useRealTimers();
   });
 
-  it('should use sendBeacon on page unload', () => {
+  it("should use sendBeacon on page unload", () => {
     render(<WebVitalsTracker autoReport={true} />);
 
     const mockMetric = {
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     };
 
     const lcpCallback = mockOnLCP.mock.calls[0][0];
     lcpCallback(mockMetric);
 
     // Simulate page unload
-    const beforeUnloadEvent = new Event('beforeunload');
+    const beforeUnloadEvent = new Event("beforeunload");
     window.dispatchEvent(beforeUnloadEvent);
 
     expect(navigator.sendBeacon).toHaveBeenCalled();
   });
 
-  it('should respect sample rate', async () => {
+  it("should respect sample rate", async () => {
     // Mock Math.random to return 0.5
     const originalRandom = Math.random;
     Math.random = jest.fn(() => 0.5);
@@ -262,12 +262,12 @@ describe('WebVitalsTracker', () => {
     render(<WebVitalsTracker autoReport={true} sampleRate={0.3} />);
 
     const mockMetric = {
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     };
 
     const lcpCallback = mockOnLCP.mock.calls[0][0];
@@ -283,19 +283,19 @@ describe('WebVitalsTracker', () => {
     jest.useRealTimers();
   });
 
-  it('should generate session ID if not exists', () => {
+  it("should generate session ID if not exists", () => {
     mockSessionStorage.getItem.mockReturnValue(null);
 
     render(<WebVitalsTracker />);
 
     expect(mockSessionStorage.setItem).toHaveBeenCalledWith(
-      'webvitals_session_id',
+      "webvitals_session_id",
       expect.stringMatching(/^\d+-[a-z0-9]+$/)
     );
   });
 });
 
-describe('useWebVitals hook', () => {
+describe("useWebVitals hook", () => {
   function TestComponent() {
     const vitals = useWebVitals();
 
@@ -314,51 +314,51 @@ describe('useWebVitals hook', () => {
     jest.clearAllMocks();
   });
 
-  it('should return empty object initially', () => {
+  it("should return empty object initially", () => {
     render(<TestComponent />);
 
-    expect(screen.queryByTestId('metric-LCP')).not.toBeInTheDocument();
+    expect(screen.queryByTestId("metric-LCP")).not.toBeInTheDocument();
   });
 
-  it('should update when Web Vitals metrics are received', async () => {
+  it("should update when Web Vitals metrics are received", async () => {
     render(<TestComponent />);
 
     const mockMetric = {
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'test-id',
-      navigationType: 'navigate',
+      id: "test-id",
+      navigationType: "navigate",
     };
 
     const lcpCallback = mockOnLCP.mock.calls[0][0];
     lcpCallback(mockMetric);
 
     await waitFor(() => {
-      expect(screen.getByTestId('metric-LCP')).toHaveTextContent('LCP: 2500');
+      expect(screen.getByTestId("metric-LCP")).toHaveTextContent("LCP: 2500");
     });
   });
 
-  it('should handle multiple metrics', async () => {
+  it("should handle multiple metrics", async () => {
     render(<TestComponent />);
 
     const lcpMetric = {
-      name: 'LCP',
+      name: "LCP",
       value: 2500,
-      rating: 'good',
+      rating: "good",
       delta: 100,
-      id: 'lcp-id',
-      navigationType: 'navigate',
+      id: "lcp-id",
+      navigationType: "navigate",
     };
 
     const fcpMetric = {
-      name: 'FCP',
+      name: "FCP",
       value: 1800,
-      rating: 'good',
+      rating: "good",
       delta: 50,
-      id: 'fcp-id',
-      navigationType: 'navigate',
+      id: "fcp-id",
+      navigationType: "navigate",
     };
 
     const lcpCallback = mockOnLCP.mock.calls[0][0];
@@ -368,8 +368,8 @@ describe('useWebVitals hook', () => {
     fcpCallback(fcpMetric);
 
     await waitFor(() => {
-      expect(screen.getByTestId('metric-LCP')).toHaveTextContent('LCP: 2500');
-      expect(screen.getByTestId('metric-FCP')).toHaveTextContent('FCP: 1800');
+      expect(screen.getByTestId("metric-LCP")).toHaveTextContent("LCP: 2500");
+      expect(screen.getByTestId("metric-FCP")).toHaveTextContent("FCP: 1800");
     });
   });
 });

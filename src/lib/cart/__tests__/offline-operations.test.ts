@@ -1,11 +1,11 @@
 import {
-  storeOfflineOperation,
-  getOfflineOperations,
-  removeOfflineOperation,
-  updateOfflineOperationRetry,
   clearOfflineOperations,
+  getOfflineOperations,
   processOfflineOperations,
-} from '../utils';
+  removeOfflineOperation,
+  storeOfflineOperation,
+  updateOfflineOperationRetry,
+} from "../utils";
 
 // Mock localStorage
 const mockLocalStorage = {
@@ -13,7 +13,7 @@ const mockLocalStorage = {
   setItem: jest.fn(),
   removeItem: jest.fn(),
 };
-Object.defineProperty(global, 'localStorage', {
+Object.defineProperty(global, "localStorage", {
   value: mockLocalStorage,
 });
 
@@ -21,26 +21,26 @@ Object.defineProperty(global, 'localStorage', {
 const mockFetch = jest.fn();
 global.fetch = mockFetch;
 
-describe('Enhanced Offline Operations', () => {
+describe("Enhanced Offline Operations", () => {
   beforeEach(() => {
     jest.clearAllMocks();
     mockLocalStorage.getItem.mockReturnValue(null);
   });
 
-  describe('Store Operations', () => {
-    it('should store offline operation with metadata', () => {
+  describe("Store Operations", () => {
+    it("should store offline operation with metadata", () => {
       const operation = {
-        type: 'add' as const,
-        data: { productId: 'prod1', quantity: 2 },
+        type: "add" as const,
+        data: { productId: "prod1", quantity: 2 },
         timestamp: Date.now(),
         maxRetries: 3,
-        priority: 'high' as const,
+        priority: "high" as const,
       };
 
       storeOfflineOperation(operation);
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
-        'cart_offline_operations_v2',
+        "cart_offline_operations_v2",
         expect.stringContaining('"type":"add"')
       );
 
@@ -53,27 +53,27 @@ describe('Enhanced Offline Operations', () => {
       expect(savedData[0].id).toBeDefined();
     });
 
-    it('should append to existing operations', () => {
+    it("should append to existing operations", () => {
       const existingOperations = [
         {
-          id: 'existing-1',
-          type: 'update',
-          data: { itemId: '1', quantity: 3 },
+          id: "existing-1",
+          type: "update",
+          data: { itemId: "1", quantity: 3 },
           timestamp: Date.now() - 1000,
           retryCount: 0,
           maxRetries: 3,
-          priority: 'medium',
+          priority: "medium",
         },
       ];
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(existingOperations));
 
       const newOperation = {
-        type: 'remove' as const,
-        data: { itemId: '2' },
+        type: "remove" as const,
+        data: { itemId: "2" },
         timestamp: Date.now(),
         maxRetries: 3,
-        priority: 'low' as const,
+        priority: "low" as const,
       };
 
       storeOfflineOperation(newOperation);
@@ -82,17 +82,17 @@ describe('Enhanced Offline Operations', () => {
       expect(savedData).toHaveLength(2);
     });
 
-    it('should handle storage errors gracefully', () => {
+    it("should handle storage errors gracefully", () => {
       mockLocalStorage.setItem.mockImplementation(() => {
-        throw new Error('Storage full');
+        throw new Error("Storage full");
       });
 
       const operation = {
-        type: 'add' as const,
-        data: { productId: 'prod1', quantity: 2 },
+        type: "add" as const,
+        data: { productId: "prod1", quantity: 2 },
         timestamp: Date.now(),
         maxRetries: 3,
-        priority: 'high' as const,
+        priority: "high" as const,
       };
 
       // Should not throw
@@ -100,17 +100,17 @@ describe('Enhanced Offline Operations', () => {
     });
   });
 
-  describe('Retrieve Operations', () => {
-    it('should retrieve stored operations', () => {
+  describe("Retrieve Operations", () => {
+    it("should retrieve stored operations", () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2 },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
       ];
 
@@ -120,130 +120,130 @@ describe('Enhanced Offline Operations', () => {
       expect(result).toEqual(operations);
     });
 
-    it('should return empty array when no operations exist', () => {
+    it("should return empty array when no operations exist", () => {
       mockLocalStorage.getItem.mockReturnValue(null);
 
       const result = getOfflineOperations();
       expect(result).toEqual([]);
     });
 
-    it('should handle corrupted data gracefully', () => {
-      mockLocalStorage.getItem.mockReturnValue('invalid json');
+    it("should handle corrupted data gracefully", () => {
+      mockLocalStorage.getItem.mockReturnValue("invalid json");
 
       const result = getOfflineOperations();
       expect(result).toEqual([]);
     });
   });
 
-  describe('Remove Operations', () => {
-    it('should remove specific operation by ID', () => {
+  describe("Remove Operations", () => {
+    it("should remove specific operation by ID", () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2 },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
         {
-          id: 'op-2',
-          type: 'update',
-          data: { itemId: '1', quantity: 3 },
+          id: "op-2",
+          type: "update",
+          data: { itemId: "1", quantity: 3 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'medium',
+          priority: "medium",
         },
       ];
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(operations));
 
-      removeOfflineOperation('op-1');
+      removeOfflineOperation("op-1");
 
       const savedData = JSON.parse(mockLocalStorage.setItem.mock.calls[0][1]);
       expect(savedData).toHaveLength(1);
-      expect(savedData[0].id).toBe('op-2');
+      expect(savedData[0].id).toBe("op-2");
     });
 
-    it('should handle non-existent operation ID', () => {
+    it("should handle non-existent operation ID", () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2 },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
       ];
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(operations));
 
-      removeOfflineOperation('non-existent');
+      removeOfflineOperation("non-existent");
 
       const savedData = JSON.parse(mockLocalStorage.setItem.mock.calls[0][1]);
       expect(savedData).toHaveLength(1);
-      expect(savedData[0].id).toBe('op-1');
+      expect(savedData[0].id).toBe("op-1");
     });
   });
 
-  describe('Update Retry Count', () => {
-    it('should increment retry count for specific operation', () => {
+  describe("Update Retry Count", () => {
+    it("should increment retry count for specific operation", () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2 },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
       ];
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(operations));
 
-      updateOfflineOperationRetry('op-1');
+      updateOfflineOperationRetry("op-1");
 
       const savedData = JSON.parse(mockLocalStorage.setItem.mock.calls[0][1]);
       expect(savedData[0].retryCount).toBe(1);
     });
 
-    it('should handle non-existent operation ID', () => {
+    it("should handle non-existent operation ID", () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2 },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
       ];
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(operations));
 
-      updateOfflineOperationRetry('non-existent');
+      updateOfflineOperationRetry("non-existent");
 
       const savedData = JSON.parse(mockLocalStorage.setItem.mock.calls[0][1]);
       expect(savedData[0].retryCount).toBe(0); // Should remain unchanged
     });
   });
 
-  describe('Clear Operations', () => {
-    it('should clear all offline operations', () => {
+  describe("Clear Operations", () => {
+    it("should clear all offline operations", () => {
       clearOfflineOperations();
 
-      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith('cart_offline_operations_v2');
+      expect(mockLocalStorage.removeItem).toHaveBeenCalledWith("cart_offline_operations_v2");
     });
 
-    it('should handle clear errors gracefully', () => {
+    it("should handle clear errors gracefully", () => {
       mockLocalStorage.removeItem.mockImplementation(() => {
-        throw new Error('Storage error');
+        throw new Error("Storage error");
       });
 
       // Should not throw
@@ -251,30 +251,30 @@ describe('Enhanced Offline Operations', () => {
     });
   });
 
-  describe('Process Operations', () => {
+  describe("Process Operations", () => {
     beforeEach(() => {
       mockFetch.mockClear();
     });
 
-    it('should process successful operations', async () => {
+    it("should process successful operations", async () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2, customizations: [] },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2, customizations: [] },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
         {
-          id: 'op-2',
-          type: 'update',
-          data: { itemId: '1', quantity: 3 },
+          id: "op-2",
+          type: "update",
+          data: { itemId: "1", quantity: 3 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'medium',
+          priority: "medium",
         },
       ];
 
@@ -294,24 +294,30 @@ describe('Enhanced Offline Operations', () => {
 
       // Should have made API calls for each operation
       expect(mockFetch).toHaveBeenCalledTimes(2);
-      expect(mockFetch).toHaveBeenCalledWith('/api/cart/items', expect.objectContaining({
-        method: 'POST',
-      }));
-      expect(mockFetch).toHaveBeenCalledWith('/api/cart/items/1', expect.objectContaining({
-        method: 'PUT',
-      }));
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/cart/items",
+        expect.objectContaining({
+          method: "POST",
+        })
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/cart/items/1",
+        expect.objectContaining({
+          method: "PUT",
+        })
+      );
     });
 
-    it('should handle failed operations', async () => {
+    it("should handle failed operations", async () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2, customizations: [] },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2, customizations: [] },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
       ];
 
@@ -320,7 +326,7 @@ describe('Enhanced Offline Operations', () => {
       // Mock failed API response
       mockFetch.mockResolvedValue({
         ok: true,
-        json: () => Promise.resolve({ success: false, error: 'Product not found' }),
+        json: () => Promise.resolve({ success: false, error: "Product not found" }),
       });
 
       const result = await processOfflineOperations();
@@ -333,42 +339,42 @@ describe('Enhanced Offline Operations', () => {
       expect(mockLocalStorage.setItem).toHaveBeenCalled();
     });
 
-    it('should handle network errors', async () => {
+    it("should handle network errors", async () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2, customizations: [] },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2, customizations: [] },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
       ];
 
       mockLocalStorage.getItem.mockReturnValue(JSON.stringify(operations));
 
       // Mock network error
-      mockFetch.mockRejectedValue(new Error('Network error'));
+      mockFetch.mockRejectedValue(new Error("Network error"));
 
       const result = await processOfflineOperations();
 
       expect(result.successful).toBe(0);
       expect(result.failed).toBe(1);
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0]).toContain('Network error');
+      expect(result.errors[0]).toContain("Network error");
     });
 
-    it('should remove operations that exceed max retries', async () => {
+    it("should remove operations that exceed max retries", async () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2, customizations: [] },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2, customizations: [] },
           timestamp: Date.now(),
           retryCount: 3, // Already at max retries
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
       ];
 
@@ -379,40 +385,40 @@ describe('Enhanced Offline Operations', () => {
       expect(result.successful).toBe(0);
       expect(result.failed).toBe(1);
       expect(result.errors).toHaveLength(1);
-      expect(result.errors[0]).toContain('exceeded max retries');
+      expect(result.errors[0]).toContain("exceeded max retries");
 
       // Should remove the operation
       expect(mockLocalStorage.setItem).toHaveBeenCalled();
     });
 
-    it('should handle different operation types', async () => {
+    it("should handle different operation types", async () => {
       const operations = [
         {
-          id: 'op-1',
-          type: 'add',
-          data: { productId: 'prod1', quantity: 2, customizations: [] },
+          id: "op-1",
+          type: "add",
+          data: { productId: "prod1", quantity: 2, customizations: [] },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'high',
+          priority: "high",
         },
         {
-          id: 'op-2',
-          type: 'update',
-          data: { itemId: '1', quantity: 3 },
+          id: "op-2",
+          type: "update",
+          data: { itemId: "1", quantity: 3 },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'medium',
+          priority: "medium",
         },
         {
-          id: 'op-3',
-          type: 'remove',
-          data: { itemId: '2' },
+          id: "op-3",
+          type: "remove",
+          data: { itemId: "2" },
           timestamp: Date.now(),
           retryCount: 0,
           maxRetries: 3,
-          priority: 'low',
+          priority: "low",
         },
       ];
 
@@ -430,15 +436,24 @@ describe('Enhanced Offline Operations', () => {
       expect(mockFetch).toHaveBeenCalledTimes(3);
 
       // Check correct API endpoints were called
-      expect(mockFetch).toHaveBeenCalledWith('/api/cart/items', expect.objectContaining({
-        method: 'POST',
-      }));
-      expect(mockFetch).toHaveBeenCalledWith('/api/cart/items/1', expect.objectContaining({
-        method: 'PUT',
-      }));
-      expect(mockFetch).toHaveBeenCalledWith('/api/cart/items/2', expect.objectContaining({
-        method: 'DELETE',
-      }));
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/cart/items",
+        expect.objectContaining({
+          method: "POST",
+        })
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/cart/items/1",
+        expect.objectContaining({
+          method: "PUT",
+        })
+      );
+      expect(mockFetch).toHaveBeenCalledWith(
+        "/api/cart/items/2",
+        expect.objectContaining({
+          method: "DELETE",
+        })
+      );
     });
   });
 });

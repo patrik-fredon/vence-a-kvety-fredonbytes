@@ -1,14 +1,14 @@
 "use client";
 
-import { useSession, signOut } from "next-auth/react";
-import { useTranslations } from "next-intl";
+import { Menu, Transition } from "@headlessui/react";
 import {
+  ArrowRightOnRectangleIcon,
   Bars3Icon,
   BellIcon,
   UserCircleIcon,
-  ArrowRightOnRectangleIcon,
 } from "@heroicons/react/24/outline";
-import { Menu, Transition } from "@headlessui/react";
+import { signOut, useSession } from "next-auth/react";
+import { useTranslations } from "next-intl";
 import { Fragment } from "react";
 
 type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
@@ -87,8 +87,9 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                     {({ active }) => (
                       <a
                         href="/"
-                        className={`${active ? "bg-stone-100" : ""
-                          } flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
+                        className={`${
+                          active ? "bg-stone-100" : ""
+                        } flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
                       >
                         <UserCircleIcon className="h-4 w-4 mr-3" />
                         Zobrazit web
@@ -96,14 +97,15 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                     )}
                   </Menu.Item>
 
-                  <div className="border-t border-stone-100"></div>
+                  <div className="border-t border-stone-100" />
 
                   <Menu.Item>
                     {({ active }) => (
                       <button
                         onClick={handleSignOut}
-                        className={`${active ? "bg-stone-100" : ""
-                          } flex items-center w-full px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
+                        className={`${
+                          active ? "bg-stone-100" : ""
+                        } flex items-center w-full px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
                       >
                         <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
                         Odhlásit se

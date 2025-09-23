@@ -1,10 +1,9 @@
 "use client";
 
-import { useState } from "react";
-import { Fragment } from "react";
-import { useTranslations } from "next-intl";
 import { Dialog, Transition } from "@headlessui/react";
 import { XMarkIcon } from "@heroicons/react/24/outline";
+import { useTranslations } from "next-intl";
+import { Fragment, useState } from "react";
 
 interface Order {
   id: string;
@@ -124,9 +123,7 @@ export default function OrderDetailModal({
                   {/* Order status and basic info */}
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900 mb-3">
-                        {t("orderInfo")}
-                      </h4>
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">{t("orderInfo")}</h4>
                       <div className="space-y-2 text-sm">
                         <div className="flex justify-between">
                           <span className="text-gray-500">{t("orderNumber")}:</span>
@@ -213,7 +210,9 @@ export default function OrderDetailModal({
                   {/* Customer notes */}
                   {order.notes && (
                     <div>
-                      <h4 className="text-sm font-medium text-gray-900 mb-3">{t("customerNotes")}</h4>
+                      <h4 className="text-sm font-medium text-gray-900 mb-3">
+                        {t("customerNotes")}
+                      </h4>
                       <p className="text-sm text-gray-600 bg-gray-50 p-3 rounded-lg">
                         {order.notes}
                       </p>
