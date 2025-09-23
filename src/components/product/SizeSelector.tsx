@@ -48,14 +48,14 @@ export function SizeSelector({
     <div className={cn("space-y-4", className)}>
       {/* Header with required indicator */}
       <div className="flex items-center gap-2">
-        <h3 
+        <h3
           id={`${sectionId}-title`}
           className="text-lg font-semibold text-stone-900"
         >
           {sizeOption.name[locale as keyof typeof sizeOption.name]}
         </h3>
         {sizeOption.required && (
-          <span 
+          <span
             className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"
             aria-label={tAccessibility("required")}
           >
@@ -65,7 +65,7 @@ export function SizeSelector({
       </div>
 
       {/* Size options fieldset for proper grouping */}
-      <fieldset 
+      <fieldset
         className="border-0 p-0 m-0"
         aria-labelledby={`${sectionId}-title`}
         aria-describedby={hasValidationError ? `${sectionId}-error` : undefined}
@@ -77,7 +77,7 @@ export function SizeSelector({
         </legend>
 
         {/* Size options grid */}
-        <div 
+        <div
           className="grid grid-cols-1 sm:grid-cols-3 gap-3"
           role="radiogroup"
           aria-labelledby={`${sectionId}-title`}
@@ -110,7 +110,7 @@ export function SizeSelector({
 
                   // High contrast support
                   "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText",
-                  
+
                   // Focus improvements for accessibility
                   "focus-visible:ring-2 focus-visible:ring-stone-950 focus-visible:ring-offset-2"
                 )}
@@ -142,7 +142,7 @@ export function SizeSelector({
 
                 {/* Size label */}
                 <div className="pr-8">
-                  <div 
+                  <div
                     id={`${choiceId}-label`}
                     className="font-semibold text-stone-900 mb-1"
                   >
@@ -180,65 +180,16 @@ export function SizeSelector({
 
       {/* Validation message for required selection */}
       {hasValidationError && (
-        <div 
+        <div
           id={`${sectionId}-error`}
           className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md"
           role="alert"
           aria-live="polite"
         >
-          <div 
+          <div
             className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5"
             aria-hidden="true"
           >
-            <div className="w-2 h-2 bg-amber-600 rounded-full" />
-          </div>
-          <p className="text-sm text-amber-800">
-            {t("validation.sizeRequired")}
-          </p>
-        </div>
-      )}
-    </div>
-  );
-}
-                </div>
-              </div>
-
-              {/* Size label */}
-              <div className="pr-8">
-                <div className="font-semibold text-stone-900 mb-1">
-                  {choice.label[locale as keyof typeof choice.label]}
-                </div>
-
-                {/* Price display */}
-                <div className="space-y-1">
-                  <div className="text-lg font-bold text-stone-900">
-                    {getDisplayPrice(choice)}
-                  </div>
-                  {priceModifier && (
-                    <div className="text-sm text-stone-600">
-                      ({priceModifier})
-                    </div>
-                  )}
-                </div>
-              </div>
-
-              {/* Screen reader description */}
-              <div id={`size-${choice.id}-description`} className="sr-only">
-                {t("sizeOption", {
-                  size: choice.label[locale as keyof typeof choice.label],
-                  price: getDisplayPrice(choice),
-                  modifier: priceModifier || "",
-                })}
-              </div>
-            </button>
-          );
-        })}
-      </div>
-
-      {/* Validation message for required selection */}
-      {sizeOption.required && !selectedSize && (
-        <div className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md">
-          <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
             <div className="w-2 h-2 bg-amber-600 rounded-full" />
           </div>
           <p className="text-sm text-amber-800">
