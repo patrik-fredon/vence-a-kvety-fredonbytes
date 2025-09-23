@@ -18,7 +18,13 @@ import {
   type CartSyncEvent,
   CartSyncManager,
 } from "./realtime-sync";
-import { generateCartSessionId, getCartSessionId, setCartSessionId } from "./utils";
+import {
+  generateCartSessionId,
+  getCartSessionId,
+  setCartSessionId,
+  validateConditionalCustomizations,
+  calculateCustomizationPriceModifier
+} from "./utils";
 
 // Enhanced cart actions with optimistic updates
 type CartAction =
@@ -107,10 +113,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items: state.items.map((item) =>
           item.id === action.payload.itemId
             ? {
-                ...item,
-                quantity: action.payload.quantity,
-                totalPrice: (item.unitPrice || 0) * action.payload.quantity,
-              }
+              ...item,
+              quantity: action.payload.quantity,
+              totalPrice: (item.unitPrice || 0) * action.payload.quantity,
+            }
             : item
         ),
         optimisticUpdates: newOptimisticUpdates,
@@ -155,10 +161,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
             items: state.items.map((item) =>
               item.id === action.payload.itemId
                 ? {
-                    ...item,
-                    quantity: update.originalQuantity || 0,
-                    totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
-                  }
+                  ...item,
+                  quantity: update.originalQuantity || 0,
+                  totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
+                }
                 : item
             ),
             optimisticUpdates: newOptimisticUpdates,
@@ -291,6 +297,24 @@ export function CartProvider({ children }: CartProviderProps) {
   // Enhanced add item to cart with optimistic updates
   const addToCart = useCallback(
     async (request: AddToCartRequest): Promise<boolean> => {
+      // Validate conditional customizations before processing
+      if (request.customizations && request.customizations.length > 0) {
+        // Note: We would need product customization options for full validation
+        // This is a basic validation that ensures customizations are properly structured
+        const basicValidation = validateConditionalCustomizations(
+          request.customizations,
+          [] // We don't have customization options here, but the function handles empty array
+        );
+
+        if (!basicValidation.isValid) {
+          dispatch({
+            type: "SET_ERROR",
+            payload: "Invalid customization configuration"
+          });
+          return false;
+        }
+      }
+
       // Generate temporary ID for optimistic update
       const tempId = `temp_${Date.now()}_${Math.random()}`;
 

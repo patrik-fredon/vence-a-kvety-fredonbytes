@@ -1,3 +1,5 @@
+import type { Customization, CustomizationOption } from "@/types/product";
+
 /**
  * Generate a unique session ID for guest cart management
  * Uses crypto.randomUUID if available, falls back to timestamp + random
@@ -292,4 +294,91 @@ export function calculateCartTotals(items: any[]): {
   const total = subtotal;
 
   return { itemCount, subtotal, total };
+}
+
+/**
+ * Formats customization data for display in cart
+ */
+export function formatCustomizationForDisplay(
+  customization: Customization,
+  customizationOptions: CustomizationOption[],
+  locale: string = 'en'
+): string | null {
+  const option = customizationOptions.find(opt => opt.id === customization.optionId);
+  if (!option) return null;
+
+  const optionName = option.name[locale] || option.name.en || option.name.cs;
+
+  // Handle custom text input (like ribbon text)
+  if (customization.customValue) {
+    return `${optionName}: ${customization.customValue}`;
+  }
+
+  // Handle choice selections
+  if (customization.choiceIds && customization.choiceIds.length > 0) {
+    const selectedChoices = customization.choiceIds
+      .map(choiceId => {
+        const choice = option.choices.find(c => c.id === choiceId);
+        return choice ? (choice.label[locale] || choice.label.en || choice.label.cs) : null;
+      })
+      .filter(Boolean);
+
+    if (selectedChoices.length > 0) {
+      return `${optionName}: ${selectedChoices.join(", ")}`;
+    }
+  }
+
+  return null;
+}
+
+/**
+ * Validates that conditional customizations are properly configured
+ */
+export function validateConditionalCustomizations(
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[]
+): { isValid: boolean; errors: string[] } {
+  const errors: string[] = [];
+
+  for (const customization of customizations) {
+    const option = customizationOptions.find(opt => opt.id === customization.optionId);
+    if (!option) continue;
+
+    // Check if this customization depends on another
+    if (option.dependsOn) {
+      const dependentCustomization = customizations.find(
+        c => c.optionId === option.dependsOn!.optionId
+      );
+
+      if (!dependentCustomization) {
+        errors.push(`Missing required dependency for ${option.id}`);
+        continue;
+      }
+
+      // Check if the required choices are selected
+      const hasRequiredChoices = option.dependsOn.requiredChoiceIds.some(
+        requiredChoiceId => dependentCustomization.choiceIds.includes(requiredChoiceId)
+      );
+
+      if (!hasRequiredChoices) {
+        errors.push(`Invalid dependency configuration for ${option.id}`);
+      }
+    }
+  }
+
+  return {
+    isValid: errors.length === 0,
+    errors
+  };
+}
+
+/**
+ * Calculates total price modifier from customizations
+ */
+export function calculateCustomizationPriceModifier(
+  customizations: Customization[]
+): number {
+  return customizations.reduce((total, customization) => {
+    return total + (customization.priceModifier || 0);
+  }, 0);
 }
