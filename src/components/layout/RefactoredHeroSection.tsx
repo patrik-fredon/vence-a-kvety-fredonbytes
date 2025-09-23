@@ -143,13 +143,13 @@ export function RefactoredHeroSection({
             onError={handleLogoError}
             className={cn(
               // Mobile-first responsive sizing
-              "h-24 w-auto", // 96px height for very small screens (320px+)
-              "xs:h-28", // 112px for 375px+ screens
-              "sm:h-32", // 128px for small screens (640px+)
+              "h-42 w-auto", // 96px height for very small screens (320px+)
+              "xs:h-56", // 112px for 375px+ screens
+              "sm:h-64", // 128px for small screens (640px+)
               // Tablet sizing (768px-1023px)
-              "md:h-40", // 160px for tablets
+              "md:h-72", // 160px for tablets
               // Desktop sizing (1024px+)
-              "lg:h-48", // 192px for desktop
+              "lg:h-96", // 192px for desktop
               "xl:h-128", // 224px for large screens
               // Centering and accessibility
               "mx-auto",

@@ -7,6 +7,7 @@ import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils/price-calculator";
 import { withPerformanceMonitoring } from "@/lib/utils/customization-performance";
+import { DateSelector } from "./DateSelector";
 import type {
   Customization,
   CustomizationChoice,
@@ -235,6 +236,29 @@ export function ProductCustomizer({
     );
   };
 
+  // Render date selector for choices that require calendar
+  const renderDateSelector = (option: CustomizationOption, choice: CustomizationChoice) => {
+    const currentCustomization = getCurrentCustomization(option.id);
+    const isSelected = currentCustomization?.choiceIds.includes(choice.id);
+    const value = currentCustomization?.customValue || "";
+
+    if (!isSelected || !choice.requiresCalendar) {
+      return null;
+    }
+
+    return (
+      <div className="mt-3">
+        <DateSelector
+          value={value}
+          onChange={(date) => handleCustomValueChange(option.id, date)}
+          minDaysFromNow={choice.minDaysFromNow || 1}
+          maxDaysFromNow={choice.maxDaysFromNow || 30}
+          locale={locale}
+        />
+      </div>
+    );
+  };
+
   // Render text input for message options
   const renderTextInput = (option: CustomizationOption) => {
     const currentCustomization = getCurrentCustomization(option.id);
@@ -305,6 +329,7 @@ export function ProductCustomizer({
                     <div key={choice.id}>
                       {renderChoice(option, choice)}
                       {choice.allowCustomInput && renderCustomTextInput(option, choice)}
+                      {choice.requiresCalendar && renderDateSelector(option, choice)}
                     </div>
                   ))}
                 </div>

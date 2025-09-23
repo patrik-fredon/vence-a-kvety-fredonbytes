@@ -16,6 +16,10 @@ export interface CustomizationChoice {
   imageUrl?: string;
   allowCustomInput?: boolean;
   maxLength?: number;
+  requiresCalendar?: boolean;
+  inputType?: "text" | "date" | "number";
+  minDaysFromNow?: number;
+  maxDaysFromNow?: number;
 }
 
 export interface CustomizationOption {
