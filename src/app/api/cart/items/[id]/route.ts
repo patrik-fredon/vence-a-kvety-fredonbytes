@@ -139,7 +139,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Verify ownership of cart item
+    // Verify ownership of cart item and get customization data
     let query = supabase.from("cart_items").select("*").eq("id", id);
 
     if (session?.user?.id) {
@@ -168,7 +168,20 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Delete the cart item
+    // Log customization cleanup for audit trail
+    if (existingItem.customizations && Array.isArray(existingItem.customizations) && existingItem.customizations.length > 0) {
+      console.log(`Cleaning up customizations for cart item ${id}:`, {
+        itemId: id,
+        productId: existingItem.product_id,
+        customizationCount: existingItem.customizations.length,
+        customizations: existingItem.customizations,
+        userId: session?.user?.id || null,
+        sessionId: sessionId || null,
+        timestamp: new Date().toISOString(),
+      });
+    }
+
+    // Delete the cart item (customizations are automatically deleted as part of the row)
     const { error } = await supabase.from("cart_items").delete().eq("id", id);
 
     if (error) {
@@ -182,8 +195,12 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
+    // Log successful cleanup
+    console.log(`Successfully removed cart item ${id} with customizations`);
+
     return NextResponse.json({
       success: true,
+      message: "Cart item and associated customizations removed successfully",
     });
   } catch (error) {
     console.error("Delete cart item API error:", error);

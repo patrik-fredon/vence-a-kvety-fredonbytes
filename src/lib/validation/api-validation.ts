@@ -128,6 +128,177 @@ export function createValidationErrorResponse(
 }
 
 /**
+ * Enhanced API validation with comprehensive error handling and recovery
+ */
+export function validateWreathCustomizationsForApiEnhanced(
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[],
+  locale: string = 'cs',
+  options: {
+    enableRecovery?: boolean;
+    enableFallback?: boolean;
+    strictMode?: boolean;
+  } = {}
+): ApiValidationResult & {
+  enhancedErrors: EnhancedValidationError[];
+  recoveryStrategies: ErrorRecoveryStrategy[];
+  fallbackConfiguration?: Customization[];
+  canProceedWithWarnings: boolean;
+} {
+  const { enableRecovery = true, enableFallback = true, strictMode = true } = options;
+
+  // Extract size from customizations
+  const sizeCustomization = customizations.find(
+    (c) => c.optionId === "size" ||
+      customizationOptions.find((opt) => opt.id === c.optionId && (opt.type === "size" || opt.id === "size"))
+  );
+  const selectedSize = sizeCustomization?.choiceIds?.[0] || null;
+
+  // Run enhanced validation
+  const enhancedResult = validateWreathConfigurationEnhanced(
+    customizations,
+    customizationOptions,
+    selectedSize,
+    { locale, strictMode, enableRecovery, enableFallback }
+  );
+
+  // Convert to API format
+  const errors: ApiValidationError[] = enhancedResult.enhancedErrors
+    .filter(error => error.severity === ValidationErrorSeverity.ERROR)
+    .map(error => ({
+      field: error.field,
+      message: error.message,
+      code: error.code
+    }));
+
+  const warnings: ApiValidationError[] = enhancedResult.enhancedErrors
+    .filter(error => error.severity === ValidationErrorSeverity.WARNING)
+    .map(error => ({
+      field: error.field,
+      message: error.message,
+      code: error.code
+    }));
+
+  return {
+    isValid: enhancedResult.isValid,
+    errors,
+    warnings: warnings.length > 0 ? warnings : undefined,
+    enhancedErrors: enhancedResult.enhancedErrors,
+    recoveryStrategies: enhancedResult.recoveryStrategies,
+    fallbackConfiguration: enhancedResult.fallbackConfiguration,
+    canProceedWithWarnings: enhancedResult.canProceed
+  };
+}
+
+/**
+ * Enhanced validation error response with recovery options
+ */
+export function createEnhancedValidationErrorResponse(
+  validationResult: ApiValidationResult & {
+    enhancedErrors?: EnhancedValidationError[];
+    recoveryStrategies?: ErrorRecoveryStrategy[];
+    fallbackConfiguration?: Customization[];
+    canProceedWithWarnings?: boolean;
+  },
+  message: string = 'Validation failed',
+  locale: string = 'cs'
+): NextResponse {
+  const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
+
+  const responseBody = {
+    success: false,
+    error: message,
+    validationErrors: validationResult.errors,
+    validationWarnings: validationResult.warnings,
+    details: {
+      errorCount: validationResult.errors.length,
+      warningCount: validationResult.warnings?.length || 0,
+      canProceedWithWarnings: validationResult.canProceedWithWarnings || false
+    },
+    recovery: validationResult.recoveryStrategies ? {
+      strategies: validationResult.recoveryStrategies,
+      fallbackConfiguration: validationResult.fallbackConfiguration,
+      fallbackMessage: messages.fallbackMessage
+    } : undefined,
+    userFriendlyMessage: getLocalizedErrorMessage(validationResult.errors[0]?.code, locale)
+  };
+
+  return NextResponse.json(responseBody, { status: 400 });
+}
+
+/**
+ * Get localized error message for user display
+ */
+function getLocalizedErrorMessage(errorCode: string | undefined, locale: string): string {
+  const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
+  
+  switch (errorCode) {
+    case 'SIZE_VALIDATION_ERROR':
+      return messages.sizeRequired;
+    case 'RIBBON_VALIDATION_ERROR':
+      return messages.ribbonColorRequired;
+    case 'CUSTOM_TEXT_ERROR':
+      return messages.customTextInvalid;
+    default:
+      return messages.validationFailed;
+  }
+}
+
+/**
+ * Graceful error handling middleware for API routes
+ */
+export function withGracefulErrorHandling<T extends any[]>(
+  handler: (...args: T) => Promise<NextResponse>
+) {
+  return async (...args: T): Promise<NextResponse> => {
+    try {
+      return await handler(...args);
+    } catch (error) {
+      console.error('API Error:', error);
+      
+      // Determine error type and provide appropriate response
+      if (error instanceof Error) {
+        if (error.message.includes('network') || error.message.includes('connection')) {
+          return NextResponse.json({
+            success: false,
+            error: 'Network error occurred',
+            code: 'NETWORK_ERROR',
+            retryable: true,
+            userFriendlyMessage: 'Connection error, please check your internet connection'
+          }, { status: 503 });
+        }
+        
+        if (error.message.includes('timeout')) {
+          return NextResponse.json({
+            success: false,
+            error: 'Request timeout',
+            code: 'TIMEOUT_ERROR',
+            retryable: true,
+            userFriendlyMessage: 'Request timed out, please try again'
+          }, { status: 408 });
+        }
+      }
+
+      // Generic server error with recovery options
+      return NextResponse.json({
+        success: false,
+        error: 'Internal server error',
+        code: 'INTERNAL_ERROR',
+        retryable: true,
+        userFriendlyMessage: 'A system error occurred, please try again',
+        recovery: {
+          strategies: [{
+            canRecover: true,
+            recoveryAction: 'retry',
+            recoveryMessage: 'Try again'
+          }]
+        }
+      }, { status: 500 });
+    };
+  };
+}
+
+/**
  * Validates product availability and pricing
  */
 export function validateProductAvailability(

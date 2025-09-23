@@ -24,10 +24,11 @@ describe('Enhanced Cart Customization Utils', () => {
           id: 'size_150',
           value: '150cm',
           label: {
-            cs: '150 cm', en: '150
-ceModifier: 500,
-            available: true
-          }
+            cs: '150 cm', en: '150 cm'
+          },
+          priceModifier: 500,
+          available: true
+        }
       ],
       required: true
     },

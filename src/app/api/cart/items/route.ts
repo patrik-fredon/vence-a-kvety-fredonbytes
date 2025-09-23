@@ -5,7 +5,7 @@ import { createServerClient } from "@/lib/supabase/server";
 import {
   validateCartOperation,
   createValidationErrorResponse,
-  sanitizeCustomizations
+  sanitizeCustomizations,
 } from "@/lib/validation/api-validation";
 import type { AddToCartRequest } from "@/types/cart";
 
@@ -49,12 +49,17 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "Product not found",
+          code: 'PRODUCT_NOT_FOUND',
+          userFriendlyMessage: "The requested product could not be found"
         },
         { status: 404 }
       );
     }
 
-    // Comprehensive validation using the new validation system
+    // Get locale from request headers or default to 'cs'
+    const locale = request.headers.get('accept-language')?.includes('en') ? 'en' : 'cs';
+
+    // Comprehensive validation using the validation system
     const validationResult = validateCartOperation(
       body.productId,
       body.quantity,
@@ -65,6 +70,11 @@ export async function POST(request: NextRequest) {
     if (!validationResult.isValid) {
       console.log("❌ [API] Validation failed:", validationResult.errors);
       return createValidationErrorResponse(validationResult, "Cart operation validation failed");
+    }
+
+    // If validation has warnings, log them but proceed
+    if (validationResult.warnings && validationResult.warnings.length > 0) {
+      console.log("⚠️ [API] Validation warnings (proceeding):", validationResult.warnings);
     }
 
     // Check if item already exists in cart
@@ -109,6 +119,9 @@ export async function POST(request: NextRequest) {
           {
             success: false,
             error: "Failed to update cart item",
+            code: 'UPDATE_FAILED',
+            retryable: true,
+            userFriendlyMessage: "Failed to update cart, please try again"
           },
           { status: 500 }
         );
@@ -148,6 +161,9 @@ export async function POST(request: NextRequest) {
           {
             success: false,
             error: "Failed to add item to cart",
+            code: 'INSERT_FAILED',
+            retryable: true,
+            userFriendlyMessage: "Failed to add item to cart, please try again"
           },
           { status: 500 }
         );
@@ -162,6 +178,7 @@ export async function POST(request: NextRequest) {
       quantity: result.quantity,
       unitPrice: result.unit_price,
       totalPrice: result.total_price,
+      hadWarnings: validationResult.warnings && validationResult.warnings.length > 0
     });
 
     // Set session cookie for guest users
@@ -177,6 +194,10 @@ export async function POST(request: NextRequest) {
         createdAt: new Date(result.created_at),
         updatedAt: new Date(result.updated_at),
       },
+      validation: {
+        hadWarnings: validationResult.warnings && validationResult.warnings.length > 0,
+        warnings: validationResult.warnings
+      }
     });
 
     if (!session?.user?.id && sessionId) {
@@ -192,10 +213,28 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("💥 [API] Add to cart API error:", error);
+    
+    // Enhanced error handling with user-friendly messages
+    let errorMessage = "Internal server error";
+    let userFriendlyMessage = "A system error occurred, please try again";
+    let retryable = true;
+    
+    if (error instanceof Error) {
+      if (error.message.includes('network') || error.message.includes('connection')) {
+        errorMessage = "Network error";
+        userFriendlyMessage = "Connection error, please check your internet connection";
+      } else if (error.message.includes('timeout')) {
+        errorMessage = "Request timeout";
+        userFriendlyMessage = "Request timed out, please try again";
+      }
+    }
+    
     return NextResponse.json(
       {
         success: false,
-        error: "Internal server error",
+        error: errorMessage,
+        userFriendlyMessage,
+        retryable
       },
       { status: 500 }
     );

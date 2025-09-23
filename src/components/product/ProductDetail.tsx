@@ -7,11 +7,17 @@ import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useCart } from "@/lib/cart/context";
 import { cn } from "@/lib/utils";
-import { calculateFinalPrice } from "@/lib/utils/price-calculator";
-import { validateWreathConfiguration } from "@/lib/validation/wreath";
+
+import {
+  validateWreathConfiguration,
+  WREATH_VALIDATION_MESSAGES
+} from "@/lib/validation/wreath";
+import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import type { Customization, Product } from "@/types/product";
+
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ProductInfo } from "./ProductInfo";
+import { PriceBreakdown } from "./PriceBreakdown";
 import { RibbonConfigurator } from "./RibbonConfigurator";
 import { SizeSelector } from "./SizeSelector";
 
@@ -27,7 +33,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const { addToCart } = useCart();
 
   const [customizations, setCustomizations] = useState<Customization[]>([]);
-  const [finalPrice, setFinalPrice] = useState(product.basePrice);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
@@ -40,6 +45,15 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   // Find size option from customization options
   const sizeOption = customizationOptions.find(
     (option) => option.type === "size" || option.id === "size"
+  );
+
+  // Real-time price calculation with size and customizations
+  const priceCalculation = usePriceCalculationWithSize(
+    product.basePrice,
+    customizations,
+    customizationOptions,
+    selectedSize,
+    sizeOption
   );
 
   // Find ribbon-related options
@@ -73,62 +87,32 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       option.id !== "ribbon_text"
   );
 
-  // Calculate price based on customizations and size
-  const calculatePrice = useCallback(
-    (newCustomizations: Customization[], sizeId?: string | null) => {
-      const allCustomizations = [...newCustomizations];
 
-      // Add size customization if selected
-      if (sizeId && sizeOption) {
-        const existingSizeIndex = allCustomizations.findIndex(c => c.optionId === sizeOption.id);
-        if (existingSizeIndex >= 0) {
-          allCustomizations[existingSizeIndex] = {
-            optionId: sizeOption.id,
-            choiceIds: [sizeId],
-          };
-        } else {
-          allCustomizations.push({
-            optionId: sizeOption.id,
-            choiceIds: [sizeId],
-          });
-        }
-      }
-
-      return calculateFinalPrice(
-        product.basePrice,
-        allCustomizations,
-        [] // No discounts for now
-      );
-    },
-    [product.basePrice, sizeOption]
-  );
 
   // Handle size selection changes
   const handleSizeChange = useCallback(
     (sizeId: string) => {
       setSelectedSize(sizeId);
-      const newPrice = calculatePrice(customizations, sizeId);
-      setFinalPrice(newPrice);
+      // Price calculation is now automatic via usePriceCalculationWithSize hook
 
       // Clear validation errors and warnings when size changes
       setValidationErrors([]);
       setValidationWarnings([]);
     },
-    [customizations, calculatePrice]
+    []
   );
 
   // Handle customization changes
   const handleCustomizationChange = useCallback(
     (newCustomizations: Customization[]) => {
       setCustomizations(newCustomizations);
-      const newPrice = calculatePrice(newCustomizations, selectedSize);
-      setFinalPrice(newPrice);
+      // Price calculation is now automatic via usePriceCalculationWithSize hook
 
       // Clear validation errors and warnings when customizations change
       setValidationErrors([]);
       setValidationWarnings([]);
     },
-    [calculatePrice, selectedSize]
+    []
   );
 
   // Enhanced validation using wreath-specific validation system
@@ -144,7 +128,34 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setValidationWarnings(validationResult.warnings);
 
     return validationResult;
-  }, [customizations, customizationOptions, selectedSize, locale]);
+  }, [customizations, customizationOptions, selectedSize, locale]);;;;
+  // Handle error recovery with graceful fallbacks
+  const handleErrorRecovery = useCallback((errorType: string) => {
+    // Clear current errors
+    setValidationErrors([]);
+    setValidationWarnings([]);
+    
+    // Apply recovery strategies based on error type
+    if (errorType === 'size' && sizeOption?.choices && sizeOption.choices.length > 0) {
+      // Auto-select first available size
+      setSelectedSize(sizeOption.choices[0].id);
+    } else if (errorType === 'ribbon') {
+      // Remove all ribbon-related customizations
+      setCustomizations(prev => prev.filter(c => !c.optionId.includes('ribbon')));
+    }
+    
+    // Re-validate after recovery
+    setTimeout(() => {
+      validateCustomizations();
+    }, 100);
+  }, [sizeOption, validateCustomizations]);;
+
+  // Retry validation
+  const handleRetryValidation = useCallback(() => {
+    setValidationErrors([]);
+    setValidationWarnings([]);
+    validateCustomizations();
+  }, [validateCustomizations]);
 
   // Handle quantity change
   const handleQuantityChange = (newQuantity: number) => {
@@ -181,19 +192,46 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       });
 
       if (success) {
-        // Show success message (implement toast/notification in later tasks)
+        // Clear validation errors on successful add
+        setValidationErrors([]);
+        setValidationWarnings([]);
+        
+        // Show success message
         alert(t("addedToCart"));
       } else {
         console.error("❌ [ProductDetail] Failed to add product to cart:", product.id);
-        alert(t("addToCartError"));
+        
+        // Show user-friendly error message with recovery option
+        const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
+        const errorMessage = String(messages.systemError || t("addToCartError"));
+        
+        if (confirm(`${errorMessage}\n\n${messages.tryAgain}?`)) {
+          handleRetryValidation();
+        }
       }
     } catch (error) {
       console.error("💥 [ProductDetail] Error adding to cart:", error);
-      alert(t("addToCartError"));
+      
+      // Handle different types of errors gracefully
+      const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
+      let errorMessage = String(messages.systemError || t("addToCartError"));
+      
+      if (error instanceof Error) {
+        if (error.message.includes('network') || error.message.includes('connection')) {
+          errorMessage = String(messages.networkError);
+        } else if (error.message.includes('session')) {
+          errorMessage = String(messages.sessionExpired);
+        }
+      }
+      
+      // Show error with recovery options
+      if (confirm(`${errorMessage}\n\n${messages.tryAgain}?`)) {
+        handleRetryValidation();
+      }
     } finally {
       setIsAddingToCart(false);
     }
-  };
+  };;;;
 
   const formatPrice = (price: number) => {
     return tCurrency("format", {
@@ -201,7 +239,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     });
   };
 
-  const totalPrice = finalPrice * quantity;
+  const totalPrice = priceCalculation.totalPrice * quantity;
 
   return (
     <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", className)}>
@@ -218,7 +256,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         {/* Right Column - Product Info and Actions */}
         <div className="space-y-6">
           {/* Product Basic Info */}
-          <ProductInfo product={product} locale={locale} finalPrice={finalPrice} />
+          <ProductInfo product={product} locale={locale} finalPrice={priceCalculation.totalPrice} />
 
           {/* Size Selection */}
           {sizeOption && (
@@ -287,7 +325,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
-          {/* Validation Errors */}
+          {/* Enhanced Validation Error Display */}
           {validationErrors.length > 0 && (
             <Card className="bg-red-50 border-red-200">
               <CardContent className="py-4">
@@ -295,15 +333,52 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                   <div className="w-5 h-5 rounded-full bg-red-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <div className="w-2 h-2 bg-red-600 rounded-full" />
                   </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-red-800 mb-2">
+                  <div className="flex-1 space-y-3">
+                    <h4 className="text-sm font-medium text-red-800">
                       {t("validation.title")}
                     </h4>
-                    <ul className="text-sm text-red-700 space-y-1">
+
+                    <div className="space-y-2">
                       {validationErrors.map((error, index) => (
-                        <li key={index}>• {error}</li>
+                        <div key={index} className="flex items-start justify-between gap-3">
+                          <p className="text-sm text-red-700 flex-1">• {error}</p>
+                        </div>
                       ))}
-                    </ul>
+                    </div>
+
+                    {/* Recovery Actions */}
+                    <div className="flex items-center gap-2 pt-2 border-t border-red-200">
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={handleRetryValidation}
+                        className="text-xs bg-white border-red-300 text-red-700 hover:bg-red-50"
+                      >
+                        {WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES].tryAgain}
+                      </Button>
+
+                      {validationErrors.some(error => error.includes('velikost') || error.includes('size')) && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleErrorRecovery('size')}
+                          className="text-xs bg-white border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                          Auto-select Size
+                        </Button>
+                      )}
+
+                      {validationErrors.some(error => error.includes('stuhy') || error.includes('ribbon')) && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleErrorRecovery('ribbon')}
+                          className="text-xs bg-white border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                          Remove Ribbon
+                        </Button>
+                      )}
+                    </div>
                   </div>
                 </div>
               </CardContent>
@@ -373,25 +448,27 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                   </div>
                 </div>
 
-                {/* Price Summary */}
+                {/* Price Breakdown */}
                 <div className="border-t border-stone-200 pt-4">
-                  <div className="flex items-center justify-between mb-2">
-                    <span className="text-sm text-stone-600">
-                      {t("unitPrice")} × {quantity}
-                    </span>
-                    <span className="text-sm text-stone-900">
-                      {formatPrice(finalPrice)} × {quantity}
-                    </span>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span className="text-lg font-medium text-stone-900">{t("totalPrice")}</span>
-                    <span className="text-2xl font-semibold text-amber-700">
-                      {formatPrice(totalPrice)}
-                    </span>
-                  </div>
-                  {totalPrice !== product.basePrice * quantity && (
-                    <div className="text-sm text-stone-500 line-through mt-1 text-right">
-                      {formatPrice(product.basePrice * quantity)}
+                  <PriceBreakdown
+                    basePrice={product.basePrice}
+                    breakdown={priceCalculation.breakdown}
+                    totalPrice={priceCalculation.totalPrice}
+                    locale={locale}
+                    showDetails={priceCalculation.breakdown.length > 0}
+                  />
+
+                  {/* Quantity Total */}
+                  {quantity > 1 && (
+                    <div className="mt-4 pt-4 border-t border-stone-200">
+                      <div className="flex items-center justify-between">
+                        <span className="text-lg font-medium text-stone-900">
+                          {t("totalPrice")} × {quantity}
+                        </span>
+                        <span className="text-2xl font-semibold text-amber-700">
+                          {formatPrice(totalPrice)}
+                        </span>
+                      </div>
                     </div>
                   )}
                 </div>

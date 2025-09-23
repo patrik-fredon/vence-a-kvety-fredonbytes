@@ -347,34 +347,356 @@ export function validateWreathConfiguration(
 // Validation error message constants
 export const WREATH_VALIDATION_MESSAGES = {
   cs: {
+    // Size validation messages
     sizeRequired: "Prosím vyberte velikost věnce před přidáním do košíku",
     sizeInvalid: "Vybraná velikost není dostupná",
+    sizeUnavailable: "Vybraná velikost není momentálně k dispozici",
+    
+    // Ribbon validation messages
     ribbonColorRequired: "Při výběru stuhy je nutné zvolit barvu",
     ribbonTextRequired: "Při výběru stuhy je nutné zvolit text",
+    ribbonColorInvalid: "Vybraná barva stuhy není dostupná",
+    ribbonTextInvalid: "Vybraný text stuhy není dostupný",
+    
+    // Custom text validation messages
     customTextEmpty: "Vlastní text nemůže být prázdný",
     customTextTooLong: "Vlastní text může mít maximálně 50 znaků",
     customTextTooShort: "Vlastní text musí mít alespoň 2 znaky",
     customTextInvalid: "Text obsahuje nepovolené znaky nebo obsah",
     customTextWarning: "Text se blíží maximální délce",
+    customTextForbiddenWords: "Text obsahuje zakázaná slova",
+    customTextSpecialCharsOnly: "Text musí obsahovat alespoň jedno písmeno",
+    
+    // General validation messages
     fieldRequired: "Pole je povinné",
     minSelections: "Vyžaduje minimálně {min} výběrů",
-    maxSelections: "Umožňuje maximálně {max} výběrů"
+    maxSelections: "Umožňuje maximálně {max} výběrů",
+    invalidSelection: "Neplatný výběr",
+    optionUnavailable: "Možnost není k dispozici",
+    
+    // System error messages
+    validationFailed: "Ověření konfigurace selhalo",
+    systemError: "Došlo k systémové chybě, zkuste to prosím znovu",
+    networkError: "Chyba připojení, zkontrolujte internetové připojení",
+    sessionExpired: "Relace vypršela, obnovte prosím stránku",
+    
+    // Recovery messages
+    tryAgain: "Zkusit znovu",
+    refreshPage: "Obnovit stránku",
+    contactSupport: "Kontaktovat podporu",
+    fallbackMessage: "Pokud problém přetrvává, kontaktujte naši podporu"
   },
   en: {
+    // Size validation messages
     sizeRequired: "Please select wreath size before adding to cart",
     sizeInvalid: "Selected size is not available",
+    sizeUnavailable: "Selected size is currently unavailable",
+    
+    // Ribbon validation messages
     ribbonColorRequired: "Ribbon color selection is required when adding ribbon",
     ribbonTextRequired: "Ribbon text selection is required when adding ribbon",
+    ribbonColorInvalid: "Selected ribbon color is not available",
+    ribbonTextInvalid: "Selected ribbon text is not available",
+    
+    // Custom text validation messages
     customTextEmpty: "Custom text cannot be empty",
     customTextTooLong: "Custom text can have maximum 50 characters",
     customTextTooShort: "Custom text must have at least 2 characters",
     customTextInvalid: "Text contains invalid characters or content",
     customTextWarning: "Text is approaching maximum length",
+    customTextForbiddenWords: "Text contains forbidden words",
+    customTextSpecialCharsOnly: "Text must contain at least one letter",
+    
+    // General validation messages
     fieldRequired: "Field is required",
     minSelections: "Requires at least {min} selections",
-    maxSelections: "Allows maximum {max} selections"
+    maxSelections: "Allows maximum {max} selections",
+    invalidSelection: "Invalid selection",
+    optionUnavailable: "Option is not available",
+    
+    // System error messages
+    validationFailed: "Configuration validation failed",
+    systemError: "A system error occurred, please try again",
+    networkError: "Connection error, please check your internet connection",
+    sessionExpired: "Session expired, please refresh the page",
+    
+    // Recovery messages
+    tryAgain: "Try again",
+    refreshPage: "Refresh page",
+    contactSupport: "Contact support",
+    fallbackMessage: "If the problem persists, please contact our support"
   }
-} as const;
+} as const;;
+// Error severity levels for better error handling
+export enum ValidationErrorSeverity {
+  ERROR = 'error',
+  WARNING = 'warning',
+  INFO = 'info'
+}
+
+// Enhanced validation error interface
+export interface EnhancedValidationError {
+  field: string;
+  message: string;
+  code: string;
+  severity: ValidationErrorSeverity;
+  recoverable: boolean;
+  retryable: boolean;
+  fallbackAction?: string;
+  context?: Record<string, any>;
+}
+
+// Error recovery strategies
+export interface ErrorRecoveryStrategy {
+  canRecover: boolean;
+  recoveryAction: 'retry' | 'fallback' | 'refresh' | 'contact_support';
+  recoveryMessage: string;
+  fallbackValue?: any;
+}
+
+// Enhanced validation result with recovery information
+export interface EnhancedWreathValidationResult extends WreathValidationResult {
+  enhancedErrors: EnhancedValidationError[];
+  recoveryStrategies: ErrorRecoveryStrategy[];
+  canProceed: boolean;
+  fallbackConfiguration?: Customization[];
+}
+
+/**
+ * Enhanced validation function with comprehensive error handling
+ */
+export function validateWreathConfigurationEnhanced(
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[],
+  selectedSize: string | null,
+  options: WreathValidationOptions & {
+    enableRecovery?: boolean;
+    enableFallback?: boolean;
+  } = {}
+): EnhancedWreathValidationResult {
+  const { locale = 'cs', strictMode = false, enableRecovery = true, enableFallback = true } = options;
+  
+  // Run basic validation first
+  const basicResult = validateWreathConfiguration(
+    customizations,
+    customizationOptions,
+    selectedSize,
+    { locale, strictMode }
+  );
+
+  const enhancedErrors: EnhancedValidationError[] = [];
+  const recoveryStrategies: ErrorRecoveryStrategy[] = [];
+  let canProceed = basicResult.isValid;
+  let fallbackConfiguration: Customization[] | undefined;
+
+  // Process each error with enhanced information
+  basicResult.errors.forEach((error, index) => {
+    const enhancedError = createEnhancedValidationError(error, customizations, customizationOptions, locale);
+    enhancedErrors.push(enhancedError);
+
+    // Generate recovery strategy if enabled
+    if (enableRecovery) {
+      const strategy = generateRecoveryStrategy(enhancedError, customizations, customizationOptions, locale);
+      recoveryStrategies.push(strategy);
+    }
+  });
+
+  // Generate fallback configuration if enabled and needed
+  if (enableFallback && !basicResult.isValid) {
+    fallbackConfiguration = generateFallbackConfiguration(
+      customizations,
+      customizationOptions,
+      selectedSize,
+      enhancedErrors
+    );
+    
+    // If fallback is available, user can proceed with warnings
+    if (fallbackConfiguration) {
+      canProceed = true;
+    }
+  }
+
+  return {
+    ...basicResult,
+    enhancedErrors,
+    recoveryStrategies,
+    canProceed,
+    fallbackConfiguration
+  };
+}
+
+/**
+ * Create enhanced validation error with detailed context
+ */
+function createEnhancedValidationError(
+  errorMessage: string,
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[],
+  locale: string
+): EnhancedValidationError {
+  // Determine error type and context based on message
+  let field = 'general';
+  let code = 'VALIDATION_ERROR';
+  let severity = ValidationErrorSeverity.ERROR;
+  let recoverable = true;
+  let retryable = true;
+  let fallbackAction: string | undefined;
+  let context: Record<string, any> = {};
+
+  // Analyze error message to determine specifics
+  if (errorMessage.includes('velikost') || errorMessage.includes('size')) {
+    field = 'size';
+    code = 'SIZE_VALIDATION_ERROR';
+    fallbackAction = 'select_default_size';
+    context = {
+      availableSizes: customizationOptions.find(opt => opt.type === 'size')?.choices?.map(c => c.id) || [],
+      currentSelection: null
+    };
+  } else if (errorMessage.includes('stuhy') || errorMessage.includes('ribbon')) {
+    field = 'ribbon';
+    code = 'RIBBON_VALIDATION_ERROR';
+    fallbackAction = 'remove_ribbon';
+    context = {
+      hasRibbon: customizations.some(c => c.optionId.includes('ribbon')),
+      ribbonOptions: customizationOptions.filter(opt => opt.type?.includes('ribbon'))
+    };
+  } else if (errorMessage.includes('text')) {
+    field = 'custom_text';
+    code = 'CUSTOM_TEXT_ERROR';
+    fallbackAction = 'use_predefined_text';
+    severity = ValidationErrorSeverity.WARNING;
+    context = {
+      textLength: 0,
+      maxLength: 50
+    };
+  }
+
+  return {
+    field,
+    message: errorMessage,
+    code,
+    severity,
+    recoverable,
+    retryable,
+    fallbackAction,
+    context
+  };
+}
+
+/**
+ * Generate recovery strategy for validation error
+ */
+function generateRecoveryStrategy(
+  error: EnhancedValidationError,
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[],
+  locale: string
+): ErrorRecoveryStrategy {
+  const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
+
+  switch (error.code) {
+    case 'SIZE_VALIDATION_ERROR':
+      return {
+        canRecover: true,
+        recoveryAction: 'fallback',
+        recoveryMessage: messages.tryAgain,
+        fallbackValue: customizationOptions.find(opt => opt.type === 'size')?.choices?.[0]?.id
+      };
+
+    case 'RIBBON_VALIDATION_ERROR':
+      return {
+        canRecover: true,
+        recoveryAction: 'fallback',
+        recoveryMessage: messages.tryAgain,
+        fallbackValue: null // Remove ribbon configuration
+      };
+
+    case 'CUSTOM_TEXT_ERROR':
+      return {
+        canRecover: true,
+        recoveryAction: 'retry',
+        recoveryMessage: messages.tryAgain
+      };
+
+    default:
+      return {
+        canRecover: error.recoverable,
+        recoveryAction: error.retryable ? 'retry' : 'contact_support',
+        recoveryMessage: error.retryable ? messages.tryAgain : messages.contactSupport
+      };
+  }
+}
+
+/**
+ * Generate fallback configuration when validation fails
+ */
+function generateFallbackConfiguration(
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[],
+  selectedSize: string | null,
+  errors: EnhancedValidationError[]
+): Customization[] | undefined {
+  const fallbackCustomizations = [...customizations];
+  let hasChanges = false;
+
+  // Apply fallback strategies based on errors
+  errors.forEach(error => {
+    if (error.fallbackAction && error.context?.fallbackValue !== undefined) {
+      switch (error.fallbackAction) {
+        case 'select_default_size':
+          // Add default size if missing
+          const sizeOption = customizationOptions.find(opt => opt.type === 'size');
+          if (sizeOption && sizeOption.choices && sizeOption.choices.length > 0) {
+            const existingSizeIndex = fallbackCustomizations.findIndex(c => c.optionId === sizeOption.id);
+            const defaultSize = sizeOption.choices[0].id;
+            
+            if (existingSizeIndex >= 0) {
+              fallbackCustomizations[existingSizeIndex].choiceIds = [defaultSize];
+            } else {
+              fallbackCustomizations.push({
+                optionId: sizeOption.id,
+                choiceIds: [defaultSize]
+              });
+            }
+            hasChanges = true;
+          }
+          break;
+
+        case 'remove_ribbon':
+          // Remove all ribbon-related customizations
+          const ribbonIndices = fallbackCustomizations
+            .map((c, index) => ({ customization: c, index }))
+            .filter(({ customization }) => customization.optionId.includes('ribbon'))
+            .map(({ index }) => index)
+            .sort((a, b) => b - a); // Sort in reverse order for safe removal
+
+          ribbonIndices.forEach(index => {
+            fallbackCustomizations.splice(index, 1);
+            hasChanges = true;
+          });
+          break;
+
+        case 'use_predefined_text':
+          // Replace custom text with first predefined option
+          const textOption = customizationOptions.find(opt => opt.type === 'ribbon_text');
+          if (textOption && textOption.choices) {
+            const predefinedChoice = textOption.choices.find(c => c.id !== 'text_custom');
+            if (predefinedChoice) {
+              const textIndex = fallbackCustomizations.findIndex(c => c.optionId === textOption.id);
+              if (textIndex >= 0) {
+                fallbackCustomizations[textIndex].choiceIds = [predefinedChoice.id];
+                delete fallbackCustomizations[textIndex].customValue;
+                hasChanges = true;
+              }
+            }
+          }
+          break;
+      }
+    }
+  });
+
+  return hasChanges ? fallbackCustomizations : undefined;
+}
 
 // Helper function to get localized validation message
 export function getValidationMessage(

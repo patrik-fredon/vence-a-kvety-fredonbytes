@@ -25,6 +25,7 @@ import {
   validateConditionalCustomizations,
   calculateCustomizationPriceModifier
 } from "./utils";
+import { supabase } from "@/lib/supabase/client";
 
 // Enhanced cart actions with optimistic updates
 type CartAction =
@@ -54,6 +55,7 @@ interface CartContextType {
   enableRealTime: () => void;
   disableRealTime: () => void;
   getCartVersion: () => number;
+  runIntegrityCheck: () => Promise<any>;
 }
 
 // Enhanced initial state
@@ -635,6 +637,33 @@ export function CartProvider({ children }: CartProviderProps) {
   }, []);
 
   const getCartVersion = useCallback(() => cartVersion, [cartVersion]);
+  const runIntegrityCheck = useCallback(async (): Promise<any> => {
+    try {
+      const { performCustomizationIntegrityCheck } = await import('@/lib/cart/utils');
+      const supabaseClient = supabase;
+
+      const result = await performCustomizationIntegrityCheck(supabaseClient);
+
+      // Log integrity check results
+      console.log('Cart integrity check completed:', result);
+
+      return result;
+    } catch (error) {
+      console.error('Cart integrity check failed:', error);
+      return {
+        success: false,
+        error: error instanceof Error ? error.message : 'Unknown error',
+        issues: [],
+        fixedItems: [],
+        summary: {
+          totalCartItems: 0,
+          itemsWithCustomizations: 0,
+          issuesFound: 1,
+          issuesFixed: 0,
+        },
+      };
+    }
+  }, []);
 
   // Persist cart state to localStorage for offline support with versioning
   useEffect(() => {
@@ -685,6 +714,7 @@ export function CartProvider({ children }: CartProviderProps) {
     enableRealTime,
     disableRealTime,
     getCartVersion,
+    runIntegrityCheck,
   };
 
   return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;

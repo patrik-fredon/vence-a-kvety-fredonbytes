@@ -9,3 +9,4 @@ export { ProductTeaser } from "./ProductTeaser";
 export { RandomProductTeasers } from "./RandomProductTeasers";
 export { SizeSelector } from "./SizeSelector";
 export { RibbonConfigurator } from "./RibbonConfigurator";
+export { PriceBreakdown } from "./PriceBreakdown";

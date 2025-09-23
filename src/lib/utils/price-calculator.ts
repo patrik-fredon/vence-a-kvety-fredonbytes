@@ -1,4 +1,5 @@
-import type { Customization } from "@/types/product";
+import type { Customization, CustomizationOption } from "@/types/product";
+import type { LocalizedContent } from "@/types";
 
 export interface Address {
   street: string;
@@ -11,6 +12,20 @@ export interface Discount {
   type: "percentage" | "fixed";
   value: number;
   code: string;
+}
+
+export interface ChoicePriceBreakdown {
+  choiceId: string;
+  label: LocalizedContent;
+  priceModifier: number;
+}
+
+export interface CustomizationPriceBreakdown {
+  optionId: string;
+  optionName: LocalizedContent;
+  totalModifier: number;
+  choices: ChoicePriceBreakdown[];
+  customValue?: string | undefined;
 }
 
 export interface DiscountResult {
@@ -33,6 +48,76 @@ export function calculateTotalPrice(basePrice: number, customizations: Customiza
 
   // Ensure price is not negative
   return Math.max(0, total);
+}
+
+/**
+ * Calculate price modifiers from customizations by looking up choice price modifiers
+ * in the customization options
+ */
+export function calculateCustomizationPriceModifiers(
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[]
+): { totalModifier: number; breakdown: CustomizationPriceBreakdown[] } {
+  let totalModifier = 0;
+  const breakdown: CustomizationPriceBreakdown[] = [];
+
+  for (const customization of customizations) {
+    // Find the corresponding customization option
+    const option = customizationOptions.find(opt => opt.id === customization.optionId);
+    if (!option) continue;
+
+    let customizationModifier = 0;
+    const choiceBreakdown: ChoicePriceBreakdown[] = [];
+
+    // Calculate price modifier for each selected choice
+    for (const choiceId of customization.choiceIds) {
+      const choice = option.choices.find(c => c.id === choiceId);
+      if (choice) {
+        customizationModifier += choice.priceModifier;
+        choiceBreakdown.push({
+          choiceId: choice.id,
+          label: choice.label,
+          priceModifier: choice.priceModifier
+        });
+      }
+    }
+
+    // Add any direct price modifier from the customization itself
+    if (customization.priceModifier) {
+      customizationModifier += customization.priceModifier;
+    }
+
+    totalModifier += customizationModifier;
+
+    if (customizationModifier !== 0 || choiceBreakdown.length > 0) {
+      breakdown.push({
+        optionId: customization.optionId,
+        optionName: option.name,
+        totalModifier: customizationModifier,
+        choices: choiceBreakdown,
+        customValue: customization.customValue
+      });
+    }
+  }
+
+  return { totalModifier, breakdown };
+}
+
+/**
+ * Enhanced calculateTotalPrice that can use customization options for accurate pricing
+ */
+export function calculateTotalPriceWithOptions(
+  basePrice: number,
+  customizations: Customization[],
+  customizationOptions?: CustomizationOption[]
+): number {
+  if (customizationOptions && customizationOptions.length > 0) {
+    const { totalModifier } = calculateCustomizationPriceModifiers(customizations, customizationOptions);
+    return Math.max(0, basePrice + totalModifier);
+  }
+
+  // Fallback to original calculation if no options provided
+  return calculateTotalPrice(basePrice, customizations);
 }
 
 /**
@@ -178,10 +263,13 @@ export const formatPrice = formatPriceForDisplay;
 export function calculateFinalPrice(
   basePrice: number,
   customizations: Customization[] = [],
-  discounts: Discount[] = []
+  discounts: Discount[] = [],
+  customizationOptions?: CustomizationOption[]
 ): number {
-  // First calculate total with customizations
-  const totalWithCustomizations = calculateTotalPrice(basePrice, customizations);
+  // First calculate total with customizations using enhanced calculation if options available
+  const totalWithCustomizations = customizationOptions
+    ? calculateTotalPriceWithOptions(basePrice, customizations, customizationOptions)
+    : calculateTotalPrice(basePrice, customizations);
 
   // Then apply discounts
   const result = applyDiscounts(totalWithCustomizations, discounts);

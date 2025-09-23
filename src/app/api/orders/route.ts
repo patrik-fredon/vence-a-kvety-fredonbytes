@@ -70,17 +70,50 @@ export async function POST(request: NextRequest) {
     const itemCount = body.items.reduce((sum, item) => sum + item.quantity, 0);
 
     // Convert cart items to order items
-    const orderItems: OrderItem[] = body.items.map((item: CartItem) => ({
-      id: crypto.randomUUID(),
-      productId: item.productId,
-      productName: item.product?.name?.cs || "Unknown Product",
-      productSlug: item.product?.slug || "",
-      quantity: item.quantity,
-      unitPrice: item.unitPrice || 0,
-      totalPrice: item.totalPrice || 0,
-      customizations: item.customizations || [],
-      productSnapshot: item.product, // Store product snapshot at time of order
-    }));
+    const orderItems: OrderItem[] = body.items.map((item: CartItem) => {
+      // Import customization utilities
+      const { transferCustomizationsToOrder, validateCustomizationIntegrity } = require('@/lib/cart/utils');
+      
+      // Validate and transfer customizations
+      let processedCustomizations = item.customizations || [];
+      
+      if (processedCustomizations.length > 0) {
+        // Validate customization integrity
+        const validation = validateCustomizationIntegrity(processedCustomizations);
+        
+        if (!validation.isValid) {
+          console.warn(`Customization validation issues for cart item ${item.id}:`, validation.issues);
+          // Use fixed customizations if available
+          if (validation.fixedCustomizations) {
+            processedCustomizations = validation.fixedCustomizations;
+          }
+        }
+        
+        // Transfer customizations to order format
+        processedCustomizations = transferCustomizationsToOrder(processedCustomizations);
+        
+        // Log customization transfer for audit trail
+        console.log(`Transferring customizations for order item:`, {
+          cartItemId: item.id,
+          productId: item.productId,
+          customizationCount: processedCustomizations.length,
+          customizations: processedCustomizations,
+          timestamp: new Date().toISOString(),
+        });
+      }
+
+      return {
+        id: crypto.randomUUID(),
+        productId: item.productId,
+        productName: item.product?.name?.cs || "Unknown Product",
+        productSlug: item.product?.slug || "",
+        quantity: item.quantity,
+        unitPrice: item.unitPrice || 0,
+        totalPrice: item.totalPrice || 0,
+        customizations: processedCustomizations,
+        productSnapshot: item.product, // Store product snapshot at time of order
+      };
+    });
 
     // Create order data matching the database schema
     const orderData = {
@@ -196,6 +229,53 @@ export async function POST(request: NextRequest) {
       const { sendOrderConfirmationEmail } = await import("@/lib/email/service");
       await sendOrderConfirmationEmail(createdOrder, "cs");
     } catch (emailError) {
+    // Post-order cleanup: Remove cart items and customization cache
+    try {
+      const { cleanupOrphanedCustomizations } = await import('@/lib/cart/utils');
+      
+      // Get current user or session for cart cleanup
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      
+      const sessionId = getSessionId(request);
+      
+      // Find and clean up cart items that were converted to this order
+      let cartQuery = supabase.from("cart_items").select("*");
+      
+      if (user?.id) {
+        cartQuery = cartQuery.eq("user_id", user.id);
+      } else if (sessionId) {
+        cartQuery = cartQuery.eq("session_id", sessionId);
+      }
+      
+      const { data: cartItems, error: cartFetchError } = await cartQuery;
+      
+      if (!cartFetchError && cartItems && cartItems.length > 0) {
+        // Log customizations being cleaned up
+        const customizationCount = cartItems.reduce((count, item) => {
+          return count + (Array.isArray(item.customizations) ? item.customizations.length : 0);
+        }, 0);
+        
+        console.log(`Post-order cleanup: Removing ${cartItems.length} cart items with ${customizationCount} customizations for order ${order.id}`);
+        
+        // Delete cart items (this automatically removes associated customizations)
+        const { error: deleteError } = await supabase
+          .from("cart_items")
+          .delete()
+          .in("id", cartItems.map(item => item.id));
+        
+        if (deleteError) {
+          console.error("Error during post-order cart cleanup:", deleteError);
+          // Don't fail the order creation if cleanup fails
+        } else {
+          console.log(`Successfully cleaned up cart after order ${order.id} creation`);
+        }
+      }
+    } catch (cleanupError) {
+      console.error("Error during post-order cleanup:", cleanupError);
+      // Don't fail the order creation if cleanup fails
+    }
       console.error("Error sending confirmation email:", emailError);
       // Don't fail the order creation if email fails
     }

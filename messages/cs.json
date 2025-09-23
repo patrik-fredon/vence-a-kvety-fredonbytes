@@ -48,6 +48,7 @@
     "basePrice": "Základní cena",
     "totalPrice": "Celková cena",
     "priceWillUpdate": "Cena se aktualizuje podle vašeho přizpůsobení",
+    "customizations": "Přizpůsobení",
     "availability": "Dostupnost",
     "inStock": "Skladem",
     "outOfStock": "Není skladem",
@@ -134,7 +135,10 @@
       "customTextTooLong": "Vlastní text může mít maximálně 50 znaků",
       "customTextTooShort": "Vlastní text musí mít alespoň 2 znaky",
       "customTextInvalid": "Text obsahuje nepovolené znaky nebo obsah",
-      "customTextWarning": "Text se blíží maximální délce"
+      "customTextWarning": "Text se blíží maximální délce",
+      "networkError": "Chyba připojení, zkontrolujte internetové připojení",
+      "sessionExpired": "Relace vypršela, obnovte prosím stránku",
+      "fallbackApplied": "použita bezpečná konfigurace"
     },
     "customTextPlaceholder": "Zadejte vlastní text...",
     "customTextHelp": "Vlastní text na stuhu",

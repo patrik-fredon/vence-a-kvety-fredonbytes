@@ -48,6 +48,7 @@
     "basePrice": "Base Price",
     "totalPrice": "Total Price",
     "priceWillUpdate": "Price will update based on your customizations",
+    "customizations": "Customizations",
     "availability": "Availability",
     "inStock": "In Stock",
     "outOfStock": "Out of Stock",
@@ -134,7 +135,10 @@
       "customTextTooLong": "Custom text can have maximum 50 characters",
       "customTextTooShort": "Custom text must have at least 2 characters",
       "customTextInvalid": "Text contains invalid characters or content",
-      "customTextWarning": "Text is approaching maximum length"
+      "customTextWarning": "Text is approaching maximum length",
+      "networkError": "Connection error, please check your internet connection",
+      "sessionExpired": "Session expired, please refresh the page",
+      "fallbackApplied": "safe configuration applied"
     },
     "customTextPlaceholder": "Enter your custom text...",
     "customTextHelp": "Custom text for ribbon",
