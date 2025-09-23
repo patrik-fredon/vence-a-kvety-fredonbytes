@@ -10,8 +10,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCart } from "@/lib/cart/context";
 import { formatPrice } from "@/lib/utils";
-import type { CartItem } from "@/types/cart";
-import type { Product, Customization } from "@/types/product";
+import type { Customization } from "@/types/product";
 
 interface ShoppingCartProps {
   locale: string;
@@ -41,13 +40,13 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
   };
 
   // Helper function to format customization display
-  const formatCustomizationDisplay = (customization: Customization, product?: Product) => {
+  const formatCustomizationDisplay = (customization: Customization, product?: any) => {
     if (!product?.customizationOptions) return null;
 
-    const option = product.customizationOptions.find(opt => opt.id === customization.optionId);
+    const option = product.customizationOptions.find((opt: any) => opt.id === customization.optionId);
     if (!option) return null;
 
-    const optionName = option.name[locale] || option.name.en || option.name.cs;
+    const optionName = option.name?.[locale as keyof typeof option.name] || option.name?.en || option.name?.cs || 'Option';
 
     // Handle different customization types
     if (customization.customValue) {
@@ -58,8 +57,8 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
     if (customization.choiceIds && customization.choiceIds.length > 0) {
       const selectedChoices = customization.choiceIds
         .map(choiceId => {
-          const choice = option.choices.find(c => c.id === choiceId);
-          return choice ? (choice.label[locale] || choice.label.en || choice.label.cs) : null;
+          const choice = option.choices?.find((c: any) => c.id === choiceId);
+          return choice ? (choice.label?.[locale as keyof typeof choice.label] || choice.label?.en || choice.label?.cs) : null;
         })
         .filter(Boolean);
 
