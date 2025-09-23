@@ -6,6 +6,7 @@ import { useTranslations } from "next-intl";
 import { useCallback } from "react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils/price-calculator";
+import { withPerformanceMonitoring } from "@/lib/utils/customization-performance";
 import type {
   Customization,
   CustomizationChoice,
@@ -59,72 +60,78 @@ export function ProductCustomizer({
 
   // Clean up dependent customizations when parent option changes
   const cleanupDependentCustomizations = useCallback(
-    (customizations: Customization[], changedOptionId: string) => {
-      const dependentOptions = product.customizationOptions.filter(
-        (option) => option.dependsOn?.optionId === changedOptionId
-      );
+    withPerformanceMonitoring(
+      (customizations: Customization[], changedOptionId: string) => {
+        const dependentOptions = product.customizationOptions.filter(
+          (option) => option.dependsOn?.optionId === changedOptionId
+        );
 
-      let cleanedCustomizations = [...customizations];
+        let cleanedCustomizations = [...customizations];
 
-      for (const dependentOption of dependentOptions) {
-        // Check if the dependent option should still be visible
-        const shouldBeVisible = dependentOption.dependsOn?.requiredChoiceIds.some((requiredId) => {
-          const parentCustomization = cleanedCustomizations.find(
-            (c) => c.optionId === dependentOption.dependsOn!.optionId
-          );
-          return parentCustomization?.choiceIds.includes(requiredId);
-        });
+        for (const dependentOption of dependentOptions) {
+          // Check if the dependent option should still be visible
+          const shouldBeVisible = dependentOption.dependsOn?.requiredChoiceIds.some((requiredId) => {
+            const parentCustomization = cleanedCustomizations.find(
+              (c) => c.optionId === dependentOption.dependsOn!.optionId
+            );
+            return parentCustomization?.choiceIds.includes(requiredId);
+          });
 
-        if (!shouldBeVisible) {
-          // Remove customizations for options that are no longer visible
-          cleanedCustomizations = cleanedCustomizations.filter(
-            (c) => c.optionId !== dependentOption.id
-          );
+          if (!shouldBeVisible) {
+            // Remove customizations for options that are no longer visible
+            cleanedCustomizations = cleanedCustomizations.filter(
+              (c) => c.optionId !== dependentOption.id
+            );
+          }
         }
-      }
 
-      return cleanedCustomizations;
-    },
+        return cleanedCustomizations;
+      },
+      "customization.dependentCleanup"
+    ),
     [product.customizationOptions]
-  );
+  );;
 
   // Handle choice selection for an option
   const handleChoiceSelection = useCallback(
-    (optionId: string, choiceId: string, option: CustomizationOption) => {
-      const newCustomizations = [...customizations];
-      const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
+    withPerformanceMonitoring(
+      (optionId: string, choiceId: string, option: CustomizationOption) => {
+        const newCustomizations = [...customizations];
+        const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
 
-      if (existingIndex >= 0) {
-        const existing = newCustomizations[existingIndex]!; // Safe because existingIndex >= 0
+        if (existingIndex >= 0) {
+          const existing = newCustomizations[existingIndex]!; // Safe because existingIndex >= 0
 
-        if (option.maxSelections === 1) {
-          // Single selection - replace
-          existing.choiceIds = [choiceId];
-        } else {
-          // Multiple selection - toggle
-          if (existing.choiceIds.includes(choiceId)) {
-            existing.choiceIds = existing.choiceIds.filter((id) => id !== choiceId);
+          if (option.maxSelections === 1) {
+            // Single selection - replace
+            existing.choiceIds = [choiceId];
           } else {
-            // Check max selections limit
-            if (!option.maxSelections || existing.choiceIds.length < option.maxSelections) {
-              existing.choiceIds.push(choiceId);
+            // Multiple selection - toggle
+            if (existing.choiceIds.includes(choiceId)) {
+              existing.choiceIds = existing.choiceIds.filter((id) => id !== choiceId);
+            } else {
+              // Check max selections limit
+              if (!option.maxSelections || existing.choiceIds.length < option.maxSelections) {
+                existing.choiceIds.push(choiceId);
+              }
             }
           }
+        } else {
+          // Create new customization
+          newCustomizations.push({
+            optionId,
+            choiceIds: [choiceId],
+          });
         }
-      } else {
-        // Create new customization
-        newCustomizations.push({
-          optionId,
-          choiceIds: [choiceId],
-        });
-      }
 
-      // Clean up dependent customizations when parent option changes
-      const updatedCustomizations = cleanupDependentCustomizations(newCustomizations, optionId);
-      onCustomizationChange(updatedCustomizations);
-    },
+        // Clean up dependent customizations when parent option changes
+        const updatedCustomizations = cleanupDependentCustomizations(newCustomizations, optionId);
+        onCustomizationChange(updatedCustomizations);
+      },
+      "customization.choiceSelection"
+    ),
     [customizations, onCustomizationChange, cleanupDependentCustomizations]
-  );
+  );;
 
   // Handle custom value change (for text inputs)
   const handleCustomValueChange = useCallback(

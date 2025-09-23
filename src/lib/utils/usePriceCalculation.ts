@@ -1,6 +1,6 @@
 "use client";
 
-import { useMemo } from "react";
+import { useMemo, useState, useEffect } from "react";
 import type { Customization, CustomizationOption } from "@/types/product";
 import {
   calculateTotalPriceWithOptions,
@@ -42,6 +42,31 @@ export function usePriceCalculation(
       basePrice
     };
   }, [basePrice, customizations, customizationOptions]);
+}
+
+/**
+ * Debounced version of price calculation for performance optimization
+ * Prevents excessive recalculations during rapid customization changes
+ */
+export function useDebouncedPriceCalculation(
+  basePrice: number,
+  customizations: Customization[],
+  customizationOptions: CustomizationOption[],
+  delay: number = 300
+): PriceCalculationResult {
+  const [debouncedCustomizations, setDebouncedCustomizations] = useState(customizations);
+
+  // Debounce customizations changes
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setDebouncedCustomizations(customizations);
+    }, delay);
+
+    return () => clearTimeout(timer);
+  }, [customizations, delay]);
+
+  // Use regular price calculation with debounced customizations
+  return usePriceCalculation(basePrice, debouncedCustomizations, customizationOptions);
 }
 
 /**

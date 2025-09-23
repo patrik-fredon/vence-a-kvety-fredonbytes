@@ -283,7 +283,8 @@ describe("SizeSelector Accessibility & Internationalization", () => {
 
   describe("Internationalization", () => {
     test("should display Czech translations correctly", () => {
-      renderWithIntl(
+      setupMocks("cs");
+      render(
         <SizeSelector
           sizeOption={mockSizeOption}
           selectedSize={null}
@@ -302,15 +303,15 @@ describe("SizeSelector Accessibility & Internationalization", () => {
     });
 
     test("should display English translations correctly", () => {
-      renderWithIntl(
+      setupMocks("en");
+      render(
         <SizeSelector
           sizeOption={mockSizeOption}
           selectedSize={null}
           onSizeChange={mockOnSizeChange}
           locale="en"
           basePrice={2500}
-        />,
-        "en"
+        />
       );
 
       expect(screen.getByText("Size")).toBeInTheDocument();
@@ -322,7 +323,8 @@ describe("SizeSelector Accessibility & Internationalization", () => {
     });
 
     test("should format prices according to locale", () => {
-      renderWithIntl(
+      setupMocks("cs");
+      render(
         <SizeSelector
           sizeOption={mockSizeOption}
           selectedSize={null}
@@ -349,7 +351,8 @@ describe("RibbonConfigurator Accessibility & Internationalization", () => {
 
   describe("WCAG 2.1 AA Compliance", () => {
     test("should have proper semantic structure with fieldsets and legends", () => {
-      renderWithIntl(
+      setupMocks("cs");
+      render(
         <RibbonConfigurator
           isVisible={true}
           colorOption={mockColorOption}
