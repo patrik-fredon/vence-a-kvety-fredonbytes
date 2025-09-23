@@ -7,6 +7,7 @@ import { MonitoringProvider } from "@/components/monitoring/MonitoringProvider";
 import { type Locale, locales } from "@/i18n/config";
 import { AccessibilityProvider } from "@/lib/accessibility/context";
 import { CartProvider } from "@/lib/cart/context";
+import { CartAnimationProvider } from "@/components/cart";
 import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
 import { createClient } from "@/lib/supabase/server";
 
@@ -42,7 +43,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
         <AccessibilityProvider>
           <AuthProvider>
             <CartProvider>
-              <MainLayout locale={locale}>{children}</MainLayout>
+              <CartAnimationProvider>
+                <MainLayout locale={locale}>{children}</MainLayout>
+              </CartAnimationProvider>
             </CartProvider>
           </AuthProvider>
         </AccessibilityProvider>

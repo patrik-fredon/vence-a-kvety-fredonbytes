@@ -115,10 +115,10 @@ class PerformanceMonitor {
 
     this.addMetric(performanceMetric);
 
-    // Log performance issues for poor ratings
+    // Log performance issues for poor ratings with proper unit
     if (rating === "poor") {
       const threshold = this.getThreshold(metric.name);
-      logPerformanceIssue(metric.name, metric.value, threshold.poor, `Web Vitals - ${metric.name}`);
+      logPerformanceIssue(metric.name, metric.value, threshold.poor, `Web Vitals - ${metric.name}`, "ms");
     }
   }
 
@@ -139,10 +139,31 @@ class PerformanceMonitor {
 
     this.addMetric(metric);
 
-    // Log performance issues
+    // Log performance issues with default ms unit
     if (rating === "poor") {
       const threshold = this.getThreshold(name);
-      logPerformanceIssue(name, value, threshold.poor, context);
+      logPerformanceIssue(name, value, threshold.poor, context, "ms");
+    }
+  }
+
+  recordMetricWithUnit(name: string, value: number, context?: string, unit: string = "ms") {
+    const rating = this.getRating(name, value);
+
+    const metric: PerformanceMetric = {
+      name,
+      value,
+      rating,
+      timestamp: Date.now(),
+      url: typeof window !== "undefined" ? window.location.href : "unknown",
+      id: `${name}_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`,
+    };
+
+    this.addMetric(metric);
+
+    // Log performance issues with proper unit formatting
+    if (rating === "poor") {
+      const threshold = this.getThreshold(name);
+      logPerformanceIssue(name, value, threshold.poor, context, unit);
     }
   }
 
@@ -160,13 +181,14 @@ class PerformanceMonitor {
             this.recordMetric("SLOW_RESOURCE", resource.duration, `Resource: ${resource.name}`);
           }
 
-          // Monitor large resources
+          // Monitor large resources - fix: pass unit as "bytes" for proper formatting
           if (resource.transferSize && resource.transferSize > 1024 * 1024) {
             // > 1MB
-            this.recordMetric(
+            this.recordMetricWithUnit(
               "LARGE_RESOURCE",
               resource.transferSize,
-              `Resource: ${resource.name}`
+              `Resource: ${resource.name}`,
+              "bytes"
             );
           }
         }

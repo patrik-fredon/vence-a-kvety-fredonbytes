@@ -2,12 +2,13 @@
 
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { useCallback, useState, useMemo } from "react";
+import { useCallback, useState, useMemo, useRef } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useCart } from "@/lib/cart/context";
 import { cn } from "@/lib/utils";
+import { useAnimationSequence } from "@/components/cart/hooks";
 
 import {
   validateWreathConfiguration,
@@ -32,6 +33,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
   const { addToCart } = useCart();
+  const { startProductToCartAnimation } = useAnimationSequence();
 
   const [customizations, setCustomizations] = useState<Customization[]>([]);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
@@ -39,6 +41,10 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+
+  // Refs for animation
+  const productImageRef = useRef<HTMLDivElement>(null);
+  const addToCartButtonRef = useRef<HTMLButtonElement>(null);
 
   // Ensure customizationOptions is always an array to prevent map errors
   const customizationOptions = useMemo(() => product.customizationOptions || [], [product.customizationOptions]);
@@ -213,8 +219,43 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         setValidationErrors([]);
         setValidationWarnings([]);
 
-        // Show success message
-        alert(t("addedToCart"));
+        // Trigger cart animation
+        console.log('🛒 [ProductDetail] Attempting to trigger cart animation');
+        if (productImageRef.current && addToCartButtonRef.current) {
+          // Find the cart icon in the header
+          const cartIcon = document.querySelector('[href*="/cart"]') as HTMLElement;
+          console.log('🛒 [ProductDetail] Cart icon found:', !!cartIcon, cartIcon?.tagName);
+
+          if (cartIcon) {
+            // Get the product image source
+            const productImage = productImageRef.current.querySelector('img');
+            const imageSrc = productImage?.src || product.images?.[0]?.url || '';
+
+            console.log('🛒 [ProductDetail] Starting animation with:', {
+              productElement: productImageRef.current.tagName,
+              cartIcon: cartIcon.tagName,
+              imageSrc: imageSrc?.substring(0, 50) + '...'
+            });
+
+            startProductToCartAnimation(
+              productImageRef.current,
+              cartIcon,
+              imageSrc
+            );
+          } else {
+            console.warn('🛒 [ProductDetail] Cart icon not found in DOM');
+          }
+        } else {
+          console.warn('🛒 [ProductDetail] Missing refs:', {
+            productImageRef: !!productImageRef.current,
+            addToCartButtonRef: !!addToCartButtonRef.current
+          });
+        }
+
+        // Show success message (after a delay to not interfere with animation)
+        setTimeout(() => {
+          alert(t("addedToCart"));
+        }, 1200); // After animation completes
       } else {
         console.error("❌ [ProductDetail] Failed to add product to cart:", product.id);
 
@@ -262,7 +303,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", className)}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         {/* Left Column - Image Gallery */}
-        <div className="space-y-6">
+        <div className="space-y-6" ref={productImageRef}>
           <ProductImageGallery
             images={product.images || []}
             productName={product.name[locale as keyof typeof product.name]}
@@ -480,6 +521,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
           {/* Add to Cart Button */}
           <Button
+            ref={addToCartButtonRef}
             onClick={handleAddToCart}
             disabled={!product.availability?.inStock || isAddingToCart || validationErrors.length > 0}
             loading={isAddingToCart}

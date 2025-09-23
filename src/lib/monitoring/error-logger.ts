@@ -66,11 +66,22 @@ class ErrorLogger {
       }
     }
 
-    // Log to console in development
+    // Log to console in development with safe stack trace handling
     if (process.env.NODE_ENV === "development") {
       console.group(`🚨 Error [${errorLog.level}] - ${errorLog.id}`);
       console.error("Message:", errorLog.message);
-      console.error("Stack:", errorLog.stack);
+      
+      // Safe stack trace logging - check if stack exists and is valid
+      if (errorLog.stack && typeof errorLog.stack === "string" && errorLog.stack.trim()) {
+        try {
+          console.error("Stack:", errorLog.stack);
+        } catch (stackError) {
+          console.error("Stack trace unavailable (logging error):", stackError.message);
+        }
+      } else {
+        console.error("Stack trace unavailable");
+      }
+      
       console.log("Context:", context);
       console.groupEnd();
     }
@@ -108,9 +119,33 @@ class ErrorLogger {
   /**
    * Log performance issues
    */
-  async logPerformanceIssue(metric: string, value: number, threshold: number, context?: string) {
+  async logPerformanceIssue(
+    metric: string, 
+    value: number, 
+    threshold: number, 
+    context?: string,
+    unit: string = "ms"
+  ) {
+    // Format the value and threshold based on the unit
+    const formatValue = (val: number, unit: string): string => {
+      switch (unit) {
+        case "bytes":
+          return val > 1024 * 1024 
+            ? `${(val / (1024 * 1024)).toFixed(2)}MB`
+            : val > 1024 
+            ? `${(val / 1024).toFixed(2)}KB`
+            : `${val}B`;
+        case "ms":
+        default:
+          return `${val}ms`;
+      }
+    };
+
+    const formattedValue = formatValue(value, unit);
+    const formattedThreshold = formatValue(threshold, unit);
+    
     const error = new Error(
-      `Performance threshold exceeded: ${metric} = ${value}ms (threshold: ${threshold}ms)`
+      `Performance threshold exceeded: ${metric} = ${formattedValue} (threshold: ${formattedThreshold})`
     );
     error.name = "PerformanceError";
 
@@ -121,6 +156,7 @@ class ErrorLogger {
         metric,
         value,
         threshold,
+        unit,
         type: "performance",
       },
     });

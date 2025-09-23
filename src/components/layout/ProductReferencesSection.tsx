@@ -77,18 +77,46 @@ const ProductReferenceCard = ({
   const handleImageError = () => {
     if (!imageError) {
       setImageError(true);
-      const fallbackImage = getFallbackImage("product");
-      setCurrentImageSrc(fallbackImage.src);
+      
+      try {
+        const fallbackImage = getFallbackImage("product");
+        
+        // Validate fallback image before setting
+        if (fallbackImage && fallbackImage.src) {
+          setCurrentImageSrc(fallbackImage.src);
+        } else {
+          // Use a safe default if fallback fails
+          setCurrentImageSrc("/images/placeholder-product.png");
+        }
 
-      logErrorWithContext(new Error("Product image failed to load"), {
-        component: "ProductReferenceCard",
-        action: "image_load_error",
-        locale,
-        productId: product.id,
-        timestamp: new Date().toISOString(),
-      });
+        // Safe error logging with additional context
+        logErrorWithContext(new Error("Product image failed to load"), {
+          component: "ProductReferenceCard",
+          action: "image_load_error",
+          locale,
+          productId: product.id,
+          originalSrc: product.image_url,
+          fallbackSrc: fallbackImage?.src || "none",
+          timestamp: new Date().toISOString(),
+        });
+      } catch (fallbackError) {
+        // If even the fallback fails, use a hardcoded safe image
+        setCurrentImageSrc("/images/placeholder-product.png");
+        
+        console.error("Fallback image handling failed:", fallbackError);
+        
+        // Log the fallback failure as well
+        logErrorWithContext(new Error("Fallback image system failed"), {
+          component: "ProductReferenceCard",
+          action: "fallback_error",
+          locale,
+          productId: product.id,
+          originalError: fallbackError.message,
+          timestamp: new Date().toISOString(),
+        });
+      }
     }
-  };
+  };;
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     // Handle Enter and Space key activation

@@ -80,7 +80,7 @@ h1 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.4;
-  color: var(--color-amber-200);
+  color: var(--color-amber-400);
 }
 
 /* Focus styles for accessibility */
@@ -216,11 +216,19 @@ h1 {
 }
 
 .gradient-memorial {
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50) 0%,
+    var(--color-neutral-100) 100%
+  );
 }
 
 .bg-gradient-memorial {
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50) 0%,
+    var(--color-neutral-100) 100%
+  );
 }
 
 /* Line clamp utilities */
@@ -271,5 +279,69 @@ h1 {
   to {
     transform: translateY(0);
     opacity: 1;
+  }
+}
+
+/* Gentle fade animation for hero elements */
+.animate-gentle-fade {
+  animation: gentleFade 1.2s ease-out;
+}
+
+@keyframes gentleFade {
+  0% {
+    opacity: 0;
+    transform: translateY(20px) scale(0.95);
+  }
+  50% {
+    opacity: 0.7;
+    transform: translateY(10px) scale(0.98);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Staggered fade-in animations for landing page elements */
+.animate-fade-in-up {
+  animation: fadeInUp 0.8s ease-out forwards;
+}
+
+.animate-fade-in-up-delay-1 {
+  animation: fadeInUp 0.8s ease-out 0.2s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up-delay-2 {
+  animation: fadeInUp 0.8s ease-out 0.4s forwards;
+  opacity: 0;
+}
+
+.animate-fade-in-up-delay-3 {
+  animation: fadeInUp 0.8s ease-out 0.6s forwards;
+  opacity: 0;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .animate-gentle-fade,
+  .animate-fade-in-up,
+  .animate-fade-in-up-delay-1,
+  .animate-fade-in-up-delay-2,
+  .animate-fade-in-up-delay-3 {
+    animation: none;
+    opacity: 1;
+    transform: none;
   }
 }

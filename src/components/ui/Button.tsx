@@ -1,4 +1,5 @@
 import type { ButtonHTMLAttributes, ReactNode } from "react";
+import { forwardRef } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
 
@@ -12,7 +13,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconPosition?: "left" | "right";
 }
 
-export function Button({
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
   children,
   className,
   variant = "default",
@@ -23,7 +24,7 @@ export function Button({
   iconPosition = "left",
   disabled,
   ...props
-}: ButtonProps) {
+}, ref) {
   const prefersReducedMotion = useReducedMotion();
 
   const baseStyles = cn(
@@ -122,6 +123,7 @@ export function Button({
 
   return (
     <button
+      ref={ref}
       className={cn(baseStyles, variants[variant], sizes[size], className)}
       disabled={isDisabled}
       aria-disabled={isDisabled}
@@ -163,24 +165,22 @@ export function Button({
         </>
       )}
 
-      {/* Left icon */}
+      {/* Icon - left position */}
       {!loading && icon && iconPosition === "left" && (
-        <span className={cn("flex-shrink-0", children && "mr-2")} aria-hidden="true">
+        <span className={cn("flex-shrink-0", children ? "mr-2" : "")}>
           {icon}
         </span>
       )}
 
-      {/* Button content */}
-      <span className={loading ? "opacity-75" : ""}>
-        {loading && loadingText ? loadingText : children}
-      </span>
+      {/* Content */}
+      {loading && loadingText ? loadingText : children}
 
-      {/* Right icon */}
+      {/* Icon - right position */}
       {!loading && icon && iconPosition === "right" && (
-        <span className={cn("flex-shrink-0", children && "ml-2")} aria-hidden="true">
+        <span className={cn("flex-shrink-0", children ? "ml-2" : "")}>
           {icon}
         </span>
       )}
     </button>
   );
-}
+});

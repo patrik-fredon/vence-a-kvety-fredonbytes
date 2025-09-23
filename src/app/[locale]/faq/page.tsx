@@ -35,6 +35,17 @@ export default async function FAQPage({ params }: FAQPageProps) {
       question: t("items.2.question"),
       answer: t("items.2.answer"),
     },
+    {
+      question: t("items.3.question"),
+      answer: t("items.3.answer"),
+      image: {
+        src: "/wreath-size-comparison.svg",
+        alt: locale === "cs" ? "Porovnání velikostí věnců s lidskou postavou" : "Wreath size comparison with human figure",
+        description: locale === "cs"
+          ? "Ilustrace ukazuje poměr velikostí našich věnců (malý, střední, velký) ve srovnání s průměrnou lidskou postavou pro lepší představu o rozměrech."
+          : "Illustration showing the size ratio of our wreaths (small, medium, large) compared to an average human figure for better understanding of dimensions."
+      }
+    },
   ];
 
   // Generate structured data

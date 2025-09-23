@@ -1,11 +1,17 @@
 "use client";
 
 import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
+import Image from "next/image";
 import { useState } from "react";
 
 interface FAQItem {
   question: string;
   answer: string;
+  image?: {
+    src: string;
+    alt: string;
+    description?: string;
+  };
 }
 
 interface FAQAccordionProps {
@@ -64,12 +70,31 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
               id={`faq-answer-${index}`}
               role="region"
               aria-labelledby={`faq-question-${index}`}
-              className={`transition-all duration-300 ease-in-out ${
-                isOpen ? "max-h-96 opacity-100" : "max-h-0 opacity-0 overflow-hidden"
-              }`}
+              className={`transition-all duration-300 ease-in-out ${isOpen ? "max-h-[600px] opacity-100" : "max-h-0 opacity-0 overflow-hidden"
+                }`}
             >
               <div className="px-6 pb-4">
-                <p className="text-neutral-700 leading-relaxed">{item.answer}</p>
+                <p className="text-neutral-700 leading-relaxed mb-4">{item.answer}</p>
+
+                {item.image && (
+                  <div className="mt-6">
+                    <div className="relative w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+                      <Image
+                        src={item.image.src}
+                        alt={item.image.alt}
+                        width={800}
+                        height={600}
+                        className="w-full h-auto object-contain"
+                        priority={false}
+                      />
+                    </div>
+                    {item.image.description && (
+                      <p className="text-sm text-neutral-600 text-center mt-3 italic">
+                        {item.image.description}
+                      </p>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
           </div>
