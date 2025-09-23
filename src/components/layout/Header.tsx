@@ -5,7 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { AuthStatus } from "@/components/auth";
-import { CartIcon } from "@/components/cart/CartIcon";
+import { AnimatedCartIcon } from "@/components/cart";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import type { Locale } from "@/i18n/config";
@@ -99,8 +99,8 @@ export function Header({ locale }: HeaderProps) {
                 <LanguageSwitcher currentLocale={locale} />
               </div>
 
-              {/* Cart icon with enhanced styling */}
-              <CartIcon
+              {/* Animated Cart icon with enhanced styling */}
+              <AnimatedCartIcon
                 locale={locale}
                 className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200"
               />

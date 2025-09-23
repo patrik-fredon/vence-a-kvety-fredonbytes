@@ -1,0 +1,91 @@
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background -->
+  <rect width="800" height="600" fill="#f8f9fa"/>
+
+  <!-- Title -->
+  <text x="400" y="40" text-anchor="middle" font-family="serif" font-size="24" font-weight="bold" fill="#2d3748">
+    Porovnání velikostí věnců / Wreath Size Comparison
+  </text>
+
+  <!-- Human silhouette (170cm tall, scaled to fit) -->
+  <g transform="translate(650, 150)">
+    <!-- Head -->
+    <circle cx="0" cy="0" r="25" fill="#4a5568" opacity="0.7"/>
+    <!-- Body -->
+    <rect x="-15" y="25" width="30" height="80" fill="#4a5568" opacity="0.7" rx="5"/>
+    <!-- Arms -->
+    <rect x="-35" y="35" width="20" height="8" fill="#4a5568" opacity="0.7" rx="4"/>
+    <rect x="15" y="35" width="20" height="8" fill="#4a5568" opacity="0.7" rx="4"/>
+    <!-- Legs -->
+    <rect x="-12" y="105" width="10" height="60" fill="#4a5568" opacity="0.7" rx="5"/>
+    <rect x="2" y="105" width="10" height="60" fill="#4a5568" opacity="0.7" rx="5"/>
+    <!-- Height indicator -->
+    <text x="40" y="85" font-family="sans-serif" font-size="12" fill="#4a5568">170 cm</text>
+  </g>
+
+  <!-- Small wreath (40-50cm) -->
+  <g transform="translate(150, 300)">
+    <circle cx="0" cy="0" r="60" fill="none" stroke="#22543d" stroke-width="8" opacity="0.8"/>
+    <circle cx="0" cy="0" r="45" fill="none" stroke="#38a169" stroke-width="4" opacity="0.6"/>
+    <!-- Decorative elements -->
+    <circle cx="-30" cy="-30" r="4" fill="#e53e3e"/>
+    <circle cx="30" cy="-30" r="4" fill="#e53e3e"/>
+    <circle cx="-30" cy="30" r="4" fill="#e53e3e"/>
+    <circle cx="30" cy="30" r="4" fill="#e53e3e"/>
+    <!-- Label -->
+    <text x="0" y="90" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2d3748">
+      Malý / Small
+    </text>
+    <text x="0" y="110" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#4a5568">
+      40-50 cm
+    </text>
+  </g>
+
+  <!-- Medium wreath (60-70cm) -->
+  <g transform="translate(350, 300)">
+    <circle cx="0" cy="0" r="80" fill="none" stroke="#22543d" stroke-width="10" opacity="0.8"/>
+    <circle cx="0" cy="0" r="65" fill="none" stroke="#38a169" stroke-width="5" opacity="0.6"/>
+    <!-- Decorative elements -->
+    <circle cx="-40" cy="-40" r="5" fill="#e53e3e"/>
+    <circle cx="40" cy="-40" r="5" fill="#e53e3e"/>
+    <circle cx="-40" cy="40" r="5" fill="#e53e3e"/>
+    <circle cx="40" cy="40" r="5" fill="#e53e3e"/>
+    <circle cx="0" cy="-55" r="4" fill="#d69e2e"/>
+    <circle cx="0" cy="55" r="4" fill="#d69e2e"/>
+    <!-- Label -->
+    <text x="0" y="110" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2d3748">
+      Střední / Medium
+    </text>
+    <text x="0" y="130" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#4a5568">
+      60-70 cm
+    </text>
+  </g>
+
+  <!-- Large wreath (80-90cm) -->
+  <g transform="translate(550, 300)">
+    <circle cx="0" cy="0" r="100" fill="none" stroke="#22543d" stroke-width="12" opacity="0.8"/>
+    <circle cx="0" cy="0" r="85" fill="none" stroke="#38a169" stroke-width="6" opacity="0.6"/>
+    <!-- Decorative elements -->
+    <circle cx="-50" cy="-50" r="6" fill="#e53e3e"/>
+    <circle cx="50" cy="-50" r="6" fill="#e53e3e"/>
+    <circle cx="-50" cy="50" r="6" fill="#e53e3e"/>
+    <circle cx="50" cy="50" r="6" fill="#e53e3e"/>
+    <circle cx="0" cy="-70" r="5" fill="#d69e2e"/>
+    <circle cx="0" cy="70" r="5" fill="#d69e2e"/>
+    <circle cx="-70" cy="0" r="4" fill="#9f7aea"/>
+    <circle cx="70" cy="0" r="4" fill="#9f7aea"/>
+    <!-- Label -->
+    <text x="0" y="130" text-anchor="middle" font-family="sans-serif" font-size="14" font-weight="bold" fill="#2d3748">
+      Velký / Large
+    </text>
+    <text x="0" y="150" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#4a5568">
+      80-90 cm
+    </text>
+  </g>
+
+  <!-- Scale reference line -->
+  <line x1="100" y1="550" x2="700" y2="550" stroke="#a0aec0" stroke-width="2" stroke-dasharray="5,5"/>
+  <text x="400" y="575" text-anchor="middle" font-family="sans-serif" font-size="12" fill="#4a5568">
+    Měřítko pro srovnání s průměrnou výškou člověka / Scale comparison with average human height
+  </text>
+</svg>

@@ -34,6 +34,7 @@ export function RefactoredHeroSection({
   const [logoLoaded, setLogoLoaded] = useState(false);
   const [logoError, setLogoError] = useState(false);
   const [currentLogoSrc, setCurrentLogoSrc] = useState(companyLogo.src);
+  const [animationStarted, setAnimationStarted] = useState(false);
 
   // Safe translation function with fallbacks
   const safeT = (key: string) => safeTranslate(t, key, locale);
@@ -59,9 +60,10 @@ export function RefactoredHeroSection({
     setLogoLoaded(true);
   };
 
-  // Trigger logo animation after component mounts
+  // Trigger staggered animations after component mounts
   useEffect(() => {
     const timer = setTimeout(() => {
+      setAnimationStarted(true);
       if (!logoError) {
         setLogoLoaded(true);
       }
@@ -192,7 +194,7 @@ export function RefactoredHeroSection({
           )}
         </div>
 
-        {/* H2 Heading - Single line with responsive typography */}
+        {/* H2 Heading - Single line with responsive typography and fade-in animation */}
         <h1
           id="hero-heading"
           className={cn(
@@ -215,13 +217,23 @@ export function RefactoredHeroSection({
             "lg:mb-10", // Desktop spacing
             // Orientation adjustments
             "landscape:text-xl landscape:sm:text-3xl", // Smaller in landscape
-            "md:landscape:text-4xl" // Tablet landscape
+            "md:landscape:text-4xl", // Tablet landscape
+            // Fade-in animation with delay
+            "transition-all duration-1000 ease-out",
+            animationStarted && !prefersReducedMotion
+              ? "opacity-100 translate-y-0"
+              : animationStarted
+                ? "opacity-100"
+                : "opacity-0 translate-y-4"
           )}
+          style={{
+            transitionDelay: prefersReducedMotion ? "0ms" : "300ms"
+          }}
         >
           {safeT("heading")}
         </h1>
 
-        {/* Paragraph - Single line with responsive typography */}
+        {/* Paragraph - Single line with responsive typography and fade-in animation */}
         <p
           id="hero-description"
           className={cn(
@@ -243,32 +255,59 @@ export function RefactoredHeroSection({
             "md:mb-16", // Tablet spacing
             "lg:mb-20", // Desktop spacing
             // Text styling
-            "text-white/90", // Slightly transparent for hierarchy
+            "text-amber-200", // Slightly transparent for hierarchy
             // Orientation adjustments
             "landscape:text-sm landscape:sm:text-lg", // Smaller in landscape
-            "md:landscape:text-xl" // Tablet landscape
+            "md:landscape:text-xl", // Tablet landscape
+            // Fade-in animation with delay
+            "transition-all duration-1000 ease-out",
+            animationStarted && !prefersReducedMotion
+              ? "opacity-100 translate-y-0"
+              : animationStarted
+                ? "opacity-100"
+                : "opacity-0 translate-y-4"
           )}
+          style={{
+            transitionDelay: prefersReducedMotion ? "0ms" : "600ms"
+          }}
         >
           {safeT("description")}
         </p>
 
-        {/* Call-to-Action Button */}
-        <CTAButton
-          href={`/${locale}/products`}
+        {/* Call-to-Action Button with fade-in animation */}
+        <div
           className={cn(
-            // Mobile-first responsive sizing
-            "text-base px-6 py-3", // Compact on mobile
-            "xs:text-lg xs:px-7 xs:py-4", // Slightly larger for 375px+
-            "sm:text-xl sm:px-8 sm:py-4", // Standard for 640px+
-            "md:text-2xl md:px-10 md:py-5", // Tablet sizing
-            "lg:text-3xl lg:px-12 lg:py-6", // Desktop sizing
-            // Orientation adjustments
-            "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
-            "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4" // Tablet landscape
+            "transition-all duration-1000 ease-out",
+            animationStarted && !prefersReducedMotion
+              ? "opacity-100 translate-y-0 scale-100"
+              : animationStarted
+                ? "opacity-100"
+                : "opacity-0 translate-y-4 scale-95"
           )}
+          style={{
+            transitionDelay: prefersReducedMotion ? "0ms" : "900ms"
+          }}
         >
-          {safeT("ctaButton")}
-        </CTAButton>
+          <CTAButton
+            href={`/${locale}/products`}
+            className={cn(
+              // Mobile-first responsive sizing
+              "text-base px-6 py-3", // Compact on mobile
+              "xs:text-lg xs:px-7 xs:py-4", // Slightly larger for 375px+
+              "sm:text-xl sm:px-8 sm:py-4", // Standard for 640px+
+              "md:text-2xl md:px-10 md:py-5", // Tablet sizing
+              "lg:text-3xl lg:px-12 lg:py-6", // Desktop sizing
+              "rounded-t-lg rounded-b-3xl bg-amber-200/60 text-teal-800 font-extrabold",
+              // Orientation adjustments
+              "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
+              "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
+              // Hover animation enhancement
+              "hover:scale-105 hover:bg-amber-400/60 transition-transform duration-200"
+            )}
+          >
+            {safeT("ctaButton")}
+          </CTAButton>
+        </div>
       </div>
     </section>
   );
