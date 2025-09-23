@@ -15,7 +15,15 @@ export function ProductToCartAnimation({
 
   useEffect(() => {
     const animateProductToCart = async () => {
+      console.log('🎭 [ProductToCartAnimation] Starting animation sequence:', {
+        productElement: productElement?.tagName,
+        cartElement: cartElement?.tagName,
+        animationElement: !!animationElementRef.current,
+        productImageSrc: productImageSrc?.substring(0, 50) + '...'
+      });
+
       if (!productElement || !cartElement || !animationElementRef.current) {
+        console.error('🎭 [ProductToCartAnimation] Missing required elements, completing animation');
         onAnimationComplete();
         return;
       }
@@ -52,6 +60,7 @@ export function ProductToCartAnimation({
       const targetY = cartRect.top + cartRect.height / 2 - imageRect.height / 4;
 
       // Start animation
+      console.log('🎭 [ProductToCartAnimation] Starting product shrink animation');
       animationElement.style.transition = `all ${config.productShrinkDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
       animationElement.style.transform = `translate(${targetX - imageRect.left}px, ${targetY - imageRect.top}px) scale(0.25)`;
       animationElement.style.opacity = '0.8';
@@ -88,7 +97,7 @@ export function ProductToCartAnimation({
 
             // After cart shake, start count animation
             setTimeout(() => {
-              pdateAnimati('count-animating');
+              updateAnimationStep('count-animating');
 
               // Final cleanup
               setTimeout(() => {

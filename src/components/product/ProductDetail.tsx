@@ -220,20 +220,36 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         setValidationWarnings([]);
 
         // Trigger cart animation
+        console.log('🛒 [ProductDetail] Attempting to trigger cart animation');
         if (productImageRef.current && addToCartButtonRef.current) {
           // Find the cart icon in the header
           const cartIcon = document.querySelector('[href*="/cart"]') as HTMLElement;
+          console.log('🛒 [ProductDetail] Cart icon found:', !!cartIcon, cartIcon?.tagName);
+
           if (cartIcon) {
             // Get the product image source
             const productImage = productImageRef.current.querySelector('img');
             const imageSrc = productImage?.src || product.images?.[0]?.url || '';
+
+            console.log('🛒 [ProductDetail] Starting animation with:', {
+              productElement: productImageRef.current.tagName,
+              cartIcon: cartIcon.tagName,
+              imageSrc: imageSrc?.substring(0, 50) + '...'
+            });
 
             startProductToCartAnimation(
               productImageRef.current,
               cartIcon,
               imageSrc
             );
+          } else {
+            console.warn('🛒 [ProductDetail] Cart icon not found in DOM');
           }
+        } else {
+          console.warn('🛒 [ProductDetail] Missing refs:', {
+            productImageRef: !!productImageRef.current,
+            addToCartButtonRef: !!addToCartButtonRef.current
+          });
         }
 
         // Show success message (after a delay to not interfere with animation)
