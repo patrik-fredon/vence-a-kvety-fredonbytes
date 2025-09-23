@@ -79,8 +79,8 @@ export function usePriceCalculationWithSize(
   selectedSize: string | null,
   sizeOption?: CustomizationOption
 ): PriceCalculationResult {
-  return useMemo(() => {
-    // Create a combined customizations array including size
+  // Calculate combined customizations including size at the top level
+  const combinedCustomizations = useMemo(() => {
     const allCustomizations = [...customizations];
 
     if (selectedSize && sizeOption) {
@@ -95,9 +95,12 @@ export function usePriceCalculationWithSize(
         choiceIds: [selectedSize]
       });
 
-      return usePriceCalculation(basePrice, filteredCustomizations, customizationOptions);
+      return filteredCustomizations;
     }
 
-    return usePriceCalculation(basePrice, customizations, customizationOptions);
-  }, [basePrice, customizations, customizationOptions, selectedSize, sizeOption]);
+    return customizations;
+  }, [customizations, selectedSize, sizeOption]);
+
+  // Use the regular price calculation hook with combined customizations
+  return usePriceCalculation(basePrice, combinedCustomizations, customizationOptions);
 }

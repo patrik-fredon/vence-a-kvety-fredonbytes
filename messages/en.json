@@ -118,6 +118,7 @@
     "increaseQuantity": "Increase quantity",
     "unitPrice": "Unit price",
     "secureCheckout": "Secure checkout",
+    "noSizesAvailable": "No sizes available",
     "freeShippingOver": "Free shipping over {amount}",
     "pricing": "Pricing",
     "validation": {

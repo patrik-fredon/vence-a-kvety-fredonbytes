@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -40,11 +40,13 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   // Ensure customizationOptions is always an array to prevent map errors
-  const customizationOptions = product.customizationOptions || [];
+  const customizationOptions = useMemo(() => product.customizationOptions || [], [product.customizationOptions]);
 
   // Find size option from customization options
-  const sizeOption = customizationOptions.find(
-    (option) => option.type === "size" || option.id === "size"
+  const sizeOption = useMemo(() =>
+    customizationOptions.find(
+      (option) => option.type === "size" || option.id === "size"
+    ), [customizationOptions]
   );
 
   // Real-time price calculation with size and customizations
@@ -57,34 +59,46 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   );
 
   // Find ribbon-related options
-  const ribbonOption = customizationOptions.find(
-    (option) => option.type === "ribbon" || option.id === "ribbon"
+  const ribbonOption = useMemo(() =>
+    customizationOptions.find(
+      (option) => option.type === "ribbon" || option.id === "ribbon"
+    ), [customizationOptions]
   );
-  const ribbonColorOption = customizationOptions.find(
-    (option) => option.type === "ribbon_color" || option.id === "ribbon_color"
-  ) || null;
-  const ribbonTextOption = customizationOptions.find(
-    (option) => option.type === "ribbon_text" || option.id === "ribbon_text"
-  ) || null;
+
+  const ribbonColorOption = useMemo(() =>
+    customizationOptions.find(
+      (option) => option.type === "ribbon_color" || option.id === "ribbon_color"
+    ) || null, [customizationOptions]
+  );
+
+  const ribbonTextOption = useMemo(() =>
+    customizationOptions.find(
+      (option) => option.type === "ribbon_text" || option.id === "ribbon_text"
+    ) || null, [customizationOptions]
+  );
 
   // Check if ribbon is selected
-  const isRibbonSelected = customizations.some(
-    (customization) =>
-      customization.optionId === ribbonOption?.id &&
-      customization.choiceIds.length > 0
+  const isRibbonSelected = useMemo(() =>
+    customizations.some(
+      (customization) =>
+        customization.optionId === ribbonOption?.id &&
+        customization.choiceIds.length > 0
+    ), [customizations, ribbonOption?.id]
   );
 
   // Get non-ribbon, non-size customization options for the general customizer
-  const generalCustomizationOptions = customizationOptions.filter(
-    (option) =>
-      option.type !== "size" &&
-      option.id !== "size" &&
-      option.type !== "ribbon" &&
-      option.id !== "ribbon" &&
-      option.type !== "ribbon_color" &&
-      option.id !== "ribbon_color" &&
-      option.type !== "ribbon_text" &&
-      option.id !== "ribbon_text"
+  const generalCustomizationOptions = useMemo(() =>
+    customizationOptions.filter(
+      (option) =>
+        option.type !== "size" &&
+        option.id !== "size" &&
+        option.type !== "ribbon" &&
+        option.id !== "ribbon" &&
+        option.type !== "ribbon_color" &&
+        option.id !== "ribbon_color" &&
+        option.type !== "ribbon_text" &&
+        option.id !== "ribbon_text"
+    ), [customizationOptions]
   );
 
 
@@ -128,13 +142,13 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setValidationWarnings(validationResult.warnings);
 
     return validationResult;
-  }, [customizations, customizationOptions, selectedSize, locale]);;;;
+  }, [customizations, customizationOptions, selectedSize, locale]);
   // Handle error recovery with graceful fallbacks
   const handleErrorRecovery = useCallback((errorType: string) => {
     // Clear current errors
     setValidationErrors([]);
     setValidationWarnings([]);
-    
+
     // Apply recovery strategies based on error type
     if (errorType === 'size' && sizeOption?.choices && sizeOption.choices.length > 0) {
       // Auto-select first available size
@@ -143,12 +157,12 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       // Remove all ribbon-related customizations
       setCustomizations(prev => prev.filter(c => !c.optionId.includes('ribbon')));
     }
-    
+
     // Re-validate after recovery
     setTimeout(() => {
       validateCustomizations();
     }, 100);
-  }, [sizeOption, validateCustomizations]);;
+  }, [sizeOption, validateCustomizations]);
 
   // Retry validation
   const handleRetryValidation = useCallback(() => {
@@ -195,27 +209,27 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         // Clear validation errors on successful add
         setValidationErrors([]);
         setValidationWarnings([]);
-        
+
         // Show success message
         alert(t("addedToCart"));
       } else {
         console.error("❌ [ProductDetail] Failed to add product to cart:", product.id);
-        
+
         // Show user-friendly error message with recovery option
         const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
         const errorMessage = String(messages.systemError || t("addToCartError"));
-        
+
         if (confirm(`${errorMessage}\n\n${messages.tryAgain}?`)) {
           handleRetryValidation();
         }
       }
     } catch (error) {
       console.error("💥 [ProductDetail] Error adding to cart:", error);
-      
+
       // Handle different types of errors gracefully
       const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
       let errorMessage = String(messages.systemError || t("addToCartError"));
-      
+
       if (error instanceof Error) {
         if (error.message.includes('network') || error.message.includes('connection')) {
           errorMessage = String(messages.networkError);
@@ -223,7 +237,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           errorMessage = String(messages.sessionExpired);
         }
       }
-      
+
       // Show error with recovery options
       if (confirm(`${errorMessage}\n\n${messages.tryAgain}?`)) {
         handleRetryValidation();
@@ -231,7 +245,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     } finally {
       setIsAddingToCart(false);
     }
-  };;;;
+  };
 
   const formatPrice = (price: number) => {
     return tCurrency("format", {

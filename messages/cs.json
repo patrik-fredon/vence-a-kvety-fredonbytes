@@ -118,6 +118,7 @@
     "increaseQuantity": "Zvýšit množství",
     "unitPrice": "Cena za kus",
     "secureCheckout": "Bezpečná objednávka",
+    "noSizesAvailable": "Žádné velikosti nejsou k dispozici",
     "freeShippingOver": "Doprava zdarma nad {amount}",
     "pricing": "Ceník",
     "validation": {

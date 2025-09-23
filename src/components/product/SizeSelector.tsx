@@ -24,6 +24,30 @@ export function SizeSelector({
   const tCurrency = useTranslations("currency");
   const tAccessibility = useTranslations("accessibility");
 
+  // Early return with error handling if sizeOption is invalid
+  if (!sizeOption) {
+    console.warn("⚠️ [SizeSelector] No size option provided");
+    return null;
+  }
+
+  // Ensure choices array exists and has valid data
+  const choices = sizeOption.choices || [];
+  if (choices.length === 0) {
+    console.warn("⚠️ [SizeSelector] No size choices available for option:", sizeOption.id);
+    return (
+      <div className={cn("space-y-4", className)}>
+        <div className="flex items-center gap-2">
+          <h3 className="text-lg font-semibold text-stone-900">
+            {sizeOption.name?.[locale as keyof typeof sizeOption.name] || "Size"}
+          </h3>
+        </div>
+        <div className="text-sm text-stone-500 p-4 bg-stone-50 rounded-lg">
+          {t("noSizesAvailable")}
+        </div>
+      </div>
+    );
+  }
+
   const formatPriceDisplay = (price: number, showSign = false) => {
     const formattedPrice = formatPrice(price, locale as "cs" | "en", showSign);
     return tCurrency("format", {
@@ -52,7 +76,7 @@ export function SizeSelector({
           id={`${sectionId}-title`}
           className="text-lg font-semibold text-stone-900"
         >
-          {sizeOption.name[locale as keyof typeof sizeOption.name]}
+          {sizeOption.name?.[locale as keyof typeof sizeOption.name] || "Size"}
         </h3>
         {sizeOption.required && (
           <span
@@ -72,7 +96,7 @@ export function SizeSelector({
         aria-required={sizeOption.required}
       >
         <legend className="sr-only">
-          {sizeOption.name[locale as keyof typeof sizeOption.name]}
+          {sizeOption.name?.[locale as keyof typeof sizeOption.name] || "Size"}
           {sizeOption.required && ` (${tAccessibility("required")})`}
         </legend>
 
@@ -82,7 +106,7 @@ export function SizeSelector({
           role="radiogroup"
           aria-labelledby={`${sectionId}-title`}
         >
-          {sizeOption.choices.map((choice, index) => {
+          {choices.map((choice, index) => {
             const isSelected = selectedSize === choice.id;
             const priceModifier = getPriceModifierDisplay(choice.priceModifier);
             const choiceId = `${sectionId}-choice-${choice.id}`;
@@ -119,7 +143,7 @@ export function SizeSelector({
                 aria-describedby={`${choiceId}-description`}
                 aria-labelledby={`${choiceId}-label`}
                 aria-posinset={index + 1}
-                aria-setsize={sizeOption.choices.length}
+                aria-setsize={choices.length}
                 tabIndex={isSelected ? 0 : -1}
               >
                 {/* Selection indicator */}
@@ -140,63 +164,55 @@ export function SizeSelector({
                   </div>
                 </div>
 
-                {/* Size label */}
+                {/* Size information */}
                 <div className="pr-8">
-                  <div
-                    id={`${choiceId}-label`}
-                    className="font-semibold text-stone-900 mb-1"
-                  >
-                    {choice.label[locale as keyof typeof choice.label]}
+                  <div id={`${choiceId}-label`} className="font-semibold text-stone-900">
+                    {choice.label?.[locale as keyof typeof choice.label] || choice.id}
                   </div>
 
-                  {/* Price display */}
-                  <div className="space-y-1">
+                  <div className="mt-2 space-y-1">
                     <div className="text-lg font-bold text-stone-900">
                       {getDisplayPrice(choice)}
                     </div>
                     {priceModifier && (
                       <div className="text-sm text-stone-600">
-                        ({priceModifier})
+                        {priceModifier}
                       </div>
                     )}
                   </div>
+
+                  {!choice.available && (
+                    <div className="text-sm text-red-600 mt-2">
+                      {t("unavailable")}
+                    </div>
+                  )}
                 </div>
 
                 {/* Screen reader description */}
                 <div id={`${choiceId}-description`} className="sr-only">
-                  {t("sizeOption", {
-                    size: choice.label[locale as keyof typeof choice.label],
-                    price: getDisplayPrice(choice),
-                    modifier: priceModifier || "",
-                  })}
-                  {!choice.available && ` - ${tAccessibility("unavailable")}`}
+                  {choice.label?.[locale as keyof typeof choice.label] || choice.id}
+                  , {getDisplayPrice(choice)}
+                  {priceModifier && `, ${priceModifier}`}
+                  {!choice.available && `, ${t("unavailable")}`}
                   {isSelected && ` - ${tAccessibility("selected")}`}
                 </div>
               </button>
             );
           })}
         </div>
-      </fieldset>
 
-      {/* Validation message for required selection */}
-      {hasValidationError && (
-        <div
-          id={`${sectionId}-error`}
-          className="flex items-start gap-2 p-3 bg-amber-50 border border-amber-200 rounded-md"
-          role="alert"
-          aria-live="polite"
-        >
+        {/* Validation error message */}
+        {hasValidationError && (
           <div
-            className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5"
-            aria-hidden="true"
+            id={`${sectionId}-error`}
+            className="mt-3 text-sm text-red-600"
+            role="alert"
+            aria-live="polite"
           >
-            <div className="w-2 h-2 bg-amber-600 rounded-full" />
-          </div>
-          <p className="text-sm text-amber-800">
             {t("validation.sizeRequired")}
-          </p>
-        </div>
-      )}
+          </div>
+        )}
+      </fieldset>
     </div>
   );
 }
