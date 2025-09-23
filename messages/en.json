@@ -578,7 +578,10 @@
     "quickLinks": "Quick links",
     "legalInfo": "Legal information",
     "mainNavigation": "Main navigation",
-    "mobileNavigation": "Mobile navigation"
+    "mobileNavigation": "Mobile navigation",
+    "selected": "selected",
+    "unavailable": "unavailable",
+    "charactersOf": "characters of"
   },
   "admin": {
     "overview": "Overview",

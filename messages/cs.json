@@ -578,7 +578,10 @@
     "quickLinks": "Rychlé odkazy",
     "legalInfo": "Právní informace",
     "mainNavigation": "Hlavní navigace",
-    "mobileNavigation": "Mobilní navigace"
+    "mobileNavigation": "Mobilní navigace",
+    "selected": "vybráno",
+    "unavailable": "nedostupné",
+    "charactersOf": "znaků z"
   },
   "admin": {
     "overview": "Přehled",
