@@ -8,6 +8,7 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { useCart } from "@/lib/cart/context";
 import { cn } from "@/lib/utils";
 import { calculateFinalPrice } from "@/lib/utils/price-calculator";
+import { validateWreathConfiguration } from "@/lib/validation/wreath";
 import type { Customization, Product } from "@/types/product";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ProductInfo } from "./ProductInfo";
@@ -29,6 +30,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [finalPrice, setFinalPrice] = useState(product.basePrice);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
@@ -108,8 +110,9 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       const newPrice = calculatePrice(customizations, sizeId);
       setFinalPrice(newPrice);
 
-      // Clear validation errors when size changes
+      // Clear validation errors and warnings when size changes
       setValidationErrors([]);
+      setValidationWarnings([]);
     },
     [customizations, calculatePrice]
   );
@@ -121,98 +124,27 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       const newPrice = calculatePrice(newCustomizations, selectedSize);
       setFinalPrice(newPrice);
 
-      // Clear validation errors when customizations change
+      // Clear validation errors and warnings when customizations change
       setValidationErrors([]);
+      setValidationWarnings([]);
     },
     [calculatePrice, selectedSize]
   );
 
-  // Validate customizations including size
-  const validateCustomizations = useCallback((): string[] => {
-    const errors: string[] = [];
+  // Enhanced validation using wreath-specific validation system
+  const validateCustomizations = useCallback(() => {
+    const validationResult = validateWreathConfiguration(
+      customizations,
+      customizationOptions,
+      selectedSize,
+      { locale }
+    );
 
-    // Validate size selection first
-    if (sizeOption?.required && !selectedSize) {
-      errors.push(
-        t("validation.sizeRequired", {
-          option: sizeOption.name[locale as keyof typeof sizeOption.name],
-        })
-      );
-    }
+    // Update warnings state
+    setValidationWarnings(validationResult.warnings);
 
-    // Validate ribbon option
-    if (ribbonOption) {
-      const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption.id);
-
-      if (ribbonOption.required && (!ribbonCustomization || ribbonCustomization.choiceIds.length === 0)) {
-        errors.push(
-          t("validation.required", {
-            option: ribbonOption.name[locale as keyof typeof ribbonOption.name],
-          })
-        );
-      }
-
-      // If ribbon is selected, validate ribbon color and text
-      if (isRibbonSelected) {
-        if (ribbonColorOption?.required) {
-          const colorCustomization = customizations.find((c) => c.optionId === ribbonColorOption.id);
-          if (!colorCustomization || colorCustomization.choiceIds.length === 0) {
-            errors.push(
-              t("validation.conditionalRequired", {
-                option: ribbonColorOption.name[locale as keyof typeof ribbonColorOption.name],
-              })
-            );
-          }
-        }
-
-        if (ribbonTextOption?.required) {
-          const textCustomization = customizations.find((c) => c.optionId === ribbonTextOption.id);
-          if (!textCustomization || (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)) {
-            errors.push(
-              t("validation.conditionalRequired", {
-                option: ribbonTextOption.name[locale as keyof typeof ribbonTextOption.name],
-              })
-            );
-          }
-        }
-      }
-    }
-
-    // Validate other customizations (excluding size and ribbon-related)
-    generalCustomizationOptions.forEach((option) => {
-      const customization = customizations.find((c) => c.optionId === option.id);
-
-      if (option.required && (!customization || customization.choiceIds.length === 0)) {
-        errors.push(
-          t("validation.required", {
-            option: option.name[locale as keyof typeof option.name],
-          })
-        );
-      }
-
-      if (customization) {
-        if (option.minSelections && customization.choiceIds.length < option.minSelections) {
-          errors.push(
-            t("validation.minSelections", {
-              option: option.name[locale as keyof typeof option.name],
-              min: option.minSelections,
-            })
-          );
-        }
-
-        if (option.maxSelections && customization.choiceIds.length > option.maxSelections) {
-          errors.push(
-            t("validation.maxSelections", {
-              option: option.name[locale as keyof typeof option.name],
-              max: option.maxSelections,
-            })
-          );
-        }
-      }
-    });
-
-    return errors;
-  }, [customizations, generalCustomizationOptions, sizeOption, selectedSize, locale, t, ribbonOption, ribbonColorOption, ribbonTextOption, isRibbonSelected]);
+    return validationResult;
+  }, [customizations, customizationOptions, selectedSize, locale]);
 
   // Handle quantity change
   const handleQuantityChange = (newQuantity: number) => {
@@ -223,10 +155,10 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
   // Handle add to cart
   const handleAddToCart = async () => {
-    const errors = validateCustomizations();
+    const validationResult = validateCustomizations();
 
-    if (errors.length > 0) {
-      setValidationErrors(errors);
+    if (!validationResult.isValid) {
+      setValidationErrors(validationResult.errors);
       return;
     }
 
@@ -370,6 +302,29 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                     <ul className="text-sm text-red-700 space-y-1">
                       {validationErrors.map((error, index) => (
                         <li key={index}>• {error}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Validation Warnings */}
+          {validationWarnings.length > 0 && (
+            <Card className="bg-amber-50 border-amber-200">
+              <CardContent className="py-4">
+                <div className="flex items-start gap-3">
+                  <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
+                    <div className="w-2 h-2 bg-amber-600 rounded-full" />
+                  </div>
+                  <div className="flex-1">
+                    <h4 className="text-sm font-medium text-amber-800 mb-2">
+                      {t("validation.warnings")}
+                    </h4>
+                    <ul className="text-sm text-amber-700 space-y-1">
+                      {validationWarnings.map((warning, index) => (
+                        <li key={index}>• {warning}</li>
                       ))}
                     </ul>
                   </div>

@@ -121,11 +121,20 @@
     "pricing": "Pricing",
     "validation": {
       "title": "Please complete the following:",
+      "warnings": "Warnings:",
       "required": "{option} is required",
       "minSelections": "{option} requires at least {min} selections (currently {current})",
       "maxSelections": "{option} allows maximum {max} selections",
       "conditionalRequired": "{option} is required when ribbon is selected",
-      "sizeRequired": "Please select a size before adding to cart"
+      "sizeRequired": "Please select a size before adding to cart",
+      "sizeInvalid": "Selected size is not available",
+      "ribbonColorRequired": "Ribbon color selection is required when adding ribbon",
+      "ribbonTextRequired": "Ribbon text selection is required when adding ribbon",
+      "customTextEmpty": "Custom text cannot be empty",
+      "customTextTooLong": "Custom text can have maximum 50 characters",
+      "customTextTooShort": "Custom text must have at least 2 characters",
+      "customTextInvalid": "Text contains invalid characters or content",
+      "customTextWarning": "Text is approaching maximum length"
     },
     "customTextPlaceholder": "Enter your custom text...",
     "customTextHelp": "Custom text for ribbon",

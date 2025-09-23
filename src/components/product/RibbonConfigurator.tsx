@@ -2,9 +2,10 @@
 
 import { CheckIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { useCallback } from "react";
+import { useCallback, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils/price-calculator";
+import { validateCustomRibbonText } from "@/lib/validation/wreath";
 import type {
   Customization,
   CustomizationChoice,
@@ -40,6 +41,10 @@ export function RibbonConfigurator({
   className,
 }: RibbonConfiguratorProps) {
   const t = useTranslations("product");
+  const [customTextValidation, setCustomTextValidation] = useState<{
+    errors: string[];
+    warnings: string[];
+  }>({ errors: [], warnings: [] });
 
   const formatPriceModifier = (price: number) => {
     return formatPrice(price, locale as "cs" | "en", true);
@@ -158,6 +163,29 @@ export function RibbonConfigurator({
     [getCurrentCustomization, handleChoiceSelection, locale, formatPriceModifier]
   );
 
+  // Handle custom text validation
+  const handleCustomTextValidation = useCallback(
+    (text: string) => {
+      const validation = validateCustomRibbonText(text, locale);
+      setCustomTextValidation(validation);
+    },
+    [locale]
+  );
+
+  // Handle custom value change with validation
+  const handleCustomValueChangeWithValidation = useCallback(
+    (optionId: string, value: string) => {
+      handleCustomValueChange(optionId, value);
+      // Validate the text in real-time
+      if (value.trim()) {
+        handleCustomTextValidation(value);
+      } else {
+        setCustomTextValidation({ errors: [], warnings: [] });
+      }
+    },
+    [handleCustomValueChange, handleCustomTextValidation]
+  );
+
   // Render custom text input for choices that allow custom input
   const renderCustomTextInput = useCallback(
     (option: CustomizationOption, choice: CustomizationChoice) => {
@@ -169,25 +197,70 @@ export function RibbonConfigurator({
         return null;
       }
 
+      const hasErrors = customTextValidation.errors.length > 0;
+      const hasWarnings = customTextValidation.warnings.length > 0;
+
       return (
         <div className="mt-3 space-y-2">
           <textarea
             value={value}
-            onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
+            onChange={(e) => handleCustomValueChangeWithValidation(option.id, e.target.value)}
             placeholder={t("customTextPlaceholder")}
-            className="w-full p-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 resize-none"
+            className={cn(
+              "w-full p-3 border rounded-lg focus:ring-2 resize-none transition-colors",
+              hasErrors
+                ? "border-red-300 focus:ring-red-200 focus:border-red-500"
+                : hasWarnings
+                  ? "border-amber-300 focus:ring-amber-200 focus:border-amber-500"
+                  : "border-neutral-300 focus:ring-primary-200 focus:border-primary-500"
+            )}
             rows={2}
             maxLength={choice.maxLength || 50}
             aria-label={t("customTextAriaLabel")}
+            aria-invalid={hasErrors}
+            aria-describedby={hasErrors || hasWarnings ? `${option.id}-validation` : undefined}
           />
-          <div className="flex justify-between text-xs text-neutral-500">
-            <span>{t("customTextHelp")}</span>
-            <span>{value.length}/{choice.maxLength || 50}</span>
+
+          {/* Character count and validation messages */}
+          <div className="space-y-1">
+            <div className="flex justify-between text-xs text-neutral-500">
+              <span>{t("customTextHelp")}</span>
+              <span className={cn(
+                value.length > 40 ? "text-amber-600" : "",
+                value.length >= 50 ? "text-red-600 font-medium" : ""
+              )}>
+                {value.length}/{choice.maxLength || 50}
+              </span>
+            </div>
+
+            {/* Validation errors */}
+            {hasErrors && (
+              <div id={`${option.id}-validation`} className="text-xs text-red-600 space-y-1">
+                {customTextValidation.errors.map((error, index) => (
+                  <div key={index} className="flex items-start gap-1">
+                    <span className="text-red-500 mt-0.5">•</span>
+                    <span>{error}</span>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Validation warnings */}
+            {hasWarnings && !hasErrors && (
+              <div id={`${option.id}-validation`} className="text-xs text-amber-600 space-y-1">
+                {customTextValidation.warnings.map((warning, index) => (
+                  <div key={index} className="flex items-start gap-1">
+                    <span className="text-amber-500 mt-0.5">⚠</span>
+                    <span>{warning}</span>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
         </div>
       );
     },
-    [getCurrentCustomization, handleCustomValueChange, t]
+    [getCurrentCustomization, handleCustomValueChangeWithValidation, t, customTextValidation]
   );
 
   // Don't render if not visible

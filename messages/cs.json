@@ -121,11 +121,20 @@
     "pricing": "Ceník",
     "validation": {
       "title": "Prosím dokončete následující:",
+      "warnings": "Upozornění:",
       "required": "{option} je povinné",
       "minSelections": "{option} vyžaduje alespoň {min} výběrů (aktuálně {current})",
       "maxSelections": "{option} umožňuje maximálně {max} výběrů",
       "conditionalRequired": "{option} je povinné při výběru stuhy",
-      "sizeRequired": "Prosím vyberte velikost před přidáním do košíku"
+      "sizeRequired": "Prosím vyberte velikost před přidáním do košíku",
+      "sizeInvalid": "Vybraná velikost není dostupná",
+      "ribbonColorRequired": "Při výběru stuhy je nutné zvolit barvu",
+      "ribbonTextRequired": "Při výběru stuhy je nutné zvolit text",
+      "customTextEmpty": "Vlastní text nemůže být prázdný",
+      "customTextTooLong": "Vlastní text může mít maximálně 50 znaků",
+      "customTextTooShort": "Vlastní text musí mít alespoň 2 znaky",
+      "customTextInvalid": "Text obsahuje nepovolené znaky nebo obsah",
+      "customTextWarning": "Text se blíží maximální délce"
     },
     "customTextPlaceholder": "Zadejte vlastní text...",
     "customTextHelp": "Vlastní text na stuhu",

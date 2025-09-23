@@ -2,6 +2,11 @@ import { randomUUID } from "crypto";
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
+import {
+  validateCartOperation,
+  createValidationErrorResponse,
+  sanitizeCustomizations
+} from "@/lib/validation/api-validation";
 import type { AddToCartRequest } from "@/types/cart";
 
 /**
@@ -21,16 +26,9 @@ export async function POST(request: NextRequest) {
       customizations: body.customizations?.length || 0,
     });
 
-    // Validate request body
-    if (!(body.productId && body.quantity) || body.quantity <= 0) {
-      console.log("❌ [API] Invalid request body");
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Invalid product ID or quantity",
-        },
-        { status: 400 }
-      );
+    // Sanitize customizations if present
+    if (body.customizations) {
+      body.customizations = sanitizeCustomizations(body.customizations);
     }
 
     // Get or create session ID for guest users
@@ -39,10 +37,10 @@ export async function POST(request: NextRequest) {
       sessionId = randomUUID();
     }
 
-    // Check if product exists and get price
+    // Get full product data for validation
     const { data: product, error: productError } = await supabase
       .from("products")
-      .select("id, active, availability, base_price")
+      .select("*")
       .eq("id", body.productId)
       .single();
 
@@ -56,24 +54,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    if (!product.active) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Product is not available",
-        },
-        { status: 400 }
-      );
-    }
+    // Comprehensive validation using the new validation system
+    const validationResult = validateCartOperation(
+      body.productId,
+      body.quantity,
+      product,
+      body.customizations
+    );
 
-    if (!product.base_price) {
-      return NextResponse.json(
-        {
-          success: false,
-          error: "Product price not available",
-        },
-        { status: 400 }
-      );
+    if (!validationResult.isValid) {
+      console.log("❌ [API] Validation failed:", validationResult.errors);
+      return createValidationErrorResponse(validationResult, "Cart operation validation failed");
     }
 
     // Check if item already exists in cart
