@@ -100,21 +100,7 @@ export function ProductCard({
                 "w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md"
             )}
           >
-            {/* Favorite Button */}
-            <button
-              onClick={handleToggleFavorite}
-              className={cn(
-                "absolute top-2 right-2 z-10 p-1.5 sm:p-2 rounded-full transition-all duration-200",
-                "bg-white/80 hover:bg-white shadow-sm hover:shadow-md",
-                "focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-1",
-                isFavorite ? "text-red-500" : "text-stone-400 hover:text-red-500"
-              )}
-              aria-label={isFavorite ? t("removeFromFavorites") : t("addToFavorites")}
-            >
-              <span className={cn(viewMode === "grid" ? "text-base sm:text-lg" : "text-sm")}>
-                {isFavorite ? "❤️" : "🤍"}
-              </span>
-            </button>
+
 
             {/* Featured Badge */}
             {featured && (
