@@ -146,7 +146,8 @@
     "customTextAriaLabel": "Vstupní pole pro vlastní text na stuhu",
     "ribbonConfiguration": "Konfigurace stuhy",
     "required": "Povinné",
-    "sizeOption": "Velikost: {size}, Cena: {price} {modifier}"
+    "sizeOption": "Velikost: {size}, Cena: {price} {modifier}",
+    "selectSizeFirst": "Nejprve vyberte velikost"
   },
   "cart": {
     "title": "Nákupní košík",

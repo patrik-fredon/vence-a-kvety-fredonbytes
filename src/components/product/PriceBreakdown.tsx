@@ -6,18 +6,18 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 
 interface PriceBreakdownProps {
-  basePrice: number;
-  breakdown: CustomizationPriceBreakdown[];
-  totalPrice: number;
+  basePrice?: number;
+  breakdown?: CustomizationPriceBreakdown[];
+  totalPrice?: number;
   locale: string;
   className?: string;
   showDetails?: boolean;
 }
 
 export function PriceBreakdown({
-  basePrice,
-  breakdown,
-  totalPrice,
+  basePrice = 0,
+  breakdown = [], // Add default empty array
+  totalPrice = 0,
   locale,
   className,
   showDetails = false
@@ -25,13 +25,19 @@ export function PriceBreakdown({
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
 
-  const formatPrice = (price: number) => {
+  const formatPrice = (price: number | undefined | null) => {
+    if (price === undefined || price === null || isNaN(price)) {
+      return tCurrency("format", {
+        amount: "0",
+      });
+    }
     return tCurrency("format", {
       amount: price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US"),
     });
   };
 
-  const totalModifications = breakdown.reduce((sum, item) => sum + item.totalModifier, 0);
+  // Safe check for breakdown array
+  const totalModifications = breakdown?.reduce((sum, item) => sum + item.totalModifier, 0) || 0;
   const hasModifications = totalModifications !== 0;
 
   return (
@@ -45,7 +51,7 @@ export function PriceBreakdown({
           </div>
 
           {/* Customization Breakdown */}
-          {hasModifications && showDetails && (
+          {hasModifications && showDetails && breakdown && (
             <div className="space-y-2 border-t border-stone-200 pt-3">
               <div className="text-xs font-medium text-stone-500 uppercase tracking-wide">
                 {t("customizations")}
@@ -66,7 +72,7 @@ export function PriceBreakdown({
                   </div>
 
                   {/* Choice Details */}
-                  {item.choices.map((choice) => (
+                  {item.choices?.map((choice) => (
                     <div key={choice.choiceId} className="flex items-center justify-between ml-4">
                       <span className="text-xs text-stone-500">
                         {choice.label[locale as keyof typeof choice.label]}
@@ -90,24 +96,10 @@ export function PriceBreakdown({
             </div>
           )}
 
-          {/* Total Modifications Summary (when not showing details) */}
-          {hasModifications && !showDetails && (
-            <div className="flex items-center justify-between border-t border-stone-200 pt-3">
-              <span className="text-sm text-stone-600">{t("customizations")}</span>
-              <span className={cn(
-                "text-sm font-medium",
-                totalModifications > 0 ? "text-amber-600" :
-                  totalModifications < 0 ? "text-green-600" : "text-stone-500"
-              )}>
-                {totalModifications > 0 ? "+" : ""}{formatPrice(totalModifications)}
-              </span>
-            </div>
-          )}
-
           {/* Total Price */}
-          <div className="flex items-center justify-between border-t border-stone-300 pt-3">
+          <div className="flex items-center justify-between border-t border-stone-200 pt-3">
             <span className="text-base font-semibold text-stone-900">{t("totalPrice")}</span>
-            <span className="text-lg font-bold text-stone-900">{formatPrice(totalPrice)}</span>
+            <span className="text-base font-bold text-amber-600">{formatPrice(totalPrice)}</span>
           </div>
         </div>
       </CardContent>

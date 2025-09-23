@@ -82,13 +82,17 @@ export function Header({ locale }: HeaderProps) {
           {/* Top bar - Quick navigation */}
           <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b ">
             <div className="flex items-center gap-2">
-              {/* Logo with enhanced typography */}
+              {/* Logo with SVG */}
               <Link
                 href={`/${locale}`}
-                className="text-2xl font-light tracking-wide text-stone-900 hover:text-stone-700 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
+                className="flex items-center hover:opacity-80 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
                 aria-label={t("home")}
               >
-                POHŘEBNÍ <span className="text-teal-700 font-medium">VĚNCE</span>
+                <img
+                  src="/logo.svg"
+                  alt="Logo"
+                  className="h-8 w-auto sm:h-10 md:h-12"
+                />
               </Link>
             </div>
 
@@ -109,8 +113,6 @@ export function Header({ locale }: HeaderProps) {
 
           {/* Main header */}
           <div className="flex items-center justify-center py-4">
-            {/* Logo with enhanced typography */}
-
             {/* Desktop Navigation with enhanced styling */}
             <nav
               id="main-navigation"

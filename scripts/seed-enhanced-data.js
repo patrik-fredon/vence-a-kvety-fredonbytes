@@ -537,12 +537,12 @@ const PRODUCTS_DATA = [
     base_price: 3500.0,
     images: [
       {
-        url: "/funeral-wreaths-and-floral-arrangement-025.png",
+        url: "/funeral-wreaths-and-floral-arrangement-001.png",
         alt: "Luxusní prémiový věnec",
         primary: true,
       },
       {
-        url: "/funeral-wreaths-and-floral-arrangement-026.png",
+        url: "/funeral-wreaths-and-floral-arrangement-003.png",
         alt: "Detail prémiových květin",
         primary: false,
       },
@@ -659,6 +659,8 @@ const STANDARDIZED_CUSTOMIZATION_OPTIONS = [
     type: "ribbon",
     name: { cs: "Stuha", en: "Ribbon" },
     required: true,
+    minSelections: 1,
+    maxSelections: 1,
     choices: [
       {
         id: "ribbon_yes",

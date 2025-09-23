@@ -85,8 +85,6 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "minSelections": 1,
-      "maxSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
@@ -171,8 +169,6 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "minSelections": 1,
-      "maxSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
@@ -256,8 +252,6 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "minSelections": 1,
-      "maxSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
@@ -342,8 +336,6 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "minSelections": 1,
-      "maxSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
@@ -427,8 +419,6 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "minSelections": 1,
-      "maxSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
@@ -513,8 +503,6 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "minSelections": 1,
-      "maxSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
@@ -599,8 +587,6 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
-      "minSelections": 1,
-      "maxSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},

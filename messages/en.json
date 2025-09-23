@@ -146,7 +146,8 @@
     "customTextAriaLabel": "Custom text input for ribbon",
     "ribbonConfiguration": "Ribbon Configuration",
     "required": "Required",
-    "sizeOption": "Size: {size}, Price: {price} {modifier}"
+    "sizeOption": "Size: {size}, Price: {price} {modifier}",
+    "selectSizeFirst": "Please select a size first"
   },
   "cart": {
     "title": "Shopping Cart",

@@ -1,11 +1,12 @@
 "use client";
 
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+
 import { useTranslations } from "next-intl";
 import { useCallback, useState, useMemo, useRef } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCart } from "@/lib/cart/context";
 import { cn } from "@/lib/utils";
 import { useAnimationSequence } from "@/components/cart/hooks";
@@ -84,14 +85,15 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     ) || null, [customizationOptions]
   );
 
-  // Check if ribbon is selected
-  const isRibbonSelected = useMemo(() =>
-    customizations.some(
-      (customization) =>
-        customization.optionId === ribbonOption?.id &&
-        customization.choiceIds.length > 0
-    ), [customizations, ribbonOption?.id]
-  );
+  // FIXED: Check if ribbon is selected - specifically check for "ribbon_yes" choice
+  const isRibbonSelected = useMemo(() => {
+    const ribbonCustomization = customizations.find(
+      (customization) => customization.optionId === ribbonOption?.id
+    );
+
+    // Only return true if "ribbon_yes" is specifically selected
+    return ribbonCustomization?.choiceIds.includes("ribbon_yes") || false;
+  }, [customizations, ribbonOption?.id]);
 
   // Get non-ribbon, non-size customization options for the general customizer
   const generalCustomizationOptions = useMemo(() =>
@@ -349,15 +351,17 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                     onCustomizationChange={handleCustomizationChange}
                   />
 
-                  {/* Ribbon Configuration - appears when ribbon is selected */}
-                  <LazyRibbonConfigurator
-                    isVisible={isRibbonSelected}
-                    colorOption={ribbonColorOption}
-                    textOption={ribbonTextOption}
-                    customizations={customizations}
-                    onCustomizationChange={handleCustomizationChange}
-                    locale={locale}
-                  />
+                  {/* Ribbon Configuration - FIXED: Only appears when "ribbon_yes" is specifically selected */}
+                  {isRibbonSelected && (
+                    <LazyRibbonConfigurator
+                      isVisible={isRibbonSelected}
+                      colorOption={ribbonColorOption}
+                      textOption={ribbonTextOption}
+                      customizations={customizations}
+                      onCustomizationChange={handleCustomizationChange}
+                      locale={locale}
+                    />
+                  )}
                 </div>
               </CardContent>
             </Card>
@@ -436,6 +440,17 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           Remove Ribbon
                         </Button>
                       )}
+
+                      {validationWarnings.length > 0 && (
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setValidationWarnings([])}
+                          className="text-xs bg-white border-amber-300 text-amber-700 hover:bg-amber-50"
+                        >
+                          Dismiss Warnings
+                        </Button>
+                      )}
                     </div>
                   </div>
                 </div>
@@ -443,7 +458,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
-          {/* Validation Warnings */}
+          {/* Validation Warnings Display */}
           {validationWarnings.length > 0 && (
             <Card className="bg-amber-50 border-amber-200">
               <CardContent className="py-4">
@@ -451,13 +466,16 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                   <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
                     <div className="w-2 h-2 bg-amber-600 rounded-full" />
                   </div>
-                  <div className="flex-1">
-                    <h4 className="text-sm font-medium text-amber-800 mb-2">
+                  <div className="flex-1 space-y-3">
+                    <h4 className="text-sm font-medium text-amber-800">
                       {t("validation.warnings")}
                     </h4>
-                    <div className="space-y-1">
+
+                    <div className="space-y-2">
                       {validationWarnings.map((warning, index) => (
-                        <p key={index} className="text-sm text-amber-700">• {warning}</p>
+                        <div key={index} className="flex items-start justify-between gap-3">
+                          <p className="text-sm text-amber-700 flex-1">• {warning}</p>
+                        </div>
                       ))}
                     </div>
                   </div>
@@ -466,94 +484,80 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
-          {/* Quantity and Price */}
+          {/* Price Breakdown */}
           <Card>
             <CardContent className="py-6">
-              <div className="space-y-4">
-                {/* Quantity Selector */}
-                <div className="flex items-center justify-between">
-                  <label className="text-sm font-medium text-stone-700">
-                    {t("quantity")}
-                  </label>
-                  <div className="flex items-center gap-3">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleQuantityChange(quantity - 1)}
-                      disabled={quantity <= 1}
-                      className="w-8 h-8 p-0"
-                    >
-                      -
-                    </Button>
-                    <span className="w-8 text-center font-medium">{quantity}</span>
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => handleQuantityChange(quantity + 1)}
-                      disabled={quantity >= (product.availability.maxOrderQuantity || 10)}
-                      className="w-8 h-8 p-0"
-                    >
-                      +
-                    </Button>
-                  </div>
-                </div>
-
-                {/* Price Breakdown */}
-                <PriceBreakdown
-                  basePrice={product.basePrice}
-                  breakdown={priceCalculation.breakdown}
-                  totalPrice={priceCalculation.totalPrice}
-                  locale={locale}
-                />
-
-                {/* Total Price */}
-                <div className="flex items-center justify-between pt-4 border-t border-stone-200">
-                  <span className="text-lg font-semibold text-stone-800">
-                    {t("totalPrice")}
-                  </span>
-                  <span className="text-2xl font-bold text-stone-800">
-                    {formatPrice(totalPrice)}
-                  </span>
-                </div>
-              </div>
+              <PriceBreakdown
+                basePrice={product.basePrice}
+                breakdown={priceCalculation.breakdown}
+                totalPrice={priceCalculation.totalPrice}
+                locale={locale}
+                showDetails={true}
+              />
             </CardContent>
           </Card>
 
-          {/* Add to Cart Button */}
-          <Button
-            ref={addToCartButtonRef}
-            onClick={handleAddToCart}
-            disabled={!product.availability?.inStock || isAddingToCart || validationErrors.length > 0}
-            loading={isAddingToCart}
-            className="w-full py-4 text-lg"
-            size="lg"
-            icon={<ShoppingCartIcon className="w-5 h-5" />}
-            iconPosition="left"
-          >
-            {isAddingToCart ? t("addingToCart") : t("addToCart")}
-          </Button>
-
-          {/* Delivery Information */}
-          <Card className="bg-stone-50">
-            <CardContent className="py-4">
-              <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-green-100 flex items-center justify-center">
-                  <svg className="w-4 h-4 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-sm font-medium text-stone-800">
-                    {(product.availability?.leadTimeHours || 24) <= 12
-                      ? (locale === "cs" ? "Dodání tentýž den" : "Same-day delivery")
-                      : (locale === "cs" ? "Dodání následující den" : "Next-day delivery")
-                    }
-                  </p>
-                  <p className="text-xs text-stone-600">
-                    {locale === "cs" ? "Pro objednávky do 14:00" : "For orders before 2 PM"}
-                  </p>
+          {/* Quantity and Add to Cart */}
+          <Card>
+            <CardContent className="py-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <label className="text-sm font-medium text-stone-700">
+                  {t("quantity")}
+                </label>
+                <div className="flex items-center gap-3">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleQuantityChange(quantity - 1)}
+                    disabled={quantity <= 1}
+                    className="w-8 h-8 p-0"
+                  >
+                    -
+                  </Button>
+                  <span className="w-8 text-center font-medium">{quantity}</span>
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => handleQuantityChange(quantity + 1)}
+                    disabled={quantity >= (product.availability.maxOrderQuantity || 10)}
+                    className="w-8 h-8 p-0"
+                  >
+                    +
+                  </Button>
                 </div>
               </div>
+
+              <div className="flex items-center justify-between pt-4 border-t border-stone-200">
+                <div className="text-right">
+                  <div className="text-sm text-stone-600">{t("totalPrice")}</div>
+                  <div className="text-2xl font-bold text-stone-900">
+                    {formatPrice(totalPrice)}
+                  </div>
+                </div>
+              </div>
+
+              <Button
+                ref={addToCartButtonRef}
+                onClick={handleAddToCart}
+                disabled={isAddingToCart || !selectedSize}
+                className="w-full"
+                size="lg"
+              >
+                {isAddingToCart ? (
+                  <>
+                    <LoadingSpinner size="sm" className="mr-2" />
+                    {t("addingToCart")}
+                  </>
+                ) : (
+                  t("addToCart")
+                )}
+              </Button>
+
+              {!selectedSize && (
+                <p className="text-sm text-red-600 text-center">
+                  {t("selectSizeFirst")}
+                </p>
+              )}
             </CardContent>
           </Card>
         </div>

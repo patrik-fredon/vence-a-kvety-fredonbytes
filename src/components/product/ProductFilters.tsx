@@ -138,9 +138,9 @@ export function ProductFilters({
         </Button>
       </div>
 
-      {/* Search & Filters Panel - Collapsible */}
+      {/* Search & Filters Panel - Collapsible with matching teal background */}
       {isSearchAndFiltersVisible && (
-        <div className="space-y-6 p-4 bg-stone-50 rounded-lg border border-stone-200">
+        <div className="space-y-6 p-4 bg-teal-900 rounded-lg border border-teal-700">
           {/* Close Button */}
           <div className="flex items-center justify-between">
             <h3 className="text-sm font-medium text-amber-100">{t("searchAndFilters")}</h3>
@@ -148,7 +148,7 @@ export function ProductFilters({
               variant="ghost"
               size="sm"
               onClick={() => setIsSearchAndFiltersVisible(false)}
-              className="text-amber-100 hover:text-stone-700"
+              className="text-amber-100 hover:text-amber-200 hover:bg-teal-800"
             >
               ✕
             </Button>
@@ -156,7 +156,7 @@ export function ProductFilters({
 
           {/* Search Input */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">
+            <label className="block text-sm font-medium text-amber-100 mb-2">
               {tCommon("search")}
             </label>
             <Input
@@ -164,11 +164,11 @@ export function ProductFilters({
               placeholder={t("searchPlaceholder")}
               value={searchValue}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full"
+              className="w-full bg-white text-stone-900"
               autoFocus
             />
             {searchValue && (
-              <div className="mt-2 text-xs text-stone-600">
+              <div className="mt-2 text-xs text-amber-200">
                 {t("searchingFor", { query: searchValue })}
               </div>
             )}
@@ -176,13 +176,13 @@ export function ProductFilters({
 
           {/* Category Filter */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">
+            <label className="block text-sm font-medium text-amber-100 mb-2">
               {t("filterByCategory")}
             </label>
             <select
               value={localFilters.categoryId || ""}
               onChange={(e) => handleFilterChange("categoryId", e.target.value || undefined)}
-              className="w-full px-3 py-2 border border-neutral-300 rounded-md focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-transparent"
+              className="w-full px-3 py-2 border border-teal-600 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-400 focus:border-transparent bg-white text-stone-900"
             >
               <option value="">{t("allCategories")}</option>
               {categories.map((category) => (
@@ -195,7 +195,7 @@ export function ProductFilters({
 
           {/* Price Range */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">
+            <label className="block text-sm font-medium text-amber-100 mb-2">
               {t("filterByPrice")}
             </label>
             <div className="grid grid-cols-2 gap-2">
@@ -210,6 +210,7 @@ export function ProductFilters({
                   )
                 }
                 min="0"
+                className="bg-white text-stone-900"
               />
               <Input
                 type="number"
@@ -222,13 +223,14 @@ export function ProductFilters({
                   )
                 }
                 min="0"
+                className="bg-white text-stone-900"
               />
             </div>
           </div>
 
           {/* Availability Filters */}
           <div>
-            <label className="block text-sm font-medium text-neutral-700 mb-2">
+            <label className="block text-sm font-medium text-amber-100 mb-2">
               {t("availability")}
             </label>
             <div className="space-y-2">
@@ -237,25 +239,29 @@ export function ProductFilters({
                   type="checkbox"
                   checked={localFilters.inStock}
                   onChange={(e) => handleFilterChange("inStock", e.target.checked || undefined)}
-                  className="mr-2 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                  className="mr-2 rounded border-teal-600 text-amber-400 focus:ring-amber-400 bg-white"
                 />
-                <span className="text-sm">{t("inStockOnly")}</span>
+                <span className="text-sm text-amber-100">{t("inStockOnly")}</span>
               </label>
               <label className="flex items-center">
                 <input
                   type="checkbox"
                   checked={localFilters.featured}
                   onChange={(e) => handleFilterChange("featured", e.target.checked || undefined)}
-                  className="mr-2 rounded border-neutral-300 text-primary-600 focus:ring-primary-500"
+                  className="mr-2 rounded border-teal-600 text-amber-400 focus:ring-amber-400 bg-white"
                 />
-                <span className="text-sm">{t("featuredOnly")}</span>
+                <span className="text-sm text-amber-100">{t("featuredOnly")}</span>
               </label>
             </div>
           </div>
 
           {/* Clear Filters */}
           {hasActiveFilters && (
-            <Button variant="outline" onClick={clearFilters} className="w-full">
+            <Button
+              variant="outline"
+              onClick={clearFilters}
+              className="w-full bg-amber-100 text-teal-900 border-amber-200 hover:bg-amber-200"
+            >
               {t("clearFilters")}
             </Button>
           )}
