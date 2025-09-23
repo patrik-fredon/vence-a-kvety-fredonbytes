@@ -124,10 +124,15 @@
       "required": "{option} is required",
       "minSelections": "{option} requires at least {min} selections (currently {current})",
       "maxSelections": "{option} allows maximum {max} selections",
-      "conditionalRequired": "{option} is required when ribbon is selected"
+      "conditionalRequired": "{option} is required when ribbon is selected",
+      "sizeRequired": "Please select a size before adding to cart"
     },
     "customTextPlaceholder": "Enter your custom text...",
-    "customTextHelp": "Custom text for ribbon"
+    "customTextHelp": "Custom text for ribbon",
+    "customTextAriaLabel": "Custom text input for ribbon",
+    "ribbonConfiguration": "Ribbon Configuration",
+    "required": "Required",
+    "sizeOption": "Size: {size}, Price: {price} {modifier}"
   },
   "cart": {
     "title": "Shopping Cart",

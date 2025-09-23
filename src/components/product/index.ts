@@ -7,3 +7,5 @@ export { ProductImageGallery } from "./ProductImageGallery";
 export { ProductInfo } from "./ProductInfo";
 export { ProductTeaser } from "./ProductTeaser";
 export { RandomProductTeasers } from "./RandomProductTeasers";
+export { SizeSelector } from "./SizeSelector";
+export { RibbonConfigurator } from "./RibbonConfigurator";

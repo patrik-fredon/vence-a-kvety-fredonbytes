@@ -11,6 +11,8 @@ import { calculateFinalPrice } from "@/lib/utils/price-calculator";
 import type { Customization, Product } from "@/types/product";
 import { ProductImageGallery } from "./ProductImageGallery";
 import { ProductInfo } from "./ProductInfo";
+import { RibbonConfigurator } from "./RibbonConfigurator";
+import { SizeSelector } from "./SizeSelector";
 
 interface ProductDetailProps {
   product: Product;
@@ -28,37 +30,156 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [quantity, setQuantity] = useState(1);
+  const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
-  // Calculate price based on customizations
+  // Ensure customizationOptions is always an array to prevent map errors
+  const customizationOptions = product.customizationOptions || [];
+
+  // Find size option from customization options
+  const sizeOption = customizationOptions.find(
+    (option) => option.type === "size" || option.id === "size"
+  );
+
+  // Find ribbon-related options
+  const ribbonOption = customizationOptions.find(
+    (option) => option.type === "ribbon" || option.id === "ribbon"
+  );
+  const ribbonColorOption = customizationOptions.find(
+    (option) => option.type === "ribbon_color" || option.id === "ribbon_color"
+  ) || null;
+  const ribbonTextOption = customizationOptions.find(
+    (option) => option.type === "ribbon_text" || option.id === "ribbon_text"
+  ) || null;
+
+  // Check if ribbon is selected
+  const isRibbonSelected = customizations.some(
+    (customization) =>
+      customization.optionId === ribbonOption?.id &&
+      customization.choiceIds.length > 0
+  );
+
+  // Get non-ribbon, non-size customization options for the general customizer
+  const generalCustomizationOptions = customizationOptions.filter(
+    (option) =>
+      option.type !== "size" &&
+      option.id !== "size" &&
+      option.type !== "ribbon" &&
+      option.id !== "ribbon" &&
+      option.type !== "ribbon_color" &&
+      option.id !== "ribbon_color" &&
+      option.type !== "ribbon_text" &&
+      option.id !== "ribbon_text"
+  );
+
+  // Calculate price based on customizations and size
   const calculatePrice = useCallback(
-    (newCustomizations: Customization[]) => {
+    (newCustomizations: Customization[], sizeId?: string | null) => {
+      const allCustomizations = [...newCustomizations];
+
+      // Add size customization if selected
+      if (sizeId && sizeOption) {
+        const existingSizeIndex = allCustomizations.findIndex(c => c.optionId === sizeOption.id);
+        if (existingSizeIndex >= 0) {
+          allCustomizations[existingSizeIndex] = {
+            optionId: sizeOption.id,
+            choiceIds: [sizeId],
+          };
+        } else {
+          allCustomizations.push({
+            optionId: sizeOption.id,
+            choiceIds: [sizeId],
+          });
+        }
+      }
+
       return calculateFinalPrice(
         product.basePrice,
-        newCustomizations,
+        allCustomizations,
         [] // No discounts for now
       );
     },
-    [product.basePrice]
+    [product.basePrice, sizeOption]
+  );
+
+  // Handle size selection changes
+  const handleSizeChange = useCallback(
+    (sizeId: string) => {
+      setSelectedSize(sizeId);
+      const newPrice = calculatePrice(customizations, sizeId);
+      setFinalPrice(newPrice);
+
+      // Clear validation errors when size changes
+      setValidationErrors([]);
+    },
+    [customizations, calculatePrice]
   );
 
   // Handle customization changes
   const handleCustomizationChange = useCallback(
     (newCustomizations: Customization[]) => {
       setCustomizations(newCustomizations);
-      const newPrice = calculatePrice(newCustomizations);
+      const newPrice = calculatePrice(newCustomizations, selectedSize);
       setFinalPrice(newPrice);
 
       // Clear validation errors when customizations change
       setValidationErrors([]);
     },
-    [calculatePrice]
+    [calculatePrice, selectedSize]
   );
 
-  // Validate customizations
+  // Validate customizations including size
   const validateCustomizations = useCallback((): string[] => {
     const errors: string[] = [];
 
-    product.customizationOptions.forEach((option) => {
+    // Validate size selection first
+    if (sizeOption?.required && !selectedSize) {
+      errors.push(
+        t("validation.sizeRequired", {
+          option: sizeOption.name[locale as keyof typeof sizeOption.name],
+        })
+      );
+    }
+
+    // Validate ribbon option
+    if (ribbonOption) {
+      const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption.id);
+
+      if (ribbonOption.required && (!ribbonCustomization || ribbonCustomization.choiceIds.length === 0)) {
+        errors.push(
+          t("validation.required", {
+            option: ribbonOption.name[locale as keyof typeof ribbonOption.name],
+          })
+        );
+      }
+
+      // If ribbon is selected, validate ribbon color and text
+      if (isRibbonSelected) {
+        if (ribbonColorOption?.required) {
+          const colorCustomization = customizations.find((c) => c.optionId === ribbonColorOption.id);
+          if (!colorCustomization || colorCustomization.choiceIds.length === 0) {
+            errors.push(
+              t("validation.conditionalRequired", {
+                option: ribbonColorOption.name[locale as keyof typeof ribbonColorOption.name],
+              })
+            );
+          }
+        }
+
+        if (ribbonTextOption?.required) {
+          const textCustomization = customizations.find((c) => c.optionId === ribbonTextOption.id);
+          if (!textCustomization || (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)) {
+            errors.push(
+              t("validation.conditionalRequired", {
+                option: ribbonTextOption.name[locale as keyof typeof ribbonTextOption.name],
+              })
+            );
+          }
+        }
+      }
+    }
+
+    // Validate other customizations (excluding size and ribbon-related)
+    generalCustomizationOptions.forEach((option) => {
       const customization = customizations.find((c) => c.optionId === option.id);
 
       if (option.required && (!customization || customization.choiceIds.length === 0)) {
@@ -91,7 +212,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     });
 
     return errors;
-  }, [customizations, product.customizationOptions, locale, t]);
+  }, [customizations, generalCustomizationOptions, sizeOption, selectedSize, locale, t, ribbonOption, ribbonColorOption, ribbonTextOption, isRibbonSelected]);
 
   // Handle quantity change
   const handleQuantityChange = (newQuantity: number) => {
@@ -112,10 +233,19 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setIsAddingToCart(true);
 
     try {
+      // Combine size and other customizations
+      const allCustomizations = [...customizations];
+      if (selectedSize && sizeOption) {
+        allCustomizations.push({
+          optionId: sizeOption.id,
+          choiceIds: [selectedSize],
+        });
+      }
+
       const success = await addToCart({
         productId: product.id,
         quantity,
-        customizations,
+        customizations: allCustomizations,
       });
 
       if (success) {
@@ -147,7 +277,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         {/* Left Column - Image Gallery */}
         <div className="space-y-6">
           <ProductImageGallery
-            images={product.images}
+            images={product.images || []}
             productName={product.name[locale as keyof typeof product.name]}
             customizations={customizations}
           />
@@ -158,8 +288,55 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           {/* Product Basic Info */}
           <ProductInfo product={product} locale={locale} finalPrice={finalPrice} />
 
-          {/* Customization Options */}
-          {product.customizationOptions.length > 0 && (
+          {/* Size Selection */}
+          {sizeOption && (
+            <Card>
+              <CardContent className="py-6">
+                <SizeSelector
+                  sizeOption={sizeOption}
+                  selectedSize={selectedSize}
+                  onSizeChange={handleSizeChange}
+                  locale={locale}
+                  basePrice={product.basePrice}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Ribbon Selection */}
+          {ribbonOption && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <span>{t("ribbon")}</span>
+                  <span className="text-sm font-normal text-stone-500">({t("optional")})</span>
+                </CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-4">
+                  <LazyProductCustomizer
+                    product={{ ...product, customizationOptions: [ribbonOption] }}
+                    locale={locale}
+                    customizations={customizations}
+                    onCustomizationChange={handleCustomizationChange}
+                  />
+
+                  {/* Ribbon Configuration - appears when ribbon is selected */}
+                  <RibbonConfigurator
+                    isVisible={isRibbonSelected}
+                    colorOption={ribbonColorOption}
+                    textOption={ribbonTextOption}
+                    customizations={customizations}
+                    onCustomizationChange={handleCustomizationChange}
+                    locale={locale}
+                  />
+                </div>
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Other Customization Options */}
+          {generalCustomizationOptions.length > 0 && (
             <Card>
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
@@ -169,7 +346,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               </CardHeader>
               <CardContent>
                 <LazyProductCustomizer
-                  product={product}
+                  product={{ ...product, customizationOptions: generalCustomizationOptions }}
                   locale={locale}
                   customizations={customizations}
                   onCustomizationChange={handleCustomizationChange}
