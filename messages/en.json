@@ -325,7 +325,7 @@
         "type": "website"
       }
     },
-    "about": {
+    "aboutPage": {
       "title": "About Us | Family Floral Workshop | Ketingmar s.r.o.",
       "description": "Small family floral workshop with years of experience. We specialize in funeral wreaths and memorial arrangements with emphasis on quality and detail.",
       "keywords": [
@@ -684,7 +684,7 @@
     "allCategories": "All categories",
     "onlyActive": "Only active",
     "shown": "Shown",
-    "product": "Product",
+    "productLabel": "Product",
     "category": "Category",
     "price": "Price",
     "stock": "Stock",

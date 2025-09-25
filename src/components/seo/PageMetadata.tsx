@@ -63,13 +63,13 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       url: fullUrl,
       images: props.image
         ? [
-            {
-              url: props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`,
-              width: 1200,
-              height: 630,
-              alt: props.openGraph?.title || props.title,
-            },
-          ]
+          {
+            url: props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`,
+            width: 1200,
+            height: 630,
+            alt: props.openGraph?.title || props.title,
+          },
+        ]
         : [],
     },
     twitter: {
@@ -93,35 +93,35 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       // Product-specific meta tags
       ...(props.type === "product" &&
         props.price && {
-          "product:price:amount": props.price.toString(),
-          "product:price:currency": "CZK",
-        }),
+        "product:price:amount": props.price.toString(),
+        "product:price:currency": "CZK",
+      }),
       ...(props.type === "product" &&
         props.availability && {
-          "product:availability": props.availability,
-        }),
+        "product:availability": props.availability,
+      }),
       ...(props.type === "product" &&
         props.brand && {
-          "product:brand": props.brand,
-        }),
+        "product:brand": props.brand,
+      }),
       ...(props.type === "product" &&
         props.category && {
-          "product:category": props.category,
-        }),
+        "product:category": props.category,
+      }),
 
       // Article-specific meta tags
       ...(props.type === "article" &&
         props.publishedTime && {
-          "article:published_time": props.publishedTime,
-        }),
+        "article:published_time": props.publishedTime,
+      }),
       ...(props.type === "article" &&
         props.modifiedTime && {
-          "article:modified_time": props.modifiedTime,
-        }),
+        "article:modified_time": props.modifiedTime,
+      }),
       ...(props.type === "article" &&
         props.author && {
-          "article:author": props.author,
-        }),
+        "article:author": props.author,
+      }),
     },
   };
 
@@ -285,21 +285,21 @@ export async function generateLegalMetadata(locale: string): Promise<Metadata> {
   const keywords =
     locale === "cs"
       ? [
-          "obchodní podmínky",
-          "GDPR",
-          "ochrana údajů",
-          "cookies",
-          "pohřební věnce",
-          "právní informace",
-        ]
+        "obchodní podmínky",
+        "GDPR",
+        "ochrana údajů",
+        "cookies",
+        "pohřební věnce",
+        "právní informace",
+      ]
       : [
-          "terms conditions",
-          "GDPR",
-          "privacy policy",
-          "cookies",
-          "funeral wreaths",
-          "legal information",
-        ];
+        "terms conditions",
+        "GDPR",
+        "privacy policy",
+        "cookies",
+        "funeral wreaths",
+        "legal information",
+      ];
 
   return generatePageMetadata({
     title,
@@ -317,7 +317,7 @@ export async function generateLegalMetadata(locale: string): Promise<Metadata> {
 export async function generateAboutPageMetadata(locale: string): Promise<Metadata> {
   // Import translations dynamically
   const messages = await import(`../../../messages/${locale}.json`);
-  const seoData = messages.default.seo.about;
+  const seoData = messages.default.seo.aboutPage;
 
   return generatePageMetadata({
     title: seoData.title,

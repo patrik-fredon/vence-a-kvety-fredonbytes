@@ -32,20 +32,20 @@ const transformProductToReference = (product: any, locale: string): ProductRefer
     name: locale === "cs" ? product.name?.cs || product.nameCs : product.name?.en || product.nameEn,
     image: primaryImage
       ? {
-          src: primaryImage.url,
-          alt: primaryImage.alt,
-          width: primaryImage.width || 400,
-          height: primaryImage.height || 400,
-        }
+        src: primaryImage.url,
+        alt: primaryImage.alt,
+        width: primaryImage.width || 400,
+        height: primaryImage.height || 400,
+      }
       : fallbackImage,
     description:
       locale === "cs"
         ? product.description?.cs ||
-          product.descriptionCs ||
-          "Krásný pohřební věnec vyrobený s láskou a péčí"
+        product.descriptionCs ||
+        "Krásný pohřební věnec vyrobený s láskou a péčí"
         : product.description?.en ||
-          product.descriptionEn ||
-          "Beautiful funeral wreath crafted with love and care",
+        product.descriptionEn ||
+        "Beautiful funeral wreath crafted with love and care",
     category:
       product.category?.name?.[locale] || (locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths"),
     slug: product.slug,
@@ -77,10 +77,10 @@ const ProductReferenceCard = ({
   const handleImageError = () => {
     if (!imageError) {
       setImageError(true);
-      
+
       try {
         const fallbackImage = getFallbackImage("product");
-        
+
         // Validate fallback image before setting
         if (fallbackImage && fallbackImage.src) {
           setCurrentImageSrc(fallbackImage.src);
@@ -102,9 +102,9 @@ const ProductReferenceCard = ({
       } catch (fallbackError) {
         // If even the fallback fails, use a hardcoded safe image
         setCurrentImageSrc("/images/placeholder-product.png");
-        
+
         console.error("Fallback image handling failed:", fallbackError);
-        
+
         // Log the fallback failure as well
         logErrorWithContext(new Error("Fallback image system failed"), {
           component: "ProductReferenceCard",
@@ -135,7 +135,7 @@ const ProductReferenceCard = ({
   return (
     <article
       className={cn(
-        "group bg-white/10 backdrop-blur-sm rounded-lg overflow-hidden shadow-md",
+        "group bg-white/50 backdrop-blur-sm overflow-hidden shadow-md relative clip-corners",
         // Enhanced hover effects with motion preference support
         "transition-all duration-300 ease-in-out",
         !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",

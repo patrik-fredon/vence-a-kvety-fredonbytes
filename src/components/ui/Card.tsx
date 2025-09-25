@@ -1,4 +1,5 @@
 import type { HTMLAttributes, ReactNode } from "react";
+import * as React from 'react'
 import { cn } from "@/lib/utils";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
@@ -34,11 +35,11 @@ export function Card({
 
   const interactiveStyles = interactive
     ? cn(
-        "cursor-pointer transition-all duration-200",
-        "hover:shadow-lg hover:-translate-y-0.5",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
-        "active:translate-y-0"
-      )
+      "cursor-pointer transition-all duration-200",
+      "hover:shadow-lg hover:-translate-y-0.5",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
+      "active:translate-y-0"
+    )
     : "";
 
   return (
@@ -58,11 +59,11 @@ export function Card({
       onKeyDown={
         interactive
           ? (e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onClick?.(e as any);
-              }
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onClick?.(e as any);
             }
+          }
           : undefined
       }
       {...props}
@@ -70,6 +71,19 @@ export function Card({
       {children}
     </div>
   );
+}
+
+export function AboutCard({ className, ...props }: React.ComponentProps<'div'>) {
+  return (
+    <div
+      data-slot="card"
+      className={cn(
+        'bg-card text-card-foreground flex flex-col gap-2',
+        className,
+      )}
+      {...props}
+    />
+  )
 }
 
 // Card sub-components for better composition

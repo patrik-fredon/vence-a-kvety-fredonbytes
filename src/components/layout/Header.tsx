@@ -79,10 +79,10 @@ export function Header({ locale }: HeaderProps) {
             {tAccessibility("skipToContent")}
           </a>
 
-          {/* Top bar - Quick navigation */}
-          <div className="flex items-center justify-between py-2 text-sm text-stone-600 border-b ">
-            <div className="flex items-center gap-2">
-              {/* Logo with SVG */}
+          {/* Single row navigation - Logo left, Navigation center, Actions right */}
+          <div className="flex items-center justify-between py-4">
+            {/* Logo - Left side */}
+            <div className="flex items-center">
               <Link
                 href={`/${locale}`}
                 className="flex items-center hover:opacity-80 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
@@ -96,24 +96,7 @@ export function Header({ locale }: HeaderProps) {
               </Link>
             </div>
 
-            {/* Right side actions */}
-            <div className="flex items-center gap-3">
-              {/* Language Switcher - Desktop */}
-              <div className="hidden sm:block">
-                <LanguageSwitcher currentLocale={locale} />
-              </div>
-
-              {/* Animated Cart icon with enhanced styling */}
-              <AnimatedCartIcon
-                locale={locale}
-                className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200"
-              />
-            </div>
-          </div>
-
-          {/* Main header */}
-          <div className="flex items-center justify-center py-4">
-            {/* Desktop Navigation with enhanced styling */}
+            {/* Desktop Navigation - Center */}
             <nav
               id="main-navigation"
               className="hidden md:flex items-center gap-8"
@@ -146,30 +129,44 @@ export function Header({ locale }: HeaderProps) {
               </Link>
             </nav>
 
-            {/* Mobile menu button with enhanced styling */}
-            <button
-              onClick={toggleMobileMenu}
-              className={cn(
-                "md:hidden p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-50",
-                "transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg",
-                isMobileMenuOpen && "bg-stone-100"
-              )}
-              aria-expanded={isMobileMenuOpen}
-              aria-controls="mobile-menu"
-              aria-label={
-                isMobileMenuOpen ? tAccessibility("closeMenu") : tAccessibility("openMenu")
-              }
-            >
-              {isMobileMenuOpen ? (
-                <XMarkIcon className="w-5 h-5" aria-hidden="true" />
-              ) : (
-                <Bars3Icon className="w-5 h-5" aria-hidden="true" />
-              )}
-            </button>
+            {/* Right side actions - Language switcher and Cart */}
+            <div className="flex items-center gap-3">
+              {/* Language Switcher - Desktop */}
+              <div className="hidden sm:block">
+                <LanguageSwitcher currentLocale={locale} />
+              </div>
+
+              {/* Animated Cart icon */}
+              <AnimatedCartIcon
+                locale={locale}
+                className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200"
+              />
+
+              {/* Mobile menu button */}
+              <button
+                onClick={toggleMobileMenu}
+                className={cn(
+                  "md:hidden p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-50",
+                  "transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg",
+                  isMobileMenuOpen && "bg-stone-100"
+                )}
+                aria-expanded={isMobileMenuOpen}
+                aria-controls="mobile-menu"
+                aria-label={
+                  isMobileMenuOpen ? tAccessibility("closeMenu") : tAccessibility("openMenu")
+                }
+              >
+                {isMobileMenuOpen ? (
+                  <XMarkIcon className="w-5 h-5" aria-hidden="true" />
+                ) : (
+                  <Bars3Icon className="w-5 h-5" aria-hidden="true" />
+                )}
+              </button>
+            </div>
           </div>
         </div>
 
-        {/* Mobile menu overlay with enhanced backdrop */}
+        {/* Mobile menu overlay */}
         {isMobileMenuOpen && (
           <div
             className="fixed inset-0 bg-stone-900/50 backdrop-blur-sm z-50 md:hidden"
@@ -178,7 +175,7 @@ export function Header({ locale }: HeaderProps) {
           />
         )}
 
-        {/* Mobile menu with enhanced design */}
+        {/* Mobile menu */}
         <div
           id="mobile-menu"
           className={cn(
@@ -189,7 +186,7 @@ export function Header({ locale }: HeaderProps) {
           aria-hidden={!isMobileMenuOpen}
         >
           <div className="flex flex-col h-full">
-            {/* Mobile menu header with enhanced styling */}
+            {/* Mobile menu header */}
             <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-stone-50">
               <span className="text-lg font-light text-stone-900">{tUI("menu")}</span>
               <button
@@ -201,7 +198,7 @@ export function Header({ locale }: HeaderProps) {
               </button>
             </div>
 
-            {/* Mobile navigation with enhanced spacing */}
+            {/* Mobile navigation */}
             <div className="flex-1 overflow-y-auto p-6">
               <ErrorBoundary
                 fallback={
@@ -214,7 +211,7 @@ export function Header({ locale }: HeaderProps) {
               </ErrorBoundary>
             </div>
 
-            {/* Mobile menu footer with enhanced styling */}
+            {/* Mobile menu footer */}
             <div className="border-t border-stone-200 p-4 space-y-4 bg-stone-50">
               <div className="flex items-center justify-between">
                 <span className="text-sm font-medium text-stone-700">{tUI("language")}:</span>

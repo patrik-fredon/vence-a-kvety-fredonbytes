@@ -37,6 +37,8 @@
   --border: var(--color-stone-200);
   --input: var(--color-stone-100);
   --ring: var(--color-stone-500);
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
 
   /* Semantic colors */
   --success: #22c55e;
@@ -87,6 +89,19 @@ h1 {
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+.clip-corners {
+  clip-path: polygon(
+    15px 0%,
+    calc(100% - 15px) 0%,
+    100% 15px,
+    100% calc(100% - 15px),
+    calc(100% - 15px) 100%,
+    15px 100%,
+    0% calc(100% - 15px),
+    0% 15px
+  );
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.1);
 }
 
 /* High contrast mode styles */

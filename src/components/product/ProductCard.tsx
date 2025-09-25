@@ -68,7 +68,7 @@ export function ProductCard({
       <article
         className={cn(
           // Base card styles with improved responsive design
-          "group bg-stone-200 overflow-hidden transition-all duration-300",
+          "group bg-teal-800 clip-corners overflow-hidden transition-all duration-300 shadow-lg relative ",
           "hover:shadow-lg rounded-lg",
           // Focus styles for keyboard navigation
           "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
@@ -323,7 +323,7 @@ export function ProductCard({
         locale={locale}
         isOpen={isQuickViewOpen}
         onClose={() => setIsQuickViewOpen(false)}
-        onAddToCart={onAddToCart}
+        {...(onAddToCart ? { onAddToCart } : {})}
       />
     </>
   );

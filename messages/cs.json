@@ -325,7 +325,7 @@
         "type": "website"
       }
     },
-    "about": {
+    "aboutPage": {
       "title": "O nás | Rodinná květinová dílnička | Ketingmar s.r.o.",
       "description": "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi. Specializujeme se na pohřební věnce a smuteční květinové aranžmá s důrazem na kvalitu a detail.",
       "keywords": [
@@ -684,7 +684,7 @@
     "allCategories": "Všechny kategorie",
     "onlyActive": "Pouze aktivní",
     "shown": "Zobrazeno",
-    "product": "Produkt",
+    "productLabel": "Produkt",
     "category": "Kategorie",
     "price": "Cena",
     "stock": "Zásoby",
