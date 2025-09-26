@@ -3,11 +3,14 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
-import { ProductQuickView } from "./ProductQuickView";
+import { LazyProductQuickView } from "./LazyProductQuickView";
+import { useCoreWebVitals } from "@/lib/hooks";
+import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
+import { OptimizedImage } from "@/components/ui";
 
 interface ProductCardProps {
   product: Product;
@@ -32,6 +35,19 @@ export function ProductCard({
   const [imageLoading, setImageLoading] = useState(true);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
+  // Core Web Vitals optimization
+  const coreWebVitals = useCoreWebVitals({
+    componentName: 'ProductCard',
+    enabled: true,
+    trackCLS: true,
+    trackLCP: featured, // Only track LCP for featured products
+    trackFID: true,
+    reserveImageSpace: true,
+  });
+
+  // JavaScript optimization
+  const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductCard');
+
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
   const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
 
@@ -41,17 +57,29 @@ export function ProductCard({
     });
   };
 
-  const handleAddToCart = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onAddToCart?.(product);
-  };
+  const handleAddToCart = useCallback(
+    optimizedEventHandler(async (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
 
-  const handleQuickView = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    setIsQuickViewOpen(true);
-  };
+      await measureExecution('addToCart', async () => {
+        onAddToCart?.(product);
+      });
+    }, { debounce: 300 }),
+    [onAddToCart, product, optimizedEventHandler, measureExecution]
+  );
+
+  const handleQuickView = useCallback(
+    optimizedEventHandler(async (e: React.MouseEvent) => {
+      e.preventDefault();
+      e.stopPropagation();
+
+      await measureExecution('quickView', async () => {
+        setIsQuickViewOpen(true);
+      });
+    }, { debounce: 200 }),
+    [optimizedEventHandler, measureExecution]
+  );
 
   // List view - keep existing layout
   if (viewMode === "list") {
@@ -75,7 +103,7 @@ export function ProductCard({
             {/* Product Image */}
             <div className="relative overflow-hidden bg-stone-100 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md">
               {primaryImage && (
-                <Image
+                <OptimizedImage
                   src={primaryImage.url}
                   alt={primaryImage.alt || product.name[locale as keyof typeof product.name]}
                   fill
@@ -86,6 +114,10 @@ export function ProductCard({
                   )}
                   onLoad={() => setImageLoading(false)}
                   priority={featured}
+                  enableCoreWebVitals={true}
+                  componentName="ProductCard_List"
+                  isLCPCandidate={featured}
+                  variant="thumbnail"
                 />
               )}
 
@@ -159,7 +191,7 @@ export function ProductCard({
         </article>
 
         {/* Quick View Modal */}
-        <ProductQuickView
+        <LazyProductQuickView
           product={product}
           locale={locale}
           isOpen={isQuickViewOpen}
@@ -190,7 +222,7 @@ export function ProductCard({
           {/* Full Coverage Product Image - Takes up most of the h-96 space */}
           <div className="absolute inset-0 bg-stone-100">
             {primaryImage && (
-              <Image
+              <OptimizedImage
                 src={primaryImage.url}
                 alt={primaryImage.alt || product.name[locale as keyof typeof product.name]}
                 fill
@@ -202,12 +234,16 @@ export function ProductCard({
                 )}
                 onLoad={() => setImageLoading(false)}
                 priority={featured}
+                enableCoreWebVitals={true}
+                componentName="ProductCard_Grid_Primary"
+                isLCPCandidate={featured}
+                variant="product"
               />
             )}
 
             {/* Secondary image on hover */}
             {secondaryImage && (
-              <Image
+              <OptimizedImage
                 src={secondaryImage.url}
                 alt={secondaryImage.alt || product.name[locale as keyof typeof product.name]}
                 fill
@@ -217,6 +253,10 @@ export function ProductCard({
                   !isHovered && "opacity-0"
                 )}
                 priority={false}
+                enableCoreWebVitals={false}
+                componentName="ProductCard_Grid_Secondary"
+                isLCPCandidate={false}
+                variant="product"
               />
             )}
 
@@ -322,7 +362,7 @@ export function ProductCard({
       </article>
 
       {/* Quick View Modal */}
-      <ProductQuickView
+      <LazyProductQuickView
         product={product}
         locale={locale}
         isOpen={isQuickViewOpen}

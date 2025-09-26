@@ -15,7 +15,9 @@
     "type-check": "tsc --noEmit",
     "clean": "rm -rf .next out dist coverage",
     "analyze": "cross-env ANALYZE=true next build",
+    "analyze:imports": "node scripts/optimize-imports.js",
     "optimize:exports": "node scripts/optimize-exports.js",
+    "optimize:bundle": "npm run analyze:imports && npm run analyze",
     "db:migrate": "node scripts/migrate.js",
     "db:seed:production": "node scripts/seed-production.js",
     "db:seed:funeral": "node scripts/seed-enhanced-data.js"
@@ -80,6 +82,7 @@
     "jest-axe": "^10.0.0",
     "jest-environment-jsdom": "^29.7.0",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "webpack-bundle-analyzer": "^4.10.2"
   }
 }

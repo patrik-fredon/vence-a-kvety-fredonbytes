@@ -156,5 +156,6 @@ export const useImagePerformance = (
     isTracking,
   };
 };
-
-export default useImagePerformance;
+export { default as usePerformanceMonitor } from './usePerformanceMonitor';
+export { default as useLighthouseOptimization } from './useLighthouseOptimization';
+export { default as usePerformanceProfiler } from './usePerformanceProfiler';

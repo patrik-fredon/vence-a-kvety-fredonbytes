@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { useImageOptimization } from "@/lib/hooks/useImageOptimization";
+import { useCoreWebVitals } from "@/lib/hooks";
+import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
 import { cn } from "@/lib/utils";
 import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";
 import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
@@ -63,6 +65,24 @@ const ProductGrid = React.memo(function ProductGrid({
     rootMargin: "100px", // Start loading images 100px before they come into view
   });
 
+  // Core Web Vitals optimization
+  const coreWebVitals = useCoreWebVitals({
+    componentName: 'ProductGrid',
+    enabled: true,
+    trackCLS: true,
+    trackLCP: true,
+    trackFID: true,
+    reserveImageSpace: true,
+    onOptimizationFound: (optimization, metric) => {
+      if (process.env.NODE_ENV === 'development') {
+        console.warn(`🔧 [ProductGrid] Optimization needed for ${metric}:`, optimization);
+      }
+    },
+  });
+
+  // JavaScript optimization
+  const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductGrid');
+
   // Ref to track ongoing requests for cleanup
   const abortControllerRef = useRef<AbortController | null>(null);
 
@@ -93,12 +113,14 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // Optimized view mode change handler with useCallback
   const handleViewModeChange = useCallback(
-    (mode: "grid" | "list") => {
-      setViewMode(mode);
-      localStorage.setItem("product-view-mode", mode);
-      announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
-    },
-    [announce, t]
+    optimizedEventHandler(async (mode: "grid" | "list") => {
+      await measureExecution('viewModeChange', async () => {
+        setViewMode(mode);
+        localStorage.setItem("product-view-mode", mode);
+        announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
+      });
+    }, { debounce: 100 }),
+    [announce, t, optimizedEventHandler, measureExecution]
   );
 
   // Optimized fetch products function with abort controller for cleanup
@@ -235,51 +257,68 @@ const ProductGrid = React.memo(function ProductGrid({
   }, []);
 
   // Optimized filter change handler with useCallback
-  const handleFiltersChange = useCallback((newFilters: ProductFilters) => {
-    setFilters(newFilters);
-    setCurrentPage(1);
-    // fetchProducts will be called by useEffect due to filters dependency
-  }, []);
+  const handleFiltersChange = useCallback(
+    optimizedEventHandler(async (newFilters: ProductFilters) => {
+      await measureExecution('filtersChange', async () => {
+        setFilters(newFilters);
+        setCurrentPage(1);
+        // fetchProducts will be called by useEffect due to filters dependency
+      });
+    }, { debounce: 300 }),
+    [optimizedEventHandler, measureExecution]
+  );
 
   // Optimized sort change handler with useCallback
-  const handleSortChange = useCallback((newSort: ProductSortOptions) => {
-    setSortOptions(newSort);
-    setCurrentPage(1);
-    // fetchProducts will be called by useEffect due to sortOptions dependency
-  }, []);
+  const handleSortChange = useCallback(
+    optimizedEventHandler(async (newSort: ProductSortOptions) => {
+      await measureExecution('sortChange', async () => {
+        setSortOptions(newSort);
+        setCurrentPage(1);
+        // fetchProducts will be called by useEffect due to sortOptions dependency
+      });
+    }, { debounce: 200 }),
+    [optimizedEventHandler, measureExecution]
+  );
 
   // Optimized load more function with useCallback
-  const loadMore = useCallback(async () => {
-    if (loading) return; // Prevent multiple simultaneous loads
+  const loadMore = useCallback(
+    optimizedEventHandler(async () => {
+      if (loading) return; // Prevent multiple simultaneous loads
 
-    if (canLoadMore) {
-      // Load more from current products array
-      const newDisplayedCount = Math.min(displayedCount + INITIAL_PRODUCTS_COUNT, products.length);
-      setDisplayedCount(newDisplayedCount);
+      await measureExecution('loadMore', async () => {
+        if (canLoadMore) {
+          // Load more from current products array
+          const newDisplayedCount = Math.min(displayedCount + INITIAL_PRODUCTS_COUNT, products.length);
+          setDisplayedCount(newDisplayedCount);
 
-      // Announce to screen readers
-      announce(
-        t("loadedMoreProducts", {
-          count: newDisplayedCount - displayedCount,
-          total: products.length,
-        }),
-        "polite"
-      );
-    } else if (hasMore) {
-      // Fetch more products from API
-      await fetchProducts(currentPage + 1, false);
-    }
-  }, [
-    loading,
-    canLoadMore,
-    displayedCount,
-    products.length,
-    hasMore,
-    currentPage,
-    fetchProducts,
-    announce,
-    t,
-  ]);
+          // Announce to screen readers
+          announce(
+            t("loadedMoreProducts", {
+              count: newDisplayedCount - displayedCount,
+              total: products.length,
+            }),
+            "polite"
+          );
+        } else if (hasMore) {
+          // Fetch more products from API
+          await fetchProducts(currentPage + 1, false);
+        }
+      });
+    }, { debounce: 500 }),
+    [
+      loading,
+      canLoadMore,
+      displayedCount,
+      products.length,
+      hasMore,
+      currentPage,
+      fetchProducts,
+      announce,
+      t,
+      optimizedEventHandler,
+      measureExecution,
+    ]
+  );
 
   // Optimized add to cart handler with useCallback
   const handleAddToCart = useCallback(

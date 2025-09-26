@@ -3,6 +3,7 @@
 import React, { useState, useCallback, useMemo } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
+import { useCoreWebVitals } from "@/lib/hooks";
 
 interface OptimizedImageProps {
   src: string;
@@ -20,6 +21,12 @@ interface OptimizedImageProps {
   blurDataURL?: string;
   onLoad?: () => void;
   onError?: () => void;
+  /** Enable Core Web Vitals optimization */
+  enableCoreWebVitals?: boolean;
+  /** Component name for Core Web Vitals tracking */
+  componentName?: string;
+  /** Whether this image is the LCP candidate */
+  isLCPCandidate?: boolean;
 }
 
 // Generate optimized blur placeholder for better perceived performance
@@ -85,9 +92,22 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   blurDataURL,
   onLoad,
   onError,
+  enableCoreWebVitals = true,
+  componentName = "OptimizedImage",
+  isLCPCandidate = false,
 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
+  const [loadStartTime, setLoadStartTime] = useState<number | null>(null);
+
+  // Core Web Vitals optimization
+  const coreWebVitals = useCoreWebVitals({
+    componentName: `${componentName}_Image`,
+    enabled: enableCoreWebVitals,
+    trackCLS: true,
+    trackLCP: isLCPCandidate,
+    reserveImageSpace: true,
+  });
 
   // Memoize optimized sizes and quality based on variant
   const optimizedSizes = useMemo(() => {
@@ -107,11 +127,32 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     return undefined;
   }, [blurDataURL, placeholder, width, height]);
 
-  // Optimized load handler
+  // CLS prevention styles
+  const clsPreventionStyles = useMemo(() => {
+    if (!enableCoreWebVitals || !width || !height) return {};
+    return coreWebVitals.reserveImageSpace(width, height);
+  }, [enableCoreWebVitals, width, height, coreWebVitals]);
+
+  // Track image load start
+  const handleLoadStart = useCallback(() => {
+    const startTime = performance.now();
+    setLoadStartTime(startTime);
+  }, []);
+
+  // Optimized load handler with Core Web Vitals tracking
   const handleLoad = useCallback(() => {
+    const loadEndTime = performance.now();
+    const loadDuration = loadStartTime ? loadEndTime - loadStartTime : 0;
+
     setIsLoading(false);
+
+    // Record image load for Core Web Vitals
+    if (enableCoreWebVitals && loadStartTime) {
+      coreWebVitals.recordImageLoad(src, loadDuration, isLCPCandidate);
+    }
+
     onLoad?.();
-  }, [onLoad]);
+  }, [onLoad, loadStartTime, enableCoreWebVitals, coreWebVitals, src, isLCPCandidate]);
 
   // Optimized error handler
   const handleError = useCallback(() => {
@@ -149,7 +190,10 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }
 
   return (
-    <div className={cn("relative", !fill && "w-full h-full")}>
+    <div
+      className={cn("relative", !fill && "w-full h-full")}
+      style={clsPreventionStyles}
+    >
       <Image
         src={src}
         alt={alt}
@@ -168,6 +212,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
           !isLoading && "blur-0 scale-100",
           className
         )}
+        onLoadStart={handleLoadStart}
         onLoad={handleLoad}
         onError={handleError}
       />

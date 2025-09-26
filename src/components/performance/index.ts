@@ -30,3 +30,4 @@ export {
   usePerformanceMetrics,
 } from "./PerformanceMonitor";
 export { CriticalCSS, ResourceHints } from "./ResourceHints";
+export { CoreWebVitalsProvider, useCoreWebVitalsContext, withCoreWebVitals } from './CoreWebVitalsProvider';
