@@ -1,6 +1,6 @@
 "use client";
 
-
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCallback, useState, useMemo, useRef } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
@@ -40,7 +40,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
-  const [quantity, setQuantity] = useState(1);
+
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
 
   // Refs for animation
@@ -182,12 +182,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     validateCustomizations();
   }, [validateCustomizations]);
 
-  // Handle quantity change
-  const handleQuantityChange = (newQuantity: number) => {
-    const maxQuantity = product.availability.maxOrderQuantity || 10;
-    const validQuantity = Math.max(1, Math.min(maxQuantity, newQuantity));
-    setQuantity(validQuantity);
-  };
+
 
   // Handle add to cart
   const handleAddToCart = async () => {
@@ -212,7 +207,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
       const success = await addToCart({
         productId: product.id,
-        quantity,
+        quantity: 1,
         customizations: allCustomizations,
       });
 
@@ -299,18 +294,59 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     });
   };
 
-  const totalPrice = priceCalculation.totalPrice * quantity;
+  const totalPrice = priceCalculation.totalPrice;
 
   return (
     <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", className)}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        {/* Left Column - Image Gallery */}
-        <div className="space-y-6" ref={productImageRef}>
-          <ProductImageGallery
-            images={product.images || []}
-            productName={product.name[locale as keyof typeof product.name]}
-            customizations={customizations}
-          />
+        {/* Left Column - Collage-Style Image Layout */}
+        <div className="h-full min-h-[600px] lg:min-h-[700px]" ref={productImageRef}>
+          <div className="grid grid-cols-2 grid-rows-3 gap-2 h-full">
+            {/* Main large image - spans 2 rows */}
+            {product.images && product.images[0] && (
+              <div className="col-span-2 row-span-2 relative overflow-hidden rounded-lg bg-stone-100">
+                <Image
+                  src={product.images[0].url}
+                  alt={product.images[0].alt || product.name[locale as keyof typeof product.name]}
+                  fill
+                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  className="object-cover"
+                  priority
+                />
+              </div>
+            )}
+
+            {/* Secondary images - smaller grid items */}
+            {product.images && product.images.slice(1, 4).map((image, index) => (
+              <div key={image.id || index} className="relative overflow-hidden rounded-lg bg-stone-100 aspect-square">
+                <Image
+                  src={image.url}
+                  alt={image.alt || product.name[locale as keyof typeof product.name]}
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
+                />
+              </div>
+            ))}
+
+            {/* If we have more than 4 images, show a "more" indicator on the last visible image */}
+            {product.images && product.images.length > 4 && (
+              <div className="relative overflow-hidden rounded-lg bg-stone-100 aspect-square">
+                <Image
+                  src={product.images[4]?.url || product.images[1]?.url}
+                  alt={product.images[4]?.alt || product.name[locale as keyof typeof product.name]}
+                  fill
+                  sizes="(max-width: 1024px) 50vw, 25vw"
+                  className="object-cover"
+                />
+                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+                  <span className="text-white font-semibold text-lg">
+                    +{product.images.length - 4}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
 
         {/* Right Column - Product Info and Actions */}
@@ -355,6 +391,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                   {isRibbonSelected && (
                     <LazyRibbonConfigurator
                       isVisible={isRibbonSelected}
+                      isRibbonSelected={isRibbonSelected}
                       colorOption={ribbonColorOption}
                       textOption={ribbonTextOption}
                       customizations={customizations}
@@ -497,42 +534,13 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </CardContent>
           </Card>
 
-          {/* Quantity and Add to Cart */}
+          {/* Configuration Summary and Proceed Button */}
           <Card>
             <CardContent className="py-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <label className="text-sm font-medium text-stone-700">
-                  {t("quantity")}
-                </label>
-                <div className="flex items-center gap-3">
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleQuantityChange(quantity - 1)}
-                    disabled={quantity <= 1}
-                    className="w-8 h-8 p-0"
-                  >
-                    -
-                  </Button>
-                  <span className="w-8 text-center font-medium">{quantity}</span>
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    onClick={() => handleQuantityChange(quantity + 1)}
-                    disabled={quantity >= (product.availability.maxOrderQuantity || 10)}
-                    className="w-8 h-8 p-0"
-                  >
-                    +
-                  </Button>
-                </div>
-              </div>
-
-              <div className="flex items-center justify-between pt-4 border-t border-stone-200">
-                <div className="text-right">
-                  <div className="text-sm text-stone-600">{t("totalPrice")}</div>
-                  <div className="text-2xl font-bold text-stone-900">
-                    {formatPrice(totalPrice)}
-                  </div>
+              <div className="text-center">
+                <div className="text-sm text-stone-600 mb-2">{t("totalPrice")}</div>
+                <div className="text-3xl font-bold text-stone-900">
+                  {formatPrice(priceCalculation.totalPrice)}
                 </div>
               </div>
 
@@ -549,7 +557,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                     {t("addingToCart")}
                   </>
                 ) : (
-                  t("addToCart")
+                  "Proceed to Configuration"
                 )}
               </Button>
 

@@ -68,7 +68,7 @@ export function useWreathValidation({
     const ribbonCustomization = customizations.find(
       (c) => c.optionId === wreathOptions.ribbonOption?.id
     );
-    return ribbonCustomization && ribbonCustomization.choiceIds.length > 0;
+    return ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
   }, [customizations, wreathOptions.ribbonOption]);
 
   // Validate all wreath customizations
@@ -245,11 +245,11 @@ export function useEnhancedWreathValidation({
       customizations,
       customizationOptions,
       selectedSize,
-      { 
-        locale, 
-        enableRecovery, 
+      {
+        locale,
+        enableRecovery,
         enableFallback,
-        ...options 
+        ...options
       }
     );
 
@@ -376,7 +376,7 @@ export function useEnhancedWreathValidation({
     const ribbonCustomization = customizations.find(
       (c) => c.optionId === ribbonOption?.id
     );
-    return ribbonCustomization && ribbonCustomization.choiceIds.length > 0;
+    return ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
   }, [customizations, customizationOptions]);
 
   return {
@@ -407,15 +407,15 @@ export function useValidationErrorHandler(locale: string = 'cs') {
   // Format enhanced validation error with recovery options
   const formatEnhancedError = useCallback((error: EnhancedValidationError) => {
     const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
-    
+
     return {
       ...error,
       displayMessage: error.message,
-      severityLabel: error.severity === ValidationErrorSeverity.ERROR ? 
-        messages.validationFailed : 
-        error.severity === ValidationErrorSeverity.WARNING ? 
-        messages.customTextWarning : 
-        messages.fallbackMessage,
+      severityLabel: error.severity === ValidationErrorSeverity.ERROR ?
+        messages.validationFailed :
+        error.severity === ValidationErrorSeverity.WARNING ?
+          messages.customTextWarning :
+          messages.fallbackMessage,
       canRetry: error.retryable && error.recoverable,
       recoveryLabel: error.retryable ? messages.tryAgain : messages.contactSupport
     };
@@ -436,8 +436,8 @@ export function useValidationErrorHandler(locale: string = 'cs') {
     } catch (recoveryError) {
       console.error('Error recovery failed:', recoveryError);
       // Keep error in history but mark as failed recovery
-      setErrorHistory(prev => prev.map(e => 
-        e.code === error.code 
+      setErrorHistory(prev => prev.map(e =>
+        e.code === error.code
           ? { ...e, context: { ...e.context, recoveryFailed: true } }
           : e
       ));
@@ -449,7 +449,7 @@ export function useValidationErrorHandler(locale: string = 'cs') {
   // Get user-friendly error message with fallback
   const getErrorMessage = useCallback((error: string | EnhancedValidationError) => {
     const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
-    
+
     if (typeof error === 'string') {
       return error;
     }
@@ -464,9 +464,9 @@ export function useValidationErrorHandler(locale: string = 'cs') {
 
   // Check if error is recoverable
   const isErrorRecoverable = useCallback((error: EnhancedValidationError) => {
-    return error.recoverable && 
-           !error.context?.recoveryFailed && 
-           recoveryInProgress !== error.code;
+    return error.recoverable &&
+      !error.context?.recoveryFailed &&
+      recoveryInProgress !== error.code;
   }, [recoveryInProgress]);
 
   return {

@@ -12,6 +12,8 @@ export function ProductToCartAnimation({
 }: ProductToCartAnimationProps) {
   const { config, updateAnimationStep } = useCartAnimation();
   const animationElementRef = useRef<HTMLDivElement>(null);
+  const timeoutsRef = useRef<NodeJS.Timeout[]>([]);
+  const packageElementRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
     const animateProductToCart = async () => {
@@ -50,10 +52,23 @@ export function ProductToCartAnimation({
       animationElement.style.overflow = 'hidden';
       animationElement.style.boxShadow = '0 4px 12px rgba(0, 0, 0, 0.15)';
 
+      console.log('🎭 [ProductToCartAnimation] Animation element positioned:', {
+        left: imageRect.left,
+        top: imageRect.top,
+        width: imageRect.width,
+        height: imageRect.height,
+        zIndex: '9999'
+      });
+
       // Set background image
       animationElement.style.backgroundImage = `url(${productImageSrc})`;
       animationElement.style.backgroundSize = 'cover';
       animationElement.style.backgroundPosition = 'center';
+
+      // Add temporary border for debugging (remove in production)
+      animationElement.style.border = '3px solid red';
+
+      console.log('🎭 [ProductToCartAnimation] Background image set:', productImageSrc);
 
       // Calculate target position (cart center)
       const targetX = cartRect.left + cartRect.width / 2 - imageRect.width / 4; // Quarter size
@@ -66,7 +81,7 @@ export function ProductToCartAnimation({
       animationElement.style.opacity = '0.8';
 
       // After product shrink animation, start package drop
-      setTimeout(() => {
+      const timeout1 = setTimeout(() => {
         updateAnimationStep('package-dropping');
 
         // Create package drop element
@@ -81,6 +96,8 @@ export function ProductToCartAnimation({
         packageElement.style.zIndex = '9998';
         packageElement.style.boxShadow = '0 2px 4px rgba(0, 0, 0, 0.1)';
 
+        // Store reference for cleanup
+        packageElementRef.current = packageElement;
         document.body.appendChild(packageElement);
 
         // Animate package drop
@@ -88,37 +105,66 @@ export function ProductToCartAnimation({
         packageElement.style.transform = `translateY(${cartRect.height + 10}px) rotate(180deg)`;
 
         // After package drop, start cart bounce
-        setTimeout(() => {
+        const timeout2 = setTimeout(() => {
           updateAnimationStep('cart-bouncing');
 
           // After cart bounce, start cart shake (with 3ms delay as requested)
-          setTimeout(() => {
+          const timeout3 = setTimeout(() => {
             updateAnimationStep('cart-shaking');
 
             // After cart shake, start count animation
-            setTimeout(() => {
+            const timeout4 = setTimeout(() => {
               updateAnimationStep('count-animating');
 
               // Final cleanup
-              setTimeout(() => {
+              const timeout5 = setTimeout(() => {
                 updateAnimationStep('idle');
                 onAnimationComplete();
-
-                // Remove temporary elements
-                if (animationElement.parentNode) {
-                  animationElement.parentNode.removeChild(animationElement);
-                }
-                if (packageElement.parentNode) {
-                  packageElement.parentNode.removeChild(packageElement);
-                }
               }, config.countAnimationDuration);
+
+              timeoutsRef.current.push(timeout5);
             }, config.cartShakeDuration);
+
+            timeoutsRef.current.push(timeout4);
           }, config.cartBounceDuration + 3); // 3ms delay as requested
+
+          timeoutsRef.current.push(timeout3);
         }, config.packageDropDuration);
+
+        timeoutsRef.current.push(timeout2);
       }, config.productShrinkDuration);
+
+      timeoutsRef.current.push(timeout1);
     };
 
     animateProductToCart();
+
+    // Cleanup function - runs when component unmounts or dependencies change
+    return () => {
+      console.log('🎭 [ProductToCartAnimation] Cleaning up animation');
+
+      // Clear all timeouts to prevent race conditions
+      timeoutsRef.current.forEach(timeout => {
+        if (timeout) {
+          clearTimeout(timeout);
+        }
+      });
+      timeoutsRef.current = [];
+
+      // Safely remove package element if it exists
+      if (packageElementRef.current) {
+        try {
+          // Use modern remove() method instead of parentNode.removeChild()
+          packageElementRef.current.remove();
+        } catch (error) {
+          console.warn('🎭 [ProductToCartAnimation] Package element already removed:', error);
+        }
+        packageElementRef.current = null;
+      }
+
+      // Reset animation step
+      updateAnimationStep('idle');
+    };
   }, [productElement, cartElement, productImageSrc, config, updateAnimationStep, onAnimationComplete]);
 
   return (

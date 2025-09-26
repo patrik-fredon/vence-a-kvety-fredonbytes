@@ -230,8 +230,8 @@ export function OptimizedProductCustomizer({
                   type="button"
                   onClick={() => handleChoiceSelection(ribbonOption.id, choice.id, ribbonOption)}
                   className={`w-full p-3 text-left rounded-lg border-2 transition-colors ${isSelected
-                      ? "border-stone-900 bg-stone-50"
-                      : "border-stone-200 hover:border-stone-300"
+                    ? "border-stone-900 bg-stone-50"
+                    : "border-stone-200 hover:border-stone-300"
                     }`}
                 >
                   {choice.label[locale as keyof typeof choice.label]}
@@ -246,6 +246,7 @@ export function OptimizedProductCustomizer({
       {ribbonColorOption && ribbonTextOption && (
         <LazyRibbonConfigurator
           isVisible={isRibbonSelected}
+          isRibbonSelected={isRibbonSelected}
           colorOption={ribbonColorOption}
           textOption={ribbonTextOption}
           customizations={customizations}

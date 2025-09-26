@@ -37,7 +37,7 @@ export async function POST(request: NextRequest) {
       sessionId = randomUUID();
     }
 
-    // Get full product data for validation
+    // Get full product data for validation and price calculation
     const { data: product, error: productError } = await supabase
       .from("products")
       .select("*")
@@ -77,6 +77,25 @@ export async function POST(request: NextRequest) {
       console.log("⚠️ [API] Validation warnings (proceeding):", validationResult.warnings);
     }
 
+    // Calculate proper price with customizations using the price service
+    const { calculateCartItemPrice } = await import('@/lib/services/cart-price-service');
+
+    const basePrice = Number.parseFloat(product.base_price.toString());
+    const priceCalculation = await calculateCartItemPrice(
+      body.productId,
+      basePrice,
+      body.customizations || [],
+      body.quantity
+    );
+
+    console.log("💰 [API] Price calculation result:", {
+      basePrice: priceCalculation.basePrice,
+      customizationModifier: priceCalculation.customizationModifier,
+      unitPrice: priceCalculation.unitPrice,
+      totalPrice: priceCalculation.totalPrice,
+      fromCache: priceCalculation.fromCache
+    });
+
     // Check if item already exists in cart
     let query = supabase.from("cart_items").select("*").eq("product_id", body.productId);
 
@@ -99,14 +118,21 @@ export async function POST(request: NextRequest) {
     if (existingItem) {
       // Update existing item quantity and recalculate total price
       const newQuantity = existingItem.quantity + body.quantity;
-      const unitPrice = Number.parseFloat(product.base_price.toString());
-      const newTotalPrice = unitPrice * newQuantity;
+
+      // Recalculate price for the new quantity
+      const updatedPriceCalculation = await calculateCartItemPrice(
+        body.productId,
+        basePrice,
+        body.customizations || [],
+        newQuantity
+      );
 
       const { data, error } = await supabase
         .from("cart_items")
         .update({
           quantity: newQuantity,
-          total_price: newTotalPrice,
+          unit_price: updatedPriceCalculation.unitPrice,
+          total_price: updatedPriceCalculation.totalPrice,
           updated_at: new Date().toISOString(),
         })
         .eq("id", existingItem.id)
@@ -128,19 +154,16 @@ export async function POST(request: NextRequest) {
       }
 
       result = data;
+      console.log("✅ [API] Updated existing cart item with proper price calculation");
     } else {
-      // Calculate prices
-      const unitPrice = Number.parseFloat(product.base_price.toString());
-      const totalPrice = unitPrice * body.quantity;
-
-      // Create new cart item
+      // Create new cart item with calculated prices
       const cartItemData = {
         user_id: session?.user?.id || null,
         session_id: session?.user?.id ? null : sessionId,
         product_id: body.productId,
         quantity: body.quantity,
-        unit_price: unitPrice,
-        total_price: totalPrice,
+        unit_price: priceCalculation.unitPrice,
+        total_price: priceCalculation.totalPrice,
         customizations: body.customizations as any,
       };
 
@@ -170,6 +193,24 @@ export async function POST(request: NextRequest) {
       }
 
       result = data;
+      console.log("✅ [API] Created new cart item with proper price calculation");
+    }
+
+    // Update cart cache after successful addition
+    try {
+      const { updateCachedCartAfterItemChange } = await import('@/lib/cache/cart-cache');
+
+      await updateCachedCartAfterItemChange(
+        session?.user?.id || null,
+        sessionId,
+        'add',
+        result.id
+      );
+
+      console.log("🗄️ [API] Cart cache updated after item addition");
+    } catch (cacheError) {
+      console.error("⚠️ [API] Cache operation failed (non-critical):", cacheError);
+      // Don't fail the request if caching fails
     }
 
     console.log("✅ [API] Successfully added item to cart:", {
@@ -178,6 +219,7 @@ export async function POST(request: NextRequest) {
       quantity: result.quantity,
       unitPrice: result.unit_price,
       totalPrice: result.total_price,
+      customizationModifier: priceCalculation.customizationModifier,
       hadWarnings: validationResult.warnings && validationResult.warnings.length > 0
     });
 
@@ -190,9 +232,19 @@ export async function POST(request: NextRequest) {
         sessionId: result.session_id,
         productId: result.product_id,
         quantity: result.quantity,
+        unitPrice: result.unit_price,
+        totalPrice: result.total_price,
         customizations: result.customizations,
         createdAt: new Date(result.created_at),
         updatedAt: new Date(result.updated_at),
+      },
+      priceCalculation: {
+        basePrice: priceCalculation.basePrice,
+        customizationModifier: priceCalculation.customizationModifier,
+        unitPrice: priceCalculation.unitPrice,
+        totalPrice: priceCalculation.totalPrice,
+        fromCache: priceCalculation.fromCache,
+        priceBreakdown: priceCalculation.priceBreakdown
       },
       validation: {
         hadWarnings: validationResult.warnings && validationResult.warnings.length > 0,
@@ -213,12 +265,12 @@ export async function POST(request: NextRequest) {
     return response;
   } catch (error) {
     console.error("💥 [API] Add to cart API error:", error);
-    
+
     // Enhanced error handling with user-friendly messages
     let errorMessage = "Internal server error";
     let userFriendlyMessage = "A system error occurred, please try again";
     let retryable = true;
-    
+
     if (error instanceof Error) {
       if (error.message.includes('network') || error.message.includes('connection')) {
         errorMessage = "Network error";
@@ -226,9 +278,12 @@ export async function POST(request: NextRequest) {
       } else if (error.message.includes('timeout')) {
         errorMessage = "Request timeout";
         userFriendlyMessage = "Request timed out, please try again";
+      } else if (error.message.includes('price') || error.message.includes('calculation')) {
+        errorMessage = "Price calculation error";
+        userFriendlyMessage = "Error calculating price, please try again";
       }
     }
-    
+
     return NextResponse.json(
       {
         success: false,

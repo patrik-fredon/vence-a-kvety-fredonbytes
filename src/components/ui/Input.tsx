@@ -25,10 +25,10 @@ export function Input({
   const helpId = helpText ? `${inputId}-help` : undefined;
 
   const baseStyles = cn(
-    "block w-full rounded-md border border-stone-300 px-3 py-2",
-    "text-stone-900 placeholder-stone-500 bg-white",
-    "focus:border-stone-500 focus:ring-2 focus:ring-stone-500/20 focus:outline-none",
-    "disabled:bg-stone-50 disabled:text-stone-500 disabled:cursor-not-allowed disabled:border-stone-200",
+    "block w-full rounded-md border border-amber-300 px-3 py-2",
+    "text-amber-900 placeholder-amber-500 bg-white",
+    "focus:border-amber-500 focus:ring-2 focus:ring-amber-500/20 focus:outline-none",
+    "disabled:bg-amber-50 disabled:text-amber-500 disabled:cursor-not-allowed disabled:border-amber-200",
     "transition-all duration-200 ease-in-out",
     "shadow-sm focus:shadow-md",
     "font-normal text-sm leading-normal",
@@ -47,7 +47,7 @@ export function Input({
     <div className="space-y-1">
       {/* Label */}
       {label && (
-        <label htmlFor={inputId} className="block text-sm font-medium text-stone-700">
+        <label htmlFor={inputId} className="block text-sm font-medium text-amber-700">
           {label}
           {required && (
             <span className="text-error-500 ml-1" aria-label="required">
@@ -62,7 +62,7 @@ export function Input({
         {/* Left Icon */}
         {icon && iconPosition === "left" && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-stone-400" aria-hidden="true">
+            <span className="text-amber-400" aria-hidden="true">
               {icon}
             </span>
           </div>
@@ -81,7 +81,7 @@ export function Input({
         {/* Right Icon */}
         {icon && iconPosition === "right" && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-stone-400" aria-hidden="true">
+            <span className="text-amber-400" aria-hidden="true">
               {icon}
             </span>
           </div>
@@ -90,7 +90,7 @@ export function Input({
 
       {/* Help Text */}
       {helpText && (
-        <p id={helpId} className="text-sm text-stone-600">
+        <p id={helpId} className="text-sm text-amber-600">
           {helpText}
         </p>
       )}

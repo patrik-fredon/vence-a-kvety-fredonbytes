@@ -224,14 +224,10 @@ export async function POST(request: NextRequest) {
       updatedAt: new Date(order.updated_at),
     };
 
-    // Send order confirmation email
-    try {
-      const { sendOrderConfirmationEmail } = await import("@/lib/email/service");
-      await sendOrderConfirmationEmail(createdOrder, "cs");
-    } catch (emailError) {
-    // Post-order cleanup: Remove cart items and customization cache
+    // Post-order cleanup: Remove cart items, customization cache, and clear Redis cache
     try {
       const { cleanupOrphanedCustomizations } = await import('@/lib/cart/utils');
+      const { clearCartCache } = await import('@/lib/cache/cart-cache');
       
       // Get current user or session for cart cleanup
       const {
@@ -257,7 +253,7 @@ export async function POST(request: NextRequest) {
           return count + (Array.isArray(item.customizations) ? item.customizations.length : 0);
         }, 0);
         
-        console.log(`Post-order cleanup: Removing ${cartItems.length} cart items with ${customizationCount} customizations for order ${order.id}`);
+        console.log(`🧹 [Cleanup] Post-order cleanup: Removing ${cartItems.length} cart items with ${customizationCount} customizations for order ${order.id}`);
         
         // Delete cart items (this automatically removes associated customizations)
         const { error: deleteError } = await supabase
@@ -266,16 +262,31 @@ export async function POST(request: NextRequest) {
           .in("id", cartItems.map(item => item.id));
         
         if (deleteError) {
-          console.error("Error during post-order cart cleanup:", deleteError);
+          console.error("❌ [Cleanup] Error during post-order cart cleanup:", deleteError);
           // Don't fail the order creation if cleanup fails
         } else {
-          console.log(`Successfully cleaned up cart after order ${order.id} creation`);
+          console.log(`✅ [Cleanup] Successfully cleaned up cart items after order ${order.id} creation`);
+        }
+
+        // Clear Redis cache for the cart
+        try {
+          await clearCartCache(user?.id || null, sessionId);
+          console.log(`🗄️ [Cleanup] Successfully cleared cart cache after order ${order.id} creation`);
+        } catch (cacheError) {
+          console.error("⚠️ [Cleanup] Error clearing cart cache (non-critical):", cacheError);
+          // Don't fail the order creation if cache cleanup fails
         }
       }
     } catch (cleanupError) {
-      console.error("Error during post-order cleanup:", cleanupError);
+      console.error("❌ [Cleanup] Error during post-order cleanup:", cleanupError);
       // Don't fail the order creation if cleanup fails
     }
+
+    // Send order confirmation email
+    try {
+      const { sendOrderConfirmationEmail } = await import("@/lib/email/service");
+      await sendOrderConfirmationEmail(createdOrder, "cs");
+    } catch (emailError) {
       console.error("Error sending confirmation email:", emailError);
       // Don't fail the order creation if email fails
     }

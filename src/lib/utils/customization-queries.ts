@@ -1,6 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
 import type { CustomizationOption } from "@/types/product";
-import { customizationCache } from "@/lib/cache/customization-cache";
 
 /**
  * Optimized database queries for customization data with caching
@@ -12,11 +11,17 @@ import { customizationCache } from "@/lib/cache/customization-cache";
 export async function getProductCustomizationOptions(
   productId: string
 ): Promise<CustomizationOption[]> {
-  // Check cache first
-  const cached = customizationCache.get(productId);
+  // Import server-side cache utilities
+  const { getCachedCustomizationOptions, setCachedCustomizationOptions } = await import('@/lib/cache/server-customization-cache');
+
+  // Check Redis cache first
+  const cached = await getCachedCustomizationOptions(productId);
   if (cached) {
+    console.log(`✅ [CustomizationQuery] Using cached customization options for product:${productId}`);
     return cached;
   }
+
+  console.log(`🔍 [CustomizationQuery] Fetching customization options from database for product:${productId}`);
 
   const supabase = createClient();
 
@@ -28,14 +33,16 @@ export async function getProductCustomizationOptions(
     .single();
 
   if (error) {
-    console.error("Error fetching customization options:", error);
+    console.error("❌ [CustomizationQuery] Error fetching customization options:", error);
     return [];
   }
 
   const options = (data?.customization_options as CustomizationOption[]) || [];
 
-  // Cache the result
-  customizationCache.set(productId, options);
+  // Cache the result in Redis
+  await setCachedCustomizationOptions(productId, options);
+
+  console.log(`✅ [CustomizationQuery] Fetched and cached ${options.length} customization options for product:${productId}`);
 
   return options;
 }
@@ -46,12 +53,15 @@ export async function getProductCustomizationOptions(
 export async function getBatchProductCustomizationOptions(
   productIds: string[]
 ): Promise<Record<string, CustomizationOption[]>> {
+  // Import server-side cache utilities
+  const { getCachedCustomizationOptions, batchCacheCustomizationOptions } = await import('@/lib/cache/server-customization-cache');
+
   const result: Record<string, CustomizationOption[]> = {};
   const uncachedIds: string[] = [];
 
-  // Check cache for each product
+  // Check Redis cache for each product
   for (const productId of productIds) {
-    const cached = customizationCache.get(productId);
+    const cached = await getCachedCustomizationOptions(productId);
     if (cached) {
       result[productId] = cached;
     } else {
@@ -61,6 +71,8 @@ export async function getBatchProductCustomizationOptions(
 
   // Fetch uncached products in batch
   if (uncachedIds.length > 0) {
+    console.log(`🔍 [CustomizationQuery] Batch fetching ${uncachedIds.length} uncached products from database`);
+
     const supabase = createClient();
 
     const { data, error } = await supabase
@@ -69,19 +81,26 @@ export async function getBatchProductCustomizationOptions(
       .in("id", uncachedIds);
 
     if (error) {
-      console.error("Error fetching batch customization options:", error);
+      console.error("❌ [CustomizationQuery] Error fetching batch customization options:", error);
       // Return cached results even if batch fetch fails
       return result;
     }
 
     // Process batch results
+    const productOptions: Array<{ productId: string; options: CustomizationOption[] }> = [];
+
     for (const product of data || []) {
       const options = (product.customization_options as CustomizationOption[]) || [];
       result[product.id] = options;
-
-      // Cache each result
-      customizationCache.set(product.id, options);
+      productOptions.push({ productId: product.id, options });
     }
+
+    // Batch cache all results
+    if (productOptions.length > 0) {
+      await batchCacheCustomizationOptions(productOptions);
+    }
+
+    console.log(`✅ [CustomizationQuery] Batch processed and cached ${productOptions.length} products`);
   }
 
   return result;
@@ -92,6 +111,9 @@ export async function getBatchProductCustomizationOptions(
  * This can be used to pre-populate cache for common products
  */
 export async function getFrequentCustomizationOptions(): Promise<void> {
+  // Import server-side cache utilities
+  const { batchCacheCustomizationOptions } = await import('@/lib/cache/server-customization-cache');
+  
   const supabase = createClient();
 
   // Get wreath products (assuming they have 'wreath' in category or name)
@@ -102,14 +124,21 @@ export async function getFrequentCustomizationOptions(): Promise<void> {
     .limit(20); // Limit to most common products
 
   if (error) {
-    console.error("Error pre-loading customization options:", error);
+    console.error("❌ [CustomizationQuery] Error pre-loading customization options:", error);
     return;
   }
 
-  // Pre-populate cache
+  // Pre-populate Redis cache
+  const productOptions: Array<{ productId: string; options: CustomizationOption[] }> = [];
+  
   for (const product of data || []) {
     const options = (product.customization_options as CustomizationOption[]) || [];
-    customizationCache.set(product.id, options);
+    productOptions.push({ productId: product.id, options });
+  }
+
+  if (productOptions.length > 0) {
+    await batchCacheCustomizationOptions(productOptions);
+    console.log(`✅ [CustomizationQuery] Pre-loaded ${productOptions.length} frequent customization options to cache`);
   }
 }
 
