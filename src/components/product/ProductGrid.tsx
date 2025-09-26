@@ -1,12 +1,12 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useId, useMemo, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
-import { hasRequiredCustomizations, hasCustomizations } from "@/lib/utils/productCustomization";
+import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";
 import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
 import { ProductCard } from "./ProductCard";
 import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
@@ -29,6 +29,7 @@ export function ProductGrid({
   const t = useTranslations("product");
   const tCommon = useTranslations("common");
   const announce = useAnnouncer();
+  const loadMoreDescriptionId = useId();
 
   // State management
   const [products, setProducts] = useState<Product[]>(initialProducts);
@@ -47,7 +48,20 @@ export function ProductGrid({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  const PRODUCTS_PER_PAGE = 12;
+  // Progressive loading state - display only 6 products initially
+  const [displayedCount, setDisplayedCount] = useState(6);
+
+  // Updated constants for initial display optimization
+  const INITIAL_PRODUCTS_COUNT = 6;
+  const PRODUCTS_PER_PAGE = 12; // Keep API pagination at 12 for efficiency
+
+  // Memoized displayed products calculation for performance
+  const displayedProducts = useMemo(() => {
+    return products.slice(0, displayedCount);
+  }, [products, displayedCount]);
+
+  // Check if more products can be loaded from current products array
+  const canLoadMore = displayedCount < products.length;
 
   // Load view mode preference from localStorage
   useEffect(() => {
@@ -109,6 +123,8 @@ export function ProductGrid({
 
         if (resetProducts || page === 1) {
           setProducts(newProducts);
+          // Reset displayed count to initial when getting new products
+          setDisplayedCount(INITIAL_PRODUCTS_COUNT);
         } else {
           setProducts((prev) => [...prev, ...newProducts]);
         }
@@ -121,7 +137,7 @@ export function ProductGrid({
         if (resetProducts || page === 1) {
           announce(
             t("showingResults", {
-              count: newProducts.length,
+              count: Math.min(newProducts.length, INITIAL_PRODUCTS_COUNT),
               total: pagination?.total || 0,
             }),
             "polite"
@@ -134,7 +150,7 @@ export function ProductGrid({
         setLoading(false);
       }
     },
-    [filters, sortOptions, locale, announce, t]
+    [filters, sortOptions, locale, announce, t, INITIAL_PRODUCTS_COUNT]
   );
 
   // Check if any filters are active
@@ -153,8 +169,10 @@ export function ProductGrid({
       // Use initial products if available and no filters
       setProducts(initialProducts);
       setTotalProducts(initialProducts.length);
+      // Set initial displayed count for initial products
+      setDisplayedCount(INITIAL_PRODUCTS_COUNT);
     }
-  }, [initialProducts.length, hasActiveFilters]);
+  }, [initialProducts.length, hasActiveFilters, fetchProducts, INITIAL_PRODUCTS_COUNT]);
 
   // Fetch products when filters or sort options change
   useEffect(() => {
@@ -162,12 +180,12 @@ export function ProductGrid({
     if (hasActiveFilters || initialProducts.length === 0) {
       fetchProducts(1, true);
     }
-  }, [filters, locale]); // Separate useEffect for filters
+  }, [filters, locale, fetchProducts, hasActiveFilters, initialProducts.length]); // Separate useEffect for filters
 
   // Fetch products when sort options change (always, regardless of filters)
   useEffect(() => {
     fetchProducts(1, true);
-  }, [sortOptions]);
+  }, [sortOptions, fetchProducts]);
 
   // Handle filter changes
   const handleFiltersChange = (newFilters: ProductFilters) => {
@@ -183,12 +201,39 @@ export function ProductGrid({
     // fetchProducts will be called by useEffect due to sortOptions dependency
   };
 
-  // Load more products (pagination)
-  const loadMore = () => {
-    if (!loading && hasMore) {
-      fetchProducts(currentPage + 1, false);
+  // Load more products from current array or fetch from API
+  const loadMore = useCallback(async () => {
+    if (loading) return; // Prevent multiple simultaneous loads
+
+    if (canLoadMore) {
+      // Load more from current products array
+      const newDisplayedCount = Math.min(displayedCount + INITIAL_PRODUCTS_COUNT, products.length);
+      setDisplayedCount(newDisplayedCount);
+
+      // Announce to screen readers
+      announce(
+        t("loadedMoreProducts", {
+          count: newDisplayedCount - displayedCount,
+          total: products.length,
+        }),
+        "polite"
+      );
+    } else if (hasMore) {
+      // Fetch more products from API
+      await fetchProducts(currentPage + 1, false);
     }
-  };
+  }, [
+    loading,
+    canLoadMore,
+    displayedCount,
+    products.length,
+    hasMore,
+    currentPage,
+    fetchProducts,
+    announce,
+    t,
+    INITIAL_PRODUCTS_COUNT,
+  ]);
 
   // Handle add to cart
   const handleAddToCart = (product: Product) => {
@@ -206,7 +251,7 @@ export function ProductGrid({
       // Default behavior - redirect to product detail page for safety
       window.location.href = `/${locale}/products/${product.slug}`;
     }
-  };;;
+  };
 
   return (
     <section className={cn("bg-teal-800 py-12 rounded-2xl", className)}>
@@ -229,7 +274,7 @@ export function ProductGrid({
             {totalProducts > 0 && (
               <p className="text-lg font-medium text-amber-800">
                 {t("showingResults", {
-                  count: products.length,
+                  count: displayedProducts.length,
                   total: totalProducts,
                 })}
               </p>
@@ -259,7 +304,11 @@ export function ProductGrid({
                 aria-label={t("listView")}
               >
                 <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                  <path
+                    fillRule="evenodd"
+                    d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
+                    clipRule="evenodd"
+                  />
                 </svg>
               </Button>
             </div>
@@ -280,7 +329,7 @@ export function ProductGrid({
         {/* Products Grid */}
         {!error && (
           <>
-            {products.length > 0 ? (
+            {displayedProducts.length > 0 ? (
               <div
                 className={cn(
                   viewMode === "grid"
@@ -290,7 +339,7 @@ export function ProductGrid({
                     "flex flex-col gap-6 mb-12"
                 )}
               >
-                {products.map((product) => (
+                {displayedProducts.map((product) => (
                   <ProductCard
                     key={product.id}
                     product={product}
@@ -306,8 +355,18 @@ export function ProductGrid({
               // No Results State
               <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-amber-100">
                 <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  <svg
+                    className="w-8 h-8 text-amber-400"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={1.5}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                    />
                   </svg>
                 </div>
                 <h3 className="text-xl font-semibold text-amber-800 mb-3">{t("noResults")}</h3>
@@ -331,7 +390,7 @@ export function ProductGrid({
         {/* Loading State */}
         {loading && (
           <div className="space-y-6">
-            {products.length === 0 ? (
+            {displayedProducts.length === 0 ? (
               <div
                 className={cn(
                   "grid",
@@ -343,7 +402,7 @@ export function ProductGrid({
                   "2xl:grid-cols-5"
                 )}
               >
-                <ProductGridSkeleton count={PRODUCTS_PER_PAGE} />
+                <ProductGridSkeleton count={INITIAL_PRODUCTS_COUNT} />
               </div>
             ) : (
               <div className="flex justify-center py-8">
@@ -357,11 +416,93 @@ export function ProductGrid({
         )}
 
         {/* Load More Button */}
-        {!loading && hasMore && products.length > 0 && (
-          <div className="text-center pt-8">
-            <Button variant="outline" onClick={loadMore} size="lg">
-              {t("loadMore")}
+        {(canLoadMore || hasMore) && displayedProducts.length > 0 && (
+          <div className="flex flex-col items-center pt-12 pb-4 space-y-4">
+            {/* Progress indicator */}
+            {totalProducts > 0 && (
+              <div className="text-center mb-4">
+                <p className="text-sm text-amber-700 mb-2">
+                  {t("showingOf", {
+                    showing: displayedProducts.length,
+                    total: totalProducts,
+                  })}
+                </p>
+                <div className="w-64 bg-amber-100 rounded-full h-2 mx-auto">
+                  <div
+                    className="bg-amber-600 h-2 rounded-full transition-all duration-300 ease-out"
+                    style={{
+                      width: `${Math.min((displayedProducts.length / totalProducts) * 100, 100)}%`,
+                    }}
+                    role="progressbar"
+                    aria-valuenow={displayedProducts.length}
+                    aria-valuemin={0}
+                    aria-valuemax={totalProducts}
+                    aria-label={t("loadingProgress")}
+                  />
+                </div>
+              </div>
+            )}
+
+            <Button
+              variant="outline"
+              onClick={loadMore}
+              size="lg"
+              disabled={loading}
+              loading={loading}
+              loadingText={t("loadingMore")}
+              className={cn(
+                "px-8 py-3 min-w-[200px] font-medium",
+                "bg-white border-2 border-amber-600 text-amber-700",
+                "hover:bg-amber-50 hover:border-amber-700 hover:text-amber-800",
+                "focus:ring-2 focus:ring-amber-500 focus:ring-offset-2",
+                "disabled:opacity-50 disabled:cursor-not-allowed",
+                "transition-all duration-200 ease-in-out",
+                "shadow-sm hover:shadow-md"
+              )}
+              aria-describedby={loadMoreDescriptionId}
+            >
+              {loading ? (
+                <div className="flex items-center space-x-2">
+                  <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                  <span>{t("loadingMore")}</span>
+                </div>
+              ) : (
+                <div className="flex items-center space-x-2">
+                  <span>{t("loadMore")}</span>
+                  <svg
+                    className="w-4 h-4 transition-transform group-hover:translate-y-0.5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                    aria-hidden="true"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                    />
+                  </svg>
+                </div>
+              )}
             </Button>
+
+            {/* Accessible description */}
+            <p
+              id={loadMoreDescriptionId}
+              className="text-xs text-amber-600 text-center max-w-md sr-only"
+            >
+              {canLoadMore
+                ? t("loadMoreFromCurrent", { remaining: products.length - displayedCount })
+                : t("loadMoreFromServer")}
+            </p>
+
+            {/* Show when no more products available */}
+            {!(hasMore || canLoadMore) && (
+              <div className="text-center py-4">
+                <p className="text-sm text-amber-600 font-medium">{t("allProductsLoaded")}</p>
+              </div>
+            )}
           </div>
         )}
       </div>

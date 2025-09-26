@@ -15,8 +15,6 @@ interface ProductCardProps {
   onAddToCart?: (product: Product) => void;
   className?: string;
   featured?: boolean;
-  onToggleFavorite?: (productId: string) => void;
-  isFavorite?: boolean;
   viewMode?: "grid" | "list";
 }
 
@@ -26,8 +24,6 @@ export function ProductCard({
   onAddToCart,
   className,
   featured = false,
-  onToggleFavorite,
-  isFavorite = false,
   viewMode = "grid",
 }: ProductCardProps) {
   const t = useTranslations("product");
@@ -43,12 +39,6 @@ export function ProductCard({
     return tCurrency("format", {
       amount: price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US"),
     });
-  };
-
-  const handleToggleFavorite = (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
-    onToggleFavorite?.(product.id);
   };
 
   const handleAddToCart = (e: React.MouseEvent) => {
@@ -180,14 +170,14 @@ export function ProductCard({
     );
   }
 
-  // Grid view - NEW DESIGN: Full image coverage with bottom overlay
+  // Grid view - Enhanced with h-96 height for better visual impact
   return (
     <>
       <article
         className={cn(
-          // Base card styles - full image coverage
+          // Base card styles with increased height (h-96) for better visual impact
           "group relative overflow-hidden transition-all duration-300 shadow-lg",
-          "clip-corners rounded-lg aspect-square hover:-translate-y-1 hover:shadow-xl",
+          "clip-corners rounded-lg h-96 hover:-translate-y-1 hover:shadow-xl",
           // Focus styles for keyboard navigation
           "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
           className
@@ -196,11 +186,8 @@ export function ProductCard({
         onMouseLeave={() => setIsHovered(false)}
         aria-labelledby={`product-${product.id}-title`}
       >
-        <Link
-          href={`/${locale}/products/${product.slug}`}
-          className="block w-full h-full relative"
-        >
-          {/* Full Coverage Product Image */}
+        <Link href={`/${locale}/products/${product.slug}`} className="block w-full h-full relative">
+          {/* Full Coverage Product Image - Takes up most of the h-96 space */}
           <div className="absolute inset-0 bg-stone-100">
             {primaryImage && (
               <Image
@@ -252,22 +239,22 @@ export function ProductCard({
             )}
           </div>
 
-          {/* Bottom Center Overlay - NEW DESIGN */}
+          {/* Bottom Overlay - Optimized for h-96 height with better proportions */}
           <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
             <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-white/20">
-              {/* Product Name */}
+              {/* Product Name - Increased line height for better readability in taller cards */}
               <h3
                 id={`product-${product.id}-title`}
-                className="font-semibold text-stone-900 text-sm sm:text-base mb-2 line-clamp-2 leading-tight"
+                className="font-semibold text-stone-900 text-sm sm:text-base mb-3 line-clamp-2 leading-relaxed"
               >
                 {product.name[locale as keyof typeof product.name]}
               </h3>
 
-              {/* Price and QuickView Row */}
-              <div className="flex items-center justify-between">
+              {/* Price and QuickView Row - Enhanced spacing for h-96 */}
+              <div className="flex items-center justify-between mb-3">
                 {/* Price */}
                 <div className="flex items-center gap-2">
-                  <span className="font-bold text-stone-900 text-lg">
+                  <span className="font-bold text-stone-900 text-lg sm:text-xl">
                     {formatPrice(product.basePrice)}
                   </span>
                   {product.finalPrice && product.finalPrice < product.basePrice && (
@@ -277,20 +264,15 @@ export function ProductCard({
                   )}
                 </div>
 
-                {/* QuickView Icon Button */}
+                {/* QuickView Icon Button - Slightly larger for better visibility */}
                 <Button
                   size="sm"
-                  isIconOnly
-                  className="bg-stone-100/80 hover:bg-stone-200/80 text-stone-700 min-w-8 h-8"
+                  className="bg-stone-100/80 hover:bg-stone-200/80 text-stone-700 min-w-9 h-9"
                   onClick={handleQuickView}
                   aria-label={t("quickView")}
                 >
-                  <svg
-                    className="w-4 h-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
+                  <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <title>Quick View</title>
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
@@ -307,20 +289,19 @@ export function ProductCard({
                 </Button>
               </div>
 
-              {/* Availability Status */}
-              <div className="flex items-center gap-1.5 mt-2">
+              {/* Availability Status - Enhanced for better visibility in taller cards */}
+              <div className="flex items-center gap-1.5">
                 <div
                   className={cn(
                     "w-2 h-2 rounded-full",
                     product.availability.inStock ? "bg-green-500" : "bg-red-500"
                   )}
                 />
-                <span
+                <output
                   className={cn(
                     "text-xs font-medium",
                     product.availability.inStock ? "text-green-700" : "text-red-700"
                   )}
-                  role="status"
                   aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
                 >
                   {product.availability.inStock
@@ -328,13 +309,13 @@ export function ProductCard({
                       ? t("limitedStock")
                       : t("inStock")
                     : t("outOfStock")}
-                </span>
+                </output>
               </div>
             </div>
           </div>
         </Link>
 
-        {/* Hover Overlay for Additional Actions (Optional) */}
+        {/* Hover Overlay for Additional Actions - Maintained for h-96 */}
         {isHovered && (
           <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 pointer-events-none z-10" />
         )}
