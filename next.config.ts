@@ -53,8 +53,6 @@ const nextConfig: NextConfig = {
     // Optimize image loading
     unoptimized: false,
     loader: "default",
-    // Quality settings for different screen densities
-    quality: 85, // Default quality
     // Enable image optimization for external domains
     remotePatterns: [
       {
@@ -76,10 +74,6 @@ const nextConfig: NextConfig = {
         pathname: "/**",
       },
     ],
-    // Preload critical images
-    preload: true,
-    // Enable responsive images
-    responsive: true,
   },
 
   // Compression and optimization

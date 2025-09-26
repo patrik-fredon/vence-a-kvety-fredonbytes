@@ -1,7 +1,15 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { trackImagePerformance, type ImageLoadMetrics } from "@/lib/utils/image-optimization";
+import { trackImagePerformance } from "@/lib/utils/image-optimization";
+
+interface ImageLoadMetrics {
+  url: string;
+  loadTime: number;
+  fileSize?: number;
+  dimensions?: { width: number; height: number };
+  format?: string;
+}
 
 interface ImagePerformanceMonitorProps {
   /** Enable performance monitoring */
