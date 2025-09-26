@@ -197,3 +197,71 @@ export async function clearCartCache(
     console.error('❌ [Cache] Error clearing cart cache:', error);
   }
 }
+/**
+ * Update cached cart after item modification (add/update/remove)
+ * This is more efficient than full cache invalidation for single item changes
+ */
+export async function updateCachedCartAfterItemChange(
+  userId: string | null,
+  sessionId: string | null,
+  changeType: 'add' | 'update' | 'remove',
+  itemId?: string
+): Promise<void> {
+  try {
+    // For now, we'll invalidate the cache to ensure consistency
+    // In the future, we could implement more granular updates
+    await invalidateCartCache(userId, sessionId);
+
+    console.log(`🔄 [Cache] Cart cache invalidated after ${changeType} operation${itemId ? ` for item:${itemId}` : ''}`);
+  } catch (error) {
+    console.error(`❌ [Cache] Error updating cart cache after ${changeType}:`, error);
+  }
+}
+
+/**
+ * Check if cart cache exists
+ */
+export async function hasCartCache(
+  userId: string | null,
+  sessionId: string | null
+): Promise<boolean> {
+  try {
+    const client = getCacheClient();
+    const key = getCartConfigKey(userId, sessionId);
+
+    return await client.exists(key);
+  } catch (error) {
+    console.error('❌ [Cache] Error checking cart cache existence:', error);
+    return false;
+  }
+}
+
+/**
+ * Get cart cache statistics for monitorinort async function g
+tCacheStats(
+  userId: string | null,
+  sessionId: string | null
+): Promise<{
+  hasCache: boolean;
+  cacheAge?: number;
+  itemCount?: number;
+} | null> {
+  try {
+    const cachedCart = await getCachedCartConfiguration(userId, sessionId);
+
+    if (!cachedCart) {
+      return { hasCache: false };
+    }
+
+    const cacheAge = Date.now() - new Date(cachedCart.lastUpdated).getTime();
+
+    return {
+      hasCache: true,
+      cacheAge: Math.floor(cacheAge / 1000), // Age in seconds
+      itemCount: cachedCart.totalItems
+    };
+  } catch (error) {
+    console.error('❌ [Cache] Error getting cart cache stats:', error);
+    return null;
+  }
+}

@@ -248,6 +248,9 @@ export const CACHE_KEYS = {
 
   // Cart and session
   CART: "cart",
+
+  // Customization caching
+  CUSTOMIZATION: "customization",
   SESSION: "session",
 
   // API responses

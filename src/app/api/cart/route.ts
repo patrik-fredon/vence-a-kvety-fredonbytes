@@ -10,6 +10,8 @@ import type { Product } from "@/types/product";
  */
 export async function GET(request: NextRequest) {
   try {
+    console.log("🛒 [API] GET /api/cart - Fetching cart items");
+
     const supabase = createServerClient();
     const session = await auth();
 
@@ -26,6 +28,29 @@ export async function GET(request: NextRequest) {
           total: 0,
         },
       });
+    }
+
+    // Try to get cached cart configuration first
+    try {
+      const { getCachedCartConfiguration } = await import('@/lib/cache/cart-cache');
+      const cachedCart = await getCachedCartConfiguration(session?.user?.id || null, sessionId);
+      
+      if (cachedCart) {
+        console.log("✅ [API] Returning cached cart configuration");
+        return NextResponse.json({
+          success: true,
+          cart: {
+            items: cachedCart.items,
+            itemCount: cachedCart.totalItems,
+            subtotal: cachedCart.totalPrice,
+            total: cachedCart.totalPrice,
+          },
+          fromCache: true
+        });
+      }
+    } catch (cacheError) {
+      console.error("⚠️ [API] Cache retrieval failed (non-critical):", cacheError);
+      // Continue with database fetch
     }
 
     // Build query based on authentication status
@@ -62,52 +87,60 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    // Transform and calculate prices
-    const items =
-      cartItems?.map((item: any) => {
-        const product = item.products;
-        const customizations = item.customizations || [];
+    // Use the new price calculation service for accurate pricing
+    const { batchCalculateCartItemPrices } = await import('@/lib/services/cart-price-service');
 
-        // Calculate unit price with customizations
-        const unitPrice = calculateFinalPrice(
-          product.base_price,
-          customizations,
-          product.customization_options || []
-        );
-        const totalPrice = unitPrice * item.quantity;
+    // Prepare items for batch price calculation
+    const itemsForPriceCalculation = (cartItems || []).map((item: any) => ({
+      productId: item.product_id,
+      basePrice: Number.parseFloat(item.products.base_price.toString()),
+      customizations: item.customizations || [],
+      quantity: item.quantity
+    }));
 
-        return {
-          id: item.id,
-          userId: item.user_id,
-          sessionId: item.session_id,
-          productId: item.product_id,
-          quantity: item.quantity,
-          customizations,
-          createdAt: new Date(item.created_at),
-          updatedAt: new Date(item.updated_at),
-          product: {
-            id: product.id,
-            nameCs: product.name_cs,
-            nameEn: product.name_en,
-            name: {
-              cs: product.name_cs,
-              en: product.name_en,
-            },
-            slug: product.slug,
-            basePrice: product.base_price,
-            images: product.images || [],
-            customizationOptions: product.customization_options || [],
-            availability: product.availability || {},
-            seoMetadata: { title: { cs: "", en: "" }, description: { cs: "", en: "" } },
-            active: true,
-            featured: false,
-            createdAt: new Date(),
-            updatedAt: new Date(),
-          } as Product,
-          unitPrice,
-          totalPrice,
-        };
-      }) || [];
+    // Calculate prices for all items
+    const priceCalculations = await batchCalculateCartItemPrices(itemsForPriceCalculation);
+
+    // Transform cart items with calculated prices
+    const items = (cartItems || []).map((item: any, index: number) => {
+      const product = item.products;
+      const priceCalc = priceCalculations[index];
+
+      return {
+        id: item.id,
+        userId: item.user_id,
+        sessionId: item.session_id,
+        productId: item.product_id,
+        quantity: item.quantity,
+        customizations: item.customizations || [],
+        createdAt: new Date(item.created_at),
+        updatedAt: new Date(item.updated_at),
+        product: {
+          id: product.id,
+          nameCs: product.name_cs,
+          nameEn: product.name_en,
+          name: {
+            cs: product.name_cs,
+            en: product.name_en,
+          },
+          slug: product.slug,
+          basePrice: product.base_price,
+          images: product.images || [],
+          customizationOptions: product.customization_options || [],
+          availability: product.availability || {},
+          seoMetadata: { title: { cs: "", en: "" }, description: { cs: "", en: "" } },
+          active: true,
+          featured: false,
+          createdAt: new Date(),
+          updatedAt: new Date(),
+        } as Product,
+        unitPrice: priceCalc.unitPrice,
+        totalPrice: priceCalc.totalPrice,
+        priceBreakdown: priceCalc.priceBreakdown,
+        basePrice: priceCalc.basePrice,
+        customizationModifier: priceCalc.customizationModifier,
+      };
+    });
 
     // Calculate cart summary
     const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
@@ -121,12 +154,38 @@ export async function GET(request: NextRequest) {
       total,
     };
 
+    // Cache the cart configuration for future requests
+    try {
+      const { cacheCartConfiguration } = await import('@/lib/cache/cart-cache');
+      
+      await cacheCartConfiguration(session?.user?.id || null, sessionId, {
+        items: items as any[], // Type conversion for caching
+        totalItems: itemCount,
+        totalPrice: total,
+        lastUpdated: new Date().toISOString(),
+        version: 1
+      });
+      
+      console.log("🗄️ [API] Cart configuration cached successfully");
+    } catch (cacheError) {
+      console.error("⚠️ [API] Cache storage failed (non-critical):", cacheError);
+      // Don't fail the request if caching fails
+    }
+
+    console.log("✅ [API] Cart fetched successfully:", {
+      itemCount,
+      subtotal,
+      total,
+      itemsWithCustomizations: items.filter(item => item.customizations.length > 0).length
+    });
+
     return NextResponse.json({
       success: true,
       cart: cartSummary,
+      fromCache: false
     });
   } catch (error) {
-    console.error("Cart API error:", error);
+    console.error("💥 [API] Cart API error:", error);
     return NextResponse.json(
       {
         success: false,

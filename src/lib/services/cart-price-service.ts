@@ -47,7 +47,7 @@ export async function calculateCartItemPrice(
   quantity: number = 1
 ): Promise<CartPriceCalculationResult> {
   try {
-    console.log(`🧮 [PriceService] Calculating price for product:${productId} with ${customizations.length} customizations`);
+    console.log(`🧮 [PriceService] Calculating price for product:${productId} with ${customizations.length} customizations:`, customizations);
 
     // Check cache first
     const cachedPrice = await getCachedPriceCalculation(productId, customizations);
@@ -69,7 +69,9 @@ export async function calculateCartItemPrice(
     }
 
     // Get customization options for the product
+    console.log(`🔍 [PriceService] Fetching customization options for product:${productId}`);
     const customizationOptions = await getProductCustomizationOptions(productId);
+    console.log(`📋 [PriceService] Retrieved ${customizationOptions.length} customization options for product:${productId}`);
 
     if (!customizationOptions || customizationOptions.length === 0) {
       console.log(`⚠️ [PriceService] No customization options found for product:${productId}, using base price`);
