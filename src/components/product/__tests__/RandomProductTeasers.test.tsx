@@ -41,7 +41,7 @@ import { useTranslations } from "next-intl";
 import { useCart } from "@/lib/cart/context";
 
 // Import the actual component
-const { RandomProductTeasers } = require("../RandomProductTeasers");
+import RandomProductTeasers from "../RandomProductTeasers";
 
 const mockTranslations = {
   "featuredProducts.title": "Featured Funeral Wreaths",

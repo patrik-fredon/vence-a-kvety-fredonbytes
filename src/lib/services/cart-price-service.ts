@@ -45,7 +45,9 @@ export async function calculateCartItemPrice(
   productId: string,
   basePrice: number,
   customizations: Customization[],
-  quantity: number = 1
+  quantity: number = 1,
+  userId?: string | null,
+  sessionId?: string | null
 ): Promise<CartPriceCalculationResult> {
   try {
     console.log(`🧮 [PriceService] Calculating price for product:${productId} with ${customizations.length} customizations:`, customizations);
@@ -90,14 +92,14 @@ export async function calculateCartItemPrice(
         fromCache: false
       };
 
-      // Cache the base price calculation
+      // Cache the base price calculation with user/session tracking
       await cachePriceCalculation(productId, customizations, {
         unitPrice: basePrice,
         totalPrice: basePrice,
         basePrice,
         customizationModifier: 0,
         calculatedAt: new Date().toISOString()
-      });
+      }, userId, sessionId);
 
       return result;
     }
@@ -145,14 +147,14 @@ export async function calculateCartItemPrice(
       fromCache: false
     };
 
-    // Cache the calculation result
+    // Cache the calculation result with user/session tracking
     await cachePriceCalculation(productId, customizations, {
       unitPrice,
       totalPrice: unitPrice, // Store unit price, not total (quantity-independent)
       basePrice,
       customizationModifier: totalModifier,
       calculatedAt: new Date().toISOString()
-    });
+    }, userId, sessionId);
 
     return result;
 
@@ -189,7 +191,9 @@ export async function batchCalculateCartItemPrices(
     basePrice: number;
     customizations: Customization[];
     quantity: number;
-  }>
+  }>,
+  userId?: string | null,
+  sessionId?: string | null
 ): Promise<CartPriceCalculationResult[]> {
   try {
     console.log(`🧮 [PriceService] Batch calculating prices for ${items.length} items`);
@@ -200,7 +204,9 @@ export async function batchCalculateCartItemPrices(
           item.productId,
           item.basePrice,
           item.customizations,
-          item.quantity
+          item.quantity,
+          userId,
+          sessionId
         )
       )
     );
@@ -219,7 +225,9 @@ export async function batchCalculateCartItemPrices(
           item.productId,
           item.basePrice,
           item.customizations,
-          item.quantity
+          item.quantity,
+          userId,
+          sessionId
         );
         results.push(result);
       } catch (itemError) {

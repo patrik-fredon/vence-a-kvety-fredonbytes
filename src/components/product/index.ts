@@ -14,6 +14,31 @@ export { RibbonConfigurator } from "./RibbonConfigurator";
 export { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 export { PriceBreakdown } from "./PriceBreakdown";
 
+// Error boundary components
+export {
+  ProductComponentErrorBoundary,
+  ProductErrorFallback,
+  ProductCardErrorFallback,
+  ProductFiltersErrorFallback,
+  withProductErrorBoundary,
+} from "./ProductComponentErrorBoundary";
+
+// Error handling hooks
+export { useProductErrorHandler, withProductErrorHandling } from "./useProductErrorHandler";
+
+// Error boundary integrations
+export {
+  ProductGridWithErrorBoundary,
+  ProductFiltersWithErrorBoundary,
+  ResilientProductPage,
+} from "./ProductGridWithErrorBoundary";
+
+// Error testing utilities (development only)
+export {
+  ErrorTestingDashboard,
+  HOCErrorTest,
+} from "./ErrorTestingUtils";
+
 // Export shared types
 export type {
   ProductCardVariant,

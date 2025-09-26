@@ -85,7 +85,9 @@ export async function POST(request: NextRequest) {
       body.productId,
       basePrice,
       body.customizations || [],
-      body.quantity
+      body.quantity,
+      session?.user?.id || null,
+      sessionId
     );
 
     console.log("💰 [API] Price calculation result:", {
@@ -124,7 +126,9 @@ export async function POST(request: NextRequest) {
         body.productId,
         basePrice,
         body.customizations || [],
-        newQuantity
+        newQuantity,
+        session?.user?.id || null,
+        sessionId
       );
 
       const { data, error } = await supabase

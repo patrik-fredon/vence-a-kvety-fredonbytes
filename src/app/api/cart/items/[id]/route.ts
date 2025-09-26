@@ -2,11 +2,6 @@ import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
 import type { UpdateCartItemRequest } from "@/types/cart";
-import { cleanup } from "@testing-library/react";
-import { $ } from "node_modules/@upstash/redis/zmscore-DWj9Vh1g.mjs";
-import { cache } from "react";
-import { $ } from "node_modules/@upstash/redis/zmscore-DWj9Vh1g.mjs";
-import { $ } from "node_modules/@upstash/redis/zmscore-DWj9Vh1g.mjs";
 import { cache } from "react";
 
 interface RouteParams {
@@ -37,7 +32,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Get session ID for guest users
-    const sessionId = request.cookies.get("cart-session")?.value;
+    const sessionId = request.cookies.get("cart-session")?.value || null;
 
     if (!(session?.user?.id || sessionId)) {
       return NextResponse.json(
@@ -103,7 +98,9 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         existingItem.product_id,
         basePrice,
         existingItem.customizations || [],
-        body.quantity
+        body.quantity,
+        session?.user?.id || null,
+        sessionId
       );
 
       unitPrice = priceCalculation.unitPrice;
@@ -204,7 +201,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     const session = await auth();
 
     // Get session ID for guest users
-    const sessionId = request.cookies.get("cart-session")?.value;
+    const sessionId = request.cookies.get("cart-session")?.value || null;
 
     if (!(session?.user?.id || sessionId)) {
       return NextResponse.json(
@@ -253,7 +250,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         customizationCount: existingItem.customizations.length,
         customizations: existingItem.customizations,
         userId: session?.user?.id || null,
-        sessionId: sessionId || null,
+        sessionId: sessionId,
         timestamp: new Date().toISOString(),
       });
     }
@@ -308,9 +305,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       if (count === 0) {
         console.log(`🧹 [CartDelete] Cart is now empty, ensuring all cache is cleared`);
 
-        // Double-check cache is cleared for empty cart
-        const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
-        await forceClearCartCache(session?.user?.id || null, sessionId);
+        // Clear all cart-related cache (config + price calculations)
+        const { clearEmptyCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+        await clearEmptyCartCache(session?.user?.id || null, sessionId);
 
         // Verify cache is actually cleared
         const cacheExists = await verifyCacheOperation(session?.user?.id || null, sessionId, 'empty cart clear');
@@ -319,7 +316,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
           // Try one more time with debug info
           const { debugCacheState } = await import('@/lib/cache/cart-cache');
           await debugCacheState(session?.user?.id || null, sessionId);
-          await forceClearCartCache(session?.user?.id || null, sessionId);
+          await clearEmptyCartCache(session?.user?.id || null, sessionId);
         }
 
         console.log(`✅ [CartDelete] All cart cache cleared - cart is empty`);
@@ -331,7 +328,8 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         // Verify cache was cleared
         await verifyCacheOperation(session?.user?.id || null, sessionId, 'non-empty cart clear');
 
-        console.log(`🔄 [CartDelete] Cache cleared for non-empty cart (${count} items remaini
+        console.log(`🔄 [CartDelete] Cache cleared for non-empty cart (${count} items remaining)`);
+      }
     } catch (emptyCheckError) {
       console.error("⚠️ [CartDelete] Error checking if cart is empty:", emptyCheckError);
 
@@ -339,14 +337,14 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       try {
         const { forceClearCartCache } = await import('@/lib/cache/cart-cache');
         await forceClearCartCache(session?.user?.id || null, sessionId);
-        console.log(`🔄[CartDelete] Force cleared cache due to empty check failure`);
+        console.log(`🔄 [CartDelete] Force cleared cache due to empty check failure`);
       } catch (fallbackCacheError) {
         console.error("❌ [CartDelete] Fallback cache clear also failed:", fallbackCacheError);
       }
     }
 
     // Log successful cleanup
-    console.log(`✅[CartDelete] Successfully removed cart item ${ id } with comprehensive cache cleanup`);
+    console.log(`✅ [CartDelete] Successfully removed cart item ${id} with comprehensive cache cleanup`);
 
     return NextResponse.json({
       success: true,

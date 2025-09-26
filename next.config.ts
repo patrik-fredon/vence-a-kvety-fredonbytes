@@ -1,6 +1,7 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import path from "path";
+import { OPTIMIZE_PACKAGE_IMPORTS, WEBPACK_OPTIMIZATION, BUNDLE_ANALYZER_CONFIG } from "./src/lib/config/bundle-optimization";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -10,20 +11,12 @@ const nextConfig: NextConfig = {
     ignoreBuildErrors: true,
   },
 
-  // Server external packages (moved from experimental)
-  serverExternalPackages: ["@supabase/supabase-js"],
+  // Transpile packages for better optimization (removed serverExternalPackages to avoid conflicts with optimizePackageImports)
+  transpilePackages: [],
 
   // Enable experimental features for better performance
   experimental: {
-    optimizePackageImports: [
-      "@/components",
-      "@/lib",
-      "@/types",
-      "@headlessui/react",
-      "@heroicons/react",
-      "clsx",
-      "tailwind-merge",
-    ],
+    optimizePackageImports: OPTIMIZE_PACKAGE_IMPORTS,
     // CSS optimization for better performance
     optimizeCss: true,
   },
@@ -46,6 +39,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    qualities: [75, 85, 90, 95], // Fix for quality warnings
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
@@ -165,59 +159,28 @@ const nextConfig: NextConfig = {
 
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
+    // Bundle analyzer configuration for monitoring bundle size
+    if (process.env.ANALYZE === "true") {
+      const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
+      config.plugins.push(
+        new BundleAnalyzerPlugin({
+          ...BUNDLE_ANALYZER_CONFIG,
+          reportFilename: BUNDLE_ANALYZER_CONFIG.reportFilename(isServer),
+          statsFilename: BUNDLE_ANALYZER_CONFIG.statsFilename(isServer),
+        })
+      );
+    }
     // Optimize bundle size in production
     if (!(dev || isServer)) {
-      // Enhanced code splitting configuration
-      config.optimization.splitChunks = {
-        chunks: "all",
-        minSize: 20000,
-        maxSize: 244000,
-        cacheGroups: {
-          // Vendor libraries
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendors",
-            chunks: "all",
-            priority: 10,
-          },
-          // React and React DOM
-          react: {
-            test: /[\\/]node_modules[\\/](react|react-dom)[\\/]/,
-            name: "react",
-            chunks: "all",
-            priority: 20,
-          },
-          // UI libraries
-          ui: {
-            test: /[\\/]node_modules[\\/](@headlessui|@heroicons)[\\/]/,
-            name: "ui-libs",
-            chunks: "all",
-            priority: 15,
-          },
-          // Supabase
-          supabase: {
-            test: /[\\/]node_modules[\\/]@supabase[\\/]/,
-            name: "supabase",
-            chunks: "all",
-            priority: 15,
-          },
-          // Common components
-          components: {
-            test: /[\\/]src[\\/]components[\\/]/,
-            name: "components",
-            chunks: "all",
-            minChunks: 2,
-            priority: 5,
-          },
-        },
-      };
+      // Enhanced code splitting configuration using centralized config
+      config.optimization.splitChunks = WEBPACK_OPTIMIZATION.splitChunks;
 
       // Tree-shaking optimizations
-      config.optimization.usedExports = true;
-      config.optimization.sideEffects = false;
+      config.optimization.usedExports = WEBPACK_OPTIMIZATION.usedExports;
+      config.optimization.sideEffects = WEBPACK_OPTIMIZATION.sideEffects;
 
       // Module concatenation for better tree-shaking
-      config.optimization.concatenateModules = true;
+      config.optimization.concatenateModules = WEBPACK_OPTIMIZATION.concatenateModules;
     }
 
     // Resolve alias for better tree-shaking

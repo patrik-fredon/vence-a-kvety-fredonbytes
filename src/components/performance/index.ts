@@ -23,9 +23,11 @@ export {
   getImageOptimizations,
   getPerformanceConfig,
 } from "@/lib/performance/resource-hints";
+export { ImagePerformanceMonitor } from "./ImagePerformanceMonitor";
 export {
   PerformanceMonitor,
   PerformanceSummary,
   usePerformanceMetrics,
 } from "./PerformanceMonitor";
 export { CriticalCSS, ResourceHints } from "./ResourceHints";
+export { CoreWebVitalsProvider, useCoreWebVitalsContext, withCoreWebVitals } from './CoreWebVitalsProvider';

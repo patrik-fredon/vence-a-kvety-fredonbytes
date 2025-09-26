@@ -6,7 +6,9 @@ import { useTranslations } from "next-intl";
 import React, { useCallback, useMemo, useState, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { useAnimationSequence } from "@/components/cart/hooks";
+import { useImagePerformance } from "@/lib/hooks/useImagePerformance";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
@@ -31,6 +33,17 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [isAddingToCart, setIsAddingToCart] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  // Performance tracking for main image
+  const currentImage = useMemo(
+    () => product.images[selectedImageIndex] || product.images[0],
+    [product.images, selectedImageIndex]
+  );
+
+  const imagePerformance = useImagePerformance(currentImage?.url || "", {
+    enabled: true,
+    logMetrics: process.env.NODE_ENV === "development",
+  });
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
@@ -156,11 +169,6 @@ export const ProductQuickView = React.memo(function ProductQuickView({
     }
   }, [product, onAddToCart, onClose, isAddingToCart, t, startProductToCartAnimation]);
 
-  const currentImage = useMemo(
-    () => product.images[selectedImageIndex] || product.images[0],
-    [product.images, selectedImageIndex]
-  );
-
   const handleImageSelect = useCallback((index: number) => {
     setSelectedImageIndex(index);
   }, []);
@@ -208,16 +216,19 @@ export const ProductQuickView = React.memo(function ProductQuickView({
         <div className="flex-1">
           <div ref={productImageRef} className="aspect-square bg-stone-100 rounded-lg overflow-hidden mb-4">
             {currentImage && (
-              <Image
+              <OptimizedImage
                 src={currentImage.url}
                 alt={currentImage.alt || productName}
                 width={400}
                 height={400}
+                variant="hero" // High quality for modal images
                 className="w-full h-full object-cover"
-                priority={true}
-                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                priority={true} // Quick view images are always priority
+                loading="eager"
+                quality={90} // High quality for detailed view
                 placeholder="blur"
-                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
+                onLoad={() => imagePerformance.markLoaded()}
+                onError={() => imagePerformance.markError()}
               />
             )}
           </div>
@@ -237,14 +248,16 @@ export const ProductQuickView = React.memo(function ProductQuickView({
                       : "border-stone-200 hover:border-stone-300"
                   )}
                 >
-                  <Image
+                  <OptimizedImage
                     src={image.url}
                     alt={image.alt || `${productName} ${index + 1}`}
                     width={64}
                     height={64}
+                    variant="thumbnail"
                     className="w-full h-full object-cover"
-                    sizes="64px"
-                    loading="lazy"
+                    loading="lazy" // Thumbnails are always lazy loaded
+                    priority={false}
+                    quality={70} // Lower quality for small thumbnails
                   />
                 </button>
               ))}
