@@ -5,6 +5,7 @@ import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from 
 import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
+import { useImageOptimization } from "@/lib/hooks/useImageOptimization";
 import { cn } from "@/lib/utils";
 import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";
 import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
@@ -54,6 +55,13 @@ const ProductGrid = React.memo(function ProductGrid({
   // Updated constants for initial display optimization
   const INITIAL_PRODUCTS_COUNT = 6;
   const PRODUCTS_PER_PAGE = 12; // Keep API pagination at 12 for efficiency
+
+  // Image optimization hook for managing priority loading and lazy loading
+  const imageOptimization = useImageOptimization({
+    priorityCount: INITIAL_PRODUCTS_COUNT, // First 6 products get priority loading
+    enableLazyLoading: true,
+    rootMargin: "100px", // Start loading images 100px before they come into view
+  });
 
   // Ref to track ongoing requests for cleanup
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -374,18 +382,18 @@ const ProductGrid = React.memo(function ProductGrid({
               className={cn(
                 viewMode === "grid"
                   ? // Clean, minimal responsive grid
-                    "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+                  "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
                   : // List view: Clean single column layout
-                    "flex flex-col gap-6 mb-12"
+                  "flex flex-col gap-6 mb-12"
               )}
             >
-              {displayedProducts.map((product) => (
+              {displayedProducts.map((product, index) => (
                 <ProductCard
                   key={product.id}
                   product={product}
                   locale={locale}
                   onAddToCart={handleAddToCart}
-                  featured={product.featured}
+                  featured={product.featured || imageOptimization.shouldPrioritize(index)} // Prioritize first 6 products
                   viewMode={viewMode}
                   className="transition-all duration-200 hover:scale-[1.02]"
                 />

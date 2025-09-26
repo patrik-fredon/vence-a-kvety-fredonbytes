@@ -265,22 +265,22 @@ export function printValidationInstructions(): void {
       console.log(`${index + 1}. ${instruction}`);
     });
 
-    if ('checklistItems' in section
-      console.locklist: ");
-    section.checklistItems.forEach((item) => {
-      console.log(`  ☐ ${item}`);
-    });
-  }
+    if ('checklistItems' in section) {
+      console.log("Checklist:");
+      section.checklistItems.forEach((item) => {
+        console.log(`  ☐ ${item}`);
+      });
+    }
 
     if ('automatedCheck' in section) {
-    console.log(`\nAutomated Check: ${section.automatedCheck}`);
-  }
-});
+      console.log(`\nAutomated Check: ${section.automatedCheck}`);
+    }
+  });
 
-console.log("\n" + "=".repeat(60));
-console.log("💡 To run automated color contrast validation:");
-console.log("   import { runColorContrastValidation } from './ProductFilters.accessibility.validation';");
-console.log("   runColorContrastValidation();");
+  console.log("\n" + "=".repeat(60));
+  console.log("💡 To run automated color contrast validation:");
+  console.log("   import { runColorContrastValidation } from './ProductFilters.accessibility.validation';");
+  console.log("   runColorContrastValidation();");
 }
 
 /**

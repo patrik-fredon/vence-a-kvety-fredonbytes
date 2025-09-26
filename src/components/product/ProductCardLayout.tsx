@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
+import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
@@ -199,15 +200,16 @@ export function ProductCardLayout({
     }
   };
 
-  // Render product image
+  // Render product image with optimized loading
   const renderImage = () => (
     <div className={getImageContainerStyles()}>
       {primaryImage && (
         <>
-          <Image
+          <OptimizedImage
             src={primaryImage.url}
             alt={primaryImage.alt || productName}
             fill
+            variant={variant === "list" ? "thumbnail" : "product"}
             sizes={
               variant === "list"
                 ? "96px"
@@ -215,25 +217,31 @@ export function ProductCardLayout({
             }
             className={cn(
               "object-cover transition-all duration-500",
-              imageLoading && "blur-sm",
               variant !== "list" && isHovered && secondaryImage && "opacity-0"
             )}
             onLoad={() => setImageLoading(false)}
-            priority={featured}
+            priority={featured || loading === false} // Prioritize featured products and initially visible items
+            loading={featured ? "eager" : "lazy"}
+            quality={variant === "list" ? 75 : 85} // Lower quality for thumbnails
+            placeholder="blur"
           />
 
-          {/* Secondary image on hover for grid/teaser variants */}
+          {/* Secondary image on hover for grid/teaser variants with lazy loading */}
           {variant !== "list" && secondaryImage && (
-            <Image
+            <OptimizedImage
               src={secondaryImage.url}
               alt={secondaryImage.alt || productName}
               fill
+              variant="product"
               sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
               className={cn(
                 "object-cover transition-all duration-500 absolute inset-0",
                 !isHovered && "opacity-0"
               )}
-              priority={false}
+              priority={false} // Secondary images are never priority
+              loading="lazy" // Always lazy load secondary images
+              quality={80}
+              placeholder="blur"
             />
           )}
         </>

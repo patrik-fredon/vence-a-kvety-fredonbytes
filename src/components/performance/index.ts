@@ -23,6 +23,7 @@ export {
   getImageOptimizations,
   getPerformanceConfig,
 } from "@/lib/performance/resource-hints";
+export { ImagePerformanceMonitor } from "./ImagePerformanceMonitor";
 export {
   PerformanceMonitor,
   PerformanceSummary,
