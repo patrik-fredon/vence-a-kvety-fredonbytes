@@ -391,6 +391,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                   {isRibbonSelected && (
                     <LazyRibbonConfigurator
                       isVisible={isRibbonSelected}
+                      isRibbonSelected={isRibbonSelected}
                       colorOption={ribbonColorOption}
                       textOption={ribbonTextOption}
                       customizations={customizations}

@@ -59,11 +59,11 @@ export function validateWreathCustomizations(
     }
   }
 
-  // 2. Check if ribbon is selected
+  // 2. Check if ribbon is selected - specifically check for "ribbon_yes" choice
   const ribbonCustomization = customizations.find(
     (c) => c.optionId === ribbonOption?.id
   );
-  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.length > 0;
+  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
 
   // 3. Validate ribbon dependency requirements
   if (isRibbonSelected) {
@@ -283,7 +283,7 @@ export function validateRibbonDependencies(
   }
 
   const ribbonCustomization = customizations.find(c => c.optionId === ribbonOption.id);
-  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.length > 0;
+  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
 
   if (isRibbonSelected) {
     // Check ribbon color
@@ -351,13 +351,13 @@ export const WREATH_VALIDATION_MESSAGES = {
     sizeRequired: "Prosím vyberte velikost věnce před přidáním do košíku",
     sizeInvalid: "Vybraná velikost není dostupná",
     sizeUnavailable: "Vybraná velikost není momentálně k dispozici",
-    
+
     // Ribbon validation messages
     ribbonColorRequired: "Při výběru stuhy je nutné zvolit barvu",
     ribbonTextRequired: "Při výběru stuhy je nutné zvolit text",
     ribbonColorInvalid: "Vybraná barva stuhy není dostupná",
     ribbonTextInvalid: "Vybraný text stuhy není dostupný",
-    
+
     // Custom text validation messages
     customTextEmpty: "Vlastní text nemůže být prázdný",
     customTextTooLong: "Vlastní text může mít maximálně 50 znaků",
@@ -366,20 +366,20 @@ export const WREATH_VALIDATION_MESSAGES = {
     customTextWarning: "Text se blíží maximální délce",
     customTextForbiddenWords: "Text obsahuje zakázaná slova",
     customTextSpecialCharsOnly: "Text musí obsahovat alespoň jedno písmeno",
-    
+
     // General validation messages
     fieldRequired: "Pole je povinné",
     minSelections: "Vyžaduje minimálně {min} výběrů",
     maxSelections: "Umožňuje maximálně {max} výběrů",
     invalidSelection: "Neplatný výběr",
     optionUnavailable: "Možnost není k dispozici",
-    
+
     // System error messages
     validationFailed: "Ověření konfigurace selhalo",
     systemError: "Došlo k systémové chybě, zkuste to prosím znovu",
     networkError: "Chyba připojení, zkontrolujte internetové připojení",
     sessionExpired: "Relace vypršela, obnovte prosím stránku",
-    
+
     // Recovery messages
     tryAgain: "Zkusit znovu",
     refreshPage: "Obnovit stránku",
@@ -391,13 +391,13 @@ export const WREATH_VALIDATION_MESSAGES = {
     sizeRequired: "Please select wreath size before adding to cart",
     sizeInvalid: "Selected size is not available",
     sizeUnavailable: "Selected size is currently unavailable",
-    
+
     // Ribbon validation messages
     ribbonColorRequired: "Ribbon color selection is required when adding ribbon",
     ribbonTextRequired: "Ribbon text selection is required when adding ribbon",
     ribbonColorInvalid: "Selected ribbon color is not available",
     ribbonTextInvalid: "Selected ribbon text is not available",
-    
+
     // Custom text validation messages
     customTextEmpty: "Custom text cannot be empty",
     customTextTooLong: "Custom text can have maximum 50 characters",
@@ -406,20 +406,20 @@ export const WREATH_VALIDATION_MESSAGES = {
     customTextWarning: "Text is approaching maximum length",
     customTextForbiddenWords: "Text contains forbidden words",
     customTextSpecialCharsOnly: "Text must contain at least one letter",
-    
+
     // General validation messages
     fieldRequired: "Field is required",
     minSelections: "Requires at least {min} selections",
     maxSelections: "Allows maximum {max} selections",
     invalidSelection: "Invalid selection",
     optionUnavailable: "Option is not available",
-    
+
     // System error messages
     validationFailed: "Configuration validation failed",
     systemError: "A system error occurred, please try again",
     networkError: "Connection error, please check your internet connection",
     sessionExpired: "Session expired, please refresh the page",
-    
+
     // Recovery messages
     tryAgain: "Try again",
     refreshPage: "Refresh page",
@@ -475,7 +475,7 @@ export function validateWreathConfigurationEnhanced(
   } = {}
 ): EnhancedWreathValidationResult {
   const { locale = 'cs', strictMode = false, enableRecovery = true, enableFallback = true } = options;
-  
+
   // Run basic validation first
   const basicResult = validateWreathConfiguration(
     customizations,
@@ -509,7 +509,7 @@ export function validateWreathConfigurationEnhanced(
       selectedSize,
       enhancedErrors
     );
-    
+
     // If fallback is available, user can proceed with warnings
     if (fallbackConfiguration) {
       canProceed = true;
@@ -649,7 +649,7 @@ function generateFallbackConfiguration(
           if (sizeOption && sizeOption.choices && sizeOption.choices.length > 0) {
             const existingSizeIndex = fallbackCustomizations.findIndex(c => c.optionId === sizeOption.id);
             const defaultSize = sizeOption.choices[0].id;
-            
+
             if (existingSizeIndex >= 0) {
               fallbackCustomizations[existingSizeIndex].choiceIds = [defaultSize];
             } else {

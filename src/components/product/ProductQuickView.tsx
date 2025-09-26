@@ -3,9 +3,10 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import React, { useCallback, useMemo, useState, useRef } from "react";
 import { Button } from "@/components/ui/Button";
 import { Modal } from "@/components/ui/Modal";
+import { useAnimationSequence } from "@/components/cart/hooks";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
@@ -17,7 +18,7 @@ interface ProductQuickViewProps {
   onAddToCart?: (product: Product) => void;
 }
 
-export function ProductQuickView({
+export const ProductQuickView = React.memo(function ProductQuickView({
   product,
   locale,
   isOpen,
@@ -26,42 +27,197 @@ export function ProductQuickView({
 }: ProductQuickViewProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
+  const { startProductToCartAnimation } = useAnimationSequence();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [quantity, setQuantity] = useState(1);
+  const [isAddingToCart, setIsAddingToCart] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
-  const formatPrice = (price: number) => {
-    return tCurrency("format", {
-      amount: price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US"),
-    });
-  };
+  // Refs for animation
+  const productImageRef = useRef<HTMLDivElement>(null);
+  const addToCartButtonRef = useRef<HTMLButtonElement>(null);
 
-  const handleAddToCart = () => {
-    onAddToCart?.(product);
-    onClose();
-  };
+  // Optimized price formatting with useMemo for expensive calculations
+  const formatPrice = useMemo(() => {
+    return (price: number) => {
+      return tCurrency("format", {
+        amount: price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US"),
+      });
+    };
+  }, [tCurrency, locale]);
 
-  const currentImage = product.images[selectedImageIndex] || product.images[0];
+  // Memoize formatted prices to avoid recalculation on every render
+  const formattedFinalPrice = useMemo(() => {
+    return formatPrice(product.finalPrice || product.basePrice);
+  }, [formatPrice, product.finalPrice, product.basePrice]);
+
+  const formattedBasePrice = useMemo(() => {
+    return product.finalPrice && product.finalPrice < product.basePrice
+      ? formatPrice(product.basePrice)
+      : null;
+  }, [formatPrice, product.finalPrice, product.basePrice]);
+
+  // Optimized event handlers with useCallback to prevent function recreation
+  const handleAddToCart = useCallback(async () => {
+    if (!product.availability.inStock || isAddingToCart) return;
+
+    setIsAddingToCart(true);
+    setError(null);
+
+    try {
+      if (onAddToCart) {
+        await onAddToCart(product);
+
+        // Trigger cart animation
+        console.log('🛒 [ProductQuickView] Attempting to trigger cart animation');
+        if (productImageRef.current && addToCartButtonRef.current) {
+          // Try multiple selectors to find the cart icon
+          let cartIcon = document.querySelector('[href*="/cart"]') as HTMLElement;
+
+          if (!cartIcon) {
+            // Try alternative selectors
+            cartIcon = document.querySelector('[data-cart-icon]') as HTMLElement;
+          }
+
+          if (!cartIcon) {
+            // Try finding by aria-label or text content
+            cartIcon = document.querySelector('[aria-label*="cart" i], [aria-label*="košík" i]') as HTMLElement;
+          }
+
+          if (!cartIcon) {
+            // Try finding cart button or link
+            cartIcon = document.querySelector('button[class*="cart" i], a[class*="cart" i]') as HTMLElement;
+          }
+
+          if (!cartIcon) {
+            // Try finding by SVG or icon that might represent cart
+            cartIcon = document.querySelector('svg[class*="cart" i]')?.closest('button, a') as HTMLElement;
+          }
+
+          console.log('🛒 [ProductQuickView] Cart icon found:', !!cartIcon, cartIcon?.tagName, cartIcon?.className);
+
+          if (cartIcon) {
+            // Get the product image source
+            const productImage = productImageRef.current.querySelector('img');
+            const imageSrc = productImage?.src || product.images?.[0]?.url || '';
+
+            console.log('🛒 [ProductQuickView] Starting animation with:', {
+              productElement: productImageRef.current.tagName,
+              cartIcon: cartIcon.tagName,
+              cartIconClass: cartIcon.className,
+              imageSrc: imageSrc?.substring(0, 50) + '...'
+            });
+
+            startProductToCartAnimation(
+              productImageRef.current,
+              cartIcon,
+              imageSrc
+            );
+
+            // Fallback visual feedback - simple scale animation on the product image
+            if (productImageRef.current) {
+              const originalTransform = productImageRef.current.style.transform;
+              productImageRef.current.style.transition = 'transform 300ms ease-out';
+              productImageRef.current.style.transform = 'scale(0.95)';
+
+              setTimeout(() => {
+                if (productImageRef.current) {
+                  productImageRef.current.style.transform = originalTransform;
+                  setTimeout(() => {
+                    if (productImageRef.current) {
+                      productImageRef.current.style.transition = '';
+                    }
+                  }, 300);
+                }
+              }, 150);
+            }
+          } else {
+            console.warn('🛒 [ProductQuickView] Cart icon not found in DOM. Available elements:', {
+              linksWithCart: document.querySelectorAll('[href*="/cart"]').length,
+              elementsWithCartClass: document.querySelectorAll('[class*="cart" i]').length,
+              elementsWithCartAria: document.querySelectorAll('[aria-label*="cart" i]').length
+            });
+          }
+        } else {
+          console.warn('🛒 [ProductQuickView] Missing refs:', {
+            productImageRef: !!productImageRef.current,
+            addToCartButtonRef: !!addToCartButtonRef.current
+          });
+        }
+
+        // Close modal after animation starts (increased delay)
+        setTimeout(() => {
+          onClose();
+        }, 800); // Longer delay to ensure animation starts and is visible
+      }
+    } catch (err) {
+      setError(err instanceof Error ? err.message : t("addToCartError"));
+    } finally {
+      setIsAddingToCart(false);
+    }
+  }, [product, onAddToCart, onClose, isAddingToCart, t, startProductToCartAnimation]);
+
+  const currentImage = useMemo(
+    () => product.images[selectedImageIndex] || product.images[0],
+    [product.images, selectedImageIndex]
+  );
+
+  const handleImageSelect = useCallback((index: number) => {
+    setSelectedImageIndex(index);
+  }, []);
+
+  // Memoize product name for current locale to avoid repeated object access
+  const productName = useMemo(() => {
+    return product.name[locale as keyof typeof product.name];
+  }, [product.name, locale]);
+
+  // Memoize product description for current locale
+  const productDescription = useMemo(() => {
+    return product.description?.[locale as keyof typeof product.description];
+  }, [product.description, locale]);
+
+  // Memoize category name for current locale
+  const categoryName = useMemo(() => {
+    return product.category?.name[locale as keyof typeof product.category.name];
+  }, [product.category, locale]);
+
+  // Memoize availability status text
+  const availabilityText = useMemo(() => {
+    if (!product.availability.inStock) return t("outOfStock");
+    if (product.availability.stockQuantity && product.availability.stockQuantity <= 5) {
+      return t("limitedStock");
+    }
+    return t("inStock");
+  }, [product.availability.inStock, product.availability.stockQuantity, t]);
+
+  // Memoize availability styles
+  const availabilityStyles = useMemo(() => ({
+    dotColor: product.availability.inStock ? "bg-green-500" : "bg-red-500",
+    textColor: product.availability.inStock ? "text-green-700" : "text-red-700"
+  }), [product.availability.inStock]);
 
   return (
     <Modal
       isOpen={isOpen}
       onClose={onClose}
-      title={product.name[locale as keyof typeof product.name]}
+      title={productName}
       size="xl"
       className="max-w-4xl"
     >
       <div className="flex flex-col lg:flex-row gap-6 p-6">
         {/* Image Gallery */}
         <div className="flex-1">
-          <div className="aspect-square bg-stone-100 rounded-lg overflow-hidden mb-4">
+          <div ref={productImageRef} className="aspect-square bg-stone-100 rounded-lg overflow-hidden mb-4">
             {currentImage && (
               <Image
                 src={currentImage.url}
-                alt={currentImage.alt || product.name[locale as keyof typeof product.name]}
+                alt={currentImage.alt || productName}
                 width={400}
                 height={400}
                 className="w-full h-full object-cover"
-                priority
+                priority={true}
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 400px"
+                placeholder="blur"
+                blurDataURL="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQAAAQABAAD/2wBDAAYEBQYFBAYGBQYHBwYIChAKCgkJChQODwwQFxQYGBcUFhYaHSUfGhsjHBYWICwgIyYnKSopGR8tMC0oMCUoKSj/2wBDAQcHBwoIChMKChMoGhYaKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCgoKCj/wAARCAABAAEDASIAAhEBAxEB/8QAFQABAQAAAAAAAAAAAAAAAAAAAAv/xAAUEAEAAAAAAAAAAAAAAAAAAAAA/8QAFQEBAQAAAAAAAAAAAAAAAAAAAAX/xAAUEQEAAAAAAAAAAAAAAAAAAAAA/9oADAMBAAIRAxEAPwCdABmX/9k="
               />
             )}
           </div>
@@ -71,8 +227,9 @@ export function ProductQuickView({
             <div className="flex gap-2 overflow-x-auto">
               {product.images.map((image, index) => (
                 <button
+                  type="button"
                   key={image.id || index}
-                  onClick={() => setSelectedImageIndex(index)}
+                  onClick={() => handleImageSelect(index)}
                   className={cn(
                     "flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-colors",
                     selectedImageIndex === index
@@ -82,13 +239,12 @@ export function ProductQuickView({
                 >
                   <Image
                     src={image.url}
-                    alt={
-                      image.alt ||
-                      `${product.name[locale as keyof typeof product.name]} ${index + 1}`
-                    }
+                    alt={image.alt || `${productName} ${index + 1}`}
                     width={64}
                     height={64}
                     className="w-full h-full object-cover"
+                    sizes="64px"
+                    loading="lazy"
                   />
                 </button>
               ))}
@@ -99,9 +255,9 @@ export function ProductQuickView({
         {/* Product Details */}
         <div className="flex-1 space-y-4">
           {/* Category */}
-          {product.category && (
+          {categoryName && (
             <p className="text-sm text-stone-500">
-              {product.category.name[locale as keyof typeof product.category.name]}
+              {categoryName}
             </p>
           )}
 
@@ -109,11 +265,11 @@ export function ProductQuickView({
           <div className="space-y-1">
             <div className="flex items-center gap-3">
               <span className="text-2xl font-semibold text-stone-900">
-                {formatPrice(product.finalPrice || product.basePrice)}
+                {formattedFinalPrice}
               </span>
-              {product.finalPrice && product.finalPrice < product.basePrice && (
+              {formattedBasePrice && (
                 <span className="text-lg text-stone-500 line-through">
-                  {formatPrice(product.basePrice)}
+                  {formattedBasePrice}
                 </span>
               )}
             </div>
@@ -125,71 +281,34 @@ export function ProductQuickView({
           </div>
 
           {/* Description */}
-          {product.description?.[locale as keyof typeof product.description] && (
+          {productDescription && (
             <div className="space-y-2">
               <h3 className="font-medium text-stone-900">{t("description")}</h3>
               <p className="text-sm text-stone-600 leading-relaxed">
-                {product.description[locale as keyof typeof product.description]}
+                {productDescription}
               </p>
             </div>
           )}
 
           {/* Availability */}
           <div className="flex items-center gap-2">
-            <div
-              className={cn(
-                "w-2 h-2 rounded-full",
-                product.availability.inStock ? "bg-green-500" : "bg-red-500"
-              )}
-            />
-            <span
-              className={cn(
-                "text-sm font-medium",
-                product.availability.inStock ? "text-green-700" : "text-red-700"
-              )}
-            >
-              {product.availability.inStock
-                ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
-                  ? t("limitedStock")
-                  : t("inStock")
-                : t("outOfStock")}
+            <div className={cn("w-2 h-2 rounded-full", availabilityStyles.dotColor)} />
+            <span className={cn("text-sm font-medium", availabilityStyles.textColor)}>
+              {availabilityText}
             </span>
           </div>
 
-          {/* Quantity Selector */}
-          {product.availability.inStock && (
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-stone-900">{t("quantity")}</label>
-              <div className="flex items-center gap-3">
-                <button
-                  onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                  className="w-8 h-8 rounded-md border border-stone-300 flex items-center justify-center hover:bg-stone-50 transition-colors"
-                  aria-label={t("decreaseQuantity")}
-                >
-                  -
-                </button>
-                <span className="w-12 text-center font-medium">{quantity}</span>
-                <button
-                  onClick={() => setQuantity(quantity + 1)}
-                  className="w-8 h-8 rounded-md border border-stone-300 flex items-center justify-center hover:bg-stone-50 transition-colors"
-                  aria-label={t("increaseQuantity")}
-                >
-                  +
-                </button>
-              </div>
+          {/* Error Display */}
+          {error && (
+            <div className="p-3 bg-red-50 border border-red-200 rounded-md">
+              <p className="text-sm text-red-700">{error}</p>
             </div>
           )}
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
-            <Button
-              onClick={handleAddToCart}
-              disabled={!product.availability.inStock}
-              className="flex-1"
-              size="lg"
-            >
-              {product.availability.inStock ? t("addToCart") : t("outOfStock")}
-            </Button>
+
+
             <Link
               href={`/${locale}/products/${product.slug}`}
               className={cn(
@@ -205,4 +324,4 @@ export function ProductQuickView({
       </div>
     </Modal>
   );
-}
+});

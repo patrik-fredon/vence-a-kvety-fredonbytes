@@ -103,6 +103,7 @@ export function CartAnimationProvider({ children, config = {} }: CartAnimationPr
     });
 
     console.log('🎬 [CartAnimationProvider] Animation state updated, ProductToCartAnimation should render');
+    console.log('🎬 [CartAnimationProvider] Current animation data:', { productElement: productElement?.tagName, cartElement: cartElement?.tagName });
   }, []);
 
   const updateAnimationStep = useCallback((step: AnimationStep) => {

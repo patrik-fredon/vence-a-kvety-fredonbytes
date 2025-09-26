@@ -44,7 +44,9 @@ export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
 
       // Start the animation sequence
       console.log('🎯 [useAnimationSequence] Calling startAnimation from context');
+      console.log('🎯 [useAnimationSequence] Animation state before start:', state);
       startAnimation(productElement, cartElement, productImageSrc);
+      console.log('🎯 [useAnimationSequence] startAnimation called successfully');
     },
     [startAnimation, options.skipReducedMotion, state.isAnimating]
   );

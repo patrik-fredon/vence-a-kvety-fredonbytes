@@ -161,7 +161,7 @@ export function validateWreathCustomizations(
   // 1. Validate mandatory size selection
   if (sizeOption?.required && !selectedSize) {
     errors.push(
-      locale === 'cs' 
+      locale === 'cs'
         ? "Prosím vyberte velikost věnce před přidáním do košíku"
         : "Please select wreath size before adding to cart"
     );
@@ -183,7 +183,7 @@ export function validateWreathCustomizations(
   const ribbonCustomization = customizations.find(
     (c) => c.optionId === ribbonOption?.id
   );
-  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.length > 0;
+  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
 
   // 3. Validate ribbon dependency requirements
   if (isRibbonSelected) {
@@ -206,8 +206,8 @@ export function validateWreathCustomizations(
       const textCustomization = customizations.find(
         (c) => c.optionId === ribbonTextOption.id
       );
-      if (!textCustomization || 
-          (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)) {
+      if (!textCustomization ||
+        (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)) {
         errors.push(
           locale === 'cs'
             ? "Při výběru stuhy je nutné zvolit text"
@@ -231,9 +231,9 @@ export function validateWreathCustomizations(
   customizationOptions.forEach((option) => {
     // Skip size and ribbon-related options as they're handled above
     if (option.type === "size" || option.id === "size" ||
-        option.type === "ribbon" || option.id === "ribbon" ||
-        option.type === "ribbon_color" || option.id === "ribbon_color" ||
-        option.type === "ribbon_text" || option.id === "ribbon_text") {
+      option.type === "ribbon" || option.id === "ribbon" ||
+      option.type === "ribbon_color" || option.id === "ribbon_color" ||
+      option.type === "ribbon_text" || option.id === "ribbon_text") {
       return;
     }
 
@@ -297,7 +297,7 @@ export function validateCustomRibbonText(
 
   // Sanitize and validate length
   const sanitizedText = sanitizeCustomText(customText);
-  
+
   if (sanitizedText.length > 50) {
     errors.push(
       locale === 'cs'
@@ -347,7 +347,7 @@ export function validateCustomRibbonText(
 
 export function sanitizeCustomText(text: string): string {
   if (!text) return '';
-  
+
   return text
     .trim()
     .replace(/\s+/g, ' ') // Replace multiple spaces with single space
@@ -403,7 +403,7 @@ export function validateRibbonDependencies(
   }
 
   const ribbonCustomization = customizations.find(c => c.optionId === ribbonOption.id);
-  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.length > 0;
+  const isRibbonSelected = ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
 
   if (isRibbonSelected) {
     // Check ribbon color
@@ -421,8 +421,8 @@ export function validateRibbonDependencies(
     // Check ribbon text
     if (ribbonTextOption) {
       const textCustomization = customizations.find(c => c.optionId === ribbonTextOption.id);
-      if (!textCustomization || 
-          (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)) {
+      if (!textCustomization ||
+        (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)) {
         errors.push(
           locale === 'cs'
             ? "Text stuhy je povinný při výběru stuhy"
@@ -460,7 +460,7 @@ export function validateWreathConfiguration(
   options: WreathValidationOptions = {}
 ): WreathValidationResult {
   const { locale = 'cs', strictMode = false } = options;
-  
+
   const result = validateWreathCustomizations(
     customizations,
     customizationOptions,

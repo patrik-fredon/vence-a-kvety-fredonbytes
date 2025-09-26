@@ -280,7 +280,6 @@ export function ProductCard({
                 {/* QuickView Icon Button */}
                 <Button
                   size="sm"
-                  variant="light"
                   isIconOnly
                   className="bg-stone-100/80 hover:bg-stone-200/80 text-stone-700 min-w-8 h-8"
                   onClick={handleQuickView}

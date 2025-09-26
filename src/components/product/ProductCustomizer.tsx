@@ -1,6 +1,6 @@
 "use client";
 
-import { CheckIcon } from "@heroicons/react/24/outline";
+
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCallback } from "react";
@@ -171,20 +171,23 @@ export function ProductCustomizer({
         type="button"
         onClick={() => handleChoiceSelection(option.id, choice.id, option)}
         className={cn(
-          "flex items-center justify-between p-3 border rounded-lg transition-colors",
+          "flex items-center justify-between p-3 border rounded-lg transition-colors text-left",
+          "focus:outline-none focus:ring-2 focus:ring-stone-950 focus:ring-offset-2",
           isSelected
-            ? "border-primary-500 bg-primary-50 text-primary-900"
-            : "border-neutral-300 bg-white hover:border-neutral-400 hover:bg-neutral-50"
+            ? "border-stone-900 bg-stone-50 text-stone-900"
+            : "border-stone-300 bg-white hover:border-stone-400 hover:bg-stone-50"
         )}
       >
         <div className="flex items-center space-x-3">
           <div
             className={cn(
-              "w-5 h-5 rounded-full border-2 flex items-center justify-center",
-              isSelected ? "border-primary-500 bg-primary-500" : "border-neutral-300"
+              "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
+              isSelected ? "border-stone-900" : "border-stone-300"
             )}
           >
-            {isSelected && <CheckIcon className="w-3 h-3 text-white" />}
+            {isSelected && (
+              <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />
+            )}
           </div>
           <div className="text-left">
             <div className="font-medium">{choice.label[locale as keyof typeof choice.label]}</div>

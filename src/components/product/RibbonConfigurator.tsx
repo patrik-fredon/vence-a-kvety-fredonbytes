@@ -1,8 +1,7 @@
 "use client";
 
-import { CheckIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { useCallback, useState, useEffect } from "react";
+import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils/price-calculator";
 import { validateCustomRibbonText } from "@/lib/validation/wreath";
@@ -27,6 +26,8 @@ export interface RibbonConfiguratorProps {
   locale: string;
   /** Optional CSS class */
   className?: string;
+  /** Whether ribbon is actually selected (for conditional requirements) */
+  isRibbonSelected?: boolean;
 }
 
 
@@ -39,6 +40,7 @@ export function RibbonConfigurator({
   onCustomizationChange,
   locale,
   className,
+  isRibbonSelected = false,
 }: RibbonConfiguratorProps) {
   const t = useTranslations("product");
   const tAccessibility = useTranslations("accessibility");
@@ -68,7 +70,8 @@ export function RibbonConfigurator({
       if (existingIndex >= 0) {
         const existing = newCustomizations[existingIndex]!;
 
-        if (option.maxSelections === 1) {
+        // For text options, always enforce single selection (maxSelections = 1)
+        if (option.maxSelections === 1 || option.type === 'ribbon_text' || option.id === 'ribbon_text') {
           // Single selection - replace
           existing.choiceIds = [choiceId];
           // Clear custom value when selecting predefined option
@@ -157,11 +160,13 @@ export function RibbonConfigurator({
             <div
               className={cn(
                 "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-                isSelected ? "border-stone-900 bg-stone-900" : "border-stone-300"
+                isSelected ? "border-stone-900" : "border-stone-300"
               )}
               aria-hidden="true"
             >
-              {isSelected && <CheckIcon className="w-3 h-3 text-white" />}
+              {isSelected && (
+                <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />
+              )}
             </div>
             <div className="text-left">
               <div id={`${choiceId}-label`} className="font-medium">
@@ -369,15 +374,15 @@ export function RibbonConfigurator({
               className="grid grid-cols-2 gap-3"
               role={colorOption.maxSelections === 1 ? "radiogroup" : "group"}
               aria-labelledby={`${colorOption.id}-title`}
-              aria-required={colorOption.required}
+              aria-required={colorOption.required && isRibbonSelected}
             >
               {(colorOption.choices || []).map((choice, index) =>
                 renderChoice(colorOption, choice, index)
               )}
             </div>
 
-            {/* Validation for color */}
-            {colorOption.required && !getCurrentCustomization(colorOption.id)?.choiceIds.length && (
+            {/* Validation for color - only show if ribbon is selected */}
+            {colorOption.required && isRibbonSelected && !getCurrentCustomization(colorOption.id)?.choiceIds.length && (
               <div
                 className="text-sm text-red-600"
                 role="alert"
@@ -420,9 +425,9 @@ export function RibbonConfigurator({
 
             <div
               className="space-y-2"
-              role={textOption.maxSelections === 1 ? "radiogroup" : "group"}
+              role="radiogroup"
               aria-labelledby={`${textOption.id}-title`}
-              aria-required={textOption.required}
+              aria-required={textOption.required && isRibbonSelected}
             >
               {(textOption.choices || []).map((choice, index) => (
                 <div key={choice.id}>
@@ -432,8 +437,8 @@ export function RibbonConfigurator({
               ))}
             </div>
 
-            {/* Validation for text */}
-            {textOption.required && !getCurrentCustomization(textOption.id)?.choiceIds.length && (
+            {/* Validation for text - only show if ribbon is selected */}
+            {textOption.required && isRibbonSelected && !getCurrentCustomization(textOption.id)?.choiceIds.length && (
               <div
                 className="text-sm text-red-600"
                 role="alert"
