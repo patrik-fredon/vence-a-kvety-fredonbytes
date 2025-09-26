@@ -32,8 +32,8 @@ class ErrorLogger {
   private maxErrors = 100; // Keep last 100 errors in memory
   private apiEndpoint = "/api/monitoring/errors";
   private performanceErrorCount = 0;
-  private maxPerformanceErrors = 5; // Circuit breaker for performance errors
-  private performanceErrorResetTime = 60000; // Reset after 1 minute
+  private maxPerformanceErrors = 3; // Reduced circuit breaker for performance errors
+  private performanceErrorResetTime = 120000; // Reset after 2 minutes for better stability
 
   /**
    * Log an error with context information

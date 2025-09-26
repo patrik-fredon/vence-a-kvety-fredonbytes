@@ -51,16 +51,16 @@ const ProductGrid = React.memo(function ProductGrid({
   const [currentPage, setCurrentPage] = useState(1);
   const [totalProducts, setTotalProducts] = useState(0);
 
-  // Progressive loading state - display only 6 products initially
-  const [displayedCount, setDisplayedCount] = useState(6);
+  // Progressive loading state - display 8 products initially (2 rows of 4)
+  const [displayedCount, setDisplayedCount] = useState(8);
 
-  // Updated constants for initial display optimization
-  const INITIAL_PRODUCTS_COUNT = 6;
+  // Updated constants for 4-column grid layout
+  const INITIAL_PRODUCTS_COUNT = 8; // Show 8 products initially (2 rows of 4)
   const PRODUCTS_PER_PAGE = 12; // Keep API pagination at 12 for efficiency
 
   // Image optimization hook for managing priority loading and lazy loading
   const imageOptimization = useImageOptimization({
-    priorityCount: INITIAL_PRODUCTS_COUNT, // First 6 products get priority loading
+    priorityCount: INITIAL_PRODUCTS_COUNT, // First 8 products get priority loading
     enableLazyLoading: true,
     rootMargin: "100px", // Start loading images 100px before they come into view
   });
@@ -288,8 +288,8 @@ const ProductGrid = React.memo(function ProductGrid({
 
       await measureExecution('loadMore', async () => {
         if (canLoadMore) {
-          // Load more from current products array
-          const newDisplayedCount = Math.min(displayedCount + INITIAL_PRODUCTS_COUNT, products.length);
+          // Load 4 more products from current products array (1 additional row)
+          const newDisplayedCount = Math.min(displayedCount + 4, products.length);
           setDisplayedCount(newDisplayedCount);
 
           // Announce to screen readers
@@ -421,8 +421,8 @@ const ProductGrid = React.memo(function ProductGrid({
             <div
               className={cn(
                 viewMode === "grid"
-                  ? // Clean, minimal responsive grid
-                  "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+                  ? // Optimized 4-column responsive grid layout
+                  "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4"
                   : // List view: Clean single column layout
                   "flex flex-col gap-6 mb-12"
               )}
@@ -433,7 +433,7 @@ const ProductGrid = React.memo(function ProductGrid({
                   product={product}
                   locale={locale}
                   onAddToCart={handleAddToCart}
-                  featured={product.featured || imageOptimization.shouldPrioritize(index)} // Prioritize first 6 products
+                  featured={product.featured || imageOptimization.shouldPrioritize(index)} // Prioritize first 8 products
                   viewMode={viewMode}
                   className="transition-all duration-200 hover:scale-[1.02]"
                 />
@@ -479,12 +479,11 @@ const ProductGrid = React.memo(function ProductGrid({
               <div
                 className={cn(
                   "grid",
-                  // Use same responsive grid for loading skeleton
+                  // Use same 4-column responsive grid for loading skeleton
                   "grid-cols-1 gap-4",
                   "sm:grid-cols-2 sm:gap-6",
-                  "lg:grid-cols-3 lg:gap-8",
-                  "xl:grid-cols-4",
-                  "2xl:grid-cols-5"
+                  "lg:grid-cols-4 lg:gap-8",
+                  "xl:grid-cols-4"
                 )}
               >
                 <ProductGridSkeleton count={INITIAL_PRODUCTS_COUNT} />

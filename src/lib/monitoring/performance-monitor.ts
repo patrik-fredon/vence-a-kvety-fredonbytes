@@ -299,7 +299,7 @@ class PerformanceMonitor {
 
     this.sendTimeout = setTimeout(() => {
       this.sendMetricsToServer();
-    }, 5000); // Send every 5 seconds
+    }, 15000); // Send every 15 seconds to reduce lag
   }
 
   /**
