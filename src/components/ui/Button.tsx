@@ -34,7 +34,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
     "min-h-11 min-w-11",
     // Mobile-first transitions and focus states
     "transition-colors duration-200 ease-in-out",
-    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950 focus-visible:ring-offset-2",
+    "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-950 focus-visible:ring-offset-2",
     // Touch-friendly active states
     "active:scale-95 active:transition-transform active:duration-75",
     "disabled:pointer-events-none disabled:opacity-50",
@@ -49,9 +49,9 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   const variants = {
     default: cn(
-      "bg-stone-900 text-white hover:bg-stone-800 active:bg-stone-700",
+      "bg-amber-900 text-white hover:bg-amber-800 active:bg-amber-700",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-stone-950/20",
+      "focus-visible:ring-amber-950/20",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
@@ -63,30 +63,30 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     outline: cn(
-      "border border-stone-300 text-stone-700 bg-white",
-      "hover:bg-stone-50 active:bg-stone-100",
+      "border border-amber-300 text-amber-700 bg-white",
+      "hover:bg-amber-50 active:bg-amber-100",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-stone-950/20",
+      "focus-visible:ring-amber-950/20",
       "high-contrast:border-ButtonText high-contrast:text-ButtonText",
       "high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     secondary: cn(
-      "bg-stone-100 text-stone-900 hover:bg-stone-200 active:bg-stone-300",
+      "bg-amber-100 text-amber-900 hover:bg-amber-200 active:bg-amber-300",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-stone-950/20",
+      "focus-visible:ring-amber-950/20",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     ghost: cn(
-      "text-stone-700 bg-transparent hover:bg-stone-100 active:bg-stone-200",
+      "text-amber-700 bg-transparent hover:bg-amber-100 active:bg-amber-200",
       "transition-all duration-200",
-      "focus-visible:ring-stone-950/20",
+      "focus-visible:ring-amber-950/20",
       "high-contrast:text-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     link: cn(
-      "text-stone-900 bg-transparent hover:text-amber-600 active:text-amber-700",
+      "text-amber-900 bg-transparent hover:text-amber-600 active:text-amber-700",
       "underline-offset-4 hover:underline transition-all duration-200",
-      "focus-visible:ring-stone-950/20",
+      "focus-visible:ring-amber-950/20",
       "high-contrast:text-ButtonText high-contrast:hover:text-Highlight"
     ),
   };

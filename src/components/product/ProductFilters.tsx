@@ -131,13 +131,13 @@ export function ProductFilters({
   }, [isSearchAndFiltersVisible]);
 
   return (
-    <div className={cn("bg-white rounded-lg shadow-sm border border-stone-200 p-6", className)}>
+    <div className={cn("bg-teal-800 text-amber-100", className)}>
       {/* Search & Filters Toggle Button */}
       <div className="mb-4">
         <Button
           variant="outline"
           onClick={toggleSearchAndFilters}
-          className="flex items-center gap-2 bg-stone-800 text-white hover:bg-stone-700 border-stone-800 hover:border-stone-700"
+          className="flex items-center gap-2 bg-teal-800 text-amber-100 hover:bg-teal-800 border-amber-100 hover:border-amber-100"
           aria-expanded={isSearchAndFiltersVisible}
           aria-controls="filters-panel"
           aria-label={isSearchAndFiltersVisible ? t("hideSearch") : t("showSearch")}
@@ -146,7 +146,7 @@ export function ProductFilters({
           <span>{isSearchAndFiltersVisible ? t("hideSearch") : t("showSearch")}</span>
           {hasActiveFilters && (
             <span
-              className="ml-2 px-2 py-1 bg-stone-600 text-white text-xs rounded-full"
+              className="ml-2 px-2 py-1 bg-teal-800 text-amber-100 text-xs rounded-full"
               aria-label={`${Object.keys(localFilters).filter(
                 (key) =>
                   localFilters[key as keyof ProductFiltersType] !== undefined &&
@@ -165,22 +165,22 @@ export function ProductFilters({
         </Button>
       </div>
 
-      {/* Search & Filters Panel - Collapsible with stone background */}
+      {/* Search & Filters Panel - Collapsible with amber background */}
       {isSearchAndFiltersVisible && (
         <div
           id="filters-panel"
-          className="space-y-6 p-4 bg-stone-50 rounded-lg border border-stone-200 shadow-sm"
+          className="space-y-6 p-4 bg-teal-800 rounded-lg border border-amber-200 shadow-sm"
           role="region"
           aria-labelledby="filters-heading"
         >
           {/* Close Button */}
           <div className="flex items-center justify-between">
-            <h3 id="filters-heading" className="text-sm font-medium text-stone-800">{t("searchAndFilters")}</h3>
+            <h3 id="filters-heading" className="text-sm font-medium text-amber-100">{t("searchAndFilters")}</h3>
             <Button
               variant="ghost"
               size="sm"
               onClick={() => setIsSearchAndFiltersVisible(false)}
-              className="text-stone-600 hover:text-stone-800 hover:bg-stone-100"
+              className="text-amber-100 hover:text-amber-800 hover:bg-amber-100"
               aria-label="Close filters panel"
             >
               <span aria-hidden="true">✕</span>
@@ -196,12 +196,12 @@ export function ProductFilters({
               placeholder={t("searchPlaceholder")}
               value={searchValue}
               onChange={(e) => handleSearchChange(e.target.value)}
-              className="w-full bg-white text-stone-900 border-stone-300 focus:border-stone-500 focus:ring-stone-500"
+              className="w-full bg-teal-900 text-amber-100 border-amber-100 "
               autoFocus
               aria-describedby={searchValue ? "search-status" : undefined}
             />
             {searchValue && (
-              <div id="search-status" className="mt-2 text-xs text-stone-600" role="status" aria-live="polite">
+              <div id="search-status" className="mt-2 text-xs text-amber-100" role="status" aria-live="polite">
                 {t("searchingFor", { query: searchValue })}
               </div>
             )}
@@ -209,14 +209,14 @@ export function ProductFilters({
 
           {/* Category Filter */}
           <div>
-            <label htmlFor="category-filter" className="block text-sm font-medium text-stone-700 mb-2">
+            <label htmlFor="category-filter" className="block text-sm font-medium text-amber-100 mb-2">
               {t("filterByCategory")}
             </label>
             <select
               id="category-filter"
               value={localFilters.categoryId || ""}
               onChange={(e) => handleFilterChange("categoryId", e.target.value || undefined)}
-              className="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+              className="w-full px-3 py-2 border border-amber-100 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-100 bg-teal-800 text-amber-100"
               aria-label={t("filterByCategory")}
             >
               <option value="">{t("allCategories")}</option>
@@ -231,7 +231,7 @@ export function ProductFilters({
           {/* Price Range */}
           <div>
             <fieldset>
-              <legend className="block text-sm font-medium text-stone-700 mb-2">
+              <legend className="block text-sm font-medium text-amber-100 mb-2">
                 {t("filterByPrice")}
               </legend>
               <div className="grid grid-cols-2 gap-2">
@@ -248,7 +248,7 @@ export function ProductFilters({
                     )
                   }
                   min="0"
-                  className="bg-white text-stone-900 border-stone-300 focus:border-stone-500 focus:ring-stone-500"
+                  className="bg-teal-800 text-amber-100 border-amber-100 focus:border-amber-100 focus:ring-amber-100"
                   aria-describedby="price-range-help"
                 />
                 <Input
@@ -264,7 +264,7 @@ export function ProductFilters({
                     )
                   }
                   min="0"
-                  className="bg-white text-stone-900 border-stone-300 focus:border-stone-500 focus:ring-stone-500"
+                  className="bg-teal-800 text-amber-100 border-amber-100 focus:border-amber-100 focus:ring-amber-100"
                   aria-describedby="price-range-help"
                 />
               </div>
@@ -277,7 +277,7 @@ export function ProductFilters({
           {/* Availability Filters */}
           <div>
             <fieldset>
-              <legend className="block text-sm font-medium text-stone-700 mb-2">
+              <legend className="block text-sm font-medium text-amber-100 mb-2">
                 {t("availability")}
               </legend>
               <div className="space-y-2">
@@ -287,10 +287,10 @@ export function ProductFilters({
                     type="checkbox"
                     checked={localFilters.inStock}
                     onChange={(e) => handleFilterChange("inStock", e.target.checked || undefined)}
-                    className="mr-2 rounded border-stone-300 text-stone-600 focus:ring-stone-500 bg-white"
+                    className="mr-2 rounded border-amber-100 text-amber-100 focus:ring-amber-100 bg-teal-800"
                     aria-describedby="in-stock-help"
                   />
-                  <span className="text-sm text-stone-700">{t("inStockOnly")}</span>
+                  <span className="text-sm text-amber-100">{t("inStockOnly")}</span>
                 </label>
                 <div id="in-stock-help" className="sr-only">
                   Filter to show only products that are currently in stock
@@ -301,10 +301,10 @@ export function ProductFilters({
                     type="checkbox"
                     checked={localFilters.featured}
                     onChange={(e) => handleFilterChange("featured", e.target.checked || undefined)}
-                    className="mr-2 rounded border-stone-300 text-stone-600 focus:ring-stone-500 bg-white"
+                    className="mr-2 rounded border-amber-100 text-amber-100 focus:ring-amber-100 bg-teal-800"
                     aria-describedby="featured-help"
                   />
-                  <span className="text-sm text-stone-700">{t("featuredOnly")}</span>
+                  <span className="text-sm text-amber-100">{t("featuredOnly")}</span>
                 </label>
                 <div id="featured-help" className="sr-only">
                   Filter to show only featured products
@@ -318,7 +318,7 @@ export function ProductFilters({
             <Button
               variant="outline"
               onClick={clearFilters}
-              className="w-full bg-stone-100 text-stone-700 border-stone-300 hover:bg-stone-200 hover:text-stone-800"
+              className="w-full bg-teal-950 text-amber-100 border-amber-100 hover:bg-amber-200 hover:text-amber-800"
             >
               {t("clearFilters")}
             </Button>

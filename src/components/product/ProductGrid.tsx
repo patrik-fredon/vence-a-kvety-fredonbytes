@@ -209,7 +209,7 @@ export function ProductGrid({
   };;;
 
   return (
-    <section className={cn("bg-stone-50 py-12", className)}>
+    <section className={cn("bg-teal-800 py-12 rounded-2xl", className)}>
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Filters */}
         <div className="mb-8">
@@ -227,7 +227,7 @@ export function ProductGrid({
         <div className="flex items-center justify-between mb-8">
           <div>
             {totalProducts > 0 && (
-              <p className="text-lg font-medium text-stone-800">
+              <p className="text-lg font-medium text-amber-800">
                 {t("showingResults", {
                   count: products.length,
                   total: totalProducts,
@@ -238,8 +238,8 @@ export function ProductGrid({
 
           {/* View Mode Switcher */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-stone-700">{t("viewMode")}:</span>
-            <div className="flex bg-white border border-stone-200 rounded-lg overflow-hidden shadow-sm">
+            <span className="text-sm font-medium text-amber-700">{t("viewMode")}:</span>
+            <div className="flex bg-white border border-amber-200 rounded-lg overflow-hidden shadow-sm">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
@@ -304,14 +304,14 @@ export function ProductGrid({
               </div>
             ) : !loading ? (
               // No Results State
-              <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-stone-100">
-                <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg className="w-8 h-8 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-amber-100">
+                <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
                   </svg>
                 </div>
-                <h3 className="text-xl font-semibold text-stone-800 mb-3">{t("noResults")}</h3>
-                <p className="text-stone-600 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
+                <h3 className="text-xl font-semibold text-amber-800 mb-3">{t("noResults")}</h3>
+                <p className="text-amber-600 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
                 <Button
                   variant="outline"
                   size="lg"
@@ -348,8 +348,8 @@ export function ProductGrid({
             ) : (
               <div className="flex justify-center py-8">
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-stone-600 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-stone-600">{tCommon("loading")}</span>
+                  <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                  <span className="text-sm text-amber-600">{tCommon("loading")}</span>
                 </div>
               </div>
             )}

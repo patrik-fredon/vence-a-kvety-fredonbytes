@@ -82,7 +82,7 @@ h1 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.4;
-  color: var(--color-amber-400);
+  color: var(--color-amber-200);
 }
 
 /* Focus styles for accessibility */

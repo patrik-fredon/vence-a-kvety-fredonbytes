@@ -688,12 +688,27 @@ const STANDARDIZED_CUSTOMIZATION_OPTIONS = [
       {
         id: "color_black",
         label: { cs: "Černá", en: "Black" },
-        priceModifier: 0,
+        priceModifier: 50,
       },
       {
         id: "color_white",
         label: { cs: "Bílá", en: "White" },
-        priceModifier: 0,
+        priceModifier: 50,
+      },
+      {
+        id: "color_red",
+        label: { cs: "Červená", en: "Red" },
+        priceModifier: 50,
+      },
+      {
+        id: "color_gold",
+        label: { cs: "Zlatá", en: "Gold" },
+        priceModifier: 75,
+      },
+      {
+        id: "color_silver",
+        label: { cs: "Stříbrná", en: "Silver" },
+        priceModifier: 75,
       },
     ],
   },
