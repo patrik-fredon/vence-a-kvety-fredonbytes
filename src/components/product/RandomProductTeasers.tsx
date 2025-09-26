@@ -1,5 +1,6 @@
 "use client";
 
+import React from "react";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -12,7 +13,7 @@ interface RandomProductTeasersProps {
   count?: number;
 }
 
-export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasersProps) {
+const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasersProps) {
   const t = useTranslations("home");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -53,7 +54,7 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
     fetchRandomProducts();
   }, [fetchRandomProducts]);
 
-  const handleAddToCart = async (product: Product) => {
+  const handleAddToCart = useCallback(async (product: Product) => {
     try {
       console.log("🛒 [RandomProductTeasers] Starting add to cart for product:", product.id);
       setAddingToCart(product.id);
@@ -74,37 +75,44 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
     } finally {
       setAddingToCart(null);
     }
-  };
+  }, [addToCart]);
 
-  const handleRetry = () => {
+  const handleRetry = useCallback(() => {
     setRetryCount((prev) => prev + 1);
     fetchRandomProducts();
-  };
+  }, [fetchRandomProducts]);
 
   if (loading) {
     return (
-      <div className="mt-20 max-w-6xl mx-auto">
-        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
+      <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+        <h2
+          id="featured-products-title"
+          className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"
+        >
           {t("featuredProducts.title")}
         </h2>
-        <div className="flex justify-center items-center py-12">
+        <div className="flex justify-center items-center py-12" role="status" aria-label={t("loading")}>
           <LoadingSpinner size="lg" />
         </div>
-      </div>
+      </section>
     );
   }
 
   if (error) {
     return (
-      <div className="mt-20 max-w-6xl mx-auto">
-        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
+      <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+        <h2
+          id="featured-products-title"
+          className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"
+        >
           {t("featuredProducts.title")}
         </h2>
         <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
-          <p className="text-stone-600 mb-4">{error}</p>
+          <p className="text-stone-600 mb-4" role="alert">{error}</p>
           <button
             onClick={handleRetry}
             className="text-amber-600 hover:text-amber-700 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-md px-2 py-1"
+            type="button"
           >
             {t("tryAgain")}
           </button>
@@ -114,33 +122,40 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
             </p>
           )}
         </div>
-      </div>
+      </section>
     );
   }
 
   if (products.length === 0) {
     return (
-      <div className="mt-20 max-w-6xl mx-auto">
-        <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
+      <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+        <h2
+          id="featured-products-title"
+          className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"
+        >
           {t("featuredProducts.title")}
         </h2>
         <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
           <p className="text-stone-600">{t("noProducts")}</p>
         </div>
-      </div>
+      </section>
     );
   }
 
   return (
-    <div className="mt-20 max-w-6xl mx-auto">
-      <h2 className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12">
+    <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+      <h2
+        id="featured-products-title"
+        className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"
+      >
         {t("featuredProducts.title")}
       </h2>
 
-      <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+      {/* Responsive grid layout optimized for multiple teaser cards */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
         {products.map((product) => (
           <ProductTeaser
-            key={product.id}
+            key={`teaser-${product.id}-${product.slug}`} // Optimized key prop for React rendering
             product={product}
             locale={locale}
             onAddToCart={handleAddToCart}
@@ -149,7 +164,7 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
         ))}
       </div>
 
-      <div className="text-center mt-8">
+      <div className="text-center mt-12">
         <a
           href={`/${locale}/products`}
           className="inline-flex items-center justify-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors shadow-soft focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
@@ -157,6 +172,12 @@ export function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasers
           {t("featuredProducts.viewAll")}
         </a>
       </div>
-    </div>
+    </section>
   );
-}
+});
+
+// Default export for compatibility with existing imports
+export default RandomProductTeasers;
+
+// Named export for compatibility
+export { RandomProductTeasers };
