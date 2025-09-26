@@ -209,8 +209,8 @@ export function ProductGrid({
   };;;
 
   return (
-    <section className={cn("bg-amber-100 py-8", className)}>
-      <div className="container mx-auto px-4">
+    <section className={cn("bg-stone-50 py-12", className)}>
+      <div className="container mx-auto px-4 max-w-7xl">
         {/* Filters */}
         <div className="mb-8">
           <ProductFiltersComponent
@@ -224,39 +224,43 @@ export function ProductGrid({
         </div>
 
         {/* Results Summary and View Switcher */}
-        <div className="flex items-center justify-between mb-6">
-          <div className="text-sm text-stone-600">
+        <div className="flex items-center justify-between mb-8">
+          <div>
             {totalProducts > 0 && (
-              <span>
+              <p className="text-lg font-medium text-stone-800">
                 {t("showingResults", {
                   count: products.length,
                   total: totalProducts,
                 })}
-              </span>
+              </p>
             )}
           </div>
 
           {/* View Mode Switcher */}
-          <div className="flex items-center gap-2">
-            <span className="text-sm text-stone-600 mr-2">{t("viewMode")}:</span>
-            <div className="flex border border-stone-300 rounded-md overflow-hidden">
+          <div className="flex items-center gap-3">
+            <span className="text-sm font-medium text-stone-700">{t("viewMode")}:</span>
+            <div className="flex bg-white border border-stone-200 rounded-lg overflow-hidden shadow-sm">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => handleViewModeChange("grid")}
-                className="rounded-none border-0 px-3 py-1"
+                className="rounded-none border-0 px-4 py-2"
                 aria-label={t("gridView")}
               >
-                <span className="text-2xl">⊞</span>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+                </svg>
               </Button>
               <Button
                 variant={viewMode === "list" ? "default" : "ghost"}
                 size="sm"
                 onClick={() => handleViewModeChange("list")}
-                className="rounded-none border-0 px-3 py-1"
+                className="rounded-none border-0 px-4 py-2"
                 aria-label={t("listView")}
               >
-                <span className="text-2xl">☰</span>
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                  <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+                </svg>
               </Button>
             </div>
           </div>
@@ -280,50 +284,42 @@ export function ProductGrid({
               <div
                 className={cn(
                   viewMode === "grid"
-                    ? // Modern responsive grid with mobile-first approach
-                    "grid mb-8 grid-cols-1 gap-4 sm:grid-cols-2 sm:gap-6 lg:grid-cols-3 lg:gap-8 xl:grid-cols-4 2xl:grid-cols-5"
-                    : // List view: Single column layout with consistent spacing
-                    "flex flex-col gap-4 mb-8"
+                    ? // Clean, minimal responsive grid
+                    "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
+                    : // List view: Clean single column layout
+                    "flex flex-col gap-6 mb-12"
                 )}
               >
                 {products.map((product) => (
-                  <div
+                  <ProductCard
                     key={product.id}
-                    className={cn(
-                      "w-full",
-                      // Ensure consistent aspect ratio for grid cards
-                      viewMode === "grid" && "flex flex-col"
-                    )}
-                  >
-                    <ProductCard
-                      product={product}
-                      locale={locale}
-                      onAddToCart={handleAddToCart}
-                      featured={product.featured}
-                      viewMode={viewMode}
-                      className={cn(
-                        viewMode === "grid"
-                          ? "h-full flex flex-col" // Ensure cards fill container height
-                          : "w-full"
-                      )}
-                    />
-                  </div>
+                    product={product}
+                    locale={locale}
+                    onAddToCart={handleAddToCart}
+                    featured={product.featured}
+                    viewMode={viewMode}
+                    className="transition-all duration-200 hover:scale-[1.02]"
+                  />
                 ))}
               </div>
             ) : !loading ? (
               // No Results State
-              <div className="text-center py-16 bg-white rounded-lg shadow-sm">
-                <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                  <span className="text-2xl">🔍</span>
+              <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-stone-100">
+                <div className="w-20 h-20 bg-stone-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                  <svg className="w-8 h-8 text-stone-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                  </svg>
                 </div>
-                <h3 className="text-lg font-semibold text-stone-700 mb-2">{t("noResults")}</h3>
-                <p className="text-stone-500 mb-6">{t("noResultsDescription")}</p>
+                <h3 className="text-xl font-semibold text-stone-800 mb-3">{t("noResults")}</h3>
+                <p className="text-stone-600 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
                 <Button
                   variant="outline"
+                  size="lg"
                   onClick={() => {
                     setFilters({});
                     setSortOptions({ field: "created_at", direction: "desc" });
                   }}
+                  className="px-6"
                 >
                   {t("clearFilters")}
                 </Button>
