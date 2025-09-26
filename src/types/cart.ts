@@ -79,6 +79,8 @@ export interface CartItemRow {
   product_id: string;
   quantity: number;
   customizations: any; // JSONB
+  unit_price: number;
+  total_price: number;
   created_at: string;
   updated_at: string;
 }

@@ -10,7 +10,6 @@ import type { CartItem } from '@/types/cart';
 // Cache TTL constants (in seconds)
 const CART_CONFIG_TTL = 24 * 60 * 60; // 24 hours
 const PRICE_CALCULATION_TTL = 60 * 60; // 1 hour
-const CART_SESSION_TTL = 30 * 24 * 60 * 60; // 30 days
 
 /**
  * Generate cache key for cart configuration
@@ -208,13 +207,44 @@ export async function updateCachedCartAfterItemChange(
   itemId?: string
 ): Promise<void> {
   try {
-    // For now, we'll invalidate the cache to ensure consistency
-    // In the future, we could implement more granular updates
+    // Always invalidate cache to ensure consistency
     await invalidateCartCache(userId, sessionId);
 
     console.log(`🔄 [Cache] Cart cache invalidated after ${changeType} operation${itemId ? ` for item:${itemId}` : ''}`);
   } catch (error) {
     console.error(`❌ [Cache] Error updating cart cache after ${changeType}:`, error);
+    // Re-throw to ensure calling code knows cache invalidation failed
+    throw error;
+  }
+}
+
+/**
+ * Force clear all cart-related cache with verification
+ * This ensures cache is actually cleared and not just marked for deletion
+ */
+export async function forceClearCartCache(
+  userId: string | null,
+  sessionId: string | null
+): Promise<void> {
+  try {
+    const client = getCacheClient();
+    const key = getCartConfigKey(userId, sessionId);
+
+    // Delete the cache key
+    await client.del(key);
+
+    // Verify it's actually deleted
+    const exists = await client.exists(key);
+    if (exists) {
+      console.warn(`⚠️ [Cache] Cache key still exists after deletion attempt: ${key}`);
+      // Try again
+      await client.del(key);
+    }
+
+    console.log(`✅ [Cache] Force cleared cart cache for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+  } catch (error) {
+    console.error('❌ [Cache] Error force clearing cart cache:', error);
+    throw error;
   }
 }
 
@@ -237,8 +267,9 @@ export async function hasCartCache(
 }
 
 /**
- * Get cart cache statistics for monitorinort async function g
-tCacheStats(
+ * Get cart cache statistics for monitoring
+ */
+export async function getCartCacheStats(
   userId: string | null,
   sessionId: string | null
 ): Promise<{
@@ -263,5 +294,59 @@ tCacheStats(
   } catch (error) {
     console.error('❌ [Cache] Error getting cart cache stats:', error);
     return null;
+  }
+}
+/**
+ * Verify cache operations are working correctly
+ * This is useful for debugging cache issues
+ */
+export async function verifyCacheOperation(
+  userId: string | null,
+  sessionId: string | null,
+  operation: string
+): Promise<boolean> {
+  try {
+    const client = getCacheClient();
+    const key = getCartConfigKey(userId, sessionId);
+
+    const exists = await client.exists(key);
+
+    console.log(`🔍 [Cache] Verification after ${operation}: Cache ${exists ? 'EXISTS' : 'DOES NOT EXIST'} for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+
+    return exists;
+  } catch (error) {
+    console.error('❌ [Cache] Error verifying cache operation:', error);
+    return false;
+  }
+}
+
+/**
+ * Debug cache state - useful for troubleshooting
+ */
+export async function debugCacheState(
+  userId: string | null,
+  sessionId: string | null
+): Promise<void> {
+  try {
+    const client = getCacheClient();
+    const key = getCartConfigKey(userId, sessionId);
+
+    const exists = await client.exists(key);
+    console.log(`🐛 [Cache Debug] Key: ${key}, Exists: ${exists}`);
+
+    if (exists) {
+      const cached = await client.get(key);
+      if (cached) {
+        const data = deserializeFromCache<CachedCartConfig>(cached);
+        console.log(`🐛 [Cache Debug] Data:`, {
+          itemCount: data?.totalItems || 0,
+          totalPrice: data?.totalPrice || 0,
+          lastUpdated: data?.lastUpdated,
+          version: data?.version
+        });
+      }
+    }
+  } catch (error) {
+    console.error('❌ [Cache Debug] Error debugging cache state:', error);
   }
 }

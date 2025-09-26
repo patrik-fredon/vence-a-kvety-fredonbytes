@@ -78,13 +78,18 @@ export async function POST(request: NextRequest) {
       );
 
       if (existingUserItem) {
-        // Update existing user item quantity
+        // Update existing user item quantity and recalculate prices
         const newQuantity = existingUserItem.quantity + guestItem.quantity;
+
+        // Recalculate total price for new quantity
+        const unitPrice = existingUserItem.unit_price || guestItem.unit_price || 0;
+        const newTotalPrice = unitPrice * newQuantity;
 
         const { error: updateError } = await supabase
           .from("cart_items")
           .update({
             quantity: newQuantity,
+            total_price: newTotalPrice,
             updated_at: new Date().toISOString(),
           })
           .eq("id", existingUserItem.id);
@@ -93,12 +98,14 @@ export async function POST(request: NextRequest) {
           console.error("Error updating user cart item:", updateError);
         }
       } else {
-        // Create new user cart item
+        // Create new user cart item with proper price fields
         const { error: insertError } = await supabase.from("cart_items").insert({
           user_id: body.userId,
           session_id: null,
           product_id: guestItem.product_id,
           quantity: guestItem.quantity,
+          unit_price: guestItem.unit_price || 0,
+          total_price: guestItem.total_price || 0,
           customizations: guestItem.customizations,
         });
 
@@ -116,6 +123,21 @@ export async function POST(request: NextRequest) {
 
     if (deleteError) {
       console.error("Error deleting guest cart items:", deleteError);
+    }
+
+    // Clear cache for both guest session and user
+    try {
+      const { clearCartCache } = await import('@/lib/cache/cart-cache');
+
+      // Clear guest cart cache
+      await clearCartCache(null, body.sessionId);
+
+      // Clear user cart cache to ensure fresh data
+      await clearCartCache(body.userId, null);
+
+      console.log("🗄️ [CartMerge] Cart cache cleared for both guest and user");
+    } catch (cacheError) {
+      console.error("⚠️ [CartMerge] Cache clear failed (non-critical):", cacheError);
     }
 
     return NextResponse.json({

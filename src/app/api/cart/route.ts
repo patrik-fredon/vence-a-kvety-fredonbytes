@@ -1,8 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
-import { calculateFinalPrice } from "@/lib/utils/price-calculator";
-import { CartItemRow, type CartSummary } from "@/types/cart";
+import { type CartSummary } from "@/types/cart";
 import type { Product } from "@/types/product";
 
 /**
@@ -34,19 +33,31 @@ export async function GET(request: NextRequest) {
     try {
       const { getCachedCartConfiguration } = await import('@/lib/cache/cart-cache');
       const cachedCart = await getCachedCartConfiguration(session?.user?.id || null, sessionId);
-      
+
       if (cachedCart) {
-        console.log("✅ [API] Returning cached cart configuration");
-        return NextResponse.json({
-          success: true,
-          cart: {
-            items: cachedCart.items,
-            itemCount: cachedCart.totalItems,
-            subtotal: cachedCart.totalPrice,
-            total: cachedCart.totalPrice,
-          },
-          fromCache: true
-        });
+        // Validate cache age - if older than 5 minutes, fetch fresh data
+        const cacheAge = Date.now() - new Date(cachedCart.lastUpdated).getTime();
+        const maxCacheAge = 5 * 60 * 1000; // 5 minutes in milliseconds
+
+        if (cacheAge < maxCacheAge) {
+          console.log(`✅ [API] Returning cached cart configuration (age: ${Math.floor(cacheAge / 1000)}s)`);
+          return NextResponse.json({
+            success: true,
+            cart: {
+              items: cachedCart.items,
+              itemCount: cachedCart.totalItems,
+              subtotal: cachedCart.totalPrice,
+              total: cachedCart.totalPrice,
+            },
+            fromCache: true,
+            cacheAge: Math.floor(cacheAge / 1000)
+          });
+        } else {
+          console.log(`⏰ [API] Cache is stale (age: ${Math.floor(cacheAge / 1000)}s), fetching fresh data`);
+          // Clear stale cache and fetch fresh data
+          const { invalidateCartCache } = await import('@/lib/cache/cart-cache');
+          await invalidateCartCache(session?.user?.id || null, sessionId);
+        }
       }
     } catch (cacheError) {
       console.error("⚠️ [API] Cache retrieval failed (non-critical):", cacheError);
@@ -157,7 +168,7 @@ export async function GET(request: NextRequest) {
     // Cache the cart configuration for future requests
     try {
       const { cacheCartConfiguration } = await import('@/lib/cache/cart-cache');
-      
+
       await cacheCartConfiguration(session?.user?.id || null, sessionId, {
         items: items as any[], // Type conversion for caching
         totalItems: itemCount,
@@ -165,7 +176,7 @@ export async function GET(request: NextRequest) {
         lastUpdated: new Date().toISOString(),
         version: 1
       });
-      
+
       console.log("🗄️ [API] Cart configuration cached successfully");
     } catch (cacheError) {
       console.error("⚠️ [API] Cache storage failed (non-critical):", cacheError);

@@ -2,6 +2,12 @@ import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
 import type { UpdateCartItemRequest } from "@/types/cart";
+import { cleanup } from "@testing-library/react";
+import { $ } from "node_modules/@upstash/redis/zmscore-DWj9Vh1g.mjs";
+import { cache } from "react";
+import { $ } from "node_modules/@upstash/redis/zmscore-DWj9Vh1g.mjs";
+import { $ } from "node_modules/@upstash/redis/zmscore-DWj9Vh1g.mjs";
+import { cache } from "react";
 
 interface RouteParams {
   params: Promise<{ id: string }>;
@@ -86,7 +92,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     try {
       const { calculateCartItemPrice } = await import('@/lib/services/cart-price-service');
 
-      const basePrice = Number.parseFloat(existingItem.products.base_price.toString());
+      // Handle both direct product data and nested product object
+      const productData = existingItem.products || existingItem.product;
+      if (!productData) {
+        throw new Error('Product data not found in cart item');
+      }
+
+      const basePrice = Number.parseFloat(productData.base_price.toString());
       const priceCalculation = await calculateCartItemPrice(
         existingItem.product_id,
         basePrice,
@@ -246,7 +258,26 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       });
     }
 
-    // Delete the cart item (customizations are automatically deleted as part of the row)
+    // FIRST: Clear cache BEFORE deleting from database to prevent race conditions
+    try {
+      const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+
+      await forceClearCartCache(session?.user?.id || null, sessionId);
+
+      // Verify cache was actually cleared
+      const cacheExists = await verifyCacheOperation(session?.user?.id || null, sessionId, 'pre-deletion clear');
+      if (cacheExists) {
+        console.warn(`⚠️ [CartDelete] Cache still exists after force clear, trying again`);
+        await forceClearCartCache(session?.user?.id || null, sessionId);
+      }
+
+      console.log(`🗄️ [CartDelete] Cart cache force cleared BEFORE deletion of item ${id}`);
+    } catch (cacheError) {
+      console.error("⚠️ [CartDelete] Pre-deletion cache clear failed:", cacheError);
+      // Continue with deletion even if cache clear fails
+    }
+
+    // SECOND: Delete the cart item from database
     const { error } = await supabase.from("cart_items").delete().eq("id", id);
 
     if (error) {
@@ -260,24 +291,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
       );
     }
 
-    // Update cart cache after successful deletion
-    try {
-      const { updateCachedCartAfterItemChange } = await import('@/lib/cache/cart-cache');
-
-      await updateCachedCartAfterItemChange(
-        session?.user?.id || null,
-        sessionId,
-        'remove',
-        id
-      );
-
-      console.log(`🗄️ [CartDelete] Cart cache updated after removing item ${id}`);
-    } catch (cacheError) {
-      console.error("⚠️ [CartDelete] Cache update failed (non-critical):", cacheError);
-      // Don't fail the request if cache update fails
-    }
-
-    // Check if cart is now empty and clear all cache if so
+    // THIRD: Check if cart is now empty and ensure cache is cleared
     try {
       let emptyCheckQuery = supabase.from("cart_items").select("id", { count: 'exact' });
 
@@ -289,21 +303,50 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
       const { count } = await emptyCheckQuery;
 
-      if (count === 0) {
-        console.log(`🧹 [CartDelete] Cart is now empty, clearing all cache`);
+      console.log(`📊 [CartDelete] Cart item count after deletion: ${count}`);
 
-        const { clearCartCache } = await import('@/lib/cache/cart-cache');
-        await clearCartCache(session?.user?.id || null, sessionId);
+      if (count === 0) {
+        console.log(`🧹 [CartDelete] Cart is now empty, ensuring all cache is cleared`);
+
+        // Double-check cache is cleared for empty cart
+        const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+        await forceClearCartCache(session?.user?.id || null, sessionId);
+
+        // Verify cache is actually cleared
+        const cacheExists = await verifyCacheOperation(session?.user?.id || null, sessionId, 'empty cart clear');
+        if (cacheExists) {
+          console.error(`❌ [CartDelete] Cache still exists after clearing empty cart!`);
+          // Try one more time with debug info
+          const { debugCacheState } = await import('@/lib/cache/cart-cache');
+          await debugCacheState(session?.user?.id || null, sessionId);
+          await forceClearCartCache(session?.user?.id || null, sessionId);
+        }
 
         console.log(`✅ [CartDelete] All cart cache cleared - cart is empty`);
-      }
+      } else {
+        // If cart is not empty, still clear cache to ensure fresh data on next fetch
+        const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+        await forceClearCartCache(session?.user?.id || null, sessionId);
+
+        // Verify cache was cleared
+        await verifyCacheOperation(session?.user?.id || null, sessionId, 'non-empty cart clear');
+
+        console.log(`🔄 [CartDelete] Cache cleared for non-empty cart (${count} items remaini
     } catch (emptyCheckError) {
-      console.error("⚠️ [CartDelete] Error checking if cart is empty (non-critical):", emptyCheckError);
-      // Don't fail the request if empty check fails
+      console.error("⚠️ [CartDelete] Error checking if cart is empty:", emptyCheckError);
+
+      // If we can't check if cart is empty, force clear cache anyway
+      try {
+        const { forceClearCartCache } = await import('@/lib/cache/cart-cache');
+        await forceClearCartCache(session?.user?.id || null, sessionId);
+        console.log(`🔄[CartDelete] Force cleared cache due to empty check failure`);
+      } catch (fallbackCacheError) {
+        console.error("❌ [CartDelete] Fallback cache clear also failed:", fallbackCacheError);
+      }
     }
 
     // Log successful cleanup
-    console.log(`✅ [CartDelete] Successfully removed cart item ${id} with customizations and cache cleanup`);
+    console.log(`✅[CartDelete] Successfully removed cart item ${ id } with comprehensive cache cleanup`);
 
     return NextResponse.json({
       success: true,

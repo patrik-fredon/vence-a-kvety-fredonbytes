@@ -11,6 +11,7 @@ import {
   type CachedPriceCalculation
 } from '@/lib/cache/cart-cache';
 import type { Customization, CustomizationOption } from '@/types/product';
+import type { LocalizedContent } from '@/types';
 
 /**
  * Price calculation result with detailed breakdown
@@ -131,9 +132,13 @@ export async function calculateCartItemPrice(
         basePrice,
         customizations: breakdown.map(item => ({
           optionId: item.optionId,
-          optionName: item.optionName,
+          optionName: typeof item.optionName === 'string' ? item.optionName : item.optionName.cs || item.optionName.en || '',
           totalModifier: item.totalModifier,
-          choices: item.choices
+          choices: item.choices.map(choice => ({
+            choiceId: choice.choiceId,
+            label: typeof choice.label === 'string' ? choice.label : choice.label.cs || choice.label.en || '',
+            priceModifier: choice.priceModifier
+          }))
         })),
         totalModifier
       },
@@ -157,13 +162,16 @@ export async function calculateCartItemPrice(
     // Fallback to base price calculation
     console.log(`🔄 [PriceService] Falling back to base price for product:${productId}`);
 
+    // Ensure basePrice is valid
+    const fallbackBasePrice = basePrice && basePrice > 0 ? basePrice : 0;
+
     return {
-      unitPrice: basePrice,
-      totalPrice: basePrice * quantity,
-      basePrice,
+      unitPrice: fallbackBasePrice,
+      totalPrice: fallbackBasePrice * quantity,
+      basePrice: fallbackBasePrice,
       customizationModifier: 0,
       priceBreakdown: {
-        basePrice,
+        basePrice: fallbackBasePrice,
         customizations: [],
         totalModifier: 0
       },
@@ -216,14 +224,15 @@ export async function batchCalculateCartItemPrices(
         results.push(result);
       } catch (itemError) {
         console.error(`❌ [PriceService] Error calculating price for item ${item.productId}:`, itemError);
-        // Add fallback result
+        // Add fallback result with safe price handling
+        const fallbackBasePrice = item.basePrice && item.basePrice > 0 ? item.basePrice : 0;
         results.push({
-          unitPrice: item.basePrice,
-          totalPrice: item.basePrice * item.quantity,
-          basePrice: item.basePrice,
+          unitPrice: fallbackBasePrice,
+          totalPrice: fallbackBasePrice * item.quantity,
+          basePrice: fallbackBasePrice,
           customizationModifier: 0,
           priceBreakdown: {
-            basePrice: item.basePrice,
+            basePrice: fallbackBasePrice,
             customizations: [],
             totalModifier: 0
           },
