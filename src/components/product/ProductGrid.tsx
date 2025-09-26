@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useId, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
@@ -19,7 +19,7 @@ interface ProductGridProps {
   onAddToCart?: (product: Product) => void;
 }
 
-export function ProductGrid({
+const ProductGrid = React.memo(function ProductGrid({
   initialProducts = [],
   initialCategories = [],
   locale,
@@ -55,6 +55,9 @@ export function ProductGrid({
   const INITIAL_PRODUCTS_COUNT = 6;
   const PRODUCTS_PER_PAGE = 12; // Keep API pagination at 12 for efficiency
 
+  // Ref to track ongoing requests for cleanup
+  const abortControllerRef = useRef<AbortController | null>(null);
+
   // Memoized displayed products calculation for performance
   const displayedProducts = useMemo(() => {
     return products.slice(0, displayedCount);
@@ -62,6 +65,15 @@ export function ProductGrid({
 
   // Check if more products can be loaded from current products array
   const canLoadMore = displayedCount < products.length;
+
+  // Memoized active filters check for performance
+  const hasActiveFilters = useMemo(() => {
+    return Object.keys(filters).some(
+      (key) =>
+        filters[key as keyof ProductFilters] !== undefined &&
+        filters[key as keyof ProductFilters] !== ""
+    );
+  }, [filters]);
 
   // Load view mode preference from localStorage
   useEffect(() => {
@@ -71,16 +83,28 @@ export function ProductGrid({
     }
   }, []);
 
-  // Save view mode preference to localStorage
-  const handleViewModeChange = (mode: "grid" | "list") => {
-    setViewMode(mode);
-    localStorage.setItem("product-view-mode", mode);
-    announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
-  };
+  // Optimized view mode change handler with useCallback
+  const handleViewModeChange = useCallback(
+    (mode: "grid" | "list") => {
+      setViewMode(mode);
+      localStorage.setItem("product-view-mode", mode);
+      announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
+    },
+    [announce, t]
+  );
 
-  // Fetch products from API
+  // Optimized fetch products function with abort controller for cleanup
   const fetchProducts = useCallback(
     async (page: number = 1, resetProducts: boolean = false) => {
+      // Cancel any ongoing request
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+
+      // Create new abort controller for this request
+      const abortController = new AbortController();
+      abortControllerRef.current = abortController;
+
       setLoading(true);
       setError(null);
 
@@ -106,7 +130,14 @@ export function ProductGrid({
         searchParams.set("sortField", sortOptions.field);
         searchParams.set("sortDirection", sortOptions.direction);
 
-        const response = await fetch(`/api/products?${searchParams.toString()}`);
+        const response = await fetch(`/api/products?${searchParams.toString()}`, {
+          signal: abortController.signal,
+        });
+
+        // Check if request was aborted
+        if (abortController.signal.aborted) {
+          return;
+        }
 
         if (!response.ok) {
           throw new Error("Failed to fetch products");
@@ -144,22 +175,21 @@ export function ProductGrid({
           );
         }
       } catch (err) {
+        // Don't set error if request was aborted
+        if (err instanceof Error && err.name === "AbortError") {
+          return;
+        }
         console.error("Error fetching products:", err);
         setError(err instanceof Error ? err.message : "An error occurred");
       } finally {
-        setLoading(false);
+        // Only set loading to false if this is still the current request
+        if (!abortController.signal.aborted) {
+          setLoading(false);
+        }
       }
     },
-    [filters, sortOptions, locale, announce, t, INITIAL_PRODUCTS_COUNT]
+    [filters, sortOptions, locale, announce, t]
   );
-
-  // Check if any filters are active
-  const hasActiveFilters = Object.keys(filters).some(
-    (key) =>
-      filters[key as keyof ProductFilters] !== undefined &&
-      filters[key as keyof ProductFilters] !== ""
-  );
-
   // Load initial products or fetch from API
   useEffect(() => {
     if (initialProducts.length === 0 || hasActiveFilters) {
@@ -172,7 +202,7 @@ export function ProductGrid({
       // Set initial displayed count for initial products
       setDisplayedCount(INITIAL_PRODUCTS_COUNT);
     }
-  }, [initialProducts.length, hasActiveFilters, fetchProducts, INITIAL_PRODUCTS_COUNT]);
+  }, [initialProducts.length, hasActiveFilters, fetchProducts, initialProducts]);
 
   // Fetch products when filters or sort options change
   useEffect(() => {
@@ -180,28 +210,37 @@ export function ProductGrid({
     if (hasActiveFilters || initialProducts.length === 0) {
       fetchProducts(1, true);
     }
-  }, [filters, locale, fetchProducts, hasActiveFilters, initialProducts.length]); // Separate useEffect for filters
+  }, [fetchProducts, hasActiveFilters, initialProducts.length]); // Separate useEffect for filters
 
   // Fetch products when sort options change (always, regardless of filters)
   useEffect(() => {
     fetchProducts(1, true);
-  }, [sortOptions, fetchProducts]);
+  }, [fetchProducts]);
 
-  // Handle filter changes
-  const handleFiltersChange = (newFilters: ProductFilters) => {
+  // Cleanup effect to abort ongoing requests when component unmounts
+  useEffect(() => {
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+    };
+  }, []);
+
+  // Optimized filter change handler with useCallback
+  const handleFiltersChange = useCallback((newFilters: ProductFilters) => {
     setFilters(newFilters);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to filters dependency
-  };
+  }, []);
 
-  // Handle sort changes
-  const handleSortChange = (newSort: ProductSortOptions) => {
+  // Optimized sort change handler with useCallback
+  const handleSortChange = useCallback((newSort: ProductSortOptions) => {
     setSortOptions(newSort);
     setCurrentPage(1);
     // fetchProducts will be called by useEffect due to sortOptions dependency
-  };
+  }, []);
 
-  // Load more products from current array or fetch from API
+  // Optimized load more function with useCallback
   const loadMore = useCallback(async () => {
     if (loading) return; // Prevent multiple simultaneous loads
 
@@ -232,26 +271,28 @@ export function ProductGrid({
     fetchProducts,
     announce,
     t,
-    INITIAL_PRODUCTS_COUNT,
   ]);
 
-  // Handle add to cart
-  const handleAddToCart = (product: Product) => {
-    // If product has customization options, redirect to product detail page instead of adding to cart
-    if (hasRequiredCustomizations(product) || hasCustomizations(product)) {
-      // Use window.location to navigate to product detail page
-      window.location.href = `/${locale}/products/${product.slug}`;
-      return;
-    }
+  // Optimized add to cart handler with useCallback
+  const handleAddToCart = useCallback(
+    (product: Product) => {
+      // If product has customization options, redirect to product detail page instead of adding to cart
+      if (hasRequiredCustomizations(product) || hasCustomizations(product)) {
+        // Use window.location to navigate to product detail page
+        window.location.href = `/${locale}/products/${product.slug}`;
+        return;
+      }
 
-    // Only add directly to cart if no customization is needed
-    if (onAddToCart) {
-      onAddToCart(product);
-    } else {
-      // Default behavior - redirect to product detail page for safety
-      window.location.href = `/${locale}/products/${product.slug}`;
-    }
-  };
+      // Only add directly to cart if no customization is needed
+      if (onAddToCart) {
+        onAddToCart(product);
+      } else {
+        // Default behavior - redirect to product detail page for safety
+        window.location.href = `/${locale}/products/${product.slug}`;
+      }
+    },
+    [locale, onAddToCart]
+  );
 
   return (
     <section className={cn("bg-teal-800 py-12 rounded-2xl", className)}>
@@ -327,66 +368,62 @@ export function ProductGrid({
         )}
 
         {/* Products Grid */}
-        {!error && (
-          <>
-            {displayedProducts.length > 0 ? (
-              <div
-                className={cn(
-                  viewMode === "grid"
-                    ? // Clean, minimal responsive grid
+        {!error &&
+          (displayedProducts.length > 0 ? (
+            <div
+              className={cn(
+                viewMode === "grid"
+                  ? // Clean, minimal responsive grid
                     "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5"
-                    : // List view: Clean single column layout
+                  : // List view: Clean single column layout
                     "flex flex-col gap-6 mb-12"
-                )}
-              >
-                {displayedProducts.map((product) => (
-                  <ProductCard
-                    key={product.id}
-                    product={product}
-                    locale={locale}
-                    onAddToCart={handleAddToCart}
-                    featured={product.featured}
-                    viewMode={viewMode}
-                    className="transition-all duration-200 hover:scale-[1.02]"
-                  />
-                ))}
-              </div>
-            ) : !loading ? (
-              // No Results State
-              <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-amber-100">
-                <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <svg
-                    className="w-8 h-8 text-amber-400"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      strokeWidth={1.5}
-                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                    />
-                  </svg>
-                </div>
-                <h3 className="text-xl font-semibold text-amber-800 mb-3">{t("noResults")}</h3>
-                <p className="text-amber-600 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
-                <Button
-                  variant="outline"
-                  size="lg"
-                  onClick={() => {
-                    setFilters({});
-                    setSortOptions({ field: "created_at", direction: "desc" });
-                  }}
-                  className="px-6"
+              )}
+            >
+              {displayedProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  locale={locale}
+                  onAddToCart={handleAddToCart}
+                  featured={product.featured}
+                  viewMode={viewMode}
+                  className="transition-all duration-200 hover:scale-[1.02]"
+                />
+              ))}
+            </div>
+          ) : !loading ? (
+            // No Results State
+            <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-amber-100">
+              <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
+                <svg
+                  className="w-8 h-8 text-amber-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
                 >
-                  {t("clearFilters")}
-                </Button>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={1.5}
+                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
+                  />
+                </svg>
               </div>
-            ) : null}
-          </>
-        )}
-
+              <h3 className="text-xl font-semibold text-amber-800 mb-3">{t("noResults")}</h3>
+              <p className="text-amber-600 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
+              <Button
+                variant="outline"
+                size="lg"
+                onClick={() => {
+                  setFilters({});
+                  setSortOptions({ field: "created_at", direction: "desc" });
+                }}
+                className="px-6"
+              >
+                {t("clearFilters")}
+              </Button>
+            </div>
+          ) : null)}
         {/* Loading State */}
         {loading && (
           <div className="space-y-6">
@@ -508,4 +545,6 @@ export function ProductGrid({
       </div>
     </section>
   );
-}
+});
+
+export { ProductGrid };
