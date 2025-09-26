@@ -33,16 +33,19 @@ export function ProductCard({
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
-  // Core Web Vitals optimization
+  // Core Web Vitals optimization - DISABLED to prevent performance issues
+  // Multiple instances were causing UI freezing and navbar unresponsiveness
+  // Core Web Vitals tracking is now handled at the page level
   const coreWebVitals = useCoreWebVitals({
     componentName: 'ProductCard',
-    enabled: true,
-    trackCLS: true,
-    trackLCP: featured, // Only track LCP for featured products
-    trackFID: true,
-    reserveImageSpace: true,
+    enabled: false, // Disabled to fix performance issues
+    trackCLS: false,
+    trackLCP: false,
+    trackFID: false,
+    reserveImageSpace: true, // Keep this for layout stability
   });
 
   // JavaScript optimization
@@ -113,8 +116,9 @@ export function ProductCard({
                     imageLoading && "blur-sm"
                   )}
                   onLoad={() => setImageLoading(false)}
+                  onError={() => setImageError(true)}
                   priority={featured}
-                  enableCoreWebVitals={true}
+                  enableCoreWebVitals={false}
                   componentName="ProductCard_List"
                   isLCPCandidate={featured}
                   variant="thumbnail"
@@ -234,7 +238,7 @@ export function ProductCard({
                 )}
                 onLoad={() => setImageLoading(false)}
                 priority={featured}
-                enableCoreWebVitals={true}
+                enableCoreWebVitals={false}
                 componentName="ProductCard_Grid_Primary"
                 isLCPCandidate={featured}
                 variant="product"

@@ -240,7 +240,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
    * Initialize Web Vitals tracking
    */
   const initializeWebVitals = useCallback(async () => {
-    if (typeof window === 'undefined') return;
+    if (typeof window === 'undefined' || process.env.NODE_ENV === 'development') return;
 
     try {
       // Dynamic import to avoid SSR issues
@@ -354,7 +354,8 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
       optimizations: { cls: [], lcp: [], fid: [], inp: [] },
     });
 
-    if (process.env.NODE_ENV === 'development') {
+    // Reduced logging to prevent console spam and performance issues
+    if (process.env.NODE_ENV === 'development' && componentName === 'ProductGrid') {
       console.log(`🚀 [CoreWebVitals] Started tracking: ${componentName}`);
     }
   }, [enabled, isTracking, componentName, initializeWebVitals, initializeLayoutShiftObserver, updateMetrics]);
@@ -373,7 +374,8 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
       layoutShiftObserverRef.current = null;
     }
 
-    if (process.env.NODE_ENV === 'development') {
+    // Reduced logging to prevent console spam and performance issues
+    if (process.env.NODE_ENV === 'development' && componentName === 'ProductGrid') {
       console.log(`🛑 [CoreWebVitals] Stopped tracking: ${componentName}`);
     }
   }, [isTracking, componentName]);

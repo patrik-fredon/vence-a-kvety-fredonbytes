@@ -65,17 +65,18 @@ const ProductGrid = React.memo(function ProductGrid({
     rootMargin: "100px", // Start loading images 100px before they come into view
   });
 
-  // Core Web Vitals optimization
+  // Core Web Vitals optimization - DISABLED in development to prevent cascading errors
   const coreWebVitals = useCoreWebVitals({
     componentName: 'ProductGrid',
-    enabled: true,
-    trackCLS: true,
-    trackLCP: true,
-    trackFID: true,
-    reserveImageSpace: true,
+    enabled: process.env.NODE_ENV !== 'development', // Disabled in development
+    trackCLS: process.env.NODE_ENV !== 'development',
+    trackLCP: process.env.NODE_ENV !== 'development',
+    trackFID: process.env.NODE_ENV !== 'development',
+    reserveImageSpace: true, // Keep for layout stability
     onOptimizationFound: (optimization, metric) => {
-      if (process.env.NODE_ENV === 'development') {
-        console.warn(`🔧 [ProductGrid] Optimization needed for ${metric}:`, optimization);
+      // Only log in production
+      if (process.env.NODE_ENV === 'production' && optimization.includes('CRITICAL')) {
+        console.warn(`🔧 [ProductGrid] Critical optimization needed for ${metric}:`, optimization);
       }
     },
   });

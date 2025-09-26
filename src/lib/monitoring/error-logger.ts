@@ -31,6 +31,9 @@ class ErrorLogger {
   private errors: ErrorLog[] = [];
   private maxErrors = 100; // Keep last 100 errors in memory
   private apiEndpoint = "/api/monitoring/errors";
+  private performanceErrorCount = 0;
+  private maxPerformanceErrors = 5; // Circuit breaker for performance errors
+  private performanceErrorResetTime = 60000; // Reset after 1 minute
 
   /**
    * Log an error with context information
@@ -70,7 +73,7 @@ class ErrorLogger {
     if (process.env.NODE_ENV === "development") {
       console.group(`🚨 Error [${errorLog.level}] - ${errorLog.id}`);
       console.error("Message:", errorLog.message);
-      
+
       // Safe stack trace logging - check if stack exists and is valid
       if (errorLog.stack && typeof errorLog.stack === "string" && errorLog.stack.trim()) {
         try {
@@ -81,7 +84,7 @@ class ErrorLogger {
       } else {
         console.error("Stack trace unavailable");
       }
-      
+
       console.log("Context:", context);
       console.groupEnd();
     }
@@ -120,21 +123,33 @@ class ErrorLogger {
    * Log performance issues
    */
   async logPerformanceIssue(
-    metric: string, 
-    value: number, 
-    threshold: number, 
+    metric: string,
+    value: number,
+    threshold: number,
     context?: string,
     unit: string = "ms"
   ) {
+    // Circuit breaker: Stop logging performance errors in development after threshold
+    if (process.env.NODE_ENV === "development") {
+      if (this.performanceErrorCount >= this.maxPerformanceErrors) {
+        return; // Stop logging to prevent cascading errors
+      }
+      this.performanceErrorCount++;
+
+      // Reset counter after timeout
+      setTimeout(() => {
+        this.performanceErrorCount = Math.max(0, this.performanceErrorCount - 1);
+      }, this.performanceErrorResetTime);
+    }
     // Format the value and threshold based on the unit
     const formatValue = (val: number, unit: string): string => {
       switch (unit) {
         case "bytes":
-          return val > 1024 * 1024 
+          return val > 1024 * 1024
             ? `${(val / (1024 * 1024)).toFixed(2)}MB`
-            : val > 1024 
-            ? `${(val / 1024).toFixed(2)}KB`
-            : `${val}B`;
+            : val > 1024
+              ? `${(val / 1024).toFixed(2)}KB`
+              : `${val}B`;
         case "ms":
         default:
           return `${val}ms`;
@@ -143,7 +158,7 @@ class ErrorLogger {
 
     const formattedValue = formatValue(value, unit);
     const formattedThreshold = formatValue(threshold, unit);
-    
+
     const error = new Error(
       `Performance threshold exceeded: ${metric} = ${formattedValue} (threshold: ${formattedThreshold})`
     );
