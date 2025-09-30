@@ -240,7 +240,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
    * Initialize Web Vitals tracking
    */
   const initializeWebVitals = useCallback(async () => {
-    if (typeof window === 'undefined' || process.env.NODE_ENV === 'development') return;
+    if (typeof window === 'undefined' || process.env['NODE_ENV'] === 'development') return;
 
     try {
       // Dynamic import to avoid SSR issues
@@ -312,7 +312,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
             });
 
             // Log significant layout shifts
-            if (shift.value > 0.1 && process.env.NODE_ENV === 'development') {
+            if (shift.value > 0.1 && process.env['NODE_ENV'] === 'development') {
               console.warn(`🔄 [CoreWebVitals] Layout shift detected in ${componentName}:`, {
                 value: shift.value,
                 element: shift.sources?.[0]?.node,
@@ -355,7 +355,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
     });
 
     // Reduced logging to prevent console spam and performance issues
-    if (process.env.NODE_ENV === 'development' && componentName === 'ProductGrid') {
+    if (process.env['NODE_ENV'] === 'development' && componentName === 'ProductGrid') {
       console.log(`🚀 [CoreWebVitals] Started tracking: ${componentName}`);
     }
   }, [enabled, isTracking, componentName, initializeWebVitals, initializeLayoutShiftObserver, updateMetrics]);
@@ -375,7 +375,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
     }
 
     // Reduced logging to prevent console spam and performance issues
-    if (process.env.NODE_ENV === 'development' && componentName === 'ProductGrid') {
+    if (process.env['NODE_ENV'] === 'development' && componentName === 'ProductGrid') {
       console.log(`🛑 [CoreWebVitals] Stopped tracking: ${componentName}`);
     }
   }, [isTracking, componentName]);
@@ -399,7 +399,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
     // Record in global performance monitor
     performanceMonitor.recordMetric('COMPONENT_LAYOUT_SHIFT', shift, `Component: ${componentName}`);
 
-    if (process.env.NODE_ENV === 'development' && shift > 0.1) {
+    if (process.env['NODE_ENV'] === 'development' && shift > 0.1) {
       console.warn(`🔄 [CoreWebVitals] Manual layout shift recorded in ${componentName}:`, {
         shift,
         element,
@@ -429,7 +429,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
     // Record in global performance monitor
     performanceMonitor.recordMetric('COMPONENT_IMAGE_LOAD', loadTime, `Component: ${componentName}, Image: ${src}, LCP: ${isLCP}`);
 
-    if (process.env.NODE_ENV === 'development') {
+    if (process.env['NODE_ENV'] === 'development') {
       console.log(`🖼️ [CoreWebVitals] Image load recorded in ${componentName}:`, {
         src,
         loadTime: `${loadTime.toFixed(2)}ms`,
@@ -453,7 +453,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
     // Record in global performance monitor
     performanceMonitor.recordMetric('COMPONENT_JS_EXECUTION', duration, `Component: ${componentName}, Task: ${taskName}`);
 
-    if (process.env.NODE_ENV === 'development' && duration > 50) {
+    if (process.env['NODE_ENV'] === 'development' && duration > 50) {
       console.warn(`⚡ [CoreWebVitals] Long JS task in ${componentName}:`, {
         taskName,
         duration: `${duration.toFixed(2)}ms`,

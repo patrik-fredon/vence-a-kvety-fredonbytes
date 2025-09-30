@@ -25,16 +25,16 @@ class PerformanceMonitor {
   // Web Vitals thresholds (in milliseconds, except CLS which is unitless)
   // Increased thresholds for development to prevent cascading errors
   private thresholds: WebVitalsThresholds = {
-    LCP: { good: 2500, poor: process.env.NODE_ENV === "development" ? 20000 : 4000 },
-    INP: { good: 200, poor: process.env.NODE_ENV === "development" ? 2000 : 500 },
-    CLS: { good: 0.1, poor: process.env.NODE_ENV === "development" ? 1.0 : 0.25 },
-    FCP: { good: 1800, poor: process.env.NODE_ENV === "development" ? 20000 : 3000 },
-    TTFB: { good: 800, poor: process.env.NODE_ENV === "development" ? 10000 : 1800 },
+    LCP: { good: 2500, poor: process.env['NODE_ENV'] === "development" ? 20000 : 4000 },
+    INP: { good: 200, poor: process.env['NODE_ENV'] === "development" ? 2000 : 500 },
+    CLS: { good: 0.1, poor: process.env['NODE_ENV'] === "development" ? 1.0 : 0.25 },
+    FCP: { good: 1800, poor: process.env['NODE_ENV'] === "development" ? 20000 : 3000 },
+    TTFB: { good: 800, poor: process.env['NODE_ENV'] === "development" ? 10000 : 1800 },
   };
 
   constructor() {
     // Disable performance monitoring in development to prevent cascading errors
-    if (typeof window !== "undefined" && process.env.NODE_ENV !== "development") {
+    if (typeof window !== "undefined" && process.env['NODE_ENV'] !== "development") {
       this.initializeWebVitals();
       this.initializeCustomMetrics();
     }
@@ -306,7 +306,7 @@ class PerformanceMonitor {
    * Send metrics to server
    */
   private async sendMetricsToServer() {
-    if (this.metrics.length === 0 || process.env.NODE_ENV === "development") {
+    if (this.metrics.length === 0 || process.env['NODE_ENV'] === "development") {
       return;
     }
 

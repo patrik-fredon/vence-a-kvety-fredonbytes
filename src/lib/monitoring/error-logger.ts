@@ -61,7 +61,7 @@ class ErrorLogger {
     this.addToLocalStorage(errorLog);
 
     // Send to server if not in development
-    if (process.env.NODE_ENV !== "development") {
+    if (process.env['NODE_ENV'] !== "development") {
       try {
         await this.sendToServer(errorLog);
       } catch (serverError) {
@@ -70,7 +70,7 @@ class ErrorLogger {
     }
 
     // Log to console in development with safe stack trace handling
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.group(`🚨 Error [${errorLog.level}] - ${errorLog.id}`);
       console.error("Message:", errorLog.message);
 
@@ -130,7 +130,7 @@ class ErrorLogger {
     unit: string = "ms"
   ) {
     // Circuit breaker: Stop logging performance errors in development after threshold
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       if (this.performanceErrorCount >= this.maxPerformanceErrors) {
         return; // Stop logging to prevent cascading errors
       }

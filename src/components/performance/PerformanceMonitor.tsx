@@ -68,7 +68,7 @@ function sendToAnalytics(metric: WebVitalsMetric) {
 export function PerformanceMonitor({
   enabled = true,
   onMetric,
-  debug = process.env.NODE_ENV === "development",
+  debug = process.env['NODE_ENV'] === "development",
 }: PerformanceMonitorProps) {
   useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
@@ -165,7 +165,7 @@ export function PerformanceSummary() {
   const { getLatestMetrics } = usePerformanceMetrics();
   const metrics = getLatestMetrics();
 
-  if (process.env.NODE_ENV !== "development") {
+  if (process.env['NODE_ENV'] !== "development") {
     return null;
   }
 

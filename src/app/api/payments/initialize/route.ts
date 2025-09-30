@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     // Get base URL for return/webhook URLs
     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+      process.env['NEXT_PUBLIC_BASE_URL'] || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 
     // Prepare payment request
     const paymentRequest: PaymentRequest = {

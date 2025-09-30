@@ -221,14 +221,14 @@ describe("ProductComponentErrorBoundary", () => {
   });
 
   describe("Development Mode Features", () => {
-    const originalNodeEnv = process.env.NODE_ENV;
+    const originalNodeEnv = process.env['NODE_ENV'];
 
     beforeEach(() => {
-      process.env.NODE_ENV = "development";
+      process.env['NODE_ENV'] = "development";
     });
 
     afterEach(() => {
-      process.env.NODE_ENV = originalNodeEnv;
+      process.env['NODE_ENV'] = originalNodeEnv;
     });
 
     it("should show technical details in development mode", () => {

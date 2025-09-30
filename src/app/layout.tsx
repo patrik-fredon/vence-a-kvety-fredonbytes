@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   creator: "Ketingmar s.r.o.",
   publisher: "Ketingmar s.r.o.",
   robots: "index, follow",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz"),
+  metadataBase: new URL(process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz"),
   alternates: {
     canonical: "/",
     languages: {

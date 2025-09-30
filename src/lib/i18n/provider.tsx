@@ -196,7 +196,7 @@ export function useEnhancedTranslationContext() {
  */
 export function useTranslationDebug() {
   const context = useEnhancedTranslationContext();
-  const [debugMode, setDebugMode] = useState(process.env.NODE_ENV === "development");
+  const [debugMode, setDebugMode] = useState(process.env['NODE_ENV'] === "development");
 
   const logTranslationUsage = useCallback(
     (key: string, namespace?: string, value?: string) => {

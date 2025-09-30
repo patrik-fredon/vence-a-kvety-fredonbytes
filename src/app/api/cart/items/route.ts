@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
       console.log("🍪 [API] Setting cart-session cookie for guest user:", sessionId);
       response.cookies.set("cart-session", sessionId, {
         httpOnly: false, // Allow JavaScript access for client-side cart management
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env['NODE_ENV'] === "production",
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 30, // 30 days
       });

@@ -127,7 +127,7 @@ export function ProductErrorFallback({
         </button>
       )}
 
-      {process.env.NODE_ENV === "development" && error && (
+      {process.env['NODE_ENV'] === "development" && error && (
         <details className="mt-4 text-left">
           <summary className="cursor-pointer text-sm text-stone-500 hover:text-stone-700">
             Zobrazit technické detaily

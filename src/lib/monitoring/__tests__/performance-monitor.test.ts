@@ -181,15 +181,15 @@ describe("PerformanceMonitor", () => {
     });
 
     it("should not send requests in development mode", () => {
-      const originalEnv = process.env.NODE_ENV;
-      process.env.NODE_ENV = "development";
+      const originalEnv = process.env['NODE_ENV'];
+      process.env['NODE_ENV'] = "development";
 
       recordPerformanceMetric("TEST_METRIC", 1000);
       jest.advanceTimersByTime(5000);
 
       expect(fetch).not.toHaveBeenCalled();
 
-      process.env.NODE_ENV = originalEnv;
+      process.env['NODE_ENV'] = originalEnv;
     });
 
     it("should handle server errors gracefully", async () => {

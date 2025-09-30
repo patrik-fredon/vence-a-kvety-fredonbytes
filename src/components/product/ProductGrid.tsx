@@ -68,14 +68,14 @@ const ProductGrid = React.memo(function ProductGrid({
   // Core Web Vitals optimization - DISABLED in development to prevent cascading errors
   const coreWebVitals = useCoreWebVitals({
     componentName: 'ProductGrid',
-    enabled: process.env.NODE_ENV !== 'development', // Disabled in development
-    trackCLS: process.env.NODE_ENV !== 'development',
-    trackLCP: process.env.NODE_ENV !== 'development',
-    trackFID: process.env.NODE_ENV !== 'development',
+    enabled: process.env['NODE_ENV'] !== 'development', // Disabled in development
+    trackCLS: process.env['NODE_ENV'] !== 'development',
+    trackLCP: process.env['NODE_ENV'] !== 'development',
+    trackFID: process.env['NODE_ENV'] !== 'development',
     reserveImageSpace: true, // Keep for layout stability
     onOptimizationFound: (optimization, metric) => {
       // Only log in production
-      if (process.env.NODE_ENV === 'production' && optimization.includes('CRITICAL')) {
+      if (process.env['NODE_ENV'] === 'production' && optimization.includes('CRITICAL')) {
         console.warn(`🔧 [ProductGrid] Critical optimization needed for ${metric}:`, optimization);
       }
     },

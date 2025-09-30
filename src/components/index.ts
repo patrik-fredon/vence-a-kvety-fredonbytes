@@ -76,6 +76,6 @@ export { default as DynamicComponents } from "./dynamic";
 // =============================================================================
 
 // Only export examples in development
-if (process.env.NODE_ENV === "development") {
+if (process.env['NODE_ENV'] === "development") {
   export * from "./examples";
 }

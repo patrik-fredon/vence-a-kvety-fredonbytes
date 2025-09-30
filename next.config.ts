@@ -160,7 +160,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
     // Bundle analyzer configuration for monitoring bundle size
-    if (process.env.ANALYZE === "true") {
+    if (process.env['ANALYZE'] === "true") {
       const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
       config.plugins.push(
         new BundleAnalyzerPlugin({

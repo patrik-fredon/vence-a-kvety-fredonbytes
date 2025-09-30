@@ -107,7 +107,7 @@ describe("ErrorBoundary", () => {
   });
 
   it("shows development error details in development mode", () => {
-    const originalEnv = process.env.NODE_ENV;
+    const originalEnv = process.env['NODE_ENV'];
 
     // Mock NODE_ENV for this test
     Object.defineProperty(process.env, "NODE_ENV", {

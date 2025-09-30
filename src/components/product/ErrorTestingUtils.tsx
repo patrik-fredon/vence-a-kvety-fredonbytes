@@ -160,7 +160,7 @@ export function ErrorTestingDashboard() {
     setErrorLog([]);
   };
 
-  if (process.env.NODE_ENV === "production") {
+  if (process.env['NODE_ENV'] === "production") {
     return (
       <div className="p-4 bg-red-100 border border-red-300 rounded">
         <p className="text-red-800 font-semibold">

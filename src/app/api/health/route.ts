@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
 
     // Check Redis connectivity (if configured)
     let redisStatus = "not_configured";
-    if (process.env.REDIS_URL) {
+    if (process.env['REDIS_URL']) {
       try {
         // Import Redis dynamically to avoid issues if not configured
         const { Redis } = await import("ioredis");
-        const redis = new Redis(process.env.REDIS_URL);
+        const redis = new Redis(process.env['REDIS_URL']);
         await redis.ping();
         await redis.disconnect();
         redisStatus = "healthy";
@@ -51,7 +51,7 @@ export async function GET(request: NextRequest) {
       status: "healthy",
       timestamp: new Date().toISOString(),
       version: process.env.npm_package_version || "1.0.0",
-      environment: process.env.NODE_ENV || "development",
+      environment: process.env['NODE_ENV'] || "development",
       uptime: process.uptime(),
       responseTime: `${responseTime}ms`,
       checks: {
