@@ -198,8 +198,8 @@ export async function POST(request: NextRequest) {
       slug: body.slug,
       descriptionCs: body.descriptionCs || "",
       descriptionEn: body.descriptionEn || "",
-      imageUrl: body.imageUrl,
-      parentId: body.parentId,
+      imageUrl: body.imageUrl || "",
+      parentId: body.parentId || "",
       sortOrder: body.sortOrder || 0,
       active: body.active !== undefined ? body.active : true,
     });

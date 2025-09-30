@@ -94,10 +94,15 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       }
 
       const basePrice = Number.parseFloat(productData.base_price.toString());
+
+      if (!existingItem.product_id) {
+        throw new Error('Product ID is required for price calculation');
+      }
+
       const priceCalculation = await calculateCartItemPrice(
         existingItem.product_id,
         basePrice,
-        existingItem.customizations || [],
+        (existingItem.customizations as any) || [],
         body.quantity,
         session?.user?.id || null,
         sessionId || ""

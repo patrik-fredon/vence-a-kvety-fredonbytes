@@ -20,7 +20,7 @@ interface PerformanceDataRequest {
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
-    const rateLimitResult = await rateLimit("performance-monitoring", request);
+    const rateLimitResult = await rateLimit(request, "general");
     if (!rateLimitResult.success) {
       return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
     }

@@ -16,7 +16,7 @@ import {
 } from "@/lib/cache/product-cache";
 import { createServerClient } from "@/lib/supabase/server";
 import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
-import type { CategoryRow, Product, ProductRow } from "@/types/product";
+import type { Product } from "@/types/product";
 
 interface ProductsPageProps {
   params: Promise<{ locale: string }>;
@@ -128,7 +128,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
       .limit(12);
 
     // Transform the data
-    products = (productsData || []).map((row: ProductRow & { categories?: CategoryRow | null }) => {
+    products = (productsData || []).map((row: any) => {
       const category = row.categories ? transformCategoryRow(row.categories) : undefined;
       return transformProductRow(row, category);
     });
