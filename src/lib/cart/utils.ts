@@ -403,7 +403,7 @@ export function validateCustomizationIntegrity(customizations: any[]): {
     }
 
     const fixed = { ...customization };
-    let hasIssues = false;
+    // Removed unused hasIssues variable
 
     // Validate required fields
     if (!customization.optionId || typeof customization.optionId !== 'string') {

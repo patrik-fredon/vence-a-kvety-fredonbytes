@@ -333,7 +333,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             {product.images && product.images.length > 4 && (
               <div className="relative overflow-hidden rounded-lg bg-stone-100 aspect-square">
                 <Image
-                  src={product.images[4]?.url || product.images[1]?.url}
+                  src={product.images[4]?.url || product.images[1]?.url || product.images[0]?.url || "/placeholder-image.jpg"}
                   alt={product.images[4]?.alt || product.name[locale as keyof typeof product.name]}
                   fill
                   sizes="(max-width: 1024px) 50vw, 25vw"

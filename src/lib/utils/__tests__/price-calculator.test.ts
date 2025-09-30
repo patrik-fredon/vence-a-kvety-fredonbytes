@@ -110,7 +110,7 @@ describe("Price Calculator", () => {
         country: "CZ",
       };
       const deliveryDate = new Date("2024-12-25");
-      const isExpress = true;
+      // Removed unused isExpress variable
 
       const standardFee = calculateDeliveryFee(address, deliveryDate, false);
       const expressFee = calculateDeliveryFee(address, deliveryDate, true);

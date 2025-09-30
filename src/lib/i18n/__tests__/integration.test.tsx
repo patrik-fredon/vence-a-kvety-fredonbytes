@@ -4,7 +4,7 @@
  */
 
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { NextIntlClientProvider } from "next-intl";
+// Removed unused NextIntlClientProvider import
 import { LanguageToggle } from "@/components/layout/LanguageToggle";
 
 // Mock next/navigation

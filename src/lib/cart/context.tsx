@@ -218,7 +218,7 @@ interface CartProviderProps {
 export function CartProvider({ children }: CartProviderProps) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { user, loading } = useAuthContext();
-  const _syncTimeoutRef = useRef<NodeJS.Timeout | undefined>(undefined);
+  // Removed unused _syncTimeoutRef
   const retryCountRef = useRef(0);
   const maxRetries = 3;
   const [isOnline, setIsOnline] = useState(true);

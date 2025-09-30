@@ -1,6 +1,6 @@
 import {
   batchCacheProductCustomizations,
-  getCachedProductCustomizations
+  // Removed unused getCachedProductCustomizations
 } from "@/lib/cache/product-cache";
 import { getFrequentCustomizationOptions } from "./customization-queries";
 import { customizationCache } from "@/lib/cache/customization-cache";

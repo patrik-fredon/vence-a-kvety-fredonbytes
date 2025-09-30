@@ -8,10 +8,10 @@ import { getProductCustomizationOptions } from '@/lib/utils/customization-querie
 import {
   cachePriceCalculation,
   getCachedPriceCalculation,
-  type CachedPriceCalculation
+  // Removed unused CachedPriceCalculation type
 } from '@/lib/cache/cart-cache';
-import type { Customization, CustomizationOption } from '@/types/product';
-import type { LocalizedContent } from '@/types';
+import type { Customization } from '@/types/product';
+// Removed unused LocalizedContent import
 
 /**
  * Price calculation result with detailed breakdown

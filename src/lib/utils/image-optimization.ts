@@ -23,7 +23,7 @@ export const generateBlurDataURL = (
 };
 
 // Generate a low-quality image placeholder (LQIP) from a base64 string
-export const generateLQIP = (originalUrl: string): string => {
+export const generateLQIP = (_originalUrl: string): string => {
   // This is a simplified version - in production, you might want to generate
   // actual low-quality versions of images on the server
   return generateBlurDataURL(10, 10);

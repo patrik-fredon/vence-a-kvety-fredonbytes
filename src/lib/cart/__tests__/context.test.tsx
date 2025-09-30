@@ -245,7 +245,7 @@ describe("Enhanced Cart Context", () => {
     });
 
     it("should sync when coming back online", async () => {
-      const { result } = renderHook(() => useCart(), { wrapper });
+      renderHook(() => useCart(), { wrapper });
 
       // Simulate online event
       const onlineHandler = mockAddEventListener.mock.calls.find(
@@ -289,7 +289,7 @@ describe("Enhanced Cart Context", () => {
     });
 
     it("should process offline operations when back online", async () => {
-      const { result } = renderHook(() => useCart(), { wrapper });
+      renderHook(() => useCart(), { wrapper });
 
       // Mock successful processing of offline operations
       mockFetch.mockResolvedValue({
@@ -357,7 +357,7 @@ describe("Enhanced Cart Context", () => {
 
   describe("Error Handling", () => {
     it("should retry failed requests with exponential backoff", async () => {
-      const { result } = renderHook(() => useCart(), { wrapper });
+      renderHook(() => useCart(), { wrapper });
 
       // Mock initial failure then success
       mockFetch.mockRejectedValueOnce(new Error("Network error")).mockResolvedValueOnce({
@@ -584,7 +584,7 @@ describe("Enhanced Cart Context", () => {
 
   describe("Advanced Persistence", () => {
     it("should save cart state with versioning", async () => {
-      const { result } = renderHook(() => useCart(), { wrapper });
+      renderHook(() => useCart(), { wrapper });
 
       // Wait for cart to load and persist
       await waitFor(() => {

@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
+// Removed unused performanceMonitor import
 import { useLighthouseOptimization } from "./useLighthouseOptimization";
 import { usePerformanceMonitor } from "./usePerformanceMonitor";
 

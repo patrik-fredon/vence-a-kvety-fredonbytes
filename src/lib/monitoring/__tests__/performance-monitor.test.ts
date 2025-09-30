@@ -40,7 +40,7 @@ Object.defineProperty(window, "performance", {
 });
 
 // Mock PerformanceObserver
-global.PerformanceObserver = jest.fn().mockImplementation((callback) => ({
+global.PerformanceObserver = jest.fn().mockImplementation((_callback) => ({
   observe: jest.fn(),
   disconnect: jest.fn(),
 }));
@@ -237,7 +237,7 @@ describe("PerformanceMonitor", () => {
       });
 
       // Create new performance monitor instance to trigger observer setup
-      const { performanceMonitor: newMonitor } = require("../performance-monitor");
+      require("../performance-monitor");
 
       expect(mockObserver.observe).toHaveBeenCalledWith({
         entryTypes: ["resource"],
@@ -265,7 +265,7 @@ describe("PerformanceMonitor", () => {
       });
 
       // Create new performance monitor instance to trigger observer setup
-      const { performanceMonitor: newMonitor } = require("../performance-monitor");
+      require("../performance-monitor");
 
       expect(mockObserver.observe).toHaveBeenCalledWith({
         entryTypes: ["longtask"],

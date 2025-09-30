@@ -116,7 +116,7 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
   const layoutShiftsRef = useRef<Array<{ value: number; element: Element | undefined; timestamp: number }>>([]);
   const imageLoadsRef = useRef<Array<{ src: string; loadTime: number; isLCP: boolean | undefined; timestamp: number }>>([]);
   const jsExecutionsRef = useRef<Array<{ taskName: string; duration: number; timestamp: number }>>([]);
-  const _webVitalsObserverRef = useRef<PerformanceObserver | null>(null);
+  // Removed unused _webVitalsObserverRef
   const layoutShiftObserverRef = useRef<PerformanceObserver | null>(null);
 
   /**

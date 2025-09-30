@@ -99,8 +99,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         basePrice,
         existingItem.customizations || [],
         body.quantity,
-        session?.user?.id || null,
-        sessionId
+        session?.user?.id ?? null,
+        sessionId ?? null
       );
 
       unitPrice = priceCalculation.unitPrice;

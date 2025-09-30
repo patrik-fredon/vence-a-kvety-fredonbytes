@@ -11,7 +11,7 @@ import { customizationCache } from "@/lib/cache/customization-cache";
  * Admin API for managing customization cache
  */
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
     const supabase = await createClient();
 
@@ -36,7 +36,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Get cache statistics
-    const stats = await getCacheStats();
+    const stats = await getCacheWarmingStats();
 
     return NextResponse.json({
       success: true,

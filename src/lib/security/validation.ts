@@ -54,7 +54,7 @@ export interface ValidationResult<T = any> {
 /**
  * CSRF Token validation
  */
-export async function validateCSRFToken(request: NextRequest): Promise<boolean> {
+export async function validateCSRFToken(_request: NextRequest): Promise<boolean> {
   try {
     const headersList = await headers();
     const csrfToken = headersList.get("x-csrf-token");

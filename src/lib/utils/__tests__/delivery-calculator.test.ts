@@ -3,11 +3,11 @@
  */
 
 import type { Address } from "@/types";
-import { DeliveryUrgency } from "@/types/delivery";
+// Removed unused DeliveryUrgency import
 import {
   calculateDeliveryCost,
   calculateEarliestDeliveryDate,
-  DEFAULT_DELIVERY_SETTINGS,
+  // Removed unused DEFAULT_DELIVERY_SETTINGS,
   findDeliveryZone,
   generateAvailableDeliveryDates,
   getNextWorkingDay,

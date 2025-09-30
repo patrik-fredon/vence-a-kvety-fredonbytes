@@ -223,7 +223,7 @@ describe("Locale Persistence", () => {
 
     // Mock cookie reading
     mockDocument.cookie = "NEXT_LOCALE=en; path=/";
-    const cookieLocale = getLocaleCookie();
+    getLocaleCookie();
     // This would work in a real browser environment
   });
 });

@@ -218,7 +218,15 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       ...(seoDescription || description ? { description: (seoDescription || description)! } : {}),
       price: data.base_price,
       category: categoryName,
-      images: productImages.length > 0 ? productImages.map((img) => ({ url: img.url, alt: img.alt || name })) : [],
+      images: productImages.length > 0 ? productImages.map((img) => {
+        if (img && typeof img === 'object' && 'url' in img && 'alt' in img) {
+          return {
+            url: typeof img['url'] === 'string' ? img['url'] : '',
+            alt: (typeof img['alt'] === 'string' ? img['alt'] : null) || name
+          };
+        }
+        return { url: '', alt: name };
+      }) : [],
       availability: "InStock", // This should be dynamic based on actual availability
       brand: "Ketingmar s.r.o.",
     },

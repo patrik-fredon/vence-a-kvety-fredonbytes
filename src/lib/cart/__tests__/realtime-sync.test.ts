@@ -24,7 +24,7 @@ class MockWebSocket {
     }, 10);
   }
 
-  send(data: string) {
+  send(_data: string) {
     // Mock send functionality
   }
 

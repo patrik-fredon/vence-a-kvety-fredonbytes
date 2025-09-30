@@ -15,7 +15,7 @@ export interface ResourceHint {
 /**
  * Critical resources that should be preloaded for optimal LCP
  */
-export const getCriticalResourceHints = (locale: string = "en"): ResourceHint[] => [
+export const getCriticalResourceHints = (_locale: string = "en"): ResourceHint[] => [
   // Preconnect to external domains for faster connection establishment
   {
     rel: "preconnect",
@@ -77,7 +77,7 @@ export const generateResourceHintTags = (hints: ResourceHint[]): string => {
   return hints
     .map((hint) => {
       const attributes = Object.entries(hint)
-        .filter(([key, value]) => value !== undefined)
+        .filter(([_key, value]) => value !== undefined)
         .map(([key, value]) => {
           // Convert camelCase to kebab-case for HTML attributes
           const attrName = key.replace(/([A-Z])/g, "-$1").toLowerCase();

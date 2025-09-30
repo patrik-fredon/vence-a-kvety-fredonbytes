@@ -39,7 +39,7 @@ export class EmailService {
    */
   async sendOrderConfirmation(data: OrderEmailData): Promise<{ success: boolean; error?: string }> {
     try {
-      const { order, customerName, customerEmail, locale } = data;
+      const { order, customerEmail, locale } = data;
 
       const subject =
         locale === "cs"
@@ -78,7 +78,7 @@ export class EmailService {
     data: OrderEmailData & { newStatus: OrderStatus }
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { order, customerName, customerEmail, locale, newStatus } = data;
+      const { order, customerEmail, locale, newStatus } = data;
 
       const subject =
         locale === "cs"

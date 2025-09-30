@@ -490,7 +490,7 @@ export function validateWreathConfigurationEnhanced(
   let fallbackConfiguration: Customization[] | undefined;
 
   // Process each error with enhanced information
-  basicResult.errors.forEach((error, index) => {
+  basicResult.errors.forEach((error, _index) => {
     const enhancedError = createEnhancedValidationError(error, customizations, customizationOptions, locale);
     enhancedErrors.push(enhancedError);
 
@@ -532,7 +532,7 @@ function createEnhancedValidationError(
   errorMessage: string,
   customizations: Customization[],
   customizationOptions: CustomizationOption[],
-  locale: string
+  _locale: string
 ): EnhancedValidationError {
   // Determine error type and context based on message
   let field = 'general';
@@ -588,7 +588,7 @@ function createEnhancedValidationError(
  */
 function generateRecoveryStrategy(
   error: EnhancedValidationError,
-  customizations: Customization[],
+  _customizations: Customization[],
   customizationOptions: CustomizationOption[],
   locale: string
 ): ErrorRecoveryStrategy {
@@ -633,7 +633,7 @@ function generateRecoveryStrategy(
 function generateFallbackConfiguration(
   customizations: Customization[],
   customizationOptions: CustomizationOption[],
-  selectedSize: string | null,
+  _selectedSize: string | null,
   errors: EnhancedValidationError[]
 ): Customization[] | undefined {
   const fallbackCustomizations = [...customizations];
