@@ -2,11 +2,8 @@
 
 import React from "react";
 import { ProductGrid } from "./ProductGrid";
-import {
-  ProductComponentErrorBoundary,
-  ProductFiltersErrorFallback,
-  useProductErrorHandler
-} from "./ProductComponentErrorBoundary";
+import { ProductComponentErrorBoundary, ProductFiltersErrorFallback } from "./ProductComponentErrorBoundary";
+import { useProductErrorHandler } from "./useProductErrorHandler";
 import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
 import type { Category, Product } from "@/types";
 
@@ -46,8 +43,8 @@ export function ProductGridWithErrorBoundary(props: ProductGridWithErrorBoundary
         console.error("ProductGrid error:", { error, errorInfo });
 
         // Could send to analytics or error reporting service
-        if (typeof window !== "undefined" && window.gtag) {
-          window.gtag("event", "exception", {
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "exception", {
             description: `ProductGrid error: ${error.message}`,
             fatal: false,
           });

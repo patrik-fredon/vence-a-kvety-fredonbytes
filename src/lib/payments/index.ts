@@ -178,7 +178,7 @@ export class PaymentService {
     }
 
     return {
-      orderId: paymentIntent.metadata.orderId || "",
+      orderId: paymentIntent.metadata['orderId'] || "",
       transactionId: paymentIntent.id,
       amount: paymentIntent.amount / 100,
       currency: paymentIntent.currency,
@@ -226,6 +226,7 @@ export class PaymentService {
       currency: payment.currency,
       status,
       paymentMethod: "gopay",
+      error: undefined,
     };
   }
 
@@ -274,6 +275,7 @@ export class PaymentService {
         currency: result.currency,
         status: "completed",
         paymentMethod: "stripe",
+        error: undefined,
       };
     } else if (event.type === "payment_intent.payment_failed") {
       const paymentIntent = event.data.object;
@@ -334,6 +336,7 @@ export class PaymentService {
       status,
       transactionId,
       processedAt: status === "completed" ? new Date() : undefined,
+      failureReason: undefined,
     };
   }
 }

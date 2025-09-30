@@ -4,7 +4,7 @@ import {
   validateWreathConfiguration,
   validateCustomRibbonText,
   validateWreathSizeSelection,
-  validateRibbonDependencies,
+  validateRibbonDependencies as validateRibbonDependenciesCore,
   validateWreathConfigurationEnhanced,
   ValidationErrorSeverity,
   WREATH_VALIDATION_MESSAGES,
@@ -233,7 +233,7 @@ export function useEnhancedWreathValidation({
   clearErrors: () => void;
   retryValidation: () => void;
 } {
-  // Removed unused lastValidationTime state
+  const [lastValidationTime, setLastValidationTime] = useState<number>(0);
   const [isRecovering, setIsRecovering] = useState(false);
   const [recoveryAttempts, setRecoveryAttempts] = useState(0);
   const maxRecoveryAttempts = 3;
@@ -361,7 +361,7 @@ export function useEnhancedWreathValidation({
       (option) => option.type === "ribbon_text" || option.id === "ribbon_text"
     );
 
-    return validateRibbonDependencies(
+    return validateRibbonDependenciesCore(
       customizations,
       ribbonOption,
       ribbonColorOption,

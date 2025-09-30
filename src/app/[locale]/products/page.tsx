@@ -115,7 +115,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
           slug,
           description_cs,
           description_en,
-          image_url,
+          images,
           parent_id,
           sort_order,
           active,

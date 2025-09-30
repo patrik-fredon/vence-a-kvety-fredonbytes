@@ -307,7 +307,7 @@ export function formatCustomizationForDisplay(
   const option = customizationOptions.find(opt => opt.id === customization.optionId);
   if (!option) return null;
 
-  const optionName = option.name[locale] || option.name.en || option.name.cs;
+  const optionName = (option.name as any)[locale] || option.name.en || option.name.cs;
 
   // Handle custom text input (like ribbon text)
   if (customization.customValue) {
@@ -319,7 +319,7 @@ export function formatCustomizationForDisplay(
     const selectedChoices = customization.choiceIds
       .map(choiceId => {
         const choice = option.choices.find(c => c.id === choiceId);
-        return choice ? (choice.label[locale] || choice.label.en || choice.label.cs) : null;
+        return choice ? ((choice.label as any)[locale] || choice.label.en || choice.label.cs) : null;
       })
       .filter(Boolean);
 
@@ -388,6 +388,7 @@ export function validateCustomizationIntegrity(customizations: any[]): {
 } {
   const issues: string[] = [];
   const fixedCustomizations: any[] = [];
+  let hasIssues = false;
 
   if (!Array.isArray(customizations)) {
     return {
@@ -403,7 +404,6 @@ export function validateCustomizationIntegrity(customizations: any[]): {
     }
 
     const fixed = { ...customization };
-    // Removed unused hasIssues variable
 
     // Validate required fields
     if (!customization.optionId || typeof customization.optionId !== 'string') {

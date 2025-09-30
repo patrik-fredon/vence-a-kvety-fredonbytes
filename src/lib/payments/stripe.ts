@@ -164,7 +164,7 @@ export function verifyWebhookSignature(
  * Handle successful payment
  */
 export async function handleSuccessfulPayment(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata.orderId;
+  const orderId = paymentIntent.metadata['orderId'];
 
   if (!orderId) {
     throw new Error("Order ID not found in payment intent metadata");
@@ -186,7 +186,7 @@ export async function handleSuccessfulPayment(paymentIntent: Stripe.PaymentInten
  * Handle failed payment
  */
 export async function handleFailedPayment(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata.orderId;
+  const orderId = paymentIntent.metadata['orderId'];
 
   if (!orderId) {
     throw new Error("Order ID not found in payment intent metadata");

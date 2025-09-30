@@ -128,11 +128,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user has admin privileges
+    // Check if user has admin privileges using bracket notation for index signature access
     const isAdmin = profile.preferences &&
       typeof profile.preferences === 'object' &&
       'isAdmin' in profile.preferences &&
-      profile.preferences.isAdmin === true;
+      (profile.preferences as Record<string, any>)['isAdmin'] === true;
     if (!isAdmin) {
       return NextResponse.json(
         {

@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     const emailData = {
       customerName: name.trim(),
       customerEmail: email.trim().toLowerCase(),
-      customerPhone: phone?.trim(),
+      customerPhone: phone?.trim() || "",
       subject: subject.trim(),
       message: message.trim(),
       submittedAt,

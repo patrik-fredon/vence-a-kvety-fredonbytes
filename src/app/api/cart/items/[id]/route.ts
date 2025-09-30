@@ -99,8 +99,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         basePrice,
         existingItem.customizations || [],
         body.quantity,
-        session?.user?.id ?? null,
-        sessionId ?? null
+        session?.user?.id || null,
+        sessionId || ""
       );
 
       unitPrice = priceCalculation.unitPrice;
@@ -149,7 +149,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         session?.user?.id || null,
         sessionId,
         'update',
-        id
+        id as string
       );
 
       console.log(`🗄️ [CartUpdate] Cart cache updated after updating item ${id}`);
@@ -261,7 +261,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
       await forceClearCartCache(session?.user?.id || null, sessionId);
 
-      // Verify cache was actually cleared
+      // Verify cache was actually cleared - only pass the verification message
       const cacheExists = await verifyCacheOperation(session?.user?.id || null, sessionId, 'pre-deletion clear');
       if (cacheExists) {
         console.warn(`⚠️ [CartDelete] Cache still exists after force clear, trying again`);
@@ -306,8 +306,17 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         console.log(`🧹 [CartDelete] Cart is now empty, ensuring all cache is cleared`);
 
         // Clear all cart-related cache (config + price calculations)
-        const { clearEmptyCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
-        await clearEmptyCartCache(session?.user?.id || null, sessionId);
+        const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+
+        // Clear cart configuration cache
+        await forceClearCartCache(session?.user?.id || null, sessionId);
+
+        // Clear all price calculation cache for this user/session using the correct identifier
+        const cacheIdentifier = session?.user?.id || sessionId;
+        if (cacheIdentifier && typeof cacheIdentifier === 'string') {
+          const { clearAllPriceCalculationCache } = await import('@/lib/cache/cart-cache');
+          await clearAllPriceCalculationCache(cacheIdentifier);
+        }
 
         // Verify cache is actually cleared
         const cacheExists = await verifyCacheOperation(session?.user?.id || null, sessionId, 'empty cart clear');
@@ -316,7 +325,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
           // Try one more time with debug info
           const { debugCacheState } = await import('@/lib/cache/cart-cache');
           await debugCacheState(session?.user?.id || null, sessionId);
-          await clearEmptyCartCache(session?.user?.id || null, sessionId);
+          await forceClearCartCache(session?.user?.id || null, sessionId);
         }
 
         console.log(`✅ [CartDelete] All cart cache cleared - cart is empty`);
