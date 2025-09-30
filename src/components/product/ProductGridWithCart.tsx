@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+
 import { useCart } from "@/lib/cart/context";
 import type { Category, Product } from "@/types/product";
 import { ProductGrid } from "./ProductGrid";
