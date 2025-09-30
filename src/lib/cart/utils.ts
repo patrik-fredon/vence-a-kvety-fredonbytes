@@ -443,7 +443,7 @@ export function validateCustomizationIntegrity(customizations: any[]): {
   return {
     isValid: issues.length === 0,
     issues,
-    fixedCustomizations: issues.length > 0 ? fixedCustomizations : undefined,
+    ...(issues.length > 0 && { fixedCustomizations }),
   };
 }
 

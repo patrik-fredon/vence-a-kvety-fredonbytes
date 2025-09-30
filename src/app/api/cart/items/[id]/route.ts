@@ -87,8 +87,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     try {
       const { calculateCartItemPrice } = await import('@/lib/services/cart-price-service');
 
-      // Handle both direct product data and nested product object
-      const productData = existingItem.products || existingItem.product;
+      // Handle product data from the join query
+      const productData = existingItem.products;
       if (!productData) {
         throw new Error('Product data not found in cart item');
       }

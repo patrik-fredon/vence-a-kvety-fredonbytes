@@ -199,6 +199,8 @@ export interface Database {
           session_id: string | null;
           product_id: string | null;
           quantity: number;
+          unit_price: number;
+          total_price: number;
           customizations: Json;
           created_at: string;
           updated_at: string;
@@ -209,6 +211,8 @@ export interface Database {
           session_id?: string | null;
           product_id?: string | null;
           quantity?: number;
+          unit_price?: number;
+          total_price?: number;
           customizations?: Json;
           created_at?: string;
           updated_at?: string;
@@ -219,6 +223,8 @@ export interface Database {
           session_id?: string | null;
           product_id?: string | null;
           quantity?: number;
+          unit_price?: number;
+          total_price?: number;
           customizations?: Json;
           created_at?: string;
           updated_at?: string;
