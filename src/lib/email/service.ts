@@ -7,7 +7,7 @@ import type { Order, OrderStatus } from "@/types/order";
 
 // Email service configuration
 interface EmailConfig {
-  apiKey?: string;
+  apiKey: string | undefined;
   fromEmail: string;
   fromName: string;
   baseUrl: string;

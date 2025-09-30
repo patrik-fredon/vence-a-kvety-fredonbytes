@@ -4,11 +4,11 @@ import type { Locale } from "@/i18n/config";
 
 interface MetadataParams {
   locale: Locale;
-  title?: string;
-  description?: string;
-  keywords?: string[];
-  path?: string;
-  image?: string;
+  title: string | undefined;
+  description: string | undefined;
+  keywords: string[] | undefined;
+  path: string | undefined;
+  image: string | undefined;
 }
 
 /**

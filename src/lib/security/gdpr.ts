@@ -9,8 +9,8 @@ export interface GDPRDataExport {
   user: {
     id: string;
     email: string;
-    name?: string;
-    phone?: string;
+    name: string | undefined;
+    phone: string | undefined;
     createdAt: string;
     updatedAt: string;
   };
@@ -59,7 +59,7 @@ export interface GDPRDeletionResult {
     addresses: number;
     activityLog: number;
   };
-  errors?: string[];
+  errors: string[] | undefined;
 }
 
 /**

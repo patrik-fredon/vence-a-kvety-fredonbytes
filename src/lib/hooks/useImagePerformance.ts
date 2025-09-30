@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-interface ImagePerformanceMetrics {
+export interface ImagePerformanceMetrics {
   /** Time when image loading started */
   loadStartTime: number;
   /** Time when image finished loading */
@@ -12,10 +12,10 @@ interface ImagePerformanceMetrics {
   /** Image file size in bytes (if available) */
   fileSize?: number;
   /** Image dimensions */
-  dimensions?: { width: number; height: number };
+  dimensions: { width: number; height: number; } | undefined;
 }
 
-interface UseImagePerformanceOptions {
+export interface UseImagePerformanceOptions {
   /** Enable performance tracking */
   enabled?: boolean;
   /** Log metrics to console in development */
@@ -24,7 +24,7 @@ interface UseImagePerformanceOptions {
   onMetrics?: (metrics: ImagePerformanceMetrics) => void;
 }
 
-interface ImagePerformanceResult {
+export interface ImagePerformanceResult {
   /** Start tracking image performance */
   startTracking: () => void;
   /** Mark image as loaded successfully */

@@ -19,16 +19,16 @@ export interface PerformanceProfile {
     optimizationOpportunities: string[];
     criticalIssues: string[];
   };
-  memoryUsage?: {
+  memoryUsage: {
     usedJSHeapSize: number;
     totalJSHeapSize: number;
     jsHeapSizeLimit: number;
-  };
-  networkMetrics?: {
+  } | undefined;
+  networkMetrics: {
     resourceCount: number;
     totalTransferSize: number;
     slowResources: string[];
-  };
+  } | undefined;
 }
 
 /**

@@ -40,7 +40,7 @@ export interface PaymentResult {
   currency: string;
   status: PaymentStatus;
   paymentMethod: PaymentMethod;
-  error?: string;
+  error: string | undefined;
 }
 
 /**

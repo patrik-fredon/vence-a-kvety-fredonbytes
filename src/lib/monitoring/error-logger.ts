@@ -14,16 +14,16 @@ interface ErrorContext {
 interface ErrorLog {
   id: string;
   message: string;
-  stack?: string;
+  stack: string | undefined;
   name: string;
   level: string;
-  context?: string;
+  context: string | undefined;
   timestamp: string;
   userAgent: string;
   url: string;
-  userId?: string;
-  sessionId?: string;
-  additionalData?: Record<string, any>;
+  userId: string | undefined;
+  sessionId: string | undefined;
+  additionalData: Record<string, any> | undefined;
   resolved: boolean;
 }
 

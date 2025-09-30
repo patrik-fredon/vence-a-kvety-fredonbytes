@@ -103,8 +103,8 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
     trackLCP = true,
     trackFID = true,
     reserveImageSpace = true,
-    optimizeJavaScript = true,
-    prioritizeImages = true,
+    optimizeJavaScript: _optimizeJavaScript = true,
+    prioritizeImages: _prioritizeImages = true,
     onMetricsUpdate,
     onOptimizationFound,
   } = options;
@@ -113,10 +113,10 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
   const [isTracking, setIsTracking] = useState(false);
 
   // Refs for tracking data
-  const layoutShiftsRef = useRef<Array<{ value: number; element?: Element; timestamp: number }>>([]);
-  const imageLoadsRef = useRef<Array<{ src: string; loadTime: number; isLCP?: boolean; timestamp: number }>>([]);
+  const layoutShiftsRef = useRef<Array<{ value: number; element: Element | undefined; timestamp: number }>>([]);
+  const imageLoadsRef = useRef<Array<{ src: string; loadTime: number; isLCP: boolean | undefined; timestamp: number }>>([]);
   const jsExecutionsRef = useRef<Array<{ taskName: string; duration: number; timestamp: number }>>([]);
-  const webVitalsObserverRef = useRef<PerformanceObserver | null>(null);
+  const _webVitalsObserverRef = useRef<PerformanceObserver | null>(null);
   const layoutShiftObserverRef = useRef<PerformanceObserver | null>(null);
 
   /**

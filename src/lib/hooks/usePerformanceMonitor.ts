@@ -7,13 +7,13 @@ import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
 export interface ComponentPerformanceMetrics {
   componentName: string;
   renderStartTime: number;
-  renderEndTime?: number;
-  renderDuration?: number;
-  mountTime?: number;
+  renderEndTime: number | undefined;
+  renderDuration: number | undefined;
+  mountTime: number | undefined;
   updateCount: number;
-  lastUpdateTime?: number;
+  lastUpdateTime: number | undefined;
   isFirstRender: boolean;
-  props?: Record<string, unknown>;
+  props: Record<string, unknown> | undefined;
 }
 
 /**

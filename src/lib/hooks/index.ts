@@ -23,7 +23,7 @@ export {
 // Image performance hooks
 export {
   useImageOptimization,
-  type ImageOptimizationOptions,
+  type UseImageOptimizationOptions,
   type ImageOptimizationResult,
 } from './useImageOptimization';
 
