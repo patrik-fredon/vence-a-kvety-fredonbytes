@@ -141,8 +141,9 @@ function calculatePerformanceSummary(metrics: any[]) {
 
   const averageValues: Record<string, number> = {};
   Object.entries(metricsByName).forEach(([name, values]) => {
-    const sum = values.reduce((acc, metric) => acc + metric.value, 0);
-    averageValues[name] = Math.round((sum / values.length) * 100) / 100;
+    const metricValues = values as any[];
+    const sum = metricValues.reduce((acc, metric) => acc + metric.value, 0);
+    averageValues[name] = Math.round((sum / metricValues.length) * 100) / 100;
   });
 
   const ratingDistribution = metrics.reduce(
