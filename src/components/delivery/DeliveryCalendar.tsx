@@ -12,19 +12,18 @@ import { useCallback, useEffect, useState } from "react";
 import { generateAvailableDeliveryDates } from "@/lib/utils/delivery-calculator";
 import {
   type DeliveryAvailability,
-  DeliveryCalendarData,
   type DeliveryTimeSlot,
   type DeliveryUrgency,
 } from "@/types/delivery";
 
 interface DeliveryCalendarProps {
-  selectedDate?: Date;
+  selectedDate?: Date | undefined;
   onDateSelect: (date: Date) => void;
   onTimeSlotSelect?: (timeSlot: DeliveryTimeSlot) => void;
-  urgency?: DeliveryUrgency;
-  postalCode?: string;
-  className?: string;
-  disabled?: boolean;
+  urgency?: DeliveryUrgency | undefined;
+  postalCode?: string | undefined;
+  className?: string | undefined;
+  disabled?: boolean | undefined;
 }
 
 const MONTHS_CS = [
@@ -64,8 +63,6 @@ export function DeliveryCalendar({
   selectedDate,
   onDateSelect,
   onTimeSlotSelect,
-  urgency = "standard",
-  postalCode,
   className,
   disabled = false,
 }: DeliveryCalendarProps) {

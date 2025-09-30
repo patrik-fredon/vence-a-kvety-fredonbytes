@@ -7,7 +7,6 @@ import { CTAButton } from "@/components/ui/CTAButton";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
 import {
-  createImageErrorHandler,
   getFallbackImage,
   logErrorWithContext,
   safeTranslate,

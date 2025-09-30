@@ -1,10 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { Order, type OrderStatus } from "@/types/order";
+import { type OrderStatus } from "@/types/order";
 
 interface OrderHistoryProps {
   locale: string;
@@ -38,7 +38,6 @@ type OrderFilter = "all" | OrderStatus;
 type OrderSort = "newest" | "oldest" | "amount-high" | "amount-low";
 
 export function OrderHistory({ locale }: OrderHistoryProps) {
-  const t = useTranslations("order");
   const [allOrders, setAllOrders] = useState<OrderSummary[]>([]);
   const [filteredOrders, setFilteredOrders] = useState<OrderSummary[]>([]);
   const [loading, setLoading] = useState(true);

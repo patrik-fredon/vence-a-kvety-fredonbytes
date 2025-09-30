@@ -47,7 +47,7 @@ export interface ValidationError {
  */
 export interface ValidationResult<T = any> {
   isValid: boolean;
-  data?: T;
+  data?: T | undefined;
   errors: ValidationError[];
 }
 

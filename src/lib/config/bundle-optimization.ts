@@ -22,7 +22,7 @@ export const DYNAMIC_IMPORT_LIBRARIES = [
 ] as const;
 
 // Libraries that benefit from optimizePackageImports
-export const OPTIMIZE_PACKAGE_IMPORTS = [
+export const OPTIMIZE_PACKAGE_IMPORTS: string[] = [
   // Internal modules
   '@/components',
   '@/lib',
@@ -66,7 +66,7 @@ export const OPTIMIZE_PACKAGE_IMPORTS = [
   'tailwind-merge',
   'next-intl',
   'web-vitals',
-] as const;
+];;
 
 // Webpack optimization settings
 export const WEBPACK_OPTIMIZATION = {

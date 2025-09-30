@@ -5,9 +5,8 @@ import {
   BanknotesIcon,
   CreditCardIcon,
   DevicePhoneMobileIcon,
-  ExclamationTriangleIcon,
 } from "@heroicons/react/24/outline";
-import { useTranslations } from "next-intl";
+
 import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -30,7 +29,6 @@ export function GopayPaymentForm({
   onError,
   locale,
 }: GopayPaymentFormProps) {
-  const t = useTranslations("checkout");
   const [isRedirecting, setIsRedirecting] = useState(false);
 
   const handlePayment = async () => {

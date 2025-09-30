@@ -16,14 +16,21 @@ export const GET = withAdminAuth(async (request: NextRequest) => {
     const page = Number.parseInt(searchParams.get("page") || "1");
     const offset = (page - 1) * limit;
 
-    const filters = {
-      category: category || undefined,
-      active: active ? active === "true" : undefined,
-      featured: featured ? featured === "true" : undefined,
-      lowStock: lowStock === "true",
-      limit,
-      offset,
-    };
+    const filters: {
+      category?: string | undefined;
+      active?: boolean | undefined;
+      featured?: boolean | undefined;
+      lowStock?: boolean | undefined;
+      limit?: number | undefined;
+      offset?: number | undefined;
+    } = {};
+
+    if (category) filters.category = category;
+    if (active !== null) filters.active = active === "true";
+    if (featured !== null) filters.featured = featured === "true";
+    if (lowStock === "true") filters.lowStock = true;
+    if (limit) filters.limit = limit;
+    if (offset) filters.offset = offset;
 
     const { data: products, error } = await adminUtils.getAllProducts(filters);
 
@@ -39,12 +46,19 @@ export const GET = withAdminAuth(async (request: NextRequest) => {
     }
 
     // Get total count for pagination
-    const { data: allProducts } = await adminUtils.getAllProducts({
-      category: filters.category,
-      active: filters.active,
-      featured: filters.featured,
-      lowStock: filters.lowStock,
-    });
+    const countFilters: {
+      category?: string | undefined;
+      active?: boolean | undefined;
+      featured?: boolean | undefined;
+      lowStock?: boolean | undefined;
+    } = {};
+
+    if (filters.category) countFilters.category = filters.category;
+    if (filters.active !== undefined) countFilters.active = filters.active;
+    if (filters.featured !== undefined) countFilters.featured = filters.featured;
+    if (filters.lowStock !== undefined) countFilters.lowStock = filters.lowStock;
+
+    const { data: allProducts } = await adminUtils.getAllProducts(countFilters);
 
     return NextResponse.json({
       success: true,

@@ -6,7 +6,7 @@
  */
 
 import { clsx } from "clsx";
-import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 import {
   calculateDeliveryCost,
@@ -31,7 +31,6 @@ export function DeliveryCostCalculator({
   onCostCalculated,
   className,
 }: DeliveryCostCalculatorProps) {
-  const t = useTranslations("delivery");
   const [calculation, setCalculation] = useState<DeliveryCostCalculation | null>(null);
   const [isCalculating, setIsCalculating] = useState(false);
   const [error, setError] = useState<string | null>(null);
