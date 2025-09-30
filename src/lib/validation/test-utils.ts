@@ -17,12 +17,14 @@ export function testWreathValidation() {
       choices: [
         {
           id: 'size_120',
+          value: 'size_120',
           label: { cs: '120cm průměr', en: '120cm diameter' },
           priceModifier: 0,
           available: true
         },
         {
           id: 'size_150',
+          value: 'size_150',
           label: { cs: '150cm průměr', en: '150cm diameter' },
           priceModifier: 500,
           available: true
@@ -37,6 +39,7 @@ export function testWreathValidation() {
       choices: [
         {
           id: 'ribbon_yes',
+          value: 'ribbon_yes',
           label: { cs: 'Ano, přidat stuhu', en: 'Yes, add ribbon' },
           priceModifier: 0,
           available: true
@@ -51,6 +54,7 @@ export function testWreathValidation() {
       choices: [
         {
           id: 'color_black',
+          value: 'color_black',
           label: { cs: 'Černá', en: 'Black' },
           priceModifier: 0,
           available: true
@@ -65,6 +69,7 @@ export function testWreathValidation() {
       choices: [
         {
           id: 'text_custom',
+          value: 'text_custom',
           label: { cs: 'Vlastní text', en: 'Custom text' },
           priceModifier: 100,
           available: true

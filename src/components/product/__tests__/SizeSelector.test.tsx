@@ -35,18 +35,21 @@ describe("SizeSelector", () => {
     choices: [
       {
         id: "size_120",
+        value: "size_120",
         label: { cs: "120cm průměr", en: "120cm diameter" },
         priceModifier: 0,
         available: true,
       },
       {
         id: "size_150",
+        value: "size_150",
         label: { cs: "150cm průměr", en: "150cm diameter" },
         priceModifier: 500,
         available: true,
       },
       {
         id: "size_180",
+        value: "size_180",
         label: { cs: "180cm průměr", en: "180cm diameter" },
         priceModifier: 1000,
         available: true,
@@ -159,6 +162,7 @@ describe("SizeSelector", () => {
         ...mockSizeOption.choices,
         {
           id: "size_200",
+        value: "size_200",
           label: { cs: "200cm průměr", en: "200cm diameter" },
           priceModifier: 1500,
           available: false,

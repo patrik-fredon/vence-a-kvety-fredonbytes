@@ -1,7 +1,9 @@
 import { NextResponse } from 'next/server';
 import {
   validateWreathConfiguration,
+  validateWreathConfigurationEnhanced,
   ValidationErrorSeverity,
+  WREATH_VALIDATION_MESSAGES,
   type EnhancedValidationError,
   type ErrorRecoveryStrategy
 } from './wreath';
@@ -190,7 +192,9 @@ export function validateWreathCustomizationsForApiEnhanced(
     ...(warnings.length > 0 && { warnings }),
     enhancedErrors: enhancedResult.enhancedErrors,
     recoveryStrategies: enhancedResult.recoveryStrategies,
-    fallbackConfiguration: enhancedResult.fallbackConfiguration,
+    ...(enhancedResult.fallbackConfiguration !== undefined && {
+      fallbackConfiguration: enhancedResult.fallbackConfiguration
+    }),
     canProceedWithWarnings: enhancedResult.canProceed
   };
 }

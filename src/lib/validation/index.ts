@@ -1,6 +1,7 @@
 // Main validation functions
 export {
   validateWreathConfiguration,
+  validateWreathConfigurationEnhanced,
   validateCustomRibbonText,
   validateWreathSizeSelection,
   validateRibbonDependencies,

@@ -34,12 +34,14 @@ describe("RibbonConfigurator", () => {
     choices: [
       {
         id: "color_black",
+      value: "color_black",
         label: { cs: "Černá", en: "Black" },
         priceModifier: 0,
         available: true,
       },
       {
         id: "color_white",
+      value: "color_white",
         label: { cs: "Bílá", en: "White" },
         priceModifier: 0,
         available: true,
@@ -57,18 +59,21 @@ describe("RibbonConfigurator", () => {
     choices: [
       {
         id: "text_sympathy",
+      value: "text_sympathy",
         label: { cs: "S upřímnou soustrasti", en: "With sincere sympathy" },
         priceModifier: 50,
         available: true,
       },
       {
         id: "text_memory",
+      value: "text_memory",
         label: { cs: "Na věčnou památku", en: "In eternal memory" },
         priceModifier: 50,
         available: true,
       },
       {
         id: "text_custom",
+      value: "text_custom",
         label: { cs: "Vlastní text", en: "Custom text" },
         priceModifier: 100,
         available: true,

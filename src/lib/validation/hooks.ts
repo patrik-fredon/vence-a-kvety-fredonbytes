@@ -5,11 +5,12 @@ import {
   validateCustomRibbonText,
   validateWreathSizeSelection,
   validateRibbonDependencies,
+  validateWreathConfigurationEnhanced,
   ValidationErrorSeverity,
+  WREATH_VALIDATION_MESSAGES,
   type WreathValidationResult,
   type WreathValidationOptions,
   type EnhancedValidationError,
-  type ErrorRecoveryStrategy,
   type EnhancedWreathValidationResult
 } from './wreath';
 import type { Customization, CustomizationOption } from '@/types/product';
@@ -469,7 +470,7 @@ export function useValidationErrorHandler(locale: string = 'cs') {
   // Check if error is recoverable
   const isErrorRecoverable = useCallback((error: EnhancedValidationError) => {
     return error.recoverable &&
-      !error.context?.recoveryFailed &&
+      !error.context?.['recoveryFailed'] &&
       recoveryInProgress !== error.code;
   }, [recoveryInProgress]);
 

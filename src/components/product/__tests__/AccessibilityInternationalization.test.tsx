@@ -40,18 +40,21 @@ const mockSizeOption: CustomizationOption = {
   choices: [
     {
       id: "size_120",
+      value: "size_120",
       label: { cs: "120cm průměr", en: "120cm diameter" },
       priceModifier: 0,
       available: true,
     },
     {
       id: "size_150",
+      value: "size_150",
       label: { cs: "150cm průměr", en: "150cm diameter" },
       priceModifier: 500,
       available: true,
     },
     {
       id: "size_180",
+      value: "size_180",
       label: { cs: "180cm průměr", en: "180cm diameter" },
       priceModifier: 1000,
       available: false,
@@ -69,12 +72,14 @@ const mockColorOption: CustomizationOption = {
   choices: [
     {
       id: "color_black",
+      value: "color_black",
       label: { cs: "Černá", en: "Black" },
       priceModifier: 0,
       available: true,
     },
     {
       id: "color_white",
+      value: "color_white",
       label: { cs: "Bílá", en: "White" },
       priceModifier: 0,
       available: true,
@@ -92,12 +97,14 @@ const mockTextOption: CustomizationOption = {
   choices: [
     {
       id: "text_sympathy",
+      value: "text_sympathy",
       label: { cs: "S upřímnou soustrasti", en: "With sincere sympathy" },
       priceModifier: 50,
       available: true,
     },
     {
       id: "text_custom",
+      value: "text_custom",
       label: { cs: "Vlastní text", en: "Custom text" },
       priceModifier: 100,
       available: true,
