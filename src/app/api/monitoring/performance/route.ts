@@ -26,7 +26,7 @@ export async function POST(request: NextRequest) {
     }
 
     const body = (await request.json()) as PerformanceDataRequest;
-    const { metrics, userAgent, timestamp } = body;
+    const { metrics, userAgent } = body;
 
     if (!(metrics && Array.isArray(metrics))) {
       return NextResponse.json({ error: "Invalid metrics data" }, { status: 400 });

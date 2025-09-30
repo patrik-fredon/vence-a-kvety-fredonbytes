@@ -30,7 +30,6 @@ export async function GET(request: NextRequest, { params }: RouteContext) {
     const { searchParams } = new URL(request.url);
 
     const includeChildren = searchParams.get("includeChildren") === "true";
-    const includeProducts = searchParams.get("includeProducts") === "true";
 
     const { data, error } = await supabase
       .from("categories")
@@ -296,7 +295,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
  * DELETE /api/categories/[slug]
  * Soft delete a category (set active = false)
  */
-export async function DELETE(request: NextRequest, { params }: RouteContext) {
+export async function DELETE(_: NextRequest, { params }: RouteContext) {
   try {
     const supabase = createServerClient();
     const { slug } = await params;

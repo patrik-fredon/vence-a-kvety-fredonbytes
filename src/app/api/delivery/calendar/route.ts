@@ -13,7 +13,6 @@ import {
 import type { ApiResponse } from "@/types";
 import {
   type DeliveryCalendarData,
-  DeliveryCalendarRequest,
   type DeliveryCalendarResponse,
 } from "@/types/delivery";
 
@@ -117,7 +116,7 @@ export async function POST(request: NextRequest) {
   try {
     // TODO: Add authentication check for admin users
 
-    const body = await request.json();
+    await request.json();
 
     // TODO: Implement calendar updates
     // This would typically update a database with custom availability rules

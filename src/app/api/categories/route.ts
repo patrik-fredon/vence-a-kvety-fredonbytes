@@ -14,7 +14,7 @@ import {
   validateCategoryData,
 } from "@/lib/utils/product-transforms";
 import type { ApiResponse } from "@/types";
-import { type Category, CategoryRow, type CreateCategoryRequest } from "@/types/product";
+import { type Category, type CreateCategoryRequest } from "@/types/product";
 
 /**
  * GET /api/categories

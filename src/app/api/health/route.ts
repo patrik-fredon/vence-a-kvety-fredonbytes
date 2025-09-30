@@ -1,16 +1,16 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 /**
  * Health check endpoint for monitoring and deployment verification
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   const startTime = Date.now();
 
   try {
     // Check database connectivity
     const supabase = createClient();
-    const { data: dbCheck, error: dbError } = await supabase
+    const { error: dbError } = await supabase
       .from("categories")
       .select("count")
       .limit(1)

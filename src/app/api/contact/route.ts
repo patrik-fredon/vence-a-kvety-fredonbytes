@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/contact - Get contact form submissions (admin only)
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // This would require admin authentication
     // For now, return method not allowed

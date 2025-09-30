@@ -14,7 +14,7 @@ interface ConsentUpdateBody {
   functional: boolean;
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Verify authentication
     const session = await auth();

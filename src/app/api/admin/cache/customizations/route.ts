@@ -11,7 +11,7 @@ import { customizationCache } from "@/lib/cache/customization-cache";
  * Admin API for managing customization cache
  */
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createClient();
 
@@ -123,7 +123,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   try {
     const supabase = createClient();
 

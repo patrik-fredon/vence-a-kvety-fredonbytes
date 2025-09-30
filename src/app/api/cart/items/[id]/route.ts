@@ -2,7 +2,7 @@ import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
 import type { UpdateCartItemRequest } from "@/types/cart";
-import { cache } from "react";
+
 
 interface RouteParams {
   params: Promise<{ id: string }>;

@@ -73,14 +73,14 @@ export async function POST(request: NextRequest) {
     const orderItems: OrderItem[] = body.items.map((item: CartItem) => {
       // Import customization utilities
       const { transferCustomizationsToOrder, validateCustomizationIntegrity } = require('@/lib/cart/utils');
-      
+
       // Validate and transfer customizations
       let processedCustomizations = item.customizations || [];
-      
+
       if (processedCustomizations.length > 0) {
         // Validate customization integrity
         const validation = validateCustomizationIntegrity(processedCustomizations);
-        
+
         if (!validation.isValid) {
           console.warn(`Customization validation issues for cart item ${item.id}:`, validation.issues);
           // Use fixed customizations if available
@@ -88,10 +88,10 @@ export async function POST(request: NextRequest) {
             processedCustomizations = validation.fixedCustomizations;
           }
         }
-        
+
         // Transfer customizations to order format
         processedCustomizations = transferCustomizationsToOrder(processedCustomizations);
-        
+
         // Log customization transfer for audit trail
         console.log(`Transferring customizations for order item:`, {
           cartItemId: item.id,
@@ -226,41 +226,41 @@ export async function POST(request: NextRequest) {
 
     // Post-order cleanup: Remove cart items, customization cache, and clear Redis cache
     try {
-      const { cleanupOrphanedCustomizations } = await import('@/lib/cart/utils');
+
       const { clearCartCache } = await import('@/lib/cache/cart-cache');
-      
+
       // Get current user or session for cart cleanup
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      
+
       const sessionId = getSessionId(request);
-      
+
       // Find and clean up cart items that were converted to this order
       let cartQuery = supabase.from("cart_items").select("*");
-      
+
       if (user?.id) {
         cartQuery = cartQuery.eq("user_id", user.id);
       } else if (sessionId) {
         cartQuery = cartQuery.eq("session_id", sessionId);
       }
-      
+
       const { data: cartItems, error: cartFetchError } = await cartQuery;
-      
+
       if (!cartFetchError && cartItems && cartItems.length > 0) {
         // Log customizations being cleaned up
         const customizationCount = cartItems.reduce((count, item) => {
           return count + (Array.isArray(item.customizations) ? item.customizations.length : 0);
         }, 0);
-        
+
         console.log(`🧹 [Cleanup] Post-order cleanup: Removing ${cartItems.length} cart items with ${customizationCount} customizations for order ${order.id}`);
-        
+
         // Delete cart items (this automatically removes associated customizations)
         const { error: deleteError } = await supabase
           .from("cart_items")
           .delete()
           .in("id", cartItems.map(item => item.id));
-        
+
         if (deleteError) {
           console.error("❌ [Cleanup] Error during post-order cart cleanup:", deleteError);
           // Don't fail the order creation if cleanup fails
@@ -313,7 +313,7 @@ export async function POST(request: NextRequest) {
 /**
  * Get orders for current user
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createServerClient();
     const {
@@ -378,9 +378,9 @@ function getSessionId(request: NextRequest): string {
 }
 
 async function calculateDeliveryCost(
-  address: any,
+  _address: any,
   urgency: string,
-  items: CartItem[]
+  _items: CartItem[]
 ): Promise<number> {
   try {
     // This would typically call the delivery estimation API

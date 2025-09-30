@@ -10,7 +10,7 @@ import {
  * GET - Perform customization integrity check
  * Admin-only endpoint to check for customization data integrity issues
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createServerClient();
     const session = await auth();

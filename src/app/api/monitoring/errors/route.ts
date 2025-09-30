@@ -1,6 +1,4 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
-import { rateLimit } from "@/lib/utils/rate-limit";
+import { NextResponse } from "next/server";
 
 interface ErrorLogRequest {
   id: string;
@@ -17,7 +15,7 @@ interface ErrorLogRequest {
   additionalData?: Record<string, any>;
 }
 
-export async function POST(request: NextRequest) {
+export async function POST() {
   try {
     // TODO: Monitoring tables not yet implemented in database schema
     // This endpoint is disabled until the required tables are created
@@ -33,7 +31,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // TODO: Monitoring tables not yet implemented in database schema
     // This endpoint is disabled until the required tables are created

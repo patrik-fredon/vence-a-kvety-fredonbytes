@@ -56,8 +56,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get locale from request headers or default to 'cs'
-    const locale = request.headers.get('accept-language')?.includes('en') ? 'en' : 'cs';
+
 
     // Comprehensive validation using the validation system
     const validationResult = validateCartOperation(

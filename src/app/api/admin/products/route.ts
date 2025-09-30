@@ -5,7 +5,7 @@ import { adminUtils } from "@/lib/supabase/utils";
 /**
  * Get all products (Admin only)
  */
-export const GET = withAdminAuth(async (request: NextRequest, admin) => {
+export const GET = withAdminAuth(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
     const category = searchParams.get("category");
@@ -63,7 +63,7 @@ export const GET = withAdminAuth(async (request: NextRequest, admin) => {
       { status: 500 }
     );
   }
-});
+});;
 
 /**
  * Create new product (Admin only)

@@ -9,7 +9,7 @@
  * Requirements: 6.1, 6.2, 6.3
  */
 
-import { fireEvent, render, screen } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import csMessages from "../../../../messages/cs.json";
 import enMessages from "../../../../messages/en.json";
