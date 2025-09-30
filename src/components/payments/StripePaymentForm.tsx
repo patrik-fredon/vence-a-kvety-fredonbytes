@@ -48,7 +48,7 @@ function PaymentForm({
   onError,
   locale,
 }: PaymentFormProps) {
-  const t = useTranslations("checkout");
+  // Removed unused translation hook
   const stripe = useStripe();
   const elements = useElements();
 

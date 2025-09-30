@@ -1,19 +1,6 @@
 import { NextResponse } from "next/server";
 
-interface ErrorLogRequest {
-  id: string;
-  message: string;
-  stack?: string;
-  name: string;
-  level: string;
-  context?: string;
-  timestamp: string;
-  userAgent: string;
-  url: string;
-  userId?: string;
-  sessionId?: string;
-  additionalData?: Record<string, any>;
-}
+// Removed unused ErrorLogRequest interface
 
 export async function POST() {
   try {

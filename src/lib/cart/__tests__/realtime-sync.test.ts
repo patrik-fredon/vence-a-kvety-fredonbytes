@@ -337,7 +337,7 @@ describe("CartPersistenceManager", () => {
   describe("Save and Load", () => {
     it("should save cart state with version and timestamp", () => {
       const version = 12345;
-      CarceManager.saveCartState(mockCartSummary, version);
+      CacheManager.saveCartState(mockCartSummary, version);
 
       expect(mockLocalStorage.setItem).toHaveBeenCalledWith(
         "cart_state_v2",

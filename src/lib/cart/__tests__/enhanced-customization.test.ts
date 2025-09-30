@@ -49,7 +49,7 @@ describe('Enhanced Cart Customization Utils', () => {
     },
     {
       id: 'ribbon_text',
-      type: 'text',
+      type: 'ribbon_text',
       name: { cs: 'Text na stuze', en: 'Ribbon Text' },
       choices: [
         {

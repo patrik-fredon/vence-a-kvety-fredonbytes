@@ -246,7 +246,7 @@ export function generateAvailableDeliveryDates(
  * Calculate delivery cost based on distance, urgency, and time slot
  */
 export function calculateDeliveryCost(
-  address: Address,
+  _address: Address,
   urgency: DeliveryUrgency,
   timeSlot: DeliveryTimeSlot = "anytime",
   deliveryZone?: DeliveryZone

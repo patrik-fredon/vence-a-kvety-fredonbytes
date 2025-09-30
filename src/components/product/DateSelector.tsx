@@ -22,7 +22,7 @@ export function DateSelector({
   locale,
   className,
 }: DateSelectorProps) {
-  const t = useTranslations("product");
+  // Removed unused translation hook
   const [isOpen, setIsOpen] = useState(false);
 
   // Calculate min and max dates

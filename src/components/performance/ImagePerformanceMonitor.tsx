@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { trackImagePerformance } from "@/lib/utils/image-optimization";
+// Removed unused trackImagePerformance import
 
 interface ImageLoadMetrics {
   url: string;

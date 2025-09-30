@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// Removed unused Image import
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";

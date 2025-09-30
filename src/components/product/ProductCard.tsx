@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// Removed unused Image import
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 import { LazyProductQuickView } from "./LazyProductQuickView";
-import { useCoreWebVitals } from "@/lib/hooks";
+// Removed unused useCoreWebVitals import
 import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
 import { OptimizedImage } from "@/components/ui";
 
@@ -33,20 +33,13 @@ export function ProductCard({
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
-  const [imageError, setImageError] = useState(false);
+  // Removed unused imageError state
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   // Core Web Vitals optimization - DISABLED to prevent performance issues
   // Multiple instances were causing UI freezing and navbar unresponsiveness
   // Core Web Vitals tracking is now handled at the page level
-  const coreWebVitals = useCoreWebVitals({
-    componentName: 'ProductCard',
-    enabled: false, // Disabled to fix performance issues
-    trackCLS: false,
-    trackLCP: false,
-    trackFID: false,
-    reserveImageSpace: true, // Keep this for layout stability
-  });
+  // Removed unused coreWebVitals hook
 
   // JavaScript optimization
   const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductCard');

@@ -7,7 +7,7 @@ import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { useImageOptimization } from "@/lib/hooks/useImageOptimization";
 import { useCoreWebVitals } from "@/lib/hooks";
-import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
+import { useJavaScriptOptimization, debounce } from "@/lib/utils/javascript-optimization";
 import { cn } from "@/lib/utils";
 import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";
 import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
@@ -114,14 +114,14 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // Optimized view mode change handler with useCallback
   const handleViewModeChange = useCallback(
-    optimizedEventHandler(async (mode: "grid" | "list") => {
+    async (mode: "grid" | "list") => {
       await measureExecution('viewModeChange', async () => {
         setViewMode(mode);
         localStorage.setItem("product-view-mode", mode);
         announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
       });
-    }, { debounce: 100 }),
-    [announce, t, optimizedEventHandler, measureExecution]
+    },
+    [announce, t, measureExecution]
   );
 
   // Optimized fetch products function with abort controller for cleanup
@@ -257,33 +257,33 @@ const ProductGrid = React.memo(function ProductGrid({
     };
   }, []);
 
-  // Optimized filter change handler with useCallback
+  // Debounced filter change handler with useCallback
   const handleFiltersChange = useCallback(
-    optimizedEventHandler(async (newFilters: ProductFilters) => {
+    debounce(async (newFilters: ProductFilters) => {
       await measureExecution('filtersChange', async () => {
         setFilters(newFilters);
         setCurrentPage(1);
         // fetchProducts will be called by useEffect due to filters dependency
       });
-    }, { debounce: 300 }),
-    [optimizedEventHandler, measureExecution]
+    }, 30),
+    [measureExecution]
   );
 
-  // Optimized sort change handler with useCallback
+  // Debounced sort change handler with useCallback
   const handleSortChange = useCallback(
-    optimizedEventHandler(async (newSort: ProductSortOptions) => {
+    debounce(async (newSort: ProductSortOptions) => {
       await measureExecution('sortChange', async () => {
         setSortOptions(newSort);
         setCurrentPage(1);
         // fetchProducts will be called by useEffect due to sortOptions dependency
       });
-    }, { debounce: 200 }),
-    [optimizedEventHandler, measureExecution]
+    }, 200),
+    [measureExecution]
   );
 
   // Optimized load more function with useCallback
   const loadMore = useCallback(
-    optimizedEventHandler(async () => {
+    optimizedEventHandler(async (event: Event) => {
       if (loading) return; // Prevent multiple simultaneous loads
 
       await measureExecution('loadMore', async () => {
@@ -529,7 +529,10 @@ const ProductGrid = React.memo(function ProductGrid({
 
             <Button
               variant="outline"
-              onClick={loadMore}
+              onClick={(event) => {
+                event.preventDefault();
+                loadMore(event);
+              }}
               size="lg"
               disabled={loading}
               loading={loading}
