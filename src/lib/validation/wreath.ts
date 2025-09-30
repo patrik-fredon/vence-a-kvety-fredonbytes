@@ -521,7 +521,7 @@ export function validateWreathConfigurationEnhanced(
     enhancedErrors,
     recoveryStrategies,
     canProceed,
-    fallbackConfiguration
+    ...(fallbackConfiguration && { fallbackConfiguration })
   };
 }
 
@@ -578,8 +578,8 @@ function createEnhancedValidationError(
     severity,
     recoverable,
     retryable,
-    fallbackAction,
-    context
+    ...(fallbackAction && { fallbackAction }),
+    ...(context && { context })
   };
 }
 

@@ -46,7 +46,7 @@ export function CustomerInfoStep({
             type="text"
             value={customerInfo.firstName || ""}
             onChange={(e) => handleChange("firstName", e.target.value)}
-            error={errors.firstName}
+            {...(errors.firstName && { error: errors.firstName })}
             placeholder="Zadejte své jméno"
             required
           />
@@ -60,7 +60,7 @@ export function CustomerInfoStep({
             type="text"
             value={customerInfo.lastName || ""}
             onChange={(e) => handleChange("lastName", e.target.value)}
-            error={errors.lastName}
+            {...(errors.lastName && { error: errors.lastName })}
             placeholder="Zadejte své příjmení"
             required
           />
@@ -76,7 +76,7 @@ export function CustomerInfoStep({
             type="email"
             value={customerInfo.email || ""}
             onChange={(e) => handleChange("email", e.target.value)}
-            error={errors.email}
+            {...(errors.email && { error: errors.email })}
             placeholder="vas@email.cz"
             required
           />
@@ -93,7 +93,7 @@ export function CustomerInfoStep({
             type="tel"
             value={customerInfo.phone || ""}
             onChange={(e) => handleChange("phone", e.target.value)}
-            error={errors.phone}
+            {...(errors.phone && { error: errors.phone })}
             placeholder="+420 123 456 789"
             required
           />

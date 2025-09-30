@@ -5,8 +5,12 @@ import {
   validateCustomRibbonText,
   validateWreathSizeSelection,
   validateRibbonDependencies,
+  ValidationErrorSeverity,
   type WreathValidationResult,
-  type WreathValidationOptions
+  type WreathValidationOptions,
+  type EnhancedValidationError,
+  type ErrorRecoveryStrategy,
+  type EnhancedWreathValidationResult
 } from './wreath';
 import type { Customization, CustomizationOption } from '@/types/product';
 

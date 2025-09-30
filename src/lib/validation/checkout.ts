@@ -548,15 +548,16 @@ export function formatValidationErrors(errors: CheckoutValidationErrors): string
  * Sanitize and normalize form data
  */
 export function sanitizeCustomerInfo(customerInfo: Partial<CustomerInfo>): Partial<CustomerInfo> {
-  return {
-    ...customerInfo,
-    firstName: customerInfo.firstName?.trim(),
-    lastName: customerInfo.lastName?.trim(),
-    email: customerInfo.email?.trim().toLowerCase(),
-    phone: customerInfo.phone?.replace(/\s/g, ""),
-    company: customerInfo.company?.trim(),
-    note: customerInfo.note?.trim(),
-  };
+  const sanitized: Partial<CustomerInfo> = {};
+
+  if (customerInfo.firstName) sanitized.firstName = customerInfo.firstName.trim();
+  if (customerInfo.lastName) sanitized.lastName = customerInfo.lastName.trim();
+  if (customerInfo.email) sanitized.email = customerInfo.email.trim().toLowerCase();
+  if (customerInfo.phone) sanitized.phone = customerInfo.phone.replace(/\s/g, "");
+  if (customerInfo.company) sanitized.company = customerInfo.company.trim();
+  if (customerInfo.note) sanitized.note = customerInfo.note.trim();
+
+  return sanitized;
 }
 
 export function sanitizeDeliveryInfo(deliveryInfo: Partial<DeliveryInfo>): Partial<DeliveryInfo> {

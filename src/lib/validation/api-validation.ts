@@ -1,5 +1,10 @@
 import { NextResponse } from 'next/server';
-import { validateWreathConfiguration } from './wreath';
+import {
+  validateWreathConfiguration,
+  ValidationErrorSeverity,
+  type EnhancedValidationError,
+  type ErrorRecoveryStrategy
+} from './wreath';
 import type { Customization, CustomizationOption } from '@/types/product';
 
 export interface ApiValidationError {
@@ -11,7 +16,7 @@ export interface ApiValidationError {
 export interface ApiValidationResult {
   isValid: boolean;
   errors: ApiValidationError[];
-  warnings?: ApiValidationError[] | undefined;
+  warnings?: ApiValidationError[];
 }
 
 /**
@@ -101,7 +106,7 @@ export function validateWreathCustomizationsForApi(
   return {
     isValid: validationResult.isValid,
     errors,
-    warnings: warnings.length > 0 ? warnings : undefined
+    ...(warnings.length > 0 && { warnings })
   };
 }
 
@@ -182,7 +187,7 @@ export function validateWreathCustomizationsForApiEnhanced(
   return {
     isValid: enhancedResult.isValid,
     errors,
-    warnings: warnings.length > 0 ? warnings : undefined,
+    ...(warnings.length > 0 && { warnings }),
     enhancedErrors: enhancedResult.enhancedErrors,
     recoveryStrategies: enhancedResult.recoveryStrategies,
     fallbackConfiguration: enhancedResult.fallbackConfiguration,
@@ -231,7 +236,7 @@ export function createEnhancedValidationErrorResponse(
  */
 function getLocalizedErrorMessage(errorCode: string | undefined, locale: string): string {
   const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
-  
+
   switch (errorCode) {
     case 'SIZE_VALIDATION_ERROR':
       return messages.sizeRequired;
@@ -255,7 +260,7 @@ export function withGracefulErrorHandling<T extends any[]>(
       return await handler(...args);
     } catch (error) {
       console.error('API Error:', error);
-      
+
       // Determine error type and provide appropriate response
       if (error instanceof Error) {
         if (error.message.includes('network') || error.message.includes('connection')) {
@@ -267,7 +272,7 @@ export function withGracefulErrorHandling<T extends any[]>(
             userFriendlyMessage: 'Connection error, please check your internet connection'
           }, { status: 503 });
         }
-        
+
         if (error.message.includes('timeout')) {
           return NextResponse.json({
             success: false,
