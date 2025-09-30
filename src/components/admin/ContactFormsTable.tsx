@@ -6,7 +6,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
-import { ContactForm } from "@/types/contact";
+
 
 interface ContactFormsTableProps {
   contactForms: any[];

@@ -128,7 +128,7 @@ async function getProducts(request: NextRequest) {
     const offset = ((params.page || 1) - 1) * (params.limit || 12);
     query = query.range(offset, offset + (params.limit || 12) - 1);
 
-    const { data: productsData, error, count } = await query;
+    const { data: productsData, error } = await query;
 
     if (error) {
       console.error("Error fetching products:", error);

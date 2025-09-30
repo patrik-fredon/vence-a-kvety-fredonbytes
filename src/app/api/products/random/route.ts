@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     const count = Math.min(Number.parseInt(searchParams.get("count") || "3"), 10); // Max 10 products
-    const locale = searchParams.get("locale") || "cs";
 
     // Get random products that are active and in stock
     // Use a more sophisticated random selection algorithm

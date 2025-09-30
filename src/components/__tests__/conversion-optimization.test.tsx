@@ -9,7 +9,7 @@
  * Requirements: 6.1, 6.2, 6.3
  */
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { fireEvent, render, screen } from "@testing-library/react";
 import { NextIntlClientProvider } from "next-intl";
 import { ProductCard } from "@/components/product/ProductCard";
 import type { Product } from "@/types/product";

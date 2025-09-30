@@ -3,7 +3,7 @@
  * Tests for ARIA labels, keyboard navigation, focus management, and screen reader support
  */
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe, toHaveNoViolations } from "jest-axe";
 import { Button } from "@/components/ui/Button";
@@ -227,7 +227,7 @@ describe("Accessibility Implementation", () => {
         </TestWrapper>
       );
 
-      const button = screen.getByRole("button");
+      screen.getByRole("button");
       expect(document.documentElement).toHaveClass("high-contrast");
 
       // Clean up

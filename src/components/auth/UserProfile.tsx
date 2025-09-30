@@ -4,7 +4,7 @@ import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 import { OrderHistory } from "@/components/order/OrderHistory";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { useAuth, useSignOut, useUpdateProfile } from "@/lib/auth/hooks";
 import { type Address, defaultUserPreferences, type UserPreferences } from "@/types/user";
@@ -152,11 +152,10 @@ export function UserProfile() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
-                    activeTab === tab
+                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${activeTab === tab
                       ? "border-amber-600 text-amber-600"
                       : "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
-                  }`}
+                    }`}
                 >
                   {getTabLabel(tab)}
                 </button>

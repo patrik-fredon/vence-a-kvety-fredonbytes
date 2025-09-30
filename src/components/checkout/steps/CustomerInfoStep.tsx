@@ -10,14 +10,12 @@ interface CustomerInfoStepProps {
   customerInfo: Partial<CustomerInfo>;
   errors?: Partial<Record<keyof CustomerInfo, string>>;
   onChange: (customerInfo: Partial<CustomerInfo>) => void;
-  locale: string;
 }
 
 export function CustomerInfoStep({
   customerInfo,
   errors = {},
   onChange,
-  locale,
 }: CustomerInfoStepProps) {
   const t = useTranslations("checkout");
 

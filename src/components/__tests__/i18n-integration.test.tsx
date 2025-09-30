@@ -3,7 +3,7 @@
  * Tests core internationalization functionality without complex component dependencies
  */
 
-import { jest } from "@jest/globals";
+
 
 // Import translation files
 import csMessages from "../../../messages/cs.json";

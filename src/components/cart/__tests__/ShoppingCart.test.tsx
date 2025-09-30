@@ -1,6 +1,5 @@
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { CartProvider } from "@/lib/cart/context";
 import type { CartItem } from "@/types/cart";
 import { ShoppingCart } from "../ShoppingCart";
 

@@ -6,9 +6,7 @@
 
 import {
   AdjustmentsHorizontalIcon,
-  Cog6ToothIcon,
   EyeIcon,
-  SpeakerWaveIcon,
   XMarkIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
@@ -17,11 +15,9 @@ import { Button } from "@/components/ui/Button";
 import { useAccessibility } from "@/lib/accessibility/context";
 import { useSkipLinks } from "@/lib/accessibility/hooks";
 
-interface AccessibilityToolbarProps {
-  locale: string;
-}
 
-export function AccessibilityToolbar({ locale }: AccessibilityToolbarProps) {
+
+export function AccessibilityToolbar() {
   const t = useTranslations("accessibility");
   const [isOpen, setIsOpen] = useState(false);
   const { isHighContrast, toggleHighContrast, announceMessage } = useAccessibility();
@@ -56,10 +52,9 @@ export function AccessibilityToolbar({ locale }: AccessibilityToolbarProps) {
         onClick={handleToggleToolbar}
         className={`
           fixed top-4 right-4 z-50 p-3 rounded-full shadow-lg transition-all duration-200
-          ${
-            isHighContrast
-              ? "bg-black text-white border-2 border-white"
-              : "bg-stone-900 text-white hover:bg-stone-800"
+          ${isHighContrast
+            ? "bg-black text-white border-2 border-white"
+            : "bg-stone-900 text-white hover:bg-stone-800"
           }
           focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2
         `}
@@ -80,10 +75,9 @@ export function AccessibilityToolbar({ locale }: AccessibilityToolbarProps) {
           id="accessibility-toolbar"
           className={`
             fixed top-20 right-4 z-40 w-80 max-w-[calc(100vw-2rem)] rounded-lg shadow-elegant
-            ${
-              isHighContrast
-                ? "bg-black text-white border-2 border-white"
-                : "bg-white text-neutral-900 border border-neutral-200"
+            ${isHighContrast
+              ? "bg-black text-white border-2 border-white"
+              : "bg-white text-neutral-900 border border-neutral-200"
             }
           `}
           role="dialog"

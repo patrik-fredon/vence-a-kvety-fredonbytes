@@ -3,7 +3,7 @@
 import { CheckCircleIcon, CreditCardIcon, MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import React from "react";
-import { formatPrice } from "@/lib/utils";
+
 import type { CartItem } from "@/types/cart";
 import type { CheckoutFormData } from "@/types/order";
 import { OrderSummary } from "../OrderSummary";
@@ -35,7 +35,6 @@ export function ReviewStep({
   onSubscribeNewsletterChange,
   locale,
 }: ReviewStepProps) {
-  const t = useTranslations("checkout");
   const tDelivery = useTranslations("delivery");
 
   const { customerInfo, deliveryInfo, paymentMethod } = formData;

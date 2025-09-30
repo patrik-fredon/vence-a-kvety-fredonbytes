@@ -159,7 +159,7 @@ export function AddressBook({
                       <input
                         type="checkbox"
                         checked={address.isDefault}
-                        onChange={(e) => setDefaultAddress(address.id)}
+                        onChange={() => setDefaultAddress(address.id)}
                         className="mr-2 rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />
                       <span className="text-sm text-stone-700">

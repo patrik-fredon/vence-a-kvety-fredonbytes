@@ -5,15 +5,13 @@
 
 import { jest } from "@jest/globals";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
-import { NextIntlClientProvider } from "next-intl";
+
 
 // Import translation files
 import csMessages from "../../../messages/cs.json";
 import enMessages from "../../../messages/en.json";
 
-// Import i18n components
-import { CurrencyDisplay } from "../i18n/CurrencyDisplay";
-import { DateDisplay } from "../i18n/DateDisplay";
+
 
 // Mock cart context
 const mockCartContext = {
@@ -52,37 +50,7 @@ jest.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-// Test wrapper component
-const TestWrapper = ({
-  children,
-  locale = "cs",
-  messages = csMessages,
-}: {
-  children: React.ReactNode;
-  locale?: string;
-  messages?: any;
-}) => (
-  <NextIntlClientProvider locale={locale} messages={messages}>
-    {children}
-  </NextIntlClientProvider>
-);
 
-// Sample product data for testing
-const mockProduct = {
-  id: "1",
-  name: { cs: "Smuteční věnec", en: "Funeral Wreath" },
-  description: { cs: "Krásný smuteční věnec", en: "Beautiful funeral wreath" },
-  category: "wreaths" as const,
-  pricing: { base: 2500, currency: "CZK" as const, customizationFees: {} },
-  images: ["/test-image.jpg"],
-  availability: true,
-  customization: {
-    sizes: ["small", "medium", "large"],
-    flowers: ["roses", "lilies"],
-    ribbons: true,
-    personalMessage: true,
-  },
-};
 
 describe("I18n Validation - Task 15.1: Czech and English Language Support", () => {
   describe("Translation File Structure", () => {

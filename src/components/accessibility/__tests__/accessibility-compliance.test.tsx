@@ -3,7 +3,7 @@
  * Tests WCAG 2.1 AA compliance, keyboard navigation, and screen reader support
  */
 
-import { fireEvent, render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { axe, toHaveNoViolations } from "jest-axe";
 import { NextIntlClientProvider } from "next-intl";
@@ -214,7 +214,7 @@ describe("Accessibility Compliance Tests", () => {
         <TestWrapper>
           <Modal
             isOpen={true}
-            onClose={() => {}}
+            onClose={() => { }}
             title="Test Modal"
             description="This is a test modal"
           >
@@ -275,7 +275,7 @@ describe("Accessibility Compliance Tests", () => {
     it("should not have accessibility violations", async () => {
       const { container } = render(
         <TestWrapper>
-          <ProductCard product={mockProduct} locale="cs" onAddToCart={() => {}} />
+          <ProductCard product={mockProduct} locale="cs" onAddToCart={() => { }} />
         </TestWrapper>
       );
 
@@ -286,7 +286,7 @@ describe("Accessibility Compliance Tests", () => {
     it("should have proper semantic structure", () => {
       render(
         <TestWrapper>
-          <ProductCard product={mockProduct} locale="cs" onAddToCart={() => {}} />
+          <ProductCard product={mockProduct} locale="cs" onAddToCart={() => { }} />
         </TestWrapper>
       );
 
@@ -555,7 +555,7 @@ describe("Accessibility Compliance Tests", () => {
         <TestWrapper>
           <div>
             <h1>Main Title</h1>
-            <ProductCard product={mockProduct} locale="cs" onAddToCart={() => {}} />
+            <ProductCard product={mockProduct} locale="cs" onAddToCart={() => { }} />
           </div>
         </TestWrapper>
       );
@@ -580,7 +580,7 @@ describe("Keyboard Navigation Integration Tests", () => {
           <main id="main-content" tabIndex={-1}>
             <KeyboardNavigationGrid columns={2} ariaLabel="Product Grid">
               <GridItem>
-                <ProductCard product={mockProduct} locale="cs" onAddToCart={() => {}} />
+                <ProductCard product={mockProduct} locale="cs" onAddToCart={() => { }} />
               </GridItem>
               <GridItem>
                 <ProductCard
@@ -590,7 +590,7 @@ describe("Keyboard Navigation Integration Tests", () => {
                     name: { cs: "Druhý věnec", en: "Second Wreath" },
                   }}
                   locale="cs"
-                  onAddToCart={() => {}}
+                  onAddToCart={() => { }}
                 />
               </GridItem>
             </KeyboardNavigationGrid>

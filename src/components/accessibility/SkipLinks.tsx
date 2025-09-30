@@ -7,11 +7,7 @@
 
 import { useTranslations } from "next-intl";
 
-interface SkipLinksProps {
-  locale: string;
-}
-
-export function SkipLinks({ locale }: SkipLinksProps) {
+export function SkipLinks() {
   const t = useTranslations("accessibility");
 
   const skipLinks = [

@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+
 import { defaultUserPreferences, type UserPreferences } from "@/types/user";
 
 interface UserPreferencesProps {

@@ -4,9 +4,9 @@
  */
 
 import { jest } from "@jest/globals";
-import { render } from "@testing-library/react";
+
 import fs from "fs";
-import { NextIntlClientProvider } from "next-intl";
+
 import path from "path";
 
 // Import translation files
@@ -40,20 +40,7 @@ jest.mock("next/navigation", () => ({
   useSearchParams: () => new URLSearchParams(),
 }));
 
-// Test wrapper
-const TestWrapper = ({
-  children,
-  locale = "cs",
-  messages = csMessages,
-}: {
-  children: React.ReactNode;
-  locale?: string;
-  messages?: any;
-}) => (
-  <NextIntlClientProvider locale={locale} messages={messages}>
-    {children}
-  </NextIntlClientProvider>
-);
+
 
 describe("Hardcoded Strings Detection - Task 15.2: No Hardcoded Strings", () => {
   // Common English words that should not appear as hardcoded strings
@@ -132,80 +119,7 @@ describe("Hardcoded Strings Detection - Task 15.2: No Hardcoded Strings", () => 
     "Help",
   ];
 
-  // Common Czech words that should not appear as hardcoded strings in English version
-  const commonCzechWords = [
-    "Domů",
-    "Produkty",
-    "O nás",
-    "Kontakt",
-    "Košík",
-    "Přihlášení",
-    "Registrace",
-    "Přidat do košíku",
-    "Cena",
-    "Popis",
-    "Hledat",
-    "Filtrovat",
-    "Seřadit",
-    "Další",
-    "Předchozí",
-    "Načítání",
-    "Chyba",
-    "Úspěch",
-    "Zrušit",
-    "Potvrdit",
-    "Uložit",
-    "Upravit",
-    "Smazat",
-    "Zavřít",
-    "Otevřít",
-    "Odeslat",
-    "Resetovat",
-    "E-mail",
-    "Heslo",
-    "Jméno",
-    "Adresa",
-    "Telefon",
-    "Město",
-    "Země",
-    "Celkem",
-    "Mezisoučet",
-    "Doprava",
-    "DPH",
-    "Objednávka",
-    "Objednat",
-    "Doručení",
-    "Platba",
-    "Zákazník",
-    "Informace",
-    "Detaily",
-    "Dostupné",
-    "Nedostupné",
-    "Skladem",
-    "Není skladem",
-    "Doporučené",
-    "Oblíbené",
-    "Nové",
-    "Sleva",
-    "Zdarma",
-    "Velikost",
-    "Barva",
-    "Množství",
-    "Kategorie",
-    "Značka",
-    "Model",
-    "Recenze",
-    "Hodnocení",
-    "Komentáře",
-    "Zpětná vazba",
-    "Podpora",
-    "Soukromí",
-    "Podmínky",
-    "Cookies",
-    "Právní",
-    "FAQ",
-    "Nápověda",
-  ];
+
 
   describe("Static Code Analysis", () => {
     const getComponentFiles = (dir: string): string[] => {
