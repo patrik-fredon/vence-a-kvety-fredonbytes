@@ -48,7 +48,7 @@ export function CoreWebVitalsProvider({
       setGlobalMetrics(metrics);
       onMetricsUpdate?.(metrics);
     },
-    onOptimizationFound,
+    ...(onOptimizationFound && { onOptimizationFound }),
   });
 
   // Log performance summary in development
