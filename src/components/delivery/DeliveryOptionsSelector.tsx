@@ -5,7 +5,7 @@
  * Allows users to select delivery urgency and view available options
  */
 
-import { ClockIcon, TruckIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, TruckIcon } from "@/lib/icons";
 import { clsx } from "clsx";
 
 import { useEffect, useState } from "react";

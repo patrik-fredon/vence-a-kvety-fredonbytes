@@ -1,6 +1,6 @@
 "use client";
 
-import { CreditCardIcon, ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { CreditCardIcon, ExclamationTriangleIcon } from "@/lib/icons";
 import {
   Elements,
   PaymentElement,
