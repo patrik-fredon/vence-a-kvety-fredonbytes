@@ -55,9 +55,10 @@ export function ProductFilters({
       timeoutRef.current = setTimeout(() => {
         // Use functional update to get the latest localFilters
         setLocalFilters((currentFilters) => {
+          const { search: _, ...filtersWithoutSearch } = currentFilters;
           const newFilters = searchTerm
             ? { ...currentFilters, search: searchTerm }
-            : { ...currentFilters, search: undefined };
+            : filtersWithoutSearch;
           onFiltersChange(newFilters);
           return newFilters;
         });

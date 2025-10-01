@@ -25,7 +25,7 @@ export const FALLBACK_IMAGES = {
     </svg>
   `).toString("base64")}`,
   product: {
-    src: "/funeral-wreaths-and-floral-arrangement-001.png",
+    src: "https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp",
     alt: "Funeral Wreath",
     width: 400,
     height: 400,

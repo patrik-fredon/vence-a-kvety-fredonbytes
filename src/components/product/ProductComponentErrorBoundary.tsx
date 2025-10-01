@@ -2,7 +2,7 @@
 
 import { Component, type ReactNode } from "react";
 import { ExclamationTriangleIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
-import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+
 import { logError } from "@/lib/monitoring/error-logger";
 
 interface ProductComponentErrorBoundaryProps {
@@ -45,11 +45,10 @@ export class ProductComponentErrorBoundary extends Component<
       errorInfo,
       level: "component",
       context: `product-component-${componentName || "unknown"}`,
-      errorId: this.state.errorId,
+      errorId: this.state.errorId || "unknown",
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      productComponent: componentName,
     });
 
     // Call custom error handler if provided
@@ -68,10 +67,10 @@ export class ProductComponentErrorBoundary extends Component<
 
       return (
         <ProductErrorFallback
-          error={this.state.error}
+          error={this.state.error || new Error("Unknown error")}
           onRetry={this.handleRetry}
-          componentName={this.props.componentName}
-          errorId={this.state.errorId}
+          componentName={this.props.componentName || "Unknown"}
+          errorId={this.state.errorId || "unknown"}
         />
       );
     }
@@ -145,9 +144,9 @@ export function ProductErrorFallback({
  * Lightweight error fallback for product cards in grids
  */
 export function ProductCardErrorFallback({
-  error,
+  error: _error,
   onRetry,
-  errorId,
+  errorId: _errorId,
 }: ProductErrorFallbackProps) {
   return (
     <div
@@ -185,9 +184,9 @@ export function ProductCardErrorFallback({
  * Minimal error fallback for product filters
  */
 export function ProductFiltersErrorFallback({
-  error,
+  error: _error,
   onRetry,
-  errorId,
+  errorId: _errorId,
 }: ProductErrorFallbackProps) {
   return (
     <div
@@ -230,7 +229,7 @@ export function withProductErrorBoundary<P extends object>(
 ) {
   const WrappedComponent = (props: P) => (
     <ProductComponentErrorBoundary
-      componentName={componentName}
+      componentName={componentName || "Unknown"}
       fallbackComponent={fallbackComponent}
     >
       <Component {...props} />

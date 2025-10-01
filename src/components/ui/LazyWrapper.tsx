@@ -219,7 +219,7 @@ export function LazyImage({ src, alt, className, width, height, placeholder }: L
   return (
     <div className={`relative overflow-hidden ${className || ""}`}>
       {!isLoaded && (
-        <div className="absolute inset-0 bg-neutral-200 animate-pulse" style={{ width, height }} />
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] animate-pulse" style={{ width, height }} />
       )}
 
       <img
@@ -228,7 +228,7 @@ export function LazyImage({ src, alt, className, width, height, placeholder }: L
           isInView
             ? src
             : placeholder ||
-              "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         }
         alt={alt}
         width={width}

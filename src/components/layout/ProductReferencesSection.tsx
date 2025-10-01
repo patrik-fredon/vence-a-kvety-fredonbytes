@@ -21,7 +21,7 @@ const transformProductToReference = (product: any, locale: string): ProductRefer
 
   // Fallback image for products without images
   const fallbackImage = {
-    src: "/funeral-wreaths-and-floral-arrangement-001.png",
+    src: "https://cdn.fredonbytes.com/dewy-white-lilies-floral-design.webp",
     alt: locale === "cs" ? "Pohřební věnec" : "Funeral wreath",
     width: 400,
     height: 400,
@@ -86,7 +86,7 @@ const ProductReferenceCard = ({
           setCurrentImageSrc(fallbackImage.src);
         } else {
           // Use a safe default if fallback fails
-          setCurrentImageSrc("/images/placeholder-product.png");
+          setCurrentImageSrc("https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp");
         }
 
         // Safe error logging with additional context
@@ -98,7 +98,7 @@ const ProductReferenceCard = ({
         } as any);
       } catch (fallbackError) {
         // If even the fallback fails, use a hardcoded safe image
-        setCurrentImageSrc("/images/placeholder-product.png");
+        setCurrentImageSrc("https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp");
 
         console.error("Fallback image handling failed:", fallbackError);
 

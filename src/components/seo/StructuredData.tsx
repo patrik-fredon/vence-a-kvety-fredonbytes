@@ -105,9 +105,9 @@ export function generateOrganizationStructuredData(locale: string) {
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Ketingmar s.r.o.",
+    name: "Pohrebni vence by Bloomsy Lucy",
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: `${baseUrl}/logo.svg`,
     description:
       locale === "cs"
         ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
@@ -115,11 +115,11 @@ export function generateOrganizationStructuredData(locale: string) {
     address: {
       "@type": "PostalAddress",
       addressCountry: "CZ",
-      addressLocality: "Praha",
+      addressLocality: "Ostrava",
     },
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+420-XXX-XXX-XXX",
+      telephone: "+420-735-116-328",
       contactType: "customer service",
       availableLanguage: ["Czech", "English"],
     },
@@ -174,22 +174,22 @@ export function generateLocalBusinessStructuredData(locale: string) {
         ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
         : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: `${baseUrl}/logo.svg`,
     image: `${baseUrl}/og-image.jpg`,
-    telephone: "+420-XXX-XXX-XXX", // Replace with actual phone
+    telephone: "+420-735-116-328", // Replace with actual phone
     email: "info@pohrebni-vence.cz", // Replace with actual email
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Your Street Address", // Replace with actual address
-      addressLocality: "Praha",
-      addressRegion: "Praha",
-      postalCode: "10000", // Replace with actual postal code
+      streetAddress: "Jistebník 87", // Replace with actual address
+      addressLocality: "Jistebník",
+      addressRegion: "Ostrava",
+      postalCode: "74282", // Replace with actual postal code
       addressCountry: "CZ",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: "50.0755", // Replace with actual coordinates
-      longitude: "14.4378",
+      latitude: "49.75691163984363", // Replace with actual coordinates
+      longitude: "18.127455048644787",
     },
     openingHoursSpecification: [
       {

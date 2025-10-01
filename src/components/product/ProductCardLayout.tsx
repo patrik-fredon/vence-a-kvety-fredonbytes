@@ -404,7 +404,7 @@ export function ProductCardLayout({
     loading,
     className: variant === "teaser" ? "w-full" : "",
     variant: primaryAction.variant || "default",
-    size: variant === "list" ? "sm" : "default",
+    size: (variant === "list" ? "sm" : "default") as "default" | "sm" | "lg" | "icon",
     icon: primaryAction.icon,
     iconPosition: "left" as const,
   });

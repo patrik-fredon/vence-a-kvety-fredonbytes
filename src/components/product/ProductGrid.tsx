@@ -69,7 +69,7 @@ const ProductGrid = React.memo(function ProductGrid({
   // Removed unused coreWebVitals variable
 
   // JavaScript optimization
-  const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductGrid');
+  const { measureExecution } = useJavaScriptOptimization('ProductGrid');
 
   // Ref to track ongoing requests for cleanup
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -270,7 +270,7 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // Optimized load more function with useCallback
   const loadMore = useCallback(
-    optimizedEventHandler(async () => {
+    async () => {
       if (loading) return; // Prevent multiple simultaneous loads
 
       await measureExecution('loadMore', async () => {
@@ -292,7 +292,7 @@ const ProductGrid = React.memo(function ProductGrid({
           await fetchProducts(currentPage + 1, false);
         }
       });
-    }, { debounce: 500 }),
+    },
     [
       loading,
       canLoadMore,
@@ -303,7 +303,6 @@ const ProductGrid = React.memo(function ProductGrid({
       fetchProducts,
       announce,
       t,
-      optimizedEventHandler,
       measureExecution,
     ]
   );

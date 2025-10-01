@@ -91,7 +91,7 @@ export function Header({ locale }: HeaderProps) {
                 <img
                   src="/logo.svg"
                   alt="Logo"
-                  className="h-8 w-auto sm:h-10 md:h-12"
+                  className="h-10 w-auto sm:h-12 md:h-14"
                 />
               </Link>
             </div>
