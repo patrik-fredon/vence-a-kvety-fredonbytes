@@ -259,6 +259,16 @@ export function ComponentErrorFallback({
   return (
     <div className={`bg-white border border-neutral-200 rounded-lg p-6 ${className}`}>
       <ErrorFallback
+        error={error || new Error("Unknown error")}
+        onRetry={onRetry}
+        errorId={errorId || "unknown"}
+        title="Komponenta se nepodařila načíst"
+        message="Při načítání této části stránky došlo k chybě."
+      />
+    </div>
+  );
+}>
+      <ErrorFallback
         error={error}
         onRetry={onRetry}
         errorId={errorId}
@@ -282,6 +292,8 @@ export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
     window.location.href = "/";
   };
 
+  const finalErrorId = errorId || "unknown";
+
   return (
     <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-xl border-2 border-red-200 p-8 max-w-lg mx-auto">
@@ -297,12 +309,10 @@ export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
             naši podporu nebo se vraťte na hlavní stránku.
           </p>
 
-          {errorId && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
-              <p className="text-sm text-red-600 font-medium">ID chyby pro podporu:</p>
-              <p className="text-xs font-mono text-red-800 mt-1">{errorId}</p>
-            </div>
-          )}
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
+            <p className="text-sm text-red-600 font-medium">ID chyby pro podporu:</p>
+            <p className="text-xs font-mono text-red-800 mt-1">{finalErrorId}</p>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
