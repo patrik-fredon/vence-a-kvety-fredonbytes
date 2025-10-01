@@ -7,7 +7,6 @@ import { logError } from "@/lib/monitoring/error-logger";
 import {
   isValidLocale,
   isValidProductSlug,
-  isValidNavigationParams,
   ValidationResult,
   ValidationError
 } from "./type-guards";
@@ -280,10 +279,10 @@ export function validateSearchParams(searchParams: URLSearchParams): ValidationR
           code: 'QUERY_TOO_LONG',
           severity: 'warning'
         });
-        validatedParams.q = query.substring(0, 100);
+        validatedParams['q'] = query.substring(0, 100);
       } else if (query.length > 0) {
         // Sanitize search query
-        validatedParams.q = query.replace(/[<>]/g, '');
+        validatedParams['q'] = query.replace(/[<>]/g, '');
       }
     }
 
@@ -298,7 +297,7 @@ export function validateSearchParams(searchParams: URLSearchParams): ValidationR
           severity: 'warning'
         });
       } else {
-        validatedParams.category = category;
+        validatedParams['category'] = category;
       }
     }
 
@@ -314,7 +313,7 @@ export function validateSearchParams(searchParams: URLSearchParams): ValidationR
           severity: 'warning'
         });
       } else {
-        validatedParams.sort = sort;
+        validatedParams['sort'] = sort;
       }
     }
 
@@ -329,9 +328,9 @@ export function validateSearchParams(searchParams: URLSearchParams): ValidationR
           code: 'INVALID_PAGE_NUMBER',
           severity: 'warning'
         });
-        validatedParams.page = '1';
+        validatedParams['page'] = '1';
       } else {
-        validatedParams.page = Math.min(pageNum, 1000).toString(); // Cap at 1000 pages
+        validatedParams['page'] = Math.min(pageNum, 1000).toString(); // Cap at 1000 pages
       }
     }
 

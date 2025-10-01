@@ -39,8 +39,8 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    qualities: [75, 85, 90, 95], // Fix for quality warnings
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
+    qualities: [50, 75, 85, 90, 95], // Enhanced quality options for different use cases
+    minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year for better caching
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -140,6 +140,26 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      // Enhanced caching headers for static assets
+      {
+        source: "/public/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // Image optimization caching
+      {
+        source: "/_next/image(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
       // Additional headers for API routes
       {
         source: "/api/(.*)",
@@ -218,6 +238,6 @@ const nextConfig: NextConfig = {
       // Add rewrites as needed
     ];
   },
-};
+};;
 
 export default withNextIntl(nextConfig);

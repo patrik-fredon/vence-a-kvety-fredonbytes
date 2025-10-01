@@ -170,7 +170,7 @@ export function ProductImage({
   const [isInView, setIsInView] = useState(!enableIntersectionObserver);
   const imageRef = useRef<HTMLDivElement>(null);
 
-  // Intersection Observer for optimized lazy loading
+  // Enhanced Intersection Observer for optimized lazy loading
   useEffect(() => {
     if (!enableIntersectionObserver || !imageRef.current) return;
 
@@ -183,7 +183,7 @@ export function ProductImage({
         }
       },
       {
-        rootMargin: '50px', // Start loading 50px before image comes into view
+        rootMargin: '100px', // Increased margin for better UX
         threshold: 0.1,
       }
     );
@@ -234,7 +234,7 @@ export function ProductImage({
     onLoadStart?.();
   }, [onLoadStart]);
 
-  // Handle successful image load
+  // Enhanced image load handler with performance monitoring
   const handleLoad = useCallback(() => {
     const loadEndTime = performance.now();
     const loadDuration = loadStartTime ? loadEndTime - loadStartTime : 0;
@@ -242,24 +242,37 @@ export function ProductImage({
     setIsLoading(false);
     setHasError(false);
 
-    // Log performance for monitoring
-    if (loadStartTime && loadDuration > 1000) {
-      console.warn(`Slow image load detected: ${image.url} took ${loadDuration.toFixed(2)}ms`);
+    // Enhanced performance monitoring
+    if (loadStartTime) {
+      // Log slow loading images for optimization
+      if (loadDuration > 1000) {
+        console.warn(`Slow image load detected: ${image.url} took ${loadDuration.toFixed(2)}ms`);
+      }
+
+      // Track Core Web Vitals impact
+      if (shouldLoadWithPriority && loadDuration > 2500) {
+        console.warn(`Critical image load exceeded LCP threshold: ${image.url} (${loadDuration.toFixed(2)}ms)`);
+      }
     }
 
     onLoad?.();
-  }, [onLoad, loadStartTime, image.url]);
+  }, [onLoad, loadStartTime, image.url, shouldLoadWithPriority]);
 
-  // Handle image load error with fallback
+  // Enhanced error handler with fallback strategy
   const handleError = useCallback(() => {
     setIsLoading(false);
     setHasError(true);
 
-    // Log error for monitoring
-    console.error(`Failed to load product image: ${image.url}`);
+    // Enhanced error logging for monitoring
+    console.error(`Failed to load product image: ${image.url}`, {
+      variant,
+      priority: shouldLoadWithPriority,
+      isAboveFold,
+      productName,
+    });
 
     onError?.();
-  }, [onError, image.url]);
+  }, [onError, image.url, variant, shouldLoadWithPriority, isAboveFold, productName]);
 
   // Determine final image source with fallback
   const imageSrc = useMemo(() => {
@@ -269,13 +282,24 @@ export function ProductImage({
     return image.url;
   }, [hasError, image.url, fallbackSrc]);
 
-  // Preload critical images
+  // Enhanced preloading for critical images with resource hints
   useEffect(() => {
     if (preload && shouldLoadWithPriority && image.url) {
       const link = document.createElement('link');
       link.rel = 'preload';
       link.as = 'image';
       link.href = image.url;
+
+      // Add fetchpriority for critical images
+      if (variant === 'hero' || isAboveFold) {
+        link.setAttribute('fetchpriority', 'high');
+      }
+
+      // Add responsive image attributes for better preloading
+      if (optimizedSizes) {
+        link.setAttribute('imagesizes', optimizedSizes);
+      }
+
       document.head.appendChild(link);
 
       return () => {
@@ -284,9 +308,8 @@ export function ProductImage({
         }
       };
     }
-    // No cleanup needed if conditions aren't met
     return undefined;
-  }, [preload, shouldLoadWithPriority, image.url]);
+  }, [preload, shouldLoadWithPriority, image.url, variant, isAboveFold, optimizedSizes]);
 
   // Error fallback component
   if (hasError && !showErrorFallback) {
@@ -323,54 +346,48 @@ export function ProductImage({
       ref={imageRef}
       className={cn("relative", !fill && "w-full h-full")}
     >
-      {/* Only render image when in view (for intersection observer) or when priority loading */}
-      {(isInView || shouldLoadWithPriority) && (
-        <Image
-          src={imageSrc}
-          alt={altText}
-          {...(!fill && width && { width })}
-          {...(!fill && height && { height })}
-          {...(fill && { fill: true })}
-          sizes={optimizedSizes}
-          priority={shouldLoadWithPriority}
-          loading={loadingStrategy}
-          quality={optimizedQuality}
-          placeholder="blur"
-          blurDataURL={blurDataURL}
-          className={cn(
-            "transition-all duration-300",
-            isLoading && "blur-sm scale-105",
-            !isLoading && "blur-0 scale-100",
-            hasError && "opacity-75",
-            className
-          )}
-          onLoadStart={handleLoadStart}
-          onLoad={handleLoad}
-          onError={handleError}
-        />
-      )}
-
-      {/* Loading spinner overlay */}
+      {/* Loading spinner */}
       {isLoading && showLoadingSpinner && (
         <div
-          className="absolute inset-0 flex items-center justify-center bg-stone-100/50 backdrop-blur-sm"
-          aria-label={locale === 'cs' ? 'Načítání obrázku...' : 'Loading image...'}
+          className={cn(
+            "absolute inset-0 flex items-center justify-center bg-stone-50",
+            "animate-pulse"
+          )}
         >
           <div className="w-6 h-6 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
         </div>
       )}
 
-      {/* Error indicator for accessibility */}
-      {hasError && (
-        <div className="sr-only" role="alert">
-          {locale === 'cs'
-            ? `Obrázek produktu ${productName} se nepodařilo načíst. Zobrazuje se náhradní obrázek.`
-            : `Failed to load image for ${productName}. Showing fallback image.`
-          }
-        </div>
+      {/* Only render Image when in view or priority loading */}
+      {(isInView || shouldLoadWithPriority) && (
+        <Image
+          src={imageSrc}
+          alt={altText}
+          fill={fill}
+          {...(!fill && width && { width })}
+          {...(!fill && height && { height })}
+          sizes={optimizedSizes}
+          quality={optimizedQuality}
+          priority={shouldLoadWithPriority}
+          loading={loadingStrategy}
+          placeholder="blur"
+          blurDataURL={blurDataURL}
+          onLoadingComplete={handleLoad}
+          onError={handleError}
+          onLoadStart={handleLoadStart}
+          className={cn(
+            "object-cover transition-opacity duration-300",
+            isLoading ? "opacity-0" : "opacity-100",
+            className
+          )}
+          style={{
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
       )}
     </div>
   );
-}
+};
 
 export default ProductImage;

@@ -207,7 +207,7 @@ export async function safeAsyncOperation<T>(
 
     return {
       isValid: false,
-      data: fallback,
+      data: fallback as T,
       errors: [validationError]
     };
   }

@@ -41,7 +41,6 @@ export {
   validateCustomerInfo,
   validateDeliveryInfo,
   validateCheckoutForm,
-  hasValidationErrors,
   formatValidationErrors,
   sanitizeCustomerInfo,
   sanitizeDeliveryInfo

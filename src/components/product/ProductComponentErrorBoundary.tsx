@@ -230,6 +230,16 @@ export function withProductErrorBoundary<P extends object>(
   const WrappedComponent = (props: P) => (
     <ProductComponentErrorBoundary
       componentName={componentName || "Unknown"}
+      fallbackComponent={fallbackComponent}
+    >
+      <Component {...props} />
+    </ProductComponentErrorBoundary>
+  );
+
+  WrappedComponent.displayName = `withProductErrorBoundary(${Component.displayName || Component.name || 'Component'})`;
+
+  return WrappedComponent;
+}
 
 /**
  * Specialized error boundary for product grid with grid-specific error handling
@@ -260,7 +270,9 @@ export class ProductGridErrorBoundary extends Component<
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      gridSize: this.props.gridSize,
+      additionalData: {
+        gridSize: this.props.gridSize,
+      },
     });
 
     // Call custom error handler if provided
@@ -282,7 +294,7 @@ export class ProductGridErrorBoundary extends Component<
           error={this.state.error || new Error("Unknown error")}
           onRetry={this.handleRetry}
           errorId={this.state.errorId || "unknown"}
-          gridSize={this.props.gridSize}
+          {...(this.props.gridSize !== undefined && { gridSize: this.props.gridSize })}
         />
       );
     }
@@ -394,7 +406,9 @@ export class NavigationErrorBoundary extends Component<
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      currentPath: this.props.currentPath,
+      additionalData: {
+        currentPath: this.props.currentPath,
+      },
     });
 
     // Call custom error handler if provided
@@ -416,7 +430,7 @@ export class NavigationErrorBoundary extends Component<
           error={this.state.error || new Error("Unknown error")}
           onRetry={this.handleRetry}
           errorId={this.state.errorId || "unknown"}
-          currentPath={this.props.currentPath}
+          {...(this.props.currentPath !== undefined && { currentPath: this.props.currentPath })}
         />
       );
     }
@@ -528,7 +542,9 @@ export class ImageErrorBoundary extends Component<
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      imageSrc: this.props.imageSrc,
+      additionalData: {
+        imageSrc: this.props.imageSrc,
+      },
     });
 
     // Call custom error handler if provided
@@ -550,7 +566,7 @@ export class ImageErrorBoundary extends Component<
           error={this.state.error || new Error("Unknown error")}
           onRetry={this.handleRetry}
           errorId={this.state.errorId || "unknown"}
-          imageSrc={this.props.imageSrc}
+          {...(this.props.imageSrc !== undefined && { imageSrc: this.props.imageSrc })}
         />
       );
     }
@@ -600,14 +616,4 @@ export function ImageErrorFallback({
       )}
     </div>
   );
-}
-      fallbackComponent={fallbackComponent}
-    >
-      <Component {...props} />
-    </ProductComponentErrorBoundary>
-  );
-
-  WrappedComponent.displayName = `withProductErrorBoundary(${Component.displayName || Component.name || 'Component'})`;
-
-  return WrappedComponent;
 }

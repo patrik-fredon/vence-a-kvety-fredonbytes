@@ -22,7 +22,6 @@ export {
   ProductErrorFallback,
   ProductCardErrorFallback,
   ProductFiltersErrorFallback,
-  ProductGridErrorBoundary,
   ProductGridErrorFallback,
   NavigationErrorBoundary,
   NavigationErrorFallback,

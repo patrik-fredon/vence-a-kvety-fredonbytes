@@ -153,7 +153,7 @@ export async function executeAllWithErrorHandling<T>(
     outcomes.forEach((outcome, index) => {
       if (outcome.status === 'fulfilled') {
         if (outcome.value.success) {
-          results[index] = outcome.value.data;
+          results[index] = outcome.value.data as T;
         } else {
           errors.push(...(outcome.value.errors || []));
         }
