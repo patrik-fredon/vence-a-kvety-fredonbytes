@@ -1,6 +1,7 @@
 export { ProductCard } from "./ProductCard";
 export { ProductCardLayout } from "./ProductCardLayout";
 export { ProductCustomizer } from "./ProductCustomizer";
+export { ProductImage } from "./ProductImage";
 export { OptimizedProductCustomizer } from "./OptimizedProductCustomizer";
 export { ProductDetail } from "./ProductDetail";
 export { ProductFilters } from "./ProductFilters";

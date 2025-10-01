@@ -1,6 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
+import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
@@ -31,6 +32,7 @@ const ProductGrid = React.memo(function ProductGrid({
 }: ProductGridProps) {
   const t = useTranslations("product");
   const tCommon = useTranslations("common");
+  const router = useRouter();
   const announce = useAnnouncer();
   const loadMoreDescriptionId = useId();
 
@@ -70,6 +72,52 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // JavaScript optimization
   const { measureExecution } = useJavaScriptOptimization('ProductGrid');
+
+  // Navigation error handler
+  const handleNavigationError = useCallback((error: Error, productSlug: string, context: string) => {
+    console.error(`Navigation error in ${context}:`, error);
+    setError(`Navigation failed for product ${productSlug}. Please try again.`);
+
+    // Report error for monitoring
+    if (typeof window !== 'undefined' && 'gtag' in window && typeof (window as any).gtag === 'function') {
+      (window as any).gtag('event', 'navigation_error', {
+        event_category: 'ProductGrid',
+        event_label: context,
+        product_slug: productSlug,
+        error_message: error.message,
+      });
+    }
+  }, []);
+
+  // Test navigation with different product types and customization requirements
+  const testProductNavigation = useCallback(async (product: Product) => {
+    const hasCustomizationOptions = hasRequiredCustomizations(product) || hasCustomizations(product);
+
+    // Log product navigation test for debugging
+    console.log('Testing navigation for product:', {
+      slug: product.slug,
+      name: product.name,
+      hasCustomizations: hasCustomizationOptions,
+      inStock: product.availability.inStock,
+      category: product.category?.name,
+    });
+
+    // Validate product slug format
+    if (!product.slug || typeof product.slug !== 'string' || product.slug.trim() === '') {
+      throw new Error(`Invalid product slug: ${product.slug}`);
+    }
+
+    // Validate locale
+    if (!locale || (locale !== 'cs' && locale !== 'en')) {
+      throw new Error(`Invalid locale: ${locale}`);
+    }
+
+    return {
+      shouldNavigateToDetail: hasCustomizationOptions || !onAddToCart,
+      targetUrl: `/${locale}/products/${product.slug}`,
+      navigationMethod: hasCustomizationOptions ? 'customization_required' : 'default_behavior'
+    };
+  }, [locale, onAddToCart]);
 
   // Ref to track ongoing requests for cleanup
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -309,24 +357,55 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // Optimized add to cart handler with useCallback
   const handleAddToCart = useCallback(
-    (product: Product) => {
-      // If product has customization options, redirect to product detail page instead of adding to cart
-      if (hasRequiredCustomizations(product) || hasCustomizations(product)) {
-        // Use window.location to navigate to product detail page
-        window.location.href = `/${locale}/products/${product.slug}`;
-        return;
-      }
+    async (product: Product) => {
+      try {
+        // Clear any previous errors
+        setError(null);
 
-      // Only add directly to cart if no customization is needed
-      if (onAddToCart) {
-        onAddToCart(product);
-      } else {
-        // Default behavior - redirect to product detail page for safety
+        // Test navigation parameters and get navigation strategy
+        const navigationTest = await testProductNavigation(product);
+
+        // If product has customization options, redirect to product detail page instead of adding to cart
+        if (hasRequiredCustomizations(product) || hasCustomizations(product)) {
+          // Use Next.js router for navigation with error handling
+          await measureExecution('navigationToCustomization', async () => {
+            try {
+              await router.push(navigationTest.targetUrl);
+            } catch (error) {
+              handleNavigationError(error as Error, product.slug, 'customization_navigation');
+              // Fallback to window.location if router fails
+              window.location.href = navigationTest.targetUrl;
+            }
+          });
+          return;
+        }
+
+        // Only add directly to cart if no customization is needed
+        if (onAddToCart) {
+          await measureExecution('directAddToCart', async () => {
+            onAddToCart(product);
+          });
+        } else {
+          // Default behavior - redirect to product detail page for safety
+          await measureExecution('navigationToProduct', async () => {
+            try {
+              await router.push(navigationTest.targetUrl);
+            } catch (error) {
+              handleNavigationError(error as Error, product.slug, 'product_detail_navigation');
+              // Fallback to window.location if router fails
+              window.location.href = navigationTest.targetUrl;
+            }
+          });
+        }
+      } catch (error) {
+        console.error('Error in handleAddToCart:', error);
+        handleNavigationError(error as Error, product.slug, 'add_to_cart_handler');
+        // Final fallback - always try to navigate to product page
         window.location.href = `/${locale}/products/${product.slug}`;
       }
     },
-    [locale, onAddToCart]
-  );
+    [locale, onAddToCart, router, measureExecution, handleNavigationError, testProductNavigation]
+  );;;;
 
   return (
     <section className={cn("bg-teal-800 py-12 rounded-2xl", className)}>
