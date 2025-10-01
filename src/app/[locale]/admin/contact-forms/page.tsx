@@ -8,76 +8,200 @@ interface ContactFormsPageProps {
   searchParams: Promise<{ page?: string; status?: string; search?: string }>;
 }
 
-export default async function ContactFormsPage({ params, searchParams }: ContactFormsPageProps) {
-  const { locale } = await params;
+export default async function ContactFormsPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}) {
   const { page = "1", status = "all", search = "" } = await searchParams;
 
-  // Check authentication and admin role
-  const session = await auth();
-  if (!session?.user) {
-    redirect(`/${locale}/auth/signin`);
-  }
-
-  // Check if user is admin (this would need to be implemented based on your user system)
-  // For now, we'll assume any authenticated user can access this
-
-  const supabase = createServerClient();
+  const supabase = await createClient();
 
   // Build query
   let query = supabase
     .from("contact_forms")
-    .select("*", { count: "exact" })
-    .order("created_at", { ascending: false });
+    .select("*", { count: "exact" });
 
   // Apply filters
   if (status !== "all") {
-    query = query.eq("status", status as "new" | "read" | "replied" | "archived");
+    query = query.eq("status", status);
   }
 
   if (search) {
-    query = query.or(`name.ilike.%${search}%,email.ilike.%${search}%,subject.ilike.%${search}%`);
+    query = query.or(
+      `name.ilike.%${search}%,email.ilike.%${search}%,subject.ilike.%${search}%,message.ilike.%${search}%`
+    );
   }
+
+  // Get total count for pagination
+  const { count: totalCount } = await query;
 
   // Pagination
   const pageSize = 20;
-  const offset = (Number.parseInt(page) - 1) * pageSize;
+  const offset = (Number.parseInt(page, 10) - 1) * pageSize;
   query = query.range(offset, offset + pageSize - 1);
 
-  const { data: contactForms, error, count } = await query;
+  // Order by created_at desc
+  query = query.order("created_at", { ascending: false });
+
+  const { data: contactForms, error } = await query;
 
   if (error) {
     console.error("Error fetching contact forms:", error);
+    return <div>Error loading contact forms</div>;
   }
 
-  const totalPages = Math.ceil((count || 0) / pageSize);
+  const totalPages = Math.ceil((totalCount || 0) / pageSize);
+
+  // Get stats
+  const { data: stats } = await supabase
+    .from("contact_forms")
+    .select("status")
+    .then(({ data }) => {
+      const statusCounts = data?.reduce(
+        (acc, form) => {
+          acc[form.status] = (acc[form.status] || 0) + 1;
+          return acc;
+        },
+        { new: 0, in_progress: 0, resolved: 0, closed: 0 }
+      );
+      return { data: statusCounts };
+    });
 
   return (
-    <div className="container mx-auto px-4 py-8">
-      <div className="max-w-7xl mx-auto">
-        <div className="mb-8">
-          <h1 className="text-elegant text-3xl font-semibold text-primary-800 mb-2">
-            Správa kontaktních formulářů
-          </h1>
-          <p className="text-teal-800">Přehled a správa zpráv od zákazníků</p>
-        </div>
+    <div className="space-y-6">
+      <div className="flex justify-between items-center">
+        <h1 className="text-3xl font-bold text-gray-900">Contact Forms</h1>
+      </div>
 
-        {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
+      {/* Stats Cards */}
+      <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-amber-100 text-blue-600 mr-4">
-                <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg 
+                  className="w-6 h-6" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  aria-label="New contact forms"
+                  role="img"
+                >
                   <path
                     strokeLinecap="round"
                     strokeLinejoin="round"
                     strokeWidth={2}
-                    d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2 2v-5m16 0h-2M4 13h2m0 0V9a2 2 0 012-2h2m0 0V6a2 2 0 012-2h2.09M15 13h2m-2 0V9a2 2 0 00-2-2H9a2 2 0 00-2 2v4.01"
+                    d="M12 6v6m0 0v6m0-6h6m-6 0H6"
                   />
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-teal-800">Celkem zpráv</p>
-                <p className="text-2xl font-semibold text-neutral-900">{count || 0}</p>
+                <p className="text-sm font-medium text-gray-500 truncate">New</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats?.new || 0}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-teal-100 text-teal-900 mr-4">
+                <svg 
+                  className="w-6 h-6" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  aria-label="In progress contact forms"
+                  role="img"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500 truncate">In Progress</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats?.in_progress || 0}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
+                <svg 
+                  className="w-6 h-6" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  aria-label="Resolved contact forms"
+                  role="img"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500 truncate">Resolved</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats?.resolved || 0}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="bg-white overflow-hidden shadow rounded-lg">
+          <div className="p-5">
+            <div className="flex items-center">
+              <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
+                <svg 
+                  className="w-6 h-6" 
+                  fill="none" 
+                  stroke="currentColor" 
+                  viewBox="0 0 24 24"
+                  aria-label="Closed contact forms"
+                  role="img"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M9 5H7a2 2 0 00-2 2v10a2 2 0 002 2h8a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"
+                  />
+                </svg>
+              </div>
+              <div>
+                <p className="text-sm font-medium text-gray-500 truncate">Closed</p>
+                <p className="text-2xl font-semibold text-gray-900">{stats?.closed || 0}</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Contact Forms Table */}
+      <div className="bg-white shadow rounded-lg">
+        <ContactFormsTable
+          contactForms={contactForms || []}
+          currentPage={Number.parseInt(page, 10)}
+          totalPages={totalPages}
+          currentStatus={status}
+          currentSearch={search}
+        />
+      </div>
+    </div>
+  );
+}</p>
               </div>
             </div>
           </div>
