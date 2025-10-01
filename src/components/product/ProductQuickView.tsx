@@ -45,7 +45,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
-  const _addToCartButtonRef = useRef<HTMLButtonElement>(null);
+
 
   // Optimized price formatting with useMemo for expensive calculations
   const formatPrice = useMemo(() => {

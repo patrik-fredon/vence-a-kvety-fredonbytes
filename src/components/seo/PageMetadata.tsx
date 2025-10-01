@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { generateEnhancedMetaTags, generateHreflangAttributes } from "@/lib/seo/utils";
+import { generateHreflangAttributes } from "@/lib/seo/utils";
 
 interface PageMetadataProps {
   title: string;
@@ -170,6 +170,8 @@ export function generateProductMetadata(params: {
     ...(keywords || []),
   ].filter(Boolean);
 
+  const imageUrl = product.images?.[0]?.url;
+
   return generatePageMetadata({
     title,
     description,
@@ -177,7 +179,7 @@ export function generateProductMetadata(params: {
     locale,
     path: `/products/${slug}`,
     type: "product",
-    image: product.images?.[0]?.url,
+    ...(imageUrl && { image: imageUrl }),
     price: product.price,
     availability:
       product.availability === "InStock"
@@ -186,7 +188,7 @@ export function generateProductMetadata(params: {
           ? "out of stock"
           : "preorder",
     brand: product.brand || "Ketingmar s.r.o.",
-    category: product.category,
+    ...(product.category && { category: product.category }),
   });
 }
 

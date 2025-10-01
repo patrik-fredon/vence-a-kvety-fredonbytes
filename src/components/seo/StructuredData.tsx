@@ -34,7 +34,7 @@ export function generateProductStructuredData(
     sku?: string;
     url: string;
   },
-  locale: string
+  _locale: string
 ) {
   const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 

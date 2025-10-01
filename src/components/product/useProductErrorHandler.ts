@@ -26,10 +26,6 @@ export function useProductErrorHandler() {
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      productId: context?.productId,
-      componentName: context?.componentName,
-      action: context?.action,
-      additionalData: context?.additionalData,
     });
 
     // In development, also log to console for debugging
@@ -57,10 +53,6 @@ export function useProductErrorHandler() {
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      productId: context?.productId,
-      componentName: context?.componentName,
-      action: context?.action,
-      additionalData: context?.additionalData,
     });
 
     if (process.env['NODE_ENV'] === "development") {
@@ -100,10 +92,6 @@ export function withProductErrorHandling<T extends (...args: any[]) => Promise<a
         timestamp: new Date().toISOString(),
         userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
         url: typeof window !== "undefined" ? window.location.href : "unknown",
-        productId: context?.productId,
-        componentName: context?.componentName,
-        action: context?.action,
-        additionalData: context?.additionalData,
       });
 
       if (process.env['NODE_ENV'] === "development") {

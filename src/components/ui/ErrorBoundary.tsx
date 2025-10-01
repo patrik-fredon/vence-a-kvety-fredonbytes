@@ -42,8 +42,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     logError(error, {
       errorInfo,
       level,
-      context,
-      errorId: this.state.errorId,
+      context: context || "unknown",
+      errorId: this.state.errorId || "unknown",
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
@@ -68,22 +68,27 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       if (level === "page") {
         return (
           <PageErrorFallback
-            error={this.state.error}
+            error={this.state.error || new Error("Unknown error")}
             onRetry={this.handleRetry}
-            errorId={this.state.errorId}
+            errorId={this.state.errorId || "unknown"}
           />
         );
       }
 
       if (level === "critical") {
-        return <CriticalErrorFallback error={this.state.error} errorId={this.state.errorId} />;
+        return (
+          <CriticalErrorFallback 
+            error={this.state.error || new Error("Unknown error")} 
+            errorId={this.state.errorId || "unknown"} 
+          />
+        );
       }
 
       return (
         <ErrorFallback
-          error={this.state.error}
+          error={this.state.error || new Error("Unknown error")}
           onRetry={this.handleRetry}
-          errorId={this.state.errorId}
+          errorId={this.state.errorId || "unknown"}
         />
       );
     }
@@ -221,9 +226,9 @@ export function PageErrorFallback({ error, onRetry, errorId }: ErrorFallbackProp
     <div className="min-h-screen bg-gradient-memorial flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-elegant p-8 max-w-md mx-auto">
         <ErrorFallback
-          error={error}
+          error={error || new Error("Unknown error")}
           onRetry={onRetry}
-          errorId={errorId}
+          errorId={errorId || "unknown"}
           title="Stránka se nepodařila načíst"
           message="Omlouváme se, při načítání stránky došlo k chybě. Zkuste obnovit stránku nebo se vraťte na hlavní stránku."
           showContactSupport={true}
