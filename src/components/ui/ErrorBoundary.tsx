@@ -249,26 +249,6 @@ export function PageErrorFallback({ error, onRetry, errorId }: ErrorFallbackProp
     </div>
   );
 }
-          title="Stránka se nepodařila načíst"
-          message="Omlouváme se, při načítání stránky došlo k chybě. Zkuste obnovit stránku nebo se vraťte na hlavní stránku."
-          showContactSupport={true}
-          recoveryActions={[
-            {
-              label: "Obnovit stránku",
-              action: handleRefreshPage,
-              icon: ArrowPathIcon,
-            },
-            {
-              label: "Hlavní stránka",
-              action: handleGoHome,
-              icon: HomeIcon,
-            },
-          ]}
-        />
-      </div>
-    </div>
-  );
-}
 
 export function ComponentErrorFallback({
   error,
@@ -281,16 +261,6 @@ export function ComponentErrorFallback({
       <ErrorFallback
         error={error || new Error("Unknown error")}
         onRetry={onRetry || (() => window.location.reload())}
-        errorId={errorId || "unknown"}
-        title="Komponenta se nepodařila načíst"
-        message="Při načítání této části stránky došlo k chybě."
-      />
-    </div>
-  );
-}>
-      <ErrorFallback
-        error={error || new Error("Unknown error")}
-        onRetry={onRetry}
         errorId={errorId || "unknown"}
         title="Komponenta se nepodařila načíst"
         message="Při načítání této části stránky došlo k chybě."
