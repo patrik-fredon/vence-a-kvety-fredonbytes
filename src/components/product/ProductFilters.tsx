@@ -24,9 +24,9 @@ interface ProductFiltersProps {
 export function ProductFilters({
   categories,
   filters,
-  sortOptions,
+  sortOptions: _sortOptions,
   onFiltersChange,
-  onSortChange,
+  onSortChange: _onSortChange,
   locale,
   className,
 }: ProductFiltersProps) {

@@ -138,8 +138,8 @@ function fisherYatesShuffle<T>(array: T[]): T[] {
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
     const temp = shuffled[i];
-    shuffled[i] = shuffled[j];
-    shuffled[j] = temp;
+    shuffled[i] = shuffled[j]!; // Non-null assertion since j is always valid index
+    shuffled[j] = temp!; // Non-null assertion since temp is from valid index
   }
   return shuffled;
 }

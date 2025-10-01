@@ -172,8 +172,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
 
   const itemListStructuredData = generateItemListStructuredData(
     productItems,
-    t("collectionTitle"),
-    locale
+    t("collectionTitle")
   );
 
   // Generate CollectionPage structured data if filtering by category

@@ -35,7 +35,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return { hasError: true, error, errorId };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  override componentDidCatch(error: Error, errorInfo: any) {
     const { level = "component", context } = this.props;
 
     // Log error with context
@@ -54,10 +54,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: undefined, errorId: undefined });
+    this.setState({ hasError: false });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -183,11 +183,10 @@ export function ErrorFallback({
             <button
               key={index}
               onClick={action.action}
-              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                action.primary
-                  ? "bg-primary-600 hover:bg-primary-700 text-white"
-                  : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700"
-              }`}
+              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${action.primary
+                ? "bg-primary-600 hover:bg-primary-700 text-white"
+                : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700"
+                }`}
             >
               {action.icon && <action.icon className="w-4 h-4" />}
               <span>{action.label}</span>

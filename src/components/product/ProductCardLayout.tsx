@@ -46,7 +46,7 @@ export function ProductCardLayout({
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
+  const [_imageLoading, setImageLoading] = useState(true);
 
   const productName = product.name[locale as keyof typeof product.name];
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
@@ -403,7 +403,7 @@ export function ProductCardLayout({
     disabled: !product.availability.inStock || loading,
     loading,
     className: variant === "teaser" ? "w-full" : "",
-    variant: primaryAction.variant,
+    variant: primaryAction.variant || "default",
     size: variant === "list" ? "sm" : "default",
     icon: primaryAction.icon,
     iconPosition: "left" as const,

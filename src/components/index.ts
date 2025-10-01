@@ -74,7 +74,4 @@ export type * from "@/types/components";
 // DEVELOPMENT COMPONENTS
 // =============================================================================
 
-// Only export examples in development
-if (process.env['NODE_ENV'] === "development") {
-  export * from "./examples";
-}
+// Examples directory not currently available

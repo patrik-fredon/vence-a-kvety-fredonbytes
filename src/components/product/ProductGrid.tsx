@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { useImageOptimization } from "@/lib/hooks/useImageOptimization";
-import { useCoreWebVitals } from "@/lib/hooks";
+// Removed unused import: useCoreWebVitals
 import { useJavaScriptOptimization, debounce } from "@/lib/utils/javascript-optimization";
 import { cn } from "@/lib/utils";
 import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";

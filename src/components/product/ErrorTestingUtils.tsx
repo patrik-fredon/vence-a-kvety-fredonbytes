@@ -5,9 +5,9 @@ import { Button } from "@/components/ui/Button";
 import {
   ProductComponentErrorBoundary,
   ProductCardErrorFallback,
-  useProductErrorHandler,
   withProductErrorBoundary
 } from "./ProductComponentErrorBoundary";
+import { useProductErrorHandler } from "./useProductErrorHandler";
 
 /**
  * Utility components for testing error scenarios and demonstrating graceful degradation

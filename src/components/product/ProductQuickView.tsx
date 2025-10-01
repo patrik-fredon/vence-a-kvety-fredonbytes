@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState, useRef } from "react";
+import React, { useMemo, useState, useRef, useCallback } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { useAnimationSequence } from "@/components/cart/hooks";
@@ -23,14 +23,14 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   locale,
   isOpen,
   onClose,
-  onAddToCart,
+  onAddToCart: _onAddToCart,
 }: ProductQuickViewProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
-  const { startProductToCartAnimation } = useAnimationSequence();
+  const { startProductToCartAnimation: _startProductToCartAnimation } = useAnimationSequence();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_isAddingToCart, _setIsAddingToCart] = useState(false);
+  const [_error, _setError] = useState<string | null>(null);
 
   // Performance tracking for main image
   const currentImage = useMemo(
@@ -45,7 +45,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
-  const addToCartButtonRef = useRef<HTMLButtonElement>(null);
+  const _addToCartButtonRef = useRef<HTMLButtonElement>(null);
 
   // Optimized price formatting with useMemo for expensive calculations
   const formatPrice = useMemo(() => {
@@ -213,9 +213,9 @@ export const ProductQuickView = React.memo(function ProductQuickView({
           </div>
 
           {/* Error Display */}
-          {error && (
+          {_error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-700">{error}</p>
+              <p className="text-sm text-red-700">{_error}</p>
             </div>
           )}
 

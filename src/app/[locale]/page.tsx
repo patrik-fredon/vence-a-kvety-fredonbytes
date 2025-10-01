@@ -58,7 +58,7 @@ export default async function Home({ params }: HomeProps) {
     },
   ];
 
-  const faqStructuredData = generateFAQStructuredData(faqs, locale);
+  const faqStructuredData = generateFAQStructuredData(faqs);
 
   // Company logo configuration for RefactoredPageLayout
   const companyLogo = {

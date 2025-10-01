@@ -37,7 +37,7 @@ export class ProductComponentErrorBoundary extends Component<
     return { hasError: true, error, errorId };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  override componentDidCatch(error: Error, errorInfo: any) {
     const { componentName, onError } = this.props;
 
     // Log error with product-specific context
@@ -57,10 +57,10 @@ export class ProductComponentErrorBoundary extends Component<
   }
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: undefined, errorId: undefined });
+    this.setState({ hasError: false });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallbackComponent) {
         return this.props.fallbackComponent;

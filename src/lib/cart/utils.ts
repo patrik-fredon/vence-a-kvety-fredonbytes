@@ -429,7 +429,7 @@ export function validateCustomizationIntegrity(customizations: any[]): {
       } else if (customization.customValue.length > 100) {
         issues.push(`CustomValue too long for option: ${customization.optionId}`);
         fixed.customValue = customization.customValue.substring(0, 100);
-        hasIssues = true;
+        // Issue already added to issues array above
       }
     }
 

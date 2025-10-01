@@ -20,7 +20,7 @@ function getSupabaseConfig() {
 const supabaseConfig = getSupabaseConfig();
 
 export const config = {
-  adapter: supabaseConfig ? SupabaseAdapter(supabaseConfig) : undefined,
+  ...(supabaseConfig && { adapter: SupabaseAdapter(supabaseConfig) }),
   providers: [
     {
       id: "credentials",
