@@ -81,41 +81,41 @@
   - Ensure color contrast ratios meet WCAG 2.1 AA standards
   - _Requirements: 3.1, 3.6, 3.8_
 
-- [ ] 4. Streamline Checkout Process to Stripe-Only
+- [x] 4. Streamline Checkout Process to Stripe-Only
   - Remove all GoPay payment integration and references
   - Simplify checkout flow to use only Stripe payments
   - Update payment processing logic and error handling
   - _Requirements: 4.1, 4.2, 4.3, 4.4, 4.5, 4.6, 4.7, 4.8_
 
-- [ ] 4.1 Remove GoPay components and references
+- [x] 4.1 Remove GoPay components and references
   - Delete GopayPaymentForm.tsx component
   - Remove GoPay imports and references from LazyPaymentComponents
   - Remove GoPay options from PaymentStep component
   - Clean up GoPay-related types and interfaces
   - _Requirements: 4.1, 4.2, 4.3_
 
-- [ ] 4.2 Update PaymentStep component for Stripe-only
+- [x] 4.2 Update PaymentStep component for Stripe-only
   - Remove GoPay payment method option from payment selection
   - Simplify payment method state to only handle Stripe
   - Update payment form rendering to show only StripePaymentForm
   - Remove GoPay-specific validation and error handling
   - _Requirements: 4.2, 4.3, 4.4_
 
-- [ ] 4.3 Enhance StripePaymentForm component
+- [x] 4.3 Enhance StripePaymentForm component
   - Improve Stripe payment form UI and user experience
   - Add comprehensive error handling for Stripe-specific errors
   - Implement proper loading states during payment processing
   - Add payment retry functionality for failed payments
   - _Requirements: 4.4, 4.5, 4.6, 4.8_
 
-- [ ] 4.4 Update checkout flow and order processing
+- [x] 4.4 Update checkout flow and order processing
   - Simplify order creation to only handle Stripe payments
   - Update success and error page handling for Stripe-only flow
   - Remove GoPay webhook handling and related API endpoints
   - Update order status tracking for Stripe payment lifecycle
   - _Requirements: 4.5, 4.6, 4.7_
 
-- [ ] 4.5 Clean up payment configuration and environment variables
+- [x] 4.5 Clean up payment configuration and environment variables
   - Remove GoPay-related environment variables and configuration
   - Update payment provider initialization to Stripe-only
   - Clean up payment-related utility functions

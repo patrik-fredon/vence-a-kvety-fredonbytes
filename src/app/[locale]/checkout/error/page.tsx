@@ -144,7 +144,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
               <div>
                 <p className="font-medium text-teal-800">Zkuste jiný způsob platby</p>
                 <p className="text-sm text-teal-600">
-                  Použijte jinou kartu nebo zvolte GoPay pro více možností platby.
+                  Použijte jinou kartu nebo kontaktujte svou banku.
                 </p>
               </div>
             </div>

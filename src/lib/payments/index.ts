@@ -1,9 +1,8 @@
 /**
- * Unified payment service for Stripe and GoPay integration
+ * Unified payment service for Stripe integration
  */
 
 import type { PaymentInfo, PaymentMethod, PaymentStatus } from "@/types/order";
-import { createGopayClient, type GopayPaymentRequest } from "./gopay";
 import {
   createPaymentIntent,
   handleFailedPayment as handleStripeFailure,
@@ -28,8 +27,7 @@ export interface PaymentRequest {
 export interface PaymentResponse {
   success: boolean;
   paymentId?: string;
-  clientSecret?: string; // For Stripe
-  redirectUrl?: string; // For GoPay
+  clientSecret?: string;
   error?: string;
 }
 
@@ -48,18 +46,15 @@ export interface PaymentResult {
  */
 export class PaymentService {
   /**
-   * Initialize payment based on payment method
+   * Initialize Stripe payment
    */
   static async initializePayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
-      switch (request.paymentMethod) {
-        case "stripe":
-          return await PaymentService.initializeStripePayment(request);
-        case "gopay":
-          return await PaymentService.initializeGopayPayment(request);
-        default:
-          throw new Error(`Unsupported payment method: ${request.paymentMethod}`);
+      if (request.paymentMethod !== "stripe") {
+        throw new Error(`Unsupported payment method: ${request.paymentMethod}`);
       }
+
+      return await PaymentService.initializeStripePayment(request);
     } catch (error) {
       console.error("Error initializing payment:", error);
       return {
@@ -97,54 +92,21 @@ export class PaymentService {
     }
   }
 
-  /**
-   * Initialize GoPay payment
-   */
-  private static async initializeGopayPayment(request: PaymentRequest): Promise<PaymentResponse> {
-    try {
-      const gopayClient = createGopayClient();
 
-      const gopayRequest: GopayPaymentRequest = {
-        amount: request.amount,
-        currency: request.currency,
-        orderId: request.orderId,
-        customerEmail: request.customerEmail,
-        customerName: request.customerName,
-        returnUrl: request.returnUrl,
-        notifyUrl: request.webhookUrl,
-        description: request.description,
-        lang: (request.locale?.toUpperCase() as "CS" | "EN") || "CS",
-      };
-
-      const payment = await gopayClient.createPayment(gopayRequest);
-
-      return {
-        success: true,
-        paymentId: payment.id.toString(),
-        redirectUrl: payment.gw_url,
-      };
-    } catch (error) {
-      console.error("Error initializing GoPay payment:", error);
-      throw error;
-    }
-  }
 
   /**
-   * Get payment status
+   * Get Stripe payment status
    */
   static async getPaymentStatus(
     paymentId: string,
     paymentMethod: PaymentMethod
   ): Promise<PaymentResult | null> {
     try {
-      switch (paymentMethod) {
-        case "stripe":
-          return await PaymentService.getStripePaymentStatus(paymentId);
-        case "gopay":
-          return await PaymentService.getGopayPaymentStatus(paymentId);
-        default:
-          throw new Error(`Unsupported payment method: ${paymentMethod}`);
+      if (paymentMethod !== "stripe") {
+        throw new Error(`Unsupported payment method: ${paymentMethod}`);
       }
+
+      return await PaymentService.getStripePaymentStatus(paymentId);
     } catch (error) {
       console.error("Error getting payment status:", error);
       return null;
@@ -188,50 +150,10 @@ export class PaymentService {
     };
   }
 
-  /**
-   * Get GoPay payment status
-   */
-  private static async getGopayPaymentStatus(paymentId: string): Promise<PaymentResult> {
-    const gopayClient = createGopayClient();
-    const payment = await gopayClient.getPaymentStatus(Number.parseInt(paymentId));
 
-    let status: PaymentStatus;
-    switch (payment.state) {
-      case "PAID":
-        status = "completed";
-        break;
-      case "AUTHORIZED":
-        status = "processing";
-        break;
-      case "CREATED":
-      case "PAYMENT_METHOD_CHOSEN":
-        status = "pending";
-        break;
-      case "CANCELED":
-        status = "cancelled";
-        break;
-      case "TIMEOUTED":
-      case "REFUNDED":
-      case "PARTIALLY_REFUNDED":
-        status = "refunded";
-        break;
-      default:
-        status = "failed";
-    }
-
-    return {
-      orderId: payment.order_number,
-      transactionId: payment.id.toString(),
-      amount: payment.amount / 100,
-      currency: payment.currency,
-      status,
-      paymentMethod: "gopay",
-      error: undefined,
-    };
-  }
 
   /**
-   * Process webhook notification
+   * Process Stripe webhook notification
    */
   static async processWebhook(
     payload: string | Buffer,
@@ -239,14 +161,11 @@ export class PaymentService {
     paymentMethod: PaymentMethod
   ): Promise<PaymentResult | null> {
     try {
-      switch (paymentMethod) {
-        case "stripe":
-          return await PaymentService.processStripeWebhook(payload, signature);
-        case "gopay":
-          return await PaymentService.processGopayWebhook(payload as string, signature);
-        default:
-          throw new Error(`Unsupported payment method: ${paymentMethod}`);
+      if (paymentMethod !== "stripe") {
+        throw new Error(`Unsupported payment method: ${paymentMethod}`);
       }
+
+      return await PaymentService.processStripeWebhook(payload, signature);
     } catch (error) {
       console.error("Error processing webhook:", error);
       return null;
@@ -295,29 +214,7 @@ export class PaymentService {
     return null;
   }
 
-  /**
-   * Process GoPay webhook
-   */
-  private static async processGopayWebhook(
-    payload: string,
-    signature: string
-  ): Promise<PaymentResult | null> {
-    const gopayClient = createGopayClient();
 
-    if (!gopayClient.verifyNotification(payload, signature)) {
-      throw new Error("Invalid GoPay webhook signature");
-    }
-
-    const data = JSON.parse(payload);
-    const paymentId = data.id;
-
-    if (!paymentId) {
-      throw new Error("Payment ID not found in GoPay webhook");
-    }
-
-    // Get current payment status
-    return await PaymentService.getGopayPaymentStatus(paymentId.toString());
-  }
 
   /**
    * Create payment info object for database storage
@@ -341,7 +238,6 @@ export class PaymentService {
   }
 }
 
-export * from "./gopay";
 // Export types and utilities
 export * from "./stripe";
 export { PaymentService as default };

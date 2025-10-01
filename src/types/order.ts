@@ -23,7 +23,7 @@ export type PaymentStatus =
   | "cancelled"
   | "refunded";
 
-export type PaymentMethod = "stripe" | "gopay";
+export type PaymentMethod = "stripe";
 
 // Customer information for checkout
 export interface CustomerInfo extends ContactInfo {

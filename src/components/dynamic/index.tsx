@@ -49,16 +49,7 @@ export const LazyStripePaymentForm = dynamic(
   }
 );
 
-export const LazyGopayPaymentForm = dynamic(
-  () =>
-    import("@/components/payments/GopayPaymentForm").then((mod) => ({
-      default: mod.GopayPaymentForm,
-    })),
-  {
-    loading: () => <LoadingSpinner size="md" />,
-    ssr: false,
-  }
-);
+
 
 // Utility function to create lazy component with custom loading
 export function createLazyComponent<T extends Record<string, any>>(

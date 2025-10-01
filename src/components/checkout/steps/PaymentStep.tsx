@@ -1,14 +1,13 @@
 "use client";
 
 import {
-  BanknotesIcon,
   CreditCardIcon,
   ExclamationTriangleIcon,
   ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
-import { LazyGopayPaymentForm, LazyStripePaymentForm } from "@/components/dynamic";
+import { LazyStripePaymentForm } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { PaymentMethod } from "@/types/order";
 
@@ -39,11 +38,17 @@ export function PaymentStep({
 
   const [paymentData, setPaymentData] = useState<{
     clientSecret?: string;
-    redirectUrl?: string;
     paymentId?: string;
   } | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
   const [initializationError, setInitializationError] = useState<string | null>(null);
+
+  // Auto-select Stripe as the only payment method
+  useEffect(() => {
+    if (!paymentMethod) {
+      onChange("stripe");
+    }
+  }, [paymentMethod, onChange]);
 
   // Initialize payment when method is selected and we have required data
   useEffect(() => {
@@ -82,7 +87,6 @@ export function PaymentStep({
       if (data.success) {
         setPaymentData({
           clientSecret: data.data.clientSecret,
-          redirectUrl: data.data.redirectUrl,
           paymentId: data.data.paymentId,
         });
       } else {
@@ -118,14 +122,6 @@ export function PaymentStep({
       features: ["Okamžité zpracování", "Bezpečné platby", "3D Secure"],
       recommended: true,
     },
-    {
-      id: "gopay" as PaymentMethod,
-      name: "GoPay",
-      description: "Bankovní převod, platební karta, rychlé platby",
-      icon: <BanknotesIcon className="w-6 h-6" />,
-      features: ["Bankovní převod", "Platební karta", "Apple Pay", "Google Pay"],
-      recommended: false,
-    },
   ];
 
   return (
@@ -144,10 +140,9 @@ export function PaymentStep({
             key={option.id}
             className={`
               relative border-2 rounded-lg p-6 cursor-pointer transition-all
-              ${
-                paymentMethod === option.id
-                  ? "border-primary-500 bg-primary-50"
-                  : "border-neutral-200 bg-white hover:border-neutral-300"
+              ${paymentMethod === option.id
+                ? "border-primary-500 bg-primary-50"
+                : "border-neutral-200 bg-white hover:border-neutral-300"
               }
             `}
             onClick={() => onChange(option.id)}
@@ -167,11 +162,10 @@ export function PaymentStep({
                 <div
                   className={`
                   w-5 h-5 rounded-full border-2 flex items-center justify-center
-                  ${
-                    paymentMethod === option.id
+                  ${paymentMethod === option.id
                       ? "border-primary-500 bg-primary-500"
                       : "border-neutral-300 bg-white"
-                  }
+                    }
                 `}
                 >
                   {paymentMethod === option.id && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -182,11 +176,10 @@ export function PaymentStep({
               <div
                 className={`
                 flex-shrink-0 p-3 rounded-lg
-                ${
-                  paymentMethod === option.id
+                ${paymentMethod === option.id
                     ? "bg-primary-100 text-primary-600"
                     : "bg-neutral-100 text-neutral-600"
-                }
+                  }
               `}
               >
                 {option.icon}
@@ -207,10 +200,9 @@ export function PaymentStep({
                       key={index}
                       className={`
                         inline-flex items-center px-2 py-1 rounded text-xs font-medium
-                        ${
-                          paymentMethod === option.id
-                            ? "bg-primary-100 text-primary-800"
-                            : "bg-neutral-100 text-neutral-700"
+                        ${paymentMethod === option.id
+                          ? "bg-primary-100 text-primary-800"
+                          : "bg-neutral-100 text-neutral-700"
                         }
                       `}
                     >
@@ -251,16 +243,7 @@ export function PaymentStep({
         </div>
       )}
 
-      {paymentMethod === "gopay" && (
-        <div className="bg-orange-50 border border-orange-200 rounded-lg p-4">
-          <h4 className="font-semibold text-orange-800 mb-2">Platba přes GoPay</h4>
-          <p className="text-sm text-orange-700">
-            Po dokončení objednávky budete přesměrováni na platební bránu GoPay, kde si můžete
-            vybrat z různých způsobů platby včetně bankovního převodu, platební karty nebo rychlých
-            plateb.
-          </p>
-        </div>
-      )}
+
 
       {/* Payment Forms */}
       {paymentMethod && orderId && amount && customerEmail && (
@@ -300,17 +283,7 @@ export function PaymentStep({
             />
           )}
 
-          {/* GoPay Payment Form */}
-          {paymentMethod === "gopay" && paymentData?.redirectUrl && (
-            <LazyGopayPaymentForm
-              redirectUrl={paymentData.redirectUrl}
-              orderId={orderId}
-              amount={amount}
-              currency={currency}
-              onError={handlePaymentError}
-              locale={locale}
-            />
-          )}
+
         </div>
       )}
 

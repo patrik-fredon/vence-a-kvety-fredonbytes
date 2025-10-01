@@ -53,8 +53,8 @@ export default async function Home({ params }: HomeProps) {
         locale === "cs" ? "Jaké způsoby platby přijímáte?" : "What payment methods do you accept?",
       answer:
         locale === "cs"
-          ? "Přijímáme platby kartou přes Stripe, bankovní převody a české platební metody přes GoPay včetně platby kartou, bankovním převodem nebo mobilními peněženkami."
-          : "We accept card payments via Stripe, bank transfers, and Czech payment methods via GoPay including card payments, bank transfers, or mobile wallets.",
+          ? "Přijímáme platby kartou přes Stripe včetně všech hlavních platebních karet (Visa, Mastercard, American Express)."
+          : "We accept card payments via Stripe including all major payment cards (Visa, Mastercard, American Express).",
     },
   ];
 
