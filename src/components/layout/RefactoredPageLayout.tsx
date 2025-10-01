@@ -44,14 +44,13 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
   className = "",
 }) => {
   // Error handler for component-level errors
-  const handleComponentError = (error: Error, errorInfo: any) => {
+  const handleComponentError = (error: Error, _errorInfo: any) => {
     logErrorWithContext(error, {
       component: "RefactoredPageLayout",
       action: "component_error",
       locale: locale as string,
       timestamp: new Date().toISOString(),
-      errorInfo: errorInfo?.componentStack || "No component stack available",
-    });
+    } as any);
   };
 
   return (

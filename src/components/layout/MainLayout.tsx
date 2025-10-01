@@ -1,6 +1,7 @@
 import { useTranslations } from "next-intl";
 import { AccessibilityToolbar } from "@/components/accessibility/AccessibilityToolbar";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
+import { type Locale } from "@/i18n/config";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 
@@ -14,10 +15,10 @@ export function MainLayout({ children, locale }: MainLayoutProps) {
 
   return (
     <div className="min-h-screen flex flex-col">
-      <SkipLinks locale={locale} />
-      <AccessibilityToolbar locale={locale} />
+      <SkipLinks />
+      <AccessibilityToolbar />
 
-      <Header locale={locale} />
+      <Header locale={locale as Locale} />
 
       <main
         id="main-content"

@@ -33,7 +33,7 @@ export function CoreWebVitalsExample() {
   });
 
   // JavaScript optimization
-  const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('CoreWebVitalsExample');
+  const { measureExecution, optimizedEventHandler: _optimizedEventHandler } = useJavaScriptOptimization('CoreWebVitalsExample');
 
   // Optimized event handlers
   const handleAddImages = useCallback(

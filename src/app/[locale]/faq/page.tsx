@@ -48,7 +48,7 @@ export default async function FAQPage({ params }: FAQPageProps) {
     },
   ];
 
-  // Generate structured data
+  // Generate structured data - fix: remove the second parameter (locale)
   const faqStructuredData = generateFAQStructuredData(faqItems);
   const organizationStructuredData = generateOrganizationStructuredData(locale);
 

@@ -329,7 +329,7 @@ export function CheckoutForm({
           {state.currentStep === "customer" && (
             <CustomerInfoStep
               customerInfo={state.formData.customerInfo}
-              errors={state.errors.customerInfo}
+              errors={state.errors.customerInfo || {}}
               onChange={(customerInfo) => updateFormData({ customerInfo })}
               locale={locale}
             />
@@ -338,7 +338,7 @@ export function CheckoutForm({
           {state.currentStep === "delivery" && (
             <DeliveryInfoStep
               deliveryInfo={state.formData.deliveryInfo}
-              errors={state.errors.deliveryInfo}
+              errors={state.errors.deliveryInfo || {}}
               onChange={(deliveryInfo) => updateFormData({ deliveryInfo })}
               locale={locale}
             />
@@ -346,7 +346,7 @@ export function CheckoutForm({
 
           {state.currentStep === "payment" && (
             <PaymentStep
-              paymentMethod={state.formData.paymentMethod}
+              {...(state.formData.paymentMethod && { paymentMethod: state.formData.paymentMethod })}
               onChange={(paymentMethod) => updateFormData({ paymentMethod })}
               locale={locale}
             />
@@ -359,7 +359,7 @@ export function CheckoutForm({
               subtotal={subtotal}
               deliveryCost={state.deliveryCost}
               totalAmount={totalAmount}
-              estimatedDeliveryDate={state.estimatedDeliveryDate}
+              {...(state.estimatedDeliveryDate && { estimatedDeliveryDate: state.estimatedDeliveryDate })}
               agreeToTerms={state.formData.agreeToTerms}
               subscribeNewsletter={state.formData.subscribeNewsletter}
               onAgreeToTermsChange={(agreeToTerms) => updateFormData({ agreeToTerms })}

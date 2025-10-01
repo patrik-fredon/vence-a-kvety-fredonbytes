@@ -193,7 +193,7 @@ export function ReviewStep({
             subtotal={subtotal}
             deliveryCost={deliveryCost}
             totalAmount={totalAmount}
-            estimatedDeliveryDate={estimatedDeliveryDate}
+            {...(estimatedDeliveryDate && { estimatedDeliveryDate })}
             locale={locale}
           />
         </div>

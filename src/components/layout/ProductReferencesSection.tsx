@@ -94,11 +94,8 @@ const ProductReferenceCard = ({
           component: "ProductReferenceCard",
           action: "image_load_error",
           locale,
-          productId: product.id,
-          originalSrc: product.image_url,
-          fallbackSrc: fallbackImage?.src || "none",
           timestamp: new Date().toISOString(),
-        });
+        } as any);
       } catch (fallbackError) {
         // If even the fallback fails, use a hardcoded safe image
         setCurrentImageSrc("/images/placeholder-product.png");
@@ -110,10 +107,8 @@ const ProductReferenceCard = ({
           component: "ProductReferenceCard",
           action: "fallback_error",
           locale,
-          productId: product.id,
-          originalError: fallbackError.message,
           timestamp: new Date().toISOString(),
-        });
+        } as any);
       }
     }
   };;
@@ -156,8 +151,8 @@ const ProductReferenceCard = ({
         <Image
           src={currentImageSrc}
           alt={`${product.image.alt} - ${safeT("productImageAlt")}`}
-          width={product.image.width}
-          height={product.image.height}
+          width={product.image.width || 400}
+          height={product.image.height || 400}
           onError={handleImageError}
           className={cn(
             "w-full h-full object-cover",
@@ -323,9 +318,8 @@ export const ProductReferencesSection = ({
         component: "ProductReferencesSection",
         action: "fetch_products",
         locale,
-        retryCount,
         timestamp: new Date().toISOString(),
-      });
+      } as any);
 
       // Set user-friendly error message
       if (error.name === "AbortError") {

@@ -152,11 +152,11 @@ class LazyLoadErrorBoundary extends React.Component<
     return { hasError: true };
   }
 
-  componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
+  override componentDidCatch(error: Error, errorInfo: React.ErrorInfo) {
     console.error("LazyProductReferencesSection failed to load:", error, errorInfo);
   }
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       return this.props.fallback;
     }
@@ -174,7 +174,7 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
   useEffect(() => {
     const observer = new IntersectionObserver(
       ([entry]) => {
-        if (entry.isIntersecting && !hasLoaded) {
+        if (entry?.isIntersecting && !hasLoaded) {
           setIsIntersecting(true);
           setHasLoaded(true);
           // Disconnect observer after first intersection to prevent re-loading

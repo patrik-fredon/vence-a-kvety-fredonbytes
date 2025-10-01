@@ -1,6 +1,6 @@
 "use client";
 
-import { BuildingOfficeIcon, EnvelopeIcon, PhoneIcon, UserIcon } from "@heroicons/react/24/outline";
+
 import { useTranslations } from "next-intl";
 import React from "react";
 import { Input } from "@/components/ui/Input";
@@ -10,12 +10,14 @@ interface CustomerInfoStepProps {
   customerInfo: Partial<CustomerInfo>;
   errors?: Partial<Record<keyof CustomerInfo, string>>;
   onChange: (customerInfo: Partial<CustomerInfo>) => void;
+  locale: string;
 }
 
 export function CustomerInfoStep({
   customerInfo,
   errors = {},
   onChange,
+  locale: _locale,
 }: CustomerInfoStepProps) {
   const t = useTranslations("checkout");
 
@@ -107,7 +109,7 @@ export function CustomerInfoStep({
           type="text"
           value={customerInfo.company || ""}
           onChange={(e) => handleChange("company", e.target.value)}
-          error={errors.company}
+          error={errors.company || ""}
           placeholder="Název společnosti"
         />
       </div>

@@ -131,7 +131,7 @@ export function DeliveryInfoStep({
               type="text"
               value={deliveryInfo.address?.street || ""}
               onChange={(e) => handleAddressChange("street", e.target.value)}
-              error={errors.address}
+              error={errors.address || ""}
               placeholder="Např. Václavské náměstí 1"
               required
             />
@@ -148,7 +148,7 @@ export function DeliveryInfoStep({
                 type="text"
                 value={deliveryInfo.address?.city || ""}
                 onChange={(e) => handleAddressChange("city", e.target.value)}
-                error={errors.address}
+                error={errors.address || ""}
                 placeholder="Praha"
                 required
               />
@@ -167,7 +167,7 @@ export function DeliveryInfoStep({
                 type="text"
                 value={deliveryInfo.address?.postalCode || ""}
                 onChange={(e) => handleAddressChange("postalCode", e.target.value)}
-                error={errors.address}
+                error={errors.address || ""}
                 placeholder="110 00"
                 required
               />
@@ -308,7 +308,7 @@ export function DeliveryInfoStep({
               type="text"
               value={deliveryInfo.recipientName || ""}
               onChange={(e) => onChange({ ...deliveryInfo, recipientName: e.target.value })}
-              error={errors.recipientName}
+              error={errors.recipientName || ""}
               placeholder="Jméno a příjmení příjemce"
             />
           </div>
@@ -325,7 +325,7 @@ export function DeliveryInfoStep({
               type="tel"
               value={deliveryInfo.recipientPhone || ""}
               onChange={(e) => onChange({ ...deliveryInfo, recipientPhone: e.target.value })}
-              error={errors.recipientPhone}
+              error={errors.recipientPhone || ""}
               placeholder="+420 123 456 789"
             />
           </div>

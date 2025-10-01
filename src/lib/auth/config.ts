@@ -3,6 +3,11 @@ import type { NextAuthConfig } from "next-auth";
 import NextAuth from "next-auth";
 
 function getSupabaseConfig() {
+  // Skip Supabase configuration in Edge Runtime
+  if (process.env.NEXT_RUNTIME === 'edge') {
+    return null;
+  }
+
   const supabaseUrl = process.env['NEXT_PUBLIC_SUPABASE_URL'];
   const supabaseServiceKey = process.env['SUPABASE_SERVICE_ROLE_KEY'];
 
@@ -40,6 +45,12 @@ export const config = {
           const supabaseAnonKey = process.env['NEXT_PUBLIC_SUPABASE_ANON_KEY'];
 
           if (!(supabaseUrl && supabaseAnonKey)) {
+            return null;
+          }
+
+          // Conditionally import Supabase only in Node.js runtime
+          if (process.env.NEXT_RUNTIME === 'edge') {
+            console.warn('Supabase auth not available in Edge Runtime');
             return null;
           }
 
@@ -89,6 +100,6 @@ export const config = {
     strategy: "jwt",
   },
   secret: process.env['NEXTAUTH_SECRET'] || "",
-} satisfies NextAuthConfig;;
+} satisfies NextAuthConfig;;;
 
 export const { handlers, auth, signIn, signOut } = NextAuth(config);

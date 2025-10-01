@@ -82,7 +82,7 @@ export function ResetPasswordForm() {
               label="Nové heslo"
               value={(formData as any)['password']}
               onChange={handleChange}
-              error={validationErrors.password || ""}
+              error={validationErrors['password'] || ""}
               required
               autoComplete="new-password"
               disabled={loading}
@@ -97,7 +97,7 @@ export function ResetPasswordForm() {
               label="Potvrzení hesla"
               value={(formData as any)['confirmPassword']}
               onChange={handleChange}
-              error={validationErrors.confirmPassword || ""}
+              error={validationErrors['confirmPassword'] || ""}
               required
               autoComplete="new-password"
               disabled={loading}

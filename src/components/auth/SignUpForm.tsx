@@ -99,9 +99,9 @@ export function SignUpForm() {
               name="name"
               type="text"
               label="Jméno a příjmení"
-              value={formData.name}
+              value={(formData as any)['name']}
               onChange={handleChange}
-              error={validationErrors.name ?? undefined}
+              error={validationErrors['name'] || ""}
               required
               autoComplete="name"
               disabled={loading}
@@ -113,9 +113,9 @@ export function SignUpForm() {
               name="email"
               type="email"
               label="E-mailová adresa"
-              value={formData.email}
+              value={(formData as any)['email']}
               onChange={handleChange}
-              error={validationErrors.email ?? undefined}
+              error={validationErrors['email'] || ""}
               required
               autoComplete="email"
               disabled={loading}
@@ -127,7 +127,7 @@ export function SignUpForm() {
               name="phone"
               type="tel"
               label="Telefon (volitelné)"
-              value={formData.phone}
+              value={(formData as any)['phone']}
               onChange={handleChange}
               autoComplete="tel"
               disabled={loading}
@@ -140,9 +140,9 @@ export function SignUpForm() {
               name="password"
               type="password"
               label="Heslo"
-              value={formData.password}
+              value={(formData as any)['password']}
               onChange={handleChange}
-              error={validationErrors.password ?? undefined}
+              error={validationErrors['password'] || ""}
               required
               autoComplete="new-password"
               disabled={loading}
@@ -155,9 +155,9 @@ export function SignUpForm() {
               name="confirmPassword"
               type="password"
               label="Potvrzení hesla"
-              value={formData.confirmPassword}
+              value={(formData as any)['confirmPassword']}
               onChange={handleChange}
-              error={validationErrors.confirmPassword ?? undefined}
+              error={validationErrors['confirmPassword'] || ""}
               required
               autoComplete="new-password"
               disabled={loading}

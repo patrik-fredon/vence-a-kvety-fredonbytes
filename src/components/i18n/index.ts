@@ -5,5 +5,5 @@
  */
 
 export { CurrencyDisplay } from "./CurrencyDisplay";
-export { DateDisplay, RelativeTime } from "./DateDisplay";
+export { DateDisplay } from "./DateDisplay";
 export { LocalizedContent, useLocalizedContent } from "./LocalizedContent";

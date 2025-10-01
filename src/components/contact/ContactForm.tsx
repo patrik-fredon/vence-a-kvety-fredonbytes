@@ -200,7 +200,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                 locale === "cs" ? "Zadejte své jméno a příjmení" : "Enter your full name"
               }
               disabled={isSubmitting}
-              error={errors.name}
+              error={errors.name || ""}
               required
             />
 
@@ -213,7 +213,7 @@ export function ContactForm({ locale }: ContactFormProps) {
               onChange={(e) => handleInputChange("email", e.target.value)}
               placeholder={locale === "cs" ? "vas.email@example.com" : "your.email@example.com"}
               disabled={isSubmitting}
-              error={errors.email}
+              error={errors.email || ""}
               required
             />
 
@@ -226,7 +226,7 @@ export function ContactForm({ locale }: ContactFormProps) {
               onChange={(e) => handleInputChange("phone", e.target.value)}
               placeholder={locale === "cs" ? "+420 123 456 789" : "+420 123 456 789"}
               disabled={isSubmitting}
-              error={errors.phone}
+              error={errors.phone || ""}
             />
 
             {/* Subject Field */}
