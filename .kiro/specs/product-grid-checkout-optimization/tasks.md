@@ -53,7 +53,7 @@
   - Create theme provider and context for dynamic theming
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-- [ ] 3.1 Create design tokens and theme configuration
+- [-] 3.1 Create design tokens and theme configuration
   - Create src/lib/design-system/tokens.ts with all color definitions
   - Implement semantic color naming (primary, secondary, accent, neutral)
   - Define typography, spacing, shadow, and border radius scales
