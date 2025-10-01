@@ -14,10 +14,10 @@ export class ColorContrast {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-          r: Number.parseInt(result[1], 16),
-          g: Number.parseInt(result[2], 16),
-          b: Number.parseInt(result[3], 16),
-        }
+        r: Number.parseInt(result[1]!, 16),
+        g: Number.parseInt(result[2]!, 16),
+        b: Number.parseInt(result[3]!, 16),
+      }
       : null;
   }
 
@@ -28,7 +28,7 @@ export class ColorContrast {
     const [rs, gs, bs] = [r, g, b].map((c) => {
       c = c / 255;
       return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
-    });
+    }) as [number, number, number];
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
   }
 
@@ -245,8 +245,6 @@ export class KeyboardValidator {
    */
   static validateKeyboardAccess(element: HTMLElement): string[] {
     const errors: string[] = [];
-    const tagName = element.tagName.toLowerCase();
-    const role = element.getAttribute("role");
 
     // Check if interactive element is focusable
     if (
@@ -331,7 +329,7 @@ export class KeyboardValidator {
   /**
    * Checks if element has keyboard event handlers
    */
-  private static hasKeyers(element: HTMLElem): boolean {
+  private static hasKeyboardHandlers(element: HTMLElement): boolean {
     return (
       element.hasAttribute("onkeydown") ||
       element.hasAttribute("onkeyup") ||

@@ -132,7 +132,7 @@ export const usePerformanceMonitor = (
       updateCount: updateCountRef.current,
       lastUpdateTime: endTime,
       isFirstRender,
-      props: trackProps ? previousPropsRef.current : undefined,
+      props: trackProps ? (previousPropsRef.current || undefined) : undefined,
     };
 
     setMetrics(newMetrics);

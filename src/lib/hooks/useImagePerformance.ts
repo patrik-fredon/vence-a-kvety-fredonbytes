@@ -62,6 +62,7 @@ export const useImagePerformance = (
     const initialMetrics: ImagePerformanceMetrics = {
       loadStartTime: startTime,
       loadSuccess: false,
+      dimensions: undefined,
     };
 
     setMetrics(initialMetrics);
@@ -126,6 +127,7 @@ export const useImagePerformance = (
       loadEndTime: endTime,
       loadDuration: duration,
       loadSuccess: false,
+      dimensions: undefined,
     };
 
     setMetrics(updatedMetrics);

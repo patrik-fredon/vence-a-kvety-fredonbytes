@@ -74,9 +74,15 @@ export function calculateCustomizationPriceModifiers(
       const choice = option.choices.find(c => c.id === choiceId);
       if (choice) {
         customizationModifier += choice.priceModifier;
+        
+        // Ensure label is LocalizedContent
+        const label: LocalizedContent = typeof choice.label === 'string' 
+          ? { cs: choice.label, en: choice.label } 
+          : choice.label;
+        
         choiceBreakdown.push({
           choiceId: choice.id,
-          label: choice.label,
+          label,
           priceModifier: choice.priceModifier
         });
       }
@@ -90,9 +96,14 @@ export function calculateCustomizationPriceModifiers(
     totalModifier += customizationModifier;
 
     if (customizationModifier !== 0 || choiceBreakdown.length > 0) {
+      // Ensure optionName is LocalizedContent
+      const optionName: LocalizedContent = typeof option.name === 'string' 
+        ? { cs: option.name, en: option.name } 
+        : option.name;
+      
       breakdown.push({
         optionId: customization.optionId,
-        optionName: option.name,
+        optionName,
         totalModifier: customizationModifier,
         choices: choiceBreakdown,
         customValue: customization.customValue

@@ -97,7 +97,7 @@ export function useWreathValidation({
 
   // Validate ribbon dependencies only
   const validateRibbonDependenciesCallback = useCallback(() => {
-    return validateRibbonDependencies(
+    return validateRibbonDependenciesCore(
       customizations,
       wreathOptions.ribbonOption,
       wreathOptions.ribbonColorOption,

@@ -307,7 +307,9 @@ export function formatCustomizationForDisplay(
   const option = customizationOptions.find(opt => opt.id === customization.optionId);
   if (!option) return null;
 
-  const optionName = (option.name as any)[locale] || option.name.en || option.name.cs;
+  const optionName = typeof option.name === 'string'
+    ? option.name
+    : (option.name as any)[locale] || (option.name as any).en || (option.name as any).cs;
 
   // Handle custom text input (like ribbon text)
   if (customization.customValue) {
@@ -319,7 +321,9 @@ export function formatCustomizationForDisplay(
     const selectedChoices = customization.choiceIds
       .map(choiceId => {
         const choice = option.choices.find(c => c.id === choiceId);
-        return choice ? ((choice.label as any)[locale] || choice.label.en || choice.label.cs) : null;
+        return choice ? (typeof choice.label === 'string'
+          ? choice.label
+          : (choice.label as any)[locale] || (choice.label as any).en || (choice.label as any).cs) : null;
       })
       .filter(Boolean);
 

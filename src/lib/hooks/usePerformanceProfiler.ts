@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-// Removed unused performanceMonitor import
+import { performanceMonitor as globalPerformanceMonitor } from "@/lib/monitoring/performance-monitor";
 import { useLighthouseOptimization } from "./useLighthouseOptimization";
 import { usePerformanceMonitor } from "./usePerformanceMonitor";
 
@@ -160,16 +160,24 @@ export const usePerformanceProfiler = (
 
     // Get Lighthouse metrics
     const lighthouseMetrics = {
-      performanceScore: calculatePerformanceScore(renderMetrics, lighthouseOptimization.metrics),
+      performanceScore: calculatePerformanceScore(renderMetrics, lighthouseOptimization.metrics ? {
+        ...(lighthouseOptimization.metrics.clsContribution !== undefined && { clsContribution: lighthouseOptimization.metrics.clsContribution }),
+        ...(lighthouseOptimization.metrics.lcpContribution !== undefined && { lcpContribution: lighthouseOptimization.metrics.lcpContribution }),
+        ...(lighthouseOptimization.metrics.tbtContribution !== undefined && { tbtContribution: lighthouseOptimization.metrics.tbtContribution }),
+      } : null),
       optimizationOpportunities: lighthouseOptimization.getOptimizationRecommendations(),
-      criticalIssues: getCriticalIssues(renderMetrics, lighthouseOptimization.metrics),
+      criticalIssues: getCriticalIssues(renderMetrics, lighthouseOptimization.metrics ? {
+        ...(lighthouseOptimization.metrics.clsContribution !== undefined && { clsContribution: lighthouseOptimization.metrics.clsContribution }),
+        ...(lighthouseOptimization.metrics.lcpContribution !== undefined && { lcpContribution: lighthouseOptimization.metrics.lcpContribution }),
+        ...(lighthouseOptimization.metrics.tbtContribution !== undefined && { tbtContribution: lighthouseOptimization.metrics.tbtContribution }),
+      } : null),
     };
 
     // Get memory metrics
-    const memoryUsage = trackMemory ? getCurrentMemoryUsage() : undefined;
+    const memoryUsage = trackMemory ? (getCurrentMemoryUsage() || undefined) : undefined;
 
     // Get network metrics
-    const networkMetrics = trackNetwork ? getNetworkMetrics() : undefined;
+    const networkMetrics = trackNetwork ? (getNetworkMetrics() || undefined) : undefined;
 
     const newProfile: PerformanceProfile = {
       componentName,
@@ -193,7 +201,7 @@ export const usePerformanceProfiler = (
     }
 
     // Record in global performance monitor
-    performanceMonitor.recordMetric(
+    globalPerformanceMonitor.recordMetric(
       `COMPONENT_PROFILE_${componentName.toUpperCase()}`,
       profilingDuration,
       `Profiling session: ${componentName}`

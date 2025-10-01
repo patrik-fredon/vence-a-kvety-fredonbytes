@@ -27,7 +27,7 @@ class CustomizationPerformanceMonitor {
         operation,
         duration,
         timestamp: Date.now(),
-        metadata,
+        ...(metadata && { metadata }),
       });
     };
   }

@@ -79,7 +79,7 @@ class ErrorLogger {
         try {
           console.error("Stack:", errorLog.stack);
         } catch (stackError) {
-          console.error("Stack trace unavailable (logging error):", stackError.message);
+          console.error("Stack trace unavailable (logging error):", stackError instanceof Error ? stackError.message : String(stackError));
         }
       } else {
         console.error("Stack trace unavailable");

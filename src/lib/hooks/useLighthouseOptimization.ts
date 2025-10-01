@@ -106,10 +106,16 @@ export const useLighthouseOptimization = (
     // Initialize metrics
     const initialMetrics: LighthouseOptimizationMetrics = {
       componentName,
+      fcpContribution: undefined,
+      lcpContribution: undefined,
+      clsContribution: undefined,
+      tbtContribution: undefined,
+      bundleSizeImpact: undefined,
       imageOptimizations: [],
       jsOptimizations: [],
       cssOptimizations: [],
       accessibilityIssues: [],
+      performanceScoreImpact: undefined,
     };
 
     setMetrics(initialMetrics);

@@ -121,9 +121,10 @@ export type ButtonVariant = "default" | "destructive" | "outline" | "secondary" 
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "size">, AtomProps {
+export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "size" | "disabled">, Omit<AtomProps, "size" | "disabled"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  disabled?: boolean;
   loading?: boolean;
   loadingText?: string;
   icon?: ReactNode;
@@ -140,7 +141,7 @@ export type InputVariant = "default" | "filled" | "outline";
 
 export interface InputProps
   extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type">,
-    AtomProps {
+  AtomProps {
   type?: InputType;
   variant?: InputVariant;
   label?: string;

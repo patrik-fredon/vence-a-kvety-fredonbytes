@@ -76,6 +76,8 @@ export function LoadingState({
       const timeoutId = setTimeout(onTimeout, timeout);
       return () => clearTimeout(timeoutId);
     }
+    // Return undefined explicitly for the else case
+    return undefined;
   }, [timeout, onTimeout]);
 
   return (

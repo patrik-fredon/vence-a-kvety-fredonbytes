@@ -77,9 +77,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       if (level === "critical") {
         return (
-          <CriticalErrorFallback
-            error={this.state.error || new Error("Unknown error")}
-            errorId={this.state.errorId || "unknown"}
+          <CriticalErrorFallback 
+            errorId={this.state.errorId || "unknown"} 
           />
         );
       }
@@ -269,7 +268,7 @@ export function ComponentErrorFallback({
   );
 }
 
-export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
+export function CriticalErrorFallback({ errorId }: Pick<ErrorFallbackProps, 'errorId'>) {
   const handleContactSupport = () => {
     const subject = encodeURIComponent(`Kritická chyba - ${errorId || "neznámé ID"}`);
     const body = encodeURIComponent(

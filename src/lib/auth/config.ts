@@ -4,7 +4,7 @@ import NextAuth from "next-auth";
 
 function getSupabaseConfig() {
   // Skip Supabase configuration in Edge Runtime
-  if (process.env.NEXT_RUNTIME === 'edge') {
+  if (process.env['NEXT_RUNTIME'] === 'edge') {
     return null;
   }
 
@@ -49,7 +49,7 @@ export const config = {
           }
 
           // Conditionally import Supabase only in Node.js runtime
-          if (process.env.NEXT_RUNTIME === 'edge') {
+          if (process.env['NEXT_RUNTIME'] === 'edge') {
             console.warn('Supabase auth not available in Edge Runtime');
             return null;
           }

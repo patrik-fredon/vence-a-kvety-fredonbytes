@@ -46,7 +46,7 @@ export interface CacheClient {
   mget(...keys: string[]): Promise<(string | null)[]>;
   mset(data: Record<string, string>, ttl?: number): Promise<void>;
   expire(key: string, ttl: number): Promise<void>;
-  flushPattern(pattern: string): Promise<void>;
+  flushPattern(_pattern: string): Promise<void>;
 }
 
 /**
@@ -125,7 +125,7 @@ class RedisCacheClient implements CacheClient {
     }
   }
 
-  async flushPattern(pattern: string): Promise<void> {
+  async flushPattern(_pattern: string): Promise<void> {
     try {
       // Note: Upstash Redis doesn't support SCAN, so we'll need to track keys manually
       // For now, we'll implement a simple pattern-based deletion

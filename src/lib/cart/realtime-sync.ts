@@ -42,7 +42,7 @@ export class CartSyncManager {
   constructor(
     private userId?: string,
     private sessionId?: string
-  ) {}
+  ) { }
 
   /**
    * Initialize WebSocket connection for real-time updates
@@ -206,9 +206,10 @@ export class CartSyncManager {
    * Broadcast cart change to other clients
    */
   broadcastCartChange(event: CartSyncEvent): void {
+    const { type, ...eventData } = event;
     this.send({
       type: "cart_change",
-      ...event,
+      ...eventData,
       source: "local",
     });
   }

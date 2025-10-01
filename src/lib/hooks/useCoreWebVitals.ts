@@ -254,8 +254,8 @@ export const useCoreWebVitals = (options: CoreWebVitalsOptions): CoreWebVitalsRe
         });
       }
 
-      if (webVitals.onFID && trackFID) {
-        webVitals.onFID((metric) => {
+      if ('onFID' in webVitals && (webVitals as any).onFID && trackFID) {
+        (webVitals as any).onFID((metric: any) => {
           updateMetrics({ fid: metric.value });
           performanceMonitor.recordMetric('FID', metric.value, `Component: ${componentName}`);
         });
