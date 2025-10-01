@@ -59,7 +59,7 @@ interface WebVitalsTrackerProps {
 export function WebVitalsTracker({
   debug = performanceConfig.development?.debug?.showWebVitalsOverlay ?? false,
   endpoint = performanceConfig.monitoring?.webVitalsTracking?.endpoint ??
-    "/api/monitoring/web-vitals",
+  "/api/monitoring/web-vitals",
   sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ?? 0.1,
   autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ?? true,
   onMetric,
@@ -406,7 +406,7 @@ export function useWebVitals() {
         if (webVitalsModule.onFCP) webVitalsModule.onFCP(handleMetric);
         if (webVitalsModule.onLCP) webVitalsModule.onLCP(handleMetric);
         if (webVitalsModule.onTTFB) webVitalsModule.onTTFB(handleMetric);
-        if (webVitalsModule.onFID) webVitalsModule.onFID(handleMetric);
+        // Note: onFID has been deprecated in favor of onINP
       } catch (error) {
         console.warn("Web Vitals library not available:", error);
       }
