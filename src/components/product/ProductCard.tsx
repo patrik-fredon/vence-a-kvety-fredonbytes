@@ -10,7 +10,7 @@ import type { Product } from "@/types/product";
 import { LazyProductQuickView } from "./LazyProductQuickView";
 // Removed unused useCoreWebVitals import
 import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
-import { ProductImage } from "./ProductImage";
+import { ProductImageHover } from "./ProductImageHover";
 
 interface ProductCardProps {
   product: Product;
@@ -33,8 +33,6 @@ export function ProductCard({
   const tCurrency = useTranslations("currency");
   const router = useRouter();
   const [isHovered, setIsHovered] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
-  // Removed unused imageError state
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   // Core Web Vitals optimization - DISABLED to prevent performance issues
@@ -154,18 +152,20 @@ export function ProductCard({
             onClick={handleImageClick}
           >
             {primaryImage && (
-              <ProductImage
-                image={primaryImage}
+              <ProductImageHover
+                primaryImage={primaryImage}
+                secondaryImage={secondaryImage}
                 productName={product.name[locale as keyof typeof product.name]}
                 locale={locale}
                 fill
                 sizes="96px"
-                className="object-cover"
-                onLoad={() => setImageLoading(false)}
-                onError={() => setImageLoading(false)}
+                className="rounded-md"
+                onClick={handleImageClick}
                 priority={featured}
+                isAboveFold={featured}
                 variant="thumbnail"
-                showLoadingSpinner={false}
+                transitionDuration={300}
+                enableTouchHover={true}
               />
             )}
 
@@ -266,41 +266,21 @@ export function ProductCard({
         aria-labelledby={`product-${product.id}-title`}
       >
         {/* Full Coverage Product Image - Takes up most of the h-96 space */}
-        <div
-          className="absolute inset-0 bg-amber-100 cursor-pointer"
-          onClick={handleImageClick}
-        >
+        <div className="absolute inset-0 bg-amber-100">
           {primaryImage && (
-            <ProductImage
-              image={primaryImage}
+            <ProductImageHover
+              primaryImage={primaryImage}
+              secondaryImage={secondaryImage}
               productName={product.name[locale as keyof typeof product.name]}
               locale={locale}
               fill
-              className={cn(
-                "object-cover transition-all duration-500",
-                isHovered && secondaryImage && "opacity-0"
-              )}
-              onLoad={() => setImageLoading(false)}
+              onClick={handleImageClick}
               priority={featured}
+              isAboveFold={featured}
               variant="product"
-              showLoadingSpinner={false}
-            />
-          )}
-
-          {/* Secondary image on hover */}
-          {secondaryImage && (
-            <ProductImage
-              image={secondaryImage}
-              productName={product.name[locale as keyof typeof product.name]}
-              locale={locale}
-              fill
-              className={cn(
-                "object-cover transition-all duration-500 absolute inset-0",
-                !isHovered && "opacity-0"
-              )}
-              priority={false}
-              variant="product"
-              showLoadingSpinner={false}
+              transitionDuration={500}
+              enableTouchHover={true}
+              onHoverChange={(hovered) => setIsHovered(hovered)}
             />
           )}
 

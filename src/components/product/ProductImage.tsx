@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ProductImage as ProductImageType } from "@/types/product";
@@ -14,6 +14,8 @@ interface ProductImageProps {
   locale: string;
   /** Whether this image should be loaded with priority */
   priority?: boolean;
+  /** Whether this image is above the fold (for automatic priority detection) */
+  isAboveFold?: boolean;
   /** Custom sizes attribute for responsive images */
   sizes?: string;
   /** Additional CSS classes */
@@ -42,6 +44,10 @@ interface ProductImageProps {
   showErrorFallback?: boolean;
   /** Custom fallback image URL */
   fallbackSrc?: string;
+  /** Enable preloading for critical images */
+  preload?: boolean;
+  /** Enable intersection observer for lazy loading optimization */
+  enableIntersectionObserver?: boolean;
 }
 
 // Generate optimized blur placeholder
@@ -80,43 +86,67 @@ const DEFAULT_FALLBACK_IMAGE = `data:image/svg+xml;base64,${Buffer.from(
   </svg>`
 ).toString("base64")}`;
 
-// Optimized sizes configuration for different variants
+// Optimized sizes configuration for different variants with responsive breakpoints
 const getSizesForVariant = (variant: ProductImageProps["variant"]): string => {
   switch (variant) {
     case "product":
-      return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw";
+      // Optimized for product grid: mobile full width, tablet 2 columns, desktop 4-5 columns
+      return "(max-width: 480px) 100vw, (max-width: 640px) 50vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, (max-width: 1536px) 20vw, 16vw";
     case "thumbnail":
-      return "(max-width: 640px) 25vw, (max-width: 1024px) 20vw, 15vw";
+      // Small thumbnails for lists and previews
+      return "(max-width: 480px) 20vw, (max-width: 640px) 15vw, (max-width: 1024px) 12vw, 10vw";
     case "hero":
+      // Full viewport width for hero images
       return "100vw";
     case "gallery":
-      return "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, 60vw";
+      // Gallery images: mobile full, tablet/desktop large
+      return "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw";
     default:
-      return "(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw";
+      return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
   }
 };
 
-// Quality settings based on variant
+// Quality settings based on variant for optimal file size vs quality balance
 const getQualityForVariant = (variant: ProductImageProps["variant"]): number => {
   switch (variant) {
     case "product":
-      return 85; // High quality for product images
+      return 85; // High quality for product images - balance between quality and file size
     case "thumbnail":
-      return 75; // Medium quality for thumbnails
+      return 75; // Medium quality for thumbnails - prioritize loading speed
     case "hero":
-      return 90; // Highest quality for hero images
+      return 90; // Highest quality for hero images - visual impact priority
     case "gallery":
-      return 88; // High quality for gallery images
+      return 88; // High quality for gallery images - detailed viewing
     default:
-      return 80;
+      return 80; // Default balanced quality
   }
+};
+
+// Determine if image should be loaded with priority based on position and variant
+const shouldUsePriority = (
+  priority: boolean | undefined,
+  variant: ProductImageProps["variant"],
+  isAboveFold?: boolean
+): boolean => {
+  // Explicit priority setting takes precedence
+  if (priority !== undefined) return priority;
+
+  // Hero images should always be priority
+  if (variant === "hero") return true;
+
+  // Above-the-fold product images should be priority
+  if (variant === "product" && isAboveFold) return true;
+
+  // Default to lazy loading
+  return false;
 };
 
 export function ProductImage({
   image,
   productName,
   locale,
-  priority = false,
+  priority,
+  isAboveFold = false,
   sizes,
   className,
   variant = "product",
@@ -131,10 +161,37 @@ export function ProductImage({
   showLoadingSpinner = true,
   showErrorFallback = true,
   fallbackSrc,
+  preload = false,
+  enableIntersectionObserver = true,
 }: ProductImageProps) {
   const [isLoading, setIsLoading] = useState(true);
   const [hasError, setHasError] = useState(false);
   const [loadStartTime, setLoadStartTime] = useState<number | null>(null);
+  const [isInView, setIsInView] = useState(!enableIntersectionObserver);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  // Intersection Observer for optimized lazy loading
+  useEffect(() => {
+    if (!enableIntersectionObserver || !imageRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry && entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: '50px', // Start loading 50px before image comes into view
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(imageRef.current);
+
+    return () => observer.disconnect();
+  }, [enableIntersectionObserver]);
 
   // Memoize optimized configuration
   const optimizedSizes = useMemo(() => {
@@ -145,6 +202,17 @@ export function ProductImage({
     return quality || getQualityForVariant(variant);
   }, [quality, variant]);
 
+  // Determine priority loading
+  const shouldLoadWithPriority = useMemo(() => {
+    return shouldUsePriority(priority, variant, isAboveFold);
+  }, [priority, variant, isAboveFold]);
+
+  // Determine loading strategy
+  const loadingStrategy = useMemo(() => {
+    if (shouldLoadWithPriority) return "eager";
+    return loading;
+  }, [shouldLoadWithPriority, loading]);
+
   // Generate blur placeholder from image dimensions or defaults
   const blurDataURL = useMemo(() => {
     if (image.blurDataUrl) return image.blurDataUrl;
@@ -154,8 +222,10 @@ export function ProductImage({
   // Determine alt text with proper fallbacks
   const altText = useMemo(() => {
     if (image.alt) return image.alt;
-    return `${productName} - produkt obrázek`;
-  }, [image.alt, productName]);
+    // Use locale for appropriate language
+    const fallbackText = locale === 'cs' ? 'produkt obrázek' : 'product image';
+    return `${productName} - ${fallbackText}`;
+  }, [image.alt, productName, locale]);
 
   // Handle load start with performance tracking
   const handleLoadStart = useCallback(() => {
@@ -199,6 +269,25 @@ export function ProductImage({
     return image.url;
   }, [hasError, image.url, fallbackSrc]);
 
+  // Preload critical images
+  useEffect(() => {
+    if (preload && shouldLoadWithPriority && image.url) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = image.url;
+      document.head.appendChild(link);
+
+      return () => {
+        if (document.head.contains(link)) {
+          document.head.removeChild(link);
+        }
+      };
+    }
+    // No cleanup needed if conditions aren't met
+    return undefined;
+  }, [preload, shouldLoadWithPriority, image.url]);
+
   // Error fallback component
   if (hasError && !showErrorFallback) {
     return (
@@ -209,7 +298,7 @@ export function ProductImage({
           className
         )}
         role="img"
-        aria-label={`Obrázek produktu ${productName} se nepodařilo načíst`}
+        aria-label={locale === 'cs' ? `Obrázek produktu ${productName} se nepodařilo načíst` : `Failed to load image for ${productName}`}
       >
         <svg
           className="w-8 h-8"
@@ -230,36 +319,42 @@ export function ProductImage({
   }
 
   return (
-    <div className={cn("relative", !fill && "w-full h-full")}>
-      <Image
-        src={imageSrc}
-        alt={altText}
-        {...(!fill && width && { width })}
-        {...(!fill && height && { height })}
-        {...(fill && { fill: true })}
-        sizes={optimizedSizes}
-        priority={priority}
-        loading={priority ? "eager" : loading}
-        quality={optimizedQuality}
-        placeholder="blur"
-        blurDataURL={blurDataURL}
-        className={cn(
-          "transition-all duration-300",
-          isLoading && "blur-sm scale-105",
-          !isLoading && "blur-0 scale-100",
-          hasError && "opacity-75",
-          className
-        )}
-        onLoadStart={handleLoadStart}
-        onLoad={handleLoad}
-        onError={handleError}
-      />
+    <div
+      ref={imageRef}
+      className={cn("relative", !fill && "w-full h-full")}
+    >
+      {/* Only render image when in view (for intersection observer) or when priority loading */}
+      {(isInView || shouldLoadWithPriority) && (
+        <Image
+          src={imageSrc}
+          alt={altText}
+          {...(!fill && width && { width })}
+          {...(!fill && height && { height })}
+          {...(fill && { fill: true })}
+          sizes={optimizedSizes}
+          priority={shouldLoadWithPriority}
+          loading={loadingStrategy}
+          quality={optimizedQuality}
+          placeholder="blur"
+          blurDataURL={blurDataURL}
+          className={cn(
+            "transition-all duration-300",
+            isLoading && "blur-sm scale-105",
+            !isLoading && "blur-0 scale-100",
+            hasError && "opacity-75",
+            className
+          )}
+          onLoadStart={handleLoadStart}
+          onLoad={handleLoad}
+          onError={handleError}
+        />
+      )}
 
       {/* Loading spinner overlay */}
       {isLoading && showLoadingSpinner && (
         <div
           className="absolute inset-0 flex items-center justify-center bg-stone-100/50 backdrop-blur-sm"
-          aria-label="Načítání obrázku..."
+          aria-label={locale === 'cs' ? 'Načítání obrázku...' : 'Loading image...'}
         >
           <div className="w-6 h-6 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
         </div>
@@ -268,7 +363,10 @@ export function ProductImage({
       {/* Error indicator for accessibility */}
       {hasError && (
         <div className="sr-only" role="alert">
-          Obrázek produktu {productName} se nepodařilo načíst. Zobrazuje se náhradní obrázek.
+          {locale === 'cs'
+            ? `Obrázek produktu ${productName} se nepodařilo načíst. Zobrazuje se náhradní obrázek.`
+            : `Failed to load image for ${productName}. Showing fallback image.`
+          }
         </div>
       )}
     </div>

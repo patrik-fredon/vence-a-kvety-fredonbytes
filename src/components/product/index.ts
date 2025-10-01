@@ -2,6 +2,7 @@ export { ProductCard } from "./ProductCard";
 export { ProductCardLayout } from "./ProductCardLayout";
 export { ProductCustomizer } from "./ProductCustomizer";
 export { ProductImage } from "./ProductImage";
+export { ProductImageHover } from "./ProductImageHover";
 export { OptimizedProductCustomizer } from "./OptimizedProductCustomizer";
 export { ProductDetail } from "./ProductDetail";
 export { ProductFilters } from "./ProductFilters";
