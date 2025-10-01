@@ -46,7 +46,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
         return (
           <div
             key={index}
-            className="bg-white rounded-lg shadow-soft border border-neutral-200 overflow-hidden"
+            className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft border border-neutral-200 overflow-hidden"
           >
             <button
               className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-inset transition-colors"
@@ -78,7 +78,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
 
                 {item.image && (
                   <div className="mt-6">
-                    <div className="relative w-full max-w-2xl mx-auto bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+                    <div className="relative w-full max-w-2xl mx-auto bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
                       <Image
                         src={item.image.src}
                         alt={item.image.alt}

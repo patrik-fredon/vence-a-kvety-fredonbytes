@@ -174,13 +174,13 @@ export function ProductCardLayout({
     switch (variant) {
       case "grid":
       case "teaser":
-        return "relative aspect-square bg-stone-100 overflow-hidden";
+        return "relative aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] overflow-hidden";
 
       case "list":
-        return "relative overflow-hidden bg-stone-100 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md";
+        return "relative overflow-hidden bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md";
 
       default:
-        return "relative aspect-square bg-stone-100 overflow-hidden";
+        return "relative aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] overflow-hidden";
     }
   };
 
@@ -250,7 +250,7 @@ export function ProductCardLayout({
       {/* Featured Badge */}
       {featured && (
         <div className="absolute top-3 left-3 z-10">
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200 shadow-sm">
+          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-teal-800 border border-amber-200 shadow-sm">
             {t("featured")}
           </span>
         </div>
@@ -266,7 +266,7 @@ export function ProductCardLayout({
       {/* Stock Status Overlay */}
       {!product.availability.inStock && (
         <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-          <span className="text-white font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
+          <span className="text-amber-100 font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
             {t("outOfStock")}
           </span>
         </div>
@@ -294,7 +294,7 @@ export function ProductCardLayout({
     if (variant !== "list" || !product.category) return null;
 
     return (
-      <p className="text-stone-500 mb-1 text-xs">
+      <p className="text-teal-900 mb-1 text-xs">
         {product.category.name[locale as keyof typeof product.category.name]}
       </p>
     );
@@ -313,7 +313,7 @@ export function ProductCardLayout({
       <div className="flex items-center gap-2">
         <span
           className={cn(
-            "font-semibold text-stone-900",
+            "font-semibold text-teal-900",
             variant === "grid" && "text-lg",
             variant === "teaser" && "text-2xl",
             variant === "list" && "text-sm sm:text-base"
@@ -322,12 +322,12 @@ export function ProductCardLayout({
           {formatPrice(product.basePrice)}
         </span>
         {product.finalPrice && product.finalPrice < product.basePrice && (
-          <span className="text-stone-500 line-through text-sm">
+          <span className="text-teal-800 line-through text-sm">
             {formatPrice(product.basePrice)}
           </span>
         )}
         {variant === "teaser" && primaryAction.type === "customize" && (
-          <span className="text-sm text-stone-500 ml-2">{locale === "cs" ? "od" : "from"}</span>
+          <span className="text-sm text-teal-800 ml-2">{locale === "cs" ? "od" : "from"}</span>
         )}
       </div>
 
@@ -336,7 +336,7 @@ export function ProductCardLayout({
         <Button
           size="sm"
           variant="outline"
-          className="bg-stone-100/80 hover:bg-stone-200/80 text-stone-700 min-w-8 h-8 p-0"
+          className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] hover:bg-stone-200/80 text-team-800 min-w-8 h-8 p-0"
           onClick={handleQuickView}
           aria-label={t("quickView")}
         >
@@ -442,7 +442,7 @@ export function ProductCardLayout({
   const renderContent = () => {
     const contentContainer =
       variant === "grid"
-        ? "bg-white/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-white/20"
+        ? "bg-amber-100/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-white/20"
         : "";
 
     return (

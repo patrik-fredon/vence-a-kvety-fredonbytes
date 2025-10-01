@@ -72,7 +72,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
       };
 
   return (
-    <div className="min-h-screen bg-neutral-50 py-12">
+    <div className="min-h-screen bg-teal-50 py-12">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Error Header */}
         <div className="text-center mb-12">
@@ -80,19 +80,19 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
             <ExclamationTriangleIcon className="w-12 h-12 text-red-600" />
           </div>
 
-          <h1 className="text-elegant text-3xl font-bold text-neutral-800 mb-4">
+          <h1 className="text-elegant text-3xl font-bold text-teal-800 mb-4">
             Chyba při platbě
           </h1>
 
-          <p className="text-lg text-neutral-600 mb-2">
+          <p className="text-lg text-teal-600 mb-2">
             Bohužel se nepodařilo zpracovat vaši platbu.
           </p>
 
-          {orderId && <p className="text-sm text-neutral-500">Objednávka #{orderId}</p>}
+          {orderId && <p className="text-sm text-teal-500">Objednávka #{orderId}</p>}
         </div>
 
         {/* Error Details Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden mb-8">
+        <div className="bg-white rounded-lg shadow-sm border border-teal-200 overflow-hidden mb-8">
           <div className="px-6 py-4 bg-red-50 border-b border-red-200">
             <h2 className="text-lg font-semibold text-red-800 flex items-center">
               <ExclamationTriangleIcon className="w-5 h-5 mr-2" />
@@ -102,7 +102,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
 
           <div className="p-6">
             <div className="space-y-4">
-              <p className="text-neutral-700">{errorInfo.description}</p>
+              <p className="text-teal-700">{errorInfo.description}</p>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
                 <h3 className="font-medium text-blue-800 mb-2">Doporučené řešení</h3>
@@ -110,8 +110,8 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
               </div>
 
               {error && (
-                <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-3">
-                  <p className="text-xs text-neutral-600">
+                <div className="bg-teal-50 border border-teal-200 rounded-lg p-3">
+                  <p className="text-xs text-teal-600">
                     <span className="font-medium">Kód chyby:</span> {error}
                   </p>
                 </div>
@@ -121,8 +121,8 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
         </div>
 
         {/* Troubleshooting Steps */}
-        <div className="bg-white rounded-lg shadow-sm border border-neutral-200 p-6 mb-8">
-          <h3 className="text-lg font-semibold text-neutral-800 mb-4">Kroky k vyřešení problému</h3>
+        <div className="bg-white rounded-lg shadow-sm border border-teal-200 p-6 mb-8">
+          <h3 className="text-lg font-semibold text-teal-800 mb-4">Kroky k vyřešení problému</h3>
 
           <div className="space-y-4">
             <div className="flex items-start space-x-3">
@@ -130,8 +130,8 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 1
               </div>
               <div>
-                <p className="font-medium text-neutral-800">Zkontrolujte údaje karty</p>
-                <p className="text-sm text-neutral-600">
+                <p className="font-medium text-teal-800">Zkontrolujte údaje karty</p>
+                <p className="text-sm text-teal-600">
                   Ověřte číslo karty, datum vypršení platnosti a CVC kód.
                 </p>
               </div>
@@ -142,8 +142,8 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 2
               </div>
               <div>
-                <p className="font-medium text-neutral-800">Zkuste jiný způsob platby</p>
-                <p className="text-sm text-neutral-600">
+                <p className="font-medium text-teal-800">Zkuste jiný způsob platby</p>
+                <p className="text-sm text-teal-600">
                   Použijte jinou kartu nebo zvolte GoPay pro více možností platby.
                 </p>
               </div>
@@ -154,8 +154,8 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 3
               </div>
               <div>
-                <p className="font-medium text-neutral-800">Kontaktujte banku</p>
-                <p className="text-sm text-neutral-600">
+                <p className="font-medium text-teal-800">Kontaktujte banku</p>
+                <p className="text-sm text-teal-600">
                   Pokud problém přetrvává, kontaktujte svou banku nebo poskytovatele karty.
                 </p>
               </div>
@@ -166,8 +166,8 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
                 4
               </div>
               <div>
-                <p className="font-medium text-neutral-800">Kontaktujte nás</p>
-                <p className="text-sm text-neutral-600">
+                <p className="font-medium text-teal-800">Kontaktujte nás</p>
+                <p className="text-sm text-teal-600">
                   Náš tým zákaznické podpory vám rád pomůže vyřešit problém.
                 </p>
               </div>
@@ -231,7 +231,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
         </div>
 
         {/* Additional Information */}
-        <div className="text-center text-sm text-neutral-500">
+        <div className="text-center text-sm text-teal-500">
           <p className="mb-2">
             Všechny platby jsou zpracovávány bezpečně prostřednictvím certifikovaných poskytovatelů.
           </p>

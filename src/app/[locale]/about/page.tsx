@@ -37,14 +37,14 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <h1 className="text-4xl md:text-5xl font-light mb-8 text-teal-900 leading-tight text-balance">
               {tAbout('title')}
             </h1>
-            <p className="text-lg text-stone-600 leading-relaxed mb-8">
+            <p className="text-lg text-teal-800 leading-relaxed mb-8">
               {tAbout('mission')}
             </p>
           </div>
 
           {/* Main Image */}
           <div className="mb-16">
-            <div className="aspect-[16/9] bg-stone-100 rounded-lg overflow-hidden">
+            <div className="aspect-[16/9] bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg overflow-hidden">
               <img
                 src="https://cdn.fredonbytes.com/lily-arrangement-with-greenery-studio.webp"
                 alt={tAbout('companyDescription')}
@@ -56,15 +56,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
           {/* Story Content */}
           <div className="max-w-3xl mx-auto mb-16">
             <div className="prose prose-lg prose-stone mx-auto">
-              <p className="text-stone-600 leading-relaxed mb-6">
+              <p className="text-teal-800 leading-relaxed mb-6">
                 {tAbout('story')}
               </p>
 
-              <p className="text-stone-600 leading-relaxed mb-6">
+              <p className="text-teal-800 leading-relaxed mb-6">
                 {tAbout('values')}
               </p>
 
-              <p className="text-stone-600 leading-relaxed">
+              <p className="text-teal-800 leading-relaxed">
                 {tAbout('commitment')}
               </p>
             </div>
@@ -72,7 +72,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
           {/* Brand Logo */}
           <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-stone-100 rounded-full mb-4">
+            <div className="inline-flex items-center justify-center w-24 h-24 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-full mb-4">
               <div className="text-2xl font-light text-teal-900">BL</div>
             </div>
           </div>
@@ -80,7 +80,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
           {/* Image Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-stone-100 relative">
+              <div className="aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] relative">
                 <img
                   src="https://cdn.fredonbytes.com/dewy-white-lilies-floral-design.webp"
                   alt={tAbout('companyDescription')}
@@ -91,13 +91,13 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-teal-900 flex items-center justify-center text-white p-6">
+              <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-amber-400 rounded-full"></div>
+                    <div className="w-6 h-6 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-full"></div>
                   </div>
                   <h3 className="text-lg font-medium mb-2">{tAbout('valuesTitle')}</h3>
-                  <p className="text-sm text-stone-300">
+                  <p className="text-sm text-teal-900">
                     {tAbout('companyDescription')}
                   </p>
                 </div>
@@ -105,7 +105,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-stone-100 relative">
+              <div className="aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] relative">
                 <img
                   src="https://cdn.fredonbytes.com/handmade-lily-wreath-with-twine-rustic.webp"
                   alt={tAbout('companyDescription')}
@@ -115,13 +115,13 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-teal-900 flex items-center justify-center text-white p-6">
+              <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-amber-400 rounded-full"></div>
+                    <div className="w-6 h-6 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-full"></div>
                   </div>
                   <h3 className="text-lg font-medium mb-2">{tAbout('storyTitle')}</h3>
-                  <p className="text-sm text-stone-300">
+                  <p className="text-sm text-teal-900">
                     {tAbout('companyDescription')}
                   </p>
                 </div>
@@ -129,7 +129,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-stone-100 relative">
+              <div className="aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] relative">
                 <img
                   src="https://cdn.fredonbytes.com/lily-funeral-wreath-making-process.webp"
                   alt={tAbout('companyDescription')}
@@ -140,13 +140,13 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-teal-900 flex items-center justify-center text-white p-6">
+              <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-amber-400 rounded-full"></div>
+                    <div className="w-6 h-6 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-full"></div>
                   </div>
                   <h3 className="text-lg font-medium mb-2">{tAbout('commitmentTitle')}</h3>
-                  <p className="text-sm text-stone-300">
+                  <p className="text-sm text-teal-900">
                     {tAbout('companyDescription')}
                   </p>
                 </div>

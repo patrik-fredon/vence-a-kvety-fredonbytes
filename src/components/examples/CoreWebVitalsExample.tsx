@@ -90,20 +90,20 @@ export function CoreWebVitalsExample() {
     <div className="max-w-4xl mx-auto p-6 space-y-8">
       <Card className="p-6">
         <h1 className="text-2xl font-bold mb-4">Core Web Vitals Optimization Demo</h1>
-        <p className="text-stone-600 mb-6">
+        <p className="text-teal-600 mb-6">
           This component demonstrates all Core Web Vitals optimizations implemented in Task 15.
         </p>
 
         {/* Performance Metrics Display */}
         {coreWebVitals.metrics && (
-          <div className="bg-stone-50 p-4 rounded-lg mb-6">
+          <div className="bg-teal-50 p-4 rounded-lg mb-6">
             <h2 className="text-lg font-semibold mb-3">Current Metrics</h2>
             <div className="grid grid-cols-2 md:grid-cols-3 gap-4 text-sm">
               {coreWebVitals.metrics.lcp && (
                 <div>
                   <span className="font-medium">LCP:</span>{' '}
                   <span className={`px-2 py-1 rounded text-xs ${coreWebVitals.metrics.ratings.lcp === 'good' ? 'bg-green-100 text-green-800' :
-                    coreWebVitals.metrics.ratings.lcp === 'needs-improvement' ? 'bg-yellow-100 text-yellow-800' :
+                    coreWebVitals.metrics.ratings.lcp === 'needs-improvement' ? 'bg-yellow-100 text-teal-800' :
                       'bg-red-100 text-red-800'
                     }`}>
                     {coreWebVitals.metrics.lcp.toFixed(0)}ms ({coreWebVitals.metrics.ratings.lcp})
@@ -186,13 +186,13 @@ export function CoreWebVitalsExample() {
       {/* CLS Prevention Demo */}
       <Card className="p-6">
         <h2 className="text-lg font-semibold mb-4">CLS Prevention with Reserved Space</h2>
-        <p className="text-stone-600 mb-4">
+        <p className="text-teal-600 mb-4">
           Images below use aspect-ratio CSS to prevent layout shifts during loading.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
           {Array.from({ length: imageCount }, (_, index) => (
-            <div key={index} style={clsPreventionStyles} className="bg-stone-100 rounded-lg overflow-hidden">
+            <div key={index} style={clsPreventionStyles} className="bg-teal-100 rounded-lg overflow-hidden">
               <OptimizedImage
                 src={`https://picsum.photos/400/300?random=${index + 1}`}
                 alt={`Demo image ${index + 1}`}
@@ -226,31 +226,31 @@ export function CoreWebVitalsExample() {
         <h2 className="text-lg font-semibold mb-4">Optimization Techniques Implemented</h2>
         <div className="space-y-3 text-sm">
           <div>
-            <h3 className="font-medium text-stone-900">Cumulative Layout Shift (CLS) Prevention:</h3>
-            <p className="text-stone-600">• Reserved space for images using aspect-ratio CSS</p>
-            <p className="text-stone-600">• Explicit dimensions for all media elements</p>
-            <p className="text-stone-600">• Skeleton screens for loading states</p>
+            <h3 className="font-medium text-teal-900">Cumulative Layout Shift (CLS) Prevention:</h3>
+            <p className="text-teal-600">• Reserved space for images using aspect-ratio CSS</p>
+            <p className="text-teal-600">• Explicit dimensions for all media elements</p>
+            <p className="text-teal-600">• Skeleton screens for loading states</p>
           </div>
 
           <div>
-            <h3 className="font-medium text-stone-900">Largest Contentful Paint (LCP) Optimization:</h3>
-            <p className="text-stone-600">• Priority loading for above-the-fold images</p>
-            <p className="text-stone-600">• Optimized image formats and sizes</p>
-            <p className="text-stone-600">• Preload hints for critical resources</p>
+            <h3 className="font-medium text-teal-900">Largest Contentful Paint (LCP) Optimization:</h3>
+            <p className="text-teal-600">• Priority loading for above-the-fold images</p>
+            <p className="text-teal-600">• Optimized image formats and sizes</p>
+            <p className="text-teal-600">• Preload hints for critical resources</p>
           </div>
 
           <div>
-            <h3 className="font-medium text-stone-900">First Input Delay (FID) Optimization:</h3>
-            <p className="text-stone-600">• Debounced and throttled event handlers</p>
-            <p className="text-stone-600">• JavaScript execution time measurement</p>
-            <p className="text-stone-600">• Task yielding for long operations</p>
+            <h3 className="font-medium text-teal-900">First Input Delay (FID) Optimization:</h3>
+            <p className="text-teal-600">• Debounced and throttled event handlers</p>
+            <p className="text-teal-600">• JavaScript execution time measurement</p>
+            <p className="text-teal-600">• Task yielding for long operations</p>
           </div>
 
           <div>
-            <h3 className="font-medium text-stone-900">Performance Monitoring:</h3>
-            <p className="text-stone-600">• Real-time Core Web Vitals tracking</p>
-            <p className="text-stone-600">• Automatic optimization recommendations</p>
-            <p className="text-stone-600">• Integration with global performance monitoring</p>
+            <h3 className="font-medium text-teal-900">Performance Monitoring:</h3>
+            <p className="text-teal-600">• Real-time Core Web Vitals tracking</p>
+            <p className="text-teal-600">• Automatic optimization recommendations</p>
+            <p className="text-teal-600">• Integration with global performance monitoring</p>
           </div>
         </div>
       </Card>

@@ -337,7 +337,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="text-white font-semibold text-lg">
+                  <span className="text-amber-100 font-semibold text-lg">
                     +{product.images.length - 4}
                   </span>
                 </div>
@@ -372,7 +372,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("ribbon")}</span>
-                  <span className="text-sm font-normal text-stone-500">({t("optional")})</span>
+                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -407,7 +407,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("customize")}</span>
-                  <span className="text-sm font-normal text-stone-500">({t("optional")})</span>
+                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -448,7 +448,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                         variant="outline"
                         size="sm"
                         onClick={handleRetryValidation}
-                        className="text-xs bg-white border-red-300 text-red-700 hover:bg-red-50"
+                        className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
                       >
                         {WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES].tryAgain}
                       </Button>
@@ -458,7 +458,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => handleErrorRecovery('size')}
-                          className="text-xs bg-white border-red-300 text-red-700 hover:bg-red-50"
+                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
                         >
                           Auto-select Size
                         </Button>
@@ -469,7 +469,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => handleErrorRecovery('ribbon')}
-                          className="text-xs bg-white border-red-300 text-red-700 hover:bg-red-50"
+                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
                         >
                           Remove Ribbon
                         </Button>
@@ -480,7 +480,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => setValidationWarnings([])}
-                          className="text-xs bg-white border-amber-300 text-amber-700 hover:bg-amber-50"
+                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-amber-300 text-amber-700 hover:bg-amber-50"
                         >
                           Dismiss Warnings
                         </Button>
@@ -494,21 +494,21 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
           {/* Validation Warnings Display */}
           {validationWarnings.length > 0 && (
-            <Card className="bg-amber-50 border-amber-200">
+            <Card className="bg-amber-100 border-amber-200">
               <CardContent className="py-4">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <div className="w-2 h-2 bg-amber-600 rounded-full" />
+                    <div className="w-2 h-2 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-full" />
                   </div>
                   <div className="flex-1 space-y-3">
-                    <h4 className="text-sm font-medium text-amber-800">
+                    <h4 className="text-sm font-medium text-teal-800">
                       {t("validation.warnings")}
                     </h4>
 
                     <div className="space-y-2">
                       {validationWarnings.map((warning, index) => (
                         <div key={index} className="flex items-start justify-between gap-3">
-                          <p className="text-sm text-amber-700 flex-1">• {warning}</p>
+                          <p className="text-sm text-teal-800 flex-1">• {warning}</p>
                         </div>
                       ))}
                     </div>
@@ -535,8 +535,8 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           <Card>
             <CardContent className="py-6 space-y-4">
               <div className="text-center">
-                <div className="text-sm text-stone-600 mb-2">{t("totalPrice")}</div>
-                <div className="text-3xl font-bold text-stone-900">
+                <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
+                <div className="text-3xl font-bold text-teal-900">
                   {formatPrice(priceCalculation.totalPrice)}
                 </div>
               </div>

@@ -18,41 +18,22 @@ interface ProductDetailPageProps {
   }>;
 }
 
-// Force dynamic rendering to avoid static generation issues
+// Enable dynamic rendering for all product pages
 export const dynamic = 'force-dynamic';
 
-// Enable ISR with 1 hour revalidation
-export const revalidate = 3600;
-
-// Generate static params for popular products
-export async function generateStaticParams() {
-  const supabase = createServerClient();
-
-  // Get popular/featured products for static generation
-  const { data: products } = await supabase
-    .from("products")
-    .select("slug")
-    .eq("active", true)
-    .or("featured.eq.true,created_at.gte.2024-01-01") // Featured or recent products
-    .limit(50); // Limit to avoid too many static pages
-
-  if (!products) return [];
-
-  // Generate params for both locales
-  const params = [];
-  for (const product of products) {
-    params.push({ locale: "cs", slug: product.slug }, { locale: "en", slug: product.slug });
-  }
-
-  return params;
-}
+// Disable static generation to avoid conflicts
+export const dynamicParams = true;
 
 export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "navigation" });
 
+  console.log(`🔍 [ProductDetailPage] Looking for product with slug: ${slug}`);
+
   // Try to get product from cache first
   let product = await getCachedProductBySlug(slug);
+
+  console.log(`🔍 [ProductDetailPage] Cached product found: ${!!product}`);
 
   // Ensure cached product has required arrays
   if (product) {
@@ -62,6 +43,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   if (!product) {
+    console.log(`🔍 [ProductDetailPage] Fetching from database...`);
     // If not in cache, fetch from database
     const supabase = createServerClient();
 
@@ -88,7 +70,14 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       .eq("active", true)
       .single();
 
+    console.log(`🔍 [ProductDetailPage] Database query result:`, {
+      hasData: !!data,
+      error: error?.message,
+      productName: data?.name_cs
+    });
+
     if (error || !data) {
+      console.log(`❌ [ProductDetailPage] Product not found, calling notFound()`);
       notFound();
     }
 

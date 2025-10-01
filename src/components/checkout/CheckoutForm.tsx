@@ -263,7 +263,7 @@ export function CheckoutForm({
                     className={`
                       flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200
                       ${isActive
-                        ? "border-amber-600 bg-amber-600 text-white shadow-md"
+                        ? "border-amber-600 bg-teal-600 text-white shadow-md"
                         : isCompleted
                           ? "border-green-500 bg-green-500 text-white shadow-sm"
                           : "border-stone-300 bg-white text-stone-400"
@@ -390,7 +390,7 @@ export function CheckoutForm({
               <Button
                 onClick={handleSubmit}
                 disabled={state.isSubmitting}
-                className="flex items-center min-w-[140px] bg-amber-600 hover:bg-amber-700 text-white"
+                className="flex items-center min-w-[140px] bg-teal-600 hover:bg-teal-700 text-white"
               >
                 {state.isSubmitting ? (
                   <>
@@ -405,7 +405,7 @@ export function CheckoutForm({
               <Button
                 onClick={goToNextStep}
                 disabled={state.isSubmitting}
-                className="flex items-center bg-amber-600 hover:bg-amber-700 text-white"
+                className="flex items-center bg-teal-600 hover:bg-amber-700 text-white"
               >
                 {tCommon("next")}
                 <ChevronRightIcon className="w-4 h-4 ml-2" />

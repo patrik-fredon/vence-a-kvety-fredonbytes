@@ -95,7 +95,7 @@ export function RefactoredHeroSection({
         "lg:px-12 lg:py-24", // Desktop padding (1024px+)
         "xl:px-16", // Extra padding for large screens
         // Text color for contrast
-        "text-white",
+        "text-amber-100",
         // Orientation handling
         "landscape:min-h-[100vh] landscape:py-8", // Landscape mobile adjustments
         "md:landscape:min-h-[90vh]", // Landscape tablet adjustments
@@ -296,12 +296,12 @@ export function RefactoredHeroSection({
               "sm:text-xl sm:px-8 sm:py-4", // Standard for 640px+
               "md:text-2xl md:px-10 md:py-5", // Tablet sizing
               "lg:text-3xl lg:px-12 lg:py-6", // Desktop sizing
-              "rounded-t-lg rounded-b-3xl bg-amber-200/60 text-teal-800 font-extrabold",
+              "rounded-t-lg rounded-b-3xl bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-teal-800 font-extrabold",
               // Orientation adjustments
               "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
               "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
               // Hover animation enhancement
-              "hover:scale-105 hover:bg-amber-400/60 transition-transform duration-200"
+              "hover:scale-105 hover:bg-amber-100/60 transition-transform duration-200"
             )}
           >
             {safeT("ctaButton")}

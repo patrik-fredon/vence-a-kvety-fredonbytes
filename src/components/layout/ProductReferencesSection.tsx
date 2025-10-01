@@ -130,12 +130,11 @@ const ProductReferenceCard = ({
   return (
     <article
       className={cn(
-        "group bg-white/50 backdrop-blur-sm overflow-hidden shadow-md relative clip-corners",
+        "group bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] backdrop-blur-sm overflow-hidden shadow-2xl relative clip-corners",
         // Enhanced hover effects with motion preference support
         "transition-all duration-300 ease-in-out",
         !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
-        prefersReducedMotion && "hover:shadow-lg hover:bg-white/15", // Subtle effect for motion-sensitive users
-        "focus-within:ring-2 focus-within:ring-white focus-within:ring-opacity-50",
+        prefersReducedMotion && "hover:shadow-lg hover:bg-white/15",
         "cursor-pointer"
       )}
       role="gridcell"
@@ -247,7 +246,7 @@ const ProductReferenceCard = ({
               "xs:text-sm xs:px-3", // 375px+ sizing
               "bg-white/20 text-teal-800",
               "transition-all duration-300 ease-in-out",
-              "group-hover:bg-amber-600/80 group-hover:text-teal-800"
+              "group-hover:bg-amber-100/80 group-hover:text-teal-800"
             )}
           >
             {product.category}

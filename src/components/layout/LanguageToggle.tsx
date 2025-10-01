@@ -46,10 +46,9 @@ export function LanguageToggle({
             disabled={isLoading || locale === currentLocale}
             className={`
               px-3 py-1 text-sm font-medium rounded-md transition-colors
-              ${
-                locale === currentLocale
-                  ? "bg-primary-100 text-primary-700 cursor-default"
-                  : "bg-white text-neutral-700 hover:bg-primary-50 hover:text-primary-700 border border-neutral-300"
+              ${locale === currentLocale
+                ? "bg-teal-900 text-amber-100 cursor-default"
+                : "bg-teal-900 text-amber-100 hover:bg-primary-50 hover:text-primary-700 border border-neutral-300"
               }
               ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
@@ -79,7 +78,7 @@ export function LanguageToggle({
         onChange={(e) => handleLocaleChange(e.target.value as Locale)}
         disabled={isLoading}
         className={`
-          appearance-none bg-white border border-neutral-300 rounded-md px-3 py-1 text-sm text-neutral-700
+          appearance-none bg-amber-100 border border-neutral-300 rounded-md px-3 py-1 text-sm text-teal-700
           hover:border-primary-500 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:border-primary-500
           cursor-pointer transition-colors
           ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
@@ -98,7 +97,7 @@ export function LanguageToggle({
           <LoadingSpinner size="sm" />
         ) : (
           <svg
-            className="w-4 h-4 text-neutral-400"
+            className="w-4 h-4 text-amber-200"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"

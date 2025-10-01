@@ -52,7 +52,7 @@ export function ReviewStep({
         {/* Left Column - Order Details */}
         <div className="space-y-6">
           {/* Customer Information */}
-          <div className="bg-white border border-neutral-200 rounded-lg p-6">
+          <div className="bg-teal border border-neutral-200 rounded-lg p-6">
             <h3 className="text-lg font-semibold text-neutral-800 mb-4 flex items-center">
               <UserIcon className="w-5 h-5 mr-2" />
               Kontaktní údaje

@@ -130,9 +130,9 @@ function OrderSummaryItem({ item, locale }: OrderSummaryItemProps) {
   const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
 
   return (
-    <div className="flex items-start space-x-3 p-3 border border-stone-200 rounded-lg bg-stone-50/50">
+    <div className="flex items-start space-x-3 p-3 border border-stone-200 rounded-lg bg-teal-50/50">
       {/* Product Image */}
-      <div className="flex-shrink-0 w-16 h-16 bg-white rounded-lg overflow-hidden shadow-sm">
+      <div className="flex-shrink-0 w-16 h-16 bg-teal-100 rounded-lg overflow-hidden shadow-sm">
         {primaryImage ? (
           <Image
             src={primaryImage.url}
@@ -197,7 +197,7 @@ export function CompactOrderSummary({
 
   return (
     <Card className={className} variant="outlined">
-      <CardContent className="bg-stone-50">
+      <CardContent className="bg-teal-50">
         <div className="flex items-center justify-between mb-3">
           <span className="text-sm font-medium text-stone-700">{t("orderSummary")}</span>
           <span className="text-sm text-stone-600">

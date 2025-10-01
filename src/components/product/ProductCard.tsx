@@ -83,9 +83,8 @@ export function ProductCard({
       <>
         <article
           className={cn(
-            "group bg-white clip-corners overflow-hidden transition-all duration-300 shadow-lg relative",
+            "group bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] clip-corners overflow-hidden transition-all duration-300 shadow-lg relative",
             "hover:shadow-lg rounded-lg flex flex-row items-center gap-4 p-4",
-            "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
             className
           )}
           onMouseEnter={() => setIsHovered(true)}
@@ -97,7 +96,7 @@ export function ProductCard({
             className="flex-1 flex items-center gap-4"
           >
             {/* Product Image */}
-            <div className="relative overflow-hidden bg-stone-100 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md">
+            <div className="relative overflow-hidden bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md">
               {primaryImage && (
                 <OptimizedImage
                   src={primaryImage.url}
@@ -121,7 +120,7 @@ export function ProductCard({
               {/* Stock Status Overlay */}
               {!product.availability.inStock && (
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="text-white font-medium px-2 py-1 bg-red-600 rounded-full text-xs">
+                  <span className="text-amber-100 font-medium px-2 py-1 bg-red-600 rounded-full text-xs">
                     {t("outOfStock")}
                   </span>
                 </div>
@@ -132,13 +131,13 @@ export function ProductCard({
             <div className="flex-1 min-w-0">
               <h3
                 id={`product-${product.id}-title`}
-                className="font-medium text-stone-900 group-hover:text-stone-700 transition-colors text-sm sm:text-base mb-1 truncate"
+                className="font-medium text-amber-100 group-hover:text-stone-700 transition-colors text-sm sm:text-base mb-1 truncate"
               >
                 {product.name[locale as keyof typeof product.name]}
               </h3>
 
               {product.category && (
-                <p className="text-stone-500 mb-1 text-xs">
+                <p className="text-amber-100 mb-1 text-xs">
                   {product.category.name[locale as keyof typeof product.category.name]}
                 </p>
               )}
@@ -207,8 +206,6 @@ export function ProductCard({
           // Base card styles with increased height (h-96) for better visual impact
           "group relative overflow-hidden transition-all duration-300 shadow-lg",
           "clip-corners rounded-lg h-96 hover:-translate-y-1 hover:shadow-xl",
-          // Focus styles for keyboard navigation
-          "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
           className
         )}
         onMouseEnter={() => setIsHovered(true)}
@@ -217,7 +214,7 @@ export function ProductCard({
       >
         <Link href={`/${locale}/products/${product.slug}`} className="block w-full h-full relative">
           {/* Full Coverage Product Image - Takes up most of the h-96 space */}
-          <div className="absolute inset-0 bg-stone-100">
+          <div className="absolute inset-0 bg-amber-100">
             {primaryImage && (
               <OptimizedImage
                 src={primaryImage.url}
@@ -260,7 +257,7 @@ export function ProductCard({
             {/* Featured Badge */}
             {featured && (
               <div className="absolute top-3 left-3 z-10">
-                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200 shadow-sm">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-teal-800 border border-amber-200 shadow-sm">
                   {t("featured")}
                 </span>
               </div>
@@ -269,7 +266,7 @@ export function ProductCard({
             {/* Stock Status Overlay */}
             {!product.availability.inStock && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-                <span className="text-white font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
+                <span className="text-amber-100 font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
                   {t("outOfStock")}
                 </span>
               </div>
@@ -278,7 +275,7 @@ export function ProductCard({
 
           {/* Bottom Overlay - Optimized for h-96 height with better proportions */}
           <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-            <div className="bg-white/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-white/20">
+            <div className="bg-amber-100/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-white/20">
               {/* Product Name - Increased line height for better readability in taller cards */}
               <h3
                 id={`product-${product.id}-title`}
@@ -304,7 +301,7 @@ export function ProductCard({
                 {/* QuickView Icon Button - Slightly larger for better visibility */}
                 <Button
                   size="sm"
-                  className="bg-stone-100/80 hover:bg-stone-200/80 text-stone-700 min-w-9 h-9"
+                  className="bg-amber-100/80 hover:bg-stone-200/80 text-teal-700 min-w-9 h-9"
                   onClick={handleQuickView}
                   aria-label={t("quickView")}
                 >

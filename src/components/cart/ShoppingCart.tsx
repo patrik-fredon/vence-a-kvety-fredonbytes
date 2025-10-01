@@ -84,7 +84,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
     return (
       <Card className={className} variant="default">
         <CardContent className="text-center py-16">
-          <div className="w-16 h-16 bg-stone-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <div className="w-16 h-16 bg-teal-800 rounded-full flex items-center justify-center mx-auto mb-6">
             <ShoppingCartIcon className="w-8 h-8 text-teal-900" />
           </div>
 
@@ -124,7 +124,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
           {state.items.map((item) => (
             <div key={item.id} className="flex items-start gap-4 p-4 border border-stone-200 rounded-lg">
               {/* Product Image */}
-              <div className="flex-shrink-0 w-20 h-20 bg-stone-100 rounded-lg overflow-hidden">
+              <div className="flex-shrink-0 w-20 h-20 bg-teal-100 rounded-lg overflow-hidden">
                 {item.product?.images?.[0]?.url ? (
                   <Image
                     src={item.product.images[0].url}

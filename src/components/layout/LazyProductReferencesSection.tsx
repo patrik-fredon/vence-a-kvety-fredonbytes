@@ -215,11 +215,11 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
       <div className="max-w-4xl mx-auto text-center">
         <h2
           id="products-error-heading"
-          className="text-2xl font-bold text-teal-800 mb-4 sm:text-3xl md:text-4xl"
+          className="text-2xl font-bold text-amber-100 mb-4 sm:text-3xl md:text-4xl"
         >
           {props.locale === "cs" ? "Naše produkty" : "Our Products"}
         </h2>
-        <p className="text-teal-800 text-lg">
+        <p className="text-amber-100 text-lg">
           {props.locale === "cs"
             ? "Produkty se momentálně nepodařilo načíst. Zkuste prosím obnovit stránku."
             : "Products could not be loaded at this time. Please try refreshing the page."}

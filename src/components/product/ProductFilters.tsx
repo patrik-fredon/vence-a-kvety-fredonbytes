@@ -173,7 +173,7 @@ export function ProductFilters({
               variant="ghost"
               size="sm"
               onClick={() => setIsSearchAndFiltersVisible(false)}
-              className="text-amber-100 hover:text-amber-800 hover:bg-amber-100"
+              className="text-amber-100 hover:text-teal-800 hover:bg-amber-100"
               aria-label="Close filters panel"
             >
               <span aria-hidden="true">✕</span>
@@ -209,7 +209,7 @@ export function ProductFilters({
               id="category-filter"
               value={localFilters.categoryId || ""}
               onChange={(e) => handleFilterChange("categoryId", e.target.value || undefined)}
-              className="w-full px-3 py-2 border border-amber-100 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-100 focus:border-amber-100 bg-teal-800 text-amber-100"
+              className="w-full px-3 py-2 border border-amber-100 rounded-md  bg-teal-800 text-amber-100"
               aria-label={t("filterByCategory")}
             >
               <option value="">{t("allCategories")}</option>
@@ -241,7 +241,7 @@ export function ProductFilters({
                     )
                   }
                   min="0"
-                  className="bg-teal-800 text-amber-100 border-amber-100 focus:border-amber-100 focus:ring-amber-100"
+                  className="bg-teal-800 text-amber-100 border-amber-100"
                   aria-describedby="price-range-help"
                 />
                 <Input
@@ -280,7 +280,7 @@ export function ProductFilters({
                     type="checkbox"
                     checked={localFilters.inStock}
                     onChange={(e) => handleFilterChange("inStock", e.target.checked || undefined)}
-                    className="mr-2 rounded border-amber-100 text-amber-100 focus:ring-amber-100 bg-teal-800"
+                    className="mr-2 rounded border-amber-100 text-amber-100  bg-teal-800"
                     aria-describedby="in-stock-help"
                   />
                   <span className="text-sm text-amber-100">{t("inStockOnly")}</span>
@@ -294,7 +294,7 @@ export function ProductFilters({
                     type="checkbox"
                     checked={localFilters.featured}
                     onChange={(e) => handleFilterChange("featured", e.target.checked || undefined)}
-                    className="mr-2 rounded border-amber-100 text-amber-100 focus:ring-amber-100 bg-teal-800"
+                    className="mr-2 rounded border-amber-100 text-amber-100  bg-teal-800"
                     aria-describedby="featured-help"
                   />
                   <span className="text-sm text-amber-100">{t("featuredOnly")}</span>
@@ -311,7 +311,7 @@ export function ProductFilters({
             <Button
               variant="outline"
               onClick={clearFilters}
-              className="w-full bg-teal-950 text-amber-100 border-amber-100 hover:bg-amber-200 hover:text-amber-800"
+              className="w-full bg-teal-950 text-amber-100 border-amber-100 hover:bg-amber-200 hover:text-teal-800"
             >
               {t("clearFilters")}
             </Button>

@@ -29,7 +29,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
   const { orderId } = await searchParams;
 
   return (
-    <div className="min-h-screen bg-neutral-50 py-12">
+    <div className="min-h-screen bg-teal-50 py-12">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Cancel Header */}
         <div className="text-center mb-12">
@@ -37,19 +37,19 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
             <XCircleIcon className="w-12 h-12 text-orange-600" />
           </div>
 
-          <h1 className="text-elegant text-3xl font-bold text-neutral-800 mb-4">
+          <h1 className="text-elegant text-3xl font-bold text-teal-800 mb-4">
             Platba byla zrušena
           </h1>
 
-          <p className="text-lg text-neutral-600 mb-2">
+          <p className="text-lg text-teal-600 mb-2">
             Vaše platba nebyla dokončena. Objednávka zůstává aktivní.
           </p>
 
-          {orderId && <p className="text-sm text-neutral-500">Objednávka #{orderId}</p>}
+          {orderId && <p className="text-sm text-teal-500">Objednávka #{orderId}</p>}
         </div>
 
         {/* Information Card */}
-        <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden mb-8">
+        <div className="bg-white rounded-lg shadow-sm border border-teal-200 overflow-hidden mb-8">
           <div className="px-6 py-4 bg-orange-50 border-b border-orange-200">
             <h2 className="text-lg font-semibold text-orange-800 flex items-center">
               <ExclamationTriangleIcon className="w-5 h-5 mr-2" />
@@ -58,7 +58,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
           </div>
 
           <div className="p-6">
-            <div className="space-y-4 text-sm text-neutral-700">
+            <div className="space-y-4 text-sm text-teal-700">
               <p>Platba byla přerušena nebo zrušena. Možné důvody:</p>
 
               <ul className="list-disc list-inside space-y-2 ml-4">
@@ -80,8 +80,8 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
         </div>
 
         {/* Next Steps */}
-        <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-neutral-800 mb-4">Co můžete udělat?</h3>
+        <div className="bg-teal-50 border border-teal-200 rounded-lg p-6 mb-8">
+          <h3 className="text-lg font-semibold text-teal-800 mb-4">Co můžete udělat?</h3>
 
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
@@ -89,8 +89,8 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                 1
               </div>
               <div>
-                <p className="font-medium text-neutral-800">Zkuste platbu znovu</p>
-                <p className="text-sm text-neutral-600">
+                <p className="font-medium text-teal-800">Zkuste platbu znovu</p>
+                <p className="text-sm text-teal-600">
                   Vraťte se k objednávce a zkuste dokončit platbu znovu se stejným nebo jiným
                   způsobem platby.
                 </p>
@@ -102,8 +102,8 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                 2
               </div>
               <div>
-                <p className="font-medium text-neutral-800">Kontaktujte nás</p>
-                <p className="text-sm text-neutral-600">
+                <p className="font-medium text-teal-800">Kontaktujte nás</p>
+                <p className="text-sm text-teal-600">
                   Pokud problém přetrvává, kontaktujte naši zákaznickou podporu pro pomoc.
                 </p>
               </div>
@@ -114,8 +114,8 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                 3
               </div>
               <div>
-                <p className="font-medium text-neutral-800">Upravte objednávku</p>
-                <p className="text-sm text-neutral-600">
+                <p className="font-medium text-teal-800">Upravte objednávku</p>
+                <p className="text-sm text-teal-600">
                   Můžete se vrátit do košíku a upravit objednávku před dokončením platby.
                 </p>
               </div>
@@ -149,13 +149,13 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
         </div>
 
         {/* Contact Information */}
-        <div className="text-center pt-8 border-t border-neutral-200">
-          <p className="text-sm text-neutral-600 mb-4">
+        <div className="text-center pt-8 border-t border-teal-200">
+          <p className="text-sm text-teal-600 mb-4">
             Potřebujete pomoc s dokončením objednávky?
           </p>
 
-          <div className="bg-white rounded-lg border border-neutral-200 p-4 inline-block">
-            <h4 className="font-medium text-neutral-800 mb-2">Kontaktujte zákaznickou podporu</h4>
+          <div className="bg-white rounded-lg border border-teal-200 p-4 inline-block">
+            <h4 className="font-medium text-teal-800 mb-2">Kontaktujte zákaznickou podporu</h4>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-center space-x-4">
                 <a
@@ -178,7 +178,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
                   +420 123 456 789
                 </a>
               </div>
-              <p className="text-neutral-500">Pondělí - Pátek: 8:00 - 18:00</p>
+              <p className="text-teal-500">Pondělí - Pátek: 8:00 - 18:00</p>
             </div>
           </div>
         </div>

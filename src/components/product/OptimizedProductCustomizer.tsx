@@ -199,7 +199,7 @@ export function OptimizedProductCustomizer({
       {/* Ribbon Selection */}
       {ribbonOption && (
         <div className="mb-6">
-          <h3 className="text-lg font-semibold text-stone-900 mb-4">
+          <h3 className="text-lg font-semibold text-teal-900 mb-4">
             {ribbonOption.name[locale as keyof typeof ribbonOption.name]}
           </h3>
           <div className="space-y-2">
@@ -211,7 +211,7 @@ export function OptimizedProductCustomizer({
                   type="button"
                   onClick={() => handleChoiceSelection(ribbonOption.id, choice.id, ribbonOption)}
                   className={`w-full p-3 text-left rounded-lg border-2 transition-colors ${isSelected
-                    ? "border-stone-900 bg-stone-50"
+                    ? "border-stone-900 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)]"
                     : "border-stone-200 hover:border-stone-300"
                     }`}
                 >
@@ -238,7 +238,7 @@ export function OptimizedProductCustomizer({
       )}
 
       {/* Price Display */}
-      <div className="mt-6 p-4 bg-stone-50 rounded-lg">
+      <div className="mt-6 p-4 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg">
         <div className="flex justify-between items-center">
           <span className="text-lg font-semibold text-stone-900">
             {t("totalPrice")}
@@ -251,7 +251,7 @@ export function OptimizedProductCustomizer({
           </span>
         </div>
         {priceCalculation.totalModifier > 0 && (
-          <div className="text-sm text-stone-600 mt-1">
+          <div className="text-sm text-amber-100 mt-1">
             {t("basePrice")}: {priceCalculation.basePrice.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
               style: "currency",
               currency: "CZK",

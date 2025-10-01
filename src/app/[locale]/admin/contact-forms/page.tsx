@@ -58,14 +58,14 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
           <h1 className="text-elegant text-3xl font-semibold text-primary-800 mb-2">
             Správa kontaktních formulářů
           </h1>
-          <p className="text-neutral-600">Přehled a správa zpráv od zákazníků</p>
+          <p className="text-teal-800">Přehled a správa zpráv od zákazníků</p>
         </div>
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
+              <div className="p-3 rounded-full bg-amber-100 text-blue-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -76,7 +76,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-neutral-600">Celkem zpráv</p>
+                <p className="text-sm font-medium text-teal-800">Celkem zpráv</p>
                 <p className="text-2xl font-semibold text-neutral-900">{count || 0}</p>
               </div>
             </div>
@@ -84,7 +84,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
 
           <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
             <div className="flex items-center">
-              <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
+              <div className="p-3 rounded-full bg-teal-100 text-teal-900 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path
                     strokeLinecap="round"
@@ -95,7 +95,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-neutral-600">Nové</p>
+                <p className="text-sm font-medium text-teal-800">Nové</p>
                 <p className="text-2xl font-semibold text-neutral-900">
                   {contactForms?.filter((form) => form.status === "new").length || 0}
                 </p>
@@ -116,7 +116,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-neutral-600">Zodpovězené</p>
+                <p className="text-sm font-medium text-teal-800">Zodpovězené</p>
                 <p className="text-2xl font-semibold text-neutral-900">
                   {contactForms?.filter((form) => form.status === "replied").length || 0}
                 </p>
@@ -137,7 +137,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
                 </svg>
               </div>
               <div>
-                <p className="text-sm font-medium text-neutral-600">Archivované</p>
+                <p className="text-sm font-medium text-teal-800">Archivované</p>
                 <p className="text-2xl font-semibold text-neutral-900">
                   {contactForms?.filter((form) => form.status === "archived").length || 0}
                 </p>

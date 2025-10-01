@@ -34,7 +34,7 @@ export function CartIcon({ locale, className = "" }: CartIconProps) {
       {itemCount > 0 && (
         <span
           className={cn(
-            "absolute -top-1 -right-1 bg-amber-600 text-white text-xs font-semibold rounded-full",
+            "absolute -top-1 -right-1 bg-teal-900 text-amber-100 text-xs font-semibold rounded-full",
             "w-5 h-5 flex items-center justify-center min-w-[1.25rem] px-1",
             "shadow-sm border border-white",
             "high-contrast:bg-Highlight high-contrast:text-HighlightText high-contrast:border-HighlightText"

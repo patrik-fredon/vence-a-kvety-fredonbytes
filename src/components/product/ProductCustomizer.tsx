@@ -125,7 +125,7 @@ export function ProductCustomizer({
             )}
           >
             {isSelected && (
-              <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />
+              <div className="w-2.5 h-2.5 rounded-full bg-teal-900" />
             )}
           </div>
           <div className="text-left">
@@ -168,11 +168,11 @@ export function ProductCustomizer({
           value={value}
           onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
           placeholder={t("customTextPlaceholder")}
-          className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none"
+          className="w-full p-3 border border-stone-300 rounded-lg"
           rows={2}
           maxLength={choice.maxLength || 50}
         />
-        <div className="flex justify-between text-xs text-stone-500">
+        <div className="flex justify-between text-xs text-amber-100">
           <span>{t("customTextHelp")}</span>
           <span>{value.length}/{choice.maxLength || 50}</span>
         </div>
@@ -214,11 +214,11 @@ export function ProductCustomizer({
           value={value}
           onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
           placeholder={t("messagePlaceholder")}
-          className="w-full p-3 border border-stone-300 rounded-lg focus:ring-2 focus:ring-amber-500 focus:border-amber-500 resize-none"
+          className="w-full p-3 border border-stone-300 rounded-lg "
           rows={3}
           maxLength={200}
         />
-        <div className="flex justify-between text-xs text-stone-500">
+        <div className="flex justify-between text-xs text-amber-100">
           <span>{t("messageHelp")}</span>
           <span>{value.length}/200</span>
         </div>
@@ -255,12 +255,12 @@ export function ProductCustomizer({
             {/* Option Header */}
             <div className="flex items-center justify-between">
               <div>
-                <h4 className="font-semibold text-stone-900">
+                <h4 className="font-semibold text-teal-900">
                   {typeof option.name === 'object' ? option.name[locale as keyof typeof option.name] || option.name.cs : option.name}
                   {option.required && <span className="text-red-500 ml-1">*</span>}
                 </h4>
                 {option.description && (
-                  <p className="text-sm text-stone-600 mt-1">
+                  <p className="text-sm text-teal-800 mt-1">
                     {typeof option.description === 'object' ? option.description[locale as keyof typeof option.description] || option.description.cs : option.description}
                   </p>
                 )}
@@ -268,7 +268,7 @@ export function ProductCustomizer({
 
               {/* Selection Counter */}
               {option.maxSelections && option.maxSelections > 1 && (
-                <div className="text-sm text-stone-500">
+                <div className="text-sm text-teal-800">
                   {selectionCount}/{option.maxSelections}
                 </div>
               )}
@@ -301,7 +301,7 @@ export function ProductCustomizer({
             )}
 
             {option.minSelections && selectionCount < option.minSelections && (
-              <div className="text-sm text-orange-600">
+              <div className="text-sm text-teal-800">
                 {t("validation.minSelections", {
                   option: typeof option.name === 'object' ? option.name[locale as keyof typeof option.name] || option.name.cs : option.name,
                   min: option.minSelections,

@@ -22,7 +22,7 @@ export default async function LegalPage() {
           <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">
             {t("terms.title")}
           </h2>
-          <div className="space-y-4 text-neutral-700">
+          <div className="space-y-4 text-teal-700">
             <p>{t("terms.content.intro")}</p>
             <p>{t("terms.content.services")}</p>
             <p>{t("terms.content.orders")}</p>
@@ -36,7 +36,7 @@ export default async function LegalPage() {
           <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">
             {t("privacy.title")}
           </h2>
-          <div className="space-y-4 text-neutral-700">
+          <div className="space-y-4 text-teal-700">
             <p>{t("privacy.content.intro")}</p>
             <p>{t("privacy.content.collection")}</p>
             <p>{t("privacy.content.usage")}</p>
@@ -50,7 +50,7 @@ export default async function LegalPage() {
           <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">
             {t("gdpr.title")}
           </h2>
-          <div className="space-y-4 text-neutral-700">
+          <div className="space-y-4 text-teal-700">
             <p>{t("gdpr.content.intro")}</p>
             <p>{t("gdpr.content.rights")}</p>
             <p>{t("gdpr.content.access")}</p>
@@ -63,7 +63,7 @@ export default async function LegalPage() {
           <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-4">
             {t("cookies.title")}
           </h2>
-          <div className="space-y-4 text-neutral-700">
+          <div className="space-y-4 text-teal-700">
             <p>{t("cookies.content.intro")}</p>
             <p>{t("cookies.content.types")}</p>
             <p>{t("cookies.content.management")}</p>
@@ -72,12 +72,12 @@ export default async function LegalPage() {
         </section>
       </div>
 
-      <div className="mt-12 p-6 bg-primary-50 rounded-lg">
+      <div className="mt-12 p-6 bg-teal-50 rounded-lg">
         <h3 className="text-elegant text-xl font-semibold text-primary-800 mb-3">
           {t("contact.title")}
         </h3>
-        <p className="text-neutral-700 mb-4">{t("contact.description")}</p>
-        <div className="space-y-2 text-neutral-700">
+        <p className="text-teal-700 mb-4">{t("contact.description")}</p>
+        <div className="space-y-2 text-teal-700">
           <p>
             <strong>{t("contact.email")}:</strong> info@pohrebni-vence.cz
           </p>

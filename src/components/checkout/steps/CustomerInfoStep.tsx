@@ -128,7 +128,7 @@ export function CustomerInfoStep({
           className={`
             w-full px-4 py-3 border rounded-lg resize-none
             focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            ${errors.note ? "border-red-300 bg-red-50" : "border-neutral-300 bg-white"}
+            ${errors.note ? "border-red-300 bg-red-50" : "border-neutral-300 bg-teal"}
           `}
         />
         {errors.note && <p className="mt-1 text-sm text-red-600">{errors.note}</p>}

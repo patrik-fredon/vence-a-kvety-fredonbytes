@@ -106,7 +106,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                   className={cn(
                     "w-full flex items-center justify-between p-4 text-left rounded-lg transition-all duration-200",
                     isActiveLink(item.href)
-                      ? "text-stone-900 bg-stone-100 font-semibold shadow-sm"
+                      ? "text-stone-900 bg-amber-100 font-semibold shadow-sm"
                       : "text-stone-700 hover:text-stone-900 hover:bg-stone-50 font-medium"
                   )}
                 >
@@ -123,7 +123,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                   <div className="mt-2 ml-4 space-y-1 animate-slide-down">
                     <Link
                       href={`/${locale}/products`}
-                      className="block p-3 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors duration-200 font-medium"
+                      className="block p-3 text-sm text-teal-900 hover:text-stone-900 hover:bg-amber-100 rounded-lg transition-colors duration-200 font-medium"
                       onClick={handleLinkClick}
                     >
                       {tProduct("allProducts")}
@@ -137,8 +137,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                 className={cn(
                   "block p-4 rounded-lg transition-all duration-200 text-base",
                   isActiveLink(item.href)
-                    ? "text-stone-900 bg-stone-100 font-semibold shadow-sm"
-                    : "text-stone-700 hover:text-stone-900 hover:bg-stone-50 font-medium"
+                    ? "text-teal-900 bg-amber-100 font-semibold shadow-sm"
+                    : "text-teal-700 hover:text-stone-900 hover:bg-amber-100 font-medium"
                 )}
                 onClick={handleLinkClick}
               >
@@ -188,8 +188,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                   "flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                   "focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2",
                   isActiveLink(item.href)
-                    ? "text-stone-900 bg-stone-100"
-                    : "text-stone-700 hover:text-stone-900 hover:bg-stone-50"
+                    ? "text-teal-900 bg-amber-100"
+                    : "text-teal-900 hover:text-stone-900 hover:bg-stone-50"
                 )}
                 aria-expanded={openDropdown === "products"}
                 aria-haspopup="true"
@@ -226,7 +226,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                         <div key={category.id}>
                           <Link
                             href={`/${locale}/products/${category.slug}`}
-                            className="block p-2 text-sm font-medium text-stone-800 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
+                            className="block p-2 text-sm font-medium text-teal-800 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
                             onClick={handleLinkClick}
                           >
                             {category.name[locale as "cs" | "en"]}
@@ -236,7 +236,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                               <Link
                                 key={subcategory.id}
                                 href={`/${locale}/products/${category.slug}/${subcategory.slug}`}
-                                className="block p-1.5 text-sm text-stone-600 hover:text-stone-900 hover:bg-stone-50 rounded transition-colors"
+                                className="block p-1.5 text-sm text-teal-600 hover:text-stone-900 hover:bg-amber-100 rounded transition-colors"
                                 onClick={handleLinkClick}
                               >
                                 {subcategory.name[locale as "cs" | "en"]}
@@ -256,8 +256,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
               className={cn(
                 "px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                 isActiveLink(item.href)
-                  ? "text-stone-900 bg-stone-100"
-                  : "text-stone-700 hover:text-stone-900 hover:bg-stone-50"
+                  ? "text-teal-900 bg-amber-100"
+                  : "text-teal-700 hover:text-stone-900 hover:bg-amber-100"
               )}
               onClick={handleLinkClick}
             >

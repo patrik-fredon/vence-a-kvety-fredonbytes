@@ -78,13 +78,13 @@ export function DateSelector({
                 {formatDateForDisplay(value)}
               </div>
             ) : (
-              <div className="text-neutral-500">
+              <div className="text-teal-500">
                 {locale === "cs" ? "Vyberte datum" : "Select date"}
               </div>
             )}
           </div>
         </div>
-        <div className="text-neutral-400">
+        <div className="text-teal-400">
           {isOpen ? "▲" : "▼"}
         </div>
       </button>
@@ -93,7 +93,7 @@ export function DateSelector({
       {isOpen && (
         <div className="p-4 border border-neutral-200 rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] shadow-lg">
           <div className="space-y-3">
-            <div className="text-sm font-medium text-neutral-700">
+            <div className="text-sm font-medium text-teal-700">
               {locale === "cs" ? "Vyberte datum dodání:" : "Select delivery date:"}
             </div>
 

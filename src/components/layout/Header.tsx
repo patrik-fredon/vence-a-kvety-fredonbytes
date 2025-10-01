@@ -105,25 +105,25 @@ export function Header({ locale }: HeaderProps) {
             >
               <Link
                 href={`/${locale}`}
-                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
+                className="text-sm font-medium text-teal-900 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("home")}
               </Link>
               <Link
                 href={`/${locale}/products`}
-                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
+                className="text-sm font-medium text-teal-900 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("products")}
               </Link>
               <Link
                 href={`/${locale}/about`}
-                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
+                className="text-sm font-medium text-teal-900 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("about")}
               </Link>
               <Link
                 href={`/${locale}/contact`}
-                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
+                className="text-sm font-medium text-teal-900 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("contact")}
               </Link>
@@ -139,16 +139,16 @@ export function Header({ locale }: HeaderProps) {
               {/* Animated Cart icon */}
               <AnimatedCartIcon
                 locale={locale}
-                className="p-1.5 hover:bg-stone-50 rounded-md transition-colors duration-200"
+                className="p-1.5 hover:bg-teal-900 rounded-full transition-colors duration-200"
               />
 
               {/* Mobile menu button */}
               <button
                 onClick={toggleMobileMenu}
                 className={cn(
-                  "md:hidden p-2 text-stone-700 hover:text-amber-900 hover:bg-stone-50",
+                  "md:hidden p-2 text-teal-900 hover:text-amber-100 hover:bg-stone-50",
                   "transition-all duration-200 rounded-lg",
-                  isMobileMenuOpen && "bg-stone-100"
+                  isMobileMenuOpen && "bg-teal-900"
                 )}
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
@@ -179,7 +179,7 @@ export function Header({ locale }: HeaderProps) {
         <div
           id="mobile-menu"
           className={cn(
-            "fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-white shadow-xl",
+            "fixed top-0 right-0 h-full w-80 max-w-[90vw] bg-amber-100 shadow-xl",
             "transform transition-transform duration-300 ease-in-out z-50 md:hidden",
             isMobileMenuOpen ? "translate-x-0" : "translate-x-full"
           )}
@@ -187,11 +187,11 @@ export function Header({ locale }: HeaderProps) {
         >
           <div className="flex flex-col h-full">
             {/* Mobile menu header */}
-            <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-stone-50">
+            <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-amber-100">
               <span className="text-lg font-light text-stone-900">{tUI("menu")}</span>
               <button
                 onClick={closeMobileMenu}
-                className="p-2 text-stone-700 hover:text-amber-900 hover:bg-stone-100 transition-colors duration-200 rounded-lg"
+                className="p-2 text-teal-900 hover:text-amber-100 hover:bg-stone-100 transition-colors duration-200 rounded-lg"
                 aria-label={tAccessibility("closeMenu")}
               >
                 <XMarkIcon className="w-6 h-6" aria-hidden="true" />
@@ -212,9 +212,9 @@ export function Header({ locale }: HeaderProps) {
             </div>
 
             {/* Mobile menu footer */}
-            <div className="border-t border-stone-200 p-4 space-y-4 bg-stone-50">
+            <div className="border-t border-stone-200 p-4 space-y-4 bg-amber-100">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-stone-700">{tUI("language")}:</span>
+                <span className="text-sm font-medium text-teal-900">{tUI("language")}:</span>
                 <LanguageSwitcher currentLocale={locale} />
               </div>
 

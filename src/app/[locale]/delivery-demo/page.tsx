@@ -56,11 +56,11 @@ export default function DeliveryDemoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Delivery Calendar & Scheduling Demo</h1>
-          <p className="mt-2 text-gray-600">
+          <h1 className="text-3xl font-bold text-teal-900">Delivery Calendar & Scheduling Demo</h1>
+          <p className="mt-2 text-teal-600">
             Demonstration of the delivery calendar and scheduling functionality for the funeral
             wreaths e-commerce platform.
           </p>
@@ -70,44 +70,44 @@ export default function DeliveryDemoPage() {
           {/* Left Column - Address and Options */}
           <div className="space-y-6">
             {/* Address Form */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Delivery Address</h2>
+            <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-teal-900 mb-4">Delivery Address</h2>
 
               <div className="space-y-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">
+                  <label className="block text-sm font-medium text-teal-700 mb-1">
                     Street Address
                   </label>
                   <input
                     type="text"
                     value={deliveryAddress.street}
                     onChange={(e) => handleAddressChange("street", e.target.value)}
-                    className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                    className="w-full px-3 py-2 border border-teal-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                     placeholder="Enter street address"
                   />
                 </div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">City</label>
+                    <label className="block text-sm font-medium text-teal-700 mb-1">City</label>
                     <input
                       type="text"
                       value={deliveryAddress.city}
                       onChange={(e) => handleAddressChange("city", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-teal-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="City"
                     />
                   </div>
 
                   <div>
-                    <label className="block text-sm font-medium text-gray-700 mb-1">
+                    <label className="block text-sm font-medium text-teal-700 mb-1">
                       Postal Code
                     </label>
                     <input
                       type="text"
                       value={deliveryAddress.postalCode}
                       onChange={(e) => handleAddressChange("postalCode", e.target.value)}
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
+                      className="w-full px-3 py-2 border border-teal-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-blue-500"
                       placeholder="Postal code"
                     />
                   </div>
@@ -116,7 +116,7 @@ export default function DeliveryDemoPage() {
             </div>
 
             {/* Delivery Options */}
-            <div className="bg-white rounded-lg shadow p-6">
+            <div className="bg-amber-200 rounded-lg shadow p-6">
               <DeliveryOptionsSelector
                 address={deliveryAddress}
                 selectedUrgency={selectedUrgency}
@@ -130,15 +130,15 @@ export default function DeliveryDemoPage() {
               urgency={selectedUrgency}
               timeSlot={selectedTimeSlot}
               onCostCalculated={handleCostCalculated}
-              className="bg-white rounded-lg shadow"
+              className="bg-amber-200 rounded-lg shadow"
             />
           </div>
 
           {/* Right Column - Calendar */}
           <div className="space-y-6">
             {/* Delivery Calendar */}
-            <div className="bg-white rounded-lg shadow p-6">
-              <h2 className="text-xl font-semibold text-gray-900 mb-4">Select Delivery Date</h2>
+            <div className="bg-amber-200 rounded-lg shadow p-6">
+              <h2 className="text-xl font-semibold text-teal-900 mb-4">Select Delivery Date</h2>
 
               <DeliveryCalendar
                 {...(selectedDate && { selectedDate })}
@@ -151,13 +151,13 @@ export default function DeliveryDemoPage() {
 
             {/* Summary */}
             {(selectedDate || costCalculation) && (
-              <div className="bg-white rounded-lg shadow p-6">
-                <h2 className="text-xl font-semibold text-gray-900 mb-4">Delivery Summary</h2>
+              <div className="bg-amber-200 rounded-lg shadow p-6">
+                <h2 className="text-xl font-semibold text-teal-900 mb-4">Delivery Summary</h2>
 
                 <div className="space-y-3">
                   {selectedDate && (
                     <div className="flex justify-between">
-                      <span className="text-gray-600">Selected Date:</span>
+                      <span className="text-teal-600">Selected Date:</span>
                       <span className="font-medium">
                         {selectedDate.toLocaleDateString("cs-CZ", {
                           weekday: "long",
@@ -170,12 +170,12 @@ export default function DeliveryDemoPage() {
                   )}
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Delivery Method:</span>
+                    <span className="text-teal-600">Delivery Method:</span>
                     <span className="font-medium capitalize">{selectedUrgency}</span>
                   </div>
 
                   <div className="flex justify-between">
-                    <span className="text-gray-600">Time Slot:</span>
+                    <span className="text-teal-600">Time Slot:</span>
                     <span className="font-medium">
                       {selectedTimeSlot === "morning" && "Morning (8-12)"}
                       {selectedTimeSlot === "afternoon" && "Afternoon (12-18)"}
@@ -197,13 +197,13 @@ export default function DeliveryDemoPage() {
         </div>
 
         {/* Debug Information */}
-        <div className="mt-8 bg-gray-100 rounded-lg p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Debug Information</h3>
+        <div className="mt-8 bg-teal-100 rounded-lg p-6">
+          <h3 className="text-lg font-semibold text-teal-900 mb-4">Debug Information</h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
             <div>
-              <h4 className="font-medium text-gray-700 mb-2">State:</h4>
-              <pre className="bg-white p-3 rounded border text-xs overflow-auto">
+              <h4 className="font-medium text-teal-700 mb-2">State:</h4>
+              <pre className="bg-amber-200 p-3 rounded border text-xs overflow-auto">
                 {JSON.stringify(
                   {
                     selectedDate: selectedDate?.toISOString(),
@@ -218,8 +218,8 @@ export default function DeliveryDemoPage() {
             </div>
 
             <div>
-              <h4 className="font-medium text-gray-700 mb-2">Cost Calculation:</h4>
-              <pre className="bg-white p-3 rounded border text-xs overflow-auto">
+              <h4 className="font-medium text-teal-700 mb-2">Cost Calculation:</h4>
+              <pre className="bg-amber-200 p-3 rounded border text-xs overflow-auto">
                 {JSON.stringify(costCalculation, null, 2)}
               </pre>
             </div>

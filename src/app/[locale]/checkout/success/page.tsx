@@ -43,7 +43,7 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
   //   .single();
 
   return (
-    <div className="min-h-screen bg-neutral-50 py-12">
+    <div className="min-h-screen bg-teal-50 py-12">
       <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Success Header */}
         <div className="text-center mb-12">
@@ -55,21 +55,21 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
             {t("orderConfirmation")}
           </h1>
 
-          <p className="text-lg text-neutral-600 mb-2">
+          <p className="text-lg text-teal-600 mb-2">
             Děkujeme za vaši objednávku. Platba byla úspěšně zpracována.
           </p>
 
-          <p className="text-sm text-neutral-500">Objednávka #{orderId}</p>
+          <p className="text-sm text-teal-500">Objednávka #{orderId}</p>
         </div>
 
         {/* Success Message */}
-        <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden mb-8">
+        <div className="bg-white rounded-lg shadow-sm border border-teal-200 overflow-hidden mb-8">
           <div className="px-6 py-4 bg-green-50 border-b border-green-200">
             <h2 className="text-lg font-semibold text-green-800">Platba byla úspěšně zpracována</h2>
           </div>
 
           <div className="p-6">
-            <p className="text-neutral-700 mb-4">
+            <p className="text-teal-700 mb-4">
               Vaše objednávka pohřebních věnců byla úspěšně vytvořena a platba byla zpracována. Na
               váš email jsme odeslali potvrzení s detaily objednávky.
             </p>
@@ -131,8 +131,8 @@ export default async function CheckoutSuccessPage({ params, searchParams }: Page
         </div>
 
         {/* Contact Information */}
-        <div className="text-center mt-12 pt-8 border-t border-neutral-200">
-          <p className="text-sm text-neutral-600 mb-2">Máte otázky k vaší objednávce?</p>
+        <div className="text-center mt-12 pt-8 border-t border-teal-200">
+          <p className="text-sm text-teal-600 mb-2">Máte otázky k vaší objednávce?</p>
           <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-sm">
             <a
               href="mailto:info@pohrebni-vence.cz"

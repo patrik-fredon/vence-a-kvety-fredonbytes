@@ -66,18 +66,18 @@ export function DeliveryCostCalculator({
 
   if (!address?.postalCode) {
     return (
-      <div className={clsx("delivery-cost-calculator bg-gray-50 rounded-lg p-4", className)}>
-        <p className="text-sm text-gray-600">Zadejte adresu pro výpočet ceny doručení</p>
+      <div className={clsx("delivery-cost-calculator bg-teal-50 rounded-lg p-4", className)}>
+        <p className="text-sm text-teal-600">Zadejte adresu pro výpočet ceny doručení</p>
       </div>
     );
   }
 
   if (isCalculating) {
     return (
-      <div className={clsx("delivery-cost-calculator bg-gray-50 rounded-lg p-4", className)}>
+      <div className={clsx("delivery-cost-calculator bg-teal-50 rounded-lg p-4", className)}>
         <div className="flex items-center gap-2">
           <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-600" />
-          <span className="text-sm text-gray-600">Počítám cenu doručení...</span>
+          <span className="text-sm text-teal-600">Počítám cenu doručení...</span>
         </div>
       </div>
     );
@@ -97,7 +97,7 @@ export function DeliveryCostCalculator({
 
   return (
     <div className={clsx("delivery-cost-calculator bg-white border rounded-lg p-4", className)}>
-      <h3 className="text-lg font-semibold text-gray-900 mb-3">Cena doručení</h3>
+      <h3 className="text-lg font-semibold text-teal-900 mb-3">Cena doručení</h3>
 
       {/* Delivery Option Info */}
       {deliveryOption && (
@@ -113,27 +113,27 @@ export function DeliveryCostCalculator({
       {/* Cost Breakdown */}
       <div className="space-y-2">
         <div className="flex justify-between text-sm">
-          <span className="text-gray-600">Základní cena:</span>
+          <span className="text-teal-600">Základní cena:</span>
           <span className="font-medium">{calculation.baseCost} Kč</span>
         </div>
 
         {calculation.distanceCost > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Příplatek za vzdálenost:</span>
+            <span className="text-teal-600">Příplatek za vzdálenost:</span>
             <span className="font-medium">{calculation.distanceCost} Kč</span>
           </div>
         )}
 
         {calculation.urgencyCost > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Příplatek za rychlost:</span>
+            <span className="text-teal-600">Příplatek za rychlost:</span>
             <span className="font-medium">{calculation.urgencyCost} Kč</span>
           </div>
         )}
 
         {calculation.timeSlotCost > 0 && (
           <div className="flex justify-between text-sm">
-            <span className="text-gray-600">Příplatek za čas:</span>
+            <span className="text-teal-600">Příplatek za čas:</span>
             <span className="font-medium">{calculation.timeSlotCost} Kč</span>
           </div>
         )}
@@ -147,9 +147,9 @@ export function DeliveryCostCalculator({
       </div>
 
       {/* Estimated Delivery Date */}
-      <div className="mt-4 p-3 bg-gray-50 rounded-lg">
+      <div className="mt-4 p-3 bg-teal-50 rounded-lg">
         <div className="flex justify-between items-center">
-          <span className="text-sm text-gray-600">Odhadované doručení:</span>
+          <span className="text-sm text-teal-600">Odhadované doručení:</span>
           <span className="text-sm font-medium">
             {calculation.estimatedDeliveryDate.toLocaleDateString("cs-CZ", {
               weekday: "long",
@@ -162,7 +162,7 @@ export function DeliveryCostCalculator({
 
         {calculation.estimatedTimeSlot && calculation.estimatedTimeSlot !== "anytime" && (
           <div className="flex justify-between items-center mt-1">
-            <span className="text-sm text-gray-600">Čas:</span>
+            <span className="text-sm text-teal-600">Čas:</span>
             <span className="text-sm font-medium">
               {calculation.estimatedTimeSlot === "morning" && "Dopoledne (8-12)"}
               {calculation.estimatedTimeSlot === "afternoon" && "Odpoledne (12-18)"}
@@ -173,7 +173,7 @@ export function DeliveryCostCalculator({
       </div>
 
       {/* Delivery Zone Info */}
-      <div className="mt-3 text-xs text-gray-500">
+      <div className="mt-3 text-xs text-teal-500">
         <p>Cena zahrnuje doručení do oblasti {findDeliveryZone(address.postalCode).name}</p>
       </div>
     </div>
