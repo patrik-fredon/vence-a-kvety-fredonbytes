@@ -47,34 +47,34 @@
   - Add proper aspect ratio maintenance during image transitions
   - _Requirements: 2.6, 2.7_
 
-- [ ] 3. Create Modern Centralized Theming System
+- [x] 3. Create Modern Centralized Theming System
   - Design and implement centralized design tokens system
   - Replace all hardcoded color classes with theme tokens
   - Create theme provider and context for dynamic theming
   - _Requirements: 3.1, 3.2, 3.3, 3.4, 3.5, 3.6, 3.7, 3.8_
 
-- [-] 3.1 Create design tokens and theme configuration
+- [x] 3.1 Create design tokens and theme configuration
   - Create src/lib/design-system/tokens.ts with all color definitions
   - Implement semantic color naming (primary, secondary, accent, neutral)
   - Define typography, spacing, shadow, and border radius scales
   - Create light and dark theme variants maintaining funeral-appropriate aesthetics
   - _Requirements: 3.1, 3.2, 3.4, 3.5_
 
-- [ ] 3.2 Implement ThemeProvider and context system
+- [x] 3.2 Implement ThemeProvider and context system
   - Create ThemeProvider component with React Context
   - Implement theme switching functionality
   - Add theme persistence using localStorage
   - Create useTheme hook for consuming theme in components
   - _Requirements: 3.3, 3.6, 3.7_
 
-- [ ] 3.3 Migrate UI components to use design tokens
+- [x] 3.3 Migrate UI components to use design tokens
   - Update Button, Card, Input, Modal, and other UI components
   - Replace hardcoded Tailwind classes with theme token references
   - Ensure all components support both light and dark themes
   - Add proper TypeScript types for theme token usage
   - _Requirements: 3.6, 3.7, 3.8_
 
-- [ ] 3.4 Update product and layout components with new theming
+- [x] 3.4 Update product and layout components with new theming
   - Migrate ProductCard, ProductGrid, ProductFilters to use design tokens
   - Update Header, Footer, Navigation components with theme system
   - Replace all bg-teal, text-amber, bg-stone, text-stone classes with semantic tokens
