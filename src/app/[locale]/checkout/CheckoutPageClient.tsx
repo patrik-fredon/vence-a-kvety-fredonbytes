@@ -96,7 +96,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
   return (
     <div className="min-h-screen bg-neutral-50">
       {/* Header */}
-      <div className="bg-white border-b border-neutral-200">
+      <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-b border-neutral-200">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
@@ -119,7 +119,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           {/* Checkout Form - Takes 2 columns on large screens */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-soft p-6 lg:p-8">
+            <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6 lg:p-8">
               <CheckoutForm items={items} locale={locale} onOrderComplete={handleOrderComplete} />
             </div>
           </div>
@@ -140,7 +140,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
 
               {/* Desktop: Full Summary */}
               <div className="hidden lg:block">
-                <div className="bg-white rounded-lg shadow-soft p-6">
+                <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
                   <h2 className="text-lg font-semibold text-neutral-800 mb-4">
                     Shrnutí objednávky
                   </h2>

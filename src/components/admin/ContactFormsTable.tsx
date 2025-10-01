@@ -129,7 +129,7 @@ export function ContactFormsTable({
                   params.set("page", "1");
                   router.push(`/${locale}/admin/contact-forms?${params.toString()}`);
                 }}
-                className="px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+                className="px-3 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-stone-900"
               >
                 <option value="all">Všechny</option>
                 <option value="new">Nové</option>
@@ -163,7 +163,7 @@ export function ContactFormsTable({
                 </th>
               </tr>
             </thead>
-            <tbody className="bg-white divide-y divide-stone-200">
+            <tbody className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] divide-y divide-stone-200">
               {contactForms.map((form) => (
                 <tr key={form.id} className="hover:bg-stone-50">
                   <td className="px-6 py-4 whitespace-nowrap">
@@ -188,7 +188,7 @@ export function ContactFormsTable({
                       <select
                         value={form.status}
                         onChange={(e) => handleStatusChange(form.id, e.target.value)}
-                        className="text-xs border border-stone-300 rounded px-2 py-1 bg-white text-stone-900 focus:ring-2 focus:ring-stone-500 focus:border-stone-500"
+                        className="text-xs border border-stone-300 rounded px-2 py-1 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-stone-900 focus:ring-2 focus:ring-stone-500 focus:border-stone-500"
                       >
                         <option value="new">Nová</option>
                         <option value="read">Přečtená</option>

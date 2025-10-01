@@ -25,7 +25,7 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
       // Desktop layout with proper space utilization (1024px+)
       "lg:py-24 lg:px-12", // Ample desktop padding
       "xl:py-28 xl:px-16", // Maximum padding for large screens
-      "bg-amber-100", // funeral background color from design tokens
+      "bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)]", // funeral background color from design tokens
       // Orientation handling
       "landscape:py-8", // Reduced padding in landscape
       "md:landscape:py-16" // Tablet landscape adjustment
@@ -202,7 +202,7 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
   const ErrorFallback = () => (
     <section
       className={cn(
-        "py-12 px-3 bg-amber-100",
+        "py-12 px-3 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)]",
         "xs:py-14 xs:px-4",
         "sm:py-16 sm:px-6",
         "md:py-20 md:px-8",

@@ -131,7 +131,7 @@ export function Modal({
       <div
         ref={modalRef}
         className={cn(
-          "relative bg-white rounded-lg shadow-xl w-full",
+          "relative bg-amber-100 rounded-lg shadow-xl w-full",
           sizeClasses[size],
           "max-h-[90vh] overflow-hidden",
           "focus:outline-none",

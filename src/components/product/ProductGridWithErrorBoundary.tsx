@@ -52,8 +52,7 @@ export function ProductGridWithErrorBoundary(props: ProductGridWithErrorBoundary
       }}
     >
       <ProductGrid
-        {...props}
-        onAddToCart={handleAddToCartWithErrorHandling}
+        {...(props.onAddToCart ? { ...props, onAddToCart: handleAddToCartWithErrorHandling } : props)}
       />
     </ProductComponentErrorBoundary>
   );
@@ -128,7 +127,7 @@ export function ResilientProductPage({
         initialProducts={initialProducts}
         initialCategories={initialCategories}
         locale={locale}
-        onAddToCart={onAddToCart}
+        {...(onAddToCart && { onAddToCart })}
       />
     </div>
   );

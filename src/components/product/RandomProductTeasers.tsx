@@ -107,7 +107,7 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
         >
           {t("featuredProducts.title")}
         </h2>
-        <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
+        <div className="text-center py-12 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-xl shadow-soft border border-stone-200 p-8">
           <p className="text-stone-600 mb-4" role="alert">{error}</p>
           <button
             onClick={handleRetry}
@@ -135,7 +135,7 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
         >
           {t("featuredProducts.title")}
         </h2>
-        <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
+        <div className="text-center py-12 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-xl shadow-soft border border-stone-200 p-8">
           <p className="text-stone-600">{t("noProducts")}</p>
         </div>
       </section>

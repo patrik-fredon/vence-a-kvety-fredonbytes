@@ -63,7 +63,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
 
         {/* Stats Cards */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
-          <div className="bg-white rounded-lg shadow-soft p-6">
+          <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-blue-100 text-blue-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -82,7 +82,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-soft p-6">
+          <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-yellow-100 text-yellow-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-soft p-6">
+          <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-green-100 text-green-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -124,7 +124,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             </div>
           </div>
 
-          <div className="bg-white rounded-lg shadow-soft p-6">
+          <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6">
             <div className="flex items-center">
               <div className="p-3 rounded-full bg-purple-100 text-purple-600 mr-4">
                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -147,7 +147,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
         </div>
 
         {/* Contact Forms Table */}
-        <div className="bg-white rounded-lg shadow-soft">
+        <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft">
           <ContactFormsTable
             contactForms={contactForms || []}
             currentPage={Number.parseInt(page)}

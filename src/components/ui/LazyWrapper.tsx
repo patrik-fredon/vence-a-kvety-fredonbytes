@@ -115,7 +115,7 @@ export function Skeleton({
 }: SkeletonProps) {
   return (
     <div
-      className={`animate-pulse bg-neutral-200 ${rounded ? "rounded-full" : "rounded"} ${className || ""}`}
+      className={`animate-pulse bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] ${rounded ? "rounded-full" : "rounded"} ${className || ""}`}
       style={{ width, height }}
     />
   );
@@ -126,7 +126,7 @@ export function Skeleton({
  */
 export function ProductCardSkeleton() {
   return (
-    <div className="bg-white rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+    <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
       {/* Image skeleton */}
       <Skeleton height="200px" className="w-full" />
 
