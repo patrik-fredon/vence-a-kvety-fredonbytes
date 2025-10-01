@@ -75,7 +75,7 @@ export function KeyboardNavigationGrid({
   const enhancedChildren = children.map((child, index) => {
     return React.cloneElement(child, {
       key: child.key || index,
-      "data-grid-item": true,
+      'data-grid-item': true,
       tabIndex: currentIndex === index ? 0 : -1,
       role: "gridcell",
       "aria-setsize": children.length,

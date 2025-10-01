@@ -33,7 +33,7 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
   const fullUrl = props.canonicalUrl || `${baseUrl}/${props.locale}${props.path}`;
 
   // Generate enhanced meta tags
-  const metaTags = generateEnhancedMetaTags(props);
+  // const metaTags = generateEnhancedMetaTags(props); // TODO: Use this for enhanced meta tags
 
   // Generate hreflang attributes
   const hreflangUrls = generateHreflangAttributes(props.path);

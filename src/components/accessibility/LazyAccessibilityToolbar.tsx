@@ -22,6 +22,6 @@ interface LazyAccessibilityToolbarProps {
   className?: string;
 }
 
-export function LazyAccessibilityToolbar(props: LazyAccessibilityToolbarProps) {
-  return <AccessibilityToolbar {...props} />;
+export function LazyAccessibilityToolbar(_props: LazyAccessibilityToolbarProps) {
+  return <AccessibilityToolbar />;
 }

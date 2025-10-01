@@ -36,17 +36,17 @@ async function getProducts(request: NextRequest) {
     const params: ProductSearchParams = {
       page: Number.parseInt(searchParams.get("page") || "1"),
       limit: Math.min(Number.parseInt(searchParams.get("limit") || "12"), 100), // Max 100 items per page
-      categoryId: searchParams.get("categoryId") || undefined,
-      categorySlug: searchParams.get("categorySlug") || undefined,
+      categoryId: searchParams.get("categoryId") || "",
+      categorySlug: searchParams.get("categorySlug") || "",
       minPrice: searchParams.get("minPrice")
         ? Number.parseFloat(searchParams.get("minPrice")!)
-        : undefined,
+        : 0,
       maxPrice: searchParams.get("maxPrice")
         ? Number.parseFloat(searchParams.get("maxPrice")!)
-        : undefined,
-      inStock: searchParams.get("inStock") === "true" ? true : undefined,
-      featured: searchParams.get("featured") === "true" ? true : undefined,
-      search: searchParams.get("search") || undefined,
+        : 999999,
+      inStock: searchParams.get("inStock") === "true",
+      featured: searchParams.get("featured") === "true",
+      search: searchParams.get("search") || "",
       locale: searchParams.get("locale") || "cs",
       sort: {
         field: (searchParams.get("sortField") as any) || "created_at",

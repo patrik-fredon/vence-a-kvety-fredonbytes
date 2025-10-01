@@ -233,7 +233,7 @@ export function useEnhancedWreathValidation({
   clearErrors: () => void;
   retryValidation: () => void;
 } {
-  const [lastValidationTime, setLastValidationTime] = useState<number>(0);
+  const [, setLastValidationTime] = useState<number>(0);
   const [isRecovering, setIsRecovering] = useState(false);
   const [recoveryAttempts, setRecoveryAttempts] = useState(0);
   const maxRecoveryAttempts = 3;

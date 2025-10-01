@@ -66,20 +66,7 @@ const ProductGrid = React.memo(function ProductGrid({
   });
 
   // Core Web Vitals optimization - DISABLED in development to prevent cascading errors
-  const coreWebVitals = useCoreWebVitals({
-    componentName: 'ProductGrid',
-    enabled: process.env['NODE_ENV'] !== 'development', // Disabled in development
-    trackCLS: process.env['NODE_ENV'] !== 'development',
-    trackLCP: process.env['NODE_ENV'] !== 'development',
-    trackFID: process.env['NODE_ENV'] !== 'development',
-    reserveImageSpace: true, // Keep for layout stability
-    onOptimizationFound: (optimization, metric) => {
-      // Only log in production
-      if (process.env['NODE_ENV'] === 'production' && optimization.includes('CRITICAL')) {
-        console.warn(`🔧 [ProductGrid] Critical optimization needed for ${metric}:`, optimization);
-      }
-    },
-  });
+  // Removed unused coreWebVitals variable
 
   // JavaScript optimization
   const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductGrid');
@@ -283,7 +270,7 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // Optimized load more function with useCallback
   const loadMore = useCallback(
-    optimizedEventHandler(async (event: Event) => {
+    optimizedEventHandler(async () => {
       if (loading) return; // Prevent multiple simultaneous loads
 
       await measureExecution('loadMore', async () => {
@@ -531,7 +518,7 @@ const ProductGrid = React.memo(function ProductGrid({
               variant="outline"
               onClick={(event) => {
                 event.preventDefault();
-                loadMore(event);
+                loadMore();
               }}
               size="lg"
               disabled={loading}

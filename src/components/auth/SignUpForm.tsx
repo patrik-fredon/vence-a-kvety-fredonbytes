@@ -24,23 +24,23 @@ export function SignUpForm() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
 
-    if (!formData.email) {
+    if (!(formData as any)['email']) {
       errors.email = "E-mail je povinný";
-    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
+    } else if (!/\S+@\S+\.\S+/.test((formData as any)['email'])) {
       errors.email = "E-mail není ve správném formátu";
     }
 
-    if (!formData.password) {
+    if (!(formData as any)['password']) {
       errors.password = "Heslo je povinné";
-    } else if (formData.password.length < 6) {
+    } else if ((formData as any)['password'].length < 6) {
       errors.password = "Heslo musí mít alespoň 6 znaků";
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if ((formData as any)['password'] !== (formData as any)['confirmPassword']) {
       errors.confirmPassword = "Hesla se neshodují";
     }
 
-    if (!formData.name) {
+    if (!(formData as any)['name']) {
       errors.name = "Jméno je povinné";
     }
 
@@ -56,10 +56,10 @@ export function SignUpForm() {
     }
 
     const result = await signUp({
-      email: formData.email,
-      password: formData.password,
-      name: formData.name,
-      phone: formData.phone || undefined,
+      email: (formData as any)['email'],
+      password: (formData as any)['password'],
+      name: (formData as any)['name'],
+      phone: (formData as any)['phone'] || "",
     });
 
     if (result.success) {

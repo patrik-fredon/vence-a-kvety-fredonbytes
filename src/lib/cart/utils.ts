@@ -388,7 +388,7 @@ export function validateCustomizationIntegrity(customizations: any[]): {
 } {
   const issues: string[] = [];
   const fixedCustomizations: any[] = [];
-  let hasIssues = false;
+
 
   if (!Array.isArray(customizations)) {
     return {
@@ -408,20 +408,17 @@ export function validateCustomizationIntegrity(customizations: any[]): {
     // Validate required fields
     if (!customization.optionId || typeof customization.optionId !== 'string') {
       issues.push(`Missing or invalid optionId: ${customization.optionId}`);
-      hasIssues = true;
     }
 
     if (!customization.choiceIds || !Array.isArray(customization.choiceIds)) {
       issues.push(`Missing or invalid choiceIds for option: ${customization.optionId}`);
       fixed.choiceIds = [];
-      hasIssues = true;
     }
 
     // Validate price modifier
     if (customization.priceModifier !== undefined && typeof customization.priceModifier !== 'number') {
       issues.push(`Invalid priceModifier for option: ${customization.optionId}`);
       fixed.priceModifier = 0;
-      hasIssues = true;
     }
 
     // Validate custom value if present
@@ -429,7 +426,6 @@ export function validateCustomizationIntegrity(customizations: any[]): {
       if (typeof customization.customValue !== 'string') {
         issues.push(`Invalid customValue for option: ${customization.optionId}`);
         fixed.customValue = String(customization.customValue || '');
-        hasIssues = true;
       } else if (customization.customValue.length > 100) {
         issues.push(`CustomValue too long for option: ${customization.optionId}`);
         fixed.customValue = customization.customValue.substring(0, 100);

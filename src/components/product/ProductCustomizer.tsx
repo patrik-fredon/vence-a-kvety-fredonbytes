@@ -25,338 +25,245 @@ interface ProductCustomizerProps {
 
 export function ProductCustomizer({
   product,
-  locale,
   customizations,
+  locale,
   onCustomizationChange,
   className,
 }: ProductCustomizerProps) {
   const t = useTranslations("product");
-  const tCurrency = useTranslations("currency");
 
   const formatPriceModifier = (price: number) => {
     return formatPrice(price, locale as "cs" | "en", true);
   };
 
   // Check if a conditional option should be visible
-  const isOptionVisible = useCallback(
-    (option: CustomizationOption) => {
-      if (!option.dependsOn) {
-        return true;
-      }
+  const isOptionVisible = (option: CustomizationOption): boolean => {
+    if (!option.conditions || option.conditions.length === 0) {
+      return true;
+    }
 
+    return option.conditions.every((condition) => {
       const dependentCustomization = customizations.find(
-        (c) => c.optionId === option.dependsOn!.optionId
+        (c) => c.optionId === condition.dependsOn
       );
 
       if (!dependentCustomization) {
         return false;
       }
 
-      return option.dependsOn.requiredChoiceIds.some((requiredId) =>
-        dependentCustomization.choiceIds.includes(requiredId)
+      return condition.values.some((value) =>
+        dependentCustomization.choiceIds.includes(value)
       );
-    },
-    [customizations]
-  );
-
-  // Clean up dependent customizations when parent option changes
-  const cleanupDependentCustomizations = useCallback(
-    withPerformanceMonitoring(
-      (customizations: Customization[], changedOptionId: string) => {
-        const dependentOptions = product.customizationOptions.filter(
-          (option) => option.dependsOn?.optionId === changedOptionId
-        );
-
-        let cleanedCustomizations = [...customizations];
-
-        for (const dependentOption of dependentOptions) {
-          // Check if the dependent option should still be visible
-          const shouldBeVisible = dependentOption.dependsOn?.requiredChoiceIds.some((requiredId) => {
-            const parentCustomization = cleanedCustomizations.find(
-              (c) => c.optionId === dependentOption.dependsOn!.optionId
-            );
-            return parentCustomization?.choiceIds.includes(requiredId);
-          });
-
-          if (!shouldBeVisible) {
-            // Remove customizations for options that are no longer visible
-            cleanedCustomizations = cleanedCustomizations.filter(
-              (c) => c.optionId !== dependentOption.id
-            );
-          }
-        }
-
-        return cleanedCustomizations;
-      },
-      "customization.dependentCleanup"
-    ),
-    [product.customizationOptions]
-  );;
-
-  // Handle choice selection for an option
-  const handleChoiceSelection = useCallback(
-    withPerformanceMonitoring(
-      (optionId: string, choiceId: string, option: CustomizationOption) => {
-        const newCustomizations = [...customizations];
-        const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
-
-        if (existingIndex >= 0) {
-          const existing = newCustomizations[existingIndex]!; // Safe because existingIndex >= 0
-
-          if (option.maxSelections === 1) {
-            // Single selection - replace
-            existing.choiceIds = [choiceId];
-          } else {
-            // Multiple selection - toggle
-            if (existing.choiceIds.includes(choiceId)) {
-              existing.choiceIds = existing.choiceIds.filter((id) => id !== choiceId);
-            } else {
-              // Check max selections limit
-              if (!option.maxSelections || existing.choiceIds.length < option.maxSelections) {
-                existing.choiceIds.push(choiceId);
-              }
-            }
-          }
-        } else {
-          // Create new customization
-          newCustomizations.push({
-            optionId,
-            choiceIds: [choiceId],
-          });
-        }
-
-        // Clean up dependent customizations when parent option changes
-        const updatedCustomizations = cleanupDependentCustomizations(newCustomizations, optionId);
-        onCustomizationChange(updatedCustomizations);
-      },
-      "customization.choiceSelection"
-    ),
-    [customizations, onCustomizationChange, cleanupDependentCustomizations]
-  );;
-
-  // Handle custom value change (for text inputs)
-  const handleCustomValueChange = useCallback(
-    (optionId: string, value: string) => {
-      const newCustomizations = [...customizations];
-      const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
-
-      if (existingIndex >= 0) {
-        newCustomizations[existingIndex]!.customValue = value;
-      } else {
-        newCustomizations.push({
-          optionId,
-          choiceIds: [],
-          customValue: value,
-        });
-      }
-
-      onCustomizationChange(newCustomizations);
-    },
-    [customizations, onCustomizationChange]
-  );
-
-  // Get current customization for an option
-  const getCurrentCustomization = (optionId: string) => {
-    return customizations.find((c) => c.optionId === optionId);
+    });
   };
 
-  // Render a single choice
-  const renderChoice = (option: CustomizationOption, choice: CustomizationChoice) => {
-    const currentCustomization = getCurrentCustomization(option.id);
-    const isSelected = currentCustomization?.choiceIds.includes(choice.id);
+  const visibleOptions = product.customization_options?.filter(isOptionVisible) || [];
 
-    return (
-      <button
-        key={choice.id}
-        type="button"
-        onClick={() => handleChoiceSelection(option.id, choice.id, option)}
-        className={cn(
-          "flex items-center justify-between p-3 border rounded-lg transition-colors text-left",
-          "focus:outline-none focus:ring-2 focus:ring-stone-950 focus:ring-offset-2",
-          isSelected
-            ? "border-stone-900 bg-stone-50 text-stone-900"
-            : "border-stone-300 bg-white hover:border-stone-400 hover:bg-stone-50"
-        )}
-      >
-        <div className="flex items-center space-x-3">
-          <div
-            className={cn(
-              "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-              isSelected ? "border-stone-900" : "border-stone-300"
-            )}
-          >
-            {isSelected && (
-              <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />
-            )}
-          </div>
-          <div className="text-left">
-            <div className="font-medium">{choice.label[locale as keyof typeof choice.label]}</div>
-            {choice.priceModifier !== 0 && (
-              <div className="text-sm text-neutral-600">
-                {formatPriceModifier(choice.priceModifier)}
-              </div>
-            )}
-          </div>
-        </div>
-        {choice.imageUrl && (
-          <Image
-            src={choice.imageUrl}
-            alt={choice.label[locale as keyof typeof choice.label]}
-            width={48}
-            height={48}
-            className="rounded-md object-cover"
-          />
-        )}
-      </button>
-    );
-  };
-
-  // Render custom text input for choices that allow custom input
-  const renderCustomTextInput = (option: CustomizationOption, choice: CustomizationChoice) => {
-    const currentCustomization = getCurrentCustomization(option.id);
-    const isSelected = currentCustomization?.choiceIds.includes(choice.id);
-    const value = currentCustomization?.customValue || "";
-
-    if (!isSelected) {
-      return null;
-    }
-
-    return (
-      <div className="mt-3 space-y-2">
-        <textarea
-          value={value}
-          onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
-          placeholder={t("customTextPlaceholder")}
-          className="w-full p-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 resize-none"
-          rows={2}
-          maxLength={choice.maxLength || 50}
-        />
-        <div className="flex justify-between text-xs text-neutral-500">
-          <span>{t("customTextHelp")}</span>
-          <span>{value.length}/{choice.maxLength || 50}</span>
-        </div>
-      </div>
-    );
-  };
-
-  // Render date selector for choices that require calendar
-  const renderDateSelector = (option: CustomizationOption, choice: CustomizationChoice) => {
-    const currentCustomization = getCurrentCustomization(option.id);
-    const isSelected = currentCustomization?.choiceIds.includes(choice.id);
-    const value = currentCustomization?.customValue || "";
-
-    if (!isSelected || !choice.requiresCalendar) {
-      return null;
-    }
-
-    return (
-      <div className="mt-3">
-        <DateSelector
-          value={value}
-          onChange={(date) => handleCustomValueChange(option.id, date)}
-          minDaysFromNow={choice.minDaysFromNow || 1}
-          maxDaysFromNow={choice.maxDaysFromNow || 30}
-          locale={locale}
-        />
-      </div>
-    );
-  };
-
-  // Render text input for message options
   const renderTextInput = (option: CustomizationOption) => {
-    const currentCustomization = getCurrentCustomization(option.id);
-    const value = currentCustomization?.customValue || "";
+    const current = customizations.find((c) => c.optionId === option.id);
+    const value = current?.customValue || "";
 
     return (
-      <div className="space-y-2">
-        <textarea
+      <div key={option.id} className="space-y-2">
+        <label className="block text-sm font-medium text-stone-700">
+          {option.name}
+          {option.required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        <input
+          type="text"
           value={value}
-          onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
-          placeholder={t("messagePlaceholder")}
-          className="w-full p-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-200 focus:border-primary-500 resize-none"
-          rows={3}
-          maxLength={200}
+          onChange={(e) => {
+            const newCustomizations = customizations.filter(c => c.optionId !== option.id);
+            newCustomizations.push({
+              optionId: option.id,
+              choiceIds: [],
+              customValue: e.target.value
+            });
+            onCustomizationChange(newCustomizations);
+          }}
+          placeholder={option.description || `${t("enterText")}...`}
+          className="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+          maxLength={option.max_length || 100}
         />
-        <div className="flex justify-between text-xs text-neutral-500">
-          <span>{t("messageHelp")}</span>
-          <span>{value.length}/200</span>
-        </div>
+        {option.max_length && (
+          <p className="text-xs text-stone-500">
+            {value.length}/{option.max_length} {t("characters")}
+          </p>
+        )}
       </div>
     );
   };
 
-  if (product.customizationOptions.length === 0) {
-    return null;
-  }
+  const renderCustomTextInput = (option: CustomizationOption) => {
+    const current = customizations.find((c) => c.optionId === option.id);
+    const value = current?.customValue || "";
 
-  // Filter visible options
-  const visibleOptions = product.customizationOptions.filter(isOptionVisible);
+    return (
+      <div key={option.id} className="space-y-2">
+        <label className="block text-sm font-medium text-stone-700">
+          {option.name}
+          {option.required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        <textarea
+          value={value}
+          onChange={(e) => {
+            const newCustomizations = customizations.filter(c => c.optionId !== option.id);
+            newCustomizations.push({
+              optionId: option.id,
+              choiceIds: [],
+              customValue: e.target.value
+            });
+            onCustomizationChange(newCustomizations);
+          }}
+          placeholder={option.description || `${t("enterCustomText")}...`}
+          className="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent resize-vertical"
+          rows={3}
+          maxLength={option.max_length || 200}
+        />
+        {option.max_length && (
+          <p className="text-xs text-stone-500">
+            {value.length}/{option.max_length} {t("characters")}
+          </p>
+        )}
+      </div>
+    );
+  };
+
+  const renderDateSelector = (option: CustomizationOption) => {
+    const current = customizations.find((c) => c.optionId === option.id);
+    const value = current?.customValue || "";
+
+    return (
+      <div key={option.id} className="space-y-2">
+        <label className="block text-sm font-medium text-stone-700">
+          {option.name}
+          {option.required && <span className="text-red-500 ml-1">*</span>}
+        </label>
+        <input
+          type="date"
+          value={value}
+          onChange={(e) => {
+            const newCustomizations = customizations.filter(c => c.optionId !== option.id);
+            newCustomizations.push({
+              optionId: option.id,
+              choiceIds: [],
+              customValue: e.target.value
+            });
+            onCustomizationChange(newCustomizations);
+          }}
+          className="w-full px-3 py-2 border border-stone-300 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+          min={new Date().toISOString().split("T")[0]}
+        />
+        {option.description && (
+          <p className="text-xs text-stone-500">{option.description}</p>
+        )}
+      </div>
+    );
+  };
 
   return (
     <div className={cn("space-y-6", className)}>
       {visibleOptions.map((option) => {
-        const currentCustomization = getCurrentCustomization(option.id);
-        const selectionCount = currentCustomization?.choiceIds.length || 0;
+        const current = customizations.find((c) => c.optionId === option.id);
+
+        if (option.type === "text") {
+          return renderTextInput(option);
+        }
+
+        if (option.type === "custom_text") {
+          return renderCustomTextInput(option);
+        }
+
+        if (option.type === "date") {
+          return renderDateSelector(option);
+        }
 
         return (
           <div key={option.id} className="space-y-3">
-            {/* Option Header */}
             <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-semibold text-neutral-900">
-                  {option.name[locale as keyof typeof option.name]}
-                  {option.required && <span className="text-red-500 ml-1">*</span>}
-                </h4>
-                {option.description && (
-                  <p className="text-sm text-neutral-600 mt-1">
-                    {option.description[locale as keyof typeof option.description]}
-                  </p>
-                )}
-              </div>
-
-              {/* Selection Counter */}
-              {option.maxSelections && option.maxSelections > 1 && (
-                <div className="text-sm text-neutral-500">
-                  {selectionCount}/{option.maxSelections}
-                </div>
+              <label className="block text-sm font-medium text-stone-700">
+                {option.name}
+                {option.required && <span className="text-red-500 ml-1">*</span>}
+              </label>
+              {option.max_selections && option.max_selections > 1 && (
+                <span className="text-xs text-stone-500">
+                  {current?.choiceIds.length || 0}/{option.max_selections} {t("selected")}
+                </span>
               )}
             </div>
 
-            {/* Option Choices */}
-            {option.type === "message" ? (
-              renderTextInput(option)
-            ) : (
-              <div className="space-y-2">
-                <div className="grid grid-cols-1 gap-2">
-                  {(option.choices || []).map((choice) => (
-                    <div key={choice.id}>
-                      {renderChoice(option, choice)}
-                      {choice.allowCustomInput && renderCustomTextInput(option, choice)}
-                      {choice.requiresCalendar && renderDateSelector(option, choice)}
+            {option.description && (
+              <p className="text-sm text-stone-600">{option.description}</p>
+            )}
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              {option.choices?.map((choice) => {
+                const isSelected = current?.choiceIds.includes(choice.id) || false;
+                const selectionCount = current?.choiceIds.length || 0;
+                const canSelect = !isSelected && (
+                  !option.max_selections ||
+                  selectionCount < option.max_selections
+                );
+
+                return (
+                  <button
+                    key={choice.id}
+                    type="button"
+                    onClick={() => {
+                      if (isSelected) {
+                        // Remove selection
+                        const newChoiceIds = current?.choiceIds.filter(id => id !== choice.id) || [];
+                        const newCustomizations = customizations.filter(c => c.optionId !== option.id);
+                        if (newChoiceIds.length > 0) {
+                          newCustomizations.push({
+                            optionId: option.id,
+                            choiceIds: newChoiceIds
+                          });
+                        }
+                        onCustomizationChange(newCustomizations);
+                      } else if (canSelect) {
+                        // Add selection
+                        const newChoiceIds = option.max_selections === 1
+                          ? [choice.id]
+                          : [...(current?.choiceIds || []), choice.id];
+                        const newCustomizations = customizations.filter(c => c.optionId !== option.id);
+                        newCustomizations.push({
+                          optionId: option.id,
+                          choiceIds: newChoiceIds
+                        });
+                        onCustomizationChange(newCustomizations);
+                      }
+                    }}
+                    disabled={!isSelected && !canSelect}
+                    className={cn(
+                      "p-3 border rounded-lg text-left transition-all duration-200",
+                      "hover:shadow-md focus:outline-none focus:ring-2 focus:ring-amber-500",
+                      isSelected
+                        ? "border-amber-500 bg-amber-50 text-amber-900"
+                        : canSelect
+                          ? "border-stone-300 bg-white text-stone-700 hover:border-amber-300"
+                          : "border-stone-200 bg-stone-50 text-stone-400 cursor-not-allowed"
+                    )}
+                  >
+                    <div className="flex items-center justify-between">
+                      <span className="font-medium">{choice.name}</span>
+                      {choice.price_modifier !== 0 && (
+                        <span className={cn(
+                          "text-sm font-medium",
+                          choice.price_modifier > 0 ? "text-green-600" : "text-red-600"
+                        )}>
+                          {choice.price_modifier > 0 ? "+" : ""}
+                          {formatPriceModifier(choice.price_modifier)}
+                        </span>
+                      )}
                     </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
-            {/* Validation Messages */}
-            {option.required && selectionCount === 0 && (
-              <div className="text-sm text-red-600">
-                {t("validation.required", {
-                  option: option.name[locale as keyof typeof option.name],
-                })}
-              </div>
-            )}
-
-            {option.minSelections && selectionCount < option.minSelections && (
-              <div className="text-sm text-orange-600">
-                {t("validation.minSelections", {
-                  option: option.name[locale as keyof typeof option.name],
-                  min: option.minSelections,
-                  current: selectionCount,
-                })}
-              </div>
-            )}
+                    {choice.description && (
+                      <p className="text-sm text-stone-500 mt-1">{choice.description}</p>
+                    )}
+                  </button>
+                );
+              })}
+            </div>
           </div>
         );
       })}

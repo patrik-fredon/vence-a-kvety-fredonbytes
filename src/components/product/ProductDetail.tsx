@@ -18,7 +18,6 @@ import {
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import type { Customization, Product } from "@/types/product";
 
-import { ProductImageGallery } from "./ProductImageGallery";
 import { ProductInfo } from "./ProductInfo";
 import { PriceBreakdown } from "./PriceBreakdown";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
@@ -293,8 +292,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       amount: price.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US"),
     });
   };
-
-  const totalPrice = priceCalculation.totalPrice;
 
   return (
     <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", className)}>

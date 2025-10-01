@@ -181,7 +181,7 @@ export async function POST(request: NextRequest) {
     const createdOrder: Order = {
       id: order.id,
       orderNumber: customerInfo.orderNumber || orderNumber,
-      userId: order.user_id || undefined,
+      userId: order.user_id || "",
       sessionId: customerInfo.sessionId || undefined,
       items: itemsData.items || [],
       itemCount: itemsData.itemCount || 0,
@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
         urgency: deliveryInfo.urgency,
         preferredDate: deliveryInfo.preferredDate
           ? new Date(deliveryInfo.preferredDate)
-          : undefined,
+          : new Date(),
         preferredTimeSlot: deliveryInfo.preferredTimeSlot,
         specialInstructions: deliveryInfo.specialInstructions,
         recipientName: deliveryInfo.recipientName,
@@ -218,7 +218,7 @@ export async function POST(request: NextRequest) {
         failureReason: paymentInfo.failureReason,
       },
       status: order.status as OrderStatus,
-      notes: order.notes || undefined,
+      notes: order.notes || "",
       internalNotes: undefined,
       createdAt: new Date(order.created_at),
       updatedAt: new Date(order.updated_at),
@@ -294,7 +294,7 @@ export async function POST(request: NextRequest) {
     const response: CreateOrderResponse = {
       success: true,
       order: createdOrder,
-      paymentUrl,
+      paymentUrl: paymentUrl || "",
     };
 
     return NextResponse.json(response);

@@ -20,13 +20,13 @@ export function ResetPasswordForm() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
 
-    if (!formData.password) {
+    if (!(formData as any)['password']) {
       errors.password = "Heslo je povinné";
-    } else if (formData.password.length < 6) {
+    } else if ((formData as any)['password'].length < 6) {
       errors.password = "Heslo musí mít alespoň 6 znaků";
     }
 
-    if (formData.password !== formData.confirmPassword) {
+    if ((formData as any)['password'] !== (formData as any)['confirmPassword']) {
       errors.confirmPassword = "Hesla se neshodují";
     }
 
@@ -80,9 +80,9 @@ export function ResetPasswordForm() {
               name="password"
               type="password"
               label="Nové heslo"
-              value={formData.password}
+              value={(formData as any)['password']}
               onChange={handleChange}
-              error={validationErrors.password}
+              error={validationErrors.password || ""}
               required
               autoComplete="new-password"
               disabled={loading}
@@ -95,9 +95,9 @@ export function ResetPasswordForm() {
               name="confirmPassword"
               type="password"
               label="Potvrzení hesla"
-              value={formData.confirmPassword}
+              value={(formData as any)['confirmPassword']}
               onChange={handleChange}
-              error={validationErrors.confirmPassword}
+              error={validationErrors.confirmPassword || ""}
               required
               autoComplete="new-password"
               disabled={loading}

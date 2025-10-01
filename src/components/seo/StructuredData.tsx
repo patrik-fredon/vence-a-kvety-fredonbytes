@@ -263,8 +263,7 @@ export function generateLocalBusinessStructuredData(locale: string) {
  * Generate FAQ structured data
  */
 export function generateFAQStructuredData(
-  faqs: Array<{ question: string; answer: string }>,
-  locale: string
+  faqs: Array<{ question: string; answer: string }>
 ) {
   return {
     "@context": "https://schema.org",
@@ -291,8 +290,7 @@ export function generateItemListStructuredData(
     description?: string;
     price?: number;
   }>,
-  listName: string,
-  locale: string
+  listName: string
 ) {
   const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
@@ -316,11 +314,11 @@ export function generateItemListStructuredData(
         description: item.description,
         offers: item.price
           ? {
-              "@type": "Offer",
-              price: item.price,
-              priceCurrency: "CZK",
-              availability: "https://schema.org/InStock",
-            }
+            "@type": "Offer",
+            price: item.price,
+            priceCurrency: "CZK",
+            availability: "https://schema.org/InStock",
+          }
           : undefined,
       },
     })),

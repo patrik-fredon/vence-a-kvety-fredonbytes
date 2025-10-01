@@ -128,7 +128,7 @@ export function AccessibilityToolbar() {
                 <h3 className="text-sm font-medium">{t("visualOptions")}</h3>
                 <Button
                   size="sm"
-                  variant={isHighContrast ? "primary" : "outline"}
+                  variant={isHighContrast ? "default" : "outline"}
                   onClick={handleHighContrastToggle}
                   className="justify-start w-full"
                   aria-pressed={isHighContrast}
