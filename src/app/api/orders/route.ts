@@ -182,7 +182,7 @@ export async function POST(request: NextRequest) {
       id: order.id,
       orderNumber: customerInfo.orderNumber || orderNumber,
       userId: order.user_id || "",
-      sessionId: customerInfo.sessionId || undefined,
+      sessionId: customerInfo.sessionId,
       items: itemsData.items || [],
       itemCount: itemsData.itemCount || 0,
       subtotal: itemsData.subtotal || 0,
@@ -219,7 +219,6 @@ export async function POST(request: NextRequest) {
       },
       status: order.status as OrderStatus,
       notes: order.notes || "",
-      internalNotes: undefined,
       createdAt: new Date(order.created_at),
       updatedAt: new Date(order.updated_at),
     };

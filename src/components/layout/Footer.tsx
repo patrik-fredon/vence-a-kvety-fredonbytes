@@ -18,7 +18,7 @@ export function Footer({ locale }: FooterProps) {
       fallback={
         <footer className="bg-stone-900 text-stone-100 py-8">
           <div className="container mx-auto px-4 text-center">
-            <p className="text-stone-200">© 2024 Ketingmar s.r.o. • Všechna práva vyhrazena</p>
+            <p className="text-stone-200">© 2025 FredonBytes</p>
           </div>
         </footer>
       }
@@ -122,7 +122,7 @@ export function Footer({ locale }: FooterProps) {
                       className="hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded"
                       aria-label={tAccessibility("sendOrderEmail")}
                     >
-                      objednavky@ketingmar.cz
+                      info@pohrebni-vence.cz
                     </a>
                     <p className="text-xs text-stone-400 mt-0.5">Objednávky</p>
                   </div>
@@ -170,7 +170,7 @@ export function Footer({ locale }: FooterProps) {
                   {t("faq")}
                 </Link>
                 <Link
-                  href={`/${locale}/delivery`}
+                  href={`/${locale}/legal`}
                   className="block text-stone-300 hover:text-white transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 focus:ring-offset-stone-900 rounded px-1 py-0.5"
                 >
                   {t("delivery")}

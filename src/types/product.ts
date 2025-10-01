@@ -9,10 +9,10 @@ export type CustomizationType = "size" | "flowers" | "ribbon" | "ribbon_color" |
 
 export interface CustomizationChoice {
   id: string;
-  value: string;
-  label: LocalizedContent;
+  value?: string;
+  label: LocalizedContent | string;
   priceModifier: number;
-  available: boolean;
+  available?: boolean;
   imageUrl?: string;
   allowCustomInput?: boolean;
   maxLength?: number;
@@ -25,8 +25,8 @@ export interface CustomizationChoice {
 export interface CustomizationOption {
   id: string;
   type: CustomizationType;
-  name: LocalizedContent;
-  description?: LocalizedContent;
+  name: LocalizedContent | string;
+  description?: LocalizedContent | string;
   choices: CustomizationChoice[];
   required: boolean;
   maxSelections?: number;

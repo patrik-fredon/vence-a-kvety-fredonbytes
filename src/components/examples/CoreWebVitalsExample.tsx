@@ -37,16 +37,16 @@ export function CoreWebVitalsExample() {
 
   // Optimized event handlers
   const handleAddImages = useCallback(
-    optimizedEventHandler(async () => {
+    async () => {
       await measureExecution('addImages', async () => {
         setImageCount(prev => prev + 2);
       });
-    }, { debounce: 300 }),
-    [optimizedEventHandler, measureExecution]
+    },
+    [measureExecution]
   );
 
   const handleSimulateSlowTask = useCallback(
-    optimizedEventHandler(async () => {
+    async () => {
       setIsLoading(true);
 
       await measureExecution('slowTask', async () => {
@@ -61,12 +61,12 @@ export function CoreWebVitalsExample() {
 
         setIsLoading(false);
       });
-    }, { debounce: 500 }),
-    [optimizedEventHandler, measureExecution, coreWebVitals]
+    },
+    [measureExecution, coreWebVitals]
   );
 
   const handleLayoutShiftDemo = useCallback(
-    optimizedEventHandler(async () => {
+    async () => {
       await measureExecution('layoutShiftDemo', async () => {
         setLayoutShiftDemo(prev => !prev);
 
@@ -75,8 +75,8 @@ export function CoreWebVitalsExample() {
           coreWebVitals.recordLayoutShift(0.15);
         }
       });
-    }, { debounce: 200 }),
-    [optimizedEventHandler, measureExecution, coreWebVitals, layoutShiftDemo]
+    },
+    [measureExecution, coreWebVitals, layoutShiftDemo]
   );
 
   const handleImageLoad = useCallback((src: string, loadTime: number, isLCP: boolean) => {
@@ -103,8 +103,8 @@ export function CoreWebVitalsExample() {
                 <div>
                   <span className="font-medium">LCP:</span>{' '}
                   <span className={`px-2 py-1 rounded text-xs ${coreWebVitals.metrics.ratings.lcp === 'good' ? 'bg-green-100 text-green-800' :
-                      coreWebVitals.metrics.ratings.lcp === 'needs-improvement' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
+                    coreWebVitals.metrics.ratings.lcp === 'needs-improvement' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
                     }`}>
                     {coreWebVitals.metrics.lcp.toFixed(0)}ms ({coreWebVitals.metrics.ratings.lcp})
                   </span>
@@ -114,8 +114,8 @@ export function CoreWebVitalsExample() {
                 <div>
                   <span className="font-medium">FID:</span>{' '}
                   <span className={`px-2 py-1 rounded text-xs ${coreWebVitals.metrics.ratings.fid === 'good' ? 'bg-green-100 text-green-800' :
-                      coreWebVitals.metrics.ratings.fid === 'needs-improvement' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
+                    coreWebVitals.metrics.ratings.fid === 'needs-improvement' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
                     }`}>
                     {coreWebVitals.metrics.fid.toFixed(0)}ms ({coreWebVitals.metrics.ratings.fid})
                   </span>
@@ -125,8 +125,8 @@ export function CoreWebVitalsExample() {
                 <div>
                   <span className="font-medium">CLS:</span>{' '}
                   <span className={`px-2 py-1 rounded text-xs ${coreWebVitals.metrics.ratings.cls === 'good' ? 'bg-green-100 text-green-800' :
-                      coreWebVitals.metrics.ratings.cls === 'needs-improvement' ? 'bg-yellow-100 text-yellow-800' :
-                        'bg-red-100 text-red-800'
+                    coreWebVitals.metrics.ratings.cls === 'needs-improvement' ? 'bg-yellow-100 text-yellow-800' :
+                      'bg-red-100 text-red-800'
                     }`}>
                     {coreWebVitals.metrics.cls.toFixed(3)} ({coreWebVitals.metrics.ratings.cls})
                   </span>

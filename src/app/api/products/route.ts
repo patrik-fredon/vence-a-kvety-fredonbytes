@@ -322,7 +322,7 @@ export async function POST(request: NextRequest) {
         },
       },
       active: body.active !== undefined ? body.active : true,
-      featured: body.featured,
+      featured: body.featured ?? false,
     });
 
     const { data, error } = await supabase

@@ -130,14 +130,14 @@ export function withPerformanceMonitoring<T extends (...args: any[]) => any>(
       // Handle async functions
       if (result instanceof Promise) {
         return result.finally(() => {
-          endTiming({ args: args.length });
+          endTiming();
         });
       }
 
-      endTiming({ args: args.length });
+      endTiming();
       return result;
     } catch (error) {
-      endTiming({ error: error instanceof Error ? error.message : 'Unknown error', args: args.length });
+      endTiming();
       throw error;
     }
   }) as T;
@@ -159,14 +159,14 @@ export function performanceMonitored(operationName?: string) {
 
         if (result instanceof Promise) {
           return result.finally(() => {
-            endTiming({ args: args.length });
+            endTiming();
           });
         }
 
-        endTiming({ args: args.length });
+        endTiming();
         return result;
       } catch (error) {
-        endTiming({ error: error instanceof Error ? error.message : 'Unknown error', args: args.length });
+        endTiming();
         throw error;
       }
     };

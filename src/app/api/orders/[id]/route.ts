@@ -206,7 +206,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           id: updatedOrder.id,
           orderNumber: customerInfo.orderNumber || updatedOrder.id.slice(-8).toUpperCase(),
           userId: updatedOrder.user_id || "",
-          sessionId: customerInfo.sessionId || undefined,
+          sessionId: customerInfo.sessionId,
           items: itemsData.items || [],
           itemCount: itemsData.itemCount || 0,
           subtotal: itemsData.subtotal || 0,
@@ -246,10 +246,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           internalNotes: updatedOrder.notes || "",
           createdAt: new Date(updatedOrder.created_at),
           updatedAt: new Date(updatedOrder.updated_at),
-          confirmedAt: updatedOrder.confirmed_at ? new Date(updatedOrder.confirmed_at) : undefined,
-          shippedAt: updatedOrder.shipped_at ? new Date(updatedOrder.shipped_at) : undefined,
-          deliveredAt: updatedOrder.delivered_at ? new Date(updatedOrder.delivered_at) : undefined,
-          cancelledAt: updatedOrder.cancelled_at ? new Date(updatedOrder.cancelled_at) : undefined,
+          ...(updatedOrder.confirmed_at && { confirmedAt: new Date(updatedOrder.confirmed_at) }),
+          ...(updatedOrder.shipped_at && { shippedAt: new Date(updatedOrder.shipped_at) }),
+          ...(updatedOrder.delivered_at && { deliveredAt: new Date(updatedOrder.delivered_at) }),
+          ...(updatedOrder.cancelled_at && { cancelledAt: new Date(updatedOrder.cancelled_at) }),
         };
 
         // Send status update email

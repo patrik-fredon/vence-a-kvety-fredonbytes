@@ -21,13 +21,13 @@ export function ResetPasswordForm() {
     const errors: Record<string, string> = {};
 
     if (!(formData as any)['password']) {
-      errors.password = "Heslo je povinné";
+      errors['password'] = "Heslo je povinné";
     } else if ((formData as any)['password'].length < 6) {
-      errors.password = "Heslo musí mít alespoň 6 znaků";
+      errors['password'] = "Heslo musí mít alespoň 6 znaků";
     }
 
     if ((formData as any)['password'] !== (formData as any)['confirmPassword']) {
-      errors.confirmPassword = "Hesla se neshodují";
+      errors['confirmPassword'] = "Hesla se neshodují";
     }
 
     setValidationErrors(errors);
