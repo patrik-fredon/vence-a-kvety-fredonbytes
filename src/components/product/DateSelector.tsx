@@ -1,6 +1,6 @@
 "use client";
 
-import { CalendarIcon } from "@heroicons/react/24/outline";
+import { CalendarIcon } from "@/lib/icons";
 import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 

@@ -5,7 +5,7 @@ import {
   ChevronRightIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/Card";

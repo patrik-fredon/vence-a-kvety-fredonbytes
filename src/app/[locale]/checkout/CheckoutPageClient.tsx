@@ -1,6 +1,6 @@
 "use client";
 
-import { ArrowLeftIcon, ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { ArrowLeftIcon, ShoppingCartIcon } from "@/lib/icons";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";

@@ -1,7 +1,7 @@
 "use client";
 
 import { Component, type ReactNode } from "react";
-import { ExclamationTriangleIcon, ArrowPathIcon } from "@heroicons/react/24/outline";
+import { ExclamationTriangleIcon, ArrowPathIcon } from "@/lib/icons";
 
 import { logError } from "@/lib/monitoring/error-logger";
 

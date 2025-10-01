@@ -1,4 +1,4 @@
-import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
 import { getTranslations } from "next-intl/server";
 import { ContactForm } from "@/components/contact";
 

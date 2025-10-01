@@ -51,6 +51,12 @@ export {
   UsersIcon,
   DocumentDuplicateIcon,
   ClipboardDocumentListIcon,
+  ArrowPathIcon,
+  CheckIcon,
+  BanknotesIcon,
+  ArrowTopRightOnSquareIcon,
+  ArrowUpIcon,
+  CubeIcon,
 } from "@heroicons/react/24/outline";
 
 // Solid icons - used sparingly for emphasis

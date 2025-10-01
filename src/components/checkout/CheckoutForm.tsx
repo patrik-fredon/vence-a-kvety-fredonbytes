@@ -5,7 +5,7 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";

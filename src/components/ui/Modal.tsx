@@ -5,7 +5,7 @@
 
 "use client";
 
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@/lib/icons";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";

@@ -5,7 +5,7 @@ import {
   ExclamationTriangleIcon,
   HomeIcon,
   PhoneIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 import { Component, type ReactNode } from "react";
 import { logError } from "@/lib/monitoring/error-logger";
 import { getErrorMessage } from "@/lib/monitoring/error-messages";
@@ -77,8 +77,8 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       if (level === "critical") {
         return (
-          <CriticalErrorFallback 
-            errorId={this.state.errorId || "unknown"} 
+          <CriticalErrorFallback
+            errorId={this.state.errorId || "unknown"}
           />
         );
       }

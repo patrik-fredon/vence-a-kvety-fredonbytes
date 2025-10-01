@@ -5,7 +5,7 @@ import {
   BanknotesIcon,
   CreditCardIcon,
   DevicePhoneMobileIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 
 import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";

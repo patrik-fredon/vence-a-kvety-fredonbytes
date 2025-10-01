@@ -6,7 +6,7 @@ import {
   Bars3Icon,
   BellIcon,
   UserCircleIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 import { signOut, useSession } from "next-auth/react";
 
 import { Fragment } from "react";
