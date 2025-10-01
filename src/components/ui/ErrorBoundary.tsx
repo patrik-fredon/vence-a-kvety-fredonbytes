@@ -77,9 +77,9 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
 
       if (level === "critical") {
         return (
-          <CriticalErrorFallback 
-            error={this.state.error || new Error("Unknown error")} 
-            errorId={this.state.errorId || "unknown"} 
+          <CriticalErrorFallback
+            error={this.state.error || new Error("Unknown error")}
+            errorId={this.state.errorId || "unknown"}
           />
         );
       }
@@ -227,8 +227,28 @@ export function PageErrorFallback({ error, onRetry, errorId }: ErrorFallbackProp
       <div className="bg-white rounded-lg shadow-elegant p-8 max-w-md mx-auto">
         <ErrorFallback
           error={error || new Error("Unknown error")}
-          onRetry={onRetry}
+          onRetry={onRetry || (() => window.location.reload())}
           errorId={errorId || "unknown"}
+          title="Stránka se nepodařila načíst"
+          message="Omlouváme se, při načítání stránky došlo k chybě. Zkuste obnovit stránku nebo se vraťte na hlavní stránku."
+          showContactSupport={true}
+          recoveryActions={[
+            {
+              label: "Obnovit stránku",
+              action: handleRefreshPage,
+              icon: ArrowPathIcon,
+            },
+            {
+              label: "Hlavní stránka",
+              action: handleGoHome,
+              icon: HomeIcon,
+            },
+          ]}
+        />
+      </div>
+    </div>
+  );
+}
           title="Stránka se nepodařila načíst"
           message="Omlouváme se, při načítání stránky došlo k chybě. Zkuste obnovit stránku nebo se vraťte na hlavní stránku."
           showContactSupport={true}
@@ -260,7 +280,7 @@ export function ComponentErrorFallback({
     <div className={`bg-white border border-neutral-200 rounded-lg p-6 ${className}`}>
       <ErrorFallback
         error={error || new Error("Unknown error")}
-        onRetry={onRetry}
+        onRetry={onRetry || (() => window.location.reload())}
         errorId={errorId || "unknown"}
         title="Komponenta se nepodařila načíst"
         message="Při načítání této části stránky došlo k chybě."
@@ -269,9 +289,9 @@ export function ComponentErrorFallback({
   );
 }>
       <ErrorFallback
-        error={error}
+        error={error || new Error("Unknown error")}
         onRetry={onRetry}
-        errorId={errorId}
+        errorId={errorId || "unknown"}
         title="Komponenta se nepodařila načíst"
         message="Při načítání této části stránky došlo k chybě."
       />
