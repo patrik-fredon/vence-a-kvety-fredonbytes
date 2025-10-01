@@ -61,7 +61,11 @@ export function ResourceHints({
         rel="preload"
         href="/styles/critical.css"
         as="style"
-        onLoad="this.onload=null;this.rel='stylesheet'"
+        onLoad={(e) => {
+          const target = e.target as HTMLLinkElement;
+          target.onload = null;
+          target.rel = 'stylesheet';
+        }}
       />
 
       {/* Viewport meta for proper responsive behavior */}

@@ -42,7 +42,7 @@ export function ProductCard({
   // Removed unused coreWebVitals hook
 
   // JavaScript optimization
-  const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductCard');
+  const { measureExecution } = useJavaScriptOptimization('ProductCard');
 
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
   const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
@@ -54,27 +54,27 @@ export function ProductCard({
   };
 
   const handleAddToCart = useCallback(
-    optimizedEventHandler(async (e: React.MouseEvent) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
       await measureExecution('addToCart', async () => {
         onAddToCart?.(product);
       });
-    }, { debounce: 300 }),
-    [onAddToCart, product, optimizedEventHandler, measureExecution]
+    },
+    [onAddToCart, product, measureExecution]
   );
 
   const handleQuickView = useCallback(
-    optimizedEventHandler(async (e: React.MouseEvent) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
       await measureExecution('quickView', async () => {
         setIsQuickViewOpen(true);
       });
-    }, { debounce: 200 }),
-    [optimizedEventHandler, measureExecution]
+    },
+    [measureExecution]
   );
 
   // List view - keep existing layout
@@ -109,7 +109,7 @@ export function ProductCard({
                     imageLoading && "blur-sm"
                   )}
                   onLoad={() => setImageLoading(false)}
-                  onError={() => setImageError(true)}
+                  onError={() => setImageLoading(false)}
                   priority={featured}
                   enableCoreWebVitals={false}
                   componentName="ProductCard_List"

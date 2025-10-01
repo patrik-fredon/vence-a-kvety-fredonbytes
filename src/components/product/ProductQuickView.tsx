@@ -115,7 +115,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
       <div className="flex flex-col lg:flex-row gap-6 p-6">
         {/* Image Gallery */}
         <div className="flex-1">
-          <div ref={productImageRef} className="aspect-square bg-stone-100 rounded-lg overflow-hidden mb-4">
+          <div ref={productImageRef} className="aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg overflow-hidden mb-4">
             {currentImage && (
               <OptimizedImage
                 src={currentImage.url}
@@ -188,7 +188,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
               )}
             </div>
             {product.featured && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-amber-800 border border-amber-200">
                 {t("featured")}
               </span>
             )}

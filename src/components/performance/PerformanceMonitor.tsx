@@ -8,11 +8,12 @@ import { useEffect } from "react";
  */
 
 interface WebVitalsMetric {
-  name: "CLS" | "FID" | "FCP" | "LCP" | "TTFB";
+  name: "CLS" | "INP" | "FCP" | "LCP" | "TTFB";
   value: number;
   rating: "good" | "needs-improvement" | "poor";
   delta: number;
   id: string;
+  timestamp: number;
 }
 
 interface PerformanceMonitorProps {
@@ -29,7 +30,7 @@ interface PerformanceMonitorProps {
  */
 const VITALS_THRESHOLDS = {
   CLS: { good: 0.1, poor: 0.25 },
-  FID: { good: 100, poor: 300 },
+  INP: { good: 200, poor: 500 },
   FCP: { good: 1800, poor: 3000 },
   LCP: { good: 2500, poor: 4000 },
   TTFB: { good: 800, poor: 1800 },
@@ -75,7 +76,7 @@ export function PerformanceMonitor({
 
     // Dynamic import of web-vitals to avoid SSR issues
     import("web-vitals")
-      .then(({ onCLS, onFID, onFCP, onLCP, onTTFB }) => {
+      .then(({ onCLS, onINP, onFCP, onLCP, onTTFB }) => {
         const handleMetric = (metric: any) => {
           const webVitalsMetric: WebVitalsMetric = {
             name: metric.name,
@@ -83,6 +84,7 @@ export function PerformanceMonitor({
             rating: getMetricRating(metric.name, metric.value),
             delta: metric.delta,
             id: metric.id,
+            timestamp: Date.now(),
           };
 
           // Log to console in debug mode
@@ -103,7 +105,7 @@ export function PerformanceMonitor({
 
         // Register metric observers
         onCLS(handleMetric);
-        onFID(handleMetric);
+        onINP(handleMetric);
         onFCP(handleMetric);
         onLCP(handleMetric);
         onTTFB(handleMetric);
