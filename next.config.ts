@@ -17,8 +17,8 @@ const nextConfig: NextConfig = {
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: OPTIMIZE_PACKAGE_IMPORTS,
-    // CSS optimization for better performance
-    optimizeCss: true,
+    // CSS optimization disabled due to critters module dependency issue
+    // optimizeCss: true,
   },
 
   // Turbopack configuration (replaces experimental.turbo)
