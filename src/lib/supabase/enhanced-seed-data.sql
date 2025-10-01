@@ -45,7 +45,13 @@ INSERT INTO categories (name_cs, name_en, slug, description_cs, description_en, 
  'Věnce ve tvaru srdce pro vyjádření lásky a úcty',
  'Heart-shaped wreaths to express love and respect',
  '/images/categories/heart-wreaths.jpg',
- (SELECT id FROM categories WHERE slug = 'funeral-wreaths'), 3, true)
+ (SELECT id FROM categories WHERE slug = 'funeral-wreaths'), 3, true),
+
+('Křížové věnce', 'Cross Wreaths', 'cross-wreaths',
+ 'Křížové pohřební aranžmá pro náboženské obřady',
+ 'Cross funeral arrangements for religious ceremonies',
+ '/images/categories/cross-wreaths.jpg',
+ (SELECT id FROM categories WHERE slug = 'funeral-wreaths'), 4, true)
 
 ON CONFLICT (slug) DO UPDATE SET
   name_cs = EXCLUDED.name_cs,
@@ -56,28 +62,29 @@ ON CONFLICT (slug) DO UPDATE SET
   sort_order = EXCLUDED.sort_order,
   updated_at = NOW();
 
--- Standardized customisation_options for ALL products
--- This ensures consistency across the entire product catalog
-
 -- Insert comprehensive products with standardized customization_options
 INSERT INTO products (
   name_cs, name_en, slug, description_cs, description_en,
   base_price, category_id, images, customization_options, availability, seo_metadata, featured, active
 ) VALUES
 
--- Classic Funeral Wreaths
+-- Classic Round Wreath
 (
-  'Klasický bílý pohřební věnec',
-  'Classic White Funeral Wreath',
-  'classic-white-funeral-wreath',
-  'Tradiční pohřební věnec z čerstvých bílých chryzantém, růží a zelených listů. Elegantní a důstojný design vhodný pro všechny typy pohřebních obřadů. Věnec je ručně vyráběn našimi zkušenými floristy s důrazem na kvalitu a detail.',
-  'Traditional funeral wreath made from fresh white chrysanthemums, roses and green leaves. Elegant and dignified design suitable for all types of funeral ceremonies. The wreath is handcrafted by our experienced florists with emphasis on quality and detail.',
-  1200.00,
+  'Kulatý věnec',
+  'Round wreath',
+  'classic-round-wreath',
+  'Tradiční kruhový pohřební věnec s bílými růžemi, žlutými karafiáty a zelenými anthuriumy. Ideální pro pohřební obřady, rozloučení a smuteční ceremonie.',
+  'Traditional circular funeral wreath with white roses, yellow carnations, and green anthuriums. Ideal for funeral services, farewells, and memorial ceremonies.',
+  4400.00,
   (SELECT id FROM categories WHERE slug = 'classic-wreaths'),
   '[
-    {"url": "/funeral-wreaths-and-floral-arrangement-001.png", "alt": "Klasický bílý pohřební věnec", "primary": true},
-    {"url": "/funeral-wreaths-and-floral-arrangement-002.png", "alt": "Detail bílých chryzantém", "primary": false},
-    {"url": "/funeral-wreaths-and-floral-arrangement-003.png", "alt": "Celkový pohled na věnec", "primary": false}
+    {"url": "https://cdn.fredonbytes.com/circular-funeral-wreath-white-roses-yellow-carnations-green-anthuriums.webp", "alt": "Classic white round funeral wreath", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/circular-funeral-wreath-white-roses-yellow-carnations-green-anthuriums-detail-1.webp", "alt": "Detail 1: Classic white round funeral wreath", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/circular-funeral-wreath-white-roses-yellow-carnations-green-anthuriums-detail-2.webp", "alt": "Detail 2: Classic white round funeral wreath", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/beige-satin-ribbon-marble-surface-dark-background.webp", "alt": "White ribbon with gold border", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-gold-ribbon-funeral-wreath.webp", "alt": "Black ribbon with gold edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/charcoal-satin-ribbon-natural-light.webp", "alt": "Black classic ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/florist-hands-arranging-lilies-closeup.webp", "alt": "The florist creates a wreath", "primary": false}
   ]'::jsonb,
   '[
     {
@@ -85,6 +92,8 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
         {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
         {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
@@ -96,6 +105,8 @@ INSERT INTO products (
       "type": "ribbon",
       "name": {"cs": "Stuha", "en": "Ribbon"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
         {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
         {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
@@ -108,6 +119,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -122,6 +134,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -137,10 +150,11 @@ INSERT INTO products (
       "type": "delivery",
       "name": {"cs": "Čas dodání", "en": "Delivery Time"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
-        {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
-        {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
       ]
     }
   ]'::jsonb,
@@ -150,18 +164,20 @@ INSERT INTO products (
   true
 ),
 
+-- Rectangle with Photo
 (
-  'Růžový smuteční věnec s liliemi',
-  'Pink Mourning Wreath with Lilies',
-  'pink-mourning-wreath-lilies',
-  'Jemný smuteční věnec s růžovými růžemi, bílými liliemi a zelenými listy. Symbolizuje lásku, naději a věčnou vzpomínku. Ideální pro rozloučení s blízkými osobami, zejména ženami a mladými lidmi.',
-  'Gentle mourning wreath with pink roses, white lilies and green leaves. Symbolizes love, hope and eternal memory. Ideal for farewell to loved ones, especially women and young people.',
-  1500.00,
-  (SELECT id FROM categories WHERE slug = 'classic-wreaths'),
+  'Obdélník s fotografii',
+  'Rectangle with photo',
+  'rectangle-wreath-with-photo',
+  'Čtvercový pohřební věnec s růžovými, červenými a fialovými růžemi, černou stuhou. Detaily zahrnují zelené listí a drobné doplňkové květiny. Ideální pro pohřební obřady, smuteční ceremonie a významná rozloučení.',
+  'Square funeral wreath with pink, red, and purple roses, black ribbon. Details include green foliage and small accent flowers. Ideal for funeral services, memorial ceremonies, and significant farewells.',
+  5400.00,
+  (SELECT id FROM categories WHERE slug = 'modern-wreaths'),
   '[
-    {"url": "/funeral-wreaths-and-floral-arrangement-004.png", "alt": "Růžový smuteční věnec s liliemi", "primary": true},
-    {"url": "/funeral-wreaths-and-floral-arrangement-005.png", "alt": "Detail růžových růží", "primary": false},
-    {"url": "/funeral-wreaths-and-floral-arrangement-006.png", "alt": "Bílé lilie v kompozici", "primary": false}
+    {"url": "https://cdn.fredonbytes.com/square-funeral-wreath-pink-red-purple-roses-black-ribbon.webp", "alt": "Classic white round funeral wreath", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/black-satin-ribbon-coiled.webp", "alt": "Black satin ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-satin-gold-edged-ribbon-natural-light.webp", "alt": "Black satin ribbon with golden edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/white-gold-edge-ribbon-awareness.webp", "alt": "White classic ribbon", "primary": false}
   ]'::jsonb,
   '[
     {
@@ -169,10 +185,10 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
-        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
-        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
+        {"id": "size_120", "label": {"cs": "39x47cm rozměr", "en": "39x47cm size"}, "priceModifier": 0, "available": true}
       ]
     },
     {
@@ -180,6 +196,8 @@ INSERT INTO products (
       "type": "ribbon",
       "name": {"cs": "Stuha", "en": "Ribbon"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
         {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
         {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
@@ -192,6 +210,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -206,6 +225,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -221,30 +241,36 @@ INSERT INTO products (
       "type": "delivery",
       "name": {"cs": "Čas dodání", "en": "Delivery Time"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
-        {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
-        {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
       ]
     }
   ]'::jsonb,
-  '{"inStock": true, "quantity": 15, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": ["fresh_lilies"]}'::jsonb,
-  '{"title": {"cs": "Růžový smuteční věnec s liliemi | Pohřební květiny", "en": "Pink Mourning Wreath with Lilies | Funeral Flowers"}, "description": {"cs": "Jemný růžový věnec s liliemi pro důstojné rozloučení. Expresní dodání.", "en": "Gentle pink wreath with lilies for dignified farewell. Express delivery."}, "keywords": {"cs": "růžový věnec, lilie, smuteční květiny, pohřeb ženy", "en": "pink wreath, lilies, mourning flowers, woman funeral"}}'::jsonb,
-  true,
+  '{"inStock": true, "quantity": 5, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": ["premium_roses", "careful_handling"]}'::jsonb,
+  '{"title": {"cs": "Srdcový věnec z červených růží | Romantické věnce", "en": "Heart Wreath with Red Roses | Romantic Wreaths"}, "description": {"cs": "Romantický srdcový věnec symbolizující věčnou lásku. Prémiové červené růže.", "en": "Romantic heart wreath symbolizing eternal love. Premium red roses."}, "keywords": {"cs": "srdcový věnec, červené růže, láska, partner", "en": "heart wreath, red roses, love, partner"}}'::jsonb,
+  false,
   true
 ),
--- Modern Wreaths
+
+-- Full Heart
 (
-  'Moderní asymetrický věnec',
-  'Modern Asymmetric Wreath',
-  'modern-asymmetric-wreath',
-  'Současný designový věnec s asymetrickou kompozicí. Kombinuje tradiční květiny s moderními prvky jako jsou sukulenty a netradiční zelené rostliny. Vhodný pro mladší generaci a milovníky moderního designu.',
-  'Contemporary design wreath with asymmetric composition. Combines traditional flowers with modern elements such as succulents and non-traditional green plants. Suitable for younger generation and lovers of modern design.',
-  1800.00,
-  (SELECT id FROM categories WHERE slug = 'modern-wreaths'),
+  'Plné srdce',
+  'Full heart',
+  'full-hearth-wreath',
+  'Srdcovitý pohřební věnec z bílých chryzantém a fialových růží s černou stuhou se zlatými pruhy. Detailní smuteční aranžmá s bohatým zeleným listím pro pohřební obřady a rozloučení. Kvalitní pohřební květiny jako symbol úcty a lítosti.',
+  'Heart-shaped funeral wreath made of white chrysanthemums and purple roses with a black ribbon with gold stripes. Detailed funeral arrangement with rich green foliage for funeral ceremonies and farewells. High-quality funeral flowers as a symbol of respect and sorrow.',
+  5700.00,
+  (SELECT id FROM categories WHERE slug = 'heart-wreaths'),
   '[
-    {"url": "/funeral-wreaths-and-floral-arrangement-007.png", "alt": "Moderní asymetrický věnec", "primary": true},
-    {"url": "/funeral-wreaths-and-floral-arrangement-008.png", "alt": "Detail moderní kompozice", "primary": false}
+    {"url": "https://cdn.fredonbytes.com/heart-shaped-funeral-wreath-white-chrysanthemums-purple-roses-black-ribbon.webp", "alt": "Hearth shaped funeral wreath, white and purple flowers", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/heart-shaped-funeral-wreath-white-chrysanthemums-purple-roses-black-ribbon-detail.webp", "alt": "Detail 1: Hearth shaped funeral wreath, white and purple flowers", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/beige-satin-ribbon-marble-surface-dark-background.webp", "alt": "White ribbon with gold border", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-gold-ribbon-funeral-wreath.webp", "alt": "Black ribbon with gold edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/charcoal-satin-ribbon-natural-light.webp", "alt": "Black classic ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/mountain-landscape-view.webp", "alt": "Wreath pink roses and violet flowers", "primary": false}
   ]'::jsonb,
   '[
     {
@@ -252,10 +278,12 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
-        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
-        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
+        {"id": "size_120", "label": {"cs": "45cm průměr", "en": "45cm diameter"}, "priceModifier": 0, "available": true},
+        {"id": "size_150", "label": {"cs": "60cm průměr", "en": "60cm diameter"}, "priceModifier": 1000, "available": true},
+        {"id": "size_180", "label": {"cs": "75cm průměr", "en": "75cm diameter"}, "priceModifier": 2000, "available": true}
       ]
     },
     {
@@ -263,6 +291,8 @@ INSERT INTO products (
       "type": "ribbon",
       "name": {"cs": "Stuha", "en": "Ribbon"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
         {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
         {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
@@ -275,6 +305,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -289,6 +320,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -304,10 +336,11 @@ INSERT INTO products (
       "type": "delivery",
       "name": {"cs": "Čas dodání", "en": "Delivery Time"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
-        {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
-        {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
       ]
     }
   ]'::jsonb,
@@ -317,18 +350,23 @@ INSERT INTO products (
   true
 ),
 
--- Heart Wreaths
+-- Slanted Heart
 (
-  'Srdcový věnec z červených růží',
-  'Heart Wreath with Red Roses',
-  'heart-wreath-red-roses',
-  'Romantický srdcový věnec z červených růží symbolizující věčnou lásku a oddanost. Ideální pro rozloučení s životním partnerem nebo partnerkou. Ručně vyráběný s největší péčí a citem.',
-  'Romantic heart wreath with red roses symbolizing eternal love and devotion. Ideal for farewell to life partner. Handcrafted with the greatest care and sensitivity.',
-  2200.00,
+  'šikmé srdce',
+  'Slanted heart',
+  'wreath-slanted-hearth',
+  'Srdcovitý pohřební věnec z červených růží s bílou gypsofilií, červenými bobulemi a černou stuhou se červenými pruhy. Detailní aranžmá s břečťanem a zeleným listím na dřevěných pamětních deskách. Ideální pro pohřební obřady a rozloučení. Kvalitní smuteční květiny symbolizující hlubokou úctu a upřímnou lítost.',
+  'Heart-shaped funeral wreath made of red roses with white gypsophila, red berries, and black ribbon with red stripes. Detailed arrangement with ivy and green foliage on wooden memorial plaques. Ideal for funeral ceremonies and farewells. High-quality funeral flowers symbolizing deep respect and sincere condolences.',
+  4800.00,
   (SELECT id FROM categories WHERE slug = 'heart-wreaths'),
   '[
-    {"url": "/funeral-wreaths-and-floral-arrangement-009.png", "alt": "Srdcový věnec z červených růží", "primary": true},
-    {"url": "/funeral-wreaths-and-floral-arrangement-010.png", "alt": "Detail červených růží", "primary": false}
+    {"url": "https://cdn.fredonbytes.com/red-rose-funeral-arrangement-berries-babys-breath-black-ribbon.webp", "alt": "Red rose funeral arrandement berries babys breath black ribbon", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/red-rose-funeral-arrangement-berries-babys-breath-black-ribbon-detail-1.webp", "alt": "Detail 1: Red rose funeral arrandement berries babys breath black ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/red-rose-funeral-arrangement-berries-babys-breath-black-ribbon-detail-2.webp", "alt": "Detail 2: Red rose funeral arrandement berries babys breath black ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/glossy-black-gold-edge-ribbon-luxury", "alt": "Black ribbon with gold border", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-gold-ribbon-funeral-wreath.webp", "alt": "Black ribbon with gold edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/glossy-black-gold-edge-ribbon-luxury.webp", "alt": "White ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/wiring-lilies-wreath-floral-design.webp", "alt": "The florist creates a wreath", "primary": false}
   ]'::jsonb,
   '[
     {
@@ -336,10 +374,10 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
-        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
-        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
+        {"id": "size_120", "label": {"cs": "50cm průměr", "en": "50cm diameter"}, "priceModifier": 0, "available": true}
       ]
     },
     {
@@ -347,6 +385,8 @@ INSERT INTO products (
       "type": "ribbon",
       "name": {"cs": "Stuha", "en": "Ribbon"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
         {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
         {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
@@ -359,6 +399,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -373,6 +414,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -388,198 +430,36 @@ INSERT INTO products (
       "type": "delivery",
       "name": {"cs": "Čas dodání", "en": "Delivery Time"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
-        {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
-        {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
       ]
     }
   ]'::jsonb,
-  '{"inStock": true, "quantity": 5, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": ["premium_roses", "careful_handling"]}'::jsonb,
-  '{"title": {"cs": "Srdcový věnec z červených růží | Romantické věnce", "en": "Heart Wreath with Red Roses | Romantic Wreaths"}, "description": {"cs": "Romantický srdcový věnec symbolizující věčnou lásku. Prémiové červené růže.", "en": "Romantic heart wreath symbolizing eternal love. Premium red roses."}, "keywords": {"cs": "srdcový věnec, červené růže, láska, partner", "en": "heart wreath, red roses, love, partner"}}'::jsonb,
-  true,
-  true
-),
--- Mourning Bouquets
-(
-  'Elegantní bílá smuteční kytice',
-  'Elegant White Mourning Bouquet',
-  'elegant-white-mourning-bouquet',
-  'Elegantní smuteční kytice z bílých a krémových květin včetně růží, lilií a eustomy. Vázaná v klasickém stylu s přírodními materiály. Vhodná pro položení k rakvi nebo jako dar pozůstalým.',
-  'Elegant mourning bouquet made from white and cream flowers including roses, lilies and eustoma. Tied in classic style with natural materials. Suitable for placing by the coffin or as a gift to the bereaved.',
-  800.00,
-  (SELECT id FROM categories WHERE slug = 'mourning-bouquets'),
-  '[
-    {"url": "/funeral-wreaths-and-floral-arrangement-011.png", "alt": "Elegantní bílá smuteční kytice", "primary": true},
-    {"url": "/funeral-wreaths-and-floral-arrangement-012.png", "alt": "Detail bílých květin", "primary": false}
-  ]'::jsonb,
-  '[
-    {
-      "id": "size",
-      "type": "size",
-      "name": {"cs": "Velikost", "en": "Size"},
-      "required": true,
-      "choices": [
-        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
-        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
-        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
-      ]
-    },
-    {
-      "id": "ribbon",
-      "type": "ribbon",
-      "name": {"cs": "Stuha", "en": "Ribbon"},
-      "required": true,
-      "choices": [
-        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
-        {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
-      ]
-    },
-    {
-      "id": "ribbon_color",
-      "type": "ribbon_color",
-      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
-      "required": false,
-      "dependsOn": {
-        "optionId": "ribbon",
-        "requiredChoiceIds": ["ribbon_yes"]
-      },
-      "choices": [
-        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
-        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
-      ]
-    },
-    {
-      "id": "ribbon_text",
-      "type": "ribbon_text",
-      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
-      "required": false,
-      "dependsOn": {
-        "optionId": "ribbon",
-        "requiredChoiceIds": ["ribbon_yes"]
-      },
-      "choices": [
-        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
-        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
-        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
-        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
-        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
-      ]
-    },
-    {
-      "id": "delivery_time",
-      "type": "delivery",
-      "name": {"cs": "Čas dodání", "en": "Delivery Time"},
-      "required": true,
-      "choices": [
-        {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
-        {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
-        {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
-      ]
-    }
-  ]'::jsonb,
-  '{"inStock": true, "quantity": 20, "estimatedDelivery": "same-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": []}'::jsonb,
-  '{"title": {"cs": "Elegantní bílá smuteční kytice | Smuteční květiny", "en": "Elegant White Mourning Bouquet | Mourning Flowers"}, "description": {"cs": "Elegantní bílá kytice pro vyjádření soustrasti. Dodání tentýž den.", "en": "Elegant white bouquet to express condolences. Same-day delivery."}, "keywords": {"cs": "smuteční kytice, bílé květiny, kondolence", "en": "mourning bouquet, white flowers, condolences"}}'::jsonb,
-  false,
-  true
-),
-
--- Grave Wreaths
-(
-  'Trvalý věnec na hrob - podzimní',
-  'Permanent Grave Wreath - Autumn',
-  'permanent-grave-wreath-autumn',
-  'Trvalý věnec z umělých květin v podzimních barvách pro dlouhodobou úpravu hrobu. Odolný vůči povětrnostním vlivům, vydrží celou sezónu. Kombinuje oranžové, žluté a hnědé tóny s přírodními prvky.',
-  'Permanent wreath made from artificial flowers in autumn colors for long-term grave decoration. Weather resistant, lasts the entire season. Combines orange, yellow and brown tones with natural elements.',
-  900.00,
-  (SELECT id FROM categories WHERE slug = 'grave-wreaths'),
-  '[
-    {"url": "/funeral-wreaths-and-floral-arrangement-013.png", "alt": "Trvalý podzimní věnec na hrob", "primary": true},
-    {"url": "/funeral-wreaths-and-floral-arrangement-014.png", "alt": "Detail podzimních barev", "primary": false}
-  ]'::jsonb,
-  '[
-    {
-      "id": "size",
-      "type": "size",
-      "name": {"cs": "Velikost", "en": "Size"},
-      "required": true,
-      "choices": [
-        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
-        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
-        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
-      ]
-    },
-    {
-      "id": "ribbon",
-      "type": "ribbon",
-      "name": {"cs": "Stuha", "en": "Ribbon"},
-      "required": true,
-      "choices": [
-        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
-        {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
-      ]
-    },
-    {
-      "id": "ribbon_color",
-      "type": "ribbon_color",
-      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
-      "required": false,
-      "dependsOn": {
-        "optionId": "ribbon",
-        "requiredChoiceIds": ["ribbon_yes"]
-      },
-      "choices": [
-        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
-        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
-      ]
-    },
-    {
-      "id": "ribbon_text",
-      "type": "ribbon_text",
-      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
-      "required": false,
-      "dependsOn": {
-        "optionId": "ribbon",
-        "requiredChoiceIds": ["ribbon_yes"]
-      },
-      "choices": [
-        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
-        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
-        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
-        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
-        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
-      ]
-    },
-    {
-      "id": "delivery_time",
-      "type": "delivery",
-      "name": {"cs": "Čas dodání", "en": "Delivery Time"},
-      "required": true,
-      "choices": [
-        {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
-        {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
-        {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
-      ]
-    }
-  ]'::jsonb,
-  '{"inStock": true, "quantity": 30, "estimatedDelivery": "2-3-days", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": false, "specialRequirements": ["weather_resistant"]}'::jsonb,
+  '{"inStock": true, "quantity": 30, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": false, "specialRequirements": ["weather_resistant"]}'::jsonb,
   '{"title": {"cs": "Trvalý podzimní věnec na hrob | Hrobové věnce", "en": "Permanent Autumn Grave Wreath | Grave Wreaths"}, "description": {"cs": "Odolný podzimní věnec pro dlouhodobou úpravu hrobu. Umělé květiny.", "en": "Durable autumn wreath for long-term grave decoration. Artificial flowers."}, "keywords": {"cs": "hrobový věnec, podzimní, trvalý, umělé květiny", "en": "grave wreath, autumn, permanent, artificial flowers"}}'::jsonb,
   false,
   true
 ),
 
--- Mourning Decorations
+-- Heart for Urn - THE PRODUCT YOU'RE LOOKING FOR!
 (
-  'Smuteční svíčka s květinovou dekorací',
-  'Mourning Candle with Floral Decoration',
-  'mourning-candle-floral-decoration',
-  'Elegantní smuteční svíčka obklopená jemnou květinovou dekorací. Symbolizuje světlo a naději v temných chvílích. Vhodná jako doplněk k hlavní květinové výzdobě nebo jako samostatný dar.',
-  'Elegant mourning candle surrounded by delicate floral decoration. Symbolizes light and hope in dark moments. Suitable as a complement to main floral decoration or as a standalone gift.',
-  350.00,
-  (SELECT id FROM categories WHERE slug = 'mourning-decorations'),
+  'Srdce na urnu',
+  'Heart for urn',
+  'hearth-for-urn-wreath',
+  'Srdcovitý pohřební věnec s oranžovými gerberami, žlutými chryzantémami, zelenými květy a červenými bobulemi. Ideální pro pohřební obřady, rozloučení a smuteční ceremonie. Kvalitní smuteční květiny jako symbol hluboké úcty a upřímné lítosti.',
+  'Heart-shaped funeral wreath with orange gerberas, yellow chrysanthemums, green flowers, and red berries. Ideal for funeral services, farewells, and memorial ceremonies. High-quality funeral flowers as a symbol of deep respect and sincere condolences.',
+  4900.00,
+  (SELECT id FROM categories WHERE slug = 'heart-wreaths'),
   '[
-    {"url": "/funeral-wreaths-and-floral-arrangement-015.png", "alt": "Smuteční svíčka s květinovou dekorací", "primary": true},
-    {"url": "/funeral-wreaths-and-floral-arrangement-016.png", "alt": "Detail květinové dekorace", "primary": false}
+    {"url": "https://cdn.fredonbytes.com/heart-shaped-orange-gerbera-funeral-wreath-yellow-chrysanthemums.webp", "alt": "Orange hearth for urn", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/heart-shaped-orange-gerbera-funeral-wreath-yellow-chrysanthemums-detail.webp", "alt": "Detail 1: Orange hearth for urn", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-satin-ribbon-unspooled-wood.webp", "alt": "Black classic ribbon with strong edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-gold-ribbon-funeral-wreath.webp", "alt": "Black ribbon with gold edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/glossy-black-gold-edge-ribbon-luxury.webp", "alt": "Black ribbon with strong golden edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/white-lily-funeral-wreath-coffin.webp", "alt": "The florist creates a wreath", "primary": false}
   ]'::jsonb,
   '[
     {
@@ -587,10 +467,10 @@ INSERT INTO products (
       "type": "size",
       "name": {"cs": "Velikost", "en": "Size"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "size_120", "label": {"cs": "120cm průměr", "en": "120cm diameter"}, "priceModifier": 0, "available": true},
-        {"id": "size_150", "label": {"cs": "150cm průměr", "en": "150cm diameter"}, "priceModifier": 500, "available": true},
-        {"id": "size_180", "label": {"cs": "180cm průměr", "en": "180cm diameter"}, "priceModifier": 1000, "available": true}
+        {"id": "size_120", "label": {"cs": "60cm průměr", "en": "60cm diameter"}, "priceModifier": 0, "available": true}
       ]
     },
     {
@@ -598,6 +478,8 @@ INSERT INTO products (
       "type": "ribbon",
       "name": {"cs": "Stuha", "en": "Ribbon"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
         {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
         {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
@@ -610,6 +492,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -624,6 +507,7 @@ INSERT INTO products (
       "required": false,
       "dependsOn": {
         "optionId": "ribbon",
+        "condition": "selected",
         "requiredChoiceIds": ["ribbon_yes"]
       },
       "choices": [
@@ -639,16 +523,295 @@ INSERT INTO products (
       "type": "delivery",
       "name": {"cs": "Čas dodání", "en": "Delivery Time"},
       "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
       "choices": [
-        {"id": "standard", "label": {"cs": "Standardní (následující den)", "en": "Standard (next day)"}, "priceModifier": 0},
-        {"id": "express", "label": {"cs": "Expresní (do 12 hodin)", "en": "Express (within 12 hours)"}, "priceModifier": 200},
-        {"id": "same-day", "label": {"cs": "Tentýž den (do 4 hodin)", "en": "Same day (within 4 hours)"}, "priceModifier": 400}
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
       ]
     }
   ]'::jsonb,
-  '{"inStock": true, "quantity": 50, "estimatedDelivery": "same-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": ["fragile_handling"]}'::jsonb,
-  '{"title": {"cs": "Smuteční svíčka s květinovou dekorací | Smuteční doplňky", "en": "Mourning Candle with Floral Decoration | Mourning Accessories"}, "description": {"cs": "Elegantní smuteční svíčka s jemnou květinovou dekorací. Rychlé dodání.", "en": "Elegant mourning candle with delicate floral decoration. Fast delivery."}, "keywords": {"cs": "smuteční svíčka, květinová dekorace, kondolence", "en": "mourning candle, floral decoration, condolences"}}'::jsonb,
+  '{"inStock": true, "quantity": 3, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": false, "specialRequirements": ["exotic_orchids", "premium_handling"]}'::jsonb,
+  '{"title": {"cs": "Fialový věnec s orchidejemi | Luxusní věnce", "en": "Purple Wreath with Orchids | Luxury Wreaths"}, "description": {"cs": "Luxusní fialový věnec s exotickými orchidejemi. Výjimečná elegance.", "en": "Luxury purple wreath with exotic orchids. Exceptional elegance."}, "keywords": {"cs": "fialový věnec, orchideje, luxus, elegance", "en": "purple wreath, orchids, luxury, elegance"}}'::jsonb,
+  true,
+  true
+),
+
+-- Slanted Empty Heart
+(
+  'šikmé prazdne srdce',
+  'Slanted empty heart',
+  'slanted-empty-hearth-wreath',
+  'Srdcovitý pohřební věnec s žlutými gerberami, bílými chryzantémami a bílými růžemi doplněný černou stuhou se zlatými pruhy. Ideální pro pohřební obřady a rozloučení. Kvalitní smuteční květiny symbolizující hlubokou úctu a upřímnou lítost.',
+  'Heart-shaped funeral wreath with yellow gerberas, white chrysanthemums, and white roses, complemented by a black ribbon with gold stripes. Ideal for funeral ceremonies and farewells. High-quality funeral flowers symbolizing deep respect and sincere condolences.',
+  5800.00,
+  (SELECT id FROM categories WHERE slug = 'heart-wreaths'),
+  '[
+    {"url": "https://cdn.fredonbytes.com/heart-shaped-yellow-white-funeral-wreath-black-ribbon.webp", "alt": "White hearth wreath with yellow flowers", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/heart-shaped-yellow-white-funeral-wreath-black-ribbon-detail-1.webp", "alt": "Detail 1: White hearth wreath with yellow flowers", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/heart-shaped-yellow-white-funeral-wreath-black-ribbon-detail-2.webp", "alt": "Detail 2: White hearth wreath with yellow flowers", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/beige-satin-ribbon-marble-surface-dark-background.webp", "alt": "White ribbon with gold border", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-gold-edge-ribbon-luxury.webp", "alt": "Black classic ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/white-rose-wreath-making-process.webp", "alt": "The florist creates a wreath", "primary": false}
+  ]'::jsonb,
+  '[
+    {
+      "id": "size",
+      "type": "size",
+      "name": {"cs": "Velikost", "en": "Size"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "size_120", "label": {"cs": "80cm rozměr", "en": "80cm size"}, "priceModifier": 0, "available": true}
+      ]
+    },
+    {
+      "id": "ribbon",
+      "type": "ribbon",
+      "name": {"cs": "Stuha", "en": "Ribbon"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
+        {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_color",
+      "type": "ribbon_color",
+      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "condition": "selected",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
+        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_text",
+      "type": "ribbon_text",
+      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "condition": "selected",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
+        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
+        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
+        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
+        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
+      ]
+    },
+    {
+      "id": "delivery_time",
+      "type": "delivery",
+      "name": {"cs": "Čas dodání", "en": "Delivery Time"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
+      ]
+    }
+  ]'::jsonb,
+  '{"inStock": true, "quantity": 10, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": ["mixed_flowers"]}'::jsonb,
+  '{"title": {"cs": "Smíšený barevný věnec | Pestrobarevné věnce", "en": "Mixed Colorful Wreath | Multicolor Wreaths"}, "description": {"cs": "Pestrobarevný věnec symbolizující bohatství života. Různé druhy květin.", "en": "Colorful wreath symbolizing richness of life. Various flower types."}, "keywords": {"cs": "barevný věnec, smíšené květiny, rozmanitost", "en": "colorful wreath, mixed flowers, diversity"}}'::jsonb,
   false,
+  true
+),
+
+-- Flower for Coffin
+(
+  'Květina na rakev',
+  'Flower for coffin',
+  'flower-for-coffin',
+  'Pohřební aranžmá s bílými růžemi, žlutými karafiáty a bílými kaly na dřevěném kmeni. Kvalitní smuteční květiny symbolizující hlubokou úctu a upřímnou lítost.',
+  'Funeral arrangement with white roses, yellow carnations, and white calla lilies on a wooden trunk. High-quality funeral flowers symbolizing deep respect and sincere condolences.',
+  3500.00,
+  (SELECT id FROM categories WHERE slug = 'mourning-bouquets'),
+  '[
+    {"url": "https://cdn.fredonbytes.com/funeral-arrangement-white-roses-yellow-carnations-wooden-stump.webp", "alt": "Funeral arrangement with white roses for coffin", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/funeral-arrangement-white-roses-yellow-carnations-wooden-stump-detail-1.webp", "alt": "Detail 1: Funeral arrangement with white roses for coffin", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/beige-satin-ribbon-marble-surface-dark-background.webp", "alt": "White ribbon with gold border", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-gold-ribbon-funeral-wreath.webp", "alt": "Black ribbon with gold edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/charcoal-satin-ribbon-natural-light.webp", "alt": "Black classic ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/florist-hands-arranging-lilies-closeup.webp", "alt": "The florist creates a wreath", "primary": false}
+  ]'::jsonb,
+  '[
+    {
+      "id": "size",
+      "type": "size",
+      "name": {"cs": "Velikost", "en": "Size"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "size_120", "label": {"cs": "Jeden rozměr", "en": "One-size"}, "priceModifier": 0, "available": true}
+      ]
+    },
+    {
+      "id": "ribbon",
+      "type": "ribbon",
+      "name": {"cs": "Stuha", "en": "Ribbon"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
+        {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_color",
+      "type": "ribbon_color",
+      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "condition": "selected",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
+        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_text",
+      "type": "ribbon_text",
+      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "condition": "selected",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
+        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
+        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
+        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
+        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
+      ]
+    },
+    {
+      "id": "delivery_time",
+      "type": "delivery",
+      "name": {"cs": "Čas dodání", "en": "Delivery Time"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
+      ]
+    }
+  ]'::jsonb,
+  '{"inStock": true, "quantity": 12, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": ["fresh_gerberas"]}'::jsonb,
+  '{"title": {"cs": "Žlutý věnec s gerberami | Barevné věnce", "en": "Yellow Wreath with Gerberas | Colorful Wreaths"}, "description": {"cs": "Veselý žlutý věnec symbolizující radost ze života. Čerstvé gerbery.", "en": "Cheerful yellow wreath symbolizing joy of life. Fresh gerberas."}, "keywords": {"cs": "žlutý věnec, gerbery, radost, světlé vzpomínky", "en": "yellow wreath, gerberas, joy, bright memories"}}'::jsonb,
+  false,
+  true
+),
+
+-- Cross
+(
+  'Kříž',
+  'Cross',
+  'wreath-cross',
+  'Křížový pohřební aranžmá s červenými a bílými růžemi, bílými karafiáty a bílou gypsofilií doplněné černou stuhou.',
+  'Cross funeral arrangement with red and white roses, white carnations, and white gypsophila, complemented by a black ribbon.',
+  5700.00,
+  (SELECT id FROM categories WHERE slug = 'cross-wreaths'),
+  '[
+    {"url": "https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon.webp", "alt": "Cross funeral arrangement with red and white flowers", "primary": true},
+    {"url": "https://cdn.fredonbytes.com/beige-satin-ribbon-marble-surface-dark-background.webp", "alt": "White ribbon with gold border", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/ivory-satin-ribbon-textured-surface-dark-background.webp", "alt": "Ivory satin ribbon", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/black-textured-gold-edge-ribbon-linen.webp", "alt": "Black textured ribbon with light golden edges", "primary": false},
+    {"url": "https://cdn.fredonbytes.com/wiring-lilies-wreath-floral-design.webp", "alt": "The florist creates a wreath", "primary": false}
+  ]'::jsonb,
+  '[
+    {
+      "id": "size",
+      "type": "size",
+      "name": {"cs": "Velikost", "en": "Size"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "size_120", "label": {"cs": "80cm rozměr", "en": "80cm size"}, "priceModifier": 0, "available": true}
+      ]
+    },
+    {
+      "id": "ribbon",
+      "type": "ribbon",
+      "name": {"cs": "Stuha", "en": "Ribbon"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "ribbon_yes", "label": {"cs": "Ano, přidat stuhu", "en": "Yes, add ribbon"}, "priceModifier": 0},
+        {"id": "ribbon_no", "label": {"cs": "Nechci stuhu", "en": "No, without ribbon"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_color",
+      "type": "ribbon_color",
+      "name": {"cs": "Barva stuhy", "en": "Ribbon Color"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "condition": "selected",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "color_black", "label": {"cs": "Černá", "en": "Black"}, "priceModifier": 0},
+        {"id": "color_white", "label": {"cs": "Bílá", "en": "White"}, "priceModifier": 0}
+      ]
+    },
+    {
+      "id": "ribbon_text",
+      "type": "ribbon_text",
+      "name": {"cs": "Text na stuze", "en": "Ribbon Text"},
+      "required": false,
+      "dependsOn": {
+        "optionId": "ribbon",
+        "condition": "selected",
+        "requiredChoiceIds": ["ribbon_yes"]
+      },
+      "choices": [
+        {"id": "text_sympathy", "label": {"cs": "S upřímnou soustrasti", "en": "With sincere sympathy"}, "priceModifier": 50},
+        {"id": "text_memory", "label": {"cs": "Na věčnou památku", "en": "In eternal memory"}, "priceModifier": 50},
+        {"id": "text_love", "label": {"cs": "S láskou vzpomínáme", "en": "With love we remember"}, "priceModifier": 50},
+        {"id": "text_respect", "label": {"cs": "S úctou a respektem", "en": "With honor and respect"}, "priceModifier": 50},
+        {"id": "text_custom", "label": {"cs": "Vlastní text", "en": "Custom text"}, "priceModifier": 100, "allowCustomInput": true, "maxLength": 50}
+      ]
+    },
+    {
+      "id": "delivery_time",
+      "type": "delivery",
+      "name": {"cs": "Čas dodání", "en": "Delivery Time"},
+      "required": true,
+      "maxSelections": 1,
+      "minSelections": 1,
+      "choices": [
+        {"id": "next_day_morning", "label": {"cs": "Následující den ráno (do 10:00)", "en": "Next day morning (by 10:00 AM)"}, "priceModifier": 0, "available": true},
+        {"id": "custom_date", "label": {"cs": "Vlastní datum (kalendář)", "en": "Custom date (calendar)"}, "priceModifier": 0, "available": true, "inputType": "date", "maxDaysFromNow": 30, "minDaysFromNow": 1, "allowCustomInput": true, "requiresCalendar": true}
+      ]
+    }
+  ]'::jsonb,
+  '{"inStock": true, "quantity": 15, "estimatedDelivery": "next-day", "lastUpdated": "2024-01-15T10:00:00Z", "seasonalAvailability": true, "specialRequirements": ["seasonal_flowers"]}'::jsonb,
+  '{"title": {"cs": "Jarní sezónní kytice | Sezónní květiny", "en": "Seasonal Spring Bouquet | Seasonal Flowers"}, "description": {"cs": "Svěží jarní kytice symbolizující nový začátek. Sezónní květiny.", "en": "Fresh spring bouquet symbolizing new beginning. Seasonal flowers."}, "keywords": {"cs": "jarní kytice, tulipány, narcisy, naděje", "en": "spring bouquet, tulips, daffodils, hope"}}'::jsonb,
+  true,
   true
 )
 
