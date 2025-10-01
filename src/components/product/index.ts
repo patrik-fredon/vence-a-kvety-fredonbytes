@@ -22,6 +22,12 @@ export {
   ProductErrorFallback,
   ProductCardErrorFallback,
   ProductFiltersErrorFallback,
+  ProductGridErrorBoundary,
+  ProductGridErrorFallback,
+  NavigationErrorBoundary,
+  NavigationErrorFallback,
+  ImageErrorBoundary,
+  ImageErrorFallback,
   withProductErrorBoundary,
 } from "./ProductComponentErrorBoundary";
 
