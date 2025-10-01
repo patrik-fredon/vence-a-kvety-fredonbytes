@@ -68,14 +68,10 @@ export type * from "@/types/components";
 // DYNAMIC IMPORTS FOR CODE SPLITTING
 // =============================================================================
 
-// Heavy components that should be loaded dynamically
-export { default as DynamicComponents } from "./dynamic";
+// Removed unused DynamicComponents export
 
 // =============================================================================
 // DEVELOPMENT COMPONENTS
 // =============================================================================
 
-// Only export examples in development
-if (process.env.NODE_ENV === "development") {
-  export * from "./examples";
-}
+// Examples directory not currently available

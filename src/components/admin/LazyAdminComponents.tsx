@@ -5,7 +5,7 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Dynamic imports for admin components to reduce main bundle size
 export const LazyProductManagement = dynamic(
-  () => import("./ProductManagement").then((mod) => ({ default: mod.ProductManagement })),
+  () => import("./ProductManagement"),
   {
     loading: () => (
       <div className="flex items-center justify-center p-8">
@@ -18,7 +18,7 @@ export const LazyProductManagement = dynamic(
 );
 
 export const LazyOrderManagement = dynamic(
-  () => import("./OrderManagement").then((mod) => ({ default: mod.OrderManagement })),
+  () => import("./OrderManagement"),
   {
     loading: () => (
       <div className="flex items-center justify-center p-8">
@@ -31,7 +31,7 @@ export const LazyOrderManagement = dynamic(
 );
 
 export const LazyInventoryManagement = dynamic(
-  () => import("./InventoryManagement").then((mod) => ({ default: mod.InventoryManagement })),
+  () => import("./InventoryManagement"),
   {
     loading: () => (
       <div className="flex items-center justify-center p-8">
@@ -70,7 +70,7 @@ export const LazyContactFormsTable = dynamic(
 );
 
 export const LazyProductForm = dynamic(
-  () => import("./ProductForm").then((mod) => ({ default: mod.ProductForm })),
+  () => import("./ProductForm"),
   {
     loading: () => (
       <div className="flex items-center justify-center p-8">

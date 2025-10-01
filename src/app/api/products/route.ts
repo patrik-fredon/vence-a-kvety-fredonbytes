@@ -36,17 +36,17 @@ async function getProducts(request: NextRequest) {
     const params: ProductSearchParams = {
       page: Number.parseInt(searchParams.get("page") || "1"),
       limit: Math.min(Number.parseInt(searchParams.get("limit") || "12"), 100), // Max 100 items per page
-      categoryId: searchParams.get("categoryId") || undefined,
-      categorySlug: searchParams.get("categorySlug") || undefined,
+      categoryId: searchParams.get("categoryId") || "",
+      categorySlug: searchParams.get("categorySlug") || "",
       minPrice: searchParams.get("minPrice")
         ? Number.parseFloat(searchParams.get("minPrice")!)
-        : undefined,
+        : 0,
       maxPrice: searchParams.get("maxPrice")
         ? Number.parseFloat(searchParams.get("maxPrice")!)
-        : undefined,
-      inStock: searchParams.get("inStock") === "true" ? true : undefined,
-      featured: searchParams.get("featured") === "true" ? true : undefined,
-      search: searchParams.get("search") || undefined,
+        : 999999,
+      inStock: searchParams.get("inStock") === "true",
+      featured: searchParams.get("featured") === "true",
+      search: searchParams.get("search") || "",
       locale: searchParams.get("locale") || "cs",
       sort: {
         field: (searchParams.get("sortField") as any) || "created_at",
@@ -128,7 +128,7 @@ async function getProducts(request: NextRequest) {
     const offset = ((params.page || 1) - 1) * (params.limit || 12);
     query = query.range(offset, offset + (params.limit || 12) - 1);
 
-    const { data: productsData, error, count } = await query;
+    const { data: productsData, error } = await query;
 
     if (error) {
       console.error("Error fetching products:", error);
@@ -307,10 +307,10 @@ export async function POST(request: NextRequest) {
       nameCs: body.nameCs,
       nameEn: body.nameEn,
       slug: body.slug,
-      descriptionCs: body.descriptionCs,
-      descriptionEn: body.descriptionEn,
+      descriptionCs: body.descriptionCs || "",
+      descriptionEn: body.descriptionEn || "",
       basePrice: body.basePrice,
-      categoryId: body.categoryId,
+      categoryId: body.categoryId || "",
       images: imagesWithIds,
       customizationOptions: customizationOptionsWithIds,
       availability: body.availability || { inStock: true },
@@ -322,7 +322,7 @@ export async function POST(request: NextRequest) {
         },
       },
       active: body.active !== undefined ? body.active : true,
-      featured: body.featured,
+      featured: body.featured ?? false,
     });
 
     const { data, error } = await supabase

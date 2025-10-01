@@ -8,7 +8,7 @@ import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/componen
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/types/cart";
-import { OrderSummary as OrderSummaryType } from "@/types/order";
+
 
 interface OrderSummaryProps {
   items: CartItem[];

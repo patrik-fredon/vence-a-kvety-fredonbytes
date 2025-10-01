@@ -34,7 +34,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
         <div className="container mx-auto px-4">
           {/* Hero Text */}
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <h1 className="text-4xl md:text-5xl font-light mb-8 text-stone-800 leading-tight text-balance">
+            <h1 className="text-4xl md:text-5xl font-light mb-8 text-teal-900 leading-tight text-balance">
               {tAbout('title')}
             </h1>
             <p className="text-lg text-stone-600 leading-relaxed mb-8">
@@ -46,7 +46,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
           <div className="mb-16">
             <div className="aspect-[16/9] bg-stone-100 rounded-lg overflow-hidden">
               <img
-                src="/hands-crafting-funeral-wreath-workshop-scene.jpg"
+                src="https://cdn.fredonbytes.com/lily-arrangement-with-greenery-studio.webp"
                 alt={tAbout('companyDescription')}
                 className="w-full h-full object-cover"
               />
@@ -73,7 +73,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
           {/* Brand Logo */}
           <div className="text-center mb-16">
             <div className="inline-flex items-center justify-center w-24 h-24 bg-stone-100 rounded-full mb-4">
-              <div className="text-2xl font-light text-stone-800">BL</div>
+              <div className="text-2xl font-light text-teal-900">BL</div>
             </div>
           </div>
 
@@ -82,7 +82,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-stone-100 relative">
                 <img
-                  src="/funeral-wreath-crafting-process-1.jpg"
+                  src="https://cdn.fredonbytes.com/dewy-white-lilies-floral-design.webp"
                   alt={tAbout('companyDescription')}
                   className="w-full h-full object-cover"
                 />
@@ -91,7 +91,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-stone-800 flex items-center justify-center text-white p-6">
+              <div className="aspect-square bg-teal-900 flex items-center justify-center text-white p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
                     <div className="w-6 h-6 bg-amber-400 rounded-full"></div>
@@ -107,7 +107,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-stone-100 relative">
                 <img
-                  src="/funeral-wreath-crafting-process-2.jpg"
+                  src="https://cdn.fredonbytes.com/handmade-lily-wreath-with-twine-rustic.webp"
                   alt={tAbout('companyDescription')}
                   className="w-full h-full object-cover"
                 />
@@ -115,7 +115,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-stone-800 flex items-center justify-center text-white p-6">
+              <div className="aspect-square bg-teal-900 flex items-center justify-center text-white p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
                     <div className="w-6 h-6 bg-amber-400 rounded-full"></div>
@@ -131,7 +131,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-stone-100 relative">
                 <img
-                  src="/funeral-wreath-crafting-process-3.jpg"
+                  src="https://cdn.fredonbytes.com/lily-funeral-wreath-making-process.webp"
                   alt={tAbout('companyDescription')}
                   className="w-full h-full object-cover"
                 />
@@ -140,7 +140,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-stone-800 flex items-center justify-center text-white p-6">
+              <div className="aspect-square bg-teal-900 flex items-center justify-center text-white p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
                     <div className="w-6 h-6 bg-amber-400 rounded-full"></div>

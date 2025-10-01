@@ -73,14 +73,14 @@ export async function POST(request: NextRequest) {
     const orderItems: OrderItem[] = body.items.map((item: CartItem) => {
       // Import customization utilities
       const { transferCustomizationsToOrder, validateCustomizationIntegrity } = require('@/lib/cart/utils');
-      
+
       // Validate and transfer customizations
       let processedCustomizations = item.customizations || [];
-      
+
       if (processedCustomizations.length > 0) {
         // Validate customization integrity
         const validation = validateCustomizationIntegrity(processedCustomizations);
-        
+
         if (!validation.isValid) {
           console.warn(`Customization validation issues for cart item ${item.id}:`, validation.issues);
           // Use fixed customizations if available
@@ -88,10 +88,10 @@ export async function POST(request: NextRequest) {
             processedCustomizations = validation.fixedCustomizations;
           }
         }
-        
+
         // Transfer customizations to order format
         processedCustomizations = transferCustomizationsToOrder(processedCustomizations);
-        
+
         // Log customization transfer for audit trail
         console.log(`Transferring customizations for order item:`, {
           cartItemId: item.id,
@@ -181,8 +181,8 @@ export async function POST(request: NextRequest) {
     const createdOrder: Order = {
       id: order.id,
       orderNumber: customerInfo.orderNumber || orderNumber,
-      userId: order.user_id || undefined,
-      sessionId: customerInfo.sessionId || undefined,
+      userId: order.user_id || "",
+      sessionId: customerInfo.sessionId,
       items: itemsData.items || [],
       itemCount: itemsData.itemCount || 0,
       subtotal: itemsData.subtotal || 0,
@@ -202,7 +202,7 @@ export async function POST(request: NextRequest) {
         urgency: deliveryInfo.urgency,
         preferredDate: deliveryInfo.preferredDate
           ? new Date(deliveryInfo.preferredDate)
-          : undefined,
+          : new Date(),
         preferredTimeSlot: deliveryInfo.preferredTimeSlot,
         specialInstructions: deliveryInfo.specialInstructions,
         recipientName: deliveryInfo.recipientName,
@@ -218,49 +218,48 @@ export async function POST(request: NextRequest) {
         failureReason: paymentInfo.failureReason,
       },
       status: order.status as OrderStatus,
-      notes: order.notes || undefined,
-      internalNotes: undefined,
+      notes: order.notes || "",
       createdAt: new Date(order.created_at),
       updatedAt: new Date(order.updated_at),
     };
 
     // Post-order cleanup: Remove cart items, customization cache, and clear Redis cache
     try {
-      const { cleanupOrphanedCustomizations } = await import('@/lib/cart/utils');
+
       const { clearCartCache } = await import('@/lib/cache/cart-cache');
-      
+
       // Get current user or session for cart cleanup
       const {
         data: { user },
       } = await supabase.auth.getUser();
-      
+
       const sessionId = getSessionId(request);
-      
+
       // Find and clean up cart items that were converted to this order
       let cartQuery = supabase.from("cart_items").select("*");
-      
+
       if (user?.id) {
         cartQuery = cartQuery.eq("user_id", user.id);
       } else if (sessionId) {
         cartQuery = cartQuery.eq("session_id", sessionId);
       }
-      
+
       const { data: cartItems, error: cartFetchError } = await cartQuery;
-      
+
       if (!cartFetchError && cartItems && cartItems.length > 0) {
         // Log customizations being cleaned up
         const customizationCount = cartItems.reduce((count, item) => {
           return count + (Array.isArray(item.customizations) ? item.customizations.length : 0);
         }, 0);
-        
+
         console.log(`🧹 [Cleanup] Post-order cleanup: Removing ${cartItems.length} cart items with ${customizationCount} customizations for order ${order.id}`);
-        
+
         // Delete cart items (this automatically removes associated customizations)
         const { error: deleteError } = await supabase
           .from("cart_items")
           .delete()
           .in("id", cartItems.map(item => item.id));
-        
+
         if (deleteError) {
           console.error("❌ [Cleanup] Error during post-order cart cleanup:", deleteError);
           // Don't fail the order creation if cleanup fails
@@ -294,7 +293,7 @@ export async function POST(request: NextRequest) {
     const response: CreateOrderResponse = {
       success: true,
       order: createdOrder,
-      paymentUrl,
+      paymentUrl: paymentUrl || "",
     };
 
     return NextResponse.json(response);
@@ -313,7 +312,7 @@ export async function POST(request: NextRequest) {
 /**
  * Get orders for current user
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createServerClient();
     const {
@@ -378,9 +377,9 @@ function getSessionId(request: NextRequest): string {
 }
 
 async function calculateDeliveryCost(
-  address: any,
+  _address: any,
   urgency: string,
-  items: CartItem[]
+  _items: CartItem[]
 ): Promise<number> {
   try {
     // This would typically call the delivery estimation API
@@ -413,7 +412,7 @@ async function createStripePaymentSession(
 ): Promise<string> {
   try {
     // Initialize payment through our payment API
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/payments/initialize`, {
       method: "POST",
       headers: {
@@ -451,7 +450,7 @@ async function createGopayPayment(
 ): Promise<string> {
   try {
     // Initialize payment through our payment API
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/payments/initialize`, {
       method: "POST",
       headers: {

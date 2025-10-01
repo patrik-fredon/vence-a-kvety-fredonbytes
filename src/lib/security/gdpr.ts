@@ -9,8 +9,8 @@ export interface GDPRDataExport {
   user: {
     id: string;
     email: string;
-    name?: string;
-    phone?: string;
+    name: string | undefined;
+    phone: string | undefined;
     createdAt: string;
     updatedAt: string;
   };
@@ -59,7 +59,7 @@ export interface GDPRDeletionResult {
     addresses: number;
     activityLog: number;
   };
-  errors?: string[];
+  errors: string[] | undefined;
 }
 
 /**
@@ -104,7 +104,7 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
 
     // Note: user_addresses and user_activity_log tables don't exist in current schema
     // These would need to be created if address and activity tracking is needed
-    const addresses: any[] = [];
+    // Removed unused addresses variable
     const activityLog: any[] = [];
 
     // Compile export data
@@ -138,8 +138,8 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
       addresses: Array.isArray(userProfile.addresses) ? (userProfile.addresses as any[]) : [],
       preferences:
         typeof userProfile.preferences === "object" &&
-        userProfile.preferences !== null &&
-        !Array.isArray(userProfile.preferences)
+          userProfile.preferences !== null &&
+          !Array.isArray(userProfile.preferences)
           ? (userProfile.preferences as { language: string; currency: string; notifications: any })
           : { language: "cs", currency: "CZK", notifications: {} },
       activityLog:
@@ -266,7 +266,7 @@ export async function logUserActivity(
   ipAddress?: string
 ): Promise<void> {
   try {
-    const supabase = await createClient();
+    // Removed unused supabase client
 
     // Note: user_activity_log table is not in the current schema
     // Activity logging is disabled until the table is added to the database
@@ -279,14 +279,14 @@ export async function logUserActivity(
 /**
  * Check if user has given consent for data processing
  */
-export async function checkUserConsent(userId: string): Promise<{
+export async function checkUserConsent(_userId: string): Promise<{
   marketing: boolean;
   analytics: boolean;
   functional: boolean;
   lastUpdated: string;
 }> {
   try {
-    const supabase = await createClient();
+    // Removed unused supabase client
 
     // Note: user_consent table is not in the current schema
     // Using default consent settings until the table is added
@@ -319,7 +319,7 @@ export async function updateUserConsent(
   }
 ): Promise<boolean> {
   try {
-    const supabase = await createClient();
+    // Removed unused supabase client
 
     // Note: user_consent table is not in the current schema
     // Consent updates are logged but not persisted until the table is added

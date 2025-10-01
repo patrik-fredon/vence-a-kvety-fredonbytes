@@ -10,7 +10,7 @@ import {
  * GET - Perform customization integrity check
  * Admin-only endpoint to check for customization data integrity issues
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     const supabase = createServerClient();
     const session = await auth();
@@ -44,7 +44,10 @@ export async function GET(request: NextRequest) {
     }
 
     // Check if user has admin privileges (assuming admin flag in preferences)
-    const isAdmin = profile.preferences?.isAdmin === true;
+    const isAdmin = profile.preferences &&
+      typeof profile.preferences === 'object' &&
+      'isAdmin' in profile.preferences &&
+      profile.preferences['isAdmin'] === true;
     if (!isAdmin) {
       return NextResponse.json(
         {
@@ -60,7 +63,7 @@ export async function GET(request: NextRequest) {
 
     // Also run database-level integrity check
     const { data: dbIntegrityResult, error: dbError } = await supabase
-      .rpc('check_customization_integrity');
+      .rpc('check_customization_integrity' as any);
 
     if (dbError) {
       console.error("Database integrity check failed:", dbError);
@@ -125,8 +128,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Check if user has admin privileges
-    const isAdmin = profile.preferences?.isAdmin === true;
+    // Check if user has admin privileges using bracket notation for index signature access
+    const isAdmin = profile.preferences &&
+      typeof profile.preferences === 'object' &&
+      'isAdmin' in profile.preferences &&
+      (profile.preferences as Record<string, any>)['isAdmin'] === true;
     if (!isAdmin) {
       return NextResponse.json(
         {
@@ -155,7 +161,7 @@ export async function POST(request: NextRequest) {
     // Fix integrity issues if requested
     if (body.fixIntegrityIssues === true) {
       const { data: dbFixResult, error: dbFixError } = await supabase
-        .rpc('cleanup_invalid_customizations');
+        .rpc('cleanup_invalid_customizations' as any);
 
       results.operations.push({
         type: 'fix_integrity_issues',

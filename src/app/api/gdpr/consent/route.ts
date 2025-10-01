@@ -8,13 +8,9 @@ import { auth } from "@/lib/auth/config";
 import { checkUserConsent, logUserActivity, updateUserConsent } from "@/lib/security/gdpr";
 import { validateCSRFToken, validateRequestBody } from "@/lib/security/validation";
 
-interface ConsentUpdateBody {
-  marketing: boolean;
-  analytics: boolean;
-  functional: boolean;
-}
+// Removed unused ConsentUpdateBody interface
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Verify authentication
     const session = await auth();

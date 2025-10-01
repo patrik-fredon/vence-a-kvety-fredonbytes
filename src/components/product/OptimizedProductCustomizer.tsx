@@ -45,7 +45,7 @@ export function OptimizedProductCustomizer({
 
   // Use debounced price calculation for better performance
   const priceCalculation = useDebouncedPriceCalculation(
-    product.price,
+    product.basePrice,
     customizations,
     customizationOptions,
     200 // 200ms debounce delay
@@ -148,26 +148,7 @@ export function OptimizedProductCustomizer({
     [customizations, onCustomizationChange, cleanupDependentCustomizations]
   );
 
-  // Optimized custom value change handler
-  const handleCustomValueChange = useCallback(
-    (optionId: string, value: string) => {
-      const newCustomizations = [...customizations];
-      const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
 
-      if (existingIndex >= 0) {
-        newCustomizations[existingIndex]!.customValue = value;
-      } else {
-        newCustomizations.push({
-          optionId,
-          choiceIds: [],
-          customValue: value,
-        });
-      }
-
-      onCustomizationChange(newCustomizations);
-    },
-    [customizations, onCustomizationChange]
-  );
 
   // Memoize size and ribbon options for better performance
   const { sizeOption, ribbonOption, ribbonColorOption, ribbonTextOption } = useMemo(() => {
@@ -210,7 +191,7 @@ export function OptimizedProductCustomizer({
           selectedSize={currentCustomizations.get(sizeOption.id)?.choiceIds[0] || null}
           onSizeChange={(sizeId) => handleChoiceSelection(sizeOption.id, sizeId, sizeOption)}
           locale={locale}
-          basePrice={product.price}
+          basePrice={product.basePrice}
           className="mb-6"
         />
       )}

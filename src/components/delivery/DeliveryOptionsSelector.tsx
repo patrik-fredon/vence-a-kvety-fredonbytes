@@ -5,9 +5,9 @@
  * Allows users to select delivery urgency and view available options
  */
 
-import { ClockIcon, TruckIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, TruckIcon } from "@/lib/icons";
 import { clsx } from "clsx";
-import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 import type { Address } from "@/types";
 import type { DeliveryOption, DeliveryUrgency } from "@/types/delivery";
@@ -27,7 +27,6 @@ export function DeliveryOptionsSelector({
   className,
   disabled = false,
 }: DeliveryOptionsSelectorProps) {
-  const t = useTranslations("delivery");
   const [availableOptions, setAvailableOptions] = useState<DeliveryOption[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);

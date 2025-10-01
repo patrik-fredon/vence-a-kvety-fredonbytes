@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
+import { performanceMonitor as globalPerformanceMonitor } from "@/lib/monitoring/performance-monitor";
 import { useLighthouseOptimization } from "./useLighthouseOptimization";
 import { usePerformanceMonitor } from "./usePerformanceMonitor";
 
@@ -19,16 +19,16 @@ export interface PerformanceProfile {
     optimizationOpportunities: string[];
     criticalIssues: string[];
   };
-  memoryUsage?: {
+  memoryUsage: {
     usedJSHeapSize: number;
     totalJSHeapSize: number;
     jsHeapSizeLimit: number;
-  };
-  networkMetrics?: {
+  } | undefined;
+  networkMetrics: {
     resourceCount: number;
     totalTransferSize: number;
     slowResources: string[];
-  };
+  } | undefined;
 }
 
 /**
@@ -76,7 +76,7 @@ export const usePerformanceProfiler = (
 ): UsePerformanceProfilerResult => {
   const {
     componentName,
-    enabled = process.env.NODE_ENV === "development",
+    enabled = process.env['NODE_ENV'] === "development",
     trackMemory = true,
     trackNetwork = true,
     sampleRate = 1.0,
@@ -132,7 +132,7 @@ export const usePerformanceProfiler = (
     performanceMonitor.startTracking();
     lighthouseOptimization.startOptimizationTracking();
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.log(`🔬 [PerformanceProfiler] Started profiling: ${componentName}`);
     }
   }, [enabled, sampleRate, componentName, performanceMonitor, lighthouseOptimization]);
@@ -160,16 +160,24 @@ export const usePerformanceProfiler = (
 
     // Get Lighthouse metrics
     const lighthouseMetrics = {
-      performanceScore: calculatePerformanceScore(renderMetrics, lighthouseOptimization.metrics),
+      performanceScore: calculatePerformanceScore(renderMetrics, lighthouseOptimization.metrics ? {
+        ...(lighthouseOptimization.metrics.clsContribution !== undefined && { clsContribution: lighthouseOptimization.metrics.clsContribution }),
+        ...(lighthouseOptimization.metrics.lcpContribution !== undefined && { lcpContribution: lighthouseOptimization.metrics.lcpContribution }),
+        ...(lighthouseOptimization.metrics.tbtContribution !== undefined && { tbtContribution: lighthouseOptimization.metrics.tbtContribution }),
+      } : null),
       optimizationOpportunities: lighthouseOptimization.getOptimizationRecommendations(),
-      criticalIssues: getCriticalIssues(renderMetrics, lighthouseOptimization.metrics),
+      criticalIssues: getCriticalIssues(renderMetrics, lighthouseOptimization.metrics ? {
+        ...(lighthouseOptimization.metrics.clsContribution !== undefined && { clsContribution: lighthouseOptimization.metrics.clsContribution }),
+        ...(lighthouseOptimization.metrics.lcpContribution !== undefined && { lcpContribution: lighthouseOptimization.metrics.lcpContribution }),
+        ...(lighthouseOptimization.metrics.tbtContribution !== undefined && { tbtContribution: lighthouseOptimization.metrics.tbtContribution }),
+      } : null),
     };
 
     // Get memory metrics
-    const memoryUsage = trackMemory ? getCurrentMemoryUsage() : undefined;
+    const memoryUsage = trackMemory ? (getCurrentMemoryUsage() || undefined) : undefined;
 
     // Get network metrics
-    const networkMetrics = trackNetwork ? getNetworkMetrics() : undefined;
+    const networkMetrics = trackNetwork ? (getNetworkMetrics() || undefined) : undefined;
 
     const newProfile: PerformanceProfile = {
       componentName,
@@ -182,7 +190,7 @@ export const usePerformanceProfiler = (
     setProfile(newProfile);
 
     // Log profile summary
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.log(`📊 [PerformanceProfiler] Profile complete for ${componentName}:`, {
         profilingDuration: `${profilingDuration.toFixed(2)}ms`,
         averageRenderTime: `${renderMetrics.averageRenderTime.toFixed(2)}ms`,
@@ -193,7 +201,7 @@ export const usePerformanceProfiler = (
     }
 
     // Record in global performance monitor
-    performanceMonitor.recordMetric(
+    globalPerformanceMonitor.recordMetric(
       `COMPONENT_PROFILE_${componentName.toUpperCase()}`,
       profilingDuration,
       `Profiling session: ${componentName}`

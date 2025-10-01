@@ -3,6 +3,7 @@
  */
 
 import type { CheckoutValidationErrors, CustomerInfo, DeliveryInfo } from "@/types/order";
+import type { LocalizedContent } from "@/types";
 
 // Email validation regex
 import type { Customization, CustomizationOption } from '@/types/product';
@@ -144,6 +145,14 @@ export function validateWreathCustomizations(
   const errors: string[] = [];
   const warnings: string[] = [];
 
+  // Helper function to safely get localized name
+  const getLocalizedName = (name: string | LocalizedContent): string => {
+    if (typeof name === 'string') {
+      return name;
+    }
+    return name[locale as keyof typeof name] || name.cs || 'Unknown';
+  };
+
   // Find wreath-specific options
   const sizeOption = customizationOptions.find(
     (option) => option.type === "size" || option.id === "size"
@@ -240,7 +249,7 @@ export function validateWreathCustomizations(
     const customization = customizations.find((c) => c.optionId === option.id);
 
     if (option.required && (!customization || customization.choiceIds.length === 0)) {
-      const optionName = option.name[locale as keyof typeof option.name] || option.name.cs || option.id;
+      const optionName = getLocalizedName(option.name);
       errors.push(
         locale === 'cs'
           ? `Pole "${optionName}" je povinné`
@@ -251,7 +260,7 @@ export function validateWreathCustomizations(
     if (customization) {
       // Validate min/max selections
       if (option.minSelections && customization.choiceIds.length < option.minSelections) {
-        const optionName = option.name[locale as keyof typeof option.name] || option.name.cs || option.id;
+        const optionName = getLocalizedName(option.name);
         errors.push(
           locale === 'cs'
             ? `Pole "${optionName}" vyžaduje minimálně ${option.minSelections} výběrů`
@@ -260,7 +269,7 @@ export function validateWreathCustomizations(
       }
 
       if (option.maxSelections && customization.choiceIds.length > option.maxSelections) {
-        const optionName = option.name[locale as keyof typeof option.name] || option.name.cs || option.id;
+        const optionName = getLocalizedName(option.name);
         errors.push(
           locale === 'cs'
             ? `Pole "${optionName}" umožňuje maximálně ${option.maxSelections} výběrů`
@@ -548,15 +557,16 @@ export function formatValidationErrors(errors: CheckoutValidationErrors): string
  * Sanitize and normalize form data
  */
 export function sanitizeCustomerInfo(customerInfo: Partial<CustomerInfo>): Partial<CustomerInfo> {
-  return {
-    ...customerInfo,
-    firstName: customerInfo.firstName?.trim(),
-    lastName: customerInfo.lastName?.trim(),
-    email: customerInfo.email?.trim().toLowerCase(),
-    phone: customerInfo.phone?.replace(/\s/g, ""),
-    company: customerInfo.company?.trim(),
-    note: customerInfo.note?.trim(),
-  };
+  const sanitized: Partial<CustomerInfo> = {};
+
+  if (customerInfo.firstName) sanitized.firstName = customerInfo.firstName.trim();
+  if (customerInfo.lastName) sanitized.lastName = customerInfo.lastName.trim();
+  if (customerInfo.email) sanitized.email = customerInfo.email.trim().toLowerCase();
+  if (customerInfo.phone) sanitized.phone = customerInfo.phone.replace(/\s/g, "");
+  if (customerInfo.company) sanitized.company = customerInfo.company.trim();
+  if (customerInfo.note) sanitized.note = customerInfo.note.trim();
+
+  return sanitized;
 }
 
 export function sanitizeDeliveryInfo(deliveryInfo: Partial<DeliveryInfo>): Partial<DeliveryInfo> {

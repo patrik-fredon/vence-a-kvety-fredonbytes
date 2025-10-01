@@ -2,7 +2,6 @@
 
 import {
   EyeIcon,
-  FunnelIcon,
   MagnifyingGlassIcon,
   PencilIcon,
   PlusIcon,
@@ -294,10 +293,10 @@ export default function ProductManagement() {
                       {product.track_inventory ? (
                         <span
                           className={`${product.stock_quantity === 0
-                              ? "text-red-600"
-                              : product.stock_quantity <= 5
-                                ? "text-amber-600"
-                                : "text-green-600"
+                            ? "text-red-600"
+                            : product.stock_quantity <= 5
+                              ? "text-amber-600"
+                              : "text-green-600"
                             }`}
                         >
                           {product.stock_quantity} {t("pieces")}
@@ -310,8 +309,8 @@ export default function ProductManagement() {
                       <div className="flex items-center space-x-2">
                         <span
                           className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.active
-                              ? "bg-green-100 text-green-800"
-                              : "bg-red-100 text-red-800"
+                            ? "bg-green-100 text-green-800"
+                            : "bg-red-100 text-red-800"
                             }`}
                         >
                           {product.active ? t("active") : t("inactive")}

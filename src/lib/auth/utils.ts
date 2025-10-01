@@ -180,8 +180,8 @@ export const authUtils = {
       const { error: profileError } = await supabase
         .from("user_profiles")
         .update({
-          name: data.name,
-          phone: data.phone,
+          name: data.name || null,
+          phone: data.phone || null,
           addresses: data.addresses as any,
           preferences: data.preferences as any,
           updated_at: new Date().toISOString(),
@@ -227,8 +227,8 @@ export const authUtils = {
       const authUser: AuthUser = {
         id: user.id,
         email: user.email!,
-        name: profile?.name || user.user_metadata?.name || null,
-        phone: profile?.phone || user.user_metadata?.phone || null,
+        name: profile?.name || user.user_metadata?.['name'] || null,
+        phone: profile?.phone || user.user_metadata?.['phone'] || null,
         addresses: (profile?.addresses as unknown as Address[]) || [],
         preferences: (profile?.preferences as unknown as UserPreferences) || defaultUserPreferences,
       };

@@ -5,7 +5,7 @@ import {
   ChevronRightIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { Card } from "@/components/ui/Card";
@@ -130,7 +130,7 @@ export function ProductImageGallery({
 
   if (relevantImages.length === 0) {
     return (
-      <Card className={cn("aspect-square bg-stone-50 flex items-center justify-center", className)}>
+      <Card className={cn("aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] flex items-center justify-center", className)}>
         <div className="text-stone-400 text-center">
           <div className="text-4xl mb-2">📷</div>
           <div className="text-sm">No images available</div>
@@ -143,7 +143,7 @@ export function ProductImageGallery({
     <>
       <div className={cn("space-y-4", className)}>
         {/* Main Image Display */}
-        <Card padding="none" className="relative aspect-square bg-stone-50 overflow-hidden group">
+        <Card padding="none" className="relative aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] overflow-hidden group">
           {selectedImage && (
             <div
               ref={imageRef}
@@ -162,8 +162,8 @@ export function ProductImageGallery({
                 style={
                   isZoomed
                     ? {
-                        transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                      }
+                      transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                    }
                     : undefined
                 }
                 onClick={toggleZoom}

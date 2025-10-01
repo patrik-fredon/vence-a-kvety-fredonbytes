@@ -21,7 +21,7 @@ export interface TranslationMessages {
 export function validateTranslationCompleteness(
   primaryMessages: TranslationMessages,
   secondaryMessages: TranslationMessages,
-  primaryLocale: Locale,
+  _primaryLocale: Locale,
   secondaryLocale: Locale
 ): TranslationValidationResult {
   const result: TranslationValidationResult = {
@@ -150,31 +150,7 @@ export function validateTranslationKey(key: string): boolean {
 /**
  * Validate translation value
  */
-function validateTranslationValue(key: string, value: string): string[] {
-  const errors: string[] = [];
-
-  if (!value.trim()) {
-    errors.push(`Empty translation value for key: ${key}`);
-  }
-
-  // Check for placeholder consistency (basic check for {variable} patterns)
-  const placeholderPattern = /\{[a-zA-Z_0-9_]*\}/g;
-  const placeholders = value.match(placeholderPattern) || [];
-
-  // Check for unclosed placeholders
-  const unclosePattern = /\{[^}]*$/;
-  if (unclosePattern.test(value)) {
-    errors.push(`Unclosed placeholder in translation for key: ${key}`);
-  }
-
-  // Check for malformed placeholders
-  const malformedPattern = /\{[^a-zA-Z_0-9_}]/;
-  if (malformedPattern.test(value)) {
-    errors.push(`Malformed placeholder in translation for key: ${key}`);
-  }
-
-  return errors;
-}
+// Removed unused validateTranslationValue function
 
 /**
  * Generate translation validation report

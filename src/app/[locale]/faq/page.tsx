@@ -39,7 +39,7 @@ export default async function FAQPage({ params }: FAQPageProps) {
       question: t("items.3.question"),
       answer: t("items.3.answer"),
       image: {
-        src: "/wreath-size-comparison.svg",
+        src: "https://cdn.fredonbytes.com/wreath-size-comparsion.webp",
         alt: locale === "cs" ? "Porovnání velikostí věnců s lidskou postavou" : "Wreath size comparison with human figure",
         description: locale === "cs"
           ? "Ilustrace ukazuje poměr velikostí našich věnců (malý, střední, velký) ve srovnání s průměrnou lidskou postavou pro lepší představu o rozměrech."
@@ -48,8 +48,8 @@ export default async function FAQPage({ params }: FAQPageProps) {
     },
   ];
 
-  // Generate structured data
-  const faqStructuredData = generateFAQStructuredData(faqItems, locale);
+  // Generate structured data - fix: remove the second parameter (locale)
+  const faqStructuredData = generateFAQStructuredData(faqItems);
   const organizationStructuredData = generateOrganizationStructuredData(locale);
 
   return (

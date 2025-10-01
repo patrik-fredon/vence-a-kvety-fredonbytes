@@ -223,19 +223,21 @@ export function generateAvailableDeliveryDates(
     const isWeekendDay = isWeekend(currentDate);
     const isWorking = isWorkingDay(currentDate, settings);
 
+    const reasonText = !isWorking
+      ? isHoliday
+        ? "Státní svátek"
+        : isWeekendDay
+          ? "Víkend"
+          : "Nedostupné"
+      : null;
+
     availableDates.push({
       date: new Date(currentDate),
       available: isWorking,
       timeSlots: isWorking ? ["morning", "afternoon", "anytime"] : [],
       isHoliday,
       isWeekend: isWeekendDay,
-      reason: !isWorking
-        ? isHoliday
-          ? "Státní svátek"
-          : isWeekendDay
-            ? "Víkend"
-            : "Nedostupné"
-        : undefined,
+      ...(reasonText && { reason: reasonText }),
     });
   }
 
@@ -246,7 +248,7 @@ export function generateAvailableDeliveryDates(
  * Calculate delivery cost based on distance, urgency, and time slot
  */
 export function calculateDeliveryCost(
-  address: Address,
+  _address: Address,
   urgency: DeliveryUrgency,
   timeSlot: DeliveryTimeSlot = "anytime",
   deliveryZone?: DeliveryZone

@@ -1,6 +1,6 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
-interface UseImageOptimizationOptions {
+export interface UseImageOptimizationOptions {
   /** Number of images to prioritize (above-fold) */
   priorityCount?: number;
   /** Intersection observer root margin for lazy loading */
@@ -11,7 +11,7 @@ interface UseImageOptimizationOptions {
   enableLazyLoading?: boolean;
 }
 
-interface ImageOptimizationResult {
+export interface ImageOptimizationResult {
   /** Whether this image should have priority loading */
   shouldPrioritize: (index: number) => boolean;
   /** Whether this image should be lazy loaded */

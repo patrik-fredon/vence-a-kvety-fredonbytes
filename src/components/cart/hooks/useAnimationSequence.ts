@@ -6,7 +6,7 @@ import type { AnimationSequenceOptions } from '../animations/types';
 
 export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
   const { startAnimation, state, resetAnimation } = useCartAnimation();
-  const animationTimeoutRef = useRef<NodeJS.Timeout>();
+  const animationTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const startProductToCartAnimation = useCallback(
     (productElement: HTMLElement, cartElement: HTMLElement, productImageSrc: string) => {

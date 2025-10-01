@@ -1,6 +1,6 @@
 import {
   batchCacheProductCustomizations,
-  getCachedProductCustomizations
+  // Removed unused getCachedProductCustomizations
 } from "@/lib/cache/product-cache";
 import { getFrequentCustomizationOptions } from "./customization-queries";
 import { customizationCache } from "@/lib/cache/customization-cache";
@@ -78,7 +78,7 @@ export async function warmUpUserBasedCache(userId?: string): Promise<void> {
     }
 
     if (recentProducts && recentProducts.length > 0) {
-      const productIds = [...new Set(recentProducts.map(item => item.product_id))];
+      const productIds = [...new Set(recentProducts.map(item => item.product_id).filter((id): id is string => id !== null))];
       await batchCacheProductCustomizations(productIds);
 
       console.log(`Cache warmed up for ${productIds.length} user-specific products`);

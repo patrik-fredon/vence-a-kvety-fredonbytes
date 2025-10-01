@@ -235,15 +235,15 @@ export async function forceClearCartCache(
   try {
     const client = getCacheClient();
     const identifier = userId || sessionId || 'anonymous';
-    
+
     // Clear cart configuration cache
     const configKey = getCartConfigKey(userId, sessionId);
     await client.del(configKey);
-    
+
     // Clear all price calculation caches for this user/session
     // Since Upstash Redis doesn't support SCAN, we need to track and clear known patterns
     await clearAllPriceCalculationCache(identifier);
-    
+
     // Verify configuration cache is actually deleted
     const configExists = await client.exists(configKey);
     if (configExists) {
@@ -266,34 +266,34 @@ export async function forceClearCartCache(
  * 2. Clear all keys from that set
  * 3. Clean up the tracking set itself
  */
-async function clearAllPriceCalculationCache(identifier: string): Promise<void> {
+export async function clearAllPriceCalculationCache(identifier: string): Promise<void> {
   try {
     const client = getCacheClient();
-    
+
     // Get the tracking set key for this user/session
     const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
-    
+
     // Get all tracked price cache keys for this user/session
     const trackedKeys = await client.get(trackingKey);
-    
+
     if (trackedKeys) {
       try {
         const keyList: string[] = JSON.parse(trackedKeys);
-        
+
         // Delete all tracked price cache keys
         for (const key of keyList) {
           await client.del(key);
         }
-        
+
         console.log(`🧹 [Cache] Cleared ${keyList.length} price calculation cache entries for ${identifier}`);
       } catch (parseError) {
         console.warn(`⚠️ [Cache] Could not parse tracked keys for ${identifier}:`, parseError);
       }
     }
-    
+
     // Clear the tracking set itself
     await client.del(trackingKey);
-    
+
     console.log(`✅ [Cache] Cleared price calculation tracking for ${identifier}`);
   } catch (error) {
     console.error('❌ [Cache] Error clearing price calculation cache:', error);
@@ -308,11 +308,11 @@ async function trackPriceCalculationKey(identifier: string, cacheKey: string): P
   try {
     const client = getCacheClient();
     const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
-    
+
     // Get existing tracked keys
     const existingKeys = await client.get(trackingKey);
     let keyList: string[] = [];
-    
+
     if (existingKeys) {
       try {
         keyList = JSON.parse(existingKeys);
@@ -321,11 +321,11 @@ async function trackPriceCalculationKey(identifier: string, cacheKey: string): P
         keyList = [];
       }
     }
-    
+
     // Add new key if not already tracked
     if (!keyList.includes(cacheKey)) {
       keyList.push(cacheKey);
-      
+
       // Store updated list with same TTL as price calculations
       await client.set(trackingKey, JSON.stringify(keyList), PRICE_CALCULATION_TTL);
     }

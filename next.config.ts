@@ -6,9 +6,9 @@ import { OPTIMIZE_PACKAGE_IMPORTS, WEBPACK_OPTIMIZATION, BUNDLE_ANALYZER_CONFIG 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
 const nextConfig: NextConfig = {
-  // Temporarily disable TypeScript checking during build
+  // TypeScript checking enabled for production builds
   typescript: {
-    ignoreBuildErrors: true,
+    ignoreBuildErrors: false,
   },
 
   // Transpile packages for better optimization (removed serverExternalPackages to avoid conflicts with optimizePackageImports)
@@ -17,8 +17,8 @@ const nextConfig: NextConfig = {
   // Enable experimental features for better performance
   experimental: {
     optimizePackageImports: OPTIMIZE_PACKAGE_IMPORTS,
-    // CSS optimization for better performance
-    optimizeCss: true,
+    // CSS optimization disabled due to critters module dependency issue
+    // optimizeCss: true,
   },
 
   // Turbopack configuration (replaces experimental.turbo)
@@ -160,7 +160,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
     // Bundle analyzer configuration for monitoring bundle size
-    if (process.env.ANALYZE === "true") {
+    if (process.env['ANALYZE'] === "true") {
       const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
       config.plugins.push(
         new BundleAnalyzerPlugin({

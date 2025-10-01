@@ -5,7 +5,7 @@
 
 "use client";
 
-import { XMarkIcon } from "@heroicons/react/24/outline";
+import { XMarkIcon } from "@/lib/icons";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
@@ -24,7 +24,7 @@ interface ModalProps {
   closeOnEscape?: boolean;
   showCloseButton?: boolean;
   className?: string;
-  initialFocus?: React.RefObject<HTMLElement>;
+  initialFocus?: React.RefObject<HTMLElement | null>;
 }
 
 export function Modal({
@@ -78,21 +78,18 @@ export function Modal({
         document.body.style.overflow = originalStyle;
       };
     }
+    return undefined;
   }, [isOpen]);
 
   // Focus management
   useEffect(() => {
     if (isOpen && modalRef.current) {
-      // Focus the initial focus element or the title
       const focusTarget = initialFocus?.current || titleRef.current;
       if (focusTarget) {
         focusTarget.focus();
       }
-
-      // Announce modal opening
       announce(`${t("openMenu")}: ${title}`, "polite");
     } else if (!isOpen && previousActiveElement.current) {
-      // Return focus to the previously focused element
       previousActiveElement.current.focus();
       previousActiveElement.current = null;
     }
@@ -124,18 +121,13 @@ export function Modal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={handleOverlayClick}
     >
-      {/* Backdrop */}
       <div className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm" aria-hidden="true" />
-
-      {/* Modal */}
       <div
-        ref={modalRef}
+        ref={modalRef as React.RefObject<HTMLDivElement>}
         className={cn(
-          "relative bg-white rounded-lg shadow-xl w-full",
+          "relative bg-amber-100 rounded-lg shadow-xl w-full",
           sizeClasses[size],
-          "max-h-[90vh] overflow-hidden",
-          "focus:outline-none",
-          // High contrast support
+          "max-h-[90vh] overflow-hidden focus:outline-none",
           "high-contrast:border-2 high-contrast:border-WindowText",
           className
         )}
@@ -144,7 +136,6 @@ export function Modal({
         aria-labelledby="modal-title"
         aria-describedby={description ? "modal-description" : undefined}
       >
-        {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-stone-200">
           <div className="flex-1 min-w-0">
             <h2
@@ -161,7 +152,6 @@ export function Modal({
               </p>
             )}
           </div>
-
           {showCloseButton && (
             <Button
               variant="ghost"
@@ -174,20 +164,14 @@ export function Modal({
             </Button>
           )}
         </div>
-
-        {/* Content */}
         <div className="p-6 overflow-y-auto max-h-[calc(90vh-8rem)]">{children}</div>
       </div>
     </div>
   );
 
-  // Render modal in portal
   return createPortal(modalContent, document.body);
 }
 
-/**
- * Modal footer component for consistent button layouts
- */
 interface ModalFooterProps {
   children: React.ReactNode;
   className?: string;
@@ -206,9 +190,6 @@ export function ModalFooter({ children, className }: ModalFooterProps) {
   );
 }
 
-/**
- * Confirmation modal with standard actions
- */
 interface ConfirmModalProps {
   isOpen: boolean;
   onClose: () => void;
@@ -235,7 +216,6 @@ export function ConfirmModal({
   const t = useTranslations("common");
   const confirmButtonRef = useRef<HTMLButtonElement>(null);
 
-  // Use translations as defaults if not provided
   const defaultConfirmText = confirmText || t("confirm");
   const defaultCancelText = cancelText || t("cancel");
 
@@ -253,7 +233,6 @@ export function ConfirmModal({
     >
       <div className="space-y-4">
         <p className="text-stone-700">{message}</p>
-
         <ModalFooter>
           <Button variant="outline" onClick={onClose} disabled={loading}>
             {defaultCancelText}

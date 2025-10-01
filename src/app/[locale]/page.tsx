@@ -58,11 +58,11 @@ export default async function Home({ params }: HomeProps) {
     },
   ];
 
-  const faqStructuredData = generateFAQStructuredData(faqs, locale);
+  const faqStructuredData = generateFAQStructuredData(faqs);
 
   // Company logo configuration for RefactoredPageLayout
   const companyLogo = {
-    src: "/logo.svg",
+    src: "https://cdn.fredonbytes.com/logo-bigger-pohrebni-vence-hero-section.webp",
     alt:
       locale === "cs"
         ? "Logo společnosti specializující se na pohřební věnce a květinové aranžmá"

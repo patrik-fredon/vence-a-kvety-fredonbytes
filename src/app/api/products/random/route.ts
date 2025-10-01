@@ -10,7 +10,6 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     const count = Math.min(Number.parseInt(searchParams.get("count") || "3"), 10); // Max 10 products
-    const locale = searchParams.get("locale") || "cs";
 
     // Get random products that are active and in stock
     // Use a more sophisticated random selection algorithm
@@ -50,7 +49,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter products that are in stock
-    const availableProducts = products.filter((product) => product.availability?.inStock !== false);
+    const availableProducts = products.filter((product) => (product.availability as any)?.['inStock'] !== false);
 
     if (availableProducts.length === 0) {
       return NextResponse.json({
@@ -138,7 +137,9 @@ function fisherYatesShuffle<T>(array: T[]): T[] {
   const shuffled = [...array];
   for (let i = shuffled.length - 1; i > 0; i--) {
     const j = Math.floor(Math.random() * (i + 1));
-    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+    const temp = shuffled[i];
+    shuffled[i] = shuffled[j]!; // Non-null assertion since j is always valid index
+    shuffled[j] = temp!; // Non-null assertion since temp is from valid index
   }
   return shuffled;
 }

@@ -1,7 +1,6 @@
 "use client";
 
-import { CalendarIcon } from "@heroicons/react/24/outline";
-import { useTranslations } from "next-intl";
+import { CalendarIcon } from "@/lib/icons";
 import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
@@ -22,7 +21,7 @@ export function DateSelector({
   locale,
   className,
 }: DateSelectorProps) {
-  const t = useTranslations("product");
+  // Removed unused translation hook
   const [isOpen, setIsOpen] = useState(false);
 
   // Calculate min and max dates
@@ -67,7 +66,7 @@ export function DateSelector({
         onClick={handleToggleCalendar}
         className={cn(
           "w-full flex items-center justify-between p-3 border rounded-lg transition-colors",
-          "border-neutral-300 bg-white hover:border-neutral-400 hover:bg-neutral-50",
+          "border-neutral-300 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] hover:border-neutral-400 hover:bg-neutral-50",
           "focus:ring-2 focus:ring-primary-200 focus:border-primary-500"
         )}
       >
@@ -92,7 +91,7 @@ export function DateSelector({
 
       {/* Calendar Input */}
       {isOpen && (
-        <div className="p-4 border border-neutral-200 rounded-lg bg-white shadow-lg">
+        <div className="p-4 border border-neutral-200 rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] shadow-lg">
           <div className="space-y-3">
             <div className="text-sm font-medium text-neutral-700">
               {locale === "cs" ? "Vyberte datum dodání:" : "Select delivery date:"}

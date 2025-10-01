@@ -5,7 +5,7 @@ import {
   ExclamationTriangleIcon,
   HomeIcon,
   PhoneIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 import { Component, type ReactNode } from "react";
 import { logError } from "@/lib/monitoring/error-logger";
 import { getErrorMessage } from "@/lib/monitoring/error-messages";
@@ -35,15 +35,15 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
     return { hasError: true, error, errorId };
   }
 
-  componentDidCatch(error: Error, errorInfo: any) {
+  override componentDidCatch(error: Error, errorInfo: any) {
     const { level = "component", context } = this.props;
 
     // Log error with context
     logError(error, {
       errorInfo,
       level,
-      context,
-      errorId: this.state.errorId,
+      context: context || "unknown",
+      errorId: this.state.errorId || "unknown",
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
@@ -54,10 +54,10 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
   }
 
   handleRetry = () => {
-    this.setState({ hasError: false, error: undefined, errorId: undefined });
+    this.setState({ hasError: false });
   };
 
-  render() {
+  override render() {
     if (this.state.hasError) {
       if (this.props.fallback) {
         return this.props.fallback;
@@ -68,22 +68,26 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       if (level === "page") {
         return (
           <PageErrorFallback
-            error={this.state.error}
+            error={this.state.error || new Error("Unknown error")}
             onRetry={this.handleRetry}
-            errorId={this.state.errorId}
+            errorId={this.state.errorId || "unknown"}
           />
         );
       }
 
       if (level === "critical") {
-        return <CriticalErrorFallback error={this.state.error} errorId={this.state.errorId} />;
+        return (
+          <CriticalErrorFallback
+            errorId={this.state.errorId || "unknown"}
+          />
+        );
       }
 
       return (
         <ErrorFallback
-          error={this.state.error}
+          error={this.state.error || new Error("Unknown error")}
           onRetry={this.handleRetry}
-          errorId={this.state.errorId}
+          errorId={this.state.errorId || "unknown"}
         />
       );
     }
@@ -157,7 +161,7 @@ export function ErrorFallback({
           </p>
         )}
 
-        {process.env.NODE_ENV === "development" && error && (
+        {process.env['NODE_ENV'] === "development" && error && (
           <details className="mb-6 text-left">
             <summary className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700">
               Zobrazit technické detaily
@@ -183,11 +187,10 @@ export function ErrorFallback({
             <button
               key={index}
               onClick={action.action}
-              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
-                action.primary
-                  ? "bg-primary-600 hover:bg-primary-700 text-white"
-                  : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700"
-              }`}
+              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${action.primary
+                ? "bg-primary-600 hover:bg-primary-700 text-white"
+                : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700"
+                }`}
             >
               {action.icon && <action.icon className="w-4 h-4" />}
               <span>{action.label}</span>
@@ -222,9 +225,9 @@ export function PageErrorFallback({ error, onRetry, errorId }: ErrorFallbackProp
     <div className="min-h-screen bg-gradient-memorial flex items-center justify-center p-4">
       <div className="bg-white rounded-lg shadow-elegant p-8 max-w-md mx-auto">
         <ErrorFallback
-          error={error}
-          onRetry={onRetry}
-          errorId={errorId}
+          error={error || new Error("Unknown error")}
+          onRetry={onRetry || (() => window.location.reload())}
+          errorId={errorId || "unknown"}
           title="Stránka se nepodařila načíst"
           message="Omlouváme se, při načítání stránky došlo k chybě. Zkuste obnovit stránku nebo se vraťte na hlavní stránku."
           showContactSupport={true}
@@ -255,9 +258,9 @@ export function ComponentErrorFallback({
   return (
     <div className={`bg-white border border-neutral-200 rounded-lg p-6 ${className}`}>
       <ErrorFallback
-        error={error}
-        onRetry={onRetry}
-        errorId={errorId}
+        error={error || new Error("Unknown error")}
+        onRetry={onRetry || (() => window.location.reload())}
+        errorId={errorId || "unknown"}
         title="Komponenta se nepodařila načíst"
         message="Při načítání této části stránky došlo k chybě."
       />
@@ -265,7 +268,7 @@ export function ComponentErrorFallback({
   );
 }
 
-export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
+export function CriticalErrorFallback({ errorId }: Pick<ErrorFallbackProps, 'errorId'>) {
   const handleContactSupport = () => {
     const subject = encodeURIComponent(`Kritická chyba - ${errorId || "neznámé ID"}`);
     const body = encodeURIComponent(
@@ -277,6 +280,8 @@ export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
   const handleGoHome = () => {
     window.location.href = "/";
   };
+
+  const finalErrorId = errorId || "unknown";
 
   return (
     <div className="min-h-screen bg-red-50 flex items-center justify-center p-4">
@@ -293,12 +298,10 @@ export function CriticalErrorFallback({ error, errorId }: ErrorFallbackProps) {
             naši podporu nebo se vraťte na hlavní stránku.
           </p>
 
-          {errorId && (
-            <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
-              <p className="text-sm text-red-600 font-medium">ID chyby pro podporu:</p>
-              <p className="text-xs font-mono text-red-800 mt-1">{errorId}</p>
-            </div>
-          )}
+          <div className="bg-red-50 border border-red-200 rounded-lg p-3 mb-6">
+            <p className="text-sm text-red-600 font-medium">ID chyby pro podporu:</p>
+            <p className="text-xs font-mono text-red-800 mt-1">{finalErrorId}</p>
+          </div>
 
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button

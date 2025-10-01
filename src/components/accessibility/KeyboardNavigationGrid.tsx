@@ -73,19 +73,20 @@ export function KeyboardNavigationGrid({
 
   // Enhanced children with grid item attributes
   const enhancedChildren = children.map((child, index) => {
-    return React.cloneElement(child, {
+    const props = {
       key: child.key || index,
-      "data-grid-item": true,
       tabIndex: currentIndex === index ? 0 : -1,
-      role: "gridcell",
+      role: "gridcell" as const,
       "aria-setsize": children.length,
       "aria-posinset": index + 1,
+      ...({ 'data-grid-item': true } as any),
       onFocus: () => {
         if (currentIndex !== index) {
           focusItem(index);
         }
       },
-    });
+    };
+    return React.cloneElement(child, props);
   });
 
   return (

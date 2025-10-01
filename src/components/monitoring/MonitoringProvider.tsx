@@ -89,8 +89,8 @@ export function useErrorReporting() {
   const reportError = (error: Error, context?: string) => {
     errorLogger.logError(error, {
       level: "component",
-      context,
-      userId: sessionStorage.getItem("monitoring_user_id") || undefined,
+      ...(context && { context }),
+      ...(sessionStorage.getItem("monitoring_user_id") && { userId: sessionStorage.getItem("monitoring_user_id")! }),
     });
   };
 

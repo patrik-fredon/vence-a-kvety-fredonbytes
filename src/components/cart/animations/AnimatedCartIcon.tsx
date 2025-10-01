@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import React, { useRef, useEffect } from "react";

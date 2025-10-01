@@ -21,12 +21,10 @@
 .next/
 out/
 archive/
-.serena/
-.kiro/
-.vscode/
-.clinerules/
-.kilocode/
-.roo/
+
+
+
+
 .windsurf/
 .cursor/
 .qoder/
@@ -130,18 +128,4 @@ storybook-static
 # Temporary folders
 tmp/
 temp/
-.clinerules/byterover-rules.md
-.kilocode/rules/byterover-rules.md
-.roo/rules/byterover-rules.md
-.windsurf/rules/byterover-rules.md
-.cursor/rules/byterover-rules.mdc
-.kiro/steering/byterover-rules.md
-.qoder/rules/byterover-rules.md
-.augment/rules/byterover-rules.md
-.kiro/specs/ui-layout-migration/design.md
-.kiro/specs/ui-layout-migration/requirements.md
-.kiro/specs/ui-layout-migration/tasks.md
-.kiro/steering/structure.md
-.kiro/steering/tech.md
-.serena/project.yml
-.serena/memories/tech_stack.md
+

@@ -27,7 +27,7 @@ class CustomizationPerformanceMonitor {
         operation,
         duration,
         timestamp: Date.now(),
-        metadata,
+        ...(metadata && { metadata }),
       });
     };
   }
@@ -44,7 +44,7 @@ class CustomizationPerformanceMonitor {
     }
 
     // Log slow operations in development
-    if (process.env.NODE_ENV === "development" && metric.duration > 100) {
+    if (process.env['NODE_ENV'] === "development" && metric.duration > 100) {
       console.warn(`Slow customization operation: ${metric.operation} took ${metric.duration.toFixed(2)}ms`, metric.metadata);
     }
   }
@@ -130,14 +130,14 @@ export function withPerformanceMonitoring<T extends (...args: any[]) => any>(
       // Handle async functions
       if (result instanceof Promise) {
         return result.finally(() => {
-          endTiming({ args: args.length });
+          endTiming();
         });
       }
 
-      endTiming({ args: args.length });
+      endTiming();
       return result;
     } catch (error) {
-      endTiming({ error: error instanceof Error ? error.message : 'Unknown error', args: args.length });
+      endTiming();
       throw error;
     }
   }) as T;
@@ -159,14 +159,14 @@ export function performanceMonitored(operationName?: string) {
 
         if (result instanceof Promise) {
           return result.finally(() => {
-            endTiming({ args: args.length });
+            endTiming();
           });
         }
 
-        endTiming({ args: args.length });
+        endTiming();
         return result;
       } catch (error) {
-        endTiming({ error: error instanceof Error ? error.message : 'Unknown error', args: args.length });
+        endTiming();
         throw error;
       }
     };

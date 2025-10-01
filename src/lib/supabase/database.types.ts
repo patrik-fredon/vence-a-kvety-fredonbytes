@@ -199,6 +199,8 @@ export interface Database {
           session_id: string | null;
           product_id: string | null;
           quantity: number;
+          unit_price: number;
+          total_price: number;
           customizations: Json;
           created_at: string;
           updated_at: string;
@@ -209,6 +211,8 @@ export interface Database {
           session_id?: string | null;
           product_id?: string | null;
           quantity?: number;
+          unit_price?: number;
+          total_price?: number;
           customizations?: Json;
           created_at?: string;
           updated_at?: string;
@@ -219,6 +223,8 @@ export interface Database {
           session_id?: string | null;
           product_id?: string | null;
           quantity?: number;
+          unit_price?: number;
+          total_price?: number;
           customizations?: Json;
           created_at?: string;
           updated_at?: string;
@@ -417,6 +423,55 @@ export interface Database {
           updated_at?: string;
         };
         Relationships: [];
+      };
+      performance_metrics: {
+        Row: {
+          id: string;
+          name: string;
+          value: number;
+          rating: string | null;
+          delta: number | null;
+          url: string | null;
+          user_id: string | null;
+          session_id: string | null;
+          timestamp: string;
+          metadata: Json | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          value: number;
+          rating?: string | null;
+          delta?: number | null;
+          url?: string | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+          metadata?: Json | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          value?: number;
+          rating?: string | null;
+          delta?: number | null;
+          url?: string | null;
+          user_id?: string | null;
+          session_id?: string | null;
+          timestamp?: string;
+          metadata?: Json | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "performance_metrics_user_id_fkey";
+            columns: ["user_id"];
+            referencedRelation: "users";
+            referencedColumns: ["id"];
+          },
+        ];
       };
     };
     Views: {

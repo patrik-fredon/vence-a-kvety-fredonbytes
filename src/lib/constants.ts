@@ -130,7 +130,7 @@ export const API_ENDPOINTS = {
 
 // Social media and contact
 export const CONTACT_INFO = {
-  email: "info@ketingmar.cz",
+  email: "info@pohrebni-vence.cz",
   phone: "+420 123 456 789",
   address: {
     street: "Hlavní 123",

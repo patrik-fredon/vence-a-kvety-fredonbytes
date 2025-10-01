@@ -18,7 +18,7 @@ interface ErrorContext {
 }
 
 export function getErrorMessage(error: Error, context: ErrorContext = {}): ErrorMessage {
-  const { errorType, statusCode, url, userAction } = context;
+  const { statusCode } = context;
 
   // Network errors
   if (error.message.includes("fetch") || error.message.includes("network")) {

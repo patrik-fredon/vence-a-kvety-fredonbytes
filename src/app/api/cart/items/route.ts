@@ -2,6 +2,7 @@ import { randomUUID } from "crypto";
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
+import type { Json } from "@/lib/supabase/database.types";
 import {
   validateCartOperation,
   createValidationErrorResponse,
@@ -56,8 +57,7 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Get locale from request headers or default to 'cs'
-    const locale = request.headers.get('accept-language')?.includes('en') ? 'en' : 'cs';
+
 
     // Comprehensive validation using the validation system
     const validationResult = validateCartOperation(
@@ -160,15 +160,15 @@ export async function POST(request: NextRequest) {
       result = data;
       console.log("✅ [API] Updated existing cart item with proper price calculation");
     } else {
-      // Create new cart item with calculated prices
+      // Create new cart item with calculated prices and proper JSON type casting
       const cartItemData = {
         user_id: session?.user?.id || null,
-        session_id: session?.user?.id ? null : sessionId,
+        session_id: session?.user?.id ? null : (sessionId || null),
         product_id: body.productId,
         quantity: body.quantity,
         unit_price: priceCalculation.unitPrice,
         total_price: priceCalculation.totalPrice,
-        customizations: body.customizations as any,
+        customizations: (body.customizations || []) as unknown as Json,
       };
 
       const { data, error } = await supabase
@@ -206,7 +206,7 @@ export async function POST(request: NextRequest) {
 
       await updateCachedCartAfterItemChange(
         session?.user?.id || null,
-        sessionId,
+        sessionId || null,
         'add',
         result.id
       );
@@ -260,7 +260,7 @@ export async function POST(request: NextRequest) {
       console.log("🍪 [API] Setting cart-session cookie for guest user:", sessionId);
       response.cookies.set("cart-session", sessionId, {
         httpOnly: false, // Allow JavaScript access for client-side cart management
-        secure: process.env.NODE_ENV === "production",
+        secure: process.env['NODE_ENV'] === "production",
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 30, // 30 days
       });

@@ -7,13 +7,13 @@ import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
 export interface ComponentPerformanceMetrics {
   componentName: string;
   renderStartTime: number;
-  renderEndTime?: number;
-  renderDuration?: number;
-  mountTime?: number;
+  renderEndTime: number | undefined;
+  renderDuration: number | undefined;
+  mountTime: number | undefined;
   updateCount: number;
-  lastUpdateTime?: number;
+  lastUpdateTime: number | undefined;
   isFirstRender: boolean;
-  props?: Record<string, unknown>;
+  props: Record<string, unknown> | undefined;
 }
 
 /**
@@ -76,7 +76,7 @@ export const usePerformanceMonitor = (
 ): UsePerformanceMonitorResult => {
   const {
     enabled = true,
-    logMetrics = process.env.NODE_ENV === "development",
+    logMetrics = process.env['NODE_ENV'] === "development",
     componentName,
     trackProps = false,
     onMetrics,
@@ -132,7 +132,7 @@ export const usePerformanceMonitor = (
       updateCount: updateCountRef.current,
       lastUpdateTime: endTime,
       isFirstRender,
-      props: trackProps ? previousPropsRef.current : undefined,
+      props: trackProps ? (previousPropsRef.current || undefined) : undefined,
     };
 
     setMetrics(newMetrics);
@@ -196,7 +196,7 @@ export const usePerformanceMonitor = (
    * Auto-track render cycles (only in non-test environments)
    */
   useEffect(() => {
-    if (!enabled || process.env.NODE_ENV === "test") return;
+    if (!enabled || process.env['NODE_ENV'] === "test") return;
 
     // Prevent multiple auto-tracking sessions
     if (autoTrackingRef.current) return;

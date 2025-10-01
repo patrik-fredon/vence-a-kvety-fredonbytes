@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+
 import { useCart } from "@/lib/cart/context";
 import type { Category, Product } from "@/types/product";
 import { ProductGrid } from "./ProductGrid";
@@ -20,20 +20,23 @@ export function ProductGridWithCart({
 }: ProductGridWithCartProps) {
   const { addToCart } = useCart();
 
-  const handleAddToCart = async (product: Product) => {
+  const handleAddToCart = (product: Product) => {
     console.log("🛒 [ProductGridWithCart] Adding product to cart:", product.id);
 
-    const success = await addToCart({
+    // Execute the async addToCart operation without awaiting
+    addToCart({
       productId: product.id,
       quantity: 1,
       customizations: [],
+    }).then((success) => {
+      if (success) {
+        console.log("✅ [ProductGridWithCart] Successfully added product to cart:", product.id);
+      } else {
+        console.error("❌ [ProductGridWithCart] Failed to add product to cart:", product.id);
+      }
+    }).catch((error) => {
+      console.error("❌ [ProductGridWithCart] Error adding product to cart:", product.id, error);
     });
-
-    if (success) {
-      console.log("✅ [ProductGridWithCart] Successfully added product to cart:", product.id);
-    } else {
-      console.error("❌ [ProductGridWithCart] Failed to add product to cart:", product.id);
-    }
   };
 
   return (
@@ -41,7 +44,7 @@ export function ProductGridWithCart({
       initialProducts={initialProducts}
       initialCategories={initialCategories}
       locale={locale}
-      className={className}
+      {...(className && { className })}
       onAddToCart={handleAddToCart}
     />
   );

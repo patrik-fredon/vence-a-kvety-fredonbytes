@@ -26,7 +26,7 @@ export const metadata: Metadata = {
   creator: "Ketingmar s.r.o.",
   publisher: "Ketingmar s.r.o.",
   robots: "index, follow",
-  metadataBase: new URL(process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz"),
+  metadataBase: new URL(process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz"),
   alternates: {
     canonical: "/",
     languages: {
@@ -59,7 +59,7 @@ export default function RootLayout({
   return (
     <html className="scroll-smooth">
       <body
-        className={`${inter.variable} ${playfairDisplay.variable} font-sans antialiased bg-amber-100 text-neutral-900`}
+        className={`${inter.variable} ${playfairDisplay.variable} font-sans antialiased bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-neutral-900`}
       >
         {children}
       </body>

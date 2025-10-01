@@ -12,7 +12,7 @@ export interface AdminUser {
 /**
  * Middleware to check if user has admin access
  */
-export async function requireAdmin(request: NextRequest): Promise<AdminUser | NextResponse> {
+export async function requireAdmin(_request: NextRequest): Promise<AdminUser | NextResponse> {
   try {
     const session = await auth();
 
@@ -41,7 +41,7 @@ export async function requireAdmin(request: NextRequest): Promise<AdminUser | Ne
     return {
       id: session.user.id,
       email: session.user.email!,
-      name: session.user.name || undefined,
+      ...(session.user.name && { name: session.user.name }),
       role: role as "admin" | "super_admin",
     };
   } catch (error) {
@@ -98,7 +98,7 @@ export async function logAdminAction(
       admin_id: adminId,
       action,
       resource_type: resourceType,
-      resource_id: resourceId,
+      resource_id: resourceId || null,
       old_values: oldValues,
       new_values: newValues,
       ip_address: (request as any)?.ip || request?.headers.get("x-forwarded-for") || null,

@@ -262,7 +262,7 @@ export class JavaScriptProfiler {
       this.measurements.get(name)!.push(duration);
 
       // Log slow executions in development
-      if (process.env.NODE_ENV === 'development' && duration > 50) {
+      if (process.env['NODE_ENV'] === 'development' && duration > 50) {
         console.warn(`🐌 [JSProfiler] Slow execution: ${name} took ${duration.toFixed(2)}ms`);
       }
 

@@ -23,7 +23,7 @@ import {
   getCartSessionId,
   setCartSessionId,
   validateConditionalCustomizations,
-  calculateCustomizationPriceModifier
+  calculateCustomizationPriceModifier as _calculateCustomizationPriceModifier
 } from "./utils";
 import { supabase } from "@/lib/supabase/client";
 
@@ -218,7 +218,7 @@ interface CartProviderProps {
 export function CartProvider({ children }: CartProviderProps) {
   const [state, dispatch] = useReducer(cartReducer, initialState);
   const { user, loading } = useAuthContext();
-  const syncTimeoutRef = useRef<NodeJS.Timeout>();
+  // Removed unused _syncTimeoutRef
   const retryCountRef = useRef(0);
   const maxRetries = 3;
   const [isOnline, setIsOnline] = useState(true);

@@ -8,7 +8,7 @@ import {
   ExclamationTriangleIcon,
   PhoneIcon,
   ShoppingCartIcon,
-} from "@heroicons/react/24/outline";
+} from "@/lib/icons";
 import type { Metadata } from "next";
 import React from "react";
 import { Button } from "@/components/ui/Button";
@@ -66,10 +66,10 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
     error && commonErrors[error]
       ? commonErrors[error]
       : {
-          title: "Neočekávaná chyba",
-          description: "Došlo k neočekávané chybě při zpracování platby.",
-          solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
-        };
+        title: "Neočekávaná chyba",
+        description: "Došlo k neočekávané chybě při zpracování platby.",
+        solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
+      };
 
   return (
     <div className="min-h-screen bg-neutral-50 py-12">

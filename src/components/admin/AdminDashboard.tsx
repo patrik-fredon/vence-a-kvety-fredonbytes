@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+
 import { useEffect, useState } from "react";
 import { LazyInventoryManagement, LazyMonitoringDashboard } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -54,7 +54,6 @@ interface DashboardStats {
 }
 
 export default function AdminDashboard() {
-  const t = useTranslations("admin");
   const [currentView, setCurrentView] = useState<AdminView>("overview");
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);

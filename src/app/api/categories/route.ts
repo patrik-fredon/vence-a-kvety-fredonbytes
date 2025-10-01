@@ -14,7 +14,7 @@ import {
   validateCategoryData,
 } from "@/lib/utils/product-transforms";
 import type { ApiResponse } from "@/types";
-import { type Category, CategoryRow, type CreateCategoryRequest } from "@/types/product";
+import { type Category, type CreateCategoryRequest } from "@/types/product";
 
 /**
  * GET /api/categories
@@ -196,10 +196,10 @@ export async function POST(request: NextRequest) {
       nameCs: body.nameCs,
       nameEn: body.nameEn,
       slug: body.slug,
-      descriptionCs: body.descriptionCs,
-      descriptionEn: body.descriptionEn,
-      imageUrl: body.imageUrl,
-      parentId: body.parentId,
+      descriptionCs: body.descriptionCs || "",
+      descriptionEn: body.descriptionEn || "",
+      imageUrl: body.imageUrl || "",
+      parentId: body.parentId || "",
       sortOrder: body.sortOrder || 0,
       active: body.active !== undefined ? body.active : true,
     });

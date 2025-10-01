@@ -20,13 +20,13 @@ interface PerformanceDataRequest {
 export async function POST(request: NextRequest) {
   try {
     // Rate limiting
-    const rateLimitResult = await rateLimit("performance-monitoring", request);
+    const rateLimitResult = await rateLimit(request, "general");
     if (!rateLimitResult.success) {
       return NextResponse.json({ error: "Rate limit exceeded" }, { status: 429 });
     }
 
     const body = (await request.json()) as PerformanceDataRequest;
-    const { metrics, userAgent, timestamp } = body;
+    const { metrics, userAgent } = body;
 
     if (!(metrics && Array.isArray(metrics))) {
       return NextResponse.json({ error: "Invalid metrics data" }, { status: 400 });
@@ -141,8 +141,9 @@ function calculatePerformanceSummary(metrics: any[]) {
 
   const averageValues: Record<string, number> = {};
   Object.entries(metricsByName).forEach(([name, values]) => {
-    const sum = values.reduce((acc, metric) => acc + metric.value, 0);
-    averageValues[name] = Math.round((sum / values.length) * 100) / 100;
+    const metricValues = values as any[];
+    const sum = metricValues.reduce((acc, metric) => acc + metric.value, 0);
+    averageValues[name] = Math.round((sum / metricValues.length) * 100) / 100;
   });
 
   const ratingDistribution = metrics.reduce(

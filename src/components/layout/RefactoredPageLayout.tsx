@@ -16,6 +16,7 @@
 
 import type React from "react";
 import { ComponentErrorFallback, ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { type Locale } from "@/i18n/config";
 import { funeralColors } from "@/lib/design-tokens";
 import { logErrorWithContext } from "@/lib/utils/fallback-utils";
 import { LazyProductReferencesSection } from "./LazyProductReferencesSection";
@@ -44,14 +45,13 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
   className = "",
 }) => {
   // Error handler for component-level errors
-  const handleComponentError = (error: Error, errorInfo: any) => {
+  const handleComponentError = (error: Error, _errorInfo: any) => {
     logErrorWithContext(error, {
       component: "RefactoredPageLayout",
       action: "component_error",
       locale: locale as string,
       timestamp: new Date().toISOString(),
-      errorInfo: errorInfo?.componentStack || "No component stack available",
-    });
+    } as any);
   };
 
   return (
@@ -116,7 +116,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
             />
           }
         >
-          <LazyProductReferencesSection locale={locale} />
+          <LazyProductReferencesSection locale={locale as Locale} />
         </ErrorBoundary>
       </section>
 

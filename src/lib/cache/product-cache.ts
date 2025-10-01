@@ -4,6 +4,7 @@
  */
 
 import type { Category, Product } from "@/types/product";
+import { createClient } from "@/lib/supabase/server";
 import {
   CACHE_KEYS,
   CACHE_TTL,
@@ -309,10 +310,10 @@ export async function warmUpProductCache(): Promise<void> {
  */
 export async function cacheProductCustomizations(productId: string) {
   const cacheKey = `product:customizations:${productId}`;
-  
+
   try {
     const supabase = createClient();
-    
+
     // Optimized query for just customization options
     const { data, error } = await supabase
       .from("products")
@@ -326,7 +327,8 @@ export async function cacheProductCustomizations(productId: string) {
     }
 
     if (data) {
-      await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(data.customization_options));
+      const client = getCacheClient();
+      await client.set(cacheKey, JSON.stringify(data.customization_options), CACHE_TTL.MEDIUM);
       return data.customization_options;
     }
 
@@ -342,13 +344,14 @@ export async function cacheProductCustomizations(productId: string) {
  */
 export async function getCachedProductCustomizations(productId: string) {
   const cacheKey = `product:customizations:${productId}`;
-  
+
   try {
-    const cached = await redis.get(cacheKey);
+    const client = getCacheClient();
+    const cached = await client.get(cacheKey);
     if (cached) {
       return JSON.parse(cached);
     }
-    
+
     // If not cached, fetch and cache
     return await cacheProductCustomizations(productId);
   } catch (error) {
@@ -362,7 +365,7 @@ export async function getCachedProductCustomizations(productId: string) {
  */
 export async function batchCacheProductCustomizations(productIds: string[]) {
   const supabase = createClient();
-  
+
   try {
     const { data, error } = await supabase
       .from("products")
@@ -375,9 +378,10 @@ export async function batchCacheProductCustomizations(productIds: string[]) {
     }
 
     // Cache each product's customizations
+    const client = getCacheClient();
     const cachePromises = (data || []).map(async (product) => {
       const cacheKey = `product:customizations:${product.id}`;
-      await redis.setex(cacheKey, CACHE_TTL, JSON.stringify(product.customization_options));
+      await client.set(cacheKey, JSON.stringify(product.customization_options), CACHE_TTL.MEDIUM);
     });
 
     await Promise.all(cachePromises);

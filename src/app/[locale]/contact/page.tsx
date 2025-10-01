@@ -1,4 +1,4 @@
-import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
 import { getTranslations } from "next-intl/server";
 import { ContactForm } from "@/components/contact";
 
@@ -16,14 +16,14 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
   const contactInfo = {
     address: {
-      cs: "Hlavní 123, 110 00 Praha 1",
-      en: "Hlavní 123, 110 00 Prague 1",
+      cs: "Jistebník 87 , Jistebník 74282",
+      en: "Jistebník 87 , Jistebník 74282",
     },
-    phone: "+420 123 456 789",
+    phone: "+420 735 116 328",
     email: "info@pohrebni-vence.cz",
     hours: {
-      cs: "Po-Pá: 8:00-17:00, So: 9:00-14:00",
-      en: "Mon-Fri: 8:00-17:00, Sat: 9:00-14:00",
+      cs: "Po-Pá: Dle objednavek",
+      en: "Mon-Fri: Per orders",
     },
   };
 
@@ -37,7 +37,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Information - Compact Professional Card */}
           <div className="lg:col-span-1">
-            <div className="bg-white rounded-lg shadow-soft p-6 h-fit">
+            <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6 h-fit">
               <h2 className="text-elegant text-xl font-semibold text-neutral-800 mb-4 border-b border-neutral-100 pb-3">
                 {tContact("contactInfo")}
               </h2>
@@ -102,7 +102,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
           {/* Contact Form - Takes remaining space */}
           <div className="lg:col-span-2">
-            <div className="bg-white rounded-lg shadow-soft p-8">
+            <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-8">
               <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-6">
                 {tContact("contactForm")}
               </h2>

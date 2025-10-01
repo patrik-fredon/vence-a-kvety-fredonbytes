@@ -1,6 +1,6 @@
 "use client";
 
-import { ShoppingCartIcon } from "@heroicons/react/24/outline";
+import { ShoppingCartIcon } from "@/lib/icons";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";

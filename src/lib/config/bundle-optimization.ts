@@ -22,7 +22,7 @@ export const DYNAMIC_IMPORT_LIBRARIES = [
 ] as const;
 
 // Libraries that benefit from optimizePackageImports
-export const OPTIMIZE_PACKAGE_IMPORTS = [
+export const OPTIMIZE_PACKAGE_IMPORTS: string[] = [
   // Internal modules
   '@/components',
   '@/lib',
@@ -34,24 +34,7 @@ export const OPTIMIZE_PACKAGE_IMPORTS = [
   '@heroicons/react/24/solid',
   '@heroicons/react/20/solid',
 
-  // Radix UI components
-  '@radix-ui/react-accordion',
-  '@radix-ui/react-alert-dialog',
-  '@radix-ui/react-avatar',
-  '@radix-ui/react-checkbox',
-  '@radix-ui/react-dialog',
-  '@radix-ui/react-dropdown-menu',
-  '@radix-ui/react-label',
-  '@radix-ui/react-popover',
-  '@radix-ui/react-progress',
-  '@radix-ui/react-radio-group',
-  '@radix-ui/react-select',
-  '@radix-ui/react-separator',
-  '@radix-ui/react-slot',
-  '@radix-ui/react-switch',
-  '@radix-ui/react-tabs',
-  '@radix-ui/react-toast',
-  '@radix-ui/react-tooltip',
+  // Note: Radix UI components removed as they were unused
 
   // Payment libraries
   '@stripe/react-stripe-js',
@@ -59,14 +42,13 @@ export const OPTIMIZE_PACKAGE_IMPORTS = [
 
   // Supabase
   '@supabase/supabase-js',
-  '@supabase/ssr',
 
   // Utility libraries
   'clsx',
   'tailwind-merge',
   'next-intl',
   'web-vitals',
-] as const;
+];;
 
 // Webpack optimization settings
 export const WEBPACK_OPTIMIZATION = {
@@ -91,7 +73,7 @@ export const WEBPACK_OPTIMIZATION = {
       },
       // UI libraries
       ui: {
-        test: /[\\/]node_modules[\\/](@headlessui|@heroicons|@radix-ui)[\\/]/,
+        test: /[\\/]node_modules[\\/](@headlessui|@heroicons)[\\/]/,
         name: 'ui-libs',
         chunks: 'all' as const,
         priority: 15,
@@ -156,7 +138,7 @@ export function shouldOptimizePackageImport(modulePath: string): boolean {
 export function getRecommendedChunkName(modulePath: string): string {
   if (modulePath.includes('@stripe')) return 'payments';
   if (modulePath.includes('@supabase')) return 'supabase';
-  if (modulePath.includes('@radix-ui') || modulePath.includes('@headlessui') || modulePath.includes('@heroicons')) return 'ui-libs';
+  if (modulePath.includes('@headlessui') || modulePath.includes('@heroicons')) return 'ui-libs';
   if (modulePath.includes('react')) return 'react';
   if (modulePath.includes('/admin/')) return 'admin';
   if (modulePath.includes('/components/')) return 'components';

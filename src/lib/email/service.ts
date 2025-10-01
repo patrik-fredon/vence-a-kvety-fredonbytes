@@ -7,7 +7,7 @@ import type { Order, OrderStatus } from "@/types/order";
 
 // Email service configuration
 interface EmailConfig {
-  apiKey?: string;
+  apiKey: string | undefined;
   fromEmail: string;
   fromName: string;
   baseUrl: string;
@@ -27,10 +27,10 @@ export class EmailService {
 
   constructor() {
     this.config = {
-      apiKey: process.env.RESEND_API_KEY,
-      fromEmail: process.env.FROM_EMAIL || "objednavky@pohrebni-vence.cz",
-      fromName: process.env.FROM_NAME || "Pohřební věnce",
-      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+      apiKey: process.env['RESEND_API_KEY'],
+      fromEmail: process.env['FROM_EMAIL'] || "objednavky@pohrebni-vence.cz",
+      fromName: process.env['FROM_NAME'] || "Pohřební věnce",
+      baseUrl: process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000",
     };
   }
 
@@ -39,7 +39,7 @@ export class EmailService {
    */
   async sendOrderConfirmation(data: OrderEmailData): Promise<{ success: boolean; error?: string }> {
     try {
-      const { order, customerName, customerEmail, locale } = data;
+      const { order, customerEmail, locale } = data;
 
       const subject =
         locale === "cs"
@@ -50,7 +50,7 @@ export class EmailService {
       const textContent = this.generateOrderConfirmationText(data);
 
       // If Resend is configured, use it; otherwise log for development
-      if (this.config.apiKey && process.env.NODE_ENV === "production") {
+      if (this.config.apiKey && process.env['NODE_ENV'] === "production") {
         return await this.sendWithResend({
           to: customerEmail,
           subject,
@@ -78,7 +78,7 @@ export class EmailService {
     data: OrderEmailData & { newStatus: OrderStatus }
   ): Promise<{ success: boolean; error?: string }> {
     try {
-      const { order, customerName, customerEmail, locale, newStatus } = data;
+      const { order, customerEmail, locale, newStatus } = data;
 
       const subject =
         locale === "cs"
@@ -88,7 +88,7 @@ export class EmailService {
       const htmlContent = this.generateStatusUpdateHTML({ ...data, newStatus });
       const textContent = this.generateStatusUpdateText({ ...data, newStatus });
 
-      if (this.config.apiKey && process.env.NODE_ENV === "production") {
+      if (this.config.apiKey && process.env['NODE_ENV'] === "production") {
         return await this.sendWithResend({
           to: customerEmail,
           subject,
@@ -180,25 +180,24 @@ export class EmailService {
     <div class="content">
       <p>${isCs ? "Vážený" : "Dear"} ${customerName},</p>
 
-      <p>${
-        isCs
-          ? "Děkujeme za vaši objednávku. Níže najdete podrobnosti:"
-          : "Thank you for your order. Please find the details below:"
+      <p>${isCs
+        ? "Děkujeme za vaši objednávku. Níže najdete podrobnosti:"
+        : "Thank you for your order. Please find the details below:"
       }</p>
 
       <div class="order-details">
         <h3>${isCs ? "Objednané položky" : "Ordered Items"}</h3>
         ${order.items
-          .map(
-            (item) => `
+        .map(
+          (item) => `
           <div class="item">
             <strong>${item.productName}</strong><br>
             ${isCs ? "Množství" : "Quantity"}: ${item.quantity}<br>
             ${isCs ? "Cena" : "Price"}: ${item.totalPrice.toLocaleString("cs-CZ")} Kč
           </div>
         `
-          )
-          .join("")}
+        )
+        .join("")}
 
         <div class="total">
           <p>${isCs ? "Celková částka" : "Total Amount"}: ${order.totalAmount.toLocaleString("cs-CZ")} Kč</p>
@@ -211,26 +210,23 @@ export class EmailService {
         ${order.deliveryInfo.address.street}<br>
         ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}</p>
 
-        ${
-          order.deliveryInfo.preferredDate
-            ? `
+        ${order.deliveryInfo.preferredDate
+        ? `
           <p><strong>${isCs ? "Preferovaný termín" : "Preferred Date"}:</strong><br>
           ${new Date(order.deliveryInfo.preferredDate).toLocaleDateString(locale)}</p>
         `
-            : ""
-        }
+        : ""
+      }
       </div>
 
-      <p>${
-        isCs
-          ? "Budeme vás informovat o dalších krocích zpracování vaší objednávky."
-          : "We will keep you informed about the next steps in processing your order."
+      <p>${isCs
+        ? "Budeme vás informovat o dalších krocích zpracování vaší objednávky."
+        : "We will keep you informed about the next steps in processing your order."
       }</p>
 
-      <p>${
-        isCs
-          ? "V případě dotazů nás neváhejte kontaktovat."
-          : "Please don't hesitate to contact us if you have any questions."
+      <p>${isCs
+        ? "V případě dotazů nás neváhejte kontaktovat."
+        : "Please don't hesitate to contact us if you have any questions."
       }</p>
     </div>
 
@@ -257,22 +253,21 @@ ${isCs ? "Objednávka" : "Order"} #${order.orderNumber}
 
 ${isCs ? "Vážený" : "Dear"} ${customerName},
 
-${
-  isCs
-    ? "Děkujeme za vaši objednávku. Níže najdete podrobnosti:"
-    : "Thank you for your order. Please find the details below:"
-}
+${isCs
+        ? "Děkujeme za vaši objednávku. Níže najdete podrobnosti:"
+        : "Thank you for your order. Please find the details below:"
+      }
 
 ${isCs ? "OBJEDNANÉ POLOŽKY:" : "ORDERED ITEMS:"}
 ${order.items
-  .map(
-    (item) => `
+        .map(
+          (item) => `
 - ${item.productName}
   ${isCs ? "Množství" : "Quantity"}: ${item.quantity}
   ${isCs ? "Cena" : "Price"}: ${item.totalPrice.toLocaleString("cs-CZ")} Kč
 `
-  )
-  .join("")}
+        )
+        .join("")}
 
 ${isCs ? "CELKOVÁ ČÁSTKA" : "TOTAL AMOUNT"}: ${order.totalAmount.toLocaleString("cs-CZ")} Kč
 
@@ -280,17 +275,15 @@ ${isCs ? "DORUČENÍ:" : "DELIVERY:"}
 ${isCs ? "Adresa" : "Address"}: ${order.deliveryInfo.address.street}, ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}
 ${order.deliveryInfo.preferredDate ? `${isCs ? "Preferovaný termín" : "Preferred Date"}: ${new Date(order.deliveryInfo.preferredDate).toLocaleDateString(locale)}` : ""}
 
-${
-  isCs
-    ? "Budeme vás informovat o dalších krocích zpracování vaší objednávky."
-    : "We will keep you informed about the next steps in processing your order."
-}
+${isCs
+        ? "Budeme vás informovat o dalších krocích zpracování vaší objednávky."
+        : "We will keep you informed about the next steps in processing your order."
+      }
 
-${
-  isCs
-    ? "V případě dotazů nás neváhejte kontaktovat."
-    : "Please don't hesitate to contact us if you have any questions."
-}
+${isCs
+        ? "V případě dotazů nás neváhejte kontaktovat."
+        : "Please don't hesitate to contact us if you have any questions."
+      }
 
 ${this.config.fromName}
 ${isCs ? "Telefon" : "Phone"}: +420 XXX XXX XXX
@@ -356,10 +349,9 @@ Email: ${this.config.fromEmail}
         <p>${statusMessage}</p>
       </div>
 
-      <p>${
-        isCs
-          ? "Děkujeme za vaši důvěru a těšíme se na další spolupráci."
-          : "Thank you for your trust and we look forward to serving you again."
+      <p>${isCs
+        ? "Děkujeme za vaši důvěru a těšíme se na další spolupráci."
+        : "Thank you for your trust and we look forward to serving you again."
       }</p>
     </div>
 
@@ -410,11 +402,10 @@ ${isCs ? "NOVÝ STAV OBJEDNÁVKY" : "NEW ORDER STATUS"}: ${newStatus.toUpperCase
 
 ${statusMessage}
 
-${
-  isCs
-    ? "Děkujeme za vaši důvěru a těšíme se na další spolupráci."
-    : "Thank you for your trust and we look forward to serving you again."
-}
+${isCs
+        ? "Děkujeme za vaši důvěru a těšíme se na další spolupráci."
+        : "Thank you for your trust and we look forward to serving you again."
+      }
 
 ${this.config.fromName}
 Email: ${this.config.fromEmail}

@@ -24,9 +24,9 @@ interface ProductFiltersProps {
 export function ProductFilters({
   categories,
   filters,
-  sortOptions,
+  sortOptions: _sortOptions,
   onFiltersChange,
-  onSortChange,
+  onSortChange: _onSortChange,
   locale,
   className,
 }: ProductFiltersProps) {
@@ -44,7 +44,7 @@ export function ProductFilters({
   }, [filters]);
 
   // Debounced search function with useRef to avoid stale closures
-  const timeoutRef = useRef<NodeJS.Timeout>();
+  const timeoutRef = useRef<NodeJS.Timeout | null>(null);
 
   const debouncedSearch = useCallback(
     (searchTerm: string) => {
@@ -55,7 +55,10 @@ export function ProductFilters({
       timeoutRef.current = setTimeout(() => {
         // Use functional update to get the latest localFilters
         setLocalFilters((currentFilters) => {
-          const newFilters = { ...currentFilters, search: searchTerm || undefined };
+          const { search: _, ...filtersWithoutSearch } = currentFilters;
+          const newFilters = searchTerm
+            ? { ...currentFilters, search: searchTerm }
+            : filtersWithoutSearch;
           onFiltersChange(newFilters);
           return newFilters;
         });
@@ -84,17 +87,7 @@ export function ProductFilters({
     onFiltersChange(newFilters);
   };
 
-  const handleSortChange = (
-    field: ProductSortOptions["field"],
-    direction?: ProductSortOptions["direction"]
-  ) => {
-    const newSort = {
-      field,
-      direction: direction || sortOptions.direction,
-    };
-    console.log("📊 [ProductFilters] Sort change:", newSort);
-    onSortChange(newSort);
-  };
+
 
   const clearFilters = () => {
     const clearedFilters: ProductFiltersType = {};

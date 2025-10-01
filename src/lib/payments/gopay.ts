@@ -227,8 +227,8 @@ export class GopayClient {
  * Create GoPay client instance
  */
 export function createGopayClient(): GopayClient {
-  const clientId = process.env.GOPAY_CLIENT_ID;
-  const clientSecret = process.env.GOPAY_CLIENT_SECRET;
+  const clientId = process.env['GOPAY_CLIENT_ID'];
+  const clientSecret = process.env['GOPAY_CLIENT_SECRET'];
 
   if (!(clientId && clientSecret)) {
     throw new Error(
@@ -239,7 +239,7 @@ export function createGopayClient(): GopayClient {
   const config: GopayConfig = {
     clientId,
     clientSecret,
-    environment: process.env.NODE_ENV === "production" ? "production" : "sandbox",
+    environment: process.env['NODE_ENV'] === "production" ? "production" : "sandbox",
   };
 
   return new GopayClient(config);

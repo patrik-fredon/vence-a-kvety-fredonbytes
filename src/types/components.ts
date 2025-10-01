@@ -121,9 +121,10 @@ export type ButtonVariant = "default" | "destructive" | "outline" | "secondary" 
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "size">, AtomProps {
+export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "size" | "disabled" | "className" | "aria-label">, Omit<AtomProps, "size" | "disabled"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
+  disabled?: boolean;
   loading?: boolean;
   loadingText?: string;
   icon?: ReactNode;
@@ -139,10 +140,11 @@ export type InputType = "text" | "email" | "password" | "number" | "tel" | "url"
 export type InputVariant = "default" | "filled" | "outline";
 
 export interface InputProps
-  extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type">,
-    AtomProps {
+  extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type" | "disabled" | "className" | "aria-label">,
+  Omit<AtomProps, "disabled"> {
   type?: InputType;
   variant?: InputVariant;
+  disabled?: boolean;
   label?: string;
   error?: string;
   helpText?: string;

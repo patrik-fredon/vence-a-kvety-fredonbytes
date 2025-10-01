@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// Removed unused Image import
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
@@ -46,7 +46,7 @@ export function ProductCardLayout({
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
-  const [imageLoading, setImageLoading] = useState(true);
+  const [_imageLoading, setImageLoading] = useState(true);
 
   const productName = product.name[locale as keyof typeof product.name];
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
@@ -142,7 +142,7 @@ export function ProductCardLayout({
   // Variant-specific styling
   const getCardStyles = () => {
     const baseStyles = cn(
-      "group relative bg-white transition-all duration-300 shadow-lg border border-stone-200",
+      "group relative bg-teal-900 transition-all duration-300 shadow-lg border border-stone-200",
       "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
       className
     );
@@ -403,8 +403,8 @@ export function ProductCardLayout({
     disabled: !product.availability.inStock || loading,
     loading,
     className: variant === "teaser" ? "w-full" : "",
-    variant: primaryAction.variant,
-    size: variant === "list" ? "sm" : "default",
+    variant: primaryAction.variant || "default",
+    size: (variant === "list" ? "sm" : "default") as "default" | "sm" | "lg" | "icon",
     icon: primaryAction.icon,
     iconPosition: "left" as const,
   });

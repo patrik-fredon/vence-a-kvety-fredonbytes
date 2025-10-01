@@ -197,15 +197,15 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
       <Image
         src={src}
         alt={alt}
-        width={fill ? undefined : width}
-        height={fill ? undefined : height}
+        {...(!fill && width && { width })}
+        {...(!fill && height && { height })}
         fill={fill}
         sizes={optimizedSizes}
         priority={priority}
         loading={priority ? "eager" : loading}
         quality={optimizedQuality}
         placeholder={placeholder}
-        blurDataURL={optimizedBlurDataURL}
+        {...(optimizedBlurDataURL && { blurDataURL: optimizedBlurDataURL })}
         className={cn(
           "transition-all duration-300",
           isLoading && "blur-sm scale-105",

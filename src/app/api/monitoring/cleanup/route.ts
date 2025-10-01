@@ -1,5 +1,4 @@
 import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
 
 /**
  * Cleanup endpoint for maintenance tasks
@@ -9,7 +8,7 @@ export async function POST(request: NextRequest) {
   try {
     // Verify this is a cron job request
     const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
+    if (authHeader !== `Bearer ${process.env['CRON_SECRET']}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 

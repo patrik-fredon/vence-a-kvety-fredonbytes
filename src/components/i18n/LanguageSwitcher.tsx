@@ -1,6 +1,6 @@
 "use client";
 
-import { ChevronDownIcon, GlobeAltIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, GlobeAltIcon } from "@/lib/icons";
 import { usePathname, useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
@@ -81,11 +81,10 @@ export function LanguageSwitcher({ currentLocale, className = "" }: LanguageSwit
               <button
                 key={locale}
                 type="button"
-                className={`block w-full text-left px-4 py-2 text-sm transition-colors ${
-                  locale === currentLocale
+                className={`block w-full text-left px-4 py-2 text-sm transition-colors ${locale === currentLocale
                     ? "bg-amber-50 text-amber-900 font-medium"
                     : "text-stone-700 hover:bg-stone-50 hover:text-stone-900"
-                }`}
+                  }`}
                 onClick={() => switchLanguage(locale)}
                 role="option"
                 aria-selected={locale === currentLocale}

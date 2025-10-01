@@ -75,9 +75,14 @@ export function ValidationErrorDisplay({
   const errorsByType = visibleErrors.reduce((acc, error, index) => {
     const key = error.severity;
     if (!acc[key]) acc[key] = [];
-    acc[key].push({ error, index, strategy: recoveryStrategies[index] });
+    const strategy = recoveryStrategies[index];
+    acc[key].push({ 
+      error, 
+      index, 
+      ...(strategy !== undefined && { strategy })
+    });
     return acc;
-  }, {} as Record<ValidationErrorSeverity, Array<{ error: EnhancedValidationError; index: number; strategy?: ErrorRecoveryStrategy }>>);
+  }, {} as Record<ValidationErrorSeverity, Array<{ error: EnhancedValidationError; index: number; strategy?: ErrorRecoveryStrategy }>>);;
 
   return (
     <div className={`space-y-4 ${className}`}>

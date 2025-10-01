@@ -12,7 +12,7 @@ interface StatusHistoryItem {
 /**
  * Get order history and status timeline
  */
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
     const {

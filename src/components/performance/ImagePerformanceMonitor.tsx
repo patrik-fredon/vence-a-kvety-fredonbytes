@@ -1,7 +1,6 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { trackImagePerformance } from "@/lib/utils/image-optimization";
 
 interface ImageLoadMetrics {
   url: string;
@@ -31,7 +30,7 @@ interface PerformanceStats {
 }
 
 export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = ({
-  enabled = process.env.NODE_ENV === "development",
+  enabled = process.env['NODE_ENV'] === "development",
   logToConsole = true,
   onMetrics,
   maxMetrics = 100,
@@ -71,7 +70,7 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
 
     setStats(newStats);
 
-    if (logToConsole) {
+    if (logToConsole && newStats.slowestImage && newStats.fastestImage) {
       console.group("🖼️ Image Performance Stats");
       console.log(`Total Images: ${newStats.totalImages}`);
       console.log(`Average Load Time: ${newStats.averageLoadTime.toFixed(2)}ms`);
@@ -127,7 +126,7 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
         <span className="font-semibold">Image Performance</span>
       </div>
 
-      {stats ? (
+      {stats && stats.slowestImage && stats.fastestImage ? (
         <div className="space-y-1">
           <div>Images: {stats.totalImages}</div>
           <div>Avg Load: {stats.averageLoadTime.toFixed(1)}ms</div>
@@ -140,7 +139,9 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
           </div>
         </div>
       ) : (
-        <div className="text-gray-400">No images loaded yet</div>
+        <div className="text-gray-400">
+          Monitoring images...
+        </div>
       )}
     </div>
   );

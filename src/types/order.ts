@@ -49,10 +49,10 @@ export interface PaymentInfo {
   method: PaymentMethod;
   amount: number;
   currency: string;
-  transactionId?: string;
+  transactionId: string | undefined;
   status: PaymentStatus;
-  processedAt?: Date;
-  failureReason?: string;
+  processedAt: Date | undefined;
+  failureReason: string | undefined;
 }
 
 // Order item (similar to cart item but for completed orders)

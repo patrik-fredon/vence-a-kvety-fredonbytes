@@ -34,9 +34,9 @@ export function generateProductStructuredData(
     sku?: string;
     url: string;
   },
-  locale: string
+  _locale: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -82,7 +82,7 @@ export function generateBreadcrumbStructuredData(
   breadcrumbs: Array<{ name: string; url: string }>,
   locale: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -100,14 +100,14 @@ export function generateBreadcrumbStructuredData(
  * Generate organization structured data
  */
 export function generateOrganizationStructuredData(locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
     "@type": "Organization",
-    name: "Ketingmar s.r.o.",
+    name: "Pohrebni vence by Bloomsy Lucy",
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: `${baseUrl}/logo.svg`,
     description:
       locale === "cs"
         ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
@@ -115,11 +115,11 @@ export function generateOrganizationStructuredData(locale: string) {
     address: {
       "@type": "PostalAddress",
       addressCountry: "CZ",
-      addressLocality: "Praha",
+      addressLocality: "Ostrava",
     },
     contactPoint: {
       "@type": "ContactPoint",
-      telephone: "+420-XXX-XXX-XXX",
+      telephone: "+420-735-116-328",
       contactType: "customer service",
       availableLanguage: ["Czech", "English"],
     },
@@ -133,7 +133,7 @@ export function generateOrganizationStructuredData(locale: string) {
  * Generate website structured data
  */
 export function generateWebsiteStructuredData(locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -161,7 +161,7 @@ export function generateWebsiteStructuredData(locale: string) {
  * Generate LocalBusiness structured data
  */
 export function generateLocalBusinessStructuredData(locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -174,22 +174,22 @@ export function generateLocalBusinessStructuredData(locale: string) {
         ? "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení."
         : "Premium funeral wreaths and floral arrangements. Handcrafted, fast delivery, dignified farewell.",
     url: baseUrl,
-    logo: `${baseUrl}/logo.png`,
+    logo: `${baseUrl}/logo.svg`,
     image: `${baseUrl}/og-image.jpg`,
-    telephone: "+420-XXX-XXX-XXX", // Replace with actual phone
+    telephone: "+420-735-116-328", // Replace with actual phone
     email: "info@pohrebni-vence.cz", // Replace with actual email
     address: {
       "@type": "PostalAddress",
-      streetAddress: "Your Street Address", // Replace with actual address
-      addressLocality: "Praha",
-      addressRegion: "Praha",
-      postalCode: "10000", // Replace with actual postal code
+      streetAddress: "Jistebník 87", // Replace with actual address
+      addressLocality: "Jistebník",
+      addressRegion: "Ostrava",
+      postalCode: "74282", // Replace with actual postal code
       addressCountry: "CZ",
     },
     geo: {
       "@type": "GeoCoordinates",
-      latitude: "50.0755", // Replace with actual coordinates
-      longitude: "14.4378",
+      latitude: "49.75691163984363", // Replace with actual coordinates
+      longitude: "18.127455048644787",
     },
     openingHoursSpecification: [
       {
@@ -263,8 +263,7 @@ export function generateLocalBusinessStructuredData(locale: string) {
  * Generate FAQ structured data
  */
 export function generateFAQStructuredData(
-  faqs: Array<{ question: string; answer: string }>,
-  locale: string
+  faqs: Array<{ question: string; answer: string }>
 ) {
   return {
     "@context": "https://schema.org",
@@ -291,10 +290,9 @@ export function generateItemListStructuredData(
     description?: string;
     price?: number;
   }>,
-  listName: string,
-  locale: string
+  listName: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -316,11 +314,11 @@ export function generateItemListStructuredData(
         description: item.description,
         offers: item.price
           ? {
-              "@type": "Offer",
-              price: item.price,
-              priceCurrency: "CZK",
-              availability: "https://schema.org/InStock",
-            }
+            "@type": "Offer",
+            price: item.price,
+            priceCurrency: "CZK",
+            availability: "https://schema.org/InStock",
+          }
           : undefined,
       },
     })),
@@ -339,7 +337,7 @@ export function generateCollectionPageStructuredData(
   },
   locale: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",

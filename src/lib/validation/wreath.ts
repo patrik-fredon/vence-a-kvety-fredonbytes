@@ -1,4 +1,5 @@
 import type { Customization, CustomizationOption } from '@/types/product';
+import type { LocalizedContent } from '@/types';
 
 // Type definitions for wreath validation
 export interface WreathValidationResult {
@@ -23,6 +24,14 @@ export function validateWreathCustomizations(
 ): WreathValidationResult {
   const errors: string[] = [];
   const warnings: string[] = [];
+
+  // Helper function to safely get localized name
+  const getLocalizedName = (name: string | LocalizedContent): string => {
+    if (typeof name === 'string') {
+      return name;
+    }
+    return name[locale as keyof typeof name] || name.cs || 'Unknown';
+  };
 
   // Find wreath-specific options
   const sizeOption = customizationOptions.find(
@@ -120,7 +129,7 @@ export function validateWreathCustomizations(
     const customization = customizations.find((c) => c.optionId === option.id);
 
     if (option.required && (!customization || customization.choiceIds.length === 0)) {
-      const optionName = option.name[locale as keyof typeof option.name] || option.name.cs || option.id;
+      const optionName = getLocalizedName(option.name);
       errors.push(
         locale === 'cs'
           ? `Pole "${optionName}" je povinné`
@@ -131,7 +140,7 @@ export function validateWreathCustomizations(
     if (customization) {
       // Validate min/max selections
       if (option.minSelections && customization.choiceIds.length < option.minSelections) {
-        const optionName = option.name[locale as keyof typeof option.name] || option.name.cs || option.id;
+        const optionName = getLocalizedName(option.name);
         errors.push(
           locale === 'cs'
             ? `Pole "${optionName}" vyžaduje minimálně ${option.minSelections} výběrů`
@@ -140,7 +149,7 @@ export function validateWreathCustomizations(
       }
 
       if (option.maxSelections && customization.choiceIds.length > option.maxSelections) {
-        const optionName = option.name[locale as keyof typeof option.name] || option.name.cs || option.id;
+        const optionName = getLocalizedName(option.name);
         errors.push(
           locale === 'cs'
             ? `Pole "${optionName}" umožňuje maximálně ${option.maxSelections} výběrů`
@@ -490,7 +499,7 @@ export function validateWreathConfigurationEnhanced(
   let fallbackConfiguration: Customization[] | undefined;
 
   // Process each error with enhanced information
-  basicResult.errors.forEach((error, index) => {
+  basicResult.errors.forEach((error, _index) => {
     const enhancedError = createEnhancedValidationError(error, customizations, customizationOptions, locale);
     enhancedErrors.push(enhancedError);
 
@@ -521,7 +530,7 @@ export function validateWreathConfigurationEnhanced(
     enhancedErrors,
     recoveryStrategies,
     canProceed,
-    fallbackConfiguration
+    ...(fallbackConfiguration && { fallbackConfiguration })
   };
 }
 
@@ -532,7 +541,7 @@ function createEnhancedValidationError(
   errorMessage: string,
   customizations: Customization[],
   customizationOptions: CustomizationOption[],
-  locale: string
+  _locale: string
 ): EnhancedValidationError {
   // Determine error type and context based on message
   let field = 'general';
@@ -578,8 +587,8 @@ function createEnhancedValidationError(
     severity,
     recoverable,
     retryable,
-    fallbackAction,
-    context
+    ...(fallbackAction && { fallbackAction }),
+    ...(context && { context })
   };
 }
 
@@ -588,7 +597,7 @@ function createEnhancedValidationError(
  */
 function generateRecoveryStrategy(
   error: EnhancedValidationError,
-  customizations: Customization[],
+  _customizations: Customization[],
   customizationOptions: CustomizationOption[],
   locale: string
 ): ErrorRecoveryStrategy {
@@ -633,7 +642,7 @@ function generateRecoveryStrategy(
 function generateFallbackConfiguration(
   customizations: Customization[],
   customizationOptions: CustomizationOption[],
-  selectedSize: string | null,
+  _selectedSize: string | null,
   errors: EnhancedValidationError[]
 ): Customization[] | undefined {
   const fallbackCustomizations = [...customizations];
@@ -641,24 +650,26 @@ function generateFallbackConfiguration(
 
   // Apply fallback strategies based on errors
   errors.forEach(error => {
-    if (error.fallbackAction && error.context?.fallbackValue !== undefined) {
+    if (error.fallbackAction && error.context?.['fallbackValue'] !== undefined) {
       switch (error.fallbackAction) {
         case 'select_default_size':
           // Add default size if missing
           const sizeOption = customizationOptions.find(opt => opt.type === 'size');
           if (sizeOption && sizeOption.choices && sizeOption.choices.length > 0) {
             const existingSizeIndex = fallbackCustomizations.findIndex(c => c.optionId === sizeOption.id);
-            const defaultSize = sizeOption.choices[0].id;
+            const defaultSize = sizeOption.choices[0]?.id;
 
-            if (existingSizeIndex >= 0) {
-              fallbackCustomizations[existingSizeIndex].choiceIds = [defaultSize];
-            } else {
-              fallbackCustomizations.push({
-                optionId: sizeOption.id,
-                choiceIds: [defaultSize]
-              });
+            if (defaultSize) {
+              if (existingSizeIndex >= 0 && fallbackCustomizations[existingSizeIndex]) {
+                fallbackCustomizations[existingSizeIndex].choiceIds = [defaultSize];
+              } else {
+                fallbackCustomizations.push({
+                  optionId: sizeOption.id,
+                  choiceIds: [defaultSize]
+                });
+              }
+              hasChanges = true;
             }
-            hasChanges = true;
           }
           break;
 
@@ -683,7 +694,7 @@ function generateFallbackConfiguration(
             const predefinedChoice = textOption.choices.find(c => c.id !== 'text_custom');
             if (predefinedChoice) {
               const textIndex = fallbackCustomizations.findIndex(c => c.optionId === textOption.id);
-              if (textIndex >= 0) {
+              if (textIndex >= 0 && fallbackCustomizations[textIndex]) {
                 fallbackCustomizations[textIndex].choiceIds = [predefinedChoice.id];
                 delete fallbackCustomizations[textIndex].customValue;
                 hasChanges = true;
@@ -705,7 +716,7 @@ export function getValidationMessage(
   params?: Record<string, string | number>
 ): string {
   const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES] || WREATH_VALIDATION_MESSAGES.cs;
-  let message = messages[key] || key;
+  let message: string = messages[key] || key;
 
   if (params) {
     Object.entries(params).forEach(([param, value]) => {

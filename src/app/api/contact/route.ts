@@ -129,7 +129,7 @@ export async function POST(request: NextRequest) {
     const emailData = {
       customerName: name.trim(),
       customerEmail: email.trim().toLowerCase(),
-      customerPhone: phone?.trim(),
+      customerPhone: phone?.trim() || "",
       subject: subject.trim(),
       message: message.trim(),
       submittedAt,
@@ -174,7 +174,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/contact - Get contact form submissions (admin only)
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // This would require admin authentication
     // For now, return method not allowed

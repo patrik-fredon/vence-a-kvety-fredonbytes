@@ -1,6 +1,6 @@
 "use client";
 
-import { useTranslations } from "next-intl";
+
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -14,7 +14,6 @@ interface ContactFormProps {
 }
 
 export function ContactForm({ locale }: ContactFormProps) {
-  const t = useTranslations("contact");
   const [formData, setFormData] = useState<ContactFormData>({
     name: "",
     email: "",
@@ -134,9 +133,9 @@ export function ContactForm({ locale }: ContactFormProps) {
       } else {
         setSubmitError(
           result.message ||
-            (locale === "cs"
-              ? "Došlo k chybě při odesílání zprávy"
-              : "An error occurred while sending the message")
+          (locale === "cs"
+            ? "Došlo k chybě při odesílání zprávy"
+            : "An error occurred while sending the message")
         );
       }
     } catch (error) {
@@ -154,25 +153,25 @@ export function ContactForm({ locale }: ContactFormProps) {
   const subjectOptions =
     locale === "cs"
       ? [
-          { value: "", label: "Vyberte předmět zprávy" },
-          { value: "Dotaz na pohřební věnce", label: "Dotaz na pohřební věnce" },
-          { value: "Objednávka věnce", label: "Objednávka věnce" },
-          { value: "Individuální požadavek", label: "Individuální požadavek" },
-          { value: "Dodání a doručení", label: "Dodání a doručení" },
-          { value: "Reklamace", label: "Reklamace" },
-          { value: "Platba a fakturace", label: "Platba a fakturace" },
-          { value: "Jiné", label: "Jiné" },
-        ]
+        { value: "", label: "Vyberte předmět zprávy" },
+        { value: "Dotaz na pohřební věnce", label: "Dotaz na pohřební věnce" },
+        { value: "Objednávka věnce", label: "Objednávka věnce" },
+        { value: "Individuální požadavek", label: "Individuální požadavek" },
+        { value: "Dodání a doručení", label: "Dodání a doručení" },
+        { value: "Reklamace", label: "Reklamace" },
+        { value: "Platba a fakturace", label: "Platba a fakturace" },
+        { value: "Jiné", label: "Jiné" },
+      ]
       : [
-          { value: "", label: "Select message subject" },
-          { value: "Funeral wreaths inquiry", label: "Funeral wreaths inquiry" },
-          { value: "Wreath order", label: "Wreath order" },
-          { value: "Individual request", label: "Individual request" },
-          { value: "Delivery and shipping", label: "Delivery and shipping" },
-          { value: "Complaint", label: "Complaint" },
-          { value: "Payment and billing", label: "Payment and billing" },
-          { value: "Other", label: "Other" },
-        ];
+        { value: "", label: "Select message subject" },
+        { value: "Funeral wreaths inquiry", label: "Funeral wreaths inquiry" },
+        { value: "Wreath order", label: "Wreath order" },
+        { value: "Individual request", label: "Individual request" },
+        { value: "Delivery and shipping", label: "Delivery and shipping" },
+        { value: "Complaint", label: "Complaint" },
+        { value: "Payment and billing", label: "Payment and billing" },
+        { value: "Other", label: "Other" },
+      ];
 
   return (
     <>
@@ -201,7 +200,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                 locale === "cs" ? "Zadejte své jméno a příjmení" : "Enter your full name"
               }
               disabled={isSubmitting}
-              error={errors.name}
+              error={errors.name || ""}
               required
             />
 
@@ -214,7 +213,7 @@ export function ContactForm({ locale }: ContactFormProps) {
               onChange={(e) => handleInputChange("email", e.target.value)}
               placeholder={locale === "cs" ? "vas.email@example.com" : "your.email@example.com"}
               disabled={isSubmitting}
-              error={errors.email}
+              error={errors.email || ""}
               required
             />
 
@@ -227,7 +226,7 @@ export function ContactForm({ locale }: ContactFormProps) {
               onChange={(e) => handleInputChange("phone", e.target.value)}
               placeholder={locale === "cs" ? "+420 123 456 789" : "+420 123 456 789"}
               disabled={isSubmitting}
-              error={errors.phone}
+              error={errors.phone || ""}
             />
 
             {/* Subject Field */}
@@ -251,7 +250,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                   "shadow-sm focus:shadow-md",
                   "font-normal text-sm leading-normal",
                   errors.subject &&
-                    "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
+                  "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
                 )}
                 disabled={isSubmitting}
                 aria-invalid={errors.subject ? "true" : "false"}
@@ -293,7 +292,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                   "shadow-sm focus:shadow-md",
                   "font-normal text-sm leading-normal resize-vertical",
                   errors.message &&
-                    "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
+                  "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
                 )}
                 placeholder={
                   locale === "cs" ? "Napište nám svou zprávu..." : "Write your message..."

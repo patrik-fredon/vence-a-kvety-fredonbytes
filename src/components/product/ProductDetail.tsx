@@ -18,7 +18,6 @@ import {
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import type { Customization, Product } from "@/types/product";
 
-import { ProductImageGallery } from "./ProductImageGallery";
 import { ProductInfo } from "./ProductInfo";
 import { PriceBreakdown } from "./PriceBreakdown";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
@@ -294,8 +293,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     });
   };
 
-  const totalPrice = priceCalculation.totalPrice;
-
   return (
     <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", className)}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
@@ -304,7 +301,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           <div className="grid grid-cols-2 grid-rows-3 gap-2 h-full">
             {/* Main large image - spans 2 rows */}
             {product.images && product.images[0] && (
-              <div className="col-span-2 row-span-2 relative overflow-hidden rounded-lg bg-stone-100">
+              <div className="col-span-2 row-span-2 relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)]">
                 <Image
                   src={product.images[0].url}
                   alt={product.images[0].alt || product.name[locale as keyof typeof product.name]}
@@ -318,7 +315,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
             {/* Secondary images - smaller grid items */}
             {product.images && product.images.slice(1, 4).map((image, index) => (
-              <div key={image.id || index} className="relative overflow-hidden rounded-lg bg-stone-100 aspect-square">
+              <div key={image.id || index} className="relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] aspect-square">
                 <Image
                   src={image.url}
                   alt={image.alt || product.name[locale as keyof typeof product.name]}
@@ -331,9 +328,9 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
             {/* If we have more than 4 images, show a "more" indicator on the last visible image */}
             {product.images && product.images.length > 4 && (
-              <div className="relative overflow-hidden rounded-lg bg-stone-100 aspect-square">
+              <div className="relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] aspect-square">
                 <Image
-                  src={product.images[4]?.url || product.images[1]?.url}
+                  src={product.images[4]?.url || product.images[1]?.url || product.images[0]?.url || "/placeholder-image.jpg"}
                   alt={product.images[4]?.alt || product.name[locale as keyof typeof product.name]}
                   fill
                   sizes="(max-width: 1024px) 50vw, 25vw"

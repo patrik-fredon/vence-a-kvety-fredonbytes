@@ -3,7 +3,6 @@
 import {
   CheckCircleIcon,
   EyeIcon,
-  FunnelIcon,
   MagnifyingGlassIcon,
   PencilIcon,
   TruckIcon,

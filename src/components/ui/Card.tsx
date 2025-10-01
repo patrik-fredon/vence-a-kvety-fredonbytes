@@ -20,9 +20,9 @@ export function Card({
   ...props
 }: CardProps) {
   const variants = {
-    default: cn("bg-white border border-stone-200", "shadow-sm"),
-    outlined: cn("bg-white border border-stone-300", "shadow-none"),
-    elevated: cn("bg-white border border-stone-100", "shadow-md"),
+    default: cn("bg-amber-100 border border-stone-200", "shadow-sm"),
+    outlined: cn("bg-amber-100 border border-stone-300", "shadow-none"),
+    elevated: cn("bg-amber-100 border border-stone-100", "shadow-md"),
   };
 
   const paddings = {

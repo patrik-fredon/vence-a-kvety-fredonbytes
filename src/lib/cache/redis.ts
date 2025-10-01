@@ -14,8 +14,8 @@ let redis: Redis | null = null;
 export function getRedisClient(): Redis {
   if (!redis) {
     // Use Upstash standard environment variables
-    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.REDIS_URL;
-    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.REDIS_TOKEN;
+    const redisUrl = process.env['UPSTASH_REDIS_REST_URL'] || process.env['REDIS_URL'];
+    const redisToken = process.env['UPSTASH_REDIS_REST_TOKEN'] || process.env['REDIS_TOKEN'];
 
     if (!redisUrl) {
       throw new Error("UPSTASH_REDIS_REST_URL or REDIS_URL environment variable is not set");
@@ -46,7 +46,7 @@ export interface CacheClient {
   mget(...keys: string[]): Promise<(string | null)[]>;
   mset(data: Record<string, string>, ttl?: number): Promise<void>;
   expire(key: string, ttl: number): Promise<void>;
-  flushPattern(pattern: string): Promise<void>;
+  flushPattern(_pattern: string): Promise<void>;
 }
 
 /**
@@ -125,7 +125,7 @@ class RedisCacheClient implements CacheClient {
     }
   }
 
-  async flushPattern(pattern: string): Promise<void> {
+  async flushPattern(_pattern: string): Promise<void> {
     try {
       // Note: Upstash Redis doesn't support SCAN, so we'll need to track keys manually
       // For now, we'll implement a simple pattern-based deletion
@@ -213,7 +213,7 @@ export function getCacheClient(): CacheClient {
   if (!cacheClient) {
     try {
       // Try to use Redis if available
-      if (process.env.REDIS_URL) {
+      if (process.env['REDIS_URL']) {
         cacheClient = new RedisCacheClient();
       } else {
         console.warn("Redis not configured, using in-memory cache");

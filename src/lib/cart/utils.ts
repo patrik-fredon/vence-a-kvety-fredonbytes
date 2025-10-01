@@ -307,7 +307,9 @@ export function formatCustomizationForDisplay(
   const option = customizationOptions.find(opt => opt.id === customization.optionId);
   if (!option) return null;
 
-  const optionName = option.name[locale] || option.name.en || option.name.cs;
+  const optionName = typeof option.name === 'string'
+    ? option.name
+    : (option.name as any)[locale] || (option.name as any).en || (option.name as any).cs;
 
   // Handle custom text input (like ribbon text)
   if (customization.customValue) {
@@ -319,7 +321,9 @@ export function formatCustomizationForDisplay(
     const selectedChoices = customization.choiceIds
       .map(choiceId => {
         const choice = option.choices.find(c => c.id === choiceId);
-        return choice ? (choice.label[locale] || choice.label.en || choice.label.cs) : null;
+        return choice ? (typeof choice.label === 'string'
+          ? choice.label
+          : (choice.label as any)[locale] || (choice.label as any).en || (choice.label as any).cs) : null;
       })
       .filter(Boolean);
 
@@ -389,6 +393,7 @@ export function validateCustomizationIntegrity(customizations: any[]): {
   const issues: string[] = [];
   const fixedCustomizations: any[] = [];
 
+
   if (!Array.isArray(customizations)) {
     return {
       isValid: false,
@@ -403,25 +408,21 @@ export function validateCustomizationIntegrity(customizations: any[]): {
     }
 
     const fixed = { ...customization };
-    let hasIssues = false;
 
     // Validate required fields
     if (!customization.optionId || typeof customization.optionId !== 'string') {
       issues.push(`Missing or invalid optionId: ${customization.optionId}`);
-      hasIssues = true;
     }
 
     if (!customization.choiceIds || !Array.isArray(customization.choiceIds)) {
       issues.push(`Missing or invalid choiceIds for option: ${customization.optionId}`);
       fixed.choiceIds = [];
-      hasIssues = true;
     }
 
     // Validate price modifier
     if (customization.priceModifier !== undefined && typeof customization.priceModifier !== 'number') {
       issues.push(`Invalid priceModifier for option: ${customization.optionId}`);
       fixed.priceModifier = 0;
-      hasIssues = true;
     }
 
     // Validate custom value if present
@@ -429,11 +430,10 @@ export function validateCustomizationIntegrity(customizations: any[]): {
       if (typeof customization.customValue !== 'string') {
         issues.push(`Invalid customValue for option: ${customization.optionId}`);
         fixed.customValue = String(customization.customValue || '');
-        hasIssues = true;
       } else if (customization.customValue.length > 100) {
         issues.push(`CustomValue too long for option: ${customization.optionId}`);
         fixed.customValue = customization.customValue.substring(0, 100);
-        hasIssues = true;
+        // Issue already added to issues array above
       }
     }
 
@@ -443,7 +443,7 @@ export function validateCustomizationIntegrity(customizations: any[]): {
   return {
     isValid: issues.length === 0,
     issues,
-    fixedCustomizations: issues.length > 0 ? fixedCustomizations : undefined,
+    ...(issues.length > 0 && { fixedCustomizations }),
   };
 }
 

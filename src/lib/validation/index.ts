@@ -1,6 +1,7 @@
 // Main validation functions
 export {
   validateWreathConfiguration,
+  validateWreathConfigurationEnhanced,
   validateCustomRibbonText,
   validateWreathSizeSelection,
   validateRibbonDependencies,
@@ -20,13 +21,45 @@ export {
 // Types
 export type {
   WreathValidationResult,
-  WreathValidationOptions
+  WreathValidationOptions,
+  EnhancedValidationError,
+  ErrorRecoveryStrategy,
+  EnhancedWreathValidationResult
+} from './wreath';
+
+export {
+  ValidationErrorSeverity
 } from './wreath';
 
 export type {
   UseWreathValidationProps,
   UseWreathValidationReturn
 } from './hooks';
+
+// Checkout validation
+export {
+  validateCustomerInfo,
+  validateDeliveryInfo,
+  validateCheckoutForm,
+  hasValidationErrors,
+  formatValidationErrors,
+  sanitizeCustomerInfo,
+  sanitizeDeliveryInfo
+} from './checkout';
+
+// API validation
+export {
+  validateCartItemData,
+  createValidationErrorResponse,
+  createEnhancedValidationErrorResponse,
+  validateProductAvailability,
+  sanitizeCustomizations
+} from './api-validation';
+
+export type {
+  ApiValidationError,
+  ApiValidationResult
+} from './api-validation';
 
 // Test utilities (development only)
 export { testWreathValidation } from './test-utils';

@@ -4,7 +4,6 @@ import {
   CalendarIcon,
   ClockIcon,
   MapPinIcon,
-  PhoneIcon,
   UserIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
@@ -132,7 +131,7 @@ export function DeliveryInfoStep({
               type="text"
               value={deliveryInfo.address?.street || ""}
               onChange={(e) => handleAddressChange("street", e.target.value)}
-              error={errors.address}
+              error={errors.address || ""}
               placeholder="Např. Václavské náměstí 1"
               required
             />
@@ -149,7 +148,7 @@ export function DeliveryInfoStep({
                 type="text"
                 value={deliveryInfo.address?.city || ""}
                 onChange={(e) => handleAddressChange("city", e.target.value)}
-                error={errors.address}
+                error={errors.address || ""}
                 placeholder="Praha"
                 required
               />
@@ -168,7 +167,7 @@ export function DeliveryInfoStep({
                 type="text"
                 value={deliveryInfo.address?.postalCode || ""}
                 onChange={(e) => handleAddressChange("postalCode", e.target.value)}
-                error={errors.address}
+                error={errors.address || ""}
                 placeholder="110 00"
                 required
               />
@@ -272,10 +271,9 @@ export function DeliveryInfoStep({
                 onClick={() => handleTimeSlotChange(slot)}
                 className={`
                   p-4 border-2 rounded-lg text-left transition-colors
-                  ${
-                    deliveryInfo.preferredTimeSlot === slot
-                      ? "border-primary-500 bg-primary-50 text-primary-900"
-                      : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-300"
+                  ${deliveryInfo.preferredTimeSlot === slot
+                    ? "border-primary-500 bg-primary-50 text-primary-900"
+                    : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-300"
                   }
                 `}
               >
@@ -310,7 +308,7 @@ export function DeliveryInfoStep({
               type="text"
               value={deliveryInfo.recipientName || ""}
               onChange={(e) => onChange({ ...deliveryInfo, recipientName: e.target.value })}
-              error={errors.recipientName}
+              error={errors.recipientName || ""}
               placeholder="Jméno a příjmení příjemce"
             />
           </div>
@@ -327,7 +325,7 @@ export function DeliveryInfoStep({
               type="tel"
               value={deliveryInfo.recipientPhone || ""}
               onChange={(e) => onChange({ ...deliveryInfo, recipientPhone: e.target.value })}
-              error={errors.recipientPhone}
+              error={errors.recipientPhone || ""}
               placeholder="+420 123 456 789"
             />
           </div>
@@ -351,10 +349,9 @@ export function DeliveryInfoStep({
           className={`
             w-full px-4 py-3 border rounded-lg resize-none
             focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            ${
-              errors.specialInstructions
-                ? "border-red-300 bg-red-50"
-                : "border-neutral-300 bg-white"
+            ${errors.specialInstructions
+              ? "border-red-300 bg-red-50"
+              : "border-neutral-300 bg-white"
             }
           `}
         />

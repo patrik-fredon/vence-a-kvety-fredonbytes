@@ -94,7 +94,7 @@ export async function POST(request: NextRequest) {
           isValid: true,
           data: {
             confirmation: confirmationResult.data,
-            reason: reasonResult.data,
+            reason: reasonResult.data || "",
           },
           errors: [],
         };

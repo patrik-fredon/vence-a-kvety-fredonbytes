@@ -47,14 +47,14 @@ export interface ValidationError {
  */
 export interface ValidationResult<T = any> {
   isValid: boolean;
-  data?: T;
+  data?: T | undefined;
   errors: ValidationError[];
 }
 
 /**
  * CSRF Token validation
  */
-export async function validateCSRFToken(request: NextRequest): Promise<boolean> {
+export async function validateCSRFToken(_request: NextRequest): Promise<boolean> {
   try {
     const headersList = await headers();
     const csrfToken = headersList.get("x-csrf-token");

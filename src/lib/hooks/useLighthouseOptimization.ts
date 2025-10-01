@@ -8,25 +8,25 @@ export interface LighthouseOptimizationMetrics {
   /** Component name */
   componentName: string;
   /** First Contentful Paint contribution */
-  fcpContribution?: number;
+  fcpContribution: number | undefined;
   /** Largest Contentful Paint contribution */
-  lcpContribution?: number;
+  lcpContribution: number | undefined;
   /** Cumulative Layout Shift contribution */
-  clsContribution?: number;
+  clsContribution: number | undefined;
   /** Total Blocking Time contribution */
-  tbtContribution?: number;
+  tbtContribution: number | undefined;
   /** Bundle size impact (estimated) */
-  bundleSizeImpact?: number;
+  bundleSizeImpact: number | undefined;
   /** Image optimization opportunities */
-  imageOptimizations?: string[];
+  imageOptimizations: string[] | undefined;
   /** JavaScript optimization opportunities */
-  jsOptimizations?: string[];
+  jsOptimizations: string[] | undefined;
   /** CSS optimization opportunities */
-  cssOptimizations?: string[];
+  cssOptimizations: string[] | undefined;
   /** Accessibility issues */
-  accessibilityIssues?: string[];
+  accessibilityIssues: string[] | undefined;
   /** Performance score impact (estimated) */
-  performanceScoreImpact?: number;
+  performanceScoreImpact: number | undefined;
 }
 
 /**
@@ -86,7 +86,7 @@ export const useLighthouseOptimization = (
 
   // Refs for tracking various metrics
   const layoutShiftsRef = useRef<number[]>([]);
-  const imageLoadsRef = useRef<Array<{ src: string; loadTime: number; size?: number }>>([]);
+  const imageLoadsRef = useRef<Array<{ src: string; loadTime: number; size: number | undefined }>>([]);
   const jsExecutionsRef = useRef<Array<{ script: string; time: number }>>([]);
   const startTimeRef = useRef<number | null>(null);
 
@@ -106,15 +106,21 @@ export const useLighthouseOptimization = (
     // Initialize metrics
     const initialMetrics: LighthouseOptimizationMetrics = {
       componentName,
+      fcpContribution: undefined,
+      lcpContribution: undefined,
+      clsContribution: undefined,
+      tbtContribution: undefined,
+      bundleSizeImpact: undefined,
       imageOptimizations: [],
       jsOptimizations: [],
       cssOptimizations: [],
       accessibilityIssues: [],
+      performanceScoreImpact: undefined,
     };
 
     setMetrics(initialMetrics);
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.log(`🔍 [LighthouseOptimization] Started tracking: ${componentName}`);
     }
   }, [enabled, componentName]);
@@ -146,7 +152,7 @@ export const useLighthouseOptimization = (
         `Component: ${componentName}`
       );
 
-      if (process.env.NODE_ENV === "development" && shift > 0.1) {
+      if (process.env['NODE_ENV'] === "development" && shift > 0.1) {
         console.warn(
           `📐 [LighthouseOptimization] Layout shift detected in ${componentName}: ${shift}`
         );

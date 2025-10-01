@@ -76,7 +76,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           slug,
           description_cs,
           description_en,
-          image_url,
+          images,
           parent_id,
           sort_order,
           active,
@@ -93,7 +93,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     }
 
     // Transform the data
-    const category = data.categories ? transformCategoryRow(data.categories) : undefined;
+    const category = (data.categories && !('error' in data.categories)) ? transformCategoryRow(data.categories) : undefined;
     product = transformProductRow(data, category);
 
     // Ensure product has required arrays to prevent map errors
@@ -126,7 +126,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
       ...(product.images?.[0]?.url && { image: product.images[0].url }),
       availability: "InStock", // This should be dynamic based on actual availability
       category: categoryName,
-      brand: "Ketingmar s.r.o.",
+      brand: "Pohrebni-vence-Bloomsy-Lucy",
       sku: product.id,
       url: productUrl,
     },
@@ -218,7 +218,15 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       ...(seoDescription || description ? { description: (seoDescription || description)! } : {}),
       price: data.base_price,
       category: categoryName,
-      images: productImages.length > 0 ? productImages.map((img) => ({ url: img.url, alt: img.alt || name })) : [],
+      images: productImages.length > 0 ? productImages.map((img) => {
+        if (img && typeof img === 'object' && 'url' in img && 'alt' in img) {
+          return {
+            url: typeof img['url'] === 'string' ? img['url'] : '',
+            alt: (typeof img['alt'] === 'string' ? img['alt'] : null) || name
+          };
+        }
+        return { url: '', alt: name };
+      }) : [],
       availability: "InStock", // This should be dynamic based on actual availability
       brand: "Ketingmar s.r.o.",
     },

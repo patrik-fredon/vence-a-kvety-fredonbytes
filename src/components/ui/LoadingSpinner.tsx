@@ -1,6 +1,6 @@
 import React from "react";
 import { cn } from "@/lib/utils";
-import { getFallbackTranslation, safeTranslate } from "@/lib/utils/fallback-utils";
+import { getFallbackTranslation } from "@/lib/utils/fallback-utils";
 
 interface LoadingSpinnerProps {
   size?: "sm" | "md" | "lg";
@@ -76,6 +76,8 @@ export function LoadingState({
       const timeoutId = setTimeout(onTimeout, timeout);
       return () => clearTimeout(timeoutId);
     }
+    // Return undefined explicitly for the else case
+    return undefined;
   }, [timeout, onTimeout]);
 
   return (

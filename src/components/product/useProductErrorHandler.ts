@@ -26,14 +26,10 @@ export function useProductErrorHandler() {
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      productId: context?.productId,
-      componentName: context?.componentName,
-      action: context?.action,
-      additionalData: context?.additionalData,
     });
 
     // In development, also log to console for debugging
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.error("Product component async error:", {
         error,
         context,
@@ -57,13 +53,9 @@ export function useProductErrorHandler() {
       timestamp: new Date().toISOString(),
       userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
-      productId: context?.productId,
-      componentName: context?.componentName,
-      action: context?.action,
-      additionalData: context?.additionalData,
     });
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.error("Product component async error (non-throwing):", {
         error,
         context,
@@ -100,13 +92,9 @@ export function withProductErrorHandling<T extends (...args: any[]) => Promise<a
         timestamp: new Date().toISOString(),
         userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
         url: typeof window !== "undefined" ? window.location.href : "unknown",
-        productId: context?.productId,
-        componentName: context?.componentName,
-        action: context?.action,
-        additionalData: context?.additionalData,
       });
 
-      if (process.env.NODE_ENV === "development") {
+      if (process.env['NODE_ENV'] === "development") {
         console.error("Product async function error:", {
           error,
           context,

@@ -56,7 +56,7 @@ export async function POST(request: NextRequest) {
 
     // Get base URL for return/webhook URLs
     const baseUrl =
-      process.env.NEXT_PUBLIC_BASE_URL || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
+      process.env['NEXT_PUBLIC_BASE_URL'] || `${request.nextUrl.protocol}//${request.nextUrl.host}`;
 
     // Prepare payment request
     const paymentRequest: PaymentRequest = {
@@ -110,7 +110,7 @@ export async function POST(request: NextRequest) {
 }
 
 // Handle preflight requests for CORS
-export async function OPTIONS(request: NextRequest) {
+export async function OPTIONS() {
   return new NextResponse(null, {
     status: 200,
     headers: {

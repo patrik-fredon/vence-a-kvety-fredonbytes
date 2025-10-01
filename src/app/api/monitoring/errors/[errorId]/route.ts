@@ -1,10 +1,6 @@
-import { type NextRequest, NextResponse } from "next/server";
-import { createClient } from "@/lib/supabase/server";
+import { NextResponse } from "next/server";
 
-export async function PATCH(
-  request: NextRequest,
-  { params }: { params: Promise<{ errorId: string }> }
-) {
+export async function PATCH() {
   try {
     // TODO: Monitoring tables not yet implemented in database schema
     // This endpoint is disabled until the required tables are created

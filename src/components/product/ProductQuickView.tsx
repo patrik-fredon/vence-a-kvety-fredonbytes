@@ -1,10 +1,8 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import React, { useCallback, useMemo, useState, useRef } from "react";
-import { Button } from "@/components/ui/Button";
+import React, { useMemo, useState, useRef, useCallback } from "react";
 import { Modal } from "@/components/ui/Modal";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { useAnimationSequence } from "@/components/cart/hooks";
@@ -25,14 +23,14 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   locale,
   isOpen,
   onClose,
-  onAddToCart,
+  onAddToCart: _onAddToCart,
 }: ProductQuickViewProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
-  const { startProductToCartAnimation } = useAnimationSequence();
+  const { startProductToCartAnimation: _startProductToCartAnimation } = useAnimationSequence();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [isAddingToCart, setIsAddingToCart] = useState(false);
-  const [error, setError] = useState<string | null>(null);
+  const [_isAddingToCart, _setIsAddingToCart] = useState(false);
+  const [_error, _setError] = useState<string | null>(null);
 
   // Performance tracking for main image
   const currentImage = useMemo(
@@ -42,12 +40,12 @@ export const ProductQuickView = React.memo(function ProductQuickView({
 
   const imagePerformance = useImagePerformance(currentImage?.url || "", {
     enabled: true,
-    logMetrics: process.env.NODE_ENV === "development",
+    logMetrics: process.env['NODE_ENV'] === "development",
   });
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
-  const addToCartButtonRef = useRef<HTMLButtonElement>(null);
+
 
   // Optimized price formatting with useMemo for expensive calculations
   const formatPrice = useMemo(() => {
@@ -70,104 +68,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   }, [formatPrice, product.finalPrice, product.basePrice]);
 
   // Optimized event handlers with useCallback to prevent function recreation
-  const handleAddToCart = useCallback(async () => {
-    if (!product.availability.inStock || isAddingToCart) return;
 
-    setIsAddingToCart(true);
-    setError(null);
-
-    try {
-      if (onAddToCart) {
-        await onAddToCart(product);
-
-        // Trigger cart animation
-        console.log('🛒 [ProductQuickView] Attempting to trigger cart animation');
-        if (productImageRef.current && addToCartButtonRef.current) {
-          // Try multiple selectors to find the cart icon
-          let cartIcon = document.querySelector('[href*="/cart"]') as HTMLElement;
-
-          if (!cartIcon) {
-            // Try alternative selectors
-            cartIcon = document.querySelector('[data-cart-icon]') as HTMLElement;
-          }
-
-          if (!cartIcon) {
-            // Try finding by aria-label or text content
-            cartIcon = document.querySelector('[aria-label*="cart" i], [aria-label*="košík" i]') as HTMLElement;
-          }
-
-          if (!cartIcon) {
-            // Try finding cart button or link
-            cartIcon = document.querySelector('button[class*="cart" i], a[class*="cart" i]') as HTMLElement;
-          }
-
-          if (!cartIcon) {
-            // Try finding by SVG or icon that might represent cart
-            cartIcon = document.querySelector('svg[class*="cart" i]')?.closest('button, a') as HTMLElement;
-          }
-
-          console.log('🛒 [ProductQuickView] Cart icon found:', !!cartIcon, cartIcon?.tagName, cartIcon?.className);
-
-          if (cartIcon) {
-            // Get the product image source
-            const productImage = productImageRef.current.querySelector('img');
-            const imageSrc = productImage?.src || product.images?.[0]?.url || '';
-
-            console.log('🛒 [ProductQuickView] Starting animation with:', {
-              productElement: productImageRef.current.tagName,
-              cartIcon: cartIcon.tagName,
-              cartIconClass: cartIcon.className,
-              imageSrc: imageSrc?.substring(0, 50) + '...'
-            });
-
-            startProductToCartAnimation(
-              productImageRef.current,
-              cartIcon,
-              imageSrc
-            );
-
-            // Fallback visual feedback - simple scale animation on the product image
-            if (productImageRef.current) {
-              const originalTransform = productImageRef.current.style.transform;
-              productImageRef.current.style.transition = 'transform 300ms ease-out';
-              productImageRef.current.style.transform = 'scale(0.95)';
-
-              setTimeout(() => {
-                if (productImageRef.current) {
-                  productImageRef.current.style.transform = originalTransform;
-                  setTimeout(() => {
-                    if (productImageRef.current) {
-                      productImageRef.current.style.transition = '';
-                    }
-                  }, 300);
-                }
-              }, 150);
-            }
-          } else {
-            console.warn('🛒 [ProductQuickView] Cart icon not found in DOM. Available elements:', {
-              linksWithCart: document.querySelectorAll('[href*="/cart"]').length,
-              elementsWithCartClass: document.querySelectorAll('[class*="cart" i]').length,
-              elementsWithCartAria: document.querySelectorAll('[aria-label*="cart" i]').length
-            });
-          }
-        } else {
-          console.warn('🛒 [ProductQuickView] Missing refs:', {
-            productImageRef: !!productImageRef.current,
-            addToCartButtonRef: !!addToCartButtonRef.current
-          });
-        }
-
-        // Close modal after animation starts (increased delay)
-        setTimeout(() => {
-          onClose();
-        }, 800); // Longer delay to ensure animation starts and is visible
-      }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : t("addToCartError"));
-    } finally {
-      setIsAddingToCart(false);
-    }
-  }, [product, onAddToCart, onClose, isAddingToCart, t, startProductToCartAnimation]);
 
   const handleImageSelect = useCallback((index: number) => {
     setSelectedImageIndex(index);
@@ -214,7 +115,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
       <div className="flex flex-col lg:flex-row gap-6 p-6">
         {/* Image Gallery */}
         <div className="flex-1">
-          <div ref={productImageRef} className="aspect-square bg-stone-100 rounded-lg overflow-hidden mb-4">
+          <div ref={productImageRef} className="aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg overflow-hidden mb-4">
             {currentImage && (
               <OptimizedImage
                 src={currentImage.url}
@@ -287,7 +188,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
               )}
             </div>
             {product.featured && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-amber-800 border border-amber-200">
                 {t("featured")}
               </span>
             )}
@@ -312,9 +213,9 @@ export const ProductQuickView = React.memo(function ProductQuickView({
           </div>
 
           {/* Error Display */}
-          {error && (
+          {_error && (
             <div className="p-3 bg-red-50 border border-red-200 rounded-md">
-              <p className="text-sm text-red-700">{error}</p>
+              <p className="text-sm text-red-700">{_error}</p>
             </div>
           )}
 

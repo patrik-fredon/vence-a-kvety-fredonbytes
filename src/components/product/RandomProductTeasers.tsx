@@ -107,7 +107,7 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
         >
           {t("featuredProducts.title")}
         </h2>
-        <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
+        <div className="text-center py-12 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-xl shadow-soft border border-stone-200 p-8">
           <p className="text-stone-600 mb-4" role="alert">{error}</p>
           <button
             onClick={handleRetry}
@@ -135,7 +135,7 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
         >
           {t("featuredProducts.title")}
         </h2>
-        <div className="text-center py-12 bg-white rounded-xl shadow-soft border border-stone-200 p-8">
+        <div className="text-center py-12 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-xl shadow-soft border border-stone-200 p-8">
           <p className="text-stone-600">{t("noProducts")}</p>
         </div>
       </section>
@@ -167,7 +167,7 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
       <div className="text-center mt-12">
         <a
           href={`/${locale}/products`}
-          className="inline-flex items-center justify-center px-6 py-3 bg-amber-600 hover:bg-amber-700 text-white rounded-lg font-medium transition-colors shadow-soft focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2"
+          className="inline-flex items-center justify-center px-6 py-3 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] hover:bg-amber-700 text-white rounded-lg font-medium transition-colors shadow-soft"
         >
           {t("featuredProducts.viewAll")}
         </a>

@@ -1,10 +1,10 @@
 import { ImageResponse } from "next/og";
-import type { NextRequest } from "next/server";
+
 import React from "react";
 
 export const runtime = "edge";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   return new ImageResponse(
     React.createElement(
       "div",

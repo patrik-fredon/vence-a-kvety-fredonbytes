@@ -6,8 +6,8 @@ import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { useImageOptimization } from "@/lib/hooks/useImageOptimization";
-import { useCoreWebVitals } from "@/lib/hooks";
-import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
+// Removed unused import: useCoreWebVitals
+import { useJavaScriptOptimization, debounce } from "@/lib/utils/javascript-optimization";
 import { cn } from "@/lib/utils";
 import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";
 import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
@@ -66,23 +66,10 @@ const ProductGrid = React.memo(function ProductGrid({
   });
 
   // Core Web Vitals optimization - DISABLED in development to prevent cascading errors
-  const coreWebVitals = useCoreWebVitals({
-    componentName: 'ProductGrid',
-    enabled: process.env.NODE_ENV !== 'development', // Disabled in development
-    trackCLS: process.env.NODE_ENV !== 'development',
-    trackLCP: process.env.NODE_ENV !== 'development',
-    trackFID: process.env.NODE_ENV !== 'development',
-    reserveImageSpace: true, // Keep for layout stability
-    onOptimizationFound: (optimization, metric) => {
-      // Only log in production
-      if (process.env.NODE_ENV === 'production' && optimization.includes('CRITICAL')) {
-        console.warn(`🔧 [ProductGrid] Critical optimization needed for ${metric}:`, optimization);
-      }
-    },
-  });
+  // Removed unused coreWebVitals variable
 
   // JavaScript optimization
-  const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductGrid');
+  const { measureExecution } = useJavaScriptOptimization('ProductGrid');
 
   // Ref to track ongoing requests for cleanup
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -114,14 +101,14 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // Optimized view mode change handler with useCallback
   const handleViewModeChange = useCallback(
-    optimizedEventHandler(async (mode: "grid" | "list") => {
+    async (mode: "grid" | "list") => {
       await measureExecution('viewModeChange', async () => {
         setViewMode(mode);
         localStorage.setItem("product-view-mode", mode);
         announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
       });
-    }, { debounce: 100 }),
-    [announce, t, optimizedEventHandler, measureExecution]
+    },
+    [announce, t, measureExecution]
   );
 
   // Optimized fetch products function with abort controller for cleanup
@@ -257,33 +244,33 @@ const ProductGrid = React.memo(function ProductGrid({
     };
   }, []);
 
-  // Optimized filter change handler with useCallback
+  // Debounced filter change handler with useCallback
   const handleFiltersChange = useCallback(
-    optimizedEventHandler(async (newFilters: ProductFilters) => {
+    debounce(async (newFilters: ProductFilters) => {
       await measureExecution('filtersChange', async () => {
         setFilters(newFilters);
         setCurrentPage(1);
         // fetchProducts will be called by useEffect due to filters dependency
       });
-    }, { debounce: 300 }),
-    [optimizedEventHandler, measureExecution]
+    }, 30),
+    [measureExecution]
   );
 
-  // Optimized sort change handler with useCallback
+  // Debounced sort change handler with useCallback
   const handleSortChange = useCallback(
-    optimizedEventHandler(async (newSort: ProductSortOptions) => {
+    debounce(async (newSort: ProductSortOptions) => {
       await measureExecution('sortChange', async () => {
         setSortOptions(newSort);
         setCurrentPage(1);
         // fetchProducts will be called by useEffect due to sortOptions dependency
       });
-    }, { debounce: 200 }),
-    [optimizedEventHandler, measureExecution]
+    }, 200),
+    [measureExecution]
   );
 
   // Optimized load more function with useCallback
   const loadMore = useCallback(
-    optimizedEventHandler(async () => {
+    async () => {
       if (loading) return; // Prevent multiple simultaneous loads
 
       await measureExecution('loadMore', async () => {
@@ -305,7 +292,7 @@ const ProductGrid = React.memo(function ProductGrid({
           await fetchProducts(currentPage + 1, false);
         }
       });
-    }, { debounce: 500 }),
+    },
     [
       loading,
       canLoadMore,
@@ -316,7 +303,6 @@ const ProductGrid = React.memo(function ProductGrid({
       fetchProducts,
       announce,
       t,
-      optimizedEventHandler,
       measureExecution,
     ]
   );
@@ -529,7 +515,10 @@ const ProductGrid = React.memo(function ProductGrid({
 
             <Button
               variant="outline"
-              onClick={loadMore}
+              onClick={(event) => {
+                event.preventDefault();
+                loadMore();
+              }}
               size="lg"
               disabled={loading}
               loading={loading}

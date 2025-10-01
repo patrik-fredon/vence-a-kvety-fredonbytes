@@ -48,12 +48,12 @@ export function CoreWebVitalsProvider({
       setGlobalMetrics(metrics);
       onMetricsUpdate?.(metrics);
     },
-    onOptimizationFound,
+    ...(onOptimizationFound && { onOptimizationFound }),
   });
 
   // Log performance summary in development
   useEffect(() => {
-    if (process.env.NODE_ENV === 'development' && coreWebVitals.metrics) {
+    if (process.env['NODE_ENV'] === 'development' && coreWebVitals.metrics) {
       const { metrics } = coreWebVitals;
       console.log('🚀 [CoreWebVitals] Performance Summary:', {
         LCP: metrics.lcp ? `${metrics.lcp.toFixed(0)}ms (${metrics.ratings.lcp})` : 'N/A',

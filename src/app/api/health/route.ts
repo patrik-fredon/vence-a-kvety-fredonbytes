@@ -1,16 +1,16 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createClient } from "@/lib/supabase/server";
 
 /**
  * Health check endpoint for monitoring and deployment verification
  */
-export async function GET(request: NextRequest) {
+export async function GET() {
   const startTime = Date.now();
 
   try {
     // Check database connectivity
     const supabase = createClient();
-    const { data: dbCheck, error: dbError } = await supabase
+    const { error: dbError } = await supabase
       .from("categories")
       .select("count")
       .limit(1)
@@ -22,11 +22,11 @@ export async function GET(request: NextRequest) {
 
     // Check Redis connectivity (if configured)
     let redisStatus = "not_configured";
-    if (process.env.REDIS_URL) {
+    if (process.env['REDIS_URL']) {
       try {
         // Import Redis dynamically to avoid issues if not configured
         const { Redis } = await import("ioredis");
-        const redis = new Redis(process.env.REDIS_URL);
+        const redis = new Redis(process.env['REDIS_URL']);
         await redis.ping();
         await redis.disconnect();
         redisStatus = "healthy";
@@ -50,8 +50,8 @@ export async function GET(request: NextRequest) {
     const healthData = {
       status: "healthy",
       timestamp: new Date().toISOString(),
-      version: process.env.npm_package_version || "1.0.0",
-      environment: process.env.NODE_ENV || "development",
+      version: process.env['npm_package_version'] || "1.0.0",
+      environment: process.env['NODE_ENV'] || "development",
       uptime: process.uptime(),
       responseTime: `${responseTime}ms`,
       checks: {

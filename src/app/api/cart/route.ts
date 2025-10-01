@@ -15,7 +15,7 @@ export async function GET(request: NextRequest) {
     const session = await auth();
 
     // Get session ID from cookies if user is not authenticated
-    const sessionId = request.cookies.get("cart-session")?.value;
+    const sessionId = request.cookies.get("cart-session")?.value || null;
 
     if (!(session?.user?.id || sessionId)) {
       return NextResponse.json({
@@ -117,6 +117,15 @@ export async function GET(request: NextRequest) {
       const product = item.products;
       const priceCalc = priceCalculations[index];
 
+      // Ensure priceCalc exists with fallback values
+      const safePrice = priceCalc || {
+        unitPrice: Number.parseFloat(product.base_price.toString()),
+        totalPrice: Number.parseFloat(product.base_price.toString()) * item.quantity,
+        basePrice: Number.parseFloat(product.base_price.toString()),
+        customizationModifier: 0,
+        priceBreakdown: []
+      };
+
       return {
         id: item.id,
         userId: item.user_id,
@@ -145,11 +154,11 @@ export async function GET(request: NextRequest) {
           createdAt: new Date(),
           updatedAt: new Date(),
         } as Product,
-        unitPrice: priceCalc.unitPrice,
-        totalPrice: priceCalc.totalPrice,
-        priceBreakdown: priceCalc.priceBreakdown,
-        basePrice: priceCalc.basePrice,
-        customizationModifier: priceCalc.customizationModifier,
+        unitPrice: safePrice.unitPrice,
+        totalPrice: safePrice.totalPrice,
+        priceBreakdown: safePrice.priceBreakdown,
+        basePrice: safePrice.basePrice,
+        customizationModifier: safePrice.customizationModifier,
       };
     });
 

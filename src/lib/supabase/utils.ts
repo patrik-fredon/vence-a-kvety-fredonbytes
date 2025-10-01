@@ -527,12 +527,12 @@ export const adminUtils = {
   },
 
   async getAllProducts(filters?: {
-    category?: string;
-    active?: boolean;
-    featured?: boolean;
-    lowStock?: boolean;
-    limit?: number;
-    offset?: number;
+    category?: string | undefined;
+    active?: boolean | undefined;
+    featured?: boolean | undefined;
+    lowStock?: boolean | undefined;
+    limit?: number | undefined;
+    offset?: number | undefined;
   }) {
     let query = supabaseAdmin
       .from("products")

@@ -2,7 +2,7 @@
  * Payment success page
  */
 
-import { CheckCircleIcon, EnvelopeIcon, PhoneIcon } from "@heroicons/react/24/outline";
+import { CheckCircleIcon, EnvelopeIcon, PhoneIcon } from "@/lib/icons";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";

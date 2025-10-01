@@ -11,38 +11,41 @@ import { customizationCache } from "@/lib/cache/customization-cache";
  * Admin API for managing customization cache
  */
 
-export async function GET(request: NextRequest) {
+export async function GET(_request: NextRequest) {
   try {
-    const supabase = createClient();
+    const supabase = await createClient();
 
     // Check if user is admin
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
-    if (authError || !user) {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
-    // Get user role
+    // Get user profile to check role
     const { data: profile, error: profileError } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .select("role")
       .eq("id", user.id)
       .single();
 
-    if (profileError || profile?.role !== "admin") {
+    if (profileError || !profile?.role || !["admin", "super_admin"].includes(profile.role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
     // Get cache statistics
-    const stats = getCacheWarmingStats();
+    const stats = await getCacheWarmingStats();
 
     return NextResponse.json({
       success: true,
-      stats,
+      data: stats,
     });
   } catch (error) {
-    console.error("Error getting cache stats:", error);
+    console.error("Cache stats error:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
+      { error: "Failed to get cache statistics" },
       { status: 500 }
     );
   }
@@ -60,12 +63,12 @@ export async function POST(request: NextRequest) {
 
     // Get user role
     const { data: profile, error: profileError } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .select("role")
       .eq("id", user.id)
       .single();
 
-    if (profileError || profile?.role !== "admin") {
+    if (profileError || !profile?.role || !["admin", "super_admin"].includes(profile.role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 
@@ -123,7 +126,7 @@ export async function POST(request: NextRequest) {
   }
 }
 
-export async function DELETE(request: NextRequest) {
+export async function DELETE() {
   try {
     const supabase = createClient();
 
@@ -135,12 +138,12 @@ export async function DELETE(request: NextRequest) {
 
     // Get user role
     const { data: profile, error: profileError } = await supabase
-      .from("profiles")
+      .from("user_profiles")
       .select("role")
       .eq("id", user.id)
       .single();
 
-    if (profileError || profile?.role !== "admin") {
+    if (profileError || !profile?.role || !["admin", "super_admin"].includes(profile.role)) {
       return NextResponse.json({ error: "Forbidden" }, { status: 403 });
     }
 

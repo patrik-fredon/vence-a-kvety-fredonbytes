@@ -1,27 +1,22 @@
 {
-  "enabled": true,
+  "enabled": false,
   "name": "Code Quality Analyzer",
-  "description": "Monitors source code files for changes and analyzes modified code for potential improvements including code smells, design patterns, best practices, readability, maintainability, and performance optimizations. Leverages Context7, SequentialThinking, ByteRover, and Serena for comprehensive analysis to ensure production-ready builds.",
+  "description": "Monitors source code files for changes and analyzes modified code for potential improvements including code smells, design patterns, and best practices. Generates suggestions for improving code quality while maintaining existing functionality.",
   "version": "1",
   "when": {
-    "type": "userTriggered",
+    "type": "fileCreated",
     "patterns": [
       "src/**/*.ts",
       "src/**/*.tsx",
       "src/**/*.js",
       "src/**/*.jsx",
+      "scripts/*.js",
       "*.ts",
-      "*.tsx",
-      "*.js",
-      "*.jsx",
-      "package.json",
-      "tsconfig.json",
-      "next.config.ts",
-      "tailwind.config.ts"
+      "*.js"
     ]
   },
   "then": {
     "type": "askAgent",
-    "prompt": "Analyze the modified code files for potential improvements. Focus on:\n\n1. **Code Quality Analysis**: Identify code smells, anti-patterns, and violations of best practices\n2. **Design Patterns**: Suggest appropriate design patterns and architectural improvements\n3. **Performance Optimization**: Identify performance bottlenecks and suggest optimizations\n4. **Readability & Maintainability**: Recommend improvements for code clarity and long-term maintenance\n5. **Production Readiness**: Ensure code meets production standards including error handling, type safety, and security\n\nUse the following approach:\n- Apply **SequentialThinking** for systematic analysis of complex code changes\n- Leverage **Context7** for accessing latest documentation and best practices for the tech stack\n- Use **ByteRover** to analyze implementation processes and memory optimization\n- Apply **Serena** for comprehensive codebase analysis and pattern recognition\n- Focus on debugging and solving any potential issues based on the newest documentation\n\nProvide specific, actionable suggestions while maintaining existing functionality. Prioritize changes that improve code quality without breaking existing features."
+    "prompt": "Analyze the modified code files for potential improvements. \n\nFocus on:\n\n1. **Code Smells**: Identify any code smells like long methods, large classes, duplicate code, or complex conditionals\n2. **Design Patterns**: Suggest appropriate design patterns that could improve the code structure\n3. **Best Practices**: Check for adherence to TypeScript/JavaScript/React best practices\n4. **Readability**: Suggest improvements for code clarity and documentation\n5. **Maintainability**: Identify areas that could be refactored for better maintainability\n6. **Performance**: Suggest optimizations that don't compromise functionality\n\nWith analysed data use Serena MCP to plan improvment plan. \n\nFor each suggestion, provide:\n- Clear explanation of the issue\n- Specific recommendation with code examples where helpful\n- Rationale for why the change would improve the code\n- Priority level (High/Medium/Low)\n\nMaintain the existing functionality while suggesting improvements. Focus on practical, actionable suggestions that align with modern development practices."
   }
 }

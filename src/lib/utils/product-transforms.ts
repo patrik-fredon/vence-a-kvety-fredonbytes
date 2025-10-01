@@ -17,9 +17,9 @@ export function transformCategoryRow(row: CategoryRow): Category {
   const description: LocalizedContent | undefined =
     row.description_cs || row.description_en
       ? {
-          cs: row.description_cs || "",
-          en: row.description_en || "",
-        }
+        cs: row.description_cs || "",
+        en: row.description_en || "",
+      }
       : undefined;
 
   return {
@@ -27,16 +27,16 @@ export function transformCategoryRow(row: CategoryRow): Category {
     nameCs: row.name_cs,
     nameEn: row.name_en,
     slug: row.slug,
-    descriptionCs: row.description_cs || undefined,
-    descriptionEn: row.description_en || undefined,
-    imageUrl: row.image_url || undefined,
-    parentId: row.parent_id || undefined,
+    ...(row.description_cs && { descriptionCs: row.description_cs }),
+    ...(row.description_en && { descriptionEn: row.description_en }),
+    ...(row.image_url && { imageUrl: row.image_url }),
+    ...(row.parent_id && { parentId: row.parent_id }),
     sortOrder: row.sort_order,
     active: row.active,
     createdAt: new Date(row.created_at),
     updatedAt: new Date(row.updated_at),
     name,
-    description,
+    ...(description && { description }),
   };
 }
 
@@ -52,9 +52,9 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
   const description: LocalizedContent | undefined =
     row.description_cs || row.description_en
       ? {
-          cs: row.description_cs || "",
-          en: row.description_en || "",
-        }
+        cs: row.description_cs || "",
+        en: row.description_en || "",
+      }
       : undefined;
 
   return {
@@ -62,10 +62,10 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     nameCs: row.name_cs,
     nameEn: row.name_en,
     slug: row.slug,
-    descriptionCs: row.description_cs || undefined,
-    descriptionEn: row.description_en || undefined,
+    ...(row.description_cs && { descriptionCs: row.description_cs }),
+    ...(row.description_en && { descriptionEn: row.description_en }),
     basePrice: Number(row.base_price),
-    categoryId: row.category_id || undefined,
+    ...(row.category_id && { categoryId: row.category_id }),
     images: Array.isArray(row.images) ? row.images : [],
     customizationOptions: Array.isArray(row.customization_options) ? row.customization_options : [],
     availability: typeof row.availability === "object" ? row.availability : { inStock: true },
@@ -78,8 +78,8 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     createdAt: new Date(row.created_at),
     updatedAt: new Date(row.updated_at),
     name,
-    description,
-    category,
+    ...(description && { description }),
+    ...(category && { category }),
   };
 }
 

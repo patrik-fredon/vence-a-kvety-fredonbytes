@@ -7,14 +7,12 @@ import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
 import {
   createSlug,
-  productToRow,
   transformCategoryRow,
   transformProductRow,
   validateProductData,
 } from "@/lib/utils/product-transforms";
 import type { ApiResponse } from "@/types";
 import {
-  CategoryRow,
   type Product,
   type ProductRow,
   type UpdateProductRequest,
@@ -30,7 +28,7 @@ interface RouteContext {
  * GET /api/products/[slug]
  * Retrieve a single product by slug
  */
-export async function GET(request: NextRequest, { params }: RouteContext) {
+export async function GET(_: NextRequest, { params }: RouteContext) {
   try {
     const supabase = createServerClient();
     const { slug } = await params;
@@ -276,7 +274,7 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
  * DELETE /api/products/[slug]
  * Soft delete a product (set active = false)
  */
-export async function DELETE(request: NextRequest, { params }: RouteContext) {
+export async function DELETE(_: NextRequest, { params }: RouteContext) {
   try {
     const supabase = createServerClient();
     const { slug } = await params;

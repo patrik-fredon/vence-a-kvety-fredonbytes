@@ -5,13 +5,13 @@ import {
   ChevronLeftIcon,
   ChevronRightIcon,
   ExclamationTriangleIcon,
-} from "@heroicons/react/24/outline";
-import { useRouter } from "next/navigation";
+} from "@/lib/icons";
+
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { Input } from "@/components/ui/Input";
+
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import {
   formatValidationErrors,
@@ -21,14 +21,13 @@ import {
   validateCheckoutForm,
 } from "@/lib/validation/checkout";
 import type { CartItem } from "@/types/cart";
-import { DeliveryUrgency } from "@/types/delivery";
+
 import {
   type CheckoutFormData,
   type CheckoutState,
   type CheckoutStep,
   type CustomerInfo,
   type DeliveryInfo,
-  PaymentMethod,
 } from "@/types/order";
 import { CustomerInfoStep } from "./steps/CustomerInfoStep";
 import { DeliveryInfoStep } from "./steps/DeliveryInfoStep";
@@ -59,7 +58,6 @@ export function CheckoutForm({
 }: CheckoutFormProps) {
   const t = useTranslations("checkout");
   const tCommon = useTranslations("common");
-  const router = useRouter();
 
   // Initialize checkout state
   const [state, setState] = useState<CheckoutState>({
@@ -264,12 +262,11 @@ export function CheckoutForm({
                     disabled={!isClickable}
                     className={`
                       flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200
-                      ${
-                        isActive
-                          ? "border-amber-600 bg-amber-600 text-white shadow-md"
-                          : isCompleted
-                            ? "border-green-500 bg-green-500 text-white shadow-sm"
-                            : "border-stone-300 bg-white text-stone-400"
+                      ${isActive
+                        ? "border-amber-600 bg-amber-600 text-white shadow-md"
+                        : isCompleted
+                          ? "border-green-500 bg-green-500 text-white shadow-sm"
+                          : "border-stone-300 bg-white text-stone-400"
                       }
                       ${isClickable ? "cursor-pointer hover:border-amber-500 hover:shadow-md" : "cursor-not-allowed"}
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20
@@ -332,7 +329,7 @@ export function CheckoutForm({
           {state.currentStep === "customer" && (
             <CustomerInfoStep
               customerInfo={state.formData.customerInfo}
-              errors={state.errors.customerInfo}
+              errors={state.errors.customerInfo || {}}
               onChange={(customerInfo) => updateFormData({ customerInfo })}
               locale={locale}
             />
@@ -341,7 +338,7 @@ export function CheckoutForm({
           {state.currentStep === "delivery" && (
             <DeliveryInfoStep
               deliveryInfo={state.formData.deliveryInfo}
-              errors={state.errors.deliveryInfo}
+              errors={state.errors.deliveryInfo || {}}
               onChange={(deliveryInfo) => updateFormData({ deliveryInfo })}
               locale={locale}
             />
@@ -349,7 +346,7 @@ export function CheckoutForm({
 
           {state.currentStep === "payment" && (
             <PaymentStep
-              paymentMethod={state.formData.paymentMethod}
+              {...(state.formData.paymentMethod && { paymentMethod: state.formData.paymentMethod })}
               onChange={(paymentMethod) => updateFormData({ paymentMethod })}
               locale={locale}
             />
@@ -362,7 +359,7 @@ export function CheckoutForm({
               subtotal={subtotal}
               deliveryCost={state.deliveryCost}
               totalAmount={totalAmount}
-              estimatedDeliveryDate={state.estimatedDeliveryDate}
+              {...(state.estimatedDeliveryDate && { estimatedDeliveryDate: state.estimatedDeliveryDate })}
               agreeToTerms={state.formData.agreeToTerms}
               subscribeNewsletter={state.formData.subscribeNewsletter}
               onAgreeToTermsChange={(agreeToTerms) => updateFormData({ agreeToTerms })}

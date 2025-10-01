@@ -1,6 +1,6 @@
 "use client";
 
-import { Bars3Icon, XMarkIcon } from "@heroicons/react/24/outline";
+import { Bars3Icon, XMarkIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -58,7 +58,7 @@ export function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="border-b border-stone-200 bg-amber-100 sticky top-0 z-40 shadow-sm"
+        className="border-b border-stone-200 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] sticky top-0 z-40 shadow-sm"
         role="banner"
       >
         {/* Container with max-width and centered content */}
@@ -66,7 +66,7 @@ export function Header({ locale }: HeaderProps) {
           {/* Skip to main content link for screen readers */}
           <a
             href="#main-content"
-            className="sr-only focus:not-sr-only focus:absolute focus:top-2 focus:left-2 focus:z-50 bg-stone-900 text-white px-4 py-2 rounded-md focus:outline-none focus:ring-2 focus:ring-amber-500"
+            className="sr-only focus:top-2 focus:left-2 focus:z-50 bg-stone-900 text-white px-4 py-2 rounded-md "
             onClick={(e) => {
               e.preventDefault();
               const mainContent = document.getElementById("main-content");
@@ -85,13 +85,13 @@ export function Header({ locale }: HeaderProps) {
             <div className="flex items-center">
               <Link
                 href={`/${locale}`}
-                className="flex items-center hover:opacity-80 transition-opacity duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg px-2 py-1"
+                className="flex items-center hover:opacity-80 transition-opacity duration-200 rounded-lg px-2 py-1"
                 aria-label={t("home")}
               >
                 <img
                   src="/logo.svg"
                   alt="Logo"
-                  className="h-8 w-auto sm:h-10 md:h-12"
+                  className="h-10 w-auto sm:h-12 md:h-14"
                 />
               </Link>
             </div>
@@ -105,25 +105,25 @@ export function Header({ locale }: HeaderProps) {
             >
               <Link
                 href={`/${locale}`}
-                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("home")}
               </Link>
               <Link
                 href={`/${locale}/products`}
-                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("products")}
               </Link>
               <Link
                 href={`/${locale}/about`}
-                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("about")}
               </Link>
               <Link
                 href={`/${locale}/contact`}
-                className="text-sm font-medium text-stone-700 hover:text-stone-900 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-md px-3 py-2"
+                className="text-sm font-medium text-stone-700 hover:text-amber-900 transition-colors duration-200 rounded-md px-3 py-2"
               >
                 {t("contact")}
               </Link>
@@ -146,8 +146,8 @@ export function Header({ locale }: HeaderProps) {
               <button
                 onClick={toggleMobileMenu}
                 className={cn(
-                  "md:hidden p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-50",
-                  "transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg",
+                  "md:hidden p-2 text-stone-700 hover:text-amber-900 hover:bg-stone-50",
+                  "transition-all duration-200 rounded-lg",
                   isMobileMenuOpen && "bg-stone-100"
                 )}
                 aria-expanded={isMobileMenuOpen}
@@ -191,7 +191,7 @@ export function Header({ locale }: HeaderProps) {
               <span className="text-lg font-light text-stone-900">{tUI("menu")}</span>
               <button
                 onClick={closeMobileMenu}
-                className="p-2 text-stone-700 hover:text-stone-900 hover:bg-stone-100 transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2 rounded-lg"
+                className="p-2 text-stone-700 hover:text-amber-900 hover:bg-stone-100 transition-colors duration-200 rounded-lg"
                 aria-label={tAccessibility("closeMenu")}
               >
                 <XMarkIcon className="w-6 h-6" aria-hidden="true" />

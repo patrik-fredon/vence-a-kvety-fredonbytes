@@ -18,7 +18,14 @@ interface LocaleLayoutProps {
 
 export async function generateMetadata({ params }: LocaleLayoutProps) {
   const { locale } = await params;
-  return generateLocalizedMetadata({ locale: locale as Locale });
+  return generateLocalizedMetadata({
+    locale: locale as Locale,
+    title: undefined,
+    description: undefined,
+    keywords: undefined,
+    path: undefined,
+    image: undefined,
+  });
 }
 
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {

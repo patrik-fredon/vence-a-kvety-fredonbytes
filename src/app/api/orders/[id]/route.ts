@@ -7,7 +7,7 @@ import type { Order, OrderStatus } from "@/types/order";
 /**
  * Get order by ID
  */
-export async function GET(request: NextRequest, { params }: { params: Promise<{ id: string }> }) {
+export async function GET(_: NextRequest, { params }: { params: Promise<{ id: string }> }) {
   try {
     const supabase = createServerClient();
     const {
@@ -41,7 +41,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
     const orderResponse: Order = {
       id: order.id,
       orderNumber: customerInfo.orderNumber || order.id.slice(-8).toUpperCase(),
-      userId: order.user_id || undefined,
+      userId: order.user_id || "",
       sessionId: customerInfo.sessionId || undefined,
       items: itemsData.items || [],
       itemCount: itemsData.itemCount || 0,
@@ -62,7 +62,7 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         urgency: deliveryInfo.urgency,
         preferredDate: deliveryInfo.preferredDate
           ? new Date(deliveryInfo.preferredDate)
-          : undefined,
+          : new Date(),
         preferredTimeSlot: deliveryInfo.preferredTimeSlot,
         specialInstructions: deliveryInfo.specialInstructions,
         recipientName: deliveryInfo.recipientName,
@@ -78,14 +78,14 @@ export async function GET(request: NextRequest, { params }: { params: Promise<{ 
         failureReason: paymentInfo.failureReason,
       },
       status: order.status as OrderStatus,
-      notes: order.notes || undefined,
-      internalNotes: order.notes || undefined,
+      notes: order.notes || "",
+      internalNotes: order.notes || "",
       createdAt: new Date(order.created_at),
       updatedAt: new Date(order.updated_at),
-      confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : undefined,
-      shippedAt: order.shipped_at ? new Date(order.shipped_at) : undefined,
-      deliveredAt: order.delivered_at ? new Date(order.delivered_at) : undefined,
-      cancelledAt: order.cancelled_at ? new Date(order.cancelled_at) : undefined,
+      confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : new Date(),
+      shippedAt: order.shipped_at ? new Date(order.shipped_at) : new Date(),
+      deliveredAt: order.delivered_at ? new Date(order.delivered_at) : new Date(),
+      cancelledAt: order.cancelled_at ? new Date(order.cancelled_at) : new Date(),
     };
 
     return NextResponse.json({
@@ -205,8 +205,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         const orderForEmail: Order = {
           id: updatedOrder.id,
           orderNumber: customerInfo.orderNumber || updatedOrder.id.slice(-8).toUpperCase(),
-          userId: updatedOrder.user_id || undefined,
-          sessionId: customerInfo.sessionId || undefined,
+          userId: updatedOrder.user_id || "",
+          sessionId: customerInfo.sessionId,
           items: itemsData.items || [],
           itemCount: itemsData.itemCount || 0,
           subtotal: itemsData.subtotal || 0,
@@ -226,7 +226,7 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             urgency: deliveryInfo.urgency,
             preferredDate: deliveryInfo.preferredDate
               ? new Date(deliveryInfo.preferredDate)
-              : undefined,
+              : new Date(),
             preferredTimeSlot: deliveryInfo.preferredTimeSlot,
             specialInstructions: deliveryInfo.specialInstructions,
             recipientName: deliveryInfo.recipientName,
@@ -242,14 +242,14 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             failureReason: paymentInfo.failureReason,
           },
           status: updatedOrder.status as OrderStatus,
-          notes: updatedOrder.notes || undefined,
-          internalNotes: updatedOrder.notes || undefined,
+          notes: updatedOrder.notes || "",
+          internalNotes: updatedOrder.notes || "",
           createdAt: new Date(updatedOrder.created_at),
           updatedAt: new Date(updatedOrder.updated_at),
-          confirmedAt: updatedOrder.confirmed_at ? new Date(updatedOrder.confirmed_at) : undefined,
-          shippedAt: updatedOrder.shipped_at ? new Date(updatedOrder.shipped_at) : undefined,
-          deliveredAt: updatedOrder.delivered_at ? new Date(updatedOrder.delivered_at) : undefined,
-          cancelledAt: updatedOrder.cancelled_at ? new Date(updatedOrder.cancelled_at) : undefined,
+          ...(updatedOrder.confirmed_at && { confirmedAt: new Date(updatedOrder.confirmed_at) }),
+          ...(updatedOrder.shipped_at && { shippedAt: new Date(updatedOrder.shipped_at) }),
+          ...(updatedOrder.delivered_at && { deliveredAt: new Date(updatedOrder.delivered_at) }),
+          ...(updatedOrder.cancelled_at && { cancelledAt: new Date(updatedOrder.cancelled_at) }),
         };
 
         // Send status update email

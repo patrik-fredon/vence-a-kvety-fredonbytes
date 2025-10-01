@@ -20,11 +20,11 @@ export function getColor(colorPath: string, fallback = "#000000"): string {
   const [colorFamily, shade] = colorPath.split(".");
 
   if (colorFamily === "stone" && shade && shade in designTokens.colors.stone) {
-    return designTokens.colors.stone[shade as keyof typeof designTokens.colors.stone];
+    return designTokens.colors.stone[shade as unknown as keyof typeof designTokens.colors.stone];
   }
 
   if (colorFamily === "amber" && shade && shade in designTokens.colors.amber) {
-    return designTokens.colors.amber[shade as keyof typeof designTokens.colors.amber];
+    return designTokens.colors.amber[shade as unknown as keyof typeof designTokens.colors.amber];
   }
 
   if (colorFamily === "white") {

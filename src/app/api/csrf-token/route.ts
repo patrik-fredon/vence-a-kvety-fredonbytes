@@ -3,10 +3,10 @@
  * Provides CSRF tokens for client-side requests
  */
 
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 import { createCSRFHeaders, generateCSRFToken } from "@/lib/security/csrf";
 
-export async function GET(request: NextRequest) {
+export async function GET() {
   try {
     // Generate a new CSRF token
     const token = await generateCSRFToken();

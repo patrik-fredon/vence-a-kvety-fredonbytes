@@ -1,12 +1,17 @@
-import { useCallback, useMemo } from 'react';
+import { useCallback, useMemo, useState } from 'react';
 import { useTranslations } from 'next-intl';
 import {
   validateWreathConfiguration,
   validateCustomRibbonText,
   validateWreathSizeSelection,
-  validateRibbonDependencies,
+  validateRibbonDependencies as validateRibbonDependenciesCore,
+  validateWreathConfigurationEnhanced,
+  ValidationErrorSeverity,
+  WREATH_VALIDATION_MESSAGES,
   type WreathValidationResult,
-  type WreathValidationOptions
+  type WreathValidationOptions,
+  type EnhancedValidationError,
+  type EnhancedWreathValidationResult
 } from './wreath';
 import type { Customization, CustomizationOption } from '@/types/product';
 
@@ -92,7 +97,7 @@ export function useWreathValidation({
 
   // Validate ribbon dependencies only
   const validateRibbonDependenciesCallback = useCallback(() => {
-    return validateRibbonDependencies(
+    return validateRibbonDependenciesCore(
       customizations,
       wreathOptions.ribbonOption,
       wreathOptions.ribbonColorOption,
@@ -228,7 +233,7 @@ export function useEnhancedWreathValidation({
   clearErrors: () => void;
   retryValidation: () => void;
 } {
-  const [lastValidationTime, setLastValidationTime] = useState<number>(0);
+  const [, setLastValidationTime] = useState<number>(0);
   const [isRecovering, setIsRecovering] = useState(false);
   const [recoveryAttempts, setRecoveryAttempts] = useState(0);
   const maxRecoveryAttempts = 3;
@@ -356,7 +361,7 @@ export function useEnhancedWreathValidation({
       (option) => option.type === "ribbon_text" || option.id === "ribbon_text"
     );
 
-    return validateRibbonDependencies(
+    return validateRibbonDependenciesCore(
       customizations,
       ribbonOption,
       ribbonColorOption,
@@ -465,7 +470,7 @@ export function useValidationErrorHandler(locale: string = 'cs') {
   // Check if error is recoverable
   const isErrorRecoverable = useCallback((error: EnhancedValidationError) => {
     return error.recoverable &&
-      !error.context?.recoveryFailed &&
+      !error.context?.['recoveryFailed'] &&
       recoveryInProgress !== error.code;
   }, [recoveryInProgress]);
 

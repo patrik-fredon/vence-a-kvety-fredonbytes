@@ -1,0 +1,25 @@
+{
+  "enabled": true,
+  "name": "Task Completion Tracker",
+  "description": "Monitors all source files for task completion events and automatically stores completion details and memorable data to Notion API server for the Refactoring UI e-commerce vence-a-kvety-fredonbytes project",
+  "version": "1",
+  "when": {
+    "type": "userTriggered",
+    "patterns": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "src/**/*.js",
+      "src/**/*.jsx",
+      "*.ts",
+      "*.tsx",
+      "*.js",
+      "*.jsx",
+      "*.md",
+      "*.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Analyze the recent file changes to detect task completion. If a task has been completed, use the notionApi MCP server to store all completion details and memorable data to the *Refactoring UI e-commerce vence-a-kvety-fredonbytes* workspace. Include: 1) What task was completed, 2) Key implementation details, 3) Files modified, 4) Any important patterns or learnings, 5) Next steps or dependencies identified."
+  }
+}

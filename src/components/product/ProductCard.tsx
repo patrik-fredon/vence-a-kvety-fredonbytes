@@ -1,6 +1,6 @@
 "use client";
 
-import Image from "next/image";
+// Removed unused Image import
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useState, useCallback } from "react";
@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 import { LazyProductQuickView } from "./LazyProductQuickView";
-import { useCoreWebVitals } from "@/lib/hooks";
+// Removed unused useCoreWebVitals import
 import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
 import { OptimizedImage } from "@/components/ui";
 
@@ -33,23 +33,16 @@ export function ProductCard({
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
   const [imageLoading, setImageLoading] = useState(true);
-  const [imageError, setImageError] = useState(false);
+  // Removed unused imageError state
   const [isQuickViewOpen, setIsQuickViewOpen] = useState(false);
 
   // Core Web Vitals optimization - DISABLED to prevent performance issues
   // Multiple instances were causing UI freezing and navbar unresponsiveness
   // Core Web Vitals tracking is now handled at the page level
-  const coreWebVitals = useCoreWebVitals({
-    componentName: 'ProductCard',
-    enabled: false, // Disabled to fix performance issues
-    trackCLS: false,
-    trackLCP: false,
-    trackFID: false,
-    reserveImageSpace: true, // Keep this for layout stability
-  });
+  // Removed unused coreWebVitals hook
 
   // JavaScript optimization
-  const { measureExecution, optimizedEventHandler } = useJavaScriptOptimization('ProductCard');
+  const { measureExecution } = useJavaScriptOptimization('ProductCard');
 
   const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
   const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
@@ -61,27 +54,27 @@ export function ProductCard({
   };
 
   const handleAddToCart = useCallback(
-    optimizedEventHandler(async (e: React.MouseEvent) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
       await measureExecution('addToCart', async () => {
         onAddToCart?.(product);
       });
-    }, { debounce: 300 }),
-    [onAddToCart, product, optimizedEventHandler, measureExecution]
+    },
+    [onAddToCart, product, measureExecution]
   );
 
   const handleQuickView = useCallback(
-    optimizedEventHandler(async (e: React.MouseEvent) => {
+    async (e: React.MouseEvent<HTMLButtonElement>) => {
       e.preventDefault();
       e.stopPropagation();
 
       await measureExecution('quickView', async () => {
         setIsQuickViewOpen(true);
       });
-    }, { debounce: 200 }),
-    [optimizedEventHandler, measureExecution]
+    },
+    [measureExecution]
   );
 
   // List view - keep existing layout
@@ -116,7 +109,7 @@ export function ProductCard({
                     imageLoading && "blur-sm"
                   )}
                   onLoad={() => setImageLoading(false)}
-                  onError={() => setImageError(true)}
+                  onError={() => setImageLoading(false)}
                   priority={featured}
                   enableCoreWebVitals={false}
                   componentName="ProductCard_List"
