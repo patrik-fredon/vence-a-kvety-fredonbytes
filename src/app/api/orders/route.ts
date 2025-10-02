@@ -163,13 +163,11 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Generate payment URL based on payment method
+    // Generate payment URL for Stripe
     let paymentUrl: string | undefined;
 
     if (body.paymentMethod === "stripe") {
       paymentUrl = await createStripePaymentSession(order.id, totalAmount, body.customerInfo.email);
-    } else if (body.paymentMethod === "gopay") {
-      paymentUrl = await createGopayPayment(order.id, totalAmount, body.customerInfo);
     }
 
     // Convert database row to Order type
@@ -443,40 +441,4 @@ async function createStripePaymentSession(
   }
 }
 
-async function createGopayPayment(
-  orderId: string,
-  amount: number,
-  customerInfo: any
-): Promise<string> {
-  try {
-    // Initialize payment through our payment API
-    const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000";
-    const response = await fetch(`${baseUrl}/api/payments/initialize`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        orderId,
-        amount,
-        currency: "czk",
-        customerEmail: customerInfo.email,
-        customerName: `${customerInfo.firstName} ${customerInfo.lastName}`,
-        paymentMethod: "gopay",
-        locale: "cs",
-      }),
-    });
 
-    const data = await response.json();
-
-    if (data.success && data.data.redirectUrl) {
-      // Return GoPay redirect URL
-      return data.data.redirectUrl;
-    } else {
-      throw new Error(data.error || "Failed to create GoPay payment");
-    }
-  } catch (error) {
-    console.error("Error creating GoPay payment:", error);
-    return `/cs/checkout/error?orderId=${orderId}&error=gopay_init_failed`;
-  }
-}

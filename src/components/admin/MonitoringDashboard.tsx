@@ -2,13 +2,17 @@
 
 import {
   ArrowPathIcon,
+  CalendarIcon,
   ChartBarIcon,
   CheckCircleIcon,
   ClockIcon,
+  CreditCardIcon,
+  ExclamationCircleIcon,
   ExclamationTriangleIcon,
-  XCircleIcon,
+  LightBulbIcon,
 } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
+import { getPerformanceInsights } from "@/lib/monitoring/error-logger";
 
 interface ErrorLog {
   id: string;
@@ -20,6 +24,10 @@ interface ErrorLog {
   url: string;
   resolved: boolean;
   created_at: string;
+  additionalData?: {
+    type?: string;
+    [key: string]: any;
+  };
 }
 
 interface PerformanceMetric {
@@ -37,6 +45,9 @@ interface MonitoringStats {
     unresolved: number;
     critical: number;
     last24h: number;
+    navigation: number;
+    payment: number;
+    performance: number;
   };
   performance: {
     totalMetrics: number;
@@ -53,8 +64,9 @@ export function MonitoringDashboard() {
   const [stats, setStats] = useState<MonitoringStats | null>(null);
   const [recentErrors, setRecentErrors] = useState<ErrorLog[]>([]);
   const [recentMetrics, setRecentMetrics] = useState<PerformanceMetric[]>([]);
+  const [performanceInsights, setPerformanceInsights] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "errors" | "performance">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "errors" | "performance" | "insights">("overview");
 
   useEffect(() => {
     fetchMonitoringData();
@@ -78,7 +90,11 @@ export function MonitoringDashboard() {
         setRecentErrors(errorsData.errors || []);
         setRecentMetrics(performanceData.metrics || []);
 
-        // Calculate stats
+        // Get performance insights from client-side error logger
+        const insights = getPerformanceInsights();
+        setPerformanceInsights(insights);
+
+        // Calculate enhanced stats
         const errorStats = {
           total: errorsData.errors?.length || 0,
           unresolved: errorsData.errors?.filter((e: ErrorLog) => !e.resolved).length || 0,
@@ -89,6 +105,11 @@ export function MonitoringDashboard() {
               const dayAgo = Date.now() - 24 * 60 * 60 * 1000;
               return errorTime > dayAgo;
             }).length || 0,
+          // New error categories
+          navigation: errorsData.errors?.filter((e: ErrorLog) => e.level === "navigation").length || 0,
+          payment: errorsData.errors?.filter((e: ErrorLog) => e.level === "critical" &&
+            e.additionalData?.type === "payment").length || 0,
+          performance: errorsData.errors?.filter((e: ErrorLog) => e.level === "performance").length || 0,
         };
 
         setStats({
@@ -152,9 +173,128 @@ export function MonitoringDashboard() {
         return "text-blue-600 bg-blue-50";
       case "component":
         return "text-gray-600 bg-gray-50";
+      case "navigation":
+        return "text-purple-600 bg-purple-50";
+      case "performance":
+        return "text-indigo-600 bg-indigo-50";
       default:
         return "text-gray-600 bg-gray-50";
     }
+  };
+
+  const renderInsightsTab = () => {
+    if (!performanceInsights) {
+      return <div className="text-center py-8 text-gray-500">Žádné insights k dispozici</div>;
+    }
+
+    return (
+      <div className="space-y-6">
+        {/* Core Web Vitals Insights */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Core Web Vitals</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="bg-blue-50 p-4 rounded-lg">
+              <div className="text-2xl font-bold text-blue-600">
+                {performanceInsights.coreWebVitals.errors}
+              </div>
+              <div className="text-sm text-blue-600">Celkem problémů</div>
+            </div>
+            {Object.entries(performanceInsights.coreWebVitals.metrics || {}).map(([metric, data]: [string, any]) => (
+              <div key={metric} className="bg-gray-50 p-4 rounded-lg">
+                <div className="text-lg font-semibold text-gray-900">{metric}</div>
+                <div className="text-sm text-gray-600">
+                  Průměr: {data.avgValue?.toFixed(0)}ms
+                </div>
+                <div className="text-sm text-gray-600">
+                  Nejhorší: {data.worstValue?.toFixed(0)}ms
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Navigation Insights */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Navigace</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Problematické stránky</h4>
+              <div className="space-y-2">
+                {performanceInsights.navigation.mostProblematicRoutes?.map((route: any, index: number) => (
+                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-900">{route.route}</span>
+                    <span className="text-sm font-medium text-red-600">{route.count} chyb</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Statistiky</h4>
+              <div className="bg-red-50 p-4 rounded-lg">
+                <div className="text-2xl font-bold text-red-600">
+                  {performanceInsights.navigation.errors}
+                </div>
+                <div className="text-sm text-red-600">Navigační chyby</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Payment Insights */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Platby</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Chyby podle kroků</h4>
+              <div className="space-y-2">
+                {Object.entries(performanceInsights.payments.errorsByStep || {}).map(([step, count]: [string, any]) => (
+                  <div key={step} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-900 capitalize">{step}</span>
+                    <span className="text-sm font-medium text-red-600">{count} chyb</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Celkové statistiky</h4>
+              <div className="bg-red-50 p-4 rounded-lg">
+                <div className="text-2xl font-bold text-red-600">
+                  {performanceInsights.payments.errors}
+                </div>
+                <div className="text-sm text-red-600">Platební chyby</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        {/* Image Loading Insights */}
+        <div className="bg-white shadow rounded-lg p-6">
+          <h3 className="text-lg font-medium text-gray-900 mb-4">Načítání obrázků</h3>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Problematické obrázky</h4>
+              <div className="space-y-2">
+                {performanceInsights.images.mostProblematicImages?.map((image: any, index: number) => (
+                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
+                    <span className="text-sm text-gray-900 truncate">{image.src}</span>
+                    <span className="text-sm font-medium text-red-600">{image.count} chyb</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">Statistiky</h4>
+              <div className="bg-orange-50 p-4 rounded-lg">
+                <div className="text-2xl font-bold text-orange-600">
+                  {performanceInsights.images.errors}
+                </div>
+                <div className="text-sm text-orange-600">Chyby načítání</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
   };
 
   if (loading) {
@@ -179,22 +319,22 @@ export function MonitoringDashboard() {
         </button>
       </div>
 
-      {/* Tabs */}
+      {/* Enhanced Tabs */}
       <div className="border-b border-gray-200">
         <nav className="-mb-px flex space-x-8">
           {[
             { id: "overview", label: "Přehled", icon: ChartBarIcon },
             { id: "errors", label: "Chyby", icon: ExclamationTriangleIcon },
             { id: "performance", label: "Výkon", icon: ClockIcon },
+            { id: "insights", label: "Insights", icon: LightBulbIcon },
           ].map((tab) => (
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`${
-                activeTab === tab.id
-                  ? "border-primary-500 text-primary-600"
-                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-              } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center`}
+              className={`${activeTab === tab.id
+                ? "border-primary-500 text-primary-600"
+                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+                } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center`}
             >
               <tab.icon className="w-4 h-4 mr-2" />
               {tab.label}
@@ -202,6 +342,9 @@ export function MonitoringDashboard() {
           ))}
         </nav>
       </div>
+
+      {/* Tab Content */}
+      {activeTab === "insights" && renderInsightsTab()}
 
       {/* Overview Tab */}
       {activeTab === "overview" && stats && (
@@ -214,7 +357,23 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Nevyřešené chyby</dt>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Celkem chyb</dt>
+                    <dd className="text-lg font-medium text-gray-900">{stats.errors.total}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <ClockIcon className="h-6 w-6 text-yellow-400" />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Nevyřešené</dt>
                     <dd className="text-lg font-medium text-gray-900">{stats.errors.unresolved}</dd>
                   </dl>
                 </div>
@@ -226,11 +385,11 @@ export function MonitoringDashboard() {
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <XCircleIcon className="h-6 w-6 text-red-600" />
+                  <ExclamationCircleIcon className="h-6 w-6 text-red-500" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Kritické chyby</dt>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Kritické</dt>
                     <dd className="text-lg font-medium text-gray-900">{stats.errors.critical}</dd>
                   </dl>
                 </div>
@@ -242,12 +401,61 @@ export function MonitoringDashboard() {
             <div className="p-5">
               <div className="flex items-center">
                 <div className="flex-shrink-0">
-                  <ClockIcon className="h-6 w-6 text-blue-400" />
+                  <CalendarIcon className="h-6 w-6 text-blue-400" />
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Chyby za 24h</dt>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Za 24h</dt>
                     <dd className="text-lg font-medium text-gray-900">{stats.errors.last24h}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* New error category stats */}
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <ArrowPathIcon className="h-6 w-6 text-purple-400" />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Navigační</dt>
+                    <dd className="text-lg font-medium text-gray-900">{stats.errors.navigation}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <CreditCardIcon className="h-6 w-6 text-green-400" />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Platební</dt>
+                    <dd className="text-lg font-medium text-gray-900">{stats.errors.payment}</dd>
+                  </dl>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white overflow-hidden shadow rounded-lg">
+            <div className="p-5">
+              <div className="flex items-center">
+                <div className="flex-shrink-0">
+                  <ChartBarIcon className="h-6 w-6 text-indigo-400" />
+                </div>
+                <div className="ml-5 w-0 flex-1">
+                  <dl>
+                    <dt className="text-sm font-medium text-gray-500 truncate">Výkonové</dt>
+                    <dd className="text-lg font-medium text-gray-900">{stats.errors.performance}</dd>
                   </dl>
                 </div>
               </div>

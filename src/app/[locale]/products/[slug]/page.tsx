@@ -58,7 +58,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           slug,
           description_cs,
           description_en,
-          images,
+          image_url,
           parent_id,
           sort_order,
           active,

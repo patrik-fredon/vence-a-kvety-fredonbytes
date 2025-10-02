@@ -1,6 +1,6 @@
 interface ErrorContext {
   errorInfo?: any;
-  level?: "component" | "page" | "critical" | "api";
+  level?: "component" | "page" | "critical" | "api" | "performance" | "navigation" | "business";
   context?: string;
   errorId?: string;
   timestamp?: string;
@@ -315,8 +315,309 @@ class ErrorLogger {
   }
 }
 
+/**
+ * Enhanced Production Error Logger with Core Web Vitals integration
+ */
+class ProductionErrorLogger extends ErrorLogger {
+  private coreWebVitalsErrors: Array<{ metric: string; value: number; threshold: number; timestamp: number }> = [];
+  private navigationErrors: Array<{ route: string; error: string; timestamp: number }> = [];
+  private paymentErrors: Array<{ step: string; error: string; amount?: number; timestamp: number }> = [];
+  private imageLoadErrors: Array<{ src: string; error: string; timestamp: number }> = [];
+
+  /**
+   * Log Core Web Vitals performance issues
+   */
+  async logCoreWebVitalsIssue(
+    metric: 'LCP' | 'FID' | 'CLS' | 'INP' | 'FCP' | 'TTFB',
+    value: number,
+    threshold: number,
+    context?: string
+  ) {
+    this.coreWebVitalsErrors.push({
+      metric,
+      value,
+      threshold,
+      timestamp: Date.now(),
+    });
+
+    // Keep only last 50 entries
+    if (this.coreWebVitalsErrors.length > 50) {
+      this.coreWebVitalsErrors = this.coreWebVitalsErrors.slice(-50);
+    }
+
+    const error = new Error(
+      `Core Web Vitals threshold exceeded: ${metric} = ${value}ms (threshold: ${threshold}ms)`
+    );
+    error.name = 'CoreWebVitalsError';
+
+    return this.logError(error, {
+      level: 'performance',
+      context: context || 'Core Web Vitals Monitoring',
+      additionalData: {
+        metric,
+        value,
+        threshold,
+        type: 'core-web-vitals',
+        rating: this.getPerformanceRating(metric, value),
+      },
+    });
+  }
+
+  /**
+   * Log navigation and routing errors
+   */
+  async logNavigationError(route: string, error: Error, context?: string) {
+    this.navigationErrors.push({
+      route,
+      error: error.message,
+      timestamp: Date.now(),
+    });
+
+    // Keep only last 30 entries
+    if (this.navigationErrors.length > 30) {
+      this.navigationErrors = this.navigationErrors.slice(-30);
+    }
+
+    return this.logError(error, {
+      level: 'navigation',
+      context: context || 'Navigation Error',
+      additionalData: {
+        route,
+        type: 'navigation',
+        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
+      },
+    });
+  }
+
+  /**
+   * Log payment processing errors
+   */
+  async logPaymentError(
+    step: 'initialization' | 'processing' | 'confirmation' | 'webhook',
+    error: Error,
+    amount?: number,
+    paymentMethod?: string,
+    context?: string
+  ) {
+    this.paymentErrors.push({
+      step,
+      error: error.message,
+      ...(amount !== undefined && { amount }),
+      timestamp: Date.now(),
+    });
+
+    // Keep only last 20 entries
+    if (this.paymentErrors.length > 20) {
+      this.paymentErrors = this.paymentErrors.slice(-20);
+    }
+
+    return this.logError(error, {
+      level: 'critical',
+      context: context || 'Payment Processing Error',
+      additionalData: {
+        step,
+        amount,
+        paymentMethod,
+        type: 'payment',
+        // Don't log sensitive payment data
+        sanitized: true,
+      },
+    });
+  }
+
+  /**
+   * Log image loading performance and errors
+   */
+  async logImageLoadError(src: string, error: Error, loadTime?: number, context?: string) {
+    this.imageLoadErrors.push({
+      src: this.sanitizeImageUrl(src),
+      error: error.message,
+      timestamp: Date.now(),
+    });
+
+    // Keep only last 40 entries
+    if (this.imageLoadErrors.length > 40) {
+      this.imageLoadErrors = this.imageLoadErrors.slice(-40);
+    }
+
+    return this.logError(error, {
+      level: 'component',
+      context: context || 'Image Loading Error',
+      additionalData: {
+        src: this.sanitizeImageUrl(src),
+        loadTime,
+        type: 'image-load',
+      },
+    });
+  }
+
+  /**
+   * Log checkout flow optimization data
+   */
+  async logCheckoutFlowIssue(
+    step: 'cart' | 'shipping' | 'payment' | 'confirmation',
+    issue: string,
+    userInteraction?: string,
+    context?: string
+  ) {
+    const error = new Error(`Checkout flow issue at ${step}: ${issue}`);
+    error.name = 'CheckoutFlowError';
+
+    return this.logError(error, {
+      level: 'business',
+      context: context || 'Checkout Flow Optimization',
+      additionalData: {
+        step,
+        issue,
+        userInteraction,
+        type: 'checkout-flow',
+      },
+    });
+  }
+
+  /**
+   * Get performance insights for monitoring dashboard
+   */
+  getPerformanceInsights() {
+    return {
+      coreWebVitals: {
+        errors: this.coreWebVitalsErrors.length,
+        recentIssues: this.coreWebVitalsErrors.slice(-10),
+        metrics: this.aggregateCoreWebVitalsMetrics(),
+      },
+      navigation: {
+        errors: this.navigationErrors.length,
+        recentErrors: this.navigationErrors.slice(-5),
+        mostProblematicRoutes: this.getMostProblematicRoutes(),
+      },
+      payments: {
+        errors: this.paymentErrors.length,
+        recentErrors: this.paymentErrors.slice(-5),
+        errorsByStep: this.getPaymentErrorsByStep(),
+      },
+      images: {
+        errors: this.imageLoadErrors.length,
+        recentErrors: this.imageLoadErrors.slice(-5),
+        mostProblematicImages: this.getMostProblematicImages(),
+      },
+    };
+  }
+
+  /**
+   * Private helper methods
+   */
+  private getPerformanceRating(metric: string, value: number): 'good' | 'needs-improvement' | 'poor' {
+    const thresholds = {
+      LCP: { good: 2500, poor: 4000 },
+      FID: { good: 100, poor: 300 },
+      INP: { good: 200, poor: 500 },
+      CLS: { good: 0.1, poor: 0.25 },
+      FCP: { good: 1800, poor: 3000 },
+      TTFB: { good: 800, poor: 1800 },
+    };
+
+    const threshold = thresholds[metric as keyof typeof thresholds];
+    if (!threshold) return 'good';
+
+    if (value <= threshold.good) return 'good';
+    if (value <= threshold.poor) return 'needs-improvement';
+    return 'poor';
+  }
+
+  private sanitizeImageUrl(url: string | undefined): string {
+    // Remove query parameters that might contain sensitive data
+    if (!url || typeof url !== 'string') return '';
+    try {
+      const urlObj = new URL(url);
+      return `${urlObj.origin}${urlObj.pathname}`;
+    } catch {
+      // At this point, url is guaranteed to be a string due to the check above
+      const safeUrl = url as string; // Type assertion since we know it's a string
+      return safeUrl.includes('?') ? (safeUrl.split('?')[0] || safeUrl) : safeUrl;
+    }
+  }
+
+  private aggregateCoreWebVitalsMetrics() {
+    const metrics: Record<string, { count: number; avgValue: number; worstValue: number }> = {};
+
+    this.coreWebVitalsErrors.forEach(({ metric, value }) => {
+      if (!metrics[metric]) {
+        metrics[metric] = { count: 0, avgValue: 0, worstValue: 0 };
+      }
+      metrics[metric].count++;
+      metrics[metric].avgValue = (metrics[metric].avgValue + value) / metrics[metric].count;
+      metrics[metric].worstValue = Math.max(metrics[metric].worstValue, value);
+    });
+
+    return metrics;
+  }
+
+  private getMostProblematicRoutes() {
+    const routeCounts: Record<string, number> = {};
+    this.navigationErrors.forEach(({ route }) => {
+      routeCounts[route] = (routeCounts[route] || 0) + 1;
+    });
+
+    return Object.entries(routeCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([route, count]) => ({ route, count }));
+  }
+
+  private getPaymentErrorsByStep() {
+    const stepCounts: Record<string, number> = {};
+    this.paymentErrors.forEach(({ step }) => {
+      stepCounts[step] = (stepCounts[step] || 0) + 1;
+    });
+
+    return stepCounts;
+  }
+
+  private getMostProblematicImages() {
+    const imageCounts: Record<string, number> = {};
+    this.imageLoadErrors.forEach(({ src }) => {
+      imageCounts[src] = (imageCounts[src] || 0) + 1;
+    });
+
+    return Object.entries(imageCounts)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, 5)
+      .map(([src, count]) => ({ src, count }));
+  }
+}
+
 // Create singleton instance
-const errorLogger = new ErrorLogger();
+const errorLogger = new ProductionErrorLogger();;
+// Enhanced production monitoring functions
+export const logCoreWebVitalsIssue = (
+  metric: 'LCP' | 'FID' | 'CLS' | 'INP' | 'FCP' | 'TTFB',
+  value: number,
+  threshold: number,
+  context?: string
+) => (errorLogger as ProductionErrorLogger).logCoreWebVitalsIssue(metric, value, threshold, context);
+
+export const logNavigationError = (route: string, error: Error, context?: string) =>
+  (errorLogger as ProductionErrorLogger).logNavigationError(route, error, context);
+
+export const logPaymentError = (
+  step: 'initialization' | 'processing' | 'confirmation' | 'webhook',
+  error: Error,
+  amount?: number,
+  paymentMethod?: string,
+  context?: string
+) => (errorLogger as ProductionErrorLogger).logPaymentError(step, error, amount, paymentMethod, context);
+
+export const logImageLoadError = (src: string, error: Error, loadTime?: number, context?: string) =>
+  (errorLogger as ProductionErrorLogger).logImageLoadError(src, error, loadTime, context);
+
+export const logCheckoutFlowIssue = (
+  step: 'cart' | 'shipping' | 'payment' | 'confirmation',
+  issue: string,
+  userInteraction?: string,
+  context?: string
+) => (errorLogger as ProductionErrorLogger).logCheckoutFlowIssue(step, issue, userInteraction, context);
+
+export const getPerformanceInsights = () => (errorLogger as ProductionErrorLogger).getPerformanceInsights();
 
 // Initialize on import
 if (typeof window !== "undefined") {

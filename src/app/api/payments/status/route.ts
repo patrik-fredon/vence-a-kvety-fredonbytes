@@ -24,11 +24,11 @@ export async function GET(request: NextRequest) {
     }
 
     // Validate payment method
-    if (!["stripe", "gopay"].includes(paymentMethod)) {
+    if (paymentMethod !== "stripe") {
       return NextResponse.json(
         {
           success: false,
-          error: 'Invalid payment method. Must be "stripe" or "gopay"',
+          error: 'Invalid payment method. Must be "stripe"',
         },
         { status: 400 }
       );
@@ -89,11 +89,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate payment method
-    if (!["stripe", "gopay"].includes(paymentMethod)) {
+    if (paymentMethod !== "stripe") {
       return NextResponse.json(
         {
           success: false,
-          error: 'Invalid payment method. Must be "stripe" or "gopay"',
+          error: 'Invalid payment method. Must be "stripe"',
         },
         { status: 400 }
       );

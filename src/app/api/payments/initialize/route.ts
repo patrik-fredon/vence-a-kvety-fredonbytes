@@ -1,5 +1,5 @@
 /**
- * API route for initializing payments (Stripe and GoPay)
+ * API route for initializing Stripe payments
  */
 
 import { type NextRequest, NextResponse } from "next/server";
@@ -33,11 +33,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Validate payment method
-    if (!["stripe", "gopay"].includes(paymentMethod)) {
+    if (paymentMethod !== "stripe") {
       return NextResponse.json(
         {
           success: false,
-          error: 'Invalid payment method. Must be "stripe" or "gopay"',
+          error: 'Invalid payment method. Must be "stripe"',
         },
         { status: 400 }
       );
@@ -91,8 +91,7 @@ export async function POST(request: NextRequest) {
       success: true,
       data: {
         paymentId: result.paymentId,
-        clientSecret: result.clientSecret, // For Stripe
-        redirectUrl: result.redirectUrl, // For GoPay
+        clientSecret: result.clientSecret,
         paymentMethod,
       },
     });

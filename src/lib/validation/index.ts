@@ -41,7 +41,6 @@ export {
   validateCustomerInfo,
   validateDeliveryInfo,
   validateCheckoutForm,
-  hasValidationErrors,
   formatValidationErrors,
   sanitizeCustomerInfo,
   sanitizeDeliveryInfo
@@ -63,3 +62,63 @@ export type {
 
 // Test utilities (development only)
 export { testWreathValidation } from './test-utils';
+
+// Type guards and comprehensive error handling
+export {
+  isValidProduct,
+  isValidProductArray,
+  isValidProductImage,
+  isValidLocale,
+  isValidProductSlug,
+  isValidNavigationParams,
+  isValidApiResponse,
+  isValidErrorResponse,
+  isValidDatabaseResult,
+  isValidEmail,
+  isValidPhoneNumber,
+  isValidPostalCode,
+  safeAsyncOperation,
+  safeTransform,
+  validateApiResponse,
+  validateDatabaseQuery,
+  collectValidationErrors,
+  hasValidationErrors
+} from './type-guards';
+
+export type {
+  ValidationResult,
+  ValidationError,
+  ValidationWarning
+} from './type-guards';
+
+// Navigation validation
+export {
+  validateNavigationParams,
+  validateProductNavigation,
+  validateSearchParams,
+  createSafeNavigationUrl,
+  validateFormData
+} from './navigation-validation';
+
+export type {
+  NavigationValidationContext,
+  NavigationParams,
+  NavigationValidationResult
+} from './navigation-validation';
+
+// Async error handling
+export {
+  executeWithErrorHandling,
+  executeAllWithErrorHandling,
+  executeDatabaseOperation,
+  executeApiRequest,
+  executeFileOperation,
+  executeNavigationOperation,
+  createDebouncedAsyncOperation,
+  createThrottledAsyncOperation
+} from './async-error-handling';
+
+export type {
+  AsyncOperationOptions,
+  CircuitBreakerState
+} from './async-error-handling';

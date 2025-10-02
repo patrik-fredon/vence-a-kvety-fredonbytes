@@ -39,8 +39,8 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    qualities: [75, 85, 90, 95], // Fix for quality warnings
-    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
+    qualities: [50, 75, 85, 90, 95], // Enhanced quality options for different use cases
+    minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year for better caching
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
     contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
@@ -115,12 +115,12 @@ const nextConfig: NextConfig = {
             key: "Content-Security-Policy",
             value: [
               "default-src 'self'",
-              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://checkout.stripe.com https://gate.gopay.cz",
+              "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://js.stripe.com https://checkout.stripe.com",
               "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com",
               "font-src 'self' https://fonts.gstatic.com",
               "img-src 'self' data: blob: https://*.supabase.co https://images.unsplash.com https://cdn.fredonbytes.com",
-              "connect-src 'self' https://*.supabase.co https://api.stripe.com https://checkout.stripe.com https://gate.gopay.cz wss://*.supabase.co",
-              "frame-src 'self' https://js.stripe.com https://checkout.stripe.com https://gate.gopay.cz",
+              "connect-src 'self' https://*.supabase.co https://api.stripe.com https://checkout.stripe.com wss://*.supabase.co",
+              "frame-src 'self' https://js.stripe.com https://checkout.stripe.com",
               "object-src 'none'",
               "base-uri 'self'",
               "form-action 'self'",
@@ -137,6 +137,26 @@ const nextConfig: NextConfig = {
           {
             key: "Server",
             value: "",
+          },
+        ],
+      },
+      // Enhanced caching headers for static assets
+      {
+        source: "/public/(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
+          },
+        ],
+      },
+      // Image optimization caching
+      {
+        source: "/_next/image(.*)",
+        headers: [
+          {
+            key: "Cache-Control",
+            value: "public, max-age=31536000, immutable",
           },
         ],
       },
@@ -218,6 +238,6 @@ const nextConfig: NextConfig = {
       // Add rewrites as needed
     ];
   },
-};
+};;
 
 export default withNextIntl(nextConfig);

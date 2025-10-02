@@ -180,7 +180,6 @@ export function ReviewStep({
               <span className="font-medium text-neutral-700">Způsob platby:</span>
               <span className="ml-2 text-neutral-900">
                 {paymentMethod === "stripe" && "Platební karta (Stripe)"}
-                {paymentMethod === "gopay" && "GoPay"}
               </span>
             </div>
           </div>

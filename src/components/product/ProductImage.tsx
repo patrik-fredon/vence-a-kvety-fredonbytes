@@ -1,0 +1,393 @@
+"use client";
+
+import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import Image from "next/image";
+import { cn } from "@/lib/utils";
+import type { ProductImage as ProductImageType } from "@/types/product";
+
+interface ProductImageProps {
+  /** Product image data from database */
+  image: ProductImageType;
+  /** Product name for fallback alt text */
+  productName: string;
+  /** Current locale for alt text */
+  locale: string;
+  /** Whether this image should be loaded with priority */
+  priority?: boolean;
+  /** Whether this image is above the fold (for automatic priority detection) */
+  isAboveFold?: boolean;
+  /** Custom sizes attribute for responsive images */
+  sizes?: string;
+  /** Additional CSS classes */
+  className?: string;
+  /** Image variant for optimization settings */
+  variant?: "product" | "thumbnail" | "hero" | "gallery";
+  /** Whether to fill the container */
+  fill?: boolean;
+  /** Fixed width (when not using fill) */
+  width?: number;
+  /** Fixed height (when not using fill) */
+  height?: number;
+  /** Loading behavior */
+  loading?: "lazy" | "eager";
+  /** Quality setting (1-100) */
+  quality?: number;
+  /** Callback when image loads successfully */
+  onLoad?: () => void;
+  /** Callback when image fails to load */
+  onError?: () => void;
+  /** Callback when loading starts */
+  onLoadStart?: () => void;
+  /** Whether to show loading spinner */
+  showLoadingSpinner?: boolean;
+  /** Whether to show error fallback */
+  showErrorFallback?: boolean;
+  /** Custom fallback image URL */
+  fallbackSrc?: string;
+  /** Enable preloading for critical images */
+  preload?: boolean;
+  /** Enable intersection observer for lazy loading optimization */
+  enableIntersectionObserver?: boolean;
+}
+
+// Generate optimized blur placeholder
+const generateBlurDataURL = (width: number = 8, height: number = 8): string => {
+  return `data:image/svg+xml;base64,${Buffer.from(
+    `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
+      <defs>
+        <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" style="stop-color:#f5f5f4;stop-opacity:1" />
+          <stop offset="100%" style="stop-color:#e7e5e4;stop-opacity:1" />
+        </linearGradient>
+      </defs>
+      <rect width="100%" height="100%" fill="url(#grad)" />
+    </svg>`
+  ).toString("base64")}`;
+};
+
+// Default fallback image (funeral-appropriate placeholder)
+const DEFAULT_FALLBACK_IMAGE = `data:image/svg+xml;base64,${Buffer.from(
+  `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
+    <defs>
+      <linearGradient id="fallback" x1="0%" y1="0%" x2="100%" y2="100%">
+        <stop offset="0%" style="stop-color:#f5f5f4;stop-opacity:1" />
+        <stop offset="100%" style="stop-color:#d6d3d1;stop-opacity:1" />
+      </linearGradient>
+    </defs>
+    <rect width="100%" height="100%" fill="url(#fallback)" />
+    <g transform="translate(150, 150)">
+      <circle cx="50" cy="50" r="40" fill="#a8a29e" opacity="0.3"/>
+      <path d="M30 40 L50 20 L70 40 L60 40 L60 70 L40 70 L40 40 Z" fill="#78716c" opacity="0.5"/>
+      <circle cx="45" cy="35" r="3" fill="#78716c" opacity="0.7"/>
+    </g>
+    <text x="200" y="350" text-anchor="middle" fill="#78716c" font-family="Arial, sans-serif" font-size="14" opacity="0.6">
+      Obrázek není dostupný
+    </text>
+  </svg>`
+).toString("base64")}`;
+
+// Optimized sizes configuration for different variants with responsive breakpoints
+const getSizesForVariant = (variant: ProductImageProps["variant"]): string => {
+  switch (variant) {
+    case "product":
+      // Optimized for product grid: mobile full width, tablet 2 columns, desktop 4-5 columns
+      return "(max-width: 480px) 100vw, (max-width: 640px) 50vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, (max-width: 1280px) 25vw, (max-width: 1536px) 20vw, 16vw";
+    case "thumbnail":
+      // Small thumbnails for lists and previews
+      return "(max-width: 480px) 20vw, (max-width: 640px) 15vw, (max-width: 1024px) 12vw, 10vw";
+    case "hero":
+      // Full viewport width for hero images
+      return "100vw";
+    case "gallery":
+      // Gallery images: mobile full, tablet/desktop large
+      return "(max-width: 640px) 100vw, (max-width: 1024px) 80vw, (max-width: 1280px) 70vw, 60vw";
+    default:
+      return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw";
+  }
+};
+
+// Quality settings based on variant for optimal file size vs quality balance
+const getQualityForVariant = (variant: ProductImageProps["variant"]): number => {
+  switch (variant) {
+    case "product":
+      return 85; // High quality for product images - balance between quality and file size
+    case "thumbnail":
+      return 75; // Medium quality for thumbnails - prioritize loading speed
+    case "hero":
+      return 90; // Highest quality for hero images - visual impact priority
+    case "gallery":
+      return 88; // High quality for gallery images - detailed viewing
+    default:
+      return 80; // Default balanced quality
+  }
+};
+
+// Determine if image should be loaded with priority based on position and variant
+const shouldUsePriority = (
+  priority: boolean | undefined,
+  variant: ProductImageProps["variant"],
+  isAboveFold?: boolean
+): boolean => {
+  // Explicit priority setting takes precedence
+  if (priority !== undefined) return priority;
+
+  // Hero images should always be priority
+  if (variant === "hero") return true;
+
+  // Above-the-fold product images should be priority
+  if (variant === "product" && isAboveFold) return true;
+
+  // Default to lazy loading
+  return false;
+};
+
+export function ProductImage({
+  image,
+  productName,
+  locale,
+  priority,
+  isAboveFold = false,
+  sizes,
+  className,
+  variant = "product",
+  fill = false,
+  width,
+  height,
+  loading = "lazy",
+  quality,
+  onLoad,
+  onError,
+  onLoadStart,
+  showLoadingSpinner = true,
+  showErrorFallback = true,
+  fallbackSrc,
+  preload = false,
+  enableIntersectionObserver = true,
+}: ProductImageProps) {
+  const [isLoading, setIsLoading] = useState(true);
+  const [hasError, setHasError] = useState(false);
+  const [loadStartTime, setLoadStartTime] = useState<number | null>(null);
+  const [isInView, setIsInView] = useState(!enableIntersectionObserver);
+  const imageRef = useRef<HTMLDivElement>(null);
+
+  // Enhanced Intersection Observer for optimized lazy loading
+  useEffect(() => {
+    if (!enableIntersectionObserver || !imageRef.current) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const [entry] = entries;
+        if (entry && entry.isIntersecting) {
+          setIsInView(true);
+          observer.disconnect();
+        }
+      },
+      {
+        rootMargin: '100px', // Increased margin for better UX
+        threshold: 0.1,
+      }
+    );
+
+    observer.observe(imageRef.current);
+
+    return () => observer.disconnect();
+  }, [enableIntersectionObserver]);
+
+  // Memoize optimized configuration
+  const optimizedSizes = useMemo(() => {
+    return sizes || getSizesForVariant(variant);
+  }, [sizes, variant]);
+
+  const optimizedQuality = useMemo(() => {
+    return quality || getQualityForVariant(variant);
+  }, [quality, variant]);
+
+  // Determine priority loading
+  const shouldLoadWithPriority = useMemo(() => {
+    return shouldUsePriority(priority, variant, isAboveFold);
+  }, [priority, variant, isAboveFold]);
+
+  // Determine loading strategy
+  const loadingStrategy = useMemo(() => {
+    if (shouldLoadWithPriority) return "eager";
+    return loading;
+  }, [shouldLoadWithPriority, loading]);
+
+  // Generate blur placeholder from image dimensions or defaults
+  const blurDataURL = useMemo(() => {
+    if (image.blurDataUrl) return image.blurDataUrl;
+    return generateBlurDataURL(image.width || 400, image.height || 400);
+  }, [image.blurDataUrl, image.width, image.height]);
+
+  // Determine alt text with proper fallbacks
+  const altText = useMemo(() => {
+    if (image.alt) return image.alt;
+    // Use locale for appropriate language
+    const fallbackText = locale === 'cs' ? 'produkt obrázek' : 'product image';
+    return `${productName} - ${fallbackText}`;
+  }, [image.alt, productName, locale]);
+
+  // Handle load start with performance tracking
+  const handleLoadStart = useCallback(() => {
+    const startTime = performance.now();
+    setLoadStartTime(startTime);
+    onLoadStart?.();
+  }, [onLoadStart]);
+
+  // Enhanced image load handler with performance monitoring
+  const handleLoad = useCallback(() => {
+    const loadEndTime = performance.now();
+    const loadDuration = loadStartTime ? loadEndTime - loadStartTime : 0;
+
+    setIsLoading(false);
+    setHasError(false);
+
+    // Enhanced performance monitoring
+    if (loadStartTime) {
+      // Log slow loading images for optimization
+      if (loadDuration > 1000) {
+        console.warn(`Slow image load detected: ${image.url} took ${loadDuration.toFixed(2)}ms`);
+      }
+
+      // Track Core Web Vitals impact
+      if (shouldLoadWithPriority && loadDuration > 2500) {
+        console.warn(`Critical image load exceeded LCP threshold: ${image.url} (${loadDuration.toFixed(2)}ms)`);
+      }
+    }
+
+    onLoad?.();
+  }, [onLoad, loadStartTime, image.url, shouldLoadWithPriority]);
+
+  // Enhanced error handler with fallback strategy
+  const handleError = useCallback(() => {
+    setIsLoading(false);
+    setHasError(true);
+
+    // Enhanced error logging for monitoring
+    console.error(`Failed to load product image: ${image.url}`, {
+      variant,
+      priority: shouldLoadWithPriority,
+      isAboveFold,
+      productName,
+    });
+
+    onError?.();
+  }, [onError, image.url, variant, shouldLoadWithPriority, isAboveFold, productName]);
+
+  // Determine final image source with fallback
+  const imageSrc = useMemo(() => {
+    if (hasError) {
+      return fallbackSrc || DEFAULT_FALLBACK_IMAGE;
+    }
+    return image.url;
+  }, [hasError, image.url, fallbackSrc]);
+
+  // Enhanced preloading for critical images with resource hints
+  useEffect(() => {
+    if (preload && shouldLoadWithPriority && image.url) {
+      const link = document.createElement('link');
+      link.rel = 'preload';
+      link.as = 'image';
+      link.href = image.url;
+
+      // Add fetchpriority for critical images
+      if (variant === 'hero' || isAboveFold) {
+        link.setAttribute('fetchpriority', 'high');
+      }
+
+      // Add responsive image attributes for better preloading
+      if (optimizedSizes) {
+        link.setAttribute('imagesizes', optimizedSizes);
+      }
+
+      document.head.appendChild(link);
+
+      return () => {
+        if (document.head.contains(link)) {
+          document.head.removeChild(link);
+        }
+      };
+    }
+    return undefined;
+  }, [preload, shouldLoadWithPriority, image.url, variant, isAboveFold, optimizedSizes]);
+
+  // Error fallback component
+  if (hasError && !showErrorFallback) {
+    return (
+      <div
+        className={cn(
+          "flex items-center justify-center bg-stone-100 text-stone-400",
+          fill ? "absolute inset-0" : "w-full h-full",
+          className
+        )}
+        role="img"
+        aria-label={locale === 'cs' ? `Obrázek produktu ${productName} se nepodařilo načíst` : `Failed to load image for ${productName}`}
+      >
+        <svg
+          className="w-8 h-8"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+          aria-hidden="true"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1.5}
+            d="m2.25 15.75 5.159-5.159a2.25 2.25 0 0 1 3.182 0l5.159 5.159m-1.5-1.5 1.409-1.409a2.25 2.25 0 0 1 3.182 0l2.909 2.909m-18 3.75h16.5a1.5 1.5 0 0 0 1.5-1.5V6a1.5 1.5 0 0 0-1.5-1.5H3.75A1.5 1.5 0 0 0 2.25 6v12a1.5 1.5 0 0 0 1.5 1.5Zm10.5-11.25h.008v.008h-.008V8.25Zm.375 0a.375.375 0 1 1-.75 0 .375.375 0 0 1 .75 0Z"
+          />
+        </svg>
+      </div>
+    );
+  }
+
+  return (
+    <div
+      ref={imageRef}
+      className={cn("relative", !fill && "w-full h-full")}
+    >
+      {/* Loading spinner */}
+      {isLoading && showLoadingSpinner && (
+        <div
+          className={cn(
+            "absolute inset-0 flex items-center justify-center bg-stone-50",
+            "animate-pulse"
+          )}
+        >
+          <div className="w-6 h-6 border-2 border-stone-300 border-t-stone-600 rounded-full animate-spin" />
+        </div>
+      )}
+
+      {/* Only render Image when in view or priority loading */}
+      {(isInView || shouldLoadWithPriority) && (
+        <Image
+          src={imageSrc}
+          alt={altText}
+          fill={fill}
+          {...(!fill && width && { width })}
+          {...(!fill && height && { height })}
+          sizes={optimizedSizes}
+          quality={optimizedQuality}
+          priority={shouldLoadWithPriority}
+          loading={loadingStrategy}
+          placeholder="blur"
+          blurDataURL={blurDataURL}
+          onLoadingComplete={handleLoad}
+          onError={handleError}
+          onLoadStart={handleLoadStart}
+          className={cn(
+            "object-cover transition-opacity duration-300",
+            isLoading ? "opacity-0" : "opacity-100",
+            className
+          )}
+          style={{
+            objectFit: "cover",
+            objectPosition: "center",
+          }}
+        />
+      )}
+    </div>
+  );
+};
+
+export default ProductImage;

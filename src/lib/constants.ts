@@ -63,7 +63,6 @@ export const ORDER_STATUS = {
 // Payment methods
 export const PAYMENT_METHODS = {
   STRIPE: "stripe",
-  GOPAY: "gopay",
 } as const;
 
 // Delivery options

@@ -141,16 +141,102 @@ export const getImageOptimizations = () => ({
   imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
   // Quality settings
   quality: {
-    hero: 90, // High quality for hero images
-    product: 80, // Good quality for product images
-    thumbnail: 70, // Lower quality for thumbnails
+    hero: 95, // Highest quality for hero images
+    product: 85, // High quality for product images
+    thumbnail: 75, // Good quality for thumbnails
+    fallback: 50, // Lower quality for fallback images
   },
   // Lazy loading configuration
   lazyLoading: {
-    rootMargin: "50px", // Start loading 50px before entering viewport
+    rootMargin: "100px", // Start loading 100px before entering viewport
     threshold: 0.1, // Trigger when 10% visible
   },
-});
+  // Preloading configuration for critical images
+  preloading: {
+    // Number of above-the-fold images to preload
+    aboveFoldCount: 4,
+    // Preload hero images immediately
+    heroImages: true,
+    // Preload first product grid row
+    firstProductRow: true,
+    // Use fetchpriority="high" for critical images
+    useFetchPriority: true,
+  },
+  // Caching configuration
+  caching: {
+    // Browser cache duration (1 year)
+    maxAge: 31536000,
+    // Use immutable cache for optimized images
+    immutable: true,
+    // Stale-while-revalidate for better UX
+    staleWhileRevalidate: 86400, // 1 day
+  },
+  // Responsive image sizes for different components
+  responsiveSizes: {
+    hero: "(min-width: 1200px) 1200px, (min-width: 768px) 100vw, 100vw",
+    productGrid: "(min-width: 1200px) 300px, (min-width: 768px) 50vw, 100vw",
+    productDetail: "(min-width: 1200px) 600px, (min-width: 768px) 80vw, 100vw",
+    thumbnail: "(min-width: 768px) 150px, 100px",
+  },
+});;
+/**
+ * Generate preload hints for critical images
+ */
+export const getCriticalImagePreloads = (images: Array<{ url: string; alt: string; priority?: boolean }>) => {
+  const config = getImageOptimizations();
+  
+  return images
+    .filter((_, index) => index < config.preloading.aboveFoldCount)
+    .map((image, index) => ({
+      rel: "preload" as const,
+      as: "image" as const,
+      href: image.url,
+      // Use fetchpriority for the first few images
+      fetchpriority: (index < 2 && config.preloading.useFetchPriority) ? "high" as const : undefined,
+      // Add responsive image hints
+      imagesrcset: generateResponsiveImageSrcSet(image.url),
+      imagesizes: config.responsiveSizes.productGrid,
+    }));
+};
+
+/**
+ * Generate responsive image srcset for preloading
+ */
+const generateResponsiveImageSrcSet = (baseUrl: string) => {
+  const config = getImageOptimizations();
+  return config.deviceSizes
+    .slice(0, 4) // Limit to first 4 sizes for preloading
+    .map(size => `${baseUrl}?w=${size}&q=${config.quality.product} ${size}w`)
+    .join(", ");
+};
+
+/**
+ * Preload critical images in the browser
+ */
+export const preloadCriticalImages = (images: Array<{ url: string; priority?: boolean }>) => {
+  if (typeof window === 'undefined') return;
+  
+  const config = getImageOptimizations();
+  const criticalImages = images.slice(0, config.preloading.aboveFoldCount);
+  
+  criticalImages.forEach((image, index) => {
+    const link = document.createElement('link');
+    link.rel = 'preload';
+    link.as = 'image';
+    link.href = image.url;
+    
+    // Add fetchpriority for critical images
+    if (index < 2 && config.preloading.useFetchPriority) {
+      link.setAttribute('fetchpriority', 'high');
+    }
+    
+    // Add responsive image attributes
+    link.setAttribute('imagesrcset', generateResponsiveImageSrcSet(image.url));
+    link.setAttribute('imagesizes', config.responsiveSizes.productGrid);
+    
+    document.head.appendChild(link);
+  });
+};
 
 /**
  * Performance monitoring configuration
