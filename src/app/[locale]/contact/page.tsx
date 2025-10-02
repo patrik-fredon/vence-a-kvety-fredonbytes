@@ -30,14 +30,16 @@ export default async function ContactPage({ params }: ContactPageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        <h1 className="text-center text-4xl font-semibold mb-12 text-teal-900">
-          {tContact("title")}
-        </h1>
+        <div className="bg-funeral-teal rounded-lg p-8 mb-12">
+          <h1 className="text-center text-4xl font-semibold text-amber-100">
+            {tContact("title")}
+          </h1>
+        </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Information - Compact Professional Card */}
           <div className="lg:col-span-1">
-            <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-6 h-fit">
+            <div className="bg-funeral-gold rounded-lg shadow-soft p-6 h-fit">
               <h2 className="text-elegant text-xl font-semibold text-teal-900 mb-4 border-b border-teal-100 pb-3">
                 {tContact("contactInfo")}
               </h2>
@@ -102,7 +104,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
           {/* Contact Form - Takes remaining space */}
           <div className="lg:col-span-2">
-            <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow-soft p-8">
+            <div className="bg-funeral-gold rounded-lg shadow-soft p-8">
               <h2 className="text-elegant text-2xl font-semibold text-teal-900 mb-6">
                 {tContact("contactForm")}
               </h2>

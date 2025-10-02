@@ -113,6 +113,7 @@ export type CheckoutStep = "customer" | "delivery" | "payment" | "review";
 // Checkout state management
 export interface CheckoutState {
   currentStep: CheckoutStep;
+  completedSteps: Set<CheckoutStep>;
   formData: CheckoutFormData;
   isSubmitting: boolean;
   errors: CheckoutValidationErrors;

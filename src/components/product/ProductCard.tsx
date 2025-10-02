@@ -137,7 +137,7 @@ export function ProductCard({
       <>
         <article
           className={cn(
-            "group bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] clip-corners overflow-hidden transition-all duration-300 shadow-lg relative",
+            "group bg-funeral-gold clip-corners overflow-hidden transition-all duration-300 shadow-lg relative",
             "hover:shadow-lg rounded-lg flex flex-row items-center gap-4 p-4 cursor-pointer",
             className
           )}
@@ -148,7 +148,7 @@ export function ProductCard({
         >
           {/* Product Image */}
           <div
-            className="relative overflow-hidden bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md cursor-pointer"
+            className="relative overflow-hidden bg-funeral-gold w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md cursor-pointer"
             onClick={handleImageClick}
           >
             {primaryImage && (

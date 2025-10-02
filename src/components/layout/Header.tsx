@@ -58,7 +58,7 @@ export function Header({ locale }: HeaderProps) {
   return (
     <>
       <header
-        className="border-b border-stone-200 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] sticky top-0 z-40 shadow-sm"
+        className="border-b border-stone-200 bg-funeral-gold sticky top-0 z-40 shadow-sm"
         role="banner"
       >
         {/* Container with max-width and centered content */}

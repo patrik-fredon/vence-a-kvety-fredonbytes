@@ -9,7 +9,7 @@ const ProductImageGallery = dynamic(
   () => import("./ProductImageGallery").then((mod) => ({ default: mod.ProductImageGallery })),
   {
     loading: () => (
-      <div className="aspect-square bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg flex items-center justify-center">
+      <div className="aspect-square bg-funeral-gold rounded-lg flex items-center justify-center">
         <LoadingSpinner size="lg" />
       </div>
     ),

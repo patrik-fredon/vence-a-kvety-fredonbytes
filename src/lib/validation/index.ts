@@ -46,6 +46,22 @@ export {
   sanitizeDeliveryInfo
 } from './checkout';
 
+// Step-specific checkout validation
+export {
+  STEP_FIELDS,
+  validateCustomerStep,
+  validateDeliveryStep,
+  validatePaymentStep,
+  validateReviewStep,
+  stepValidationSchema,
+  hasStepValidationErrors,
+  formatStepValidationErrors
+} from './checkout-steps';
+
+export type {
+  StepValidationSchema
+} from './checkout-steps';
+
 // API validation
 export {
   validateCartItemData,

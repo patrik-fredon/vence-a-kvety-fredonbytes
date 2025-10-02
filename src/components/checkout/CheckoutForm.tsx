@@ -120,10 +120,20 @@ export function CheckoutForm({
 
       // Validate current step before proceeding
       if (nextStep && validateCurrentStep()) {
+        // Mark current step as completed
+        setState((prev) => {
+          const newCompletedSteps = new Set(prev.completedSteps);
+          newCompletedSteps.add(prev.currentStep);
+          return {
+            ...prev,
+            completedSteps: newCompletedSteps,
+          };
+        });
+        
         goToStep(nextStep);
       }
     }
-  };
+  };;
 
   const goToPreviousStep = () => {
     const currentIndex = STEPS.indexOf(state.currentStep);
@@ -137,50 +147,33 @@ export function CheckoutForm({
 
   // Validate current step
   const validateCurrentStep = (): boolean => {
-    const { customerInfo, deliveryInfo, agreeToTerms } = state.formData;
+    // Import step validation functions
+    const {
+      stepValidationSchema,
+      hasStepValidationErrors,
+    } = require("@/lib/validation/checkout-steps");
 
-    switch (state.currentStep) {
-      case "customer": {
-        const customerErrors = validateCheckoutForm(customerInfo, {}, false);
-        if (hasValidationErrors(customerErrors)) {
-          setState((prev) => ({ ...prev, errors: customerErrors }));
-          return false;
-        }
-        break;
-      }
+    // Get the appropriate validator for the current step
+    const validator = stepValidationSchema[state.currentStep];
 
-      case "delivery": {
-        const deliveryErrors = validateCheckoutForm({}, deliveryInfo, false);
-        if (hasValidationErrors(deliveryErrors)) {
-          setState((prev) => ({ ...prev, errors: deliveryErrors }));
-          return false;
-        }
-        break;
-      }
-
-      case "payment":
-        if (!state.formData.paymentMethod) {
-          setState((prev) => ({
-            ...prev,
-            errors: { general: ["Vyberte způsob platby"] },
-          }));
-          return false;
-        }
-        break;
-
-      case "review": {
-        const allErrors = validateCheckoutForm(customerInfo, deliveryInfo, agreeToTerms);
-        if (hasValidationErrors(allErrors)) {
-          setState((prev) => ({ ...prev, errors: allErrors }));
-          return false;
-        }
-        break;
-      }
+    if (!validator) {
+      console.error(`No validator found for step: ${state.currentStep}`);
+      return false;
     }
 
+    // Validate only the current step using step-specific validator
+    const stepErrors = validator(state.formData);
+
+    // Check if there are any validation errors
+    if (hasStepValidationErrors(stepErrors)) {
+      setState((prev) => ({ ...prev, errors: stepErrors }));
+      return false;
+    }
+
+    // Clear errors if validation passes
     setState((prev) => ({ ...prev, errors: {} }));
     return true;
-  };
+  };;
 
   // Update form data
   const updateFormData = (updates: Partial<CheckoutFormData>) => {

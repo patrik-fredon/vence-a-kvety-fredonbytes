@@ -301,7 +301,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           <div className="grid grid-cols-2 grid-rows-3 gap-2 h-full">
             {/* Main large image - spans 2 rows */}
             {product.images && product.images[0] && (
-              <div className="col-span-2 row-span-2 relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)]">
+              <div className="col-span-2 row-span-2 relative overflow-hidden rounded-lg bg-funeral-gold">
                 <Image
                   src={product.images[0].url}
                   alt={product.images[0].alt || product.name[locale as keyof typeof product.name]}
@@ -315,7 +315,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
             {/* Secondary images - smaller grid items */}
             {product.images && product.images.slice(1, 4).map((image, index) => (
-              <div key={image.id || index} className="relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] aspect-square">
+              <div key={image.id || index} className="relative overflow-hidden rounded-lg bg-funeral-gold aspect-square">
                 <Image
                   src={image.url}
                   alt={image.alt || product.name[locale as keyof typeof product.name]}
@@ -328,7 +328,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
             {/* If we have more than 4 images, show a "more" indicator on the last visible image */}
             {product.images && product.images.length > 4 && (
-              <div className="relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] aspect-square">
+              <div className="relative overflow-hidden rounded-lg bg-funeral-gold aspect-square">
                 <Image
                   src={product.images[4]?.url || product.images[1]?.url || product.images[0]?.url || "/placeholder-image.jpg"}
                   alt={product.images[4]?.alt || product.name[locale as keyof typeof product.name]}
@@ -448,7 +448,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                         variant="outline"
                         size="sm"
                         onClick={handleRetryValidation}
-                        className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
+                        className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
                       >
                         {WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES].tryAgain}
                       </Button>
@@ -458,7 +458,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => handleErrorRecovery('size')}
-                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
                         >
                           Auto-select Size
                         </Button>
@@ -469,7 +469,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => handleErrorRecovery('ribbon')}
-                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
                         >
                           Remove Ribbon
                         </Button>
@@ -480,7 +480,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => setValidationWarnings([])}
-                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-amber-300 text-amber-700 hover:bg-amber-50"
+                          className="text-xs bg-funeral-gold border-amber-300 text-amber-700 hover:bg-amber-50"
                         >
                           Dismiss Warnings
                         </Button>
@@ -498,7 +498,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardContent className="py-4">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <div className="w-2 h-2 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-full" />
+                    <div className="w-2 h-2 bg-funeral-gold rounded-full" />
                   </div>
                   <div className="flex-1 space-y-3">
                     <h4 className="text-sm font-medium text-teal-800">

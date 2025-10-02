@@ -56,7 +56,7 @@ export default function DeliveryDemoPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] py-8">
+    <div className="min-h-screen bg-funeral-gold py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold text-teal-900">Delivery Calendar & Scheduling Demo</h1>
@@ -70,7 +70,7 @@ export default function DeliveryDemoPage() {
           {/* Left Column - Address and Options */}
           <div className="space-y-6">
             {/* Address Form */}
-            <div className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg shadow p-6">
+            <div className="bg-funeral-gold rounded-lg shadow p-6">
               <h2 className="text-xl font-semibold text-teal-900 mb-4">Delivery Address</h2>
 
               <div className="space-y-4">

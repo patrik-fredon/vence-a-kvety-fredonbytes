@@ -204,9 +204,11 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
       {collectionPageStructuredData && <StructuredData data={collectionPageStructuredData} />}
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
-        <div className="m-8  text-center justify-center">
-          <h2 className="text-elegant text-4xl font-semibold  mb-4">{t("title")}</h2>
-          <p className="text-lg text-neutral-600">{t("pageDescription")}</p>
+        <div className="m-8 text-center justify-center">
+          <div className="bg-funeral-teal rounded-lg p-8 mb-8">
+            <h2 className="text-elegant text-4xl font-semibold mb-4 text-amber-100">{t("title")}</h2>
+            <p className="text-lg text-amber-200">{t("pageDescription")}</p>
+          </div>
         </div>
 
         {/* Product Grid with Filters */}

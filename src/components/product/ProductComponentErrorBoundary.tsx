@@ -90,7 +90,7 @@ export function ProductErrorFallback({
 }: ProductErrorFallbackProps) {
   return (
     <div
-      className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border border-stone-200 rounded-lg p-6 text-center"
+      className="bg-funeral-gold border border-stone-200 rounded-lg p-6 text-center"
       role="alert"
       aria-live="polite"
     >
@@ -118,7 +118,7 @@ export function ProductErrorFallback({
       {onRetry && (
         <button
           onClick={onRetry}
-          className="inline-flex items-center justify-center space-x-2 px-4 py-2 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] hover:bg-stone-700 text-amber-100 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2"
+          className="inline-flex items-center justify-center space-x-2 px-4 py-2 bg-funeral-gold hover:bg-stone-700 text-amber-100 rounded-lg font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2"
           aria-label="Zkusit znovu načíst komponentu"
         >
           <ArrowPathIcon className="w-4 h-4" />
@@ -131,7 +131,7 @@ export function ProductErrorFallback({
           <summary className="cursor-pointer text-sm text-stone-500 hover:text-stone-700">
             Zobrazit technické detaily
           </summary>
-          <pre className="mt-2 p-3 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded text-xs text-teal-900 overflow-auto max-h-32">
+          <pre className="mt-2 p-3 bg-funeral-gold rounded text-xs text-teal-900 overflow-auto max-h-32">
             {error.stack}
           </pre>
         </details>
@@ -150,7 +150,7 @@ export function ProductCardErrorFallback({
 }: ProductErrorFallbackProps) {
   return (
     <div
-      className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border border-stone-200 rounded-lg p-4 h-96 flex flex-col items-center justify-center text-center"
+      className="bg-funeral-gold border border-stone-200 rounded-lg p-4 h-96 flex flex-col items-center justify-center text-center"
       role="alert"
       aria-live="polite"
     >
@@ -169,7 +169,7 @@ export function ProductCardErrorFallback({
       {onRetry && (
         <button
           onClick={onRetry}
-          className="inline-flex items-center justify-center space-x-1 px-3 py-1.5 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] hover:bg-stone-700 text-amber-100 text-xs rounded font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2"
+          className="inline-flex items-center justify-center space-x-1 px-3 py-1.5 bg-funeral-gold hover:bg-stone-700 text-amber-100 text-xs rounded font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2"
           aria-label="Zkusit znovu načíst produkt"
         >
           <ArrowPathIcon className="w-3 h-3" />
@@ -190,7 +190,7 @@ export function ProductFiltersErrorFallback({
 }: ProductErrorFallbackProps) {
   return (
     <div
-      className="bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border border-stone-200 rounded-lg p-4 text-center"
+      className="bg-funeral-gold border border-stone-200 rounded-lg p-4 text-center"
       role="alert"
       aria-live="polite"
     >
@@ -208,7 +208,7 @@ export function ProductFiltersErrorFallback({
       {onRetry && (
         <button
           onClick={onRetry}
-          className="inline-flex items-center justify-center space-x-1 px-3 py-1.5 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] hover:bg-teal-700 text-amber-100 text-xs rounded font-medium"
+          className="inline-flex items-center justify-center space-x-1 px-3 py-1.5 bg-funeral-gold hover:bg-teal-700 text-amber-100 text-xs rounded font-medium"
           aria-label="Zkusit znovu načíst filtry"
         >
           <ArrowPathIcon className="w-3 h-3" />

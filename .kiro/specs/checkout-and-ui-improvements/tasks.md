@@ -7,12 +7,12 @@
   - _Requirements: 7.4, 7.6_
 
 - [ ] 2. Apply global background gradient
-  - [-] 2.1 Update root layout to apply bg-funeral-gold globally
+  - [x] 2.1 Update root layout to apply bg-funeral-gold globally
     - Modify src/app/[locale]/layout.tsx to add bg-funeral-gold to body element
     - Verify gradient applies to all pages
     - _Requirements: 7.1_
 
-  - [ ] 2.2 Add Teal background overrides for Hero and page headers
+  - [x] 2.2 Add Teal background overrides for Hero and page headers
     - Update HeroSection component with bg-funeral-teal class
     - Update Checkout page header with bg-funeral-teal
     - Update Contact page header with bg-funeral-teal
@@ -20,14 +20,14 @@
     - Update About page header with bg-funeral-teal
     - _Requirements: 7.2, 7.3_
 
-  - [ ] 2.3 Remove inline gradient styles throughout codebase
+  - [x] 2.3 Remove inline gradient styles throughout codebase
     - Search for inline bg-[linear-gradient...] usage
     - Replace with centralized gradient classes
     - Verify no visual regressions
     - _Requirements: 7.7_
 
 - [ ] 3. Implement step-based checkout form validation
-  - [ ] 3.1 Create step-specific validation schemas
+  - [x] 3.1 Create step-specific validation schemas
     - Define STEP_FIELDS constant with field mappings per step
     - Create StepValidationSchema type definition
     - Implement validateCustomerStep function
@@ -36,7 +36,7 @@
     - Implement validateReviewStep function
     - _Requirements: 1.1, 1.2_
 
-  - [ ] 3.2 Refactor validateCurrentStep function
+  - [-] 3.2 Refactor validateCurrentStep function
     - Update validateCurrentStep to use step-specific validators
     - Remove validation of fields not in current step
     - Add step completion tracking

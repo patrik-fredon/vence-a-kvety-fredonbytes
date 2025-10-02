@@ -207,7 +207,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
               {openDropdown === "products" && (
                 <div
                   id="products-dropdown"
-                  className="absolute top-full left-0 mt-1 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border border-stone-200 rounded-lg shadow-lg min-w-[280px] animate-scale-in z-50"
+                  className="absolute top-full left-0 mt-1 bg-funeral-gold border border-stone-200 rounded-lg shadow-lg min-w-[280px] animate-scale-in z-50"
                   onMouseLeave={() => setOpenDropdown(null)}
                   role="menu"
                   aria-labelledby="products-button"
