@@ -110,6 +110,11 @@ const config: Config = {
           "50%": { boxShadow: "0 0 20px rgba(45, 80, 22, 0.6)" },
         },
       },
+      backgroundImage: {
+        // Centralized gradient system for consistent branding
+        "funeral-gold": "linear-gradient(to right, #AE8625, #F7EF8A, #D2AC47)",
+        "funeral-teal": "linear-gradient(to right, #0f766e, #14b8a6, #0d9488)",
+      },
     },
   },
   plugins: [],

@@ -1,212 +1,129 @@
 ---
+
 inclusion: always
 ---
 
-# Multi-MCP Development Guidelines
+Development Guidelines
 
-This document defines workflows and conventions for using multiple MCP servers effectively in this Next.js e-commerce project.
+## MCP Tool Workflow
 
-## Available MCP Tools
+> **ALWAY** before task execution, check if the project is initialized and onboarded, on every approach use `sequentialthinking-tools` - Ask what MCP tool to use
 
-- **Serena**: Semantic code analysis, safe editing, and project memory
-- **Context7**: Library documentation and API references
-- **SequentialThinking**: Structured problem-solving and tool orchestration
-- **Chrome DevTools**: Browser automation, debugging, and performance testing
-- **Magic UI**: Component generation and UI design patterns
+### Initialization (Required)
 
-## Core Workflow Principles
+1. `activate_project` - Initialize Serena context
+2. `check_onboarding_performed` - Verify setup
+3. `read_memory` - Load relevant project insights
 
-### 1. Task Planning (Required First Step)
+### Code Analysis
 
-Always start complex tasks with `sequentialthinking_tools` to:
+- `find_symbol` - Locate functions, classes, components
+- `find_referencing_symbols` - Check dependencies before changes
+- `get_symbols_overview` - Understand file structure
 
-- Analyze available tools and their capabilities
-- Generate a structured approach with confidence scores
-- Identify the optimal tool sequence for the task
+### Code Modifications (Serena Only)
 
-### 2. Project Context (Required Second Step)
+- Use `replace_symbol_body`, `insert_after_symbol`, `insert_before_symbol`
+- Never mix with direct file operations (fsWrite, strReplace)
+- Always analyze before modifying
 
-Use Serena to establish codebase understanding:
+### Documentation & Memory
 
-- `activate_project` - Initialize project context
-- `check_onboarding_performed` - Verify project setup
-- `get_symbols_overview` - Understand code structure
-- `read_memory` - Access previous insights
+- `write_memory` after completing significant work
+- Use Context7 for library docs: `resolve_library_id` → `get_library_docs`
 
-## Serena MCP - Semantic Code Operations
+## Architecture Patterns
 
-### Required Initialization Sequence
+### Next.js 15 App Router
 
-1. `activate_project` - Initialize project context
-2. `check_onboarding_performed` - Verify project setup status
-3. `get_symbols_overview` - Map codebase structure
-4. `read_memory` - Load previous project insights
+- Server Components by default, Client Components only when needed
+- Route structure: `src/app/[locale]/[feature]/page.tsx`
+- API routes: `src/app/api/[endpoint]/route.ts`
+- Use `generateMetadata` for SEO
 
-### Code Analysis Before Changes
+### Component Organization
 
-- Use `find_symbol` to locate target code elements
-- Use `find_referencing_symbols` to understand dependencies
-- Use `search_for_pattern` for broader code searches
+- Atomic design: `src/components/[category]/[Component].tsx`
+- Export from index files for clean imports
+- Lazy load heavy components (galleries, configurators)
+- Use error boundaries for product features
 
-### Safe Code Modifications
+### TypeScript Standards
 
-Use only semantic editing tools:
+- Strict mode enabled
+- Define types in `src/types/[domain].ts`
+- Use type guards from `src/lib/validation/type-guards.ts`
+- No `any` types - use `unknown` and narrow
 
-- `replace_symbol_body` - Replace function/class implementations
-- `insert_after_symbol` / `insert_before_symbol` - Add new code
-- Never mix with direct file operations
+### Styling Conventions
 
-### Memory Management
+- TailwindCSS utility-first approach
+- Stone/Amber palette for funeral aesthetics
+- Mobile-first responsive design
+- Design tokens in `src/lib/design-tokens.ts`
 
-- `write_memory` after completing significant tasks
-- `read_memory` to maintain context across sessions
-- Store architectural decisions and patterns discovered
+## Data & State Management
 
-## SequentialThinking MCP - Task Planning
+### Supabase Patterns
 
-### Mandatory First Step
+- Use server-side client from `src/lib/supabase/server.ts`
+- Client-side from `src/lib/supabase/client.ts`
+- Types from `src/lib/supabase/database.types.ts`
+- Always implement RLS policies
 
-For complex tasks, always start with `sequentialthinking_tools`:
+### Caching Strategy
 
-- Analyzes available MCP tools and capabilities
-- Returns prioritized tool recommendations with confidence scores
-- Provides structured approach and execution order
+- Redis (Upstash) for API responses and sessions
+- Cache utilities in `src/lib/cache/`
+- Product cache: 5min, Cart: 1min, Delivery: 15min
 
-### Required Parameters
+### State Management
 
-```json
-{
-  "available_mcp_tools": ["mcp_serena", "mcp_Context7", "mcp_chrome_devtools", "mcp_magicuidesignmcp"],
-  "thought": "Current analysis or planning step",
-  "next_thought_needed": true,
-  "thought_number": 1,
-  "total_thoughts": 3
-}
-```
+- Server state via React Server Components
+- Client state via Context API (cart, auth, i18n)
+- Form state with controlled components
 
-### When to Use
+## Code Quality Rules
 
-- Multi-step feature implementations
-- Complex debugging scenarios
-- Architecture decisions
-- Cross-component integrations
+### Error Handling
 
-## Context7 MCP - Library Documentation
+- Use error boundaries for UI components
+- API routes return structured errors with status codes
+- Log errors via `src/lib/monitoring/error-logger.ts`
+- Validate inputs with Zod schemas
 
-### Documentation Retrieval Process
+### Performance
 
-1. `resolve_library_id` - Convert library name to Context7 ID
-2. `get_library_docs` - Fetch relevant documentation
-   - Set `tokens: 3000-5000` for complex tasks
-   - Use `topic` parameter for focused retrieval
+- Optimize images with Next.js Image component
+- Lazy load non-critical components
+- Monitor Core Web Vitals
+- Use `loading.tsx` and `error.tsx` conventions
 
-### Common Library Mappings
+### Internationalization
 
-- Next.js: `/vercel/next.js`
-- React: `/facebook/react`
-- Tailwind CSS: `/tailwindlabs/tailwindcss`
-- Stripe: `/stripe/stripe-node`
+- Use `next-intl` for translations
+- Messages in `messages/[locale].json`
+- Format currency/dates with locale utilities
+- Route-based localization: `/cs/` and `/en/`
 
-### Integration Points
+### Security
 
-- Before implementing new library features
-- When debugging library-specific issues
-- For API reference during development
+- CSRF protection on mutations
+- Rate limiting on API routes
+- Input validation on all endpoints
+- Sanitize user content
 
-## Chrome DevTools MCP - Browser Testing
-
-### Available Tool Categories
-
-- **Navigation**: `navigate_page`, `new_page`, `select_page`, `wait_for`
-- **Interaction**: `click`, `fill`, `fill_form`, `hover`, `drag`
-- **Debugging**: `take_screenshot`, `take_snapshot`, `list_console_messages`
-- **Performance**: `performance_start_trace`, `performance_stop_trace`
-- **Network**: `list_network_requests`, `get_network_request`
-
-### Common Testing Workflows
-
-**Performance Testing**
-
-1. `performance_start_trace`
-2. Execute user scenario (`navigate_page`, `click`, `fill`)
-3. `performance_stop_trace`
-4. `performance_analyze_insight`
-
-**Debugging Issues**
-
-1. `navigate_page` to problem area
-2. `list_console_messages` and `evaluate_script`
-3. `take_screenshot` or `take_snapshot` for visual context
-4. `list_network_requests` for API issues
-
-**Form Testing**
-
-1. `fill` or `fill_form` with test data
-2. `handle_dialog` for confirmations
-3. `wait_for` expected results
-
-## Magic UI MCP - Component Generation
-
-### Available Functions
-
-- `getUIComponents` - Generate responsive UI components
-- `getButtons` - Create interactive button designs
-- `getAnimations` - Add motion and transitions
-- `getBackgrounds` - Generate background patterns
-- `getSpecialEffects` - Add visual enhancements
-- `getTextAnimations` - Animate text elements
-
-### Integration Workflow
-
-1. Generate components with Magic UI
-2. Integrate safely using Serena semantic tools
-3. Validate with Chrome DevTools testing
-4. Store patterns in Serena memory
-
-## Project-Specific Conventions
-
-### Next.js E-commerce Architecture
-
-- Use App Router for all new routes
-- Implement server components by default, client components when needed
-- Follow the established folder structure in `src/app`
-- Use TypeScript strictly with proper type definitions
-
-### Code Style Standards
-
-- Use Tailwind CSS for styling
-- Implement responsive design mobile-first
-- Follow established component patterns in `src/components`
-- Use proper error handling and validation
-
-### Database & API Patterns
-
-- Use Supabase for data persistence
-- Implement proper RLS policies
-- Follow RESTful API conventions in route handlers
-- Use proper TypeScript types from `src/server/types.ts`
-
-### Testing Guidelines
+## Testing Guidelines
 
 - Do not auto-generate tests unless explicitly requested
-- Use Chrome DevTools MCP for user journey validation
-- Prefer `data-*` attributes for stable element selection
-- Focus on critical user flows over unit test coverage
+- Use `data-testid` for stable selectors
+- Focus on critical user flows (checkout, cart, auth)
 
-## Development Workflow
+## Common Pitfalls to Avoid
 
-### Standard Task Sequence
-
-1. **Plan** - Use SequentialThinking for complex tasks
-2. **Context** - Initialize Serena and read project memory
-3. **Research** - Get library docs from Context7 if needed
-4. **Implement** - Use Serena semantic tools for code changes
-5. **Validate** - Test with Chrome DevTools MCP
-6. **Document** - Store insights in Serena memory
-
-### Quality Standards
-
-- All code changes through Serena semantic tools only
-- Consistent documentation integration from Context7
-- Reproducible workflows validated with browser testing
-- Knowledge preservation through memory management
+- Don't use Client Components unnecessarily
+- Don't bypass Serena for code modifications
+- Don't skip type definitions
+- Don't ignore RLS policies
+- Don't forget mobile responsiveness
+- Don't mix caching strategies

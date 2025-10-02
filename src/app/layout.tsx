@@ -59,7 +59,7 @@ export default function RootLayout({
   return (
     <html className="scroll-smooth">
       <body
-        className={`${inter.variable} ${playfairDisplay.variable} font-sans antialiased bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-neutral-900`}
+        className={`${inter.variable} ${playfairDisplay.variable} font-sans antialiased bg-funeral-gold text-neutral-900`}
       >
         {children}
       </body>
