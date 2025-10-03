@@ -17,7 +17,7 @@ This implementation plan breaks down the session debugging improvements into dis
 
 - [ ] 2. Refactor ProductDetail Image Layout
 
-  - [ ] 2.1 Create ProductDetailImageGrid component
+  - [x] 2.1 Create ProductDetailImageGrid component
 
     - Create new component in `src/components/product/ProductDetailImageGrid.tsx`
     - Implement CSS Grid layout with responsive columns (2 cols desktop, 1 col mobile)
@@ -26,7 +26,7 @@ This implementation plan breaks down the session debugging improvements into dis
     - Implement lazy loading for images after the first
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.6_
 
-  - [ ] 2.2 Integrate ProductDetailImageGrid into ProductDetail page
+  - [x] 2.2 Integrate ProductDetailImageGrid into ProductDetail page
     - Update `src/app/[locale]/products/[slug]/page.tsx` to use new component
     - Pass all product images from Supabase to the grid component
     - Ensure left column layout with proper spacing

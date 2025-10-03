@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { useCallback, useState, useMemo, useRef } from "react";
 import { LazyProductCustomizer } from "@/components/dynamic";
@@ -22,6 +21,7 @@ import { ProductInfo } from "./ProductInfo";
 import { PriceBreakdown } from "./PriceBreakdown";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 import { SizeSelector } from "./SizeSelector";
+import { ProductDetailImageGrid } from "./ProductDetailImageGrid";
 
 interface ProductDetailProps {
   product: Product;
@@ -339,72 +339,12 @@ export function ProductDetail({
   return (
     <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", className)}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        {/* Left Column - Optimized 12-Column Grid Image Layout */}
-        <div className="h-full max-h-[700px]" ref={productImageRef}>
-          <div className="grid grid-cols-12 gap-2 h-full max-h-[700px]">
-            {/* Main large image - col-span-7 row-span-2 */}
-            {product.images && product.images[0] && (
-              <div className="col-span-12 md:col-span-7 row-span-2 relative overflow-hidden rounded-lg bg-funeral-gold aspect-[4/5] md:aspect-auto">
-                <Image
-                  src={product.images[0].url}
-                  alt={
-                    product.images[0].alt ||
-                    product.name[locale as keyof typeof product.name]
-                  }
-                  fill
-                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
-                  className="object-cover"
-                  priority
-                />
-              </div>
-            )}
-
-            {/* Secondary images - col-span-5 each */}
-            {product.images &&
-              product.images.slice(1, 5).map((image, index) => (
-                <div
-                  key={image.id || index}
-                  className="col-span-6 md:col-span-5 relative overflow-hidden rounded-lg bg-funeral-gold aspect-square"
-                >
-                  <Image
-                    src={image.url}
-                    alt={
-                      image.alt ||
-                      product.name[locale as keyof typeof product.name]
-                    }
-                    fill
-                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-
-            {/* If we have more than 5 images, show a "more" indicator on the last visible image */}
-            {product.images && product.images.length > 5 && (
-              <div className="col-span-6 md:col-span-5 relative overflow-hidden rounded-lg bg-funeral-gold aspect-square">
-                <Image
-                  src={
-                    product.images[4]?.url ||
-                    product.images[1]?.url ||
-                    product.images[0]?.url ||
-                    "/placeholder-image.jpg"
-                  }
-                  alt={
-                    product.images[4]?.alt ||
-                    product.name[locale as keyof typeof product.name]
-                  }
-                  fill
-                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
-                  className="object-cover"
-                />
-                <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                  <span className="text-amber-100 font-semibold text-lg">
-                    +{product.images.length - 5}
-                  </span>
-                </div>
-              </div>
-            )}
-          </div>
+        {/* Left Column - Product Images */}
+        <div ref={productImageRef}>
+          <ProductDetailImageGrid
+            images={product.images || []}
+            productName={product.name[locale as keyof typeof product.name]}
+          />
         </div>
 
         {/* Right Column - Product Info and Actions */}

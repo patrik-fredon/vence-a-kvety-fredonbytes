@@ -1,6 +1,12 @@
 "use client";
 
-import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
+import React, {
+  useState,
+  useCallback,
+  useMemo,
+  useRef,
+  useEffect,
+} from "react";
 import Image from "next/image";
 import { cn } from "@/lib/utils";
 import type { ProductImage as ProductImageType } from "@/types/product";
@@ -107,12 +113,14 @@ const getSizesForVariant = (variant: ProductImageProps["variant"]): string => {
 };
 
 // Quality settings based on variant for optimal file size vs quality balance
-const getQualityForVariant = (variant: ProductImageProps["variant"]): number => {
+const getQualityForVariant = (
+  variant: ProductImageProps["variant"]
+): number => {
   switch (variant) {
     case "product":
       return 85; // High quality for product images - balance between quality and file size
     case "thumbnail":
-      return 75; // Medium quality for thumbnails - prioritize loading speed
+      return 70; // Medium quality for thumbnails - prioritize loading speed
     case "hero":
       return 90; // Highest quality for hero images - visual impact priority
     case "gallery":
@@ -183,7 +191,7 @@ export function ProductImage({
         }
       },
       {
-        rootMargin: '100px', // Increased margin for better UX
+        rootMargin: "100px", // Increased margin for better UX
         threshold: 0.1,
       }
     );
@@ -223,7 +231,7 @@ export function ProductImage({
   const altText = useMemo(() => {
     if (image.alt) return image.alt;
     // Use locale for appropriate language
-    const fallbackText = locale === 'cs' ? 'produkt obrázek' : 'product image';
+    const fallbackText = locale === "cs" ? "produkt obrázek" : "product image";
     return `${productName} - ${fallbackText}`;
   }, [image.alt, productName, locale]);
 
@@ -246,12 +254,20 @@ export function ProductImage({
     if (loadStartTime) {
       // Log slow loading images for optimization
       if (loadDuration > 1000) {
-        console.warn(`Slow image load detected: ${image.url} took ${loadDuration.toFixed(2)}ms`);
+        console.warn(
+          `Slow image load detected: ${image.url} took ${loadDuration.toFixed(
+            2
+          )}ms`
+        );
       }
 
       // Track Core Web Vitals impact
       if (shouldLoadWithPriority && loadDuration > 2500) {
-        console.warn(`Critical image load exceeded LCP threshold: ${image.url} (${loadDuration.toFixed(2)}ms)`);
+        console.warn(
+          `Critical image load exceeded LCP threshold: ${
+            image.url
+          } (${loadDuration.toFixed(2)}ms)`
+        );
       }
     }
 
@@ -272,7 +288,14 @@ export function ProductImage({
     });
 
     onError?.();
-  }, [onError, image.url, variant, shouldLoadWithPriority, isAboveFold, productName]);
+  }, [
+    onError,
+    image.url,
+    variant,
+    shouldLoadWithPriority,
+    isAboveFold,
+    productName,
+  ]);
 
   // Determine final image source with fallback
   const imageSrc = useMemo(() => {
@@ -285,19 +308,19 @@ export function ProductImage({
   // Enhanced preloading for critical images with resource hints
   useEffect(() => {
     if (preload && shouldLoadWithPriority && image.url) {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
       link.href = image.url;
 
       // Add fetchpriority for critical images
-      if (variant === 'hero' || isAboveFold) {
-        link.setAttribute('fetchpriority', 'high');
+      if (variant === "hero" || isAboveFold) {
+        link.setAttribute("fetchpriority", "high");
       }
 
       // Add responsive image attributes for better preloading
       if (optimizedSizes) {
-        link.setAttribute('imagesizes', optimizedSizes);
+        link.setAttribute("imagesizes", optimizedSizes);
       }
 
       document.head.appendChild(link);
@@ -309,7 +332,14 @@ export function ProductImage({
       };
     }
     return undefined;
-  }, [preload, shouldLoadWithPriority, image.url, variant, isAboveFold, optimizedSizes]);
+  }, [
+    preload,
+    shouldLoadWithPriority,
+    image.url,
+    variant,
+    isAboveFold,
+    optimizedSizes,
+  ]);
 
   // Error fallback component
   if (hasError && !showErrorFallback) {
@@ -321,7 +351,11 @@ export function ProductImage({
           className
         )}
         role="img"
-        aria-label={locale === 'cs' ? `Obrázek produktu ${productName} se nepodařilo načíst` : `Failed to load image for ${productName}`}
+        aria-label={
+          locale === "cs"
+            ? `Obrázek produktu ${productName} se nepodařilo načíst`
+            : `Failed to load image for ${productName}`
+        }
       >
         <svg
           className="w-8 h-8"
@@ -342,10 +376,7 @@ export function ProductImage({
   }
 
   return (
-    <div
-      ref={imageRef}
-      className={cn("relative", !fill && "w-full h-full")}
-    >
+    <div ref={imageRef} className={cn("relative", !fill && "w-full h-full")}>
       {/* Loading spinner */}
       {isLoading && showLoadingSpinner && (
         <div
@@ -388,6 +419,6 @@ export function ProductImage({
       )}
     </div>
   );
-};
+}
 
 export default ProductImage;

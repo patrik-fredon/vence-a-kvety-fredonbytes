@@ -5,6 +5,7 @@ export { ProductImage } from "./ProductImage";
 export { ProductImageHover } from "./ProductImageHover";
 export { OptimizedProductCustomizer } from "./OptimizedProductCustomizer";
 export { ProductDetail } from "./ProductDetail";
+export { ProductDetailImageGrid } from "./ProductDetailImageGrid";
 export { ProductFilters } from "./ProductFilters";
 export { ProductGrid } from "./ProductGrid";
 export { ProductImageGallery } from "./ProductImageGallery";
@@ -31,7 +32,10 @@ export {
 } from "./ProductComponentErrorBoundary";
 
 // Error handling hooks
-export { useProductErrorHandler, withProductErrorHandling } from "./useProductErrorHandler";
+export {
+  useProductErrorHandler,
+  withProductErrorHandling,
+} from "./useProductErrorHandler";
 
 // Error boundary integrations
 export {
@@ -41,10 +45,7 @@ export {
 } from "./ProductGridWithErrorBoundary";
 
 // Error testing utilities (development only)
-export {
-  ErrorTestingDashboard,
-  HOCErrorTest,
-} from "./ErrorTestingUtils";
+export { ErrorTestingDashboard, HOCErrorTest } from "./ErrorTestingUtils";
 
 // Export shared types
 export type {
