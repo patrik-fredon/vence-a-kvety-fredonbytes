@@ -176,7 +176,14 @@
     "viewCart": "Zobrazit košík",
     "each": "za kus",
     "customMessage": "Vlastní vzkaz",
-    "andMore": "a dalších {count} položek"
+    "andMore": "a dalších {count} položek",
+    "clearCart": "Vyprázdnit košík",
+    "clearCartConfirmTitle": "Vyprázdnit košík?",
+    "clearCartConfirmMessage": "Opravdu chcete odstranit všechny položky z košíku? Tuto akci nelze vrátit zpět.",
+    "clearCartConfirm": "Ano, vyprázdnit košík",
+    "clearCartCancel": "Zrušit",
+    "clearCartSuccess": "Košík byl úspěšně vyprázdněn",
+    "clearCartError": "Nepodařilo se vyprázdnit košík. Zkuste to prosím znovu."
   },
   "checkout": {
     "title": "Objednávka",

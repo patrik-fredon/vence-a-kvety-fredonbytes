@@ -41,10 +41,13 @@ export function ProductCard({
   // Removed unused coreWebVitals hook
 
   // JavaScript optimization
-  const { measureExecution } = useJavaScriptOptimization('ProductCard');
+  const { measureExecution } = useJavaScriptOptimization("ProductCard");
 
-  const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
-  const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
+  // Image resolution for ProductImageHover component
+  const primaryImage =
+    product.images?.find((img) => img.isPrimary) || product.images?.[0];
+  const secondaryImage =
+    product.images?.find((img) => !img.isPrimary) || product.images?.[1];
 
   const formatPrice = (price: number) => {
     return tCurrency("format", {
@@ -58,11 +61,11 @@ export function ProductCard({
       e.preventDefault();
       e.stopPropagation();
 
-      await measureExecution('productNavigation', async () => {
+      await measureExecution("productNavigation", async () => {
         try {
           await router.push(`/${locale}/products/${product.slug}`);
         } catch (error) {
-          console.error('Navigation error:', error);
+          console.error("Navigation error:", error);
           // Fallback to window.location if router fails
           window.location.href = `/${locale}/products/${product.slug}`;
         }
@@ -76,11 +79,11 @@ export function ProductCard({
       e.preventDefault();
       e.stopPropagation();
 
-      await measureExecution('imageNavigation', async () => {
+      await measureExecution("imageNavigation", async () => {
         try {
           await router.push(`/${locale}/products/${product.slug}`);
         } catch (error) {
-          console.error('Image navigation error:', error);
+          console.error("Image navigation error:", error);
           // Fallback to window.location if router fails
           window.location.href = `/${locale}/products/${product.slug}`;
         }
@@ -94,11 +97,11 @@ export function ProductCard({
       e.preventDefault();
       e.stopPropagation();
 
-      await measureExecution('titleNavigation', async () => {
+      await measureExecution("titleNavigation", async () => {
         try {
           await router.push(`/${locale}/products/${product.slug}`);
         } catch (error) {
-          console.error('Title navigation error:', error);
+          console.error("Title navigation error:", error);
           // Fallback to window.location if router fails
           window.location.href = `/${locale}/products/${product.slug}`;
         }
@@ -112,7 +115,7 @@ export function ProductCard({
       e.preventDefault();
       e.stopPropagation();
 
-      await measureExecution('addToCart', async () => {
+      await measureExecution("addToCart", async () => {
         onAddToCart?.(product);
       });
     },
@@ -124,7 +127,7 @@ export function ProductCard({
       e.preventDefault();
       e.stopPropagation();
 
-      await measureExecution('quickView', async () => {
+      await measureExecution("quickView", async () => {
         setIsQuickViewOpen(true);
       });
     },
@@ -191,7 +194,11 @@ export function ProductCard({
 
             {product.category && (
               <p className="text-amber-100 mb-1 text-xs">
-                {product.category.name[locale as keyof typeof product.category.name]}
+                {
+                  product.category.name[
+                    locale as keyof typeof product.category.name
+                  ]
+                }
               </p>
             )}
 
@@ -211,11 +218,14 @@ export function ProductCard({
               <span
                 className={cn(
                   "text-xs font-medium",
-                  product.availability.inStock ? "text-green-700" : "text-red-700"
+                  product.availability.inStock
+                    ? "text-green-700"
+                    : "text-red-700"
                 )}
               >
                 {product.availability.inStock
-                  ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
+                  ? product.availability.stockQuantity &&
+                    product.availability.stockQuantity <= 5
                     ? t("limitedStock")
                     : t("inStock")
                   : t("outOfStock")}
@@ -232,7 +242,9 @@ export function ProductCard({
               size="sm"
             >
               <span className="text-xs sm:text-sm">
-                {product.availability.inStock ? t("addToCart") : t("outOfStock")}
+                {product.availability.inStock
+                  ? t("addToCart")
+                  : t("outOfStock")}
               </span>
             </Button>
           </div>
@@ -322,11 +334,12 @@ export function ProductCard({
                 <span className="font-bold text-stone-900 text-lg sm:text-xl">
                   {formatPrice(product.basePrice)}
                 </span>
-                {product.finalPrice && product.finalPrice < product.basePrice && (
-                  <span className="text-stone-500 line-through text-sm">
-                    {formatPrice(product.basePrice)}
-                  </span>
-                )}
+                {product.finalPrice &&
+                  product.finalPrice < product.basePrice && (
+                    <span className="text-stone-500 line-through text-sm">
+                      {formatPrice(product.basePrice)}
+                    </span>
+                  )}
               </div>
 
               {/* QuickView Icon Button - Slightly larger for better visibility */}
@@ -336,7 +349,12 @@ export function ProductCard({
                 onClick={handleQuickView}
                 aria-label={t("quickView")}
               >
-                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <svg
+                  className="w-4 h-4"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
                   <title>Quick View</title>
                   <path
                     strokeLinecap="round"
@@ -365,12 +383,17 @@ export function ProductCard({
               <output
                 className={cn(
                   "text-xs font-medium",
-                  product.availability.inStock ? "text-green-700" : "text-red-700"
+                  product.availability.inStock
+                    ? "text-green-700"
+                    : "text-red-700"
                 )}
-                aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
+                aria-label={`${t("availability")}: ${
+                  product.availability.inStock ? t("inStock") : t("outOfStock")
+                }`}
               >
                 {product.availability.inStock
-                  ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
+                  ? product.availability.stockQuantity &&
+                    product.availability.stockQuantity <= 5
                     ? t("limitedStock")
                     : t("inStock")
                   : t("outOfStock")}

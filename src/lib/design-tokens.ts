@@ -67,7 +67,7 @@ export const funeralColors = {
   // Complementary shades for the funeral palette
   heroLight: "#1A3D36", // Lighter variant of hero color
   heroDark: "#0A1A15", // Darker variant of hero color
-  backgroundLight: "#B5A66B", // Lighter variant of background color
+  backgroundLight: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)", // Lighter variant of background color
   backgroundDark: "#7A7347", // Darker variant of background color
   // Text colors that work well with funeral palette
   textOnHero: "#FFFFFF", // White text on hero background
@@ -141,7 +141,14 @@ export const fontFamily = {
     "sans-serif",
   ],
   serif: ["Georgia", "Cambria", "Times New Roman", "Times", "serif"],
-  mono: ["Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+  mono: [
+    "Menlo",
+    "Monaco",
+    "Consolas",
+    "Liberation Mono",
+    "Courier New",
+    "monospace",
+  ],
 } as const;
 
 /**

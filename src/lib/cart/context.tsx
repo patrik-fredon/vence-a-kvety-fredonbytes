@@ -11,7 +11,12 @@ import {
   useState,
 } from "react";
 import { useAuthContext } from "@/components/auth";
-import type { AddToCartRequest, CartItem, CartState, CartSummary } from "@/types/cart";
+import type {
+  AddToCartRequest,
+  CartItem,
+  CartState,
+  CartSummary,
+} from "@/types/cart";
 import {
   CartConflictResolver,
   CartPersistenceManager,
@@ -23,7 +28,7 @@ import {
   getCartSessionId,
   setCartSessionId,
   validateConditionalCustomizations,
-  calculateCustomizationPriceModifier as _calculateCustomizationPriceModifier
+  calculateCustomizationPriceModifier as _calculateCustomizationPriceModifier,
 } from "./utils";
 import { supabase } from "@/lib/supabase/client";
 
@@ -35,10 +40,16 @@ type CartAction =
   | { type: "CLEAR_CART" }
   | { type: "SET_LAST_UPDATED"; payload: Date }
   | { type: "OPTIMISTIC_ADD_ITEM"; payload: { item: CartItem; tempId: string } }
-  | { type: "OPTIMISTIC_UPDATE_QUANTITY"; payload: { itemId: string; quantity: number } }
+  | {
+      type: "OPTIMISTIC_UPDATE_QUANTITY";
+      payload: { itemId: string; quantity: number };
+    }
   | { type: "OPTIMISTIC_REMOVE_ITEM"; payload: { itemId: string } }
   | { type: "REVERT_OPTIMISTIC"; payload: { tempId?: string; itemId?: string } }
-  | { type: "CONFIRM_OPTIMISTIC"; payload: { tempId?: string; actualItem?: CartItem } }
+  | {
+      type: "CONFIRM_OPTIMISTIC";
+      payload: { tempId?: string; actualItem?: CartItem };
+    }
   | { type: "SET_SYNCING"; payload: boolean };
 
 // Enhanced cart context type
@@ -49,6 +60,7 @@ interface CartContextType {
   removeItem: (itemId: string) => Promise<boolean>;
   refreshCart: () => Promise<void>;
   clearCart: () => void;
+  clearAllItems: () => Promise<boolean>;
   syncWithServer: () => Promise<void>;
   isOnline: boolean;
   isRealTimeEnabled: boolean;
@@ -108,17 +120,18 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       newOptimisticUpdates.set(action.payload.itemId, {
         type: "update",
         originalQuantity:
-          state.items.find((item) => item.id === action.payload.itemId)?.quantity || 0,
+          state.items.find((item) => item.id === action.payload.itemId)
+            ?.quantity || 0,
       });
       return {
         ...state,
         items: state.items.map((item) =>
           item.id === action.payload.itemId
             ? {
-              ...item,
-              quantity: action.payload.quantity,
-              totalPrice: (item.unitPrice || 0) * action.payload.quantity,
-            }
+                ...item,
+                quantity: action.payload.quantity,
+                totalPrice: (item.unitPrice || 0) * action.payload.quantity,
+              }
             : item
         ),
         optimisticUpdates: newOptimisticUpdates,
@@ -127,7 +140,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
     case "OPTIMISTIC_REMOVE_ITEM": {
       const newOptimisticUpdates = new Map(state.optimisticUpdates);
-      const itemToRemove = state.items.find((item) => item.id === action.payload.itemId);
+      const itemToRemove = state.items.find(
+        (item) => item.id === action.payload.itemId
+      );
       if (itemToRemove) {
         newOptimisticUpdates.set(action.payload.itemId, {
           type: "remove",
@@ -153,7 +168,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           // Remove optimistically added item
           return {
             ...state,
-            items: state.items.filter((item) => item.id !== action.payload.tempId),
+            items: state.items.filter(
+              (item) => item.id !== action.payload.tempId
+            ),
             optimisticUpdates: newOptimisticUpdates,
           };
         } else if (update?.type === "update" && action.payload.itemId) {
@@ -163,10 +180,11 @@ function cartReducer(state: CartState, action: CartAction): CartState {
             items: state.items.map((item) =>
               item.id === action.payload.itemId
                 ? {
-                  ...item,
-                  quantity: update.originalQuantity || 0,
-                  totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
-                }
+                    ...item,
+                    quantity: update.originalQuantity || 0,
+                    totalPrice:
+                      (item.unitPrice || 0) * (update.originalQuantity || 0),
+                  }
                 : item
             ),
             optimisticUpdates: newOptimisticUpdates,
@@ -194,7 +212,9 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           return {
             ...state,
             items: state.items.map((item) =>
-              item.id === action.payload.tempId ? action.payload.actualItem! : item
+              item.id === action.payload.tempId
+                ? action.payload.actualItem!
+                : item
             ),
             optimisticUpdates: newOptimisticUpdates,
           };
@@ -311,7 +331,7 @@ export function CartProvider({ children }: CartProviderProps) {
         if (!basicValidation.isValid) {
           dispatch({
             type: "SET_ERROR",
-            payload: "Invalid customization configuration"
+            payload: "Invalid customization configuration",
           });
           return false;
         }
@@ -373,7 +393,10 @@ export function CartProvider({ children }: CartProviderProps) {
             type: "REVERT_OPTIMISTIC",
             payload: { tempId },
           });
-          dispatch({ type: "SET_ERROR", payload: data.error || "Failed to add item to cart" });
+          dispatch({
+            type: "SET_ERROR",
+            payload: data.error || "Failed to add item to cart",
+          });
           return false;
         }
       } catch (error) {
@@ -393,7 +416,10 @@ export function CartProvider({ children }: CartProviderProps) {
           });
           // TODO: Store in localStorage for offline sync
         } else {
-          dispatch({ type: "SET_ERROR", payload: "Failed to add item to cart" });
+          dispatch({
+            type: "SET_ERROR",
+            payload: "Failed to add item to cart",
+          });
         }
         return false;
       }
@@ -443,7 +469,10 @@ export function CartProvider({ children }: CartProviderProps) {
             type: "REVERT_OPTIMISTIC",
             payload: { itemId },
           });
-          dispatch({ type: "SET_ERROR", payload: data.error || "Failed to update item" });
+          dispatch({
+            type: "SET_ERROR",
+            payload: data.error || "Failed to update item",
+          });
           return false;
         }
       } catch (error) {
@@ -493,6 +522,32 @@ export function CartProvider({ children }: CartProviderProps) {
             payload: { tempId: itemId },
           });
 
+          // Check if cart becomes empty after removal
+          const remainingItems = state.items.filter(item => item.id !== itemId);
+
+          if (remainingItems.length === 0) {
+            console.log("🧹 [Cart] Cart is now empty, clearing cache explicitly");
+
+            // Call explicit cache clear endpoint when cart becomes empty
+            try {
+              const cacheResponse = await fetch("/api/cart/clear-cache", {
+                method: "POST",
+                credentials: "include",
+              });
+
+              const cacheData = await cacheResponse.json();
+
+              if (cacheData.success) {
+                console.log("✅ [Cart] Cache cleared successfully for empty cart");
+              } else {
+                console.warn("⚠️ [Cart] Cache clear failed (non-critical):", cacheData.error);
+              }
+            } catch (cacheError) {
+              console.error("⚠️ [Cart] Error clearing cache (non-critical):", cacheError);
+              // Don't fail the operation if cache clearing fails
+            }
+          }
+
           // Refresh cart to get updated totals
           await fetchCart();
           return true;
@@ -502,7 +557,10 @@ export function CartProvider({ children }: CartProviderProps) {
             type: "REVERT_OPTIMISTIC",
             payload: { itemId },
           });
-          dispatch({ type: "SET_ERROR", payload: data.error || "Failed to remove item" });
+          dispatch({
+            type: "SET_ERROR",
+            payload: data.error || "Failed to remove item",
+          });
           return false;
         }
       } catch (error) {
@@ -525,13 +583,60 @@ export function CartProvider({ children }: CartProviderProps) {
         return false;
       }
     },
-    [fetchCart, isOnline]
-  );
+    [fetchCart, isOnline, state.items]
+  );;
 
-  // Clear cart
+  // Clear cart (local state only)
   const clearCart = useCallback(() => {
     dispatch({ type: "CLEAR_CART" });
   }, []);
+
+  // Clear all items from cart (server + cache + local state)
+  const clearAllItems = useCallback(async (): Promise<boolean> => {
+    try {
+      dispatch({ type: "SET_LOADING", payload: true });
+
+      const response = await fetch("/api/cart/clear", {
+        method: "POST",
+        credentials: "include",
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        // Clear local state
+        dispatch({ type: "CLEAR_CART" });
+
+        // Refresh cart to confirm empty state
+        await fetchCart();
+
+        return true;
+      } else {
+        dispatch({
+          type: "SET_ERROR",
+          payload: data.error || "Failed to clear cart",
+        });
+        return false;
+      }
+    } catch (error) {
+      console.error("Error clearing all cart items:", error);
+
+      if (!isOnline) {
+        dispatch({
+          type: "SET_ERROR",
+          payload: "No internet connection. Changes will sync when online.",
+        });
+      } else {
+        dispatch({
+          type: "SET_ERROR",
+          payload: "Failed to clear cart",
+        });
+      }
+      return false;
+    } finally {
+      dispatch({ type: "SET_LOADING", payload: false });
+    }
+  }, [fetchCart, isOnline]);
 
   // Refresh cart
   const refreshCart = useCallback(async () => {
@@ -559,8 +664,14 @@ export function CartProvider({ children }: CartProviderProps) {
             {
               items: state.items,
               itemCount: state.items.length,
-              subtotal: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
-              total: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+              subtotal: state.items.reduce(
+                (sum, item) => sum + (item.totalPrice || 0),
+                0
+              ),
+              total: state.items.reduce(
+                (sum, item) => sum + (item.totalPrice || 0),
+                0
+              ),
             },
             data.cart,
             "merge"
@@ -571,7 +682,10 @@ export function CartProvider({ children }: CartProviderProps) {
           setCartVersion(Date.now());
 
           // Save to persistence
-          CartPersistenceManager.saveCartState(resolution.resolvedCart, cartVersion);
+          CartPersistenceManager.saveCartState(
+            resolution.resolvedCart,
+            cartVersion
+          );
 
           // Log conflicts if any
           if (resolution.conflicts.length > 0) {
@@ -611,7 +725,10 @@ export function CartProvider({ children }: CartProviderProps) {
     if (!isOnline || isRealTimeEnabled) return;
 
     const sessionId = getCartSessionId();
-    syncManagerRef.current = new CartSyncManager(user?.id, sessionId || undefined);
+    syncManagerRef.current = new CartSyncManager(
+      user?.id,
+      sessionId || undefined
+    );
 
     // Handle real-time cart updates
     syncManagerRef.current.on("sync", (event: CartSyncEvent) => {
@@ -639,20 +756,22 @@ export function CartProvider({ children }: CartProviderProps) {
   const getCartVersion = useCallback(() => cartVersion, [cartVersion]);
   const runIntegrityCheck = useCallback(async (): Promise<any> => {
     try {
-      const { performCustomizationIntegrityCheck } = await import('@/lib/cart/utils');
+      const { performCustomizationIntegrityCheck } = await import(
+        "@/lib/cart/utils"
+      );
       const supabaseClient = supabase;
 
       const result = await performCustomizationIntegrityCheck(supabaseClient);
 
       // Log integrity check results
-      console.log('Cart integrity check completed:', result);
+      console.log("Cart integrity check completed:", result);
 
       return result;
     } catch (error) {
-      console.error('Cart integrity check failed:', error);
+      console.error("Cart integrity check failed:", error);
       return {
         success: false,
-        error: error instanceof Error ? error.message : 'Unknown error',
+        error: error instanceof Error ? error.message : "Unknown error",
         issues: [],
         fixedItems: [],
         summary: {
@@ -671,8 +790,14 @@ export function CartProvider({ children }: CartProviderProps) {
       const cartSummary: CartSummary = {
         items: state.items,
         itemCount: state.items.reduce((sum, item) => sum + item.quantity, 0),
-        subtotal: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
-        total: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+        subtotal: state.items.reduce(
+          (sum, item) => sum + (item.totalPrice || 0),
+          0
+        ),
+        total: state.items.reduce(
+          (sum, item) => sum + (item.totalPrice || 0),
+          0
+        ),
       };
       CartPersistenceManager.saveCartState(cartSummary, cartVersion);
     }
@@ -708,6 +833,7 @@ export function CartProvider({ children }: CartProviderProps) {
     removeItem,
     refreshCart,
     clearCart,
+    clearAllItems,
     syncWithServer,
     isOnline,
     isRealTimeEnabled,
@@ -717,7 +843,9 @@ export function CartProvider({ children }: CartProviderProps) {
     runIntegrityCheck,
   };
 
-  return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;
+  return (
+    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
+  );
 }
 
 // Hook to use cart context

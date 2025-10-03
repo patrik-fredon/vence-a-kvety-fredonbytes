@@ -15,11 +15,13 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import {
   formatValidationErrors,
-  hasValidationErrors,
   sanitizeCustomerInfo,
   sanitizeDeliveryInfo,
-  validateCheckoutForm,
 } from "@/lib/validation/checkout";
+import {
+  stepValidationSchema,
+  hasStepValidationErrors,
+} from "@/lib/validation/checkout-steps";
 import type { CartItem } from "@/types/cart";
 
 import {
@@ -62,6 +64,7 @@ export function CheckoutForm({
   // Initialize checkout state
   const [state, setState] = useState<CheckoutState>({
     currentStep: "customer",
+    completedSteps: new Set<CheckoutStep>(),
     formData: {
       customerInfo: {},
       deliveryInfo: {},
@@ -110,6 +113,7 @@ export function CheckoutForm({
 
   // Handle step navigation
   const goToStep = (step: CheckoutStep) => {
+    // Clear errors when navigating to preserve validated data
     setState((prev) => ({ ...prev, currentStep: step, errors: {} }));
   };
 
@@ -126,20 +130,21 @@ export function CheckoutForm({
           newCompletedSteps.add(prev.currentStep);
           return {
             ...prev,
+            currentStep: nextStep,
             completedSteps: newCompletedSteps,
+            errors: {}, // Clear errors when moving to next step
           };
         });
-        
-        goToStep(nextStep);
       }
     }
-  };;
+  };
 
   const goToPreviousStep = () => {
     const currentIndex = STEPS.indexOf(state.currentStep);
     if (currentIndex > 0) {
       const prevStep = STEPS[currentIndex - 1];
       if (prevStep) {
+        // Navigate back without re-validation, preserving data
         goToStep(prevStep);
       }
     }
@@ -147,12 +152,6 @@ export function CheckoutForm({
 
   // Validate current step
   const validateCurrentStep = (): boolean => {
-    // Import step validation functions
-    const {
-      stepValidationSchema,
-      hasStepValidationErrors,
-    } = require("@/lib/validation/checkout-steps");
-
     // Get the appropriate validator for the current step
     const validator = stepValidationSchema[state.currentStep];
 
@@ -173,14 +172,14 @@ export function CheckoutForm({
     // Clear errors if validation passes
     setState((prev) => ({ ...prev, errors: {} }));
     return true;
-  };;
+  };
 
   // Update form data
   const updateFormData = (updates: Partial<CheckoutFormData>) => {
     setState((prev) => ({
       ...prev,
       formData: { ...prev.formData, ...updates },
-      errors: {},
+      // Don't clear errors on data update to preserve validation state
     }));
   };
 
@@ -245,8 +244,11 @@ export function CheckoutForm({
           <div className="flex items-center justify-between">
             {STEPS.map((step, index) => {
               const isActive = step === state.currentStep;
-              const isCompleted = STEPS.indexOf(state.currentStep) > index;
-              const isClickable = STEPS.indexOf(state.currentStep) >= index;
+              // Use completedSteps Set to determine if step is completed
+              const isCompleted = state.completedSteps.has(step);
+              // Allow clicking on current step, completed steps, and previous steps
+              const currentIndex = STEPS.indexOf(state.currentStep);
+              const isClickable = index <= currentIndex || isCompleted;
 
               return (
                 <React.Fragment key={step}>
