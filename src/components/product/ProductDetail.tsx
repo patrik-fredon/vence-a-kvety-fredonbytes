@@ -13,7 +13,7 @@ import { useAnimationSequence } from "@/components/cart/hooks";
 
 import {
   validateWreathConfiguration,
-  WREATH_VALIDATION_MESSAGES
+  WREATH_VALIDATION_MESSAGES,
 } from "@/lib/validation/wreath";
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import type { Customization, Product } from "@/types/product";
@@ -29,7 +29,11 @@ interface ProductDetailProps {
   className?: string;
 }
 
-export function ProductDetail({ product, locale, className }: ProductDetailProps) {
+export function ProductDetail({
+  product,
+  locale,
+  className,
+}: ProductDetailProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
   const { addToCart } = useCart();
@@ -47,13 +51,18 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const addToCartButtonRef = useRef<HTMLButtonElement>(null);
 
   // Ensure customizationOptions is always an array to prevent map errors
-  const customizationOptions = useMemo(() => product.customizationOptions || [], [product.customizationOptions]);
+  const customizationOptions = useMemo(
+    () => product.customizationOptions || [],
+    [product.customizationOptions]
+  );
 
   // Find size option from customization options
-  const sizeOption = useMemo(() =>
-    customizationOptions.find(
-      (option) => option.type === "size" || option.id === "size"
-    ), [customizationOptions]
+  const sizeOption = useMemo(
+    () =>
+      customizationOptions.find(
+        (option) => option.type === "size" || option.id === "size"
+      ),
+    [customizationOptions]
   );
 
   // Real-time price calculation with size and customizations
@@ -66,22 +75,29 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   );
 
   // Find ribbon-related options
-  const ribbonOption = useMemo(() =>
-    customizationOptions.find(
-      (option) => option.type === "ribbon" || option.id === "ribbon"
-    ), [customizationOptions]
+  const ribbonOption = useMemo(
+    () =>
+      customizationOptions.find(
+        (option) => option.type === "ribbon" || option.id === "ribbon"
+      ),
+    [customizationOptions]
   );
 
-  const ribbonColorOption = useMemo(() =>
-    customizationOptions.find(
-      (option) => option.type === "ribbon_color" || option.id === "ribbon_color"
-    ) || null, [customizationOptions]
+  const ribbonColorOption = useMemo(
+    () =>
+      customizationOptions.find(
+        (option) =>
+          option.type === "ribbon_color" || option.id === "ribbon_color"
+      ) || null,
+    [customizationOptions]
   );
 
-  const ribbonTextOption = useMemo(() =>
-    customizationOptions.find(
-      (option) => option.type === "ribbon_text" || option.id === "ribbon_text"
-    ) || null, [customizationOptions]
+  const ribbonTextOption = useMemo(
+    () =>
+      customizationOptions.find(
+        (option) => option.type === "ribbon_text" || option.id === "ribbon_text"
+      ) || null,
+    [customizationOptions]
   );
 
   // FIXED: Check if ribbon is selected - specifically check for "ribbon_yes" choice
@@ -95,32 +111,31 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   }, [customizations, ribbonOption?.id]);
 
   // Get non-ribbon, non-size customization options for the general customizer
-  const generalCustomizationOptions = useMemo(() =>
-    customizationOptions.filter(
-      (option) =>
-        option.type !== "size" &&
-        option.id !== "size" &&
-        option.type !== "ribbon" &&
-        option.id !== "ribbon" &&
-        option.type !== "ribbon_color" &&
-        option.id !== "ribbon_color" &&
-        option.type !== "ribbon_text" &&
-        option.id !== "ribbon_text"
-    ), [customizationOptions]
+  const generalCustomizationOptions = useMemo(
+    () =>
+      customizationOptions.filter(
+        (option) =>
+          option.type !== "size" &&
+          option.id !== "size" &&
+          option.type !== "ribbon" &&
+          option.id !== "ribbon" &&
+          option.type !== "ribbon_color" &&
+          option.id !== "ribbon_color" &&
+          option.type !== "ribbon_text" &&
+          option.id !== "ribbon_text"
+      ),
+    [customizationOptions]
   );
 
   // Handle size selection changes
-  const handleSizeChange = useCallback(
-    (sizeId: string) => {
-      setSelectedSize(sizeId);
-      // Price calculation is now automatic via usePriceCalculationWithSize hook
+  const handleSizeChange = useCallback((sizeId: string) => {
+    setSelectedSize(sizeId);
+    // Price calculation is now automatic via usePriceCalculationWithSize hook
 
-      // Clear validation errors and warnings when size changes
-      setValidationErrors([]);
-      setValidationWarnings([]);
-    },
-    []
-  );
+    // Clear validation errors and warnings when size changes
+    setValidationErrors([]);
+    setValidationWarnings([]);
+  }, []);
 
   // Handle customization changes
   const handleCustomizationChange = useCallback(
@@ -151,28 +166,37 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   }, [customizations, customizationOptions, selectedSize, locale]);
 
   // Handle error recovery with graceful fallbacks
-  const handleErrorRecovery = useCallback((errorType: string) => {
-    // Clear current errors
-    setValidationErrors([]);
-    setValidationWarnings([]);
+  const handleErrorRecovery = useCallback(
+    (errorType: string) => {
+      // Clear current errors
+      setValidationErrors([]);
+      setValidationWarnings([]);
 
-    // Apply recovery strategies based on error type
-    if (errorType === 'size' && sizeOption?.choices && sizeOption.choices.length > 0) {
-      // Auto-select first available size with proper null checking
-      const firstChoice = sizeOption.choices[0];
-      if (firstChoice?.id) {
-        setSelectedSize(firstChoice.id);
+      // Apply recovery strategies based on error type
+      if (
+        errorType === "size" &&
+        sizeOption?.choices &&
+        sizeOption.choices.length > 0
+      ) {
+        // Auto-select first available size with proper null checking
+        const firstChoice = sizeOption.choices[0];
+        if (firstChoice?.id) {
+          setSelectedSize(firstChoice.id);
+        }
+      } else if (errorType === "ribbon") {
+        // Remove all ribbon-related customizations
+        setCustomizations((prev) =>
+          prev.filter((c) => !c.optionId.includes("ribbon"))
+        );
       }
-    } else if (errorType === 'ribbon') {
-      // Remove all ribbon-related customizations
-      setCustomizations(prev => prev.filter(c => !c.optionId.includes('ribbon')));
-    }
 
-    // Re-validate after recovery
-    setTimeout(() => {
-      validateCustomizations();
-    }, 100);
-  }, [sizeOption, validateCustomizations]);;
+      // Re-validate after recovery
+      setTimeout(() => {
+        validateCustomizations();
+      }, 100);
+    },
+    [sizeOption, validateCustomizations]
+  );
 
   // Retry validation
   const handleRetryValidation = useCallback(() => {
@@ -180,8 +204,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setValidationWarnings([]);
     validateCustomizations();
   }, [validateCustomizations]);
-
-
 
   // Handle add to cart
   const handleAddToCart = async () => {
@@ -216,21 +238,28 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         setValidationWarnings([]);
 
         // Trigger cart animation
-        console.log('🛒 [ProductDetail] Attempting to trigger cart animation');
+        console.log("🛒 [ProductDetail] Attempting to trigger cart animation");
         if (productImageRef.current && addToCartButtonRef.current) {
           // Find the cart icon in the header
-          const cartIcon = document.querySelector('[href*="/cart"]') as HTMLElement;
-          console.log('🛒 [ProductDetail] Cart icon found:', !!cartIcon, cartIcon?.tagName);
+          const cartIcon = document.querySelector(
+            '[href*="/cart"]'
+          ) as HTMLElement;
+          console.log(
+            "🛒 [ProductDetail] Cart icon found:",
+            !!cartIcon,
+            cartIcon?.tagName
+          );
 
           if (cartIcon) {
             // Get the product image source
-            const productImage = productImageRef.current.querySelector('img');
-            const imageSrc = productImage?.src || product.images?.[0]?.url || '';
+            const productImage = productImageRef.current.querySelector("img");
+            const imageSrc =
+              productImage?.src || product.images?.[0]?.url || "";
 
-            console.log('🛒 [ProductDetail] Starting animation with:', {
+            console.log("🛒 [ProductDetail] Starting animation with:", {
               productElement: productImageRef.current.tagName,
               cartIcon: cartIcon.tagName,
-              imageSrc: imageSrc?.substring(0, 50) + '...'
+              imageSrc: imageSrc?.substring(0, 50) + "...",
             });
 
             startProductToCartAnimation(
@@ -239,12 +268,12 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               imageSrc
             );
           } else {
-            console.warn('🛒 [ProductDetail] Cart icon not found in DOM');
+            console.warn("🛒 [ProductDetail] Cart icon not found in DOM");
           }
         } else {
-          console.warn('🛒 [ProductDetail] Missing refs:', {
+          console.warn("🛒 [ProductDetail] Missing refs:", {
             productImageRef: !!productImageRef.current,
-            addToCartButtonRef: !!addToCartButtonRef.current
+            addToCartButtonRef: !!addToCartButtonRef.current,
           });
         }
 
@@ -253,11 +282,19 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           alert(t("addedToCart"));
         }, 1200); // After animation completes
       } else {
-        console.error("❌ [ProductDetail] Failed to add product to cart:", product.id);
+        console.error(
+          "❌ [ProductDetail] Failed to add product to cart:",
+          product.id
+        );
 
         // Show user-friendly error message with recovery option
-        const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
-        const errorMessage = String(messages.systemError || t("addToCartError"));
+        const messages =
+          WREATH_VALIDATION_MESSAGES[
+            locale as keyof typeof WREATH_VALIDATION_MESSAGES
+          ];
+        const errorMessage = String(
+          messages.systemError || t("addToCartError")
+        );
 
         if (confirm(`${errorMessage}\n\n${messages.tryAgain}?`)) {
           handleRetryValidation();
@@ -267,13 +304,19 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
       console.error("💥 [ProductDetail] Error adding to cart:", error);
 
       // Handle different types of errors gracefully
-      const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
+      const messages =
+        WREATH_VALIDATION_MESSAGES[
+          locale as keyof typeof WREATH_VALIDATION_MESSAGES
+        ];
       let errorMessage = String(messages.systemError || t("addToCartError"));
 
       if (error instanceof Error) {
-        if (error.message.includes('network') || error.message.includes('connection')) {
+        if (
+          error.message.includes("network") ||
+          error.message.includes("connection")
+        ) {
           errorMessage = String(messages.networkError);
-        } else if (error.message.includes('session')) {
+        } else if (error.message.includes("session")) {
           errorMessage = String(messages.sessionExpired);
         }
       }
@@ -296,49 +339,67 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   return (
     <div className={cn("max-w-7xl mx-auto px-4 sm:px-6 lg:px-8", className)}>
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
-        {/* Left Column - Collage-Style Image Layout */}
-        <div className="h-full min-h-[600px] lg:min-h-[700px]" ref={productImageRef}>
-          <div className="grid grid-cols-2 grid-rows-3 gap-2 h-full">
-            {/* Main large image - spans 2 rows */}
+        {/* Left Column - Optimized 12-Column Grid Image Layout */}
+        <div className="h-full max-h-[700px]" ref={productImageRef}>
+          <div className="grid grid-cols-12 gap-2 h-full max-h-[700px]">
+            {/* Main large image - col-span-7 row-span-2 */}
             {product.images && product.images[0] && (
-              <div className="col-span-2 row-span-2 relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)]">
+              <div className="col-span-12 md:col-span-7 row-span-2 relative overflow-hidden rounded-lg bg-funeral-gold aspect-[4/5] md:aspect-auto">
                 <Image
                   src={product.images[0].url}
-                  alt={product.images[0].alt || product.name[locale as keyof typeof product.name]}
+                  alt={
+                    product.images[0].alt ||
+                    product.name[locale as keyof typeof product.name]
+                  }
                   fill
-                  sizes="(max-width: 1024px) 100vw, 50vw"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 40vw"
                   className="object-cover"
                   priority
                 />
               </div>
             )}
 
-            {/* Secondary images - smaller grid items */}
-            {product.images && product.images.slice(1, 4).map((image, index) => (
-              <div key={image.id || index} className="relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] aspect-square">
-                <Image
-                  src={image.url}
-                  alt={image.alt || product.name[locale as keyof typeof product.name]}
-                  fill
-                  sizes="(max-width: 1024px) 50vw, 25vw"
-                  className="object-cover"
-                />
-              </div>
-            ))}
+            {/* Secondary images - col-span-5 each */}
+            {product.images &&
+              product.images.slice(1, 5).map((image, index) => (
+                <div
+                  key={image.id || index}
+                  className="col-span-6 md:col-span-5 relative overflow-hidden rounded-lg bg-funeral-gold aspect-square"
+                >
+                  <Image
+                    src={image.url}
+                    alt={
+                      image.alt ||
+                      product.name[locale as keyof typeof product.name]
+                    }
+                    fill
+                    sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
+                    className="object-cover"
+                  />
+                </div>
+              ))}
 
-            {/* If we have more than 4 images, show a "more" indicator on the last visible image */}
-            {product.images && product.images.length > 4 && (
-              <div className="relative overflow-hidden rounded-lg bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] aspect-square">
+            {/* If we have more than 5 images, show a "more" indicator on the last visible image */}
+            {product.images && product.images.length > 5 && (
+              <div className="col-span-6 md:col-span-5 relative overflow-hidden rounded-lg bg-funeral-gold aspect-square">
                 <Image
-                  src={product.images[4]?.url || product.images[1]?.url || product.images[0]?.url || "/placeholder-image.jpg"}
-                  alt={product.images[4]?.alt || product.name[locale as keyof typeof product.name]}
+                  src={
+                    product.images[4]?.url ||
+                    product.images[1]?.url ||
+                    product.images[0]?.url ||
+                    "/placeholder-image.jpg"
+                  }
+                  alt={
+                    product.images[4]?.alt ||
+                    product.name[locale as keyof typeof product.name]
+                  }
                   fill
-                  sizes="(max-width: 1024px) 50vw, 25vw"
+                  sizes="(max-width: 768px) 50vw, (max-width: 1024px) 25vw, 20vw"
                   className="object-cover"
                 />
                 <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
                   <span className="text-amber-100 font-semibold text-lg">
-                    +{product.images.length - 4}
+                    +{product.images.length - 5}
                   </span>
                 </div>
               </div>
@@ -349,7 +410,11 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         {/* Right Column - Product Info and Actions */}
         <div className="space-y-6">
           {/* Product Basic Info */}
-          <ProductInfo product={product} locale={locale} finalPrice={priceCalculation.totalPrice} />
+          <ProductInfo
+            product={product}
+            locale={locale}
+            finalPrice={priceCalculation.totalPrice}
+          />
 
           {/* Size Selection */}
           {sizeOption && (
@@ -372,13 +437,18 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("ribbon")}</span>
-                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
+                  <span className="text-sm font-normal text-amber-100">
+                    ({t("optional")})
+                  </span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   <LazyProductCustomizer
-                    product={{ ...product, customizationOptions: [ribbonOption] }}
+                    product={{
+                      ...product,
+                      customizationOptions: [ribbonOption],
+                    }}
                     locale={locale}
                     customizations={customizations}
                     onCustomizationChange={handleCustomizationChange}
@@ -407,12 +477,17 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("customize")}</span>
-                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
+                  <span className="text-sm font-normal text-amber-100">
+                    ({t("optional")})
+                  </span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
                 <LazyProductCustomizer
-                  product={{ ...product, customizationOptions: generalCustomizationOptions }}
+                  product={{
+                    ...product,
+                    customizationOptions: generalCustomizationOptions,
+                  }}
                   locale={locale}
                   customizations={customizations}
                   onCustomizationChange={handleCustomizationChange}
@@ -436,8 +511,13 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
                     <div className="space-y-2">
                       {validationErrors.map((error, index) => (
-                        <div key={index} className="flex items-start justify-between gap-3">
-                          <p className="text-sm text-red-700 flex-1">• {error}</p>
+                        <div
+                          key={index}
+                          className="flex items-start justify-between gap-3"
+                        >
+                          <p className="text-sm text-red-700 flex-1">
+                            • {error}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -448,28 +528,38 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                         variant="outline"
                         size="sm"
                         onClick={handleRetryValidation}
-                        className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
+                        className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
                       >
-                        {WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES].tryAgain}
+                        {
+                          WREATH_VALIDATION_MESSAGES[
+                            locale as keyof typeof WREATH_VALIDATION_MESSAGES
+                          ].tryAgain
+                        }
                       </Button>
 
-                      {validationErrors.some(error => error.includes('velikost') || error.includes('size')) && (
+                      {validationErrors.some(
+                        (error) =>
+                          error.includes("velikost") || error.includes("size")
+                      ) && (
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleErrorRecovery('size')}
-                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
+                          onClick={() => handleErrorRecovery("size")}
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
                         >
                           Auto-select Size
                         </Button>
                       )}
 
-                      {validationErrors.some(error => error.includes('stuhy') || error.includes('ribbon')) && (
+                      {validationErrors.some(
+                        (error) =>
+                          error.includes("stuhy") || error.includes("ribbon")
+                      ) && (
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => handleErrorRecovery('ribbon')}
-                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-red-300 text-red-700 hover:bg-red-50"
+                          onClick={() => handleErrorRecovery("ribbon")}
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
                         >
                           Remove Ribbon
                         </Button>
@@ -480,7 +570,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => setValidationWarnings([])}
-                          className="text-xs bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] border-amber-300 text-amber-700 hover:bg-amber-50"
+                          className="text-xs bg-funeral-gold border-amber-300 text-amber-700 hover:bg-amber-50"
                         >
                           Dismiss Warnings
                         </Button>
@@ -498,7 +588,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardContent className="py-4">
                 <div className="flex items-start gap-3">
                   <div className="w-5 h-5 rounded-full bg-amber-100 flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <div className="w-2 h-2 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-full" />
+                    <div className="w-2 h-2 bg-funeral-gold rounded-full" />
                   </div>
                   <div className="flex-1 space-y-3">
                     <h4 className="text-sm font-medium text-teal-800">
@@ -507,8 +597,13 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
                     <div className="space-y-2">
                       {validationWarnings.map((warning, index) => (
-                        <div key={index} className="flex items-start justify-between gap-3">
-                          <p className="text-sm text-teal-800 flex-1">• {warning}</p>
+                        <div
+                          key={index}
+                          className="flex items-start justify-between gap-3"
+                        >
+                          <p className="text-sm text-teal-800 flex-1">
+                            • {warning}
+                          </p>
                         </div>
                       ))}
                     </div>
@@ -535,7 +630,9 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           <Card>
             <CardContent className="py-6 space-y-4">
               <div className="text-center">
-                <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
+                <div className="text-sm text-amber-100 mb-2">
+                  {t("totalPrice")}
+                </div>
                 <div className="text-3xl font-bold text-teal-900">
                   {formatPrice(priceCalculation.totalPrice)}
                 </div>

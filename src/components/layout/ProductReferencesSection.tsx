@@ -130,7 +130,7 @@ const ProductReferenceCard = ({
   return (
     <article
       className={cn(
-        "group bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] backdrop-blur-sm overflow-hidden shadow-2xl relative clip-corners",
+        "group bg-funeral-gold backdrop-blur-sm overflow-hidden shadow-2xl relative clip-corners",
         // Enhanced hover effects with motion preference support
         "transition-all duration-300 ease-in-out",
         !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",

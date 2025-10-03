@@ -23,15 +23,18 @@ const config: Config = {
         // Funeral-specific color palette
         funeral: {
           hero: designTokens.colors.funeral.hero,
-          background: designTokens.colors.funeral.background,
+          background: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
           heroLight: designTokens.colors.funeral.heroLight,
           heroDark: designTokens.colors.funeral.heroDark,
-          backgroundLight: designTokens.colors.funeral.backgroundLight,
-          backgroundDark: designTokens.colors.funeral.backgroundDark,
+          backgroundLight: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
+          backgroundDark: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
           textOnHero: designTokens.colors.funeral.textOnHero,
           textOnBackground: designTokens.colors.funeral.textOnBackground,
           textSecondary: designTokens.colors.funeral.textSecondary,
           accent: designTokens.colors.funeral.accent,
+          green: designTokens.colors.funeral.hero,
+          gold: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
+          lightGold: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
         },
         // Semantic colors
         success: designTokens.colors.semantic.success,
@@ -39,9 +42,6 @@ const config: Config = {
         error: designTokens.colors.semantic.error,
         info: designTokens.colors.semantic.info,
         // Legacy funeral colors (maintained for backward compatibility)
-        "funeral-green": designTokens.colors.funeral.hero,
-        "funeral-gold": designTokens.colors.funeral.background,
-        "funeral-light-gold": designTokens.colors.funeral.backgroundLight,
       },
       fontFamily: designTokens.typography.fontFamily,
       fontSize: designTokens.typography.fontSize,
@@ -64,7 +64,8 @@ const config: Config = {
         ...designTokens.boxShadow,
         // Custom funeral-appropriate shadows
         soft: "0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)",
-        elegant: "0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 30px -5px rgba(0, 0, 0, 0.04)",
+        elegant:
+          "0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 30px -5px rgba(0, 0, 0, 0.04)",
         memorial: "0 8px 40px -12px rgba(0, 0, 0, 0.15)",
       },
       zIndex: designTokens.zIndex,

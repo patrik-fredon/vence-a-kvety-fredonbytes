@@ -211,7 +211,7 @@ export function OptimizedProductCustomizer({
                   type="button"
                   onClick={() => handleChoiceSelection(ribbonOption.id, choice.id, ribbonOption)}
                   className={`w-full p-3 text-left rounded-lg border-2 transition-colors ${isSelected
-                    ? "border-stone-900 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)]"
+                    ? "border-stone-900 bg-funeral-gold"
                     : "border-stone-200 hover:border-stone-300"
                     }`}
                 >
@@ -238,7 +238,7 @@ export function OptimizedProductCustomizer({
       )}
 
       {/* Price Display */}
-      <div className="mt-6 p-4 bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] rounded-lg">
+      <div className="mt-6 p-4 bg-funeral-gold rounded-lg">
         <div className="flex justify-between items-center">
           <span className="text-lg font-semibold text-stone-900">
             {t("totalPrice")}

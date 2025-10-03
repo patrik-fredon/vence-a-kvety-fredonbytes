@@ -15,11 +15,13 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import {
   formatValidationErrors,
-  hasValidationErrors,
   sanitizeCustomerInfo,
   sanitizeDeliveryInfo,
-  validateCheckoutForm,
 } from "@/lib/validation/checkout";
+import {
+  stepValidationSchema,
+  hasStepValidationErrors,
+} from "@/lib/validation/checkout-steps";
 import type { CartItem } from "@/types/cart";
 
 import {
@@ -62,6 +64,7 @@ export function CheckoutForm({
   // Initialize checkout state
   const [state, setState] = useState<CheckoutState>({
     currentStep: "customer",
+    completedSteps: new Set<CheckoutStep>(),
     formData: {
       customerInfo: {},
       deliveryInfo: {},
@@ -110,6 +113,7 @@ export function CheckoutForm({
 
   // Handle step navigation
   const goToStep = (step: CheckoutStep) => {
+    // Clear errors when navigating to preserve validated data
     setState((prev) => ({ ...prev, currentStep: step, errors: {} }));
   };
 
@@ -120,7 +124,17 @@ export function CheckoutForm({
 
       // Validate current step before proceeding
       if (nextStep && validateCurrentStep()) {
-        goToStep(nextStep);
+        // Mark current step as completed
+        setState((prev) => {
+          const newCompletedSteps = new Set(prev.completedSteps);
+          newCompletedSteps.add(prev.currentStep);
+          return {
+            ...prev,
+            currentStep: nextStep,
+            completedSteps: newCompletedSteps,
+            errors: {}, // Clear errors when moving to next step
+          };
+        });
       }
     }
   };
@@ -130,6 +144,7 @@ export function CheckoutForm({
     if (currentIndex > 0) {
       const prevStep = STEPS[currentIndex - 1];
       if (prevStep) {
+        // Navigate back without re-validation, preserving data
         goToStep(prevStep);
       }
     }
@@ -137,47 +152,24 @@ export function CheckoutForm({
 
   // Validate current step
   const validateCurrentStep = (): boolean => {
-    const { customerInfo, deliveryInfo, agreeToTerms } = state.formData;
+    // Get the appropriate validator for the current step
+    const validator = stepValidationSchema[state.currentStep];
 
-    switch (state.currentStep) {
-      case "customer": {
-        const customerErrors = validateCheckoutForm(customerInfo, {}, false);
-        if (hasValidationErrors(customerErrors)) {
-          setState((prev) => ({ ...prev, errors: customerErrors }));
-          return false;
-        }
-        break;
-      }
-
-      case "delivery": {
-        const deliveryErrors = validateCheckoutForm({}, deliveryInfo, false);
-        if (hasValidationErrors(deliveryErrors)) {
-          setState((prev) => ({ ...prev, errors: deliveryErrors }));
-          return false;
-        }
-        break;
-      }
-
-      case "payment":
-        if (!state.formData.paymentMethod) {
-          setState((prev) => ({
-            ...prev,
-            errors: { general: ["Vyberte způsob platby"] },
-          }));
-          return false;
-        }
-        break;
-
-      case "review": {
-        const allErrors = validateCheckoutForm(customerInfo, deliveryInfo, agreeToTerms);
-        if (hasValidationErrors(allErrors)) {
-          setState((prev) => ({ ...prev, errors: allErrors }));
-          return false;
-        }
-        break;
-      }
+    if (!validator) {
+      console.error(`No validator found for step: ${state.currentStep}`);
+      return false;
     }
 
+    // Validate only the current step using step-specific validator
+    const stepErrors = validator(state.formData);
+
+    // Check if there are any validation errors
+    if (hasStepValidationErrors(stepErrors)) {
+      setState((prev) => ({ ...prev, errors: stepErrors }));
+      return false;
+    }
+
+    // Clear errors if validation passes
     setState((prev) => ({ ...prev, errors: {} }));
     return true;
   };
@@ -187,7 +179,7 @@ export function CheckoutForm({
     setState((prev) => ({
       ...prev,
       formData: { ...prev.formData, ...updates },
-      errors: {},
+      // Don't clear errors on data update to preserve validation state
     }));
   };
 
@@ -252,8 +244,11 @@ export function CheckoutForm({
           <div className="flex items-center justify-between">
             {STEPS.map((step, index) => {
               const isActive = step === state.currentStep;
-              const isCompleted = STEPS.indexOf(state.currentStep) > index;
-              const isClickable = STEPS.indexOf(state.currentStep) >= index;
+              // Use completedSteps Set to determine if step is completed
+              const isCompleted = state.completedSteps.has(step);
+              // Allow clicking on current step, completed steps, and previous steps
+              const currentIndex = STEPS.indexOf(state.currentStep);
+              const isClickable = index <= currentIndex || isCompleted;
 
               return (
                 <React.Fragment key={step}>

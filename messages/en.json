@@ -176,7 +176,14 @@
     "viewCart": "View Cart",
     "each": "each",
     "customMessage": "Custom message",
-    "andMore": "and {count} more items"
+    "andMore": "and {count} more items",
+    "clearCart": "Clear Cart",
+    "clearCartConfirmTitle": "Clear Cart?",
+    "clearCartConfirmMessage": "Are you sure you want to remove all items from your cart? This action cannot be undone.",
+    "clearCartConfirm": "Yes, Clear Cart",
+    "clearCartCancel": "Cancel",
+    "clearCartSuccess": "Cart cleared successfully",
+    "clearCartError": "Failed to clear cart. Please try again."
   },
   "checkout": {
     "title": "Checkout",

@@ -75,8 +75,8 @@ export function RefactoredHeroSection({
     <section
       id="hero-section"
       className={cn(
-        // Background color - funeral hero color (#00302D) - WCAG AA compliant
-        "bg-funeral-hero",
+        // Background color - using centralized Teal gradient
+        "bg-funeral-teal",
         // Mobile-first responsive height (320px-767px)
         "min-h-screen", // Full height on mobile for impact
         "sm:min-h-[90vh]", // Slightly reduced on small screens (640px+)
@@ -296,7 +296,7 @@ export function RefactoredHeroSection({
               "sm:text-xl sm:px-8 sm:py-4", // Standard for 640px+
               "md:text-2xl md:px-10 md:py-5", // Tablet sizing
               "lg:text-3xl lg:px-12 lg:py-6", // Desktop sizing
-              "rounded-t-lg rounded-b-3xl bg-[linear-gradient(to_right,_#AE8625,_#F7EF8A,_#D2AC47)] text-teal-800 font-extrabold",
+              "rounded-t-lg rounded-b-3xl bg-funeral-gold text-teal-800 font-extrabold",
               // Orientation adjustments
               "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
               "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
