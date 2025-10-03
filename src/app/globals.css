@@ -31,7 +31,7 @@
 
   /* Background and foreground using stone palette */
   --background: var(--color-amber-100);
-  --foreground: var(--color-stone-900);
+  --foreground: var(--color-teal-900);
   --muted: var(--color-stone-100);
   --muted-foreground: var(--color-stone-600);
   --border: var(--color-stone-200);
@@ -56,7 +56,7 @@ html {
 }
 
 body {
-  background: var(--background);
+  background: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47);
   color: var(--foreground);
   font-family: "Inter", system-ui, sans-serif;
   font-feature-settings: "cv11", "ss01";
@@ -76,7 +76,7 @@ h6 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-teal-900);
+  color: var(--color-teal-800);
 }
 h1 {
   font-family: "Playfair Display", Georgia, serif;

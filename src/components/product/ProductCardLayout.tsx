@@ -7,10 +7,15 @@ import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { cn } from "@/lib/utils";
+import { resolvePrimaryProductImage } from "@/lib/utils/product-image-utils";
 import type { Product } from "@/types/product";
 
 export type ProductCardVariant = "grid" | "teaser" | "list";
-export type ProductCardActionType = "addToCart" | "customize" | "quickView" | "viewDetails";
+export type ProductCardActionType =
+  | "addToCart"
+  | "customize"
+  | "quickView"
+  | "viewDetails";
 
 export interface ProductCardLayoutProps {
   product: Product;
@@ -47,10 +52,16 @@ export function ProductCardLayout({
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
   const [_imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
   const productName = product.name[locale as keyof typeof product.name];
-  const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
-  const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
+
+  // Use image resolution utility for primary image with fallback chain
+  const resolvedPrimaryImage = resolvePrimaryProductImage(product, locale);
+
+  // Get secondary image for hover effect (if available)
+  const secondaryImage =
+    product.images?.find((img) => !img.isPrimary) || product.images?.[1];
 
   const formatPrice = useCallback(
     (price: number) => {
@@ -163,7 +174,10 @@ export function ProductCardLayout({
         );
 
       case "list":
-        return cn(baseStyles, "rounded-lg flex flex-row items-center gap-4 p-4 hover:shadow-lg");
+        return cn(
+          baseStyles,
+          "rounded-lg flex flex-row items-center gap-4 p-4 hover:shadow-lg"
+        );
 
       default:
         return baseStyles;
@@ -203,48 +217,59 @@ export function ProductCardLayout({
   // Render product image with optimized loading
   const renderImage = () => (
     <div className={getImageContainerStyles()}>
-      {primaryImage && (
-        <>
+      {/* Primary image with error handling and fallback */}
+      <div className="absolute inset-0 z-0">
+        <OptimizedImage
+          src={
+            imageError ? "/placeholder-product.jpg" : resolvedPrimaryImage.url
+          }
+          alt={resolvedPrimaryImage.alt}
+          fill
+          variant={variant === "list" ? "thumbnail" : "product"}
+          sizes={
+            variant === "list"
+              ? "96px"
+              : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
+          }
+          className={cn(
+            "object-cover transition-all duration-500",
+            variant !== "list" && isHovered && secondaryImage && "opacity-0"
+          )}
+          onLoad={() => setImageLoading(false)}
+          onError={() => {
+            console.error(`Failed to load image for product: ${product.slug}`);
+            setImageError(true);
+          }}
+          priority={featured || loading === false} // Prioritize featured products and initially visible items
+          loading={featured ? "eager" : "lazy"}
+          quality={variant === "list" ? 75 : 85} // Lower quality for thumbnails
+          placeholder="blur"
+        />
+      </div>
+
+      {/* Secondary image on hover for grid/teaser variants with lazy loading (z-10 overlay) */}
+      {variant !== "list" && secondaryImage && !imageError && (
+        <div className="absolute inset-0 z-10">
           <OptimizedImage
-            src={primaryImage.url}
-            alt={primaryImage.alt || productName}
+            src={secondaryImage.url}
+            alt={secondaryImage.alt || productName}
             fill
-            variant={variant === "list" ? "thumbnail" : "product"}
-            sizes={
-              variant === "list"
-                ? "96px"
-                : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
-            }
+            variant="product"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
             className={cn(
               "object-cover transition-all duration-500",
-              variant !== "list" && isHovered && secondaryImage && "opacity-0"
+              !isHovered && "opacity-0"
             )}
-            onLoad={() => setImageLoading(false)}
-            priority={featured || loading === false} // Prioritize featured products and initially visible items
-            loading={featured ? "eager" : "lazy"}
-            quality={variant === "list" ? 75 : 85} // Lower quality for thumbnails
+            priority={false} // Secondary images are never priority
+            loading="lazy" // Always lazy load secondary images
+            quality={80}
             placeholder="blur"
+            onError={(e) => {
+              // Silently fail for secondary image - just hide it
+              e.currentTarget.style.display = "none";
+            }}
           />
-
-          {/* Secondary image on hover for grid/teaser variants with lazy loading */}
-          {variant !== "list" && secondaryImage && (
-            <OptimizedImage
-              src={secondaryImage.url}
-              alt={secondaryImage.alt || productName}
-              fill
-              variant="product"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
-              className={cn(
-                "object-cover transition-all duration-500 absolute inset-0",
-                !isHovered && "opacity-0"
-              )}
-              priority={false} // Secondary images are never priority
-              loading="lazy" // Always lazy load secondary images
-              quality={80}
-              placeholder="blur"
-            />
-          )}
-        </>
+        </div>
       )}
 
       {/* Featured Badge */}
@@ -280,9 +305,11 @@ export function ProductCardLayout({
       id={`product-${product.id}-title`}
       className={cn(
         "font-semibold text-stone-900 transition-colors",
-        variant === "grid" && "text-sm sm:text-base mb-2 line-clamp-2 leading-tight",
+        variant === "grid" &&
+          "text-sm sm:text-base mb-2 line-clamp-2 leading-tight",
         variant === "teaser" && "text-xl mb-2 line-clamp-2 min-h-[3.5rem]",
-        variant === "list" && "text-sm sm:text-base mb-1 truncate group-hover:text-stone-700"
+        variant === "list" &&
+          "text-sm sm:text-base mb-1 truncate group-hover:text-stone-700"
       )}
     >
       {productName}
@@ -327,7 +354,9 @@ export function ProductCardLayout({
           </span>
         )}
         {variant === "teaser" && primaryAction.type === "customize" && (
-          <span className="text-sm text-teal-800 ml-2">{locale === "cs" ? "od" : "from"}</span>
+          <span className="text-sm text-teal-800 ml-2">
+            {locale === "cs" ? "od" : "from"}
+          </span>
         )}
       </div>
 
@@ -387,10 +416,13 @@ export function ProductCardLayout({
           "text-xs font-medium",
           product.availability.inStock ? "text-green-700" : "text-red-700"
         )}
-        aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
+        aria-label={`${t("availability")}: ${
+          product.availability.inStock ? t("inStock") : t("outOfStock")
+        }`}
       >
         {product.availability.inStock
-          ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
+          ? product.availability.stockQuantity &&
+            product.availability.stockQuantity <= 5
             ? t("limitedStock")
             : t("inStock")
           : t("outOfStock")}
@@ -404,7 +436,11 @@ export function ProductCardLayout({
     loading,
     className: variant === "teaser" ? "w-full" : "",
     variant: primaryAction.variant || "default",
-    size: (variant === "list" ? "sm" : "default") as "default" | "sm" | "lg" | "icon",
+    size: (variant === "list" ? "sm" : "default") as
+      | "default"
+      | "sm"
+      | "lg"
+      | "icon",
     icon: primaryAction.icon,
     iconPosition: "left" as const,
   });
@@ -413,14 +449,19 @@ export function ProductCardLayout({
   const renderCustomizeButton = () => (
     <Link href={`/${locale}/products/${product.slug}`}>
       <Button {...getButtonProps()}>
-        <span className={variant === "list" ? "text-xs sm:text-sm" : ""}>{primaryAction.text}</span>
+        <span className={variant === "list" ? "text-xs sm:text-sm" : ""}>
+          {primaryAction.text}
+        </span>
       </Button>
     </Link>
   );
 
   // Render add to cart button
   const renderAddToCartButton = () => (
-    <Button {...getButtonProps()} onClick={() => handleAction(primaryAction.type)}>
+    <Button
+      {...getButtonProps()}
+      onClick={() => handleAction(primaryAction.type)}
+    >
       <span className={variant === "list" ? "text-xs sm:text-sm" : ""}>
         {product.availability.inStock ? primaryAction.text : t("outOfStock")}
       </span>
@@ -433,7 +474,9 @@ export function ProductCardLayout({
 
     return (
       <div className={variant === "list" ? "flex-shrink-0" : ""}>
-        {primaryAction.type === "customize" ? renderCustomizeButton() : renderAddToCartButton()}
+        {primaryAction.type === "customize"
+          ? renderCustomizeButton()
+          : renderAddToCartButton()}
       </div>
     );
   };
@@ -488,7 +531,10 @@ export function ProductCardLayout({
       aria-labelledby={`product-${product.id}-title`}
     >
       {variant === "grid" ? (
-        <Link href={`/${locale}/products/${product.slug}`} className="block w-full h-full relative">
+        <Link
+          href={`/${locale}/products/${product.slug}`}
+          className="block w-full h-full relative"
+        >
           {renderImage()}
           {renderContent()}
           {/* Hover Overlay */}

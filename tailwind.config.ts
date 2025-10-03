@@ -40,6 +40,8 @@ const config: Config = {
           textOnBackground: designTokens.colors.funeral.textOnBackground,
           textSecondary: designTokens.colors.funeral.textSecondary,
           accent: designTokens.colors.funeral.accent,
+          "funeral-gold":
+            "linear-gradient(to right, #AE8625, #F7EF8A, #D2AC47)",
         },
         // Semantic colors
         success: designTokens.colors.semantic.success,

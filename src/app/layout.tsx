@@ -21,12 +21,20 @@ export const metadata: Metadata = {
   },
   description:
     "Prémiové pohřební věnce a květinové aranžmá. Ruční výroba, rychlé dodání, důstojné rozloučení.",
-  keywords: ["pohřební věnce", "květinové aranžmá", "pohřeb", "rozloučení", "věnce"],
+  keywords: [
+    "pohřební věnce",
+    "květinové aranžmá",
+    "pohřeb",
+    "rozloučení",
+    "věnce",
+  ],
   authors: [{ name: "Ketingmar s.r.o." }],
   creator: "Ketingmar s.r.o.",
   publisher: "Ketingmar s.r.o.",
   robots: "index, follow",
-  metadataBase: new URL(process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz"),
+  metadataBase: new URL(
+    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz"
+  ),
   alternates: {
     canonical: "/",
     languages: {
@@ -59,7 +67,7 @@ export default function RootLayout({
   return (
     <html className="scroll-smooth">
       <body
-        className={`${inter.variable} ${playfairDisplay.variable} font-sans antialiased bg-funeral-gold text-neutral-900`}
+        className={`${inter.variable} ${playfairDisplay.variable} font-sans antialiased bg-funeral-gold text-teal-900`}
       >
         {children}
       </body>
