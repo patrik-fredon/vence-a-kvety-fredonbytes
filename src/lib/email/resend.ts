@@ -5,8 +5,19 @@
 import { Resend } from "resend";
 import type { AdminNotificationData, ContactEmailData } from "@/types/contact";
 
-// Initialize Resend client
-const resend = new Resend(process.env['RESEND_API_KEY']);
+// Lazy initialization of Resend client
+let resendInstance: Resend | null = null;
+
+function getResendClient(): Resend {
+  if (!resendInstance) {
+    const apiKey = process.env['RESEND_API_KEY'];
+    if (!apiKey) {
+      throw new Error("RESEND_API_KEY is not configured");
+    }
+    resendInstance = new Resend(apiKey);
+  }
+  return resendInstance;
+}
 
 // Email configuration
 const EMAIL_CONFIG = {
@@ -20,6 +31,7 @@ const EMAIL_CONFIG = {
  */
 export async function sendCustomerThankYouEmail(data: ContactEmailData) {
   try {
+    const resend = getResendClient();
     const { data: emailData, error } = await resend.emails.send({
       from: EMAIL_CONFIG.from,
       to: data.customerEmail,
@@ -45,6 +57,7 @@ export async function sendCustomerThankYouEmail(data: ContactEmailData) {
  */
 export async function sendAdminNotificationEmail(data: AdminNotificationData) {
   try {
+    const resend = getResendClient();
     const { data: emailData, error } = await resend.emails.send({
       from: EMAIL_CONFIG.from,
       to: EMAIL_CONFIG.adminEmail,
