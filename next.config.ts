@@ -1,7 +1,11 @@
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import path from "path";
-import { OPTIMIZE_PACKAGE_IMPORTS, WEBPACK_OPTIMIZATION, BUNDLE_ANALYZER_CONFIG } from "./src/lib/config/bundle-optimization";
+import {
+  OPTIMIZE_PACKAGE_IMPORTS,
+  WEBPACK_OPTIMIZATION,
+  BUNDLE_ANALYZER_CONFIG,
+} from "./src/lib/config/bundle-optimization";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
 
@@ -39,7 +43,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    qualities: [50, 75, 85, 90, 95], // Enhanced quality options for different use cases
+    qualities: [50, 70, 75, 85, 90, 95], // Enhanced quality options for different use cases
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year for better caching
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
@@ -98,7 +102,8 @@ const nextConfig: NextConfig = {
           // Restrict browser features
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
           },
           // Enable XSS protection
           {
@@ -180,7 +185,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
     // Bundle analyzer configuration for monitoring bundle size
-    if (process.env['ANALYZE'] === "true") {
+    if (process.env["ANALYZE"] === "true") {
       const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
       config.plugins.push(
         new BundleAnalyzerPlugin({
@@ -200,7 +205,8 @@ const nextConfig: NextConfig = {
       config.optimization.sideEffects = WEBPACK_OPTIMIZATION.sideEffects;
 
       // Module concatenation for better tree-shaking
-      config.optimization.concatenateModules = WEBPACK_OPTIMIZATION.concatenateModules;
+      config.optimization.concatenateModules =
+        WEBPACK_OPTIMIZATION.concatenateModules;
     }
 
     // Resolve alias for better tree-shaking
@@ -238,6 +244,6 @@ const nextConfig: NextConfig = {
       // Add rewrites as needed
     ];
   },
-};;
+};
 
 export default withNextIntl(nextConfig);

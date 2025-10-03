@@ -175,7 +175,7 @@ export function ProductCard({
             {/* Stock Status Overlay */}
             {!product.availability.inStock && (
               <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
-                <span className="text-amber-100 font-medium px-2 py-1 bg-red-600 rounded-full text-xs">
+                <span className="text-accent font-medium px-2 py-1 bg-red-600 rounded-full text-xs">
                   {t("outOfStock")}
                 </span>
               </div>
@@ -186,14 +186,14 @@ export function ProductCard({
           <div className="flex-1 min-w-0">
             <h3
               id={`product-${product.id}-title`}
-              className="font-medium text-amber-100 group-hover:text-stone-700 transition-colors text-sm sm:text-base mb-1 truncate cursor-pointer"
+              className="font-medium text-accent group-hover:text-stone-700 transition-colors text-sm sm:text-base mb-1 truncate cursor-pointer"
               onClick={handleTitleClick}
             >
               {product.name[locale as keyof typeof product.name]}
             </h3>
 
             {product.category && (
-              <p className="text-amber-100 mb-1 text-xs">
+              <p className="text-accent mb-1 text-xs">
                 {
                   product.category.name[
                     locale as keyof typeof product.category.name
@@ -278,7 +278,8 @@ export function ProductCard({
         aria-labelledby={`product-${product.id}-title`}
       >
         {/* Full Coverage Product Image - Takes up most of the h-96 space */}
-        <div className="absolute inset-0 bg-amber-100">
+        {/* Image Layer (z-0) - Fills card container with absolute positioning */}
+        <div className="absolute inset-0 z-0 bg-accent">
           {primaryImage && (
             <ProductImageHover
               primaryImage={primaryImage}
@@ -296,28 +297,28 @@ export function ProductCard({
             />
           )}
 
-          {/* Featured Badge */}
+          {/* Featured Badge (z-10) */}
           {featured && (
             <div className="absolute top-3 left-3 z-10">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-teal-800 border border-amber-200 shadow-sm">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent text-primary-dark border border-accent-light shadow-sm">
                 {t("featured")}
-              </span>
-            </div>
-          )}
-
-          {/* Stock Status Overlay */}
-          {!product.availability.inStock && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-              <span className="text-amber-100 font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
-                {t("outOfStock")}
               </span>
             </div>
           )}
         </div>
 
-        {/* Bottom Overlay - Optimized for h-96 height with better proportions */}
+        {/* Stock Status Overlay (z-10) - Positioned above image layer */}
+        {!product.availability.inStock && (
+          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
+            <span className="text-accent font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
+              {t("outOfStock")}
+            </span>
+          </div>
+        )}
+
+        {/* Info Overlay (z-20) - Bottom positioned with backdrop blur for readability */}
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
-          <div className="bg-amber-100/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-white/20">
+          <div className="bg-accent/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-xl border border-white/20">
             {/* Product Name - Increased line height for better readability in taller cards */}
             <h3
               id={`product-${product.id}-title`}
@@ -345,7 +346,7 @@ export function ProductCard({
               {/* QuickView Icon Button - Slightly larger for better visibility */}
               <Button
                 size="sm"
-                className="bg-amber-100/80 hover:bg-stone-200/80 text-teal-700 min-w-9 h-9"
+                className="bg-accent/80 hover:bg-stone-200/80 text-primary-dark min-w-9 h-9"
                 onClick={handleQuickView}
                 aria-label={t("quickView")}
               >

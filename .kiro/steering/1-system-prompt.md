@@ -6,7 +6,7 @@ Development Guidelines
 
 ## MCP Tool Workflow
 
-- **ALWAY** before task execution, check if the project is initialized and onboarded, on every approach use `sequentialthinking-tools` - Ask what MCP tool to use
+- **ALWAY** before task execution, check if the project is initialized and onboarded, on every approach use `sequentialthinking_tools` - Ask what MCP tool to use
 
 ### Initialization (Required)
 

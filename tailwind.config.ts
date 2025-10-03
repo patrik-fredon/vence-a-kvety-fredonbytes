@@ -20,21 +20,26 @@ const config: Config = {
         amber: designTokens.colors.amber,
         white: designTokens.colors.white,
         black: designTokens.colors.black,
-        // Funeral-specific color palette
+        // Centralized primary color palette (teal)
+        primary: {
+          DEFAULT: "#134e4a", // teal-900
+          light: "#2dd4bf", // teal-400
+          dark: "#115e59", // teal-800
+        },
+        // Centralized accent color palette (amber)
+        accent: {
+          DEFAULT: "#fef3c7", // amber-100
+          light: "#fde68a", // amber-200
+        },
+        // Funeral-specific color palette (legacy - maintained for backward compatibility)
         funeral: {
           hero: designTokens.colors.funeral.hero,
-          background: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
           heroLight: designTokens.colors.funeral.heroLight,
           heroDark: designTokens.colors.funeral.heroDark,
-          backgroundLight: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
-          backgroundDark: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
           textOnHero: designTokens.colors.funeral.textOnHero,
           textOnBackground: designTokens.colors.funeral.textOnBackground,
           textSecondary: designTokens.colors.funeral.textSecondary,
           accent: designTokens.colors.funeral.accent,
-          green: designTokens.colors.funeral.hero,
-          gold: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
-          lightGold: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
         },
         // Semantic colors
         success: designTokens.colors.semantic.success,
