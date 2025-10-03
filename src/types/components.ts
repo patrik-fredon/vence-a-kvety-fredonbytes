@@ -3,7 +3,11 @@
  * Following atomic design principles: Atoms -> Molecules -> Organisms -> Templates -> Pages
  */
 
-import type { ComponentPropsWithoutRef, HTMLAttributes, ReactNode } from "react";
+import type {
+  ComponentPropsWithoutRef,
+  HTMLAttributes,
+  ReactNode,
+} from "react";
 import type { JSX } from "react/jsx-runtime";
 import type { Locale } from "./index";
 
@@ -117,11 +121,22 @@ export interface TemplateProps extends OrganismProps {
 /**
  * Button component variants and sizes for stone/amber design system
  */
-export type ButtonVariant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
+export type ButtonVariant =
+  | "default"
+  | "destructive"
+  | "outline"
+  | "secondary"
+  | "ghost"
+  | "link";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "size" | "disabled" | "className" | "aria-label">, Omit<AtomProps, "size" | "disabled"> {
+export interface ButtonProps
+  extends Omit<
+      ComponentPropsWithoutRef<"button">,
+      "size" | "disabled" | "className" | "aria-label"
+    >,
+    Omit<AtomProps, "size" | "disabled"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   disabled?: boolean;
@@ -135,13 +150,23 @@ export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "s
 /**
  * Input component types and variants
  */
-export type InputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search";
+export type InputType =
+  | "text"
+  | "email"
+  | "password"
+  | "number"
+  | "tel"
+  | "url"
+  | "search";
 
 export type InputVariant = "default" | "filled" | "outline";
 
 export interface InputProps
-  extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type" | "disabled" | "className" | "aria-label">,
-  Omit<AtomProps, "disabled"> {
+  extends Omit<
+      ComponentPropsWithoutRef<"input">,
+      "size" | "type" | "disabled" | "className" | "aria-label"
+    >,
+    Omit<AtomProps, "disabled"> {
   type?: InputType;
   variant?: InputVariant;
   disabled?: boolean;
@@ -548,7 +573,7 @@ export interface ProductReference {
   };
   description: string; // Localized description
   category?: string;
-  slug?: string; // For potential navigation
+  slug: string; // Required for navigation to product detail page
 }
 
 /**

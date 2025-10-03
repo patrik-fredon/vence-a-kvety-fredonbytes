@@ -478,7 +478,7 @@ const ProductGrid = React.memo(function ProductGrid({
 
   return (
     <section
-      className={cn("bg-primary-dark py-12 rounded-2xl shadow-xl", className)}
+      className={cn("bg-primary py-12 rounded-2xl shadow-xl", className)}
     >
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Filters */}
@@ -648,7 +648,7 @@ const ProductGrid = React.memo(function ProductGrid({
             ) : (
               <div className="flex justify-center py-8">
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-primary-dark border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   <span className="text-sm text-accent">
                     {tCommon("loading")}
                   </span>
@@ -672,7 +672,7 @@ const ProductGrid = React.memo(function ProductGrid({
                 </p>
                 <div className="w-64 bg-accent rounded-full h-2 mx-auto">
                   <div
-                    className="bg-primary-dark h-2 rounded-full transition-all duration-300 ease-out"
+                    className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
                     style={{
                       width: `${Math.min(
                         (displayedProducts.length / totalProducts) * 100,
@@ -701,8 +701,8 @@ const ProductGrid = React.memo(function ProductGrid({
               loadingText={t("loadingMore")}
               className={cn(
                 "px-8 py-3 min-w-[200px] font-medium",
-                "bg-white border-2 border-primary-dark text-primary-dark",
-                "hover:bg-accent-light hover:border-primary-dark hover:text-primary-dark",
+                "bg-white border-2 border-primary text-primary",
+                "hover:bg-accent-light hover:border-primary hover:text-primary",
                 "focus:ring-2 focus:ring-primary-light focus:ring-offset-2",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
                 "transition-all duration-200 ease-in-out",
@@ -712,7 +712,7 @@ const ProductGrid = React.memo(function ProductGrid({
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-primary-dark border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   <span>{t("loadingMore")}</span>
                 </div>
               ) : (

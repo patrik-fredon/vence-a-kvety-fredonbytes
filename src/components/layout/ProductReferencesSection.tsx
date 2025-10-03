@@ -12,12 +12,19 @@ import {
   logErrorWithContext,
   safeTranslate,
 } from "@/lib/utils/fallback-utils";
-import type { ProductReference, ProductReferencesSectionProps } from "@/types/components";
+import type {
+  ProductReference,
+  ProductReferencesSectionProps,
+} from "@/types/components";
 
 // Utility function to transform Product to ProductReference
-const transformProductToReference = (product: any, locale: string): ProductReference => {
+const transformProductToReference = (
+  product: any,
+  locale: string
+): ProductReference => {
   // Get the primary image or first available image
-  const primaryImage = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
+  const primaryImage =
+    product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
 
   // Fallback image for products without images
   const fallbackImage = {
@@ -29,25 +36,29 @@ const transformProductToReference = (product: any, locale: string): ProductRefer
 
   return {
     id: product.id,
-    name: locale === "cs" ? product.name?.cs || product.nameCs : product.name?.en || product.nameEn,
+    name:
+      locale === "cs"
+        ? product.name?.cs || product.nameCs
+        : product.name?.en || product.nameEn,
     image: primaryImage
       ? {
-        src: primaryImage.url,
-        alt: primaryImage.alt,
-        width: primaryImage.width || 400,
-        height: primaryImage.height || 400,
-      }
+          src: primaryImage.url,
+          alt: primaryImage.alt,
+          width: primaryImage.width || 400,
+          height: primaryImage.height || 400,
+        }
       : fallbackImage,
     description:
       locale === "cs"
         ? product.description?.cs ||
-        product.descriptionCs ||
-        "Krásný pohřební věnec vyrobený s láskou a péčí"
+          product.descriptionCs ||
+          "Krásný pohřební věnec vyrobený s láskou a péčí"
         : product.description?.en ||
-        product.descriptionEn ||
-        "Beautiful funeral wreath crafted with love and care",
+          product.descriptionEn ||
+          "Beautiful funeral wreath crafted with love and care",
     category:
-      product.category?.name?.[locale] || (locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths"),
+      product.category?.name?.[locale] ||
+      (locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths"),
     slug: product.slug,
   };
 };
@@ -69,7 +80,8 @@ const ProductReferenceCard = ({
 
   // Safe translation function with fallbacks (memoized to prevent re-renders)
   const safeT = useCallback(
-    (key: string, values?: Record<string, any>) => safeTranslate(t, key, locale, values),
+    (key: string, values?: Record<string, any>) =>
+      safeTranslate(t, key, locale, values),
     [t, locale]
   );
 
@@ -86,7 +98,9 @@ const ProductReferenceCard = ({
           setCurrentImageSrc(fallbackImage.src);
         } else {
           // Use a safe default if fallback fails
-          setCurrentImageSrc("https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp");
+          setCurrentImageSrc(
+            "https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp"
+          );
         }
 
         // Safe error logging with additional context
@@ -98,7 +112,9 @@ const ProductReferenceCard = ({
         } as any);
       } catch (fallbackError) {
         // If even the fallback fails, use a hardcoded safe image
-        setCurrentImageSrc("https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp");
+        setCurrentImageSrc(
+          "https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp"
+        );
 
         console.error("Fallback image handling failed:", fallbackError);
 
@@ -111,20 +127,97 @@ const ProductReferenceCard = ({
         } as any);
       }
     }
-  };;
+  };
+
+  // Navigate to product detail page with proper validation and error handling
+  const handleNavigation = useCallback(() => {
+    try {
+      // Validate product slug before navigation
+      if (!product.slug) {
+        console.error("Navigation failed: Product slug is missing", {
+          productId: product.id,
+          productName: product.name,
+        });
+        logErrorWithContext(new Error("Product slug is missing"), {
+          component: "ProductReferenceCard",
+          action: "navigation_validation_error",
+          productId: product.id,
+          locale,
+          timestamp: new Date().toISOString(),
+        } as any);
+        return;
+      }
+
+      // Validate slug format (basic check)
+      if (typeof product.slug !== "string" || product.slug.trim() === "") {
+        console.error("Navigation failed: Invalid product slug format", {
+          productId: product.id,
+          slug: product.slug,
+        });
+        logErrorWithContext(new Error("Invalid product slug format"), {
+          component: "ProductReferenceCard",
+          action: "navigation_validation_error",
+          productId: product.id,
+          slug: product.slug,
+          locale,
+          timestamp: new Date().toISOString(),
+        } as any);
+        return;
+      }
+
+      const targetUrl = `/${locale}/products/${product.slug}`;
+
+      // Log navigation attempt for debugging
+      console.log("Navigating to product:", {
+        productName: product.name,
+        slug: product.slug,
+        targetUrl,
+      });
+
+      // Attempt navigation using window.location (client-side navigation)
+      // Using window.location as fallback since this is a client component
+      // and we want to ensure navigation works even if router fails
+      window.location.href = targetUrl;
+    } catch (error) {
+      // Log navigation error with context
+      console.error("Navigation error:", error, {
+        productId: product.id,
+        productName: product.name,
+        slug: product.slug,
+      });
+
+      logErrorWithContext(
+        error as Error,
+        {
+          component: "ProductReferenceCard",
+          action: "navigation_error",
+          productId: product.id,
+          productName: product.name,
+          slug: product.slug,
+          locale,
+          timestamp: new Date().toISOString(),
+        } as any
+      );
+
+      // Final fallback: try direct navigation
+      try {
+        window.location.href = `/${locale}/products/${product.slug}`;
+      } catch (fallbackError) {
+        console.error("Fallback navigation also failed:", fallbackError);
+      }
+    }
+  }, [product, locale]);
 
   const handleKeyDown = (event: React.KeyboardEvent) => {
     // Handle Enter and Space key activation
     if (event.key === "Enter" || event.key === " ") {
       event.preventDefault();
-      // In a real implementation, this would navigate to product detail
-      console.log(`Navigating to product: ${product.name}`);
+      handleNavigation();
     }
   };
 
   const handleClick = () => {
-    // In a real implementation, this would navigate to product detail
-    console.log(`Navigating to product: ${product.name}`);
+    handleNavigation();
   };
 
   return (
@@ -133,7 +226,8 @@ const ProductReferenceCard = ({
         "group bg-funeral-gold backdrop-blur-sm overflow-hidden shadow-2xl relative clip-corners",
         // Enhanced hover effects with motion preference support
         "transition-all duration-300 ease-in-out",
-        !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
+        !prefersReducedMotion &&
+          "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
         prefersReducedMotion && "hover:shadow-lg hover:bg-white/15",
         "cursor-pointer"
       )}
@@ -265,7 +359,9 @@ export const ProductReferencesSection = ({
   className,
 }: ProductReferencesSectionProps) => {
   const t = useTranslations("home.productReferences");
-  const [products, setProducts] = useState<ProductReference[]>(propProducts || []);
+  const [products, setProducts] = useState<ProductReference[]>(
+    propProducts || []
+  );
   const [loading, setLoading] = useState(!propProducts);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
@@ -322,11 +418,15 @@ export const ProductReferencesSection = ({
 
       // Set user-friendly error message
       if (error.name === "AbortError") {
-        setError(safeTranslate(t, "timeoutError", locale) || "Request timed out");
+        setError(
+          safeTranslate(t, "timeoutError", locale) || "Request timed out"
+        );
       } else if (isRecoverableError(error)) {
         setError(safeTranslate(t, "loadingError", locale));
       } else {
-        setError(safeTranslate(t, "criticalError", locale) || "Critical error occurred");
+        setError(
+          safeTranslate(t, "criticalError", locale) || "Critical error occurred"
+        );
       }
     } finally {
       setLoading(false);
@@ -336,7 +436,8 @@ export const ProductReferencesSection = ({
 
   // Safe translation function with fallbacks (memoized to prevent infinite loops)
   const safeT = useCallback(
-    (key: string, values?: Record<string, any>) => safeTranslate(t, key, locale, values),
+    (key: string, values?: Record<string, any>) =>
+      safeTranslate(t, key, locale, values),
     [t, locale]
   );
 
@@ -417,7 +518,11 @@ export const ProductReferencesSection = ({
               {t("heading")}
             </h2>
           </div>
-          <div className="flex justify-center items-center py-12" role="status" aria-live="polite">
+          <div
+            className="flex justify-center items-center py-12"
+            role="status"
+            aria-live="polite"
+          >
             <div
               className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"
               aria-hidden="true"
@@ -488,7 +593,11 @@ export const ProductReferencesSection = ({
             >
               {t("heading")}
             </h2>
-            <div role="alert" aria-live="assertive" className="text-center py-12">
+            <div
+              role="alert"
+              aria-live="assertive"
+              className="text-center py-12"
+            >
               <p
                 id="products-error"
                 className={cn(
@@ -523,7 +632,9 @@ export const ProductReferencesSection = ({
                   )}
                   aria-describedby="retry-description"
                 >
-                  {isRetrying ? safeT("retrying") || "Retrying..." : safeT("tryAgain")}
+                  {isRetrying
+                    ? safeT("retrying") || "Retrying..."
+                    : safeT("tryAgain")}
                 </button>
 
                 {/* Alternative action - go to products page */}
@@ -537,7 +648,9 @@ export const ProductReferencesSection = ({
                   )}
                 >
                   {safeT("viewAllProducts") ||
-                    (locale === "cs" ? "Zobrazit všechny produkty" : "View All Products")}
+                    (locale === "cs"
+                      ? "Zobrazit všechny produkty"
+                      : "View All Products")}
                 </button>
               </div>
               <div id="retry-description" className="sr-only">

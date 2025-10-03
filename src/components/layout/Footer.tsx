@@ -70,11 +70,11 @@ export function Footer({ locale }: FooterProps) {
                     >
                       +420 733 116 328
                     </a>
-                    <p className="text-xs text-amber-100 mt-0.5">Hlavní linka</p>
+                    <p className="text-xs text-amber-100 mt-0.5">
+                      Hlavní linka
+                    </p>
                   </div>
                 </div>
-
-
 
                 <div className="flex items-start space-x-3">
                   <EnvelopeIcon
@@ -115,7 +115,10 @@ export function Footer({ locale }: FooterProps) {
               <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-amber-100">
                 {t("quickLinks")}
               </h4>
-              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility("quickLinks")}>
+              <nav
+                className="space-y-1 sm:space-y-2"
+                aria-label={tAccessibility("quickLinks")}
+              >
                 <Link
                   href={`/${locale}/about`}
                   className="block text-amber-200 hover:text-amber-100 transition-colors duration-200  rounded px-1 py-0.5"
@@ -146,7 +149,10 @@ export function Footer({ locale }: FooterProps) {
               <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-amber-100">
                 {t("legal")}
               </h4>
-              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility("legalInfo")}>
+              <nav
+                className="space-y-1 sm:space-y-2"
+                aria-label={tAccessibility("legalInfo")}
+              >
                 <Link
                   href={`/${locale}/privacy`}
                   className="block text-amber-200 hover:text-amber-100 transition-colors duration-200  rounded px-1 py-0.5"
@@ -172,6 +178,39 @@ export function Footer({ locale }: FooterProps) {
                   GDPR
                 </Link>
               </nav>
+
+              {/* Accessibility Link */}
+              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-amber-100">
+                {tAccessibility("accessibility")}
+              </h4>
+              <nav
+                className="space-y-1 sm:space-y-2"
+                aria-label={tAccessibility("accessibilityOptions")}
+              >
+                <button
+                  onClick={() => {
+                    const toolbarButton = document.querySelector(
+                      '[aria-controls="accessibility-toolbar"]'
+                    ) as HTMLButtonElement;
+                    if (toolbarButton) {
+                      toolbarButton.scrollIntoView({
+                        behavior: "smooth",
+                        block: "center",
+                      });
+                      toolbarButton.focus();
+                      // Trigger click to open toolbar if it's closed
+                      if (
+                        toolbarButton.getAttribute("aria-expanded") === "false"
+                      ) {
+                        toolbarButton.click();
+                      }
+                    }
+                  }}
+                  className="block text-left text-amber-200 hover:text-amber-100 transition-colors duration-200  rounded px-1 py-0.5"
+                >
+                  {tAccessibility("openAccessibilityToolbar")}
+                </button>
+              </nav>
             </div>
           </div>
 
@@ -180,9 +219,10 @@ export function Footer({ locale }: FooterProps) {
             <div className="flex flex-col sm:flex-row lg:flex-row justify-between items-start sm:items-center lg:items-center space-y-4 sm:space-y-0 lg:space-y-0">
               <div className="text-amber-100 text-xs sm:text-sm">
                 <p>© 2024 {t("company")} • IČO: 12345678 • DIČ: CZ12345678</p>
-                <p className="mt-1">{t("description")} • Všechna práva vyhrazena</p>
+                <p className="mt-1">
+                  {t("description")} • Všechna práva vyhrazena
+                </p>
               </div>
-
             </div>
           </div>
         </div>
