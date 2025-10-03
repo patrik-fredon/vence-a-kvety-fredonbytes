@@ -15,10 +15,8 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import {
   formatValidationErrors,
-  hasValidationErrors,
   sanitizeCustomerInfo,
   sanitizeDeliveryInfo,
-  validateCheckoutForm,
 } from "@/lib/validation/checkout";
 import type { CartItem } from "@/types/cart";
 
@@ -62,6 +60,7 @@ export function CheckoutForm({
   // Initialize checkout state
   const [state, setState] = useState<CheckoutState>({
     currentStep: "customer",
+    completedSteps: new Set(),
     formData: {
       customerInfo: {},
       deliveryInfo: {},
