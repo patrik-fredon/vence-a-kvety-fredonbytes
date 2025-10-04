@@ -36,7 +36,7 @@
   },
   "product": {
     "title": "Produkty",
-    "pageDescription": "Prohlédněte si naši kolekci pohřebních věnců a květinových aranžmá.",
+    "pageDescription": "Přinesením květin k poslednímu rozloučení vyjadřujeme úctu k zesnulému a symbolicky se s ním loučíme. Věnec symbolizuje nekonečnost a koloběh života a barva květin může odrážet osobnost našeho blízkého.",
     "collectionTitle": "Pohřební věnce a květinové aranžmá",
     "addToCart": "Přidat do košíku",
     "addingToCart": "Přidávání do košíku...",
@@ -301,8 +301,8 @@
   },
   "seo": {
     "home": {
-      "title": "Pohřební věnce Praha | Ruční výroba | Ketingmar s.r.o.",
-      "description": "Prémiové pohřební věnce a květinové aranžmá s rychlým doručením v Praze. Ruční výroba, čerstvé květiny, důstojné rozloučení. Objednávka online 24/7.",
+      "title": "Pohřební věnce Ostrava | Ruční výroba | Ketingmar s.r.o.",
+      "description": "Prémiové pohřební věnce a květinové aranžmá s rychlým doručením v Ostravě. Ruční výroba, čerstvé květiny, důstojné rozloučení. Objednávka online 24/7.",
       "keywords": [
         "pohřební věnce",
         "květinové aranžmá",
@@ -316,14 +316,14 @@
         "pietní místo"
       ],
       "openGraph": {
-        "title": "Pohřební věnce Praha | Důstojné rozloučení s krásou květin",
+        "title": "Pohřební věnce Ostrava | Důstojné rozloučení s krásou květin",
         "description": "Pomáháme rodinám vyjádřit lásku a úctu prostřednictvím krásných pohřebních věnců. Ruční výroba, čerstvé květiny, rychlé doručení.",
         "type": "website"
       }
     },
     "products": {
       "title": "Katalog pohřebních věnců | Srdce, kříže, kruhy | Ketingmar",
-      "description": "Široký výběr pohřebních věnců - srdce, kříže, kruhy. Různé velikosti a barvy. Možnost personalizace. Ceny od 2.500 Kč. Rychlé doručení v Praze.",
+      "description": "Široký výběr pohřebních věnců - srdce, kříže, kruhy. Různé velikosti a barvy. Možnost personalizace. Ceny od 900 Kč. Rychlé doručení v Ostrava.",
       "keywords": [
         "pohřební věnce katalog",
         "smuteční věnce srdce",
@@ -387,12 +387,12 @@
   "home": {
     "hero": {
       "title": "Důstojné rozloučení s krásou květin",
-      "subtitle": "Pohřební věnce vytvořené s láskou a úctou k vašim blízkým",
+      "subtitle": "Život je křehký jako motýlí prach — prach jsi a v prach se obrátíš.",
       "description": "V těžkých chvílích rozloučení vám pomůžeme vyjádřit lásku a úctu prostřednictvím nádherných květinových aranžmá. Každý věnec vytváříme s citem, pečlivostí a porozuměním pro vaši ztrátu.",
       "cta": "Vybrat věnec pro rozloučení"
     },
     "refactoredHero": {
-      "heading": "Pohřební věnce s láskou a úctou",
+      "heading": "Život je křehký jako motýlí prach — prach jsi a v prach se obrátíš.",
       "subheading": "Krásné květinové aranžmá pro důstojné rozloučení",
       "description": "Krásné květinové aranžmá pro důstojné rozloučení",
       "cta": "Prohlédnout věnce",
@@ -478,32 +478,35 @@
     "title": "Často kladené otázky",
     "items": [
       {
-        "question": "Jak správně skladovat a pečovat o pohřební věnec?",
+        "question": "Jak věnec skladovat a pečovat o něj?",
         "answer": "Pokud si přejete věnec doručit den nebo dva před obřadem, doporučujeme jej nechat vodorovně uložený v původní krabici. Zajistíte tak, že voda z korpusu věnce neodteče. Žádná další péče není nutná – věnec je dostatečně nasycen vodou a květiny jsou ošetřeny pro co nejdelší výdrž."
       },
       {
-        "question": "Jak dlouho zůstanou květiny v pohřebním věnci čerstvé?",
-        "answer": "Výdrž květin závisí na povětrnostních podmínkách. Obecně platí, že čím kratší stonek, tím delší výdrž. Smuteční věnce jsou určeny k vystavení na pietním místě. V létě při vysokých teplotách vydrží věnec krásný po dobu jednoho týdne, v chladnějším období může vydržet až dva týdny."
+        "question": "Jak dlouho květiny vydrží čerstvé?",
+        "answer": "Všeobecně u květin platí: čím kratší stonek, tím delší výdrž. Smuteční věnce jsou určeny k vystavení na pietním místě, kde jsou vystaveny povětrnostním vlivům. V létě při vysokých teplotách vydrží věnec krásný po dobu jednoho týdne, v chladnějším období může vydržet až dva týdny."
       },
       {
-        "question": "Co dělat s věncem po uvadnutí květin?",
-        "answer": "Doporučujeme ekologickou recyklaci. Květiny z věnce vyhoďte do sběrné popelnice určené pro bio odpad a korpus věnce do sběru plastů. Společně tak šetříme přírodu a dbáme na odpovědné nakládání s materiály."
+        "question": "Co dělat s věncem po uvadnutí?",
+        "answer": "Nejlepší cestou je řádná a ekologická recyklace. Květiny z věnce vyhoďte do sběrné nádoby určené ke sběru bioodpadu a korpus věnce do sběru plastů. Šetřeme spolu přírodu :)"
       },
       {
         "question": "Jaké jsou rozměry věnců a jak si vybrat správnou velikost?",
-        "answer": "Nabízíme tři základní velikosti věnců: malý (průměr 40-50 cm), střední (průměr 60-70 cm) a velký (průměr 80-90 cm). Výběr velikosti závisí na typu obřadu, prostoru a vašich preferencích. Malé věnce jsou vhodné pro intimní rozloučení, střední pro standardní obřady a velké pro reprezentativní pietní akce."
+        "answer": "Výběr velikosti závisí na typu obřadu, prostoru a vašich preferencích. Malé věnce jsou vhodné pro intimní rozloučení, střední pro standardní obřady a velké pro reprezentativní pietní akce."
       }
     ]
   },
   "about": {
     "title": "O naší květinové dílničce",
-    "mission": "Pomáháme rodinám vyjádřit lásku a úctu k jejich blízkým prostřednictvím krásných květinových aranžmá v nejtěžších chvílích života.",
-    "story": "Jsme malá rodinná květinová dílnička s dlouholetými zkušenostmi, která svou práci dělá s citem a důrazem na každý detail. Květinám se věnujeme řadu let a věříme, že sféra smutečních květin si zaslouží více pozornosti a krásy. Do každé vaší objednávky dáváme kousek svého srdce a profesionální přístup, aby tato smutná událost ve vašich životech byla alespoň trochu příjemnější.",
+    "mission": "Uvědomuji si, že život je křehký jako motýlí prach a že v jediném okamžiku se může náš svět změnit. Naše fyzická podoba se poté promění v jinou energii… Každý den je plný těchto proměn, viditelných i neviditelných. Jednou z těchto viditelných proměn je motýl, jehož přirozeným procesem je transformace z housenky na krásného tvora. Stejně tak vnímám odchod na druhou stranu…",
+    "story": "Jsme malá rodinná květinová dílnička a svou práci děláme s citem a důrazem na detail. Každý květ vybíráme s pečlivostí, aby výsledek naší práce splňoval všechna vaše očekávání. Květiny jsou kupovány vždy čerstvé, jsou pečlivě očištěné a ošetřené, aby památku vašeho milovaného uctívaly na pietním místě co nejdéle. Květinám se věnuji řadu let a myslím, že sféra smutečních květin by si zasloužila více pozornosti a krásy, která je do nich vložena. Do každé vaší objednávky dám kousek svého srdce, aby tato smutná událost ve vašich životech byla alespoň o něco snesitelnější…",
     "values": "Každý květ vybíráme s odbornou pečlivostí a kvalitou, aby výsledek naší práce splňoval všechna vaša očekávání. Květiny kupujeme vždy čerstvé, pečlivě je čistíme a ošetřujeme s profesionální péčí, aby památku vašeho milovaného uctívaly na pietním místě co nejdéle.",
     "commitment": "Naším závazkem je poskytovat nejen krásné květinové aranžmá, ale také porozumění, empatie a podporu v těžkých chvílích. Věříme, že kvalitní ruční práce a osobní přístup mohou přinést útěchu a důstojnost do procesu rozloučení.",
-    "storyTitle": "Náš příběh",
-    "valuesTitle": "Kvalita a péče",
-    "commitmentTitle": "Náš závazek",
+    "storyTitle": "Pečlivá práce",
+    "valuesTitle": "Doručení",
+    "commitmentTitle": "Garance čerstvosti",
+    "valuesDescription": "Produkty doručíme na vámi určené místo v čase, který vám vyhovuje.",
+    "commitmentDescription": "Květiny objednáváme vždy čerstvé až na základě vaší objednávky.",
+    "storyDescription": "Dáváme si záležet na uložení každého jednoho květu tak, aby výsledná práce byla dokonalá.",
     "companyDescription": "Rodinná květinová dílnička s tradicí a důrazem na kvalitu",
     "viewWreaths": "Prohlédnout naše věnce",
     "contactUs": "Kontaktovat nás"

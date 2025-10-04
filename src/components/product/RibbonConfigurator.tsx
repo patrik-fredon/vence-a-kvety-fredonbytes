@@ -157,7 +157,7 @@ export function RibbonConfigurator({
             "focus:outline-none focus:ring-2 focus:ring-stone-950 focus:ring-offset-2",
             isSelected
               ? "border-stone-900 bg-amber-300 text-stone-900"
-              : "border-stone-300 bg-funeral-gold hover:border-stone-400 hover:bg-stone-50",
+              : "border-stone-300 bg-funeral-teal hover:border-stone-400 hover:bg-stone-50",
             // High contrast support
             "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
           )}

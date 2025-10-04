@@ -14,8 +14,8 @@
   --color-teal-500: #14b8a6;
   --color-teal-600: #0d9488;
   --color-teal-700: #0f766e;
-  --color-teal-800: #115e59;
-  --color-teal-900: #134e4a;
+  --color-teal-800: #033b38;
+  --color-teal-900: #01302d;
   --color-teal-950: #013029;
 
   /* ============================================
@@ -106,9 +106,9 @@
   body {
     background: linear-gradient(
       to right,
-      #ae8625,
+      #d2ac47,
       #f7ef8a,
-      #d2ac47
+      #ae8625
     ); /* Fallback */
     background: var(
       --gradient-funeral-gold,
@@ -165,7 +165,6 @@ h2 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.4;
-  color: var(--color-teal-800);
 }
 
 h3,
@@ -175,11 +174,9 @@ h6 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-amber-100);
 }
 
 p {
-  color: var(--color-amber-100);
   line-height: 1.625;
 }
 

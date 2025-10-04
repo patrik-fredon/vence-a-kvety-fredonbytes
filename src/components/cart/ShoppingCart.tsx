@@ -5,7 +5,13 @@ import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { CartItemImage } from "@/components/cart/CartItemImage";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { ConfirmModal } from "@/components/ui/Modal";
 import { useCart } from "@/lib/cart/context";
@@ -19,7 +25,11 @@ interface ShoppingCartProps {
   className?: string;
 }
 
-export function ShoppingCart({ locale, showHeader = true, className = "" }: ShoppingCartProps) {
+export function ShoppingCart({
+  locale,
+  showHeader = true,
+  className = "",
+}: ShoppingCartProps) {
   const t = useTranslations("cart");
   const { state, updateQuantity, removeItem, clearAllItems } = useCart();
   const router = useRouter();
@@ -62,7 +72,10 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
   };
 
   // Helper function to format customization display
-  const formatCustomizationDisplay = (customization: Customization, product?: any) => {
+  const formatCustomizationDisplay = (
+    customization: Customization,
+    product?: any
+  ) => {
     if (!product?.customizationOptions) return null;
 
     const option = product.customizationOptions.find(
@@ -117,16 +130,18 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
       <Card className={className} variant="default">
         <CardContent className="text-center py-16">
           <div className="w-16 h-16 bg-teal-800 rounded-full flex items-center justify-center mx-auto mb-6">
-            <ShoppingCartIcon className="w-8 h-8 text-teal-900" />
+            <ShoppingCartIcon className="w-8 h-8 text-amber-200" />
           </div>
 
-          <h2 className="text-2xl font-light text-stone-900 mb-4">{t("empty")}</h2>
+          <h2 className="text-2xl font-light text-amber-200 mb-4">
+            {t("empty")}
+          </h2>
 
-          <p className="text-stone-600 mb-8">{t("emptyDescription")}</p>
+          <p className="text-amber-100/50 mb-8">{t("emptyDescription")}</p>
 
           <Button
             variant="default"
-            className="bg-teal-900 hover:bg-amber-700"
+            className="bg-funeral-gold hover:bg-funeral-teal hover:text-funeral-gold text-teal-800"
             onClick={() => router.push(`/${locale}/products`)}
           >
             {t("continueShopping")}
@@ -136,15 +151,20 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
     );
   }
 
-  const subtotal = state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
+  const subtotal = state.items.reduce(
+    (sum, item) => sum + (item.totalPrice || 0),
+    0
+  );
   const itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0);
 
   return (
     <Card className={className} variant="default">
       {showHeader && (
         <CardHeader>
-          <CardTitle className="text-2xl font-light text-stone-900">{t("title")}</CardTitle>
-          <p className="text-stone-600 mt-1">
+          <CardTitle className="text-2xl font-light text-amber-200">
+            {t("title")}
+          </CardTitle>
+          <p className="text-amber-100/50 mt-1">
             {itemCount} {itemCount === 1 ? t("item") : t("items")}
           </p>
         </CardHeader>
@@ -156,15 +176,22 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
           {state.items.map((item) => (
             <div
               key={item.id}
-              className="flex items-start gap-4 p-4 border border-stone-200 rounded-lg"
+              className="flex items-start gap-4 p-4 border border-amber-200 rounded-lg"
             >
               {/* Product Image */}
-              <CartItemImage item={item} locale={locale} size="md" className="flex-shrink-0" />
+              <CartItemImage
+                item={item}
+                locale={locale}
+                size="md"
+                className="flex-shrink-0"
+              />
 
               {/* Product Details */}
               <div className="flex-1 min-w-0">
-                <h3 className="text-lg font-medium text-stone-900 mb-1">
-                  {item.product?.name[locale as keyof typeof item.product.name] ||
+                <h3 className="text-lg font-medium text-amber-200 mb-1">
+                  {item.product?.name[
+                    locale as keyof typeof item.product.name
+                  ] ||
                     item.product?.name.cs ||
                     "Product"}
                 </h3>
@@ -173,9 +200,12 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
                 {item.customizations && item.customizations.length > 0 && (
                   <div className="space-y-1 mb-2">
                     {item.customizations.map((customization, index) => {
-                      const display = formatCustomizationDisplay(customization, item.product);
+                      const display = formatCustomizationDisplay(
+                        customization,
+                        item.product
+                      );
                       return display ? (
-                        <p key={index} className="text-sm text-stone-600">
+                        <p key={index} className="text-sm text-amber-100">
                           {display}
                         </p>
                       ) : null;
@@ -189,17 +219,23 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
+                      onClick={() =>
+                        handleQuantityChange(item.id, item.quantity - 1)
+                      }
                       disabled={state.isLoading}
                       className="w-8 h-8 p-0"
                     >
                       -
                     </Button>
-                    <span className="w-8 text-center font-medium">{item.quantity}</span>
+                    <span className="w-8 text-center text-amber-100 font-medium">
+                      {item.quantity}
+                    </span>
                     <Button
                       variant="outline"
                       size="sm"
-                      onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
+                      onClick={() =>
+                        handleQuantityChange(item.id, item.quantity + 1)
+                      }
                       disabled={state.isLoading}
                       className="w-8 h-8 p-0"
                     >
@@ -212,7 +248,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
                     size="sm"
                     onClick={() => handleRemoveItem(item.id)}
                     disabled={state.isLoading}
-                    className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                    className="text-red-600 hover:text-red-700 hover:bg-amber-100"
                   >
                     {t("remove")}
                   </Button>
@@ -221,12 +257,15 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
 
               {/* Price */}
               <div className="flex-shrink-0 text-right">
-                <p className="text-lg font-semibold text-stone-900">
+                <p className="text-lg font-semibold text-amber-200">
                   {formatPrice(item.totalPrice || 0, locale as "cs" | "en")}
                 </p>
                 {item.quantity > 1 && (
-                  <p className="text-sm text-stone-600">
-                    {formatPrice((item.totalPrice || 0) / item.quantity, locale as "cs" | "en")}{" "}
+                  <p className="text-sm text-amber-100">
+                    {formatPrice(
+                      (item.totalPrice || 0) / item.quantity,
+                      locale as "cs" | "en"
+                    )}{" "}
                     {t("each")}
                   </p>
                 )}
@@ -246,8 +285,10 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
       {/* Cart Summary */}
       <CardFooter className="flex-col space-y-4">
         <div className="flex justify-between items-center w-full">
-          <span className="text-lg font-medium text-stone-900">{t("subtotal")}</span>
-          <span className="text-lg font-semibold text-stone-900">
+          <span className="text-lg font-medium text-amber-100">
+            {t("subtotal")}
+          </span>
+          <span className="text-lg font-semibold text-amber-100">
             {formatPrice(subtotal, locale as "cs" | "en")}
           </span>
         </div>
@@ -255,7 +296,9 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
         {/* Success Message */}
         {clearSuccess && (
           <div className="w-full p-3 bg-green-50 border border-green-200 rounded-lg">
-            <p className="text-green-800 text-sm text-center">{t("clearCartSuccess")}</p>
+            <p className="text-green-800 text-sm text-center">
+              {t("clearCartSuccess")}
+            </p>
           </div>
         )}
 
@@ -274,7 +317,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
             variant="default"
             size="lg"
             disabled={state.isLoading}
-            className="flex-1 bg-teal-900 hover:bg-amber-700 text-white"
+            className="flex-1 bg-funeral-gold hover:bg-funeral-gold text-teal-800"
             onClick={handleProceedToCheckout}
           >
             {t("proceedToCheckout")}

@@ -49,9 +49,9 @@ export function ProductCard({
 
   // Get primary and secondary images for hover effect
   const primaryImage =
-    product.images?.find((img) => img.isPrimary) || product.images?.[0];
+    product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
   const secondaryImage =
-    product.images?.find((img) => !img.isPrimary) || product.images?.[1];
+    product.images?.find((img: any) => !img.isPrimary) || product.images?.[1];
 
   // Use resolved image if no primary image exists (fallback scenario)
   const displayPrimaryImage = primaryImage || {

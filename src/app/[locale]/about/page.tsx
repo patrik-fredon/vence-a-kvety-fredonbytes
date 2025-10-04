@@ -35,11 +35,11 @@ export default async function AboutPage({ params }: AboutPageProps) {
         <div className="container mx-auto px-4">
           {/* Hero Text */}
           <div className="max-w-4xl mx-auto text-center mb-16">
-            <div className="bg-funeral-teal rounded-lg p-8 mb-8">
-              <h1 className="text-4xl md:text-5xl font-light mb-8 text-amber-100 leading-tight text-balance">
+            <div className=" rounded-lg p-8 mb-8">
+              <h1 className="text-4xl md:text-5xl font-light mb-8 text-teal-800 leading-tight text-balance">
                 {tAbout("title")}
               </h1>
-              <p className="text-lg text-amber-200 leading-relaxed mb-8">
+              <p className="text-lg text-teal-800 leading-relaxed mb-8">
                 {tAbout("mission")}
               </p>
             </div>
@@ -47,7 +47,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
           {/* Main Image - Reduced height */}
           <div className="mb-16">
-            <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96 bg-funeral-gold rounded-lg overflow-hidden">
+            <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96 bg-funeral-gold rounded-lg  shadow-xl overflow-hidden">
               <Image
                 src="https://cdn.fredonbytes.com/lily-arrangement-with-greenery-studio.webp"
                 alt={tAbout("companyDescription")}
@@ -102,17 +102,24 @@ export default async function AboutPage({ params }: AboutPageProps) {
               </div>
             </div>
 
-            <div className="border-2 border-amber-300 bg-teal-800/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
+            <div className="border-2 border-amber-300 bg-teal-800 backdrop-blur-lg rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
               <div className="aspect-square flex items-center justify-center p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-amber-300 rounded-full" />
+                  <div className="w-24 h-24 mx-auto mb-4   flex items-center justify-center">
+                    <Image
+                      src="/logo.svg"
+                      alt="Vence a kvety logo"
+                      width={256}
+                      height={100}
+                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+                      priority
+                    />
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-amber-100">
+                  <h2 className="text-lg font-medium mb-2 text-amber-300">
                     {tAbout("valuesTitle")}
-                  </h3>
-                  <p className="text-sm text-amber-100">
-                    {tAbout("companyDescription")}
+                  </h2>
+                  <p className="text-sm text-amber-200">
+                    {tAbout("valuesDescription")}
                   </p>
                 </div>
               </div>
@@ -124,30 +131,37 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   src="https://cdn.fredonbytes.com/handmade-lily-wreath-with-twine-rustic.webp"
                   alt={tAbout("companyDescription")}
                   fill
-                  className="object-cover"
+                  className="object-cover "
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
             </div>
 
-            <div className="border-2 border-amber-300 bg-teal-800/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
+            <div className="border-2 border-amber-300 bg-teal-800 shadow-2xl backdrop-blur-lg rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
               <div className="aspect-square flex items-center justify-center p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-amber-300 rounded-full" />
+                  <div className="w-24 h-24 mx-auto mb-4  flex items-center justify-center">
+                    <Image
+                      src="/logo.svg"
+                      alt="Vence a kvety logo"
+                      width={256}
+                      height={100}
+                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+                      priority
+                    />
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-amber-100">
+                  <h2 className="text-lg font-medium mb-2 text-amber-200">
                     {tAbout("storyTitle")}
-                  </h3>
+                  </h2>
                   <p className="text-sm text-amber-100">
-                    {tAbout("companyDescription")}
+                    {tAbout("storyDescription")}
                   </p>
                 </div>
               </div>
             </div>
 
             <div className="overflow-hidden rounded-lg">
-              <div className="aspect-square bg-funeral-gold relative">
+              <div className="aspect-square bg-funeral-teal relative">
                 <Image
                   src="https://cdn.fredonbytes.com/lily-funeral-wreath-making-process.webp"
                   alt={tAbout("companyDescription")}
@@ -158,17 +172,24 @@ export default async function AboutPage({ params }: AboutPageProps) {
               </div>
             </div>
 
-            <div className="border-2 border-amber-300 bg-teal-800/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
+            <div className="border-2 border-amber-300 bg-teal-800 backdrop-blur-lg rounded-lg shadow-2xl overflow-hidden hover:border-amber-200 transition-colors duration-300">
               <div className="aspect-square flex items-center justify-center p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-amber-300 rounded-full" />
+                  <div className="w-24 h-24 mx-auto mb-4  flex items-center justify-center">
+                    <Image
+                      src="/logo.svg"
+                      alt="Vence a kvety logo"
+                      width={256}
+                      height={100}
+                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+                      priority
+                    />
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-amber-100">
+                  <h2 className="text-lg font-medium mb-2  text-amber-200">
                     {tAbout("commitmentTitle")}
-                  </h3>
+                  </h2>
                   <p className="text-sm text-amber-100">
-                    {tAbout("companyDescription")}
+                    {tAbout("commitmentDescription")}
                   </p>
                 </div>
               </div>
