@@ -55,11 +55,6 @@ export default function ProductManagement() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
-  useEffect(() => {
-    fetchProducts();
-    fetchCategories();
-  }, [fetchCategories, fetchProducts]);
-
   const fetchProducts = async () => {
     try {
       setLoading(true);
@@ -100,6 +95,11 @@ export default function ProductManagement() {
       console.error("Failed to fetch categories:", error);
     }
   };
+
+  useEffect(() => {
+    fetchProducts();
+    fetchCategories();
+  }, [fetchCategories, fetchProducts]);
 
   const handleCreateProduct = () => {
     setEditingProduct(null);
@@ -188,7 +188,9 @@ export default function ProductManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-stone-900">{t("productManagement")}</h2>
+        <h2 className="text-2xl font-bold text-stone-900">
+          {t("productManagement")}
+        </h2>
         <Button
           onClick={handleCreateProduct}
           icon={<PlusIcon className="h-5 w-5" />}
@@ -233,7 +235,9 @@ export default function ProductManagement() {
               onChange={(e) => setShowActiveOnly(e.target.checked)}
               className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
             />
-            <span className="ml-2 text-sm text-stone-700">{t("onlyActive")}</span>
+            <span className="ml-2 text-sm text-stone-700">
+              {t("onlyActive")}
+            </span>
           </label>
 
           {/* Results count */}
@@ -279,8 +283,12 @@ export default function ProductManagement() {
                   <tr key={product.id} className="hover:bg-stone-50">
                     <td className="px-6 py-4">
                       <div>
-                        <div className="text-sm font-medium text-stone-900">{product.name_cs}</div>
-                        <div className="text-sm text-stone-500">{product.slug}</div>
+                        <div className="text-sm font-medium text-stone-900">
+                          {product.name_cs}
+                        </div>
+                        <div className="text-sm text-stone-500">
+                          {product.slug}
+                        </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
@@ -296,14 +304,16 @@ export default function ProductManagement() {
                             product.stock_quantity === 0
                               ? "text-red-600"
                               : product.stock_quantity <= 5
-                                ? "text-amber-600"
-                                : "text-green-600"
+                              ? "text-amber-600"
+                              : "text-green-600"
                           }`}
                         >
                           {product.stock_quantity} {t("pieces")}
                         </span>
                       ) : (
-                        <span className="text-stone-500">{t("notTracked")}</span>
+                        <span className="text-stone-500">
+                          {t("notTracked")}
+                        </span>
                       )}
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -329,7 +339,9 @@ export default function ProductManagement() {
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => window.open(`/products/${product.slug}`, "_blank")}
+                          onClick={() =>
+                            window.open(`/products/${product.slug}`, "_blank")
+                          }
                           title={t("view")}
                         >
                           <EyeIcon className="h-4 w-4" />
@@ -378,7 +390,9 @@ export default function ProductManagement() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
+                onClick={() =>
+                  setCurrentPage(Math.min(totalPages, currentPage + 1))
+                }
                 disabled={currentPage === totalPages}
               >
                 {t("next")}
@@ -392,7 +406,9 @@ export default function ProductManagement() {
       {deleteProduct && (
         <DeleteConfirmModal
           title={t("deleteProduct")}
-          message={`${t("deleteProductConfirm")} "${deleteProduct.name_cs}"? ${t("actionIrreversible")}`}
+          message={`${t("deleteProductConfirm")} "${
+            deleteProduct.name_cs
+          }"? ${t("actionIrreversible")}`}
           onConfirm={() => handleDeleteProduct(deleteProduct)}
           onCancel={() => setDeleteProduct(null)}
         />

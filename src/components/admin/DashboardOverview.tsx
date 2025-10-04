@@ -8,7 +8,7 @@ import {
   ShoppingBagIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 interface DashboardStats {
   orders: {
@@ -43,7 +43,7 @@ export default function DashboardOverview({
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  const fetchRecentOrders = async () => {
+  const fetchRecentOrders = useCallback(async () => {
     try {
       const response = await fetch("/api/admin/orders?limit=5");
       if (response.ok) {
@@ -55,7 +55,7 @@ export default function DashboardOverview({
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
 
   useEffect(() => {
     fetchRecentOrders();

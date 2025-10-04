@@ -1,21 +1,29 @@
 "use client";
 
 import { useParams } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { OrderHistory } from "@/components/order/OrderHistory";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { useAuth, useSignOut, useUpdateProfile } from "@/lib/auth/hooks";
-import { type Address, defaultUserPreferences, type UserPreferences } from "@/types/user";
+import {
+  type Address,
+  defaultUserPreferences,
+  type UserPreferences,
+} from "@/types/user";
 import { AddressBook } from "./AddressBook";
 
 export function UserProfile() {
   const { user } = useAuth();
-  const { updateProfile, loading: updateLoading, error: updateError } = useUpdateProfile();
+  const {
+    updateProfile,
+    loading: updateLoading,
+    error: updateError,
+  } = useUpdateProfile();
   const { signOut, loading: signOutLoading } = useSignOut();
   const params = useParams();
-  const locale = (params?.locale as string) || "cs";
+  const locale = (params?.["locale"] as string) || "cs";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -23,24 +31,16 @@ export function UserProfile() {
   });
 
   const [addresses, setAddresses] = useState<Address[]>([]);
-  const [preferences, setPreferences] = useState<UserPreferences>(defaultUserPreferences);
+  const [preferences, setPreferences] = useState<UserPreferences>(
+    defaultUserPreferences
+  );
   const [isEditing, setIsEditing] = useState(false);
   const [successMessage, setSuccessMessage] = useState("");
-  const [activeTab, setActiveTab] = useState<"profile" | "orders" | "addresses" | "preferences">(
-    "profile"
-  );
+  const [activeTab, setActiveTab] = useState<
+    "profile" | "orders" | "addresses" | "preferences"
+  >("profile");
 
-  useEffect(() => {
-    if (user) {
-      setFormData({
-        name: user.name || "",
-        phone: user.phone || "",
-      });
-      loadUserProfile();
-    }
-  }, [user, loadUserProfile]);
-
-  const loadUserProfile = async () => {
+  const loadUserProfile = useCallback(async () => {
     try {
       const response = await fetch("/api/auth/profile");
       if (response.ok) {
@@ -53,7 +53,17 @@ export function UserProfile() {
     } catch (error) {
       console.error("Error loading user profile:", error);
     }
-  };
+  }, [preferences, setAddresses, setPreferences]);
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name || "",
+        phone: user.phone || "",
+      });
+      loadUserProfile();
+    }
+  }, [user, loadUserProfile, setFormData]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -68,7 +78,9 @@ export function UserProfile() {
     if (result.success) {
       setIsEditing(false);
       setSuccessMessage(
-        locale === "cs" ? "Profil byl úspěšně aktualizován" : "Profile updated successfully"
+        locale === "cs"
+          ? "Profil byl úspěšně aktualizován"
+          : "Profile updated successfully"
       );
       setTimeout(() => setSuccessMessage(""), 3000);
     }
@@ -125,7 +137,9 @@ export function UserProfile() {
           <div className="flex justify-between items-center">
             <div>
               <h1 className="text-3xl font-light text-stone-900">Můj účet</h1>
-              <p className="text-stone-600 mt-1">Spravujte své údaje a nastavení</p>
+              <p className="text-stone-600 mt-1">
+                Spravujte své údaje a nastavení
+              </p>
             </div>
             <Button
               variant="outline"
@@ -138,8 +152,8 @@ export function UserProfile() {
                   ? "Odhlašování..."
                   : "Signing out..."
                 : locale === "cs"
-                  ? "Odhlásit se"
-                  : "Sign Out"}
+                ? "Odhlásit se"
+                : "Sign Out"}
             </Button>
           </div>
         </div>
@@ -148,19 +162,21 @@ export function UserProfile() {
         <Card className="mb-6">
           <div className="border-b border-stone-200">
             <nav className="-mb-px flex space-x-8 px-6 overflow-x-auto">
-              {(["profile", "orders", "addresses", "preferences"] as const).map((tab) => (
-                <button
-                  key={tab}
-                  onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
-                    activeTab === tab
-                      ? "border-amber-600 text-amber-600"
-                      : "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
-                  }`}
-                >
-                  {getTabLabel(tab)}
-                </button>
-              ))}
+              {(["profile", "orders", "addresses", "preferences"] as const).map(
+                (tab) => (
+                  <button
+                    key={tab}
+                    onClick={() => setActiveTab(tab)}
+                    className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
+                      activeTab === tab
+                        ? "border-amber-600 text-amber-600"
+                        : "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
+                    }`}
+                  >
+                    {getTabLabel(tab)}
+                  </button>
+                )
+              )}
             </nav>
           </div>
         </Card>
@@ -172,7 +188,11 @@ export function UserProfile() {
               <div className="mb-6 bg-green-50 border border-green-200 rounded-md p-4">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-green-400" viewBox="0 0 20 20" fill="currentColor">
+                    <svg
+                      className="h-5 w-5 text-green-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
                       <path
                         fillRule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
@@ -198,7 +218,11 @@ export function UserProfile() {
                     label={locale === "cs" ? "E-mail" : "Email"}
                     value={user.email}
                     disabled
-                    helpText={locale === "cs" ? "E-mail nelze změnit" : "Email cannot be changed"}
+                    helpText={
+                      locale === "cs"
+                        ? "E-mail nelze změnit"
+                        : "Email cannot be changed"
+                    }
                   />
 
                   <Input
@@ -267,8 +291,8 @@ export function UserProfile() {
                             ? "Ukládání..."
                             : "Saving..."
                           : locale === "cs"
-                            ? "Uložit změny"
-                            : "Save Changes"}
+                          ? "Uložit změny"
+                          : "Save Changes"}
                       </Button>
                     </>
                   ) : (
@@ -308,8 +332,8 @@ export function UserProfile() {
                         ? "Ukládání..."
                         : "Saving..."
                       : locale === "cs"
-                        ? "Uložit adresy"
-                        : "Save Addresses"}
+                      ? "Uložit adresy"
+                      : "Save Addresses"}
                   </Button>
                 </div>
               </div>
@@ -331,7 +355,11 @@ export function UserProfile() {
                         value="cs"
                         checked={preferences.language === "cs"}
                         onChange={(e) =>
-                          handlePreferenceChange("language", "language", e.target.value)
+                          handlePreferenceChange(
+                            "language",
+                            "language",
+                            e.target.value
+                          )
                         }
                         className="mr-3 text-amber-600 focus:ring-amber-500"
                       />
@@ -344,7 +372,11 @@ export function UserProfile() {
                         value="en"
                         checked={preferences.language === "en"}
                         onChange={(e) =>
-                          handlePreferenceChange("language", "language", e.target.value)
+                          handlePreferenceChange(
+                            "language",
+                            "language",
+                            e.target.value
+                          )
                         }
                         className="mr-3 text-amber-600 focus:ring-amber-500"
                       />
@@ -361,13 +393,19 @@ export function UserProfile() {
                   <div className="space-y-3">
                     <label className="flex items-center justify-between">
                       <span className="text-sm text-stone-700">
-                        {locale === "cs" ? "E-mailová oznámení" : "Email Notifications"}
+                        {locale === "cs"
+                          ? "E-mailová oznámení"
+                          : "Email Notifications"}
                       </span>
                       <input
                         type="checkbox"
                         checked={preferences.notifications.email}
                         onChange={(e) =>
-                          handlePreferenceChange("notifications", "email", e.target.checked)
+                          handlePreferenceChange(
+                            "notifications",
+                            "email",
+                            e.target.checked
+                          )
                         }
                         className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />
@@ -380,33 +418,49 @@ export function UserProfile() {
                         type="checkbox"
                         checked={preferences.notifications.sms}
                         onChange={(e) =>
-                          handlePreferenceChange("notifications", "sms", e.target.checked)
+                          handlePreferenceChange(
+                            "notifications",
+                            "sms",
+                            e.target.checked
+                          )
                         }
                         className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-sm text-stone-700">
-                        {locale === "cs" ? "Aktualizace objednávek" : "Order Updates"}
+                        {locale === "cs"
+                          ? "Aktualizace objednávek"
+                          : "Order Updates"}
                       </span>
                       <input
                         type="checkbox"
                         checked={preferences.notifications.orderUpdates}
                         onChange={(e) =>
-                          handlePreferenceChange("notifications", "orderUpdates", e.target.checked)
+                          handlePreferenceChange(
+                            "notifications",
+                            "orderUpdates",
+                            e.target.checked
+                          )
                         }
                         className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-sm text-stone-700">
-                        {locale === "cs" ? "Propagační nabídky" : "Promotional Offers"}
+                        {locale === "cs"
+                          ? "Propagační nabídky"
+                          : "Promotional Offers"}
                       </span>
                       <input
                         type="checkbox"
                         checked={preferences.notifications.promotions}
                         onChange={(e) =>
-                          handlePreferenceChange("notifications", "promotions", e.target.checked)
+                          handlePreferenceChange(
+                            "notifications",
+                            "promotions",
+                            e.target.checked
+                          )
                         }
                         className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />
@@ -428,20 +482,30 @@ export function UserProfile() {
                         type="checkbox"
                         checked={preferences.privacy.shareData}
                         onChange={(e) =>
-                          handlePreferenceChange("privacy", "shareData", e.target.checked)
+                          handlePreferenceChange(
+                            "privacy",
+                            "shareData",
+                            e.target.checked
+                          )
                         }
                         className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />
                     </label>
                     <label className="flex items-center justify-between">
                       <span className="text-sm text-stone-700">
-                        {locale === "cs" ? "Povolit analytiku" : "Allow Analytics"}
+                        {locale === "cs"
+                          ? "Povolit analytiku"
+                          : "Allow Analytics"}
                       </span>
                       <input
                         type="checkbox"
                         checked={preferences.privacy.analytics}
                         onChange={(e) =>
-                          handlePreferenceChange("privacy", "analytics", e.target.checked)
+                          handlePreferenceChange(
+                            "privacy",
+                            "analytics",
+                            e.target.checked
+                          )
                         }
                         className="rounded border-stone-300 text-amber-600 focus:ring-amber-500"
                       />
@@ -460,8 +524,8 @@ export function UserProfile() {
                         ? "Ukládání..."
                         : "Saving..."
                       : locale === "cs"
-                        ? "Uložit nastavení"
-                        : "Save Preferences"}
+                      ? "Uložit nastavení"
+                      : "Save Preferences"}
                   </Button>
                 </div>
               </div>
