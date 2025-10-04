@@ -43,14 +43,19 @@ export function ProductDetailImageGrid({
     );
   }
 
+  const firstImage = images[0];
+  if (!firstImage) {
+    return null;
+  }
+
   // Single image - display large
   if (images.length === 1) {
     return (
       <div className={cn("w-full", className)}>
         <div className="relative overflow-hidden rounded-lg bg-teal-900 aspect-square w-full">
           <Image
-            src={images[0].url}
-            alt={images[0].alt || productName}
+            src={firstImage.url}
+            alt={firstImage.alt || productName}
             fill
             sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
             className="object-cover"
@@ -68,8 +73,8 @@ export function ProductDetailImageGrid({
       {/* Main image - first image displayed prominently */}
       <div className="relative overflow-hidden rounded-lg bg-teal-900 aspect-square w-full">
         <Image
-          src={images[0].url}
-          alt={images[0].alt || productName}
+          src={firstImage.url}
+          alt={firstImage.alt || productName}
           fill
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
           className="object-cover"

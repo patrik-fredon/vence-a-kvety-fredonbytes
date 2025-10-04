@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Core Web Vitals Measurement Tool</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Oxygen, Ubuntu, Cantarell, sans-serif;
+        background: linear-gradient(135deg, #115e59 0%, #0f766e 100%);
+        color: #fef3c7;
+        padding: 2rem;
+        min-height: 100vh;
+      }
+
+      .container {
+        max-width: 1200px;
+        margin: 0 auto;
+        background: rgba(255, 255, 255, 0.1);
+        backdrop-filter: blur(10px);
+        border-radius: 1rem;
+        padding: 2rem;
+        box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 0.5rem;
+        color: #fef3c7;
+      }
+
+      .subtitle {
+        color: #fde68a;
+        margin-bottom: 2rem;
+        font-size: 1.1rem;
+      }
+
+      .instructions {
+        background: rgba(254, 243, 199, 0.1);
+        border-left: 4px solid #fde68a;
+        padding: 1rem;
+        margin-bottom: 2rem;
+        border-radius: 0.5rem;
+      }
+
+      .instructions h2 {
+        font-size: 1.2rem;
+        margin-bottom: 0.5rem;
+        color: #fde68a;
+      }
+
+      .instructions ol {
+        margin-left: 1.5rem;
+        line-height: 1.8;
+      }
+
+      .metrics-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 1.5rem;
+        margin-bottom: 2rem;
+      }
+
+      .metric-card {
+        background: rgba(255, 255, 255, 0.15);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+      }
+
+      .metric-card:hover {
+        border-color: #fde68a;
+        transform: translateY(-2px);
+      }
+
+      .metric-card.good {
+        border-color: #10b981;
+        background: rgba(16, 185, 129, 0.1);
+      }
+
+      .metric-card.needs-improvement {
+        border-color: #f59e0b;
+        background: rgba(245, 158, 11, 0.1);
+      }
+
+      .metric-card.poor {
+        border-color: #ef4444;
+        background: rgba(239, 68, 68, 0.1);
+      }
+
+      .metric-name {
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #fde68a;
+        margin-bottom: 0.5rem;
+      }
+
+      .metric-value {
+        font-size: 2.5rem;
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #fef3c7;
+      }
+
+      .metric-description {
+        font-size: 0.875rem;
+        color: #fde68a;
+        line-height: 1.5;
+      }
+
+      .metric-target {
+        font-size: 0.75rem;
+        color: #fde68a;
+        margin-top: 0.5rem;
+        opacity: 0.8;
+      }
+
+      .status-badge {
+        display: inline-block;
+        padding: 0.25rem 0.75rem;
+        border-radius: 9999px;
+        font-size: 0.75rem;
+        font-weight: 600;
+        margin-top: 0.5rem;
+      }
+
+      .status-badge.good {
+        background: #10b981;
+        color: white;
+      }
+
+      .status-badge.needs-improvement {
+        background: #f59e0b;
+        color: white;
+      }
+
+      .status-badge.poor {
+        background: #ef4444;
+        color: white;
+      }
+
+      .loading {
+        text-align: center;
+        padding: 2rem;
+        color: #fde68a;
+      }
+
+      .spinner {
+        border: 3px solid rgba(254, 243, 199, 0.3);
+        border-top: 3px solid #fde68a;
+        border-radius: 50%;
+        width: 40px;
+        height: 40px;
+        animation: spin 1s linear infinite;
+        margin: 0 auto 1rem;
+      }
+
+      @keyframes spin {
+        0% {
+          transform: rotate(0deg);
+        }
+        100% {
+          transform: rotate(360deg);
+        }
+      }
+
+      .summary {
+        background: rgba(254, 243, 199, 0.1);
+        border-radius: 0.75rem;
+        padding: 1.5rem;
+        margin-top: 2rem;
+      }
+
+      .summary h2 {
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+        color: #fde68a;
+      }
+
+      .summary-item {
+        display: flex;
+        justify-content: space-between;
+        padding: 0.75rem 0;
+        border-bottom: 1px solid rgba(254, 243, 199, 0.2);
+      }
+
+      .summary-item:last-child {
+        border-bottom: none;
+      }
+
+      code {
+        background: rgba(0, 0, 0, 0.3);
+        padding: 0.25rem 0.5rem;
+        border-radius: 0.25rem;
+        font-family: "Courier New", monospace;
+        font-size: 0.875rem;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>📊 Core Web Vitals Measurement</h1>
+      <p class="subtitle">Real-time performance metrics for Vence a kvety</p>
+
+      <div class="instructions">
+        <h2>📋 How to Use</h2>
+        <ol>
+          <li>
+            Open this file in your browser while the development server is
+            running
+          </li>
+          <li>
+            Navigate to the page you want to measure (e.g.,
+            <code>http://localhost:3000/cs</code>)
+          </li>
+          <li>
+            Open DevTools (F12) and paste the measurement code from the Console
+            tab
+          </li>
+          <li>Interact with the page normally (click, scroll, etc.)</li>
+          <li>Wait for metrics to be collected (may take a few seconds)</li>
+        </ol>
+      </div>
+
+      <div id="loading" class="loading">
+        <div class="spinner"></div>
+        <p>Waiting for Web Vitals data...</p>
+        <p style="margin-top: 1rem; font-size: 0.875rem">
+          Open DevTools Console and paste the measurement code
+        </p>
+      </div>
+
+      <div id="metrics" class="metrics-grid" style="display: none"></div>
+
+      <div id="summary" class="summary" style="display: none">
+        <h2>📈 Summary</h2>
+        <div id="summary-content"></div>
+      </div>
+    </div>
+
+    <script type="module">
+      // Import web-vitals from CDN
+      import {
+        onCLS,
+        onFID,
+        onLCP,
+        onFCP,
+        onTTFB,
+      } from "https://unpkg.com/web-vitals@3?module";
+
+      const metrics = {
+        lcp: null,
+        fid: null,
+        cls: null,
+        fcp: null,
+        ttfb: null,
+      };
+
+      const thresholds = {
+        lcp: { good: 2500, poor: 4000 },
+        fid: { good: 100, poor: 300 },
+        cls: { good: 0.1, poor: 0.25 },
+        fcp: { good: 1800, poor: 3000 },
+        ttfb: { good: 800, poor: 1800 },
+      };
+
+      function getStatus(metric, value) {
+        if (value <= thresholds[metric].good) return "good";
+        if (value <= thresholds[metric].poor) return "needs-improvement";
+        return "poor";
+      }
+
+      function formatValue(metric, value) {
+        if (metric === "cls") {
+          return value.toFixed(3);
+        }
+        return `${Math.round(value)}ms`;
+      }
+
+      function updateMetric(name, value) {
+        metrics[name] = value;
+        renderMetrics();
+      }
+
+      function renderMetrics() {
+        const metricsContainer = document.getElementById("metrics");
+        const loadingContainer = document.getElementById("loading");
+        const summaryContainer = document.getElementById("summary");
+
+        // Hide loading, show metrics
+        loadingContainer.style.display = "none";
+        metricsContainer.style.display = "grid";
+
+        metricsContainer.innerHTML = "";
+
+        const metricConfigs = {
+          lcp: {
+            name: "LCP",
+            fullName: "Largest Contentful Paint",
+            description: "Time until the largest content element is visible",
+            target: "< 2.5s",
+          },
+          fid: {
+            name: "FID",
+            fullName: "First Input Delay",
+            description: "Time from first user interaction to browser response",
+            target: "< 100ms",
+          },
+          cls: {
+            name: "CLS",
+            fullName: "Cumulative Layout Shift",
+            description: "Visual stability - measures unexpected layout shifts",
+            target: "< 0.1",
+          },
+          fcp: {
+            name: "FCP",
+            fullName: "First Contentful Paint",
+            description: "Time until first content is painted",
+            target: "< 1.8s",
+          },
+          ttfb: {
+            name: "TTFB",
+            fullName: "Time to First Byte",
+            description: "Time until first byte is received from server",
+            target: "< 800ms",
+          },
+        };
+
+        for (const [key, config] of Object.entries(metricConfigs)) {
+          const value = metrics[key];
+          if (value === null) continue;
+
+          const status = getStatus(key, value);
+          const formattedValue = formatValue(key, value);
+
+          const card = document.createElement("div");
+          card.className = `metric-card ${status}`;
+          card.innerHTML = `
+          <div class="metric-name">${config.fullName} (${config.name})</div>
+          <div class="metric-value">${formattedValue}</div>
+          <div class="metric-description">${config.description}</div>
+          <div class="metric-target">Target: ${config.target}</div>
+          <span class="status-badge ${status}">
+            ${
+              status === "good"
+                ? "✅ Good"
+                : status === "needs-improvement"
+                ? "⚠️ Needs Improvement"
+                : "❌ Poor"
+            }
+          </span>
+        `;
+
+          metricsContainer.appendChild(card);
+        }
+
+        // Update summary
+        const allMetricsCollected = Object.values(metrics).every(
+          (v) => v !== null
+        );
+        if (allMetricsCollected) {
+          summaryContainer.style.display = "block";
+          const summaryContent = document.getElementById("summary-content");
+
+          const coreWebVitalsPassed =
+            getStatus("lcp", metrics.lcp) === "good" &&
+            getStatus("fid", metrics.fid) === "good" &&
+            getStatus("cls", metrics.cls) === "good";
+
+          summaryContent.innerHTML = `
+          <div class="summary-item">
+            <span>Core Web Vitals Status:</span>
+            <strong>${
+              coreWebVitalsPassed ? "✅ All Passed" : "❌ Some Failed"
+            }</strong>
+          </div>
+          <div class="summary-item">
+            <span>LCP Status:</span>
+            <strong>${
+              getStatus("lcp", metrics.lcp) === "good" ? "✅" : "❌"
+            } ${formatValue("lcp", metrics.lcp)}</strong>
+          </div>
+          <div class="summary-item">
+            <span>FID Status:</span>
+            <strong>${
+              getStatus("fid", metrics.fid) === "good" ? "✅" : "❌"
+            } ${formatValue("fid", metrics.fid)}</strong>
+          </div>
+          <div class="summary-item">
+            <span>CLS Status:</span>
+            <strong>${
+              getStatus("cls", metrics.cls) === "good" ? "✅" : "❌"
+            } ${formatValue("cls", metrics.cls)}</strong>
+          </div>
+          <div class="summary-item">
+            <span>Timestamp:</span>
+            <strong>${new Date().toLocaleString()}</strong>
+          </div>
+        `;
+        }
+      }
+
+      // Set up Web Vitals listeners
+      onLCP((metric) => {
+        console.log("LCP:", metric);
+        updateMetric("lcp", metric.value);
+      });
+
+      onFID((metric) => {
+        console.log("FID:", metric);
+        updateMetric("fid", metric.value);
+      });
+
+      onCLS((metric) => {
+        console.log("CLS:", metric);
+        updateMetric("cls", metric.value);
+      });
+
+      onFCP((metric) => {
+        console.log("FCP:", metric);
+        updateMetric("fcp", metric.value);
+      });
+
+      onTTFB((metric) => {
+        console.log("TTFB:", metric);
+        updateMetric("ttfb", metric.value);
+      });
+
+      console.log(
+        "📊 Web Vitals measurement started. Interact with the page to collect metrics."
+      );
+    </script>
+  </body>
+</html>

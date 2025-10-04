@@ -64,7 +64,7 @@ export function testKeyboardNavigation(
   let inaccessibleCount = 0;
   let tabOrderIssues = 0;
 
-  elements.forEach((element, index) => {
+  elements.forEach((element) => {
     const htmlElement = element as HTMLElement;
     const issues: string[] = [];
 

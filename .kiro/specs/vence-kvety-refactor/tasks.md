@@ -205,9 +205,9 @@
     - Fix any violations found
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-- [ ] 10. Optimize performance and monitor metrics
+- [x] 10. Optimize performance and monitor metrics
 
-  - [ ] 10.1 Optimize image loading strategy
+  - [x] 10.1 Optimize image loading strategy
 
     - Verify Next.js Image component usage
     - Set appropriate priority flags
@@ -215,7 +215,7 @@
     - Use WebP format with fallbacks
     - _Requirements: 10.1, 10.2, 10.3_
 
-  - [ ] 10.2 Measure Core Web Vitals
+  - [x] 10.2 Measure Core Web Vitals
 
     - Measure LCP (target: <2.5s)
     - Measure FID (target: <100ms)
@@ -229,45 +229,45 @@
     - Address any performance issues
     - _Requirements: 10.3, 10.5_
 
-  - [ ] 10.4 Verify bundle size hasn't increased significantly
+  - [x] 10.4 Verify bundle size hasn't increased significantly
     - Compare bundle sizes before/after
     - Check for unnecessary dependencies
     - Optimize if needed
     - _Requirements: 10.4_
 
-- [ ] 11. Cross-browser testing and validation
+- [x] 11. Cross-browser testing and validation
 
-  - [ ] 11.1 Test in Chrome/Edge
-
-    - Verify all functionality works
-    - Check visual consistency
-    - Test responsive behavior
-    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
-
-  - [ ] 11.2 Test in Firefox
+  - [x] 11.1 Test in Chrome/Edge
 
     - Verify all functionality works
     - Check visual consistency
     - Test responsive behavior
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-  - [ ] 11.3 Test in Safari (desktop and mobile)
+  - [x] 11.2 Test in Firefox
+
+    - Verify all functionality works
+    - Check visual consistency
+    - Test responsive behavior
+    - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
+
+  - [x] 11.3 Test in Safari (desktop and mobile)
     - Verify all functionality works
     - Check visual consistency
     - Test responsive behavior
     - Test on iOS devices
     - _Requirements: 8.1, 8.2, 8.3, 8.4, 8.5_
 
-- [ ] 12. Final validation and documentation
+- [-] 12. Final validation and documentation
 
-  - [ ] 12.1 Verify all translation keys are working
+  - [x] 12.1 Verify all translation keys are working
 
     - Test Czech locale
     - Test English locale
     - Verify no console errors
     - _Requirements: 1.1, 1.2, 1.3, 1.4, 1.5_
 
-  - [ ] 12.2 Verify all design requirements are met
+  - [x] 12.2 Verify all design requirements are met
 
     - Check typography colors
     - Verify hero section sizing

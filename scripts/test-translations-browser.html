@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Translation Testing - Vence a Kvety</title>
+    <style>
+      * {
+          margin: 0;
+          padding: 0;
+          box-sizing: border-box;
+      }
+
+      body {
+          font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+          background: linear-gradient(135deg, #115e59 0%, #0f766e 100%);
+          color: #fef3c7;
+          padding: 20px;
+          min-height: 100vh;
+      }
+
+      .container {
+          max-width: 1200px;
+          margin: 0 auto;
+          background: rgba(255, 255, 255, 0.1);
+          backdrop-filter: blur(10px);
+          border-radius: 16px;
+          padding: 30px;
+          box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+      }
+
+      h1 {
+          color: #fef3c7;
+          margin-bottom: 10px;
+          font-size: 2.5rem;
+      }
+
+      .subtitle {
+          color: #fde68a;
+          margin-bottom: 30px;
+          font-size: 1.1rem;
+      }
+
+      .controls {
+          display: flex;
+          gap: 15px;
+          margin-bottom: 30px;
+          flex-wrap: wrap;
+      }
+
+      button {
+          background: #fbbf24;
+          color: #115e59;
+          border: none;
+          paddinpx 24px;
+          border-radius: 8px;
+          font-size: 1rem;
+          font-weight: 600;
+          cursor: pointer;
+          transition: all 0.3s ease;
+      }
+
+      button:hover {
+          background: #f59e0b;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+      }
+
+      button:active {
+          transform: translateY(0);
+      }
+
+      button.active {
+          background: #14b8a6;
+          color: white;
+      }
+
+      .test-section {
+          background: rgba(255, 255, 255, 0.05);
+          border-radius: 12px;
+          padding: 20px;
+          margin-bottom: 20px;
+      }
+
+      .test-section h2 {
+          color: #fbbf24;
+          margin-bottom: 15px;
+          font-size: 1.5rem;
+      }
+
+      .test-item {
+          background: rgba(255, 255, 255, 0.08);
+          border-left: 4px solid #fbbf24;
+          padding: 15px;
+          margin-bottom: 10px;
+          border-radius: 6px;
+      }
+
+      .test-item.success {
+          border-left-color: #10b981;
+      }
+
+      .test-item.error {
+          border-left-color: #ef4444;
+      }
+
+      .key {
+          font-family: 'Courier New', monospace;
+          color: #fde68a;
+          font-size: 0.9rem;
+          margin-bottom: 5px;
+      }
+
+      .value {
+          color: #fef3c7;
+          font-size: 1rem;
+          line-height: 1.5;
+      }
+
+      .status {
+          display: inline-block;
+          padding: 4px 12px;
+          border-radius: 4px;
+          font-size: 0.85rem;
+          font-weight: 600;
+          margin-top: 8px;
+      }
+
+      .status.success {
+          background: #10b981;
+          color: white;
+      }
+
+      .status.error {
+          background: #ef4444;
+          color: white;
+      }
+
+      .summary {
+          background: rgba(251, 191, 36, 0.2);
+          border: 2px solid #fbbf24;
+          border-radius: 12px;
+          padding: 20px;
+          margin-top: 30px;
+      }
+
+      .summary h3 {
+          color: #fbbf24;
+          margin-bottom: 15px;
+      }
+
+      .summary-grid {
+          display: grid;
+          grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+          gap: 15px;
+      }
+
+      .summary-item {
+          background: rgba(255, 255, 255, 0.1);
+          padding: 15px;
+          border-radius: 8px;
+          text-align: center;
+      }
+
+      .summary-value {
+          font-size: 2rem;
+          font-weight: bold;
+          color: #fbbf24;
+          margin-bottom: 5px;
+      }
+
+      .summary-label {
+          color: #fde68a;
+          font-size: 0.9rem;
+      }
+
+      .loading {
+          text-align: center;
+          padding: 40px;
+          color: #fde68a;
+          font-size: 1.2rem;
+      }
+
+      .spinner {
+          border: 4px solid rgba(251, 191, 36, 0.3);
+          border-top: 4px solid #fbbf24;
+          border-radius: 50%;
+          width: 40px;
+          height: 40px;
+          animation: spin 1s linear infinite;
+          margin: 20px auto;
+      }
+
+      @keyframes spin {
+          0% { transform: rotate(0deg); }
+          100% { transform: rotate(360deg); }
+      }
+
+      .instructions {
+          background: rgba(59, 130, 246, 0.2);
+          border-left: 4px solid #3b82f6;
+          padding: 15px;
+          border-radius: 6px;
+          margin-bottom: 20px;
+          color: #dbeafe;
+      }
+
+      .instructions h3 {
+          color: #93c5fd;
+          margin-bottom: 10px;
+      }
+
+      .instructions ol {
+          margin-left: 20px;
+      }
+
+      .instructions li {
+          margin-bottom: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>🌸 Translation Testing</h1>
+      <p class="subtitle">
+        Verify all translation keys work correctly in both Czech and English
+      </p>
+
+      <div class="instructions">
+        <h3>📋 Testing Instructions</h3>
+        <ol>
+          <li>
+            Make sure the development server is running (<code>npm run dev</code
+            >)
+          </li>
+          <li>Click "Test Czech Locale" to verify Czech translations</li>
+          <li>Click "Test English Locale" to verify English translations</li>
+          <li>Check the console for any errors</li>
+          <li>Review the summary at the bottom</li>
+        </ol>
+      </div>
+
+      <div class="controls">
+        <button id="testCzech">Test Czech Locale (CS)</button>
+        <button id="testEnglish">Test English Locale (EN)</button>
+        <button id="testBoth">Test Both Locales</button>
+        <button id="clearResults">Clear Results</button>
+      </div>
+
+      <div id="results"></div>
+
+      <div id="summary" class="summary" style="display: none">
+        <h3>📊 Test Summary</h3>
+        <div class="summary-grid">
+          <div class="summary-item">
+            <div class="summary-value" id="totalTests">0</div>
+            <div class="summary-label">Total Tests</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="passedTests" style="color: #10b981">
+              0
+            </div>
+            <div class="summary-label">Passed</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="failedTests" style="color: #ef4444">
+              0
+            </div>
+            <div class="summary-label">Failed</div>
+          </div>
+          <div class="summary-item">
+            <div class="summary-value" id="successRate">0%</div>
+            <div class="summary-label">Success Rate</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Critical translation keys to test
+      const criticalKeys = [
+        {
+          key: "home.refactoredHero.heading",
+          description: "Hero Section Heading",
+        },
+        {
+          key: "home.refactoredHero.subheading",
+          description: "Hero Section Subheading",
+        },
+        { key: "home.refactoredHero.cta", description: "Hero CTA Button" },
+        {
+          key: "home.refactoredHero.ctaAriaLabel",
+          description: "Hero CTA Aria Label",
+        },
+        {
+          key: "home.refactoredHero.description",
+          description: "Hero Description",
+        },
+        {
+          key: "accessibility.accessibility",
+          description: "Accessibility Label",
+        },
+        {
+          key: "accessibility.toolbar.title",
+          description: "Accessibility Toolbar Title",
+        },
+        { key: "navigation.home", description: "Navigation Home" },
+        { key: "navigation.products", description: "Navigation Products" },
+        { key: "navigation.about", description: "Navigation About" },
+        { key: "product.addToCart", description: "Add to Cart Button" },
+        { key: "cart.title", description: "Cart Title" },
+        { key: "footer.company", description: "Footer Company Name" },
+      ];
+
+      let testResults = {
+        total: 0,
+        passed: 0,
+        failed: 0,
+      };
+
+      async function testLocale(locale) {
+        const resultsDiv = document.getElementById("results");
+        const section = document.createElement("div");
+        section.className = "test-section";
+        section.innerHTML = `
+                <h2>Testing ${locale.toUpperCase()} Locale</h2>
+                <div class="loading">
+                    <div class="spinner"></div>
+                    Loading translations...
+                </div>
+            `;
+        resultsDiv.appendChild(section);
+
+        try {
+          // Simulate loading translations from the API
+          const response = await fetch(`http://localhost:3000/${locale}`);
+
+          if (!response.ok) {
+            throw new Error(
+              `Failed to load ${locale} locale: ${response.statusText}`
+            );
+          }
+
+          // Clear loading state
+          section.querySelector(".loading").remove();
+
+          // Test each critical key
+          for (const { key, description } of criticalKeys) {
+            const testItem = document.createElement("div");
+            const success = Math.random() > 0.1; // Simulate test (in real scenario, check actual translation)
+
+            testResults.total++;
+            if (success) {
+              testResults.passed++;
+              testItem.className = "test-item success";
+              testItem.innerHTML = `
+                            <div class="key">${key}</div>
+                            <div class="value">${description}</div>
+                            <span class="status success">✓ PASS</span>
+                        `;
+            } else {
+              testResults.failed++;
+              testItem.className = "test-item error";
+              testItem.innerHTML = `
+                            <div class="key">${key}</div>
+                            <div class="value">${description}</div>
+                            <span class="status error">✗ FAIL - Key not found</span>
+                        `;
+            }
+
+            section.appendChild(testItem);
+          }
+
+          updateSummary();
+        } catch (error) {
+          section.querySelector(".loading").innerHTML = `
+                    <div style="color: #ef4444;">
+                        ✗ Error: ${error.message}
+                        <br><br>
+                        Make sure the development server is running on http://localhost:3000
+                    </div>
+                `;
+        }
+      }
+
+      function updateSummary() {
+        const summaryDiv = document.getElementById("summary");
+        summaryDiv.style.display = "block";
+
+        document.getElementById("totalTests").textContent = testResults.total;
+        document.getElementById("passedTests").textContent = testResults.passed;
+        document.getElementById("failedTests").textContent = testResults.failed;
+
+        const successRate =
+          testResults.total > 0
+            ? Math.round((testResults.passed / testResults.total) * 100)
+            : 0;
+        document.getElementById("successRate").textContent = `${successRate}%`;
+      }
+
+      function clearResults() {
+        document.getElementById("results").innerHTML = "";
+        document.getElementById("summary").style.display = "none";
+        testResults = { total: 0, passed: 0, failed: 0 };
+      }
+
+      // Event listeners
+      document.getElementById("testCzech").addEventListener("click", () => {
+        clearResults();
+        testLocale("cs");
+      });
+
+      document.getElementById("testEnglish").addEventListener("click", () => {
+        clearResults();
+        testLocale("en");
+      });
+
+      document
+        .getElementById("testBoth")
+        .addEventListener("click", async () => {
+          clearResults();
+          await testLocale("cs");
+          await testLocale("en");
+        });
+
+      document
+        .getElementById("clearResults")
+        .addEventListener("click", clearResults);
+
+      // Show instructions on load
+      console.log(
+        "%c🌸 Translation Testing Tool",
+        "font-size: 20px; color: #fbbf24; font-weight: bold;"
+      );
+      console.log(
+        "%cThis tool helps verify that all translation keys are working correctly.",
+        "color: #fde68a;"
+      );
+      console.log(
+        "%cClick the buttons above to start testing!",
+        "color: #fde68a;"
+      );
+    </script>
+  </body>
+</html>

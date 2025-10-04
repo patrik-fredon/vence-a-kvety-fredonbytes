@@ -6,7 +6,6 @@ import {
   generateOrganizationStructuredData,
   StructuredData,
 } from "@/components/seo/StructuredData";
-import { AboutCard } from "@/components/ui/Card";
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>;
@@ -24,7 +23,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
   // Generate structured data
   const organizationStructuredData = generateOrganizationStructuredData(locale);
-  const localBusinessStructuredData = generateLocalBusinessStructuredData(locale);
+  const localBusinessStructuredData =
+    generateLocalBusinessStructuredData(locale);
 
   return (
     <>
@@ -39,7 +39,9 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <h1 className="text-4xl md:text-5xl font-light mb-8 text-amber-100 leading-tight text-balance">
                 {tAbout("title")}
               </h1>
-              <p className="text-lg text-amber-200 leading-relaxed mb-8">{tAbout("mission")}</p>
+              <p className="text-lg text-amber-200 leading-relaxed mb-8">
+                {tAbout("mission")}
+              </p>
             </div>
           </div>
 
@@ -72,11 +74,17 @@ export default async function AboutPage({ params }: AboutPageProps) {
           {/* Story Content */}
           <div className="max-w-3xl mx-auto mb-16">
             <div className="prose prose-lg prose-stone mx-auto">
-              <p className="text-teal-800 leading-relaxed mb-6">{tAbout("story")}</p>
+              <p className="text-teal-800 leading-relaxed mb-6">
+                {tAbout("story")}
+              </p>
 
-              <p className="text-teal-800 leading-relaxed mb-6">{tAbout("values")}</p>
+              <p className="text-teal-800 leading-relaxed mb-6">
+                {tAbout("values")}
+              </p>
 
-              <p className="text-teal-800 leading-relaxed">{tAbout("commitment")}</p>
+              <p className="text-teal-800 leading-relaxed">
+                {tAbout("commitment")}
+              </p>
             </div>
           </div>
 
@@ -100,8 +108,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
                     <div className="w-6 h-6 bg-amber-300 rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-amber-100">{tAbout("valuesTitle")}</h3>
-                  <p className="text-sm text-amber-100">{tAbout("companyDescription")}</p>
+                  <h3 className="text-lg font-medium mb-2 text-amber-100">
+                    {tAbout("valuesTitle")}
+                  </h3>
+                  <p className="text-sm text-amber-100">
+                    {tAbout("companyDescription")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -124,8 +136,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
                     <div className="w-6 h-6 bg-amber-300 rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-amber-100">{tAbout("storyTitle")}</h3>
-                  <p className="text-sm text-amber-100">{tAbout("companyDescription")}</p>
+                  <h3 className="text-lg font-medium mb-2 text-amber-100">
+                    {tAbout("storyTitle")}
+                  </h3>
+                  <p className="text-sm text-amber-100">
+                    {tAbout("companyDescription")}
+                  </p>
                 </div>
               </div>
             </div>
@@ -148,8 +164,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
                     <div className="w-6 h-6 bg-amber-300 rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2 text-amber-100">{tAbout("commitmentTitle")}</h3>
-                  <p className="text-sm text-amber-100">{tAbout("companyDescription")}</p>
+                  <h3 className="text-lg font-medium mb-2 text-amber-100">
+                    {tAbout("commitmentTitle")}
+                  </h3>
+                  <p className="text-sm text-amber-100">
+                    {tAbout("companyDescription")}
+                  </p>
                 </div>
               </div>
             </div>

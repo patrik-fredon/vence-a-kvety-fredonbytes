@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Live Translation Test - Vence a Kvety</title>
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          sans-serif;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+        background: #f5f5f5;
+      }
+      .header {
+        background: #115e59;
+        color: #fef3c7;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+      }
+      .test-section {
+        background: white;
+        padding: 20px;
+        margin-bottom: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .test-section h2 {
+        color: #115e59;
+        margin-top: 0;
+      }
+      .locale-tabs {
+        display: flex;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      .locale-tab {
+        padding: 10px 20px;
+        border: 2px solid #115e59;
+        background: white;
+        color: #115e59;
+        cursor: pointer;
+        border-radius: 4px;
+        font-weight: bold;
+      }
+      .locale-tab.active {
+        background: #115e59;
+        color: #fef3c7;
+      }
+      .test-result {
+        padding: 10px;
+        margin: 10px 0;
+        border-radius: 4px;
+        border-left: 4px solid;
+      }
+      .test-result.pass {
+        background: #d1fae5;
+        border-color: #10b981;
+      }
+      .test-result.fail {
+        background: #fee2e2;
+        border-color: #ef4444;
+      }
+      .key-path {
+        font-family: "Courier New", monospace;
+        background: #f3f4f6;
+        padding: 2px 6px;
+        border-radius: 3px;
+        font-size: 0.9em;
+      }
+      .value {
+        margin-top: 5px;
+        padding: 8px;
+        background: #f9fafb;
+        border-radius: 4px;
+      }
+      .summary {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+        margin-top: 20px;
+      }
+      .summary-card {
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+      }
+      .summary-card.success {
+        background: #d1fae5;
+        color: #065f46;
+      }
+      .summary-card.error {
+        background: #fee2e2;
+        color: #991b1b;
+      }
+      .summary-card .number {
+        font-size: 2em;
+        font-weight: bold;
+        margin-bottom: 5px;
+      }
+      .summary-card .label {
+        font-size: 0.9em;
+      }
+      .instructions {
+        background: #fef3c7;
+        padding: 15px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+        border-left: 4px solid #f59e0b;
+      }
+      .console-output {
+        background: #1f2937;
+        color: #10b981;
+        padding: 15px;
+        border-radius: 8px;
+        font-family: "Courier New", monospace;
+        font-size: 0.9em;
+        max-height: 300px;
+        overflow-y: auto;
+      }
+      .console-output .error {
+        color: #ef4444;
+      }
+      .console-output .warning {
+        color: #f59e0b;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>🌸 Live Translation Test - Vence a Kvety</h1>
+      <p>Testing translation keys in both Czech and English locales</p>
+    </div>
+
+    <div class="instructions">
+      <strong>📋 Instructions:</strong>
+      <ol>
+        <li>Start the development server: <code>npm run dev</code></li>
+        <li>Open this file in a browser</li>
+        <li>Click "Run Tests" to verify translations</li>
+        <li>Check console for any errors</li>
+      </ol>
+    </div>
+
+    <div class="locale-tabs">
+      <button class="locale-tab active" onclick="switchLocale('cs')">
+        🇨🇿 Czech (CS)
+      </button>
+      <button class="locale-tab" onclick="switchLocale('en')">
+        🇬🇧 English (EN)
+      </button>
+      <button class="locale-tab" onclick="runAllTests()">▶️ Run Tests</button>
+    </div>
+
+    <div id="results"></div>
+
+    <div class="test-section">
+      <h2>Console Output</h2>
+      <div id="console" class="console-output">
+        <div>Waiting for tests to run...</div>
+      </div>
+    </div>
+
+    <script>
+      let currentLocale = "cs";
+      let testResults = {
+        cs: { passed: 0, failed: 0, tests: [] },
+        en: { passed: 0, failed: 0, tests: [] },
+      };
+
+      // Critical keys from requirements
+      const criticalKeys = [
+        { path: "home.refactoredHero.heading", description: "Hero heading" },
+        {
+          path: "home.refactoredHero.subheading",
+          description: "Hero subheading",
+        },
+        { path: "home.refactoredHero.cta", description: "Hero CTA button" },
+        {
+          path: "home.refactoredHero.ctaAriaLabel",
+          description: "Hero CTA aria label",
+        },
+        {
+          path: "home.refactoredHero.description",
+          description: "Hero description",
+        },
+        { path: "home.refactoredHero.ctaText", description: "Hero CTA text" },
+        {
+          path: "home.refactoredHero.ctaButton",
+          description: "Hero CTA button text",
+        },
+        {
+          path: "accessibility.accessibility",
+          description: "Accessibility label",
+        },
+        {
+          path: "accessibility.toolbar.title",
+          description: "Accessibility toolbar title",
+        },
+        {
+          path: "accessibility.toolbar.footerLink",
+          description: "Accessibility footer link",
+        },
+      ];
+
+      function log(message, type = "info") {
+        const console = document.getElementById("console");
+        const timestamp = new Date().toLocaleTimeString();
+        const className =
+          type === "error" ? "error" : type === "warning" ? "warning" : "";
+        console.innerHTML += `<div class="${className}">[${timestamp}] ${message}</div>`;
+        console.scrollTop = console.scrollHeight;
+      }
+
+      function switchLocale(locale) {
+        currentLocale = locale;
+        document.querySelectorAll(".locale-tab").forEach((tab) => {
+          tab.classList.remove("active");
+        });
+        event.target.classList.add("active");
+        log(`Switched to ${locale.toUpperCase()} locale`);
+        displayResults();
+      }
+
+      async function testTranslationKey(key, locale) {
+        try {
+          // Simulate fetching translation
+          const response = await fetch(`/messages/${locale}.json`);
+          if (!response.ok) {
+            throw new Error(`Failed to load ${locale} translations`);
+          }
+
+          const messages = await response.json();
+          const value = key.split(".").reduce((obj, k) => obj?.[k], messages);
+
+          if (value === undefined) {
+            return { success: false, error: "Key not found" };
+          }
+
+          if (typeof value === "string" && value.trim() === "") {
+            return { success: false, error: "Empty value" };
+          }
+
+          return { success: true, value };
+        } catch (error) {
+          return { success: false, error: error.message };
+        }
+      }
+
+      async function runAllTests() {
+        log("🚀 Starting translation tests...", "info");
+        document.getElementById("console").innerHTML = "";
+
+        // Reset results
+        testResults = {
+          cs: { passed: 0, failed: 0, tests: [] },
+          en: { passed: 0, failed: 0, tests: [] },
+        };
+
+        // Test both locales
+        for (const locale of ["cs", "en"]) {
+          log(`\n📋 Testing ${locale.toUpperCase()} locale...`);
+
+          for (const { path, description } of criticalKeys) {
+            const result = await testTranslationKey(path, locale);
+
+            const testResult = {
+              key: path,
+              description,
+              success: result.success,
+              value: result.value,
+              error: result.error,
+            };
+
+            testResults[locale].tests.push(testResult);
+
+            if (result.success) {
+              testResults[locale].passed++;
+              log(`✓ ${path}: ${result.value}`, "info");
+            } else {
+              testResults[locale].failed++;
+              log(`✗ ${path}: ${result.error}`, "error");
+            }
+          }
+        }
+
+        log("\n✅ All tests completed!", "info");
+        displayResults();
+      }
+
+      function displayResults() {
+        const resultsDiv = document.getElementById("results");
+        const locale = currentLocale;
+        const results = testResults[locale];
+
+        if (results.tests.length === 0) {
+          resultsDiv.innerHTML =
+            '<div class="test-section"><p>No tests run yet. Click "Run Tests" to start.</p></div>';
+          return;
+        }
+
+        let html = `
+                <div class="test-section">
+                    <h2>Test Results - ${locale.toUpperCase()}</h2>
+                    <div class="summary">
+                        <div class="summary-card success">
+                            <div class="number">${results.passed}</div>
+                            <div class="label">Passed</div>
+                        </div>
+                        <div class="summary-card ${
+                          results.failed > 0 ? "error" : "success"
+                        }">
+                            <div class="number">${results.failed}</div>
+                            <div class="label">Failed</div>
+                        </div>
+                        <div class="summary-card success">
+                            <div class="number">${results.tests.length}</div>
+                            <div class="label">Total Tests</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="test-section">
+                    <h2>Detailed Results</h2>
+            `;
+
+        results.tests.forEach((test) => {
+          html += `
+                    <div class="test-result ${test.success ? "pass" : "fail"}">
+                        <strong>${test.success ? "✓" : "✗"} ${
+            test.description
+          }</strong>
+                        <div class="key-path">${test.key}</div>
+                        ${
+                          test.success
+                            ? `<div class="value">${test.value}</div>`
+                            : `<div class="value" style="color: #991b1b;">Error: ${test.error}</div>`
+                        }
+                    </div>
+                `;
+        });
+
+        html += "</div>";
+        resultsDiv.innerHTML = html;
+      }
+
+      // Initial display
+      displayResults();
+    </script>
+  </body>
+</html>

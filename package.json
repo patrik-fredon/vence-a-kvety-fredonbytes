@@ -27,7 +27,11 @@
     "test:gradient-contrast": "npx tsx scripts/test-gradient-contrast-comprehensive.ts",
     "test:interactive-contrast": "npx tsx scripts/test-interactive-contrast.ts",
     "test:focus-visibility": "npx tsx scripts/test-focus-state-visibility.ts",
-    "test:accessibility": "npm run test:contrast && npm run test:gradient-contrast && npm run test:interactive-contrast && npm run test:focus-visibility"
+    "test:accessibility": "npm run test:contrast && npm run test:gradient-contrast && npm run test:interactive-contrast && npm run test:focus-visibility",
+    "measure:vitals": "npx tsx scripts/measure-core-web-vitals.ts",
+    "measure:vitals:prod": "npx tsx scripts/measure-core-web-vitals.ts --url=https://your-production-url.com",
+    "analyze:bundle": "npx tsx scripts/analyze-bundle-size.ts",
+    "analyze:bundle:baseline": "npx tsx scripts/analyze-bundle-size.ts --save-baseline"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",
