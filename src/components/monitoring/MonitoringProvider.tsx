@@ -90,7 +90,9 @@ export function useErrorReporting() {
     errorLogger.logError(error, {
       level: "component",
       ...(context && { context }),
-      ...(sessionStorage.getItem("monitoring_user_id") && { userId: sessionStorage.getItem("monitoring_user_id")! }),
+      ...(sessionStorage.getItem("monitoring_user_id") && {
+        userId: sessionStorage.getItem("monitoring_user_id")!,
+      }),
     });
   };
 

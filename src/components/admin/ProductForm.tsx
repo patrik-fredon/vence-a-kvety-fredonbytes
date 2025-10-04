@@ -33,7 +33,12 @@ interface ProductFormProps {
   onCancel: () => void;
 }
 
-export default function ProductForm({ product, categories, onSubmit, onCancel }: ProductFormProps) {
+export default function ProductForm({
+  product,
+  categories,
+  onSubmit,
+  onCancel,
+}: ProductFormProps) {
   const [formData, setFormData] = useState({
     name_cs: "",
     name_en: "",
@@ -121,32 +126,39 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!(formData as any)['name_cs'].trim()) {
-      newErrors['name_cs'] = "Český název je povinný";
+    if (!(formData as any).name_cs.trim()) {
+      newErrors["name_cs"] = "Český název je povinný";
     }
 
-    if (!(formData as any)['name_en'].trim()) {
-      newErrors['name_en'] = "Anglický název je povinný";
+    if (!(formData as any).name_en.trim()) {
+      newErrors["name_en"] = "Anglický název je povinný";
     }
 
-    if (!(formData as any)['slug'].trim()) {
-      newErrors['slug'] = "URL slug je povinný";
+    if (!(formData as any).slug.trim()) {
+      newErrors["slug"] = "URL slug je povinný";
     }
 
-    if ((formData as any)['base_price'] <= 0) {
-      newErrors['base_price'] = "Cena musí být větší než 0";
+    if ((formData as any).base_price <= 0) {
+      newErrors["base_price"] = "Cena musí být větší než 0";
     }
 
-    if (!(formData as any)['category_id']) {
-      newErrors['category_id'] = "Kategorie je povinná";
+    if (!(formData as any).category_id) {
+      newErrors["category_id"] = "Kategorie je povinná";
     }
 
-    if ((formData as any)['track_inventory'] && (formData as any)['stock_quantity'] < 0) {
-      newErrors['stock_quantity'] = "Počet kusů nemůže být záporný";
+    if (
+      (formData as any).track_inventory &&
+      (formData as any).stock_quantity < 0
+    ) {
+      newErrors["stock_quantity"] = "Počet kusů nemůže být záporný";
     }
 
-    if ((formData as any)['track_inventory'] && (formData as any)['low_stock_threshold'] < 0) {
-      newErrors['low_stock_threshold'] = "Práh pro upozornění nemůže být záporný";
+    if (
+      (formData as any).track_inventory &&
+      (formData as any).low_stock_threshold < 0
+    ) {
+      newErrors["low_stock_threshold"] =
+        "Práh pro upozornění nemůže být záporný";
     }
 
     setErrors(newErrors);
@@ -188,7 +200,9 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
       {/* Form */}
       <form onSubmit={handleSubmit} className="space-y-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Základní informace</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
+            Základní informace
+          </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Czech name */}
@@ -198,13 +212,18 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               </label>
               <input
                 type="text"
-                value={(formData as any)['name_cs']}
+                value={(formData as any).name_cs}
                 onChange={(e) => handleInputChange("name_cs", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['name_cs'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any).name_cs ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="Název produktu v češtině"
               />
-              {(errors as any)['name_cs'] && <p className="mt-1 text-sm text-red-600">{(errors as any)['name_cs']}</p>}
+              {(errors as any).name_cs && (
+                <p className="mt-1 text-sm text-red-600">
+                  {(errors as any).name_cs}
+                </p>
+              )}
             </div>
 
             {/* English name */}
@@ -214,37 +233,56 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               </label>
               <input
                 type="text"
-                value={(formData as any)['name_en']}
+                value={(formData as any).name_en}
                 onChange={(e) => handleInputChange("name_en", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['name_en'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any).name_en ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="Product name in English"
               />
-              {(errors as any)['name_en'] && <p className="mt-1 text-sm text-red-600">{(errors as any)['name_en']}</p>}
+              {(errors as any).name_en && (
+                <p className="mt-1 text-sm text-red-600">
+                  {(errors as any).name_en}
+                </p>
+              )}
             </div>
 
             {/* Slug */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">URL slug *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                URL slug *
+              </label>
               <input
                 type="text"
-                value={(formData as any)['slug']}
+                value={(formData as any).slug}
                 onChange={(e) => handleInputChange("slug", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['slug'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any).slug ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="url-slug-produktu"
               />
-              {(errors as any)['slug'] && <p className="mt-1 text-sm text-red-600">{(errors as any)['slug']}</p>}
+              {(errors as any).slug && (
+                <p className="mt-1 text-sm text-red-600">
+                  {(errors as any).slug}
+                </p>
+              )}
             </div>
 
             {/* Category */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">Kategorie *</label>
+              <label className="block text-sm font-medium text-gray-700 mb-2">
+                Kategorie *
+              </label>
               <select
-                value={(formData as any)['category_id']}
-                onChange={(e) => handleInputChange("category_id", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['category_id'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                value={(formData as any).category_id}
+                onChange={(e) =>
+                  handleInputChange("category_id", e.target.value)
+                }
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any).category_id
+                    ? "border-red-300"
+                    : "border-gray-300"
+                }`}
               >
                 <option value="">Vyberte kategorii</option>
                 {categories.map((category) => (
@@ -253,8 +291,10 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                   </option>
                 ))}
               </select>
-              {(errors as any)['category_id'] && (
-                <p className="mt-1 text-sm text-red-600">{(errors as any)['category_id']}</p>
+              {(errors as any).category_id && (
+                <p className="mt-1 text-sm text-red-600">
+                  {(errors as any).category_id}
+                </p>
               )}
             </div>
 
@@ -267,16 +307,24 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                 type="number"
                 min="0"
                 step="0.01"
-                value={(formData as any)['base_price']}
+                value={(formData as any).base_price}
                 onChange={(e) =>
-                  handleInputChange("base_price", Number.parseFloat(e.target.value) || 0)
+                  handleInputChange(
+                    "base_price",
+                    Number.parseFloat(e.target.value) || 0
+                  )
                 }
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['base_price'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any).base_price
+                    ? "border-red-300"
+                    : "border-gray-300"
+                }`}
                 placeholder="0.00"
               />
-              {(errors as any)['base_price'] && (
-                <p className="mt-1 text-sm text-red-600">{(errors as any)['base_price']}</p>
+              {(errors as any).base_price && (
+                <p className="mt-1 text-sm text-red-600">
+                  {(errors as any).base_price}
+                </p>
               )}
             </div>
           </div>
@@ -290,7 +338,9 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <textarea
                 rows={4}
                 value={formData.description_cs}
-                onChange={(e) => handleInputChange("description_cs", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("description_cs", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Detailní popis produktu v češtině"
               />
@@ -303,7 +353,9 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <textarea
                 rows={4}
                 value={formData.description_en}
-                onChange={(e) => handleInputChange("description_en", e.target.value)}
+                onChange={(e) =>
+                  handleInputChange("description_en", e.target.value)
+                }
                 className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                 placeholder="Detailed product description in English"
               />
@@ -313,17 +365,23 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
 
         {/* Inventory Management */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Správa zásob</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
+            Správa zásob
+          </h3>
 
           <div className="space-y-4">
             <label className="flex items-center">
               <input
                 type="checkbox"
                 checked={formData.track_inventory}
-                onChange={(e) => handleInputChange("track_inventory", e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange("track_inventory", e.target.checked)
+                }
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="ml-2 text-sm text-gray-700">Sledovat skladové zásoby</span>
+              <span className="ml-2 text-sm text-gray-700">
+                Sledovat skladové zásoby
+              </span>
             </label>
 
             {formData.track_inventory && (
@@ -335,15 +393,23 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                   <input
                     type="number"
                     min="0"
-                    value={(formData as any)['stock_quantity']}
+                    value={(formData as any).stock_quantity}
                     onChange={(e) =>
-                      handleInputChange("stock_quantity", Number.parseInt(e.target.value) || 0)
+                      handleInputChange(
+                        "stock_quantity",
+                        Number.parseInt(e.target.value, 10) || 0
+                      )
                     }
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors['stock_quantity'] ? "border-red-300" : "border-gray-300"
-                      }`}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      errors["stock_quantity"]
+                        ? "border-red-300"
+                        : "border-gray-300"
+                    }`}
                   />
-                  {errors['stock_quantity'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['stock_quantity']}</p>
+                  {errors["stock_quantity"] && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors["stock_quantity"]}
+                    </p>
                   )}
                 </div>
 
@@ -354,15 +420,23 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                   <input
                     type="number"
                     min="0"
-                    value={(formData as any)['low_stock_threshold']}
+                    value={(formData as any).low_stock_threshold}
                     onChange={(e) =>
-                      handleInputChange("low_stock_threshold", Number.parseInt(e.target.value) || 0)
+                      handleInputChange(
+                        "low_stock_threshold",
+                        Number.parseInt(e.target.value, 10) || 0
+                      )
                     }
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors['low_stock_threshold'] ? "border-red-300" : "border-gray-300"
-                      }`}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      errors["low_stock_threshold"]
+                        ? "border-red-300"
+                        : "border-gray-300"
+                    }`}
                   />
-                  {errors['low_stock_threshold'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['low_stock_threshold']}</p>
+                  {errors["low_stock_threshold"] && (
+                    <p className="mt-1 text-sm text-red-600">
+                      {errors["low_stock_threshold"]}
+                    </p>
                   )}
                 </div>
               </div>
@@ -372,7 +446,9 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
 
         {/* Status */}
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h3 className="text-lg font-semibold text-gray-900 mb-6">Stav produktu</h3>
+          <h3 className="text-lg font-semibold text-gray-900 mb-6">
+            Stav produktu
+          </h3>
 
           <div className="space-y-4">
             <label className="flex items-center">
@@ -382,17 +458,23 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                 onChange={(e) => handleInputChange("active", e.target.checked)}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="ml-2 text-sm text-gray-700">Aktivní (zobrazit na webu)</span>
+              <span className="ml-2 text-sm text-gray-700">
+                Aktivní (zobrazit na webu)
+              </span>
             </label>
 
             <label className="flex items-center">
               <input
                 type="checkbox"
                 checked={formData.featured}
-                onChange={(e) => handleInputChange("featured", e.target.checked)}
+                onChange={(e) =>
+                  handleInputChange("featured", e.target.checked)
+                }
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="ml-2 text-sm text-gray-700">Doporučený produkt</span>
+              <span className="ml-2 text-sm text-gray-700">
+                Doporučený produkt
+              </span>
             </label>
           </div>
         </div>
@@ -411,7 +493,11 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
             disabled={loading}
             className="px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors disabled:opacity-50"
           >
-            {loading ? "Ukládám..." : product ? "Uložit změny" : "Vytvořit produkt"}
+            {loading
+              ? "Ukládám..."
+              : product
+              ? "Uložit změny"
+              : "Vytvořit produkt"}
           </button>
         </div>
       </form>

@@ -1,8 +1,43 @@
 @import "tailwindcss";
 @import "../styles/mobile-optimizations.css";
 
-:root {
-  /* Stone color palette (primary neutral colors) */
+@theme {
+  /* ============================================
+     TEAL PALETTE - Primary Brand Color
+     Funeral-appropriate, calming, professional
+     ============================================ */
+  --color-teal-50: #f0fdfa;
+  --color-teal-100: #ccfbf1;
+  --color-teal-200: #99f6e4;
+  --color-teal-300: #5eead4;
+  --color-teal-400: #2dd4bf;
+  --color-teal-500: #14b8a6;
+  --color-teal-600: #0d9488;
+  --color-teal-700: #0f766e;
+  --color-teal-800: #115e59;
+  --color-teal-900: #134e4a;
+  --color-teal-950: #013029;
+
+  /* ============================================
+     AMBER PALETTE - Accent Color
+     Warm, golden, elegant
+     ============================================ */
+  --color-amber-50: #fffbeb;
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+  --color-amber-300: #fcd34d;
+  --color-amber-400: #fbbf24;
+  --color-amber-500: #f59e0b;
+  --color-amber-600: #d97706;
+  --color-amber-700: #b45309;
+  --color-amber-800: #92400e;
+  --color-amber-900: #78350f;
+  --color-amber-950: #451a03;
+
+  /* ============================================
+     STONE PALETTE - Neutral Colors
+     Primary neutral palette for text and backgrounds
+     ============================================ */
   --color-stone-50: #fafaf9;
   --color-stone-100: #f5f5f4;
   --color-stone-200: #e7e5e4;
@@ -14,61 +49,117 @@
   --color-stone-800: #292524;
   --color-stone-900: #1c1917;
   --color-stone-950: #0c0a09;
-  --color-amber-100: #fef3c6;
-  --color-amber-200: #b8b676;
-  /* Teal color palette (accent colors) */
-  --color-teal-50: #f0fdfa;
-  --color-teal-100: #ccfbf1;
-  --color-teal-200: #99f6e4;
-  --color-teal-300: #5eead4;
-  --color-teal-400: #2dd4bf;
-  --color-teal-500: #14b8a6;
-  --color-teal-600: #0d9488;
-  --color-teal-700: #0f766e;
-  --color-teal-800: #00302d;
-  --color-teal-900: #134e4a;
-  --color-teal-950: #013029;
 
-  /* Background and foreground using stone palette */
-  --background: var(--color-amber-100);
-  --foreground: var(--color-stone-900);
-  --muted: var(--color-stone-100);
-  --muted-foreground: var(--color-stone-600);
-  --border: var(--color-stone-200);
-  --input: var(--color-stone-100);
-  --ring: var(--color-stone-500);
-  --card: oklch(1 0 0);
-  --card-foreground: oklch(0.145 0 0);
+  /* ============================================
+     SEMANTIC COLOR ALIASES
+     Use these for consistent theming
+     ============================================ */
+  --color-primary: var(--color-teal-900);
+  --color-primary-light: var(--color-teal-400);
+  --color-primary-dark: var(--color-teal-800);
 
-  /* Semantic colors */
+  --color-accent: var(--color-amber-100);
+  --color-accent-light: var(--color-amber-200);
+  --color-accent-dark: var(--color-amber-300);
+
+  /* ============================================
+     GRADIENT DEFINITIONS
+     Brand gradients for backgrounds and accents
+     ============================================ */
+  --gradient-funeral-gold: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47);
+  --gradient-funeral-teal: linear-gradient(to right, #0f766e, #14b8a6, #0d9488);
+}
+
+:root {
+  /* ============================================
+     SEMANTIC UI VARIABLES
+     Using color system from @theme directive
+     ============================================ */
+  --background: var(--color-amber-100, #fef3c7);
+  --foreground: var(--color-teal-900, #134e4a);
+  --muted: var(--color-stone-100, #f5f5f4);
+  --muted-foreground: var(--color-stone-600, #57534e);
+  --border: var(--color-stone-200, #e7e5e4);
+  --input: var(--color-stone-100, #f5f5f4);
+  --ring: var(--color-stone-500, #78716c);
+
+  /* Card colors with fallbacks */
+  --card: #ffffff;
+  --card-foreground: #1c1917;
+
+  /* Status colors with fallbacks */
   --success: #22c55e;
-  --warning: var(--color-teal-600);
+  --warning: var(--color-teal-600, #0d9488);
   --error: #ef4444;
   --info: #3b82f6;
 }
 
-* {
-  box-sizing: border-box;
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
+
+  html {
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background: linear-gradient(
+      to right,
+      #ae8625,
+      #f7ef8a,
+      #d2ac47
+    ); /* Fallback */
+    background: var(
+      --gradient-funeral-gold,
+      linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47)
+    );
+    background-attachment: fixed;
+    color: var(--foreground);
+    font-family: "Inter", system-ui, sans-serif;
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 32;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
-html {
-  scroll-behavior: smooth;
-}
+/* ============================================
+   GRADIENT UTILITY CLASSES
+   Use these classes to apply brand gradients
+   With fallback values for browser compatibility
+   ============================================ */
+@layer utilities {
+  .bg-funeral-gold {
+    background: linear-gradient(
+      to right,
+      #ae8625,
+      #f7ef8a,
+      #d2ac47
+    ); /* Fallback */
+    background: var(
+      --gradient-funeral-gold,
+      linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47)
+    );
+  }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: "Inter", system-ui, sans-serif;
-  font-feature-settings: "cv11", "ss01";
-  font-variation-settings: "opsz" 32;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  .bg-funeral-teal {
+    background: linear-gradient(
+      to right,
+      #0f766e,
+      #14b8a6,
+      #0d9488
+    ); /* Fallback */
+    background: var(
+      --gradient-funeral-teal,
+      linear-gradient(to right, #0f766e, #14b8a6, #0d9488)
+    );
+  }
 }
 
 /* Headings with elegant serif font */
 
-h2,
 h3,
 h4,
 h5,
@@ -76,13 +167,14 @@ h6 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-teal-900);
+  color: var(--color-teal-800);
 }
-h1 {
+h1,
+h2 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.4;
-  color: var(--color-amber-200);
+  color: var(--color-teal-900);
 }
 
 /* Focus styles for accessibility */
@@ -104,6 +196,20 @@ h1 {
   box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.1);
 }
 
+/* Corner clipping container for product cards */
+.corner-clip-container {
+  clip-path: polygon(
+    0 20px,
+    20px 0,
+    calc(100% - 20px) 0,
+    100% 20px,
+    100% calc(100% - 20px),
+    calc(100% - 20px) 100%,
+    20px 100%,
+    0 calc(100% - 20px)
+  );
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.1);
+}
 /* High contrast mode styles */
 @media (prefers-contrast: high), (forced-colors: active) {
   :root {
@@ -130,26 +236,26 @@ h1 {
 
 .high-contrast * {
   /* Ensure text has sufficient contrast */
-  color: inherit !important;
-  border-color: currentColor !important;
+  color: inherit;
+  border-color: currentColor;
 }
 
 .high-contrast button,
 .high-contrast input,
 .high-contrast select,
 .high-contrast textarea {
-  border: 2px solid currentColor !important;
-  background: transparent !important;
+  border: 2px solid currentColor;
+  background: transparent;
 }
 
 .high-contrast button:hover,
 .high-contrast button:focus {
-  background: Highlight !important;
-  color: HighlightText !important;
+  background: Highlight;
+  color: HighlightText;
 }
 
 .high-contrast a {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 
 .high-contrast img {

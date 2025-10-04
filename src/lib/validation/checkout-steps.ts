@@ -3,8 +3,12 @@
  * Implements progressive validation that only validates fields in the current step
  */
 
-import type { CheckoutFormData, CustomerInfo, DeliveryInfo } from "@/types/order";
-import type { CheckoutValidationErrors } from "@/types/order";
+import type {
+  CheckoutFormData,
+  CheckoutValidationErrors,
+  CustomerInfo,
+  DeliveryInfo,
+} from "@/types/order";
 
 // Email validation regex
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -20,9 +24,17 @@ const POSTAL_CODE_REGEX = /^[0-9]{3}\s?[0-9]{2}$/;
  * This ensures we only validate fields visible in the current step
  */
 export const STEP_FIELDS = {
-  customer: ['email', 'firstName', 'lastName', 'phone', 'company', 'note'] as const,
-  delivery: ['address', 'urgency', 'preferredDate', 'preferredTimeSlot', 'specialInstructions', 'recipientName', 'recipientPhone'] as const,
-  payment: ['paymentMethod'] as const,
+  customer: ["email", "firstName", "lastName", "phone", "company", "note"] as const,
+  delivery: [
+    "address",
+    "urgency",
+    "preferredDate",
+    "preferredTimeSlot",
+    "specialInstructions",
+    "recipientName",
+    "recipientPhone",
+  ] as const,
+  payment: ["paymentMethod"] as const,
   review: [] as const, // Review step validates all previous steps
 } as const;
 

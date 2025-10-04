@@ -1,35 +1,25 @@
 "use client";
 
-import {
-  CheckIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  ExclamationTriangleIcon,
-} from "@/lib/icons";
-
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, ExclamationTriangleIcon } from "@/lib/icons";
 import {
   formatValidationErrors,
   sanitizeCustomerInfo,
   sanitizeDeliveryInfo,
 } from "@/lib/validation/checkout";
-import {
-  stepValidationSchema,
-  hasStepValidationErrors,
-} from "@/lib/validation/checkout-steps";
+import { hasStepValidationErrors, stepValidationSchema } from "@/lib/validation/checkout-steps";
 import type { CartItem } from "@/types/cart";
 
-import {
-  type CheckoutFormData,
-  type CheckoutState,
-  type CheckoutStep,
-  type CustomerInfo,
-  type DeliveryInfo,
+import type {
+  CheckoutFormData,
+  CheckoutState,
+  CheckoutStep,
+  CustomerInfo,
+  DeliveryInfo,
 } from "@/types/order";
 import { CustomerInfoStep } from "./steps/CustomerInfoStep";
 import { DeliveryInfoStep } from "./steps/DeliveryInfoStep";
@@ -257,11 +247,12 @@ export function CheckoutForm({
                     disabled={!isClickable}
                     className={`
                       flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200
-                      ${isActive
-                        ? "border-amber-600 bg-teal-600 text-white shadow-md"
-                        : isCompleted
-                          ? "border-green-500 bg-green-500 text-white shadow-sm"
-                          : "border-stone-300 bg-white text-stone-400"
+                      ${
+                        isActive
+                          ? "border-amber-600 bg-teal-600 text-white shadow-md"
+                          : isCompleted
+                            ? "border-green-500 bg-green-500 text-white shadow-sm"
+                            : "border-stone-300 bg-white text-stone-400"
                       }
                       ${isClickable ? "cursor-pointer hover:border-amber-500 hover:shadow-md" : "cursor-not-allowed"}
                       focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20
@@ -354,7 +345,9 @@ export function CheckoutForm({
               subtotal={subtotal}
               deliveryCost={state.deliveryCost}
               totalAmount={totalAmount}
-              {...(state.estimatedDeliveryDate && { estimatedDeliveryDate: state.estimatedDeliveryDate })}
+              {...(state.estimatedDeliveryDate && {
+                estimatedDeliveryDate: state.estimatedDeliveryDate,
+              })}
               agreeToTerms={state.formData.agreeToTerms}
               subscribeNewsletter={state.formData.subscribeNewsletter}
               onAgreeToTermsChange={(agreeToTerms) => updateFormData({ agreeToTerms })}

@@ -1,10 +1,10 @@
-import { NextRequest, NextResponse } from "next/server";
-import { createServerClient } from "@/lib/supabase/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import {
+  cleanupAbandonedCustomizations,
   performCustomizationIntegrityCheck,
-  cleanupAbandonedCustomizations
 } from "@/lib/cart/utils";
+import { createServerClient } from "@/lib/supabase/server";
 
 /**
  * GET - Perform customization integrity check
@@ -44,10 +44,11 @@ export async function GET() {
     }
 
     // Check if user has admin privileges (assuming admin flag in preferences)
-    const isAdmin = profile.preferences &&
-      typeof profile.preferences === 'object' &&
-      'isAdmin' in profile.preferences &&
-      profile.preferences['isAdmin'] === true;
+    const isAdmin =
+      profile.preferences &&
+      typeof profile.preferences === "object" &&
+      "isAdmin" in profile.preferences &&
+      profile.preferences["isAdmin"] === true;
     if (!isAdmin) {
       return NextResponse.json(
         {
@@ -62,8 +63,9 @@ export async function GET() {
     const integrityResult = await performCustomizationIntegrityCheck(supabase);
 
     // Also run database-level integrity check
-    const { data: dbIntegrityResult, error: dbError } = await supabase
-      .rpc('check_customization_integrity' as any);
+    const { data: dbIntegrityResult, error: dbError } = await (
+      supabase.rpc as any
+    )("check_customization_integrity");
 
     if (dbError) {
       console.error("Database integrity check failed:", dbError);
@@ -76,7 +78,6 @@ export async function GET() {
       databaseLevel: dbIntegrityResult || null,
       dbError: dbError?.message || null,
     });
-
   } catch (error) {
     console.error("Customization integrity check failed:", error);
     return NextResponse.json(
@@ -129,10 +130,11 @@ export async function POST(request: NextRequest) {
     }
 
     // Check if user has admin privileges using bracket notation for index signature access
-    const isAdmin = profile.preferences &&
-      typeof profile.preferences === 'object' &&
-      'isAdmin' in profile.preferences &&
-      (profile.preferences as Record<string, any>)['isAdmin'] === true;
+    const isAdmin =
+      profile.preferences &&
+      typeof profile.preferences === "object" &&
+      "isAdmin" in profile.preferences &&
+      (profile.preferences as Record<string, unknown>)["isAdmin"] === true;
     if (!isAdmin) {
       return NextResponse.json(
         {
@@ -143,7 +145,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const results: any = {
+    const results: {
+      timestamp: string;
+      operations: Array<{ type: string; result: any; error?: string | null }>;
+      errors?: string[];
+      postCheck?: any;
+    } = {
       timestamp: new Date().toISOString(),
       operations: [],
     };
@@ -151,20 +158,24 @@ export async function POST(request: NextRequest) {
     // Cleanup abandoned customizations if requested
     if (body.cleanupAbandoned !== false) {
       const daysOld = body.daysOld || 7;
-      const cleanupResult = await cleanupAbandonedCustomizations(supabase, daysOld);
+      const cleanupResult = await cleanupAbandonedCustomizations(
+        supabase,
+        daysOld
+      );
       results.operations.push({
-        type: 'cleanup_abandoned',
+        type: "cleanup_abandoned",
         result: cleanupResult,
       });
     }
 
     // Fix integrity issues if requested
     if (body.fixIntegrityIssues === true) {
-      const { data: dbFixResult, error: dbFixError } = await supabase
-        .rpc('cleanup_invalid_customizations' as any);
+      const { data: dbFixResult, error: dbFixError } = await (
+        supabase.rpc as any
+      )("cleanup_invalid_customizations");
 
       results.operations.push({
-        type: 'fix_integrity_issues',
+        type: "fix_integrity_issues",
         result: dbFixResult || null,
         error: dbFixError?.message || null,
       });
@@ -172,7 +183,9 @@ export async function POST(request: NextRequest) {
 
     // Run post-cleanup integrity check
     if (body.runPostCheck !== false) {
-      const postCheckResult = await performCustomizationIntegrityCheck(supabase);
+      const postCheckResult = await performCustomizationIntegrityCheck(
+        supabase
+      );
       results.postCheck = postCheckResult;
     }
 
@@ -180,7 +193,6 @@ export async function POST(request: NextRequest) {
       success: true,
       ...results,
     });
-
   } catch (error) {
     console.error("Customization integrity fix failed:", error);
     return NextResponse.json(

@@ -1,11 +1,11 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import {
-  ProductComponentErrorBoundary,
   ProductCardErrorFallback,
-  withProductErrorBoundary
+  ProductComponentErrorBoundary,
+  withProductErrorBoundary,
 } from "./ProductComponentErrorBoundary";
 import { useProductErrorHandler } from "./useProductErrorHandler";
 
@@ -57,11 +57,7 @@ const AsyncErrorComponent = ({ onError }: ErrorTestingProps) => {
   return (
     <div className="p-4 bg-blue-100 border border-blue-300 rounded">
       <p>Async Error Testing Component</p>
-      <Button
-        onClick={triggerAsyncError}
-        disabled={loading}
-        className="mt-2"
-      >
+      <Button onClick={triggerAsyncError} disabled={loading} className="mt-2">
         {loading ? "Processing..." : "Trigger Async Error"}
       </Button>
     </div>
@@ -95,11 +91,7 @@ const NetworkErrorComponent = () => {
     <div className="p-4 bg-yellow-100 border border-yellow-300 rounded">
       <p>Network Error Testing Component</p>
       <p>Status: {status}</p>
-      <Button
-        onClick={simulateNetworkError}
-        disabled={status === "loading"}
-        className="mt-2"
-      >
+      <Button onClick={simulateNetworkError} disabled={status === "loading"} className="mt-2">
         {status === "loading" ? "Loading..." : "Simulate Network Error"}
       </Button>
     </div>
@@ -116,7 +108,7 @@ const ProductCardErrorSimulator = () => {
     }
     return (
       <div className="h-96 bg-white border border-stone-200 rounded-lg p-4 flex flex-col items-center justify-center">
-        <div className="w-16 h-16 bg-stone-200 rounded mb-4"></div>
+        <div className="w-16 h-16 bg-stone-200 rounded mb-4" />
         <h3 className="font-semibold mb-2">Sample Product</h3>
         <p className="text-stone-600 text-sm mb-4">Product description</p>
         <Button size="sm">Add to Cart</Button>
@@ -153,14 +145,14 @@ export function ErrorTestingDashboard() {
   const [errorLog, setErrorLog] = useState<Array<{ timestamp: Date; error: Error }>>([]);
 
   const handleError = (error: Error) => {
-    setErrorLog(prev => [...prev, { timestamp: new Date(), error }]);
+    setErrorLog((prev) => [...prev, { timestamp: new Date(), error }]);
   };
 
   const clearErrorLog = () => {
     setErrorLog([]);
   };
 
-  if (process.env['NODE_ENV'] === "production") {
+  if (process.env.NODE_ENV === "production") {
     return (
       <div className="p-4 bg-red-100 border border-red-300 rounded">
         <p className="text-red-800 font-semibold">
@@ -175,17 +167,15 @@ export function ErrorTestingDashboard() {
       <div className="bg-white border border-stone-200 rounded-lg p-6">
         <h2 className="text-2xl font-bold mb-4">Product Component Error Testing Dashboard</h2>
         <p className="text-stone-600 mb-6">
-          This dashboard allows you to test various error scenarios and observe how the error boundaries handle them.
+          This dashboard allows you to test various error scenarios and observe how the error
+          boundaries handle them.
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Synchronous Error Testing */}
           <div className="space-y-4">
             <h3 className="text-lg font-semibold">Synchronous Errors</h3>
-            <ProductComponentErrorBoundary
-              componentName="SyncErrorTest"
-              onError={handleError}
-            >
+            <ProductComponentErrorBoundary componentName="SyncErrorTest" onError={handleError}>
               <SyncErrorComponent shouldThrow={true} />
             </ProductComponentErrorBoundary>
           </div>
@@ -224,9 +214,7 @@ export function ErrorTestingDashboard() {
                 <div key={index} className="mb-2 pb-2 border-b border-stone-200 last:border-b-0">
                   <div className="flex items-center justify-between text-sm">
                     <span className="font-mono text-red-600">{entry.error.message}</span>
-                    <span className="text-stone-500">
-                      {entry.timestamp.toLocaleTimeString()}
-                    </span>
+                    <span className="text-stone-500">{entry.timestamp.toLocaleTimeString()}</span>
                   </div>
                 </div>
               ))}
@@ -243,12 +231,9 @@ export function ErrorTestingDashboard() {
 }
 
 // HOC demonstration
-const TestComponentWithHOC = withProductErrorBoundary(
-  () => {
-    throw new Error("HOC wrapped component error");
-  },
-  "HOCTestComponent"
-);
+const TestComponentWithHOC = withProductErrorBoundary(() => {
+  throw new Error("HOC wrapped component error");
+}, "HOCTestComponent");
 
 export function HOCErrorTest() {
   return (

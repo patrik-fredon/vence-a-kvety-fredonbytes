@@ -19,7 +19,7 @@ export function CurrencyDisplay({
   const t = useTranslations("currency");
 
   // Handle invalid amounts
-  if (amount === null || amount === undefined || isNaN(amount)) {
+  if (amount === null || amount === undefined || Number.isNaN(amount)) {
     return (
       <span className={className} data-testid="currency-display">
         {showSymbol ? (locale === "cs" ? "0 Kč" : "0 CZK") : "0"}
@@ -51,7 +51,7 @@ export function formatCurrency(
   locale: Locale = "cs",
   showSymbol: boolean = true
 ): string {
-  if (isNaN(amount)) return showSymbol ? (locale === "cs" ? "0 Kč" : "0 CZK") : "0";
+  if (Number.isNaN(amount)) return showSymbol ? (locale === "cs" ? "0 Kč" : "0 CZK") : "0";
 
   const config = currencyConfig[locale];
   const formattedAmount = amount.toLocaleString(config.locale, {

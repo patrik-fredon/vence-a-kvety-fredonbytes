@@ -2,10 +2,10 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import React, { useMemo, useState, useRef, useCallback } from "react";
+import React, { useCallback, useMemo, useRef, useState } from "react";
+import { useAnimationSequence } from "@/components/cart/hooks";
 import { Modal } from "@/components/ui/Modal";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
-import { useAnimationSequence } from "@/components/cart/hooks";
 import { useImagePerformance } from "@/lib/hooks/useImagePerformance";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
@@ -40,12 +40,11 @@ export const ProductQuickView = React.memo(function ProductQuickView({
 
   const imagePerformance = useImagePerformance(currentImage?.url || "", {
     enabled: true,
-    logMetrics: process.env['NODE_ENV'] === "development",
+    logMetrics: process.env.NODE_ENV === "development",
   });
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
-
 
   // Optimized price formatting with useMemo for expensive calculations
   const formatPrice = useMemo(() => {
@@ -68,7 +67,6 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   }, [formatPrice, product.finalPrice, product.basePrice]);
 
   // Optimized event handlers with useCallback to prevent function recreation
-
 
   const handleImageSelect = useCallback((index: number) => {
     setSelectedImageIndex(index);
@@ -99,23 +97,23 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   }, [product.availability.inStock, product.availability.stockQuantity, t]);
 
   // Memoize availability styles
-  const availabilityStyles = useMemo(() => ({
-    dotColor: product.availability.inStock ? "bg-green-500" : "bg-red-500",
-    textColor: product.availability.inStock ? "text-green-700" : "text-red-700"
-  }), [product.availability.inStock]);
+  const availabilityStyles = useMemo(
+    () => ({
+      dotColor: product.availability.inStock ? "bg-green-500" : "bg-red-500",
+      textColor: product.availability.inStock ? "text-green-700" : "text-red-700",
+    }),
+    [product.availability.inStock]
+  );
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      title={productName}
-      size="xl"
-      className="max-w-4xl"
-    >
+    <Modal isOpen={isOpen} onClose={onClose} title={productName} size="xl" className="max-w-4xl">
       <div className="flex flex-col lg:flex-row gap-6 p-6">
         {/* Image Gallery */}
         <div className="flex-1">
-          <div ref={productImageRef} className="aspect-square bg-funeral-gold rounded-lg overflow-hidden mb-4">
+          <div
+            ref={productImageRef}
+            className="aspect-square bg-funeral-gold rounded-lg overflow-hidden mb-4"
+          >
             {currentImage && (
               <OptimizedImage
                 src={currentImage.url}
@@ -169,22 +167,14 @@ export const ProductQuickView = React.memo(function ProductQuickView({
         {/* Product Details */}
         <div className="flex-1 space-y-4">
           {/* Category */}
-          {categoryName && (
-            <p className="text-sm text-stone-500">
-              {categoryName}
-            </p>
-          )}
+          {categoryName && <p className="text-sm text-stone-500">{categoryName}</p>}
 
           {/* Price */}
           <div className="space-y-1">
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-semibold text-stone-900">
-                {formattedFinalPrice}
-              </span>
+              <span className="text-2xl font-semibold text-stone-900">{formattedFinalPrice}</span>
               {formattedBasePrice && (
-                <span className="text-lg text-stone-500 line-through">
-                  {formattedBasePrice}
-                </span>
+                <span className="text-lg text-stone-500 line-through">{formattedBasePrice}</span>
               )}
             </div>
             {product.featured && (
@@ -198,9 +188,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
           {productDescription && (
             <div className="space-y-2">
               <h3 className="font-medium text-stone-900">{t("description")}</h3>
-              <p className="text-sm text-stone-600 leading-relaxed">
-                {productDescription}
-              </p>
+              <p className="text-sm text-stone-600 leading-relaxed">{productDescription}</p>
             </div>
           )}
 
@@ -221,8 +209,6 @@ export const ProductQuickView = React.memo(function ProductQuickView({
 
           {/* Actions */}
           <div className="flex flex-col sm:flex-row gap-3 pt-4">
-
-
             <Link
               href={`/${locale}/products/${product.slug}`}
               className={cn(

@@ -1,8 +1,8 @@
 "use client";
 
-import { useCallback, useRef } from 'react';
-import { useCartAnimation } from '../animations/CartAnimationProvider';
-import type { AnimationSequenceOptions } from '../animations/types';
+import { useCallback, useRef } from "react";
+import { useCartAnimation } from "../animations/CartAnimationProvider";
+import type { AnimationSequenceOptions } from "../animations/types";
 
 export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
   const { startAnimation, state, resetAnimation } = useCartAnimation();
@@ -10,11 +10,11 @@ export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
 
   const startProductToCartAnimation = useCallback(
     (productElement: HTMLElement, cartElement: HTMLElement, productImageSrc: string) => {
-      console.log('🎯 [useAnimationSequence] startProductToCartAnimation called:', {
+      console.log("🎯 [useAnimationSequence] startProductToCartAnimation called:", {
         productElement: productElement?.tagName,
         cartElement: cartElement?.tagName,
-        productImageSrc: productImageSrc?.substring(0, 50) + '...',
-        isAnimating: state.isAnimating
+        productImageSrc: `${productImageSrc?.substring(0, 50)}...`,
+        isAnimating: state.isAnimating,
       });
 
       // Clear any existing animation timeout
@@ -24,17 +24,17 @@ export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
 
       // Check for reduced motion preference unless explicitly skipped
       if (!options.skipReducedMotion) {
-        const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
         if (prefersReducedMotion) {
-          console.log('🎯 [useAnimationSequence] Using reduced motion fallback');
+          console.log("🎯 [useAnimationSequence] Using reduced motion fallback");
           // Provide alternative feedback for reduced motion users
-          cartElement.style.transition = 'transform 150ms ease-out';
-          cartElement.style.transform = 'scale(1.05)';
+          cartElement.style.transition = "transform 150ms ease-out";
+          cartElement.style.transform = "scale(1.05)";
 
           setTimeout(() => {
-            cartElement.style.transform = 'scale(1)';
+            cartElement.style.transform = "scale(1)";
             setTimeout(() => {
-              cartElement.style.transition = '';
+              cartElement.style.transition = "";
             }, 150);
           }, 150);
 
@@ -43,12 +43,12 @@ export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
       }
 
       // Start the animation sequence
-      console.log('🎯 [useAnimationSequence] Calling startAnimation from context');
-      console.log('🎯 [useAnimationSequence] Animation state before start:', state);
+      console.log("🎯 [useAnimationSequence] Calling startAnimation from context");
+      console.log("🎯 [useAnimationSequence] Animation state before start:", state);
       startAnimation(productElement, cartElement, productImageSrc);
-      console.log('🎯 [useAnimationSequence] startAnimation called successfully');
+      console.log("🎯 [useAnimationSequence] startAnimation called successfully");
     },
-    [startAnimation, options.skipReducedMotion, state.isAnimating]
+    [startAnimation, options.skipReducedMotion, state.isAnimating, state]
   );
 
   const cancelAnimation = useCallback(() => {

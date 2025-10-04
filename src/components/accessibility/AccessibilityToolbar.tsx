@@ -4,18 +4,12 @@
 
 "use client";
 
-import {
-  AdjustmentsHorizontalIcon,
-  EyeIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { AdjustmentsHorizontalIcon, EyeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { useAccessibility } from "@/lib/accessibility/context";
 import { useSkipLinks } from "@/lib/accessibility/hooks";
-
-
 
 export function AccessibilityToolbar() {
   const t = useTranslations("accessibility");
@@ -51,16 +45,18 @@ export function AccessibilityToolbar() {
       <button
         onClick={handleToggleToolbar}
         className={`
-          fixed top-4 right-4 z-50 p-3 rounded-full shadow-lg transition-all duration-200
-          ${isHighContrast
-            ? "bg-black text-white border-2 border-white"
-            : "bg-stone-900 text-white hover:bg-stone-800"
+          fixed top-20 right-4 z-40 p-3 rounded-full shadow-lg transition-all duration-200
+          opacity-0 focus:opacity-100
+          ${
+            isHighContrast
+              ? "bg-black text-white border-2 border-white"
+              : "bg-stone-900 text-white hover:bg-stone-800"
           }
           focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2
         `}
         aria-label={isOpen ? t("closeAccessibilityToolbar") : t("openAccessibilityToolbar")}
         aria-expanded={isOpen}
-        aria-controls="accessibility-toolbar"
+        aria-controls="accessibility-panel"
       >
         {isOpen ? (
           <XMarkIcon className="w-6 h-6" aria-hidden="true" />
@@ -72,12 +68,13 @@ export function AccessibilityToolbar() {
       {/* Accessibility Toolbar Panel */}
       {isOpen && (
         <div
-          id="accessibility-toolbar"
+          id="accessibility-panel"
           className={`
-            fixed top-20 right-4 z-40 w-80 max-w-[calc(100vw-2rem)] rounded-lg shadow-elegant
-            ${isHighContrast
-              ? "bg-black text-white border-2 border-white"
-              : "bg-white text-neutral-900 border border-neutral-200"
+            fixed top-24 right-4 z-40 w-80 max-w-[calc(100vw-2rem)] rounded-lg shadow-elegant pt-16
+            ${
+              isHighContrast
+                ? "bg-black text-white border-2 border-white"
+                : "bg-white text-neutral-900 border border-neutral-200"
             }
           `}
           role="dialog"
@@ -86,7 +83,7 @@ export function AccessibilityToolbar() {
         >
           <div className="p-4">
             <h2 id="accessibility-toolbar-title" className="text-lg font-semibold mb-2">
-              {t("accessibilityOptions")}
+              {t("toolbar.title")}
             </h2>
 
             <p id="accessibility-toolbar-description" className="text-sm text-neutral-600 mb-4">

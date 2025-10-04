@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import type React from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useCoreWebVitals } from "@/lib/hooks";
+import { cn } from "@/lib/utils";
 
 interface OptimizedImageProps {
   src: string;
@@ -31,12 +32,16 @@ interface OptimizedImageProps {
 
 // Generate optimized blur placeholder for better perceived performance
 const generateBlurDataURL = (width: number = 8, height: number = 8): string => {
+  // Use stone palette colors from the centralized color system
+  const stoneLight = "#f5f5f4"; // stone-100
+  const stoneMedium = "#e7e5e4"; // stone-200
+
   return `data:image/svg+xml;base64,${Buffer.from(
     `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#f3f4f6;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#e5e7eb;stop-opacity:1" />
+          <stop offset="0%" style="stop-color:${stoneLight};stop-opacity:1" />
+          <stop offset="100%" style="stop-color:${stoneMedium};stop-opacity:1" />
         </linearGradient>
       </defs>
       <rect width="100%" height="100%" fill="url(#grad)" />
@@ -45,7 +50,9 @@ const generateBlurDataURL = (width: number = 8, height: number = 8): string => {
 };
 
 // Optimized sizes configuration for different variants
-const getSizesForVariant = (variant: OptimizedImageProps["variant"]): string => {
+const getSizesForVariant = (
+  variant: OptimizedImageProps["variant"]
+): string => {
   switch (variant) {
     case "product":
       return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw";
@@ -61,7 +68,9 @@ const getSizesForVariant = (variant: OptimizedImageProps["variant"]): string => 
 };
 
 // Quality settings based on variant for optimal file size vs quality balance
-const getQualityForVariant = (variant: OptimizedImageProps["variant"]): number => {
+const getQualityForVariant = (
+  variant: OptimizedImageProps["variant"]
+): number => {
   switch (variant) {
     case "product":
       return 85; // High quality for product images
@@ -129,7 +138,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   // CLS prevention styles
   const clsPreventionStyles = useMemo(() => {
-    if (!enableCoreWebVitals || !width || !height) return {};
+    if (!(enableCoreWebVitals && width && height)) return {};
     return coreWebVitals.reserveImageSpace(width, height);
   }, [enableCoreWebVitals, width, height, coreWebVitals]);
 
@@ -152,7 +161,14 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     }
 
     onLoad?.();
-  }, [onLoad, loadStartTime, enableCoreWebVitals, coreWebVitals, src, isLCPCandidate]);
+  }, [
+    onLoad,
+    loadStartTime,
+    enableCoreWebVitals,
+    coreWebVitals,
+    src,
+    isLCPCandidate,
+  ]);
 
   // Optimized error handler
   const handleError = useCallback(() => {

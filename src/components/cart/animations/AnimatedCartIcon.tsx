@@ -1,10 +1,10 @@
 "use client";
 
-import { ShoppingCartIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import React, { useRef, useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useCart } from "@/lib/cart/context";
+import { ShoppingCartIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { useCartAnimation } from "./CartAnimationProvider";
 
@@ -24,75 +24,78 @@ export function AnimatedCartIcon({ locale, className = "" }: AnimatedCartIconPro
 
   // Cart bounce animation
   useEffect(() => {
-    if (animationState.currentStep === 'cart-bouncing' && cartRef.current) {
+    if (animationState.currentStep === "cart-bouncing" && cartRef.current) {
       const element = cartRef.current;
 
       // Apply bounce animation using CSS transforms
       element.style.transition = `transform ${config.cartBounceDuration / 2}ms cubic-bezier(0.68, -0.55, 0.265, 1.55)`;
-      element.style.transform = 'translateY(-8px)';
+      element.style.transform = "translateY(-8px)";
 
       setTimeout(() => {
-        element.style.transform = 'translateY(0px)';
+        element.style.transform = "translateY(0px)";
       }, config.cartBounceDuration / 2);
 
       // Cleanup
       setTimeout(() => {
-        element.style.transition = '';
-        element.style.transform = '';
+        element.style.transition = "";
+        element.style.transform = "";
       }, config.cartBounceDuration);
     }
   }, [animationState.currentStep, config.cartBounceDuration]);
 
   // Cart shake animation
   useEffect(() => {
-    if (animationState.currentStep === 'cart-shaking' && cartRef.current) {
+    if (animationState.currentStep === "cart-shaking" && cartRef.current) {
       const element = cartRef.current;
 
       // Apply shake animation
       element.style.transition = `transform ${config.cartShakeDuration}ms ease-in-out`;
-      element.style.transform = 'translateX(-2px)';
+      element.style.transform = "translateX(-2px)";
 
       setTimeout(() => {
-        element.style.transform = 'translateX(2px)';
+        element.style.transform = "translateX(2px)";
       }, config.cartShakeDuration / 4);
 
       setTimeout(() => {
-        element.style.transform = 'translateX(-1px)';
+        element.style.transform = "translateX(-1px)";
       }, config.cartShakeDuration / 2);
 
-      setTimeout(() => {
-        element.style.transform = 'translateX(0px)';
-      }, (config.cartShakeDuration * 3) / 4);
+      setTimeout(
+        () => {
+          element.style.transform = "translateX(0px)";
+        },
+        (config.cartShakeDuration * 3) / 4
+      );
 
       // Cleanup
       setTimeout(() => {
-        element.style.transition = '';
-        element.style.transform = '';
+        element.style.transition = "";
+        element.style.transform = "";
       }, config.cartShakeDuration);
     }
   }, [animationState.currentStep, config.cartShakeDuration]);
 
   // Count animation
   useEffect(() => {
-    if (animationState.currentStep === 'count-animating' && countRef.current) {
+    if (animationState.currentStep === "count-animating" && countRef.current) {
       const element = countRef.current;
 
       // Scale up and fade in animation
       element.style.transition = `transform ${config.countAnimationDuration}ms cubic-bezier(0.34, 1.56, 0.64, 1), opacity ${config.countAnimationDuration}ms ease-out`;
-      element.style.transform = 'scale(1.3)';
-      element.style.opacity = '1';
+      element.style.transform = "scale(1.3)";
+      element.style.opacity = "1";
 
       setTimeout(() => {
-        element.style.transform = 'scale(1)';
+        element.style.transform = "scale(1)";
       }, config.countAnimationDuration / 2);
 
       // Cleanup
       setTimeout(() => {
-        element.style.transition = '';
-        element.style.transform = '';
+        element.style.transition = "";
+        element.style.transform = "";
       }, config.countAnimationDuration);
     }
-  }, [animationState.currentStep, config.countAnimationDuration, itemCount]);
+  }, [animationState.currentStep, config.countAnimationDuration]);
 
   return (
     <Link
@@ -119,11 +122,11 @@ export function AnimatedCartIcon({ locale, className = "" }: AnimatedCartIconPro
             "shadow-sm border border-white",
             "high-contrast:bg-Highlight high-contrast:text-HighlightText high-contrast:border-HighlightText",
             // Add will-change for performance during count animation
-            animationState.currentStep === 'count-animating' && "will-change-transform"
+            animationState.currentStep === "count-animating" && "will-change-transform"
           )}
           style={{
             // Ensure smooth animation start
-            transform: animationState.currentStep === 'count-animating' ? 'scale(1)' : undefined,
+            transform: animationState.currentStep === "count-animating" ? "scale(1)" : undefined,
           }}
         >
           {itemCount > 99 ? "99+" : itemCount}

@@ -1,58 +1,54 @@
+// Error testing utilities (development only)
+export { ErrorTestingDashboard, HOCErrorTest } from "./ErrorTestingUtils";
+export { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
+export { OptimizedProductCustomizer } from "./OptimizedProductCustomizer";
+export { PriceBreakdown } from "./PriceBreakdown";
 export { ProductCard } from "./ProductCard";
 export { ProductCardLayout } from "./ProductCardLayout";
+// Error boundary components
+export {
+  ImageErrorBoundary,
+  ImageErrorFallback,
+  NavigationErrorBoundary,
+  NavigationErrorFallback,
+  ProductCardErrorFallback,
+  ProductComponentErrorBoundary,
+  ProductErrorFallback,
+  ProductFiltersErrorFallback,
+  ProductGridErrorFallback,
+  withProductErrorBoundary,
+} from "./ProductComponentErrorBoundary";
 export { ProductCustomizer } from "./ProductCustomizer";
-export { ProductImage } from "./ProductImage";
-export { ProductImageHover } from "./ProductImageHover";
-export { OptimizedProductCustomizer } from "./OptimizedProductCustomizer";
 export { ProductDetail } from "./ProductDetail";
+export { ProductDetailImageGrid } from "./ProductDetailImageGrid";
 export { ProductFilters } from "./ProductFilters";
 export { ProductGrid } from "./ProductGrid";
+// Error boundary integrations
+export {
+  ProductFiltersWithErrorBoundary,
+  ProductGridWithErrorBoundary,
+  ResilientProductPage,
+} from "./ProductGridWithErrorBoundary";
+export { ProductImage } from "./ProductImage";
 export { ProductImageGallery } from "./ProductImageGallery";
+export { ProductImageHover } from "./ProductImageHover";
 export { ProductInfo } from "./ProductInfo";
 export { ProductTeaser } from "./ProductTeaser";
 export { RandomProductTeasers } from "./RandomProductTeasers";
-export { SizeSelector } from "./SizeSelector";
 export { RibbonConfigurator } from "./RibbonConfigurator";
-export { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
-export { PriceBreakdown } from "./PriceBreakdown";
-
-// Error boundary components
-export {
-  ProductComponentErrorBoundary,
-  ProductErrorFallback,
-  ProductCardErrorFallback,
-  ProductFiltersErrorFallback,
-  ProductGridErrorFallback,
-  NavigationErrorBoundary,
-  NavigationErrorFallback,
-  ImageErrorBoundary,
-  ImageErrorFallback,
-  withProductErrorBoundary,
-} from "./ProductComponentErrorBoundary";
-
-// Error handling hooks
-export { useProductErrorHandler, withProductErrorHandling } from "./useProductErrorHandler";
-
-// Error boundary integrations
-export {
-  ProductGridWithErrorBoundary,
-  ProductFiltersWithErrorBoundary,
-  ResilientProductPage,
-} from "./ProductGridWithErrorBoundary";
-
-// Error testing utilities (development only)
-export {
-  ErrorTestingDashboard,
-  HOCErrorTest,
-} from "./ErrorTestingUtils";
-
+export { SizeSelector } from "./SizeSelector";
 // Export shared types
 export type {
-  ProductCardVariant,
+  ProductCardActionConfig,
   ProductCardActionType,
   ProductCardLayoutProps,
-  ProductCardActionConfig,
-  SharedProductCardProps,
   ProductCardProps,
+  ProductCardVariant,
   ProductTeaserProps,
+  SharedProductCardProps,
 } from "./types";
+// Error handling hooks
+export {
+  useProductErrorHandler,
+  withProductErrorHandling,
+} from "./useProductErrorHandler";

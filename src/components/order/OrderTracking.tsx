@@ -1,9 +1,8 @@
 "use client";
 
-
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { type OrderStatus } from "@/types/order";
+import type { OrderStatus } from "@/types/order";
 
 interface OrderTrackingProps {
   orderId: string;
@@ -30,16 +29,14 @@ interface OrderHistoryResponse {
 }
 
 export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
-  const [order, setOrder] = useState<OrderHistoryResponse["order"] | null>(null);
+  const [order, setOrder] = useState<OrderHistoryResponse["order"] | null>(
+    null
+  );
   const [statusHistory, setStatusHistory] = useState<StatusHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    fetchOrderHistory();
-  }, [orderId]);
-
-  const fetchOrderHistory = async () => {
+  const fetchOrderHistory = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -59,7 +56,11 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, [orderId]);
+
+  useEffect(() => {
+    fetchOrderHistory();
+  }, [fetchOrderHistory]);
 
   const getStatusColor = (status: OrderStatus): string => {
     switch (status) {
@@ -116,7 +117,11 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg
+              className="h-5 w-5 text-red-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -158,12 +163,15 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
                 {locale === "cs" ? "Objednávka" : "Order"} #{order.orderNumber}
               </h1>
               <p className="text-sm text-gray-500 mt-1">
-                {locale === "cs" ? "Vytvořeno" : "Created"}: {formatDate(order.createdAt)}
+                {locale === "cs" ? "Vytvořeno" : "Created"}:{" "}
+                {formatDate(order.createdAt)}
               </p>
             </div>
             <div className="text-right">
               <div
-                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(order.status)}`}
+                className={`inline-flex items-center px-3 py-1 rounded-full text-sm font-medium border ${getStatusColor(
+                  order.status
+                )}`}
               >
                 {getStatusLabel(order.status)}
               </div>
@@ -198,8 +206,11 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
                       <div className="relative flex space-x-3">
                         <div>
                           <span
-                            className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white ${item.status === order.status ? "bg-green-500" : "bg-gray-400"
-                              }`}
+                            className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white ${
+                              item.status === order.status
+                                ? "bg-green-500"
+                                : "bg-gray-400"
+                            }`}
                           >
                             <svg
                               className="h-4 w-4 text-white"
@@ -219,7 +230,9 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
                             <p className="text-sm font-medium text-gray-900">
                               {getStatusLabel(item.status)}
                             </p>
-                            <p className="text-sm text-gray-500">{item.description}</p>
+                            <p className="text-sm text-gray-500">
+                              {item.description}
+                            </p>
                           </div>
                           <div className="text-right text-sm whitespace-nowrap text-gray-500">
                             {formatDate(item.timestamp)}
@@ -233,7 +246,9 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
             </div>
           ) : (
             <p className="text-gray-500 text-center py-8">
-              {locale === "cs" ? "Žádná historie není k dispozici" : "No history available"}
+              {locale === "cs"
+                ? "Žádná historie není k dispozici"
+                : "No history available"}
             </p>
           )}
         </div>
@@ -253,7 +268,12 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
             </>
           ) : (
             <>
-              <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg
+                className="w-4 h-4 mr-2"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
                 <path
                   strokeLinecap="round"
                   strokeLinejoin="round"

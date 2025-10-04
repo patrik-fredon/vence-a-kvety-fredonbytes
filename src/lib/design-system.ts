@@ -153,10 +153,10 @@ export const componentPatterns = {
  */
 export function getTextColorForBackground(backgroundColor: string): string {
   const colorMap: Record<string, string> = {
+    // Note: hero and background both use var(--color-teal-900), so we only need one entry
     [designTokens.colors.funeral.hero]: designTokens.colors.funeral.textOnHero,
     [designTokens.colors.funeral.heroLight]: designTokens.colors.funeral.textOnHero,
     [designTokens.colors.funeral.heroDark]: designTokens.colors.funeral.textOnHero,
-    [designTokens.colors.funeral.background]: designTokens.colors.funeral.textOnBackground,
     [designTokens.colors.funeral.backgroundLight]: designTokens.colors.funeral.textOnBackground,
     [designTokens.colors.funeral.backgroundDark]: designTokens.colors.funeral.textOnHero,
   };

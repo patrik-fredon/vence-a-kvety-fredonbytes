@@ -13,18 +13,21 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
   iconPosition?: "left" | "right";
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button({
-  children,
-  className,
-  variant = "default",
-  size = "default",
-  loading = false,
-  loadingText,
-  icon,
-  iconPosition = "left",
-  disabled,
-  ...props
-}, ref) {
+export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button(
+  {
+    children,
+    className,
+    variant = "default",
+    size = "default",
+    loading = false,
+    loadingText,
+    icon,
+    iconPosition = "left",
+    disabled,
+    ...props
+  },
+  ref
+) {
   const prefersReducedMotion = useReducedMotion();
 
   const baseStyles = cn(
@@ -167,9 +170,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
       {/* Icon - left position */}
       {!loading && icon && iconPosition === "left" && (
-        <span className={cn("flex-shrink-0", children ? "mr-2" : "")}>
-          {icon}
-        </span>
+        <span className={cn("flex-shrink-0", children ? "mr-2" : "")}>{icon}</span>
       )}
 
       {/* Content */}
@@ -177,9 +178,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
       {/* Icon - right position */}
       {!loading && icon && iconPosition === "right" && (
-        <span className={cn("flex-shrink-0", children ? "ml-2" : "")}>
-          {icon}
-        </span>
+        <span className={cn("flex-shrink-0", children ? "ml-2" : "")}>{icon}</span>
       )}
     </button>
   );

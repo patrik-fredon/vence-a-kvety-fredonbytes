@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useEffect, useState } from "react";
+import type React from "react";
+import { useEffect, useState } from "react";
 
 interface ImageLoadMetrics {
   url: string;
@@ -30,7 +31,7 @@ interface PerformanceStats {
 }
 
 export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = ({
-  enabled = process.env['NODE_ENV'] === "development",
+  enabled = process.env.NODE_ENV === "development",
   logToConsole = true,
   onMetrics,
   maxMetrics = 100,
@@ -56,9 +57,7 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
       current.loadTime < fastest.loadTime ? current : fastest
     );
 
-    const totalDataTransferred = metrics.reduce((sum, metric) =>
-      sum + (metric.fileSize || 0), 0
-    );
+    const totalDataTransferred = metrics.reduce((sum, metric) => sum + (metric.fileSize || 0), 0);
 
     const newStats: PerformanceStats = {
       totalImages: metrics.length,
@@ -74,8 +73,12 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
       console.group("🖼️ Image Performance Stats");
       console.log(`Total Images: ${newStats.totalImages}`);
       console.log(`Average Load Time: ${newStats.averageLoadTime.toFixed(2)}ms`);
-      console.log(`Slowest Image: ${newStats.slowestImage.url} (${newStats.slowestImage.loadTime.toFixed(2)}ms)`);
-      console.log(`Fastest Image: ${newStats.fastestImage.url} (${newStats.fastestImage.loadTime.toFixed(2)}ms)`);
+      console.log(
+        `Slowest Image: ${newStats.slowestImage.url} (${newStats.slowestImage.loadTime.toFixed(2)}ms)`
+      );
+      console.log(
+        `Fastest Image: ${newStats.fastestImage.url} (${newStats.fastestImage.loadTime.toFixed(2)}ms)`
+      );
       console.log(`Total Data: ${(newStats.totalDataTransferred / 1024).toFixed(2)}KB`);
       console.groupEnd();
     }
@@ -91,7 +94,10 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
       const entries = list.getEntries();
 
       entries.forEach((entry) => {
-        if (entry.entryType === "resource" && entry.name.match(/\.(jpg|jpeg|png|gif|webp|avif)$/i)) {
+        if (
+          entry.entryType === "resource" &&
+          entry.name.match(/\.(jpg|jpeg|png|gif|webp|avif)$/i)
+        ) {
           const resourceEntry = entry as PerformanceResourceTiming;
 
           const metric: ImageLoadMetrics = {
@@ -126,22 +132,16 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
         <span className="font-semibold">Image Performance</span>
       </div>
 
-      {stats && stats.slowestImage && stats.fastestImage ? (
+      {stats?.slowestImage && stats.fastestImage ? (
         <div className="space-y-1">
           <div>Images: {stats.totalImages}</div>
           <div>Avg Load: {stats.averageLoadTime.toFixed(1)}ms</div>
           <div>Data: {(stats.totalDataTransferred / 1024).toFixed(1)}KB</div>
-          <div className="text-red-300">
-            Slowest: {stats.slowestImage.loadTime.toFixed(1)}ms
-          </div>
-          <div className="text-green-300">
-            Fastest: {stats.fastestImage.loadTime.toFixed(1)}ms
-          </div>
+          <div className="text-red-300">Slowest: {stats.slowestImage.loadTime.toFixed(1)}ms</div>
+          <div className="text-green-300">Fastest: {stats.fastestImage.loadTime.toFixed(1)}ms</div>
         </div>
       ) : (
-        <div className="text-gray-400">
-          Monitoring images...
-        </div>
+        <div className="text-gray-400">Monitoring images...</div>
       )}
     </div>
   );

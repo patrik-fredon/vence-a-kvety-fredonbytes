@@ -5,10 +5,9 @@
  * Allows users to select delivery urgency and view available options
  */
 
-import { ClockIcon, TruckIcon } from "@/lib/icons";
 import { clsx } from "clsx";
-
 import { useEffect, useState } from "react";
+import { ClockIcon, TruckIcon } from "@/lib/icons";
 import type { Address } from "@/types";
 import type { DeliveryOption, DeliveryUrgency } from "@/types/delivery";
 
@@ -75,7 +74,6 @@ export function DeliveryOptionsSelector({
         return <ClockIcon className="w-5 h-5" />;
       case "express":
         return <TruckIcon className="w-5 h-5" />;
-      case "standard":
       default:
         return <TruckIcon className="w-5 h-5" />;
     }
@@ -91,7 +89,6 @@ export function DeliveryOptionsSelector({
           return `${baseClasses} border-red-500 bg-red-50 text-red-900`;
         case "express":
           return `${baseClasses} border-orange-500 bg-orange-50 text-orange-900`;
-        case "standard":
         default:
           return `${baseClasses} border-blue-500 bg-blue-50 text-blue-900`;
       }

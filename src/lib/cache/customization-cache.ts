@@ -17,7 +17,7 @@ class CustomizationCache {
     const cached = this.cache.get(productId);
     const timestamp = this.cacheTimestamps.get(productId);
 
-    if (!cached || !timestamp) {
+    if (!(cached && timestamp)) {
       return null;
     }
 
@@ -84,9 +84,12 @@ const customizationCache = new CustomizationCache();
 
 // Cleanup expired entries every 10 minutes
 if (typeof window !== "undefined") {
-  setInterval(() => {
-    customizationCache.cleanup();
-  }, 10 * 60 * 1000);
+  setInterval(
+    () => {
+      customizationCache.cleanup();
+    },
+    10 * 60 * 1000
+  );
 }
 
 export { customizationCache };

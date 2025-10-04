@@ -1,14 +1,14 @@
 "use client";
 
+import Image from "next/image";
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Card } from "@/components/ui/Card";
 import {
   ChevronLeftIcon,
   ChevronRightIcon,
   MagnifyingGlassIcon,
   XMarkIcon,
 } from "@/lib/icons";
-import Image from "next/image";
-import { useEffect, useRef, useState } from "react";
-import { Card } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
 import type { Customization, ProductImage } from "@/types/product";
 
@@ -59,6 +59,18 @@ export function ProductImageGallery({
     }
   }, [relevantImages.length, selectedImageIndex]);
 
+  const handlePrevious = useCallback(() => {
+    setSelectedImageIndex((prev) =>
+      prev === 0 ? relevantImages.length - 1 : prev - 1
+    );
+  }, [relevantImages.length]);
+
+  const handleNext = useCallback(() => {
+    setSelectedImageIndex((prev) =>
+      prev === relevantImages.length - 1 ? 0 : prev + 1
+    );
+  }, [relevantImages.length]);
+
   // Handle keyboard navigation
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -88,15 +100,7 @@ export function ProductImageGallery({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [isFullscreen]);
-
-  const handlePrevious = () => {
-    setSelectedImageIndex((prev) => (prev === 0 ? relevantImages.length - 1 : prev - 1));
-  };
-
-  const handleNext = () => {
-    setSelectedImageIndex((prev) => (prev === relevantImages.length - 1 ? 0 : prev + 1));
-  };
+  }, [isFullscreen, handleNext, handlePrevious]);
 
   const handleMouseMove = (event: React.MouseEvent<HTMLDivElement>) => {
     if (!(isZoomed && imageRef.current)) return;
@@ -130,7 +134,12 @@ export function ProductImageGallery({
 
   if (relevantImages.length === 0) {
     return (
-      <Card className={cn("aspect-square bg-funeral-gold flex items-center justify-center", className)}>
+      <Card
+        className={cn(
+          "aspect-square bg-funeral-gold flex items-center justify-center",
+          className
+        )}
+      >
         <div className="text-stone-400 text-center">
           <div className="text-4xl mb-2">📷</div>
           <div className="text-sm">No images available</div>
@@ -143,7 +152,10 @@ export function ProductImageGallery({
     <>
       <div className={cn("space-y-4", className)}>
         {/* Main Image Display */}
-        <Card padding="none" className="relative aspect-square bg-funeral-gold overflow-hidden group">
+        <Card
+          padding="none"
+          className="relative aspect-square bg-funeral-gold overflow-hidden group"
+        >
           {selectedImage && (
             <div
               ref={imageRef}
@@ -162,8 +174,8 @@ export function ProductImageGallery({
                 style={
                   isZoomed
                     ? {
-                      transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
-                    }
+                        transformOrigin: `${zoomPosition.x}% ${zoomPosition.y}%`,
+                      }
                     : undefined
                 }
                 onClick={toggleZoom}
@@ -172,7 +184,9 @@ export function ProductImageGallery({
               />
 
               {/* Zoom overlay */}
-              {isZoomed && <div className="absolute inset-0 bg-black/10 pointer-events-none" />}
+              {isZoomed && (
+                <div className="absolute inset-0 bg-black/10 pointer-events-none" />
+              )}
 
               {/* Navigation Arrows */}
               {relevantImages.length > 1 && (

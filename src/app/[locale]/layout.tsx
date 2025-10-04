@@ -2,12 +2,12 @@ import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages } from "next-intl/server";
 import { AuthProvider } from "@/components/auth";
+import { CartAnimationProvider } from "@/components/cart";
 import { MainLayout } from "@/components/layout/MainLayout";
 import { MonitoringProvider } from "@/components/monitoring/MonitoringProvider";
 import { type Locale, locales } from "@/i18n/config";
 import { AccessibilityProvider } from "@/lib/accessibility/context";
 import { CartProvider } from "@/lib/cart/context";
-import { CartAnimationProvider } from "@/components/cart";
 import { generateLocalizedMetadata } from "@/lib/i18n/metadata";
 import { createClient } from "@/lib/supabase/server";
 
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: LocaleLayoutProps) {
 export default async function LocaleLayout({ children, params }: LocaleLayoutProps) {
   const { locale } = await params;
   // Validate that the incoming `locale` parameter is valid
-  if (!locales.includes(locale as any)) {
+  if (!locales.includes(locale as (typeof locales)[number])) {
     notFound();
   }
 

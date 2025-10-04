@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import React, { useState, useEffect } from 'react';
-import { usePerformanceMonitor, usePerformanceProfiler } from '@/lib/hooks';
+import type React from "react";
+import { useEffect, useState } from "react";
+import { usePerformanceMonitor, usePerformanceProfiler } from "@/lib/hooks";
 
 /**
  * Example component demonstrating performance monitoring hooks usage
@@ -13,30 +14,25 @@ export const PerformanceMonitoringExample: React.FC = () => {
 
   // Basic performance monitoring
   const { metrics: renderMetrics, markMounted } = usePerformanceMonitor({
-    componentName: 'PerformanceMonitoringExample',
+    componentName: "PerformanceMonitoringExample",
     logMetrics: true,
     slowRenderThreshold: 16, // 60fps target
     onMetrics: (metrics) => {
       // Custom handling of performance metrics
       if (metrics.renderDuration && metrics.renderDuration > 50) {
-        console.warn('Slow render detected!', metrics);
+        console.warn("Slow render detected!", metrics);
       }
     },
   });
 
   // Comprehensive performance profiling
-  const {
-    profile,
-    getPerformanceReport,
-    exportProfile,
-    isProfiling
-  } = usePerformanceProfiler({
-    componentName: 'PerformanceMonitoringExample',
+  const { profile, getPerformanceReport, exportProfile, isProfiling } = usePerformanceProfiler({
+    componentName: "PerformanceMonitoringExample",
     trackMemory: true,
     trackNetwork: true,
     sampleRate: 1.0, // Profile 100% of renders in development
     onProfileComplete: (profile) => {
-      console.log('Performance profile complete:', profile);
+      console.log("Performance profile complete:", profile);
     },
   });
 
@@ -59,7 +55,7 @@ export const PerformanceMonitoringExample: React.FC = () => {
 
   // Simulate layout shift
   const handleLayoutShift = () => {
-    setCount(prev => prev + 1);
+    setCount((prev) => prev + 1);
   };
 
   // Export performance data
@@ -67,8 +63,8 @@ export const PerformanceMonitoringExample: React.FC = () => {
     const report = getPerformanceReport();
     const profileData = exportProfile();
 
-    console.log('Performance Report:\n', report);
-    console.log('Profile Data:', profileData);
+    console.log("Performance Report:\n", report);
+    console.log("Profile Data:", profileData);
 
     // In a real app, you might send this to analytics
     // analytics.track('performance_profile', JSON.parse(profileData));
@@ -84,8 +80,10 @@ export const PerformanceMonitoringExample: React.FC = () => {
         <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
           <div>
             <span className="font-medium">Profiling:</span>
-            <span className={`ml-2 px-2 py-1 rounded ${isProfiling ? 'bg-green-200 text-green-800' : 'bg-gray-200'}`}>
-              {isProfiling ? 'Active' : 'Inactive'}
+            <span
+              className={`ml-2 px-2 py-1 rounded ${isProfiling ? "bg-green-200 text-green-800" : "bg-gray-200"}`}
+            >
+              {isProfiling ? "Active" : "Inactive"}
             </span>
           </div>
 
@@ -98,12 +96,14 @@ export const PerformanceMonitoringExample: React.FC = () => {
               <div>
                 <span className="font-medium">Last Render:</span>
                 <span className="ml-2">
-                  {renderMetrics.renderDuration ? `${renderMetrics.renderDuration.toFixed(2)}ms` : 'N/A'}
+                  {renderMetrics.renderDuration
+                    ? `${renderMetrics.renderDuration.toFixed(2)}ms`
+                    : "N/A"}
                 </span>
               </div>
               <div>
                 <span className="font-medium">First Render:</span>
-                <span className="ml-2">{renderMetrics.isFirstRender ? 'Yes' : 'No'}</span>
+                <span className="ml-2">{renderMetrics.isFirstRender ? "Yes" : "No"}</span>
               </div>
             </>
           )}
@@ -129,7 +129,9 @@ export const PerformanceMonitoringExample: React.FC = () => {
             </div>
             <div>
               <span className="font-medium">Optimizations:</span>
-              <span className="ml-2">{profile.lighthouseMetrics.optimizationOpportunities.length}</span>
+              <span className="ml-2">
+                {profile.lighthouseMetrics.optimizationOpportunities.length}
+              </span>
             </div>
           </div>
 
@@ -138,7 +140,9 @@ export const PerformanceMonitoringExample: React.FC = () => {
               <h4 className="font-medium mb-2">Optimization Opportunities:</h4>
               <ul className="text-sm space-y-1">
                 {profile.lighthouseMetrics.optimizationOpportunities.map((opp, index) => (
-                  <li key={index} className="text-blue-700">• {opp}</li>
+                  <li key={index} className="text-blue-700">
+                    • {opp}
+                  </li>
                 ))}
               </ul>
             </div>
@@ -192,11 +196,12 @@ export const PerformanceMonitoringExample: React.FC = () => {
       </div>
 
       {/* Development Tools */}
-      {process.env['NODE_ENV'] === 'development' && (
+      {process.env.NODE_ENV === "development" && (
         <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">Development Tools</h3>
           <p className="text-sm text-gray-600 mb-4">
-            Performance monitoring is active in development mode. Check the browser console for detailed logs.
+            Performance monitoring is active in development mode. Check the browser console for
+            detailed logs.
           </p>
           <div className="text-xs space-y-1">
             <div>• Render times are logged for each component update</div>

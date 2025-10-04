@@ -5,7 +5,7 @@ export async function GET() {
   try {
     const session = await auth();
 
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -15,7 +15,7 @@ export async function GET() {
     const { data: profile, error } = await supabase
       .from("user_profiles")
       .select("*")
-      .eq("id", session.user.id!)
+      .eq("id", session.user.id)
       .single();
 
     if (error) {
@@ -34,7 +34,7 @@ export async function PUT(request: NextRequest) {
   try {
     const session = await auth();
 
-    if (!session?.user) {
+    if (!session?.user?.id) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -54,7 +54,7 @@ export async function PUT(request: NextRequest) {
         preferences: preferences || {},
         updated_at: new Date().toISOString(),
       })
-      .eq("id", session.user.id!);
+      .eq("id", session.user.id);
 
     if (error) {
       console.error("Profile update error:", error);

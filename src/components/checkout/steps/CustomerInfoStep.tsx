@@ -1,8 +1,6 @@
 "use client";
 
-
 import { useTranslations } from "next-intl";
-import React from "react";
 import { Input } from "@/components/ui/Input";
 import type { CustomerInfo } from "@/types/order";
 

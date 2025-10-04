@@ -44,8 +44,11 @@ class CustomizationPerformanceMonitor {
     }
 
     // Log slow operations in development
-    if (process.env['NODE_ENV'] === "development" && metric.duration > 100) {
-      console.warn(`Slow customization operation: ${metric.operation} took ${metric.duration.toFixed(2)}ms`, metric.metadata);
+    if (process.env.NODE_ENV === "development" && metric.duration > 100) {
+      console.warn(
+        `Slow customization operation: ${metric.operation} took ${metric.duration.toFixed(2)}ms`,
+        metric.metadata
+      );
     }
   }
 
@@ -57,7 +60,10 @@ class CustomizationPerformanceMonitor {
       return null;
     }
 
-    const operationStats = new Map<string, { count: number; totalDuration: number; avgDuration: number; maxDuration: number }>();
+    const operationStats = new Map<
+      string,
+      { count: number; totalDuration: number; avgDuration: number; maxDuration: number }
+    >();
 
     for (const metric of this.metrics) {
       const existing = operationStats.get(metric.operation) || {
@@ -93,7 +99,7 @@ class CustomizationPerformanceMonitor {
    * Get metrics for a specific operation
    */
   getOperationMetrics(operation: string): PerformanceMetric[] {
-    return this.metrics.filter(m => m.operation === operation);
+    return this.metrics.filter((m) => m.operation === operation);
   }
 }
 
@@ -147,7 +153,7 @@ export function withPerformanceMonitoring<T extends (...args: any[]) => any>(
  * Decorator for class methods (if using TypeScript decorators)
  */
 export function performanceMonitored(operationName?: string) {
-  return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+  return (target: any, propertyKey: string, descriptor: PropertyDescriptor) => {
     const originalMethod = descriptor.value;
     const operation = operationName || `${target.constructor.name}.${propertyKey}`;
 

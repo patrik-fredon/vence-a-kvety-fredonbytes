@@ -1,7 +1,7 @@
 "use client";
 
+import { useCallback, useState } from "react";
 import { CalendarIcon } from "@/lib/icons";
-import { useState, useCallback } from "react";
 import { cn } from "@/lib/utils";
 
 interface DateSelectorProps {
@@ -34,7 +34,7 @@ export function DateSelector({
 
   // Format date for input
   const formatDateForInput = (date: Date) => {
-    return date.toISOString().split('T')[0];
+    return date.toISOString().split("T")[0];
   };
 
   // Format date for display
@@ -48,11 +48,14 @@ export function DateSelector({
     });
   };
 
-  const handleDateChange = useCallback((event: React.ChangeEvent<HTMLInputElement>) => {
-    const selectedDate = event.target.value;
-    onChange(selectedDate);
-    setIsOpen(false);
-  }, [onChange]);
+  const handleDateChange = useCallback(
+    (event: React.ChangeEvent<HTMLInputElement>) => {
+      const selectedDate = event.target.value;
+      onChange(selectedDate);
+      setIsOpen(false);
+    },
+    [onChange]
+  );
 
   const handleToggleCalendar = () => {
     setIsOpen(!isOpen);
@@ -74,9 +77,7 @@ export function DateSelector({
           <CalendarIcon className="w-5 h-5 text-neutral-500" />
           <div className="text-left">
             {value ? (
-              <div className="font-medium text-neutral-900">
-                {formatDateForDisplay(value)}
-              </div>
+              <div className="font-medium text-neutral-900">{formatDateForDisplay(value)}</div>
             ) : (
               <div className="text-teal-500">
                 {locale === "cs" ? "Vyberte datum" : "Select date"}
@@ -84,9 +85,7 @@ export function DateSelector({
             )}
           </div>
         </div>
-        <div className="text-teal-400">
-          {isOpen ? "▲" : "▼"}
-        </div>
+        <div className="text-teal-400">{isOpen ? "▲" : "▼"}</div>
       </button>
 
       {/* Calendar Input */}
@@ -112,8 +111,7 @@ export function DateSelector({
             <div className="text-xs text-neutral-500">
               {locale === "cs"
                 ? `Dostupné termíny: ${minDate.toLocaleDateString("cs-CZ")} - ${maxDate.toLocaleDateString("cs-CZ")}`
-                : `Available dates: ${minDate.toLocaleDateString("en-US")} - ${maxDate.toLocaleDateString("en-US")}`
-              }
+                : `Available dates: ${minDate.toLocaleDateString("en-US")} - ${maxDate.toLocaleDateString("en-US")}`}
             </div>
           </div>
         </div>
@@ -126,8 +124,7 @@ export function DateSelector({
           <span>
             {locale === "cs"
               ? `Dodání naplánováno na ${formatDateForDisplay(value)}`
-              : `Delivery scheduled for ${formatDateForDisplay(value)}`
-            }
+              : `Delivery scheduled for ${formatDateForDisplay(value)}`}
           </span>
         </div>
       )}

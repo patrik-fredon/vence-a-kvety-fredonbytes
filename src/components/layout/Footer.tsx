@@ -1,9 +1,9 @@
 "use client";
 
-import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
 
 interface FooterProps {
   locale: string;
@@ -73,8 +73,6 @@ export function Footer({ locale }: FooterProps) {
                     <p className="text-xs text-amber-100 mt-0.5">Hlavní linka</p>
                   </div>
                 </div>
-
-
 
                 <div className="flex items-start space-x-3">
                   <EnvelopeIcon
@@ -172,6 +170,39 @@ export function Footer({ locale }: FooterProps) {
                   GDPR
                 </Link>
               </nav>
+
+              {/* Accessibility Link - Desktop Only */}
+              <div className="hidden md:block">
+                <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-amber-100">
+                  {tAccessibility("accessibility")}
+                </h4>
+                <nav
+                  className="space-y-1 sm:space-y-2"
+                  aria-label={tAccessibility("accessibilityOptions")}
+                >
+                  <button
+                    onClick={() => {
+                      const toolbarButton = document.querySelector(
+                        '[aria-controls="accessibility-panel"]'
+                      ) as HTMLButtonElement;
+                      if (toolbarButton) {
+                        toolbarButton.scrollIntoView({
+                          behavior: "smooth",
+                          block: "center",
+                        });
+                        toolbarButton.focus();
+                        // Trigger click to open toolbar if it's closed
+                        if (toolbarButton.getAttribute("aria-expanded") === "false") {
+                          toolbarButton.click();
+                        }
+                      }
+                    }}
+                    className="block text-left text-amber-200 hover:text-amber-100 transition-colors duration-200  rounded px-1 py-0.5"
+                  >
+                    {tAccessibility("openAccessibilityToolbar")}
+                  </button>
+                </nav>
+              </div>
             </div>
           </div>
 
@@ -182,7 +213,6 @@ export function Footer({ locale }: FooterProps) {
                 <p>© 2024 {t("company")} • IČO: 12345678 • DIČ: CZ12345678</p>
                 <p className="mt-1">{t("description")} • Všechna práva vyhrazena</p>
               </div>
-
             </div>
           </div>
         </div>

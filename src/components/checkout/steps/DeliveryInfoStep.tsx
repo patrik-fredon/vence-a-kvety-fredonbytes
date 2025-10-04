@@ -1,13 +1,8 @@
 "use client";
 
-import {
-  CalendarIcon,
-  ClockIcon,
-  MapPinIcon,
-  UserIcon,
-} from "@heroicons/react/24/outline";
+import { CalendarIcon, ClockIcon, MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DeliveryCalendar } from "@/components/delivery/DeliveryCalendar";
 import { DeliveryOptionsSelector } from "@/components/delivery/DeliveryOptionsSelector";
 import { Input } from "@/components/ui/Input";
@@ -271,9 +266,10 @@ export function DeliveryInfoStep({
                 onClick={() => handleTimeSlotChange(slot)}
                 className={`
                   p-4 border-2 rounded-lg text-left transition-colors
-                  ${deliveryInfo.preferredTimeSlot === slot
-                    ? "border-primary-500 bg-primary-50 text-primary-900"
-                    : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-300"
+                  ${
+                    deliveryInfo.preferredTimeSlot === slot
+                      ? "border-primary-500 bg-primary-50 text-primary-900"
+                      : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-300"
                   }
                 `}
               >
@@ -349,9 +345,10 @@ export function DeliveryInfoStep({
           className={`
             w-full px-4 py-3 border rounded-lg resize-none
             focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            ${errors.specialInstructions
-              ? "border-red-300 bg-red-50"
-              : "border-neutral-300 bg-white"
+            ${
+              errors.specialInstructions
+                ? "border-red-300 bg-red-50"
+                : "border-neutral-300 bg-white"
             }
           `}
         />

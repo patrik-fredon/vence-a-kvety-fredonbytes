@@ -32,7 +32,6 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
     )}
     aria-labelledby="products-heading"
     aria-describedby="products-loading"
-    role="region"
   >
     <div
       className={cn(
@@ -209,7 +208,6 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
         "lg:py-24 lg:px-12",
         "xl:py-28 xl:px-16"
       )}
-      role="region"
       aria-labelledby="products-error-heading"
     >
       <div className="max-w-4xl mx-auto text-center">

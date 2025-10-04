@@ -4,7 +4,7 @@
  */
 
 import { logError } from "@/lib/monitoring/error-logger";
-import { ValidationResult, ValidationError } from "./type-guards";
+import type { ValidationError, ValidationResult } from "./type-guards";
 
 export interface AsyncOperationOptions {
   retries?: number;
@@ -18,7 +18,7 @@ export interface AsyncOperationOptions {
 export interface CircuitBreakerState {
   failures: number;
   lastFailure: number;
-  state: 'closed' | 'open' | 'half-open';
+  state: "closed" | "open" | "half-open";
 }
 
 // Circuit breaker storage
@@ -35,24 +35,24 @@ export async function executeWithErrorHandling<T>(
     retries = 0,
     retryDelay = 1000,
     timeout = 30000,
-    context = 'unknown',
+    context = "unknown",
     fallback,
-    circuitBreaker = false
+    circuitBreaker = false,
   } = options;
 
   // Check circuit breaker if enabled
   if (circuitBreaker && isCircuitOpen(context)) {
     const error: ValidationError = {
-      field: 'operation',
-      message: 'Circuit breaker is open - operation blocked',
-      code: 'CIRCUIT_BREAKER_OPEN',
-      severity: 'error'
+      field: "operation",
+      message: "Circuit breaker is open - operation blocked",
+      code: "CIRCUIT_BREAKER_OPEN",
+      severity: "error",
     };
 
     return {
       isValid: false,
       data: fallback,
-      errors: [error]
+      errors: [error],
     };
   }
 
@@ -63,7 +63,7 @@ export async function executeWithErrorHandling<T>(
     try {
       // Create timeout promise
       const timeoutPromise = new Promise<never>((_, reject) => {
-        setTimeout(() => reject(new Error('Operation timeout')), timeout);
+        setTimeout(() => reject(new Error("Operation timeout")), timeout);
       });
 
       // Race between operation and timeout
@@ -77,23 +77,22 @@ export async function executeWithErrorHandling<T>(
       return {
         isValid: true,
         data: result,
-        errors: []
+        errors: [],
       };
-
     } catch (error) {
       lastError = error instanceof Error ? error : new Error(String(error));
       attempt++;
 
       // Log each attempt
       await logError(lastError, {
-        level: 'component',
+        level: "component",
         context: `async-operation-${context}`,
         additionalData: {
           attempt,
           maxRetries: retries,
           timeout,
-          willRetry: attempt <= retries
-        }
+          willRetry: attempt <= retries,
+        },
       });
 
       // Update circuit breaker
@@ -110,16 +109,16 @@ export async function executeWithErrorHandling<T>(
 
   // All attempts failed
   const error: ValidationError = {
-    field: 'operation',
-    message: lastError?.message || 'Async operation failed',
-    code: 'ASYNC_OPERATION_FAILED',
-    severity: 'error'
+    field: "operation",
+    message: lastError?.message || "Async operation failed",
+    code: "ASYNC_OPERATION_FAILED",
+    severity: "error",
   };
 
   return {
     isValid: false,
     data: fallback,
-    errors: [error]
+    errors: [error],
   };
 }
 
@@ -130,7 +129,7 @@ export async function executeAllWithErrorHandling<T>(
   operations: Array<() => Promise<T>>,
   options: AsyncOperationOptions = {}
 ): Promise<ValidationResult<T[]>> {
-  const { context = 'batch-operation' } = options;
+  const { context = "batch-operation" } = options;
   const results: T[] = [];
   const errors: ValidationError[] = [];
 
@@ -138,7 +137,7 @@ export async function executeAllWithErrorHandling<T>(
     const promises = operations.map(async (operation, index) => {
       const result = await executeWithErrorHandling(operation, {
         ...options,
-        context: `${context}-${index}`
+        context: `${context}-${index}`,
       });
 
       if (result.isValid && result.data !== undefined) {
@@ -151,7 +150,7 @@ export async function executeAllWithErrorHandling<T>(
     const outcomes = await Promise.allSettled(promises);
 
     outcomes.forEach((outcome, index) => {
-      if (outcome.status === 'fulfilled') {
+      if (outcome.status === "fulfilled") {
         if (outcome.value.success) {
           results[index] = outcome.value.data as T;
         } else {
@@ -160,9 +159,9 @@ export async function executeAllWithErrorHandling<T>(
       } else {
         errors.push({
           field: `operation-${index}`,
-          message: outcome.reason?.message || 'Operation failed',
-          code: 'BATCH_OPERATION_FAILED',
-          severity: 'error'
+          message: outcome.reason?.message || "Operation failed",
+          code: "BATCH_OPERATION_FAILED",
+          severity: "error",
         });
       }
     });
@@ -170,26 +169,25 @@ export async function executeAllWithErrorHandling<T>(
     return {
       isValid: errors.length === 0,
       data: results,
-      errors
+      errors,
     };
-
   } catch (error) {
     const validationError: ValidationError = {
-      field: 'batch',
-      message: error instanceof Error ? error.message : 'Batch operation failed',
-      code: 'BATCH_EXECUTION_ERROR',
-      severity: 'error'
+      field: "batch",
+      message: error instanceof Error ? error.message : "Batch operation failed",
+      code: "BATCH_EXECUTION_ERROR",
+      severity: "error",
     };
 
-    await logError(error instanceof Error ? error : new Error('Batch operation error'), {
-      level: 'component',
+    await logError(error instanceof Error ? error : new Error("Batch operation error"), {
+      level: "component",
       context: `batch-operation-${context}`,
-      additionalData: { operationCount: operations.length }
+      additionalData: { operationCount: operations.length },
     });
 
     return {
       isValid: false,
-      errors: [validationError]
+      errors: [validationError],
     };
   }
 }
@@ -202,22 +200,25 @@ export async function executeDatabaseOperation<T>(
   context: string,
   options: AsyncOperationOptions = {}
 ): Promise<ValidationResult<T>> {
-  return executeWithErrorHandling(async () => {
-    const result = await operation();
+  return executeWithErrorHandling(
+    async () => {
+      const result = await operation();
 
-    if (result.error) {
-      throw new Error(result.error.message || 'Database operation failed');
+      if (result.error) {
+        throw new Error(result.error.message || "Database operation failed");
+      }
+
+      if (result.data === null) {
+        throw new Error("No data returned from database");
+      }
+
+      return result.data;
+    },
+    {
+      ...options,
+      context: `database-${context}`,
     }
-
-    if (result.data === null) {
-      throw new Error('No data returned from database');
-    }
-
-    return result.data;
-  }, {
-    ...options,
-    context: `database-${context}`
-  });
+  );
 }
 
 /**
@@ -225,30 +226,35 @@ export async function executeDatabaseOperation<T>(
  */
 export async function executeApiRequest<T>(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit,
   context: string,
   requestOptions: AsyncOperationOptions = {}
 ): Promise<ValidationResult<T>> {
-  return executeWithErrorHandling(async () => {
-    const response = await fetch(url, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers
+  return executeWithErrorHandling(
+    async () => {
+      const response = await fetch(url, {
+        ...options,
+        headers: {
+          "Content-Type": "application/json",
+          ...options.headers,
+        },
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(
+          `API request failed: ${response.status} ${response.statusText} - ${errorText}`
+        );
       }
-    });
 
-    if (!response.ok) {
-      const errorText = await response.text();
-      throw new Error(`API request failed: ${response.status} ${response.statusText} - ${errorText}`);
+      const data = await response.json();
+      return data;
+    },
+    {
+      ...requestOptions,
+      context: `api-${context}`,
     }
-
-    const data = await response.json();
-    return data;
-  }, {
-    ...requestOptions,
-    context: `api-${context}`
-  });
+  );
 }
 
 /**
@@ -263,7 +269,7 @@ export async function executeFileOperation<T>(
     ...options,
     context: `file-${context}`,
     retries: options.retries || 2, // Default retries for file operations
-    timeout: options.timeout || 10000 // Shorter timeout for file operations
+    timeout: options.timeout || 10000, // Shorter timeout for file operations
   });
 }
 
@@ -275,16 +281,19 @@ export async function executeNavigationOperation(
   context: string,
   options: AsyncOperationOptions = {}
 ): Promise<ValidationResult<void>> {
-  return executeWithErrorHandling(async () => {
-    const result = operation();
-    if (result instanceof Promise) {
-      await result;
+  return executeWithErrorHandling(
+    async () => {
+      const result = operation();
+      if (result instanceof Promise) {
+        await result;
+      }
+    },
+    {
+      ...options,
+      context: `navigation-${context}`,
+      timeout: options.timeout || 5000, // Quick timeout for navigation
     }
-  }, {
-    ...options,
-    context: `navigation-${context}`,
-    timeout: options.timeout || 5000 // Quick timeout for navigation
-  });
+  );
 }
 
 // Circuit breaker implementation
@@ -296,19 +305,19 @@ function isCircuitOpen(context: string): boolean {
   const timeSinceLastFailure = now - breaker.lastFailure;
 
   // Reset to half-open after 60 seconds
-  if (breaker.state === 'open' && timeSinceLastFailure > 60000) {
-    breaker.state = 'half-open';
+  if (breaker.state === "open" && timeSinceLastFailure > 60000) {
+    breaker.state = "half-open";
     breaker.failures = 0;
   }
 
-  return breaker.state === 'open';
+  return breaker.state === "open";
 }
 
 function recordFailure(context: string): void {
   const breaker = circuitBreakers.get(context) || {
     failures: 0,
     lastFailure: 0,
-    state: 'closed' as const
+    state: "closed" as const,
   };
 
   breaker.failures++;
@@ -316,7 +325,7 @@ function recordFailure(context: string): void {
 
   // Open circuit after 5 failures
   if (breaker.failures >= 5) {
-    breaker.state = 'open';
+    breaker.state = "open";
   }
 
   circuitBreakers.set(context, breaker);
@@ -326,14 +335,14 @@ function resetCircuitBreaker(context: string): void {
   const breaker = circuitBreakers.get(context);
   if (breaker) {
     breaker.failures = 0;
-    breaker.state = 'closed';
+    breaker.state = "closed";
     circuitBreakers.set(context, breaker);
   }
 }
 
 // Utility functions
 function sleep(ms: number): Promise<void> {
-  return new Promise(resolve => setTimeout(resolve, ms));
+  return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 /**
@@ -356,7 +365,7 @@ export function createDebouncedAsyncOperation<T extends any[], R>(
 
       // Reject previous promise if it exists
       if (latestReject) {
-        latestReject(new Error('Operation cancelled by newer request'));
+        latestReject(new Error("Operation cancelled by newer request"));
       }
 
       latestResolve = resolve;
@@ -396,7 +405,7 @@ export function createThrottledAsyncOperation<T extends any[], R>(
   return async (...args: T): Promise<R | null> => {
     const now = Date.now();
 
-    if (isExecuting || (now - lastExecution) < interval) {
+    if (isExecuting || now - lastExecution < interval) {
       return null; // Skip execution
     }
 

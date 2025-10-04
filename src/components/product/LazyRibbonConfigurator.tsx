@@ -6,8 +6,8 @@ import type { RibbonConfiguratorProps } from "./RibbonConfigurator";
 
 // Lazy load the RibbonConfigurator component
 const RibbonConfigurator = lazy(() =>
-  import("./RibbonConfigurator").then(module => ({
-    default: module.RibbonConfigurator
+  import("./RibbonConfigurator").then((module) => ({
+    default: module.RibbonConfigurator,
   }))
 );
 
@@ -26,9 +26,7 @@ export function LazyRibbonConfigurator(props: RibbonConfiguratorProps) {
       fallback={
         <div className="flex items-center justify-center p-4">
           <LoadingSpinner size="sm" />
-          <span className="ml-2 text-sm text-stone-600">
-            Loading ribbon options...
-          </span>
+          <span className="ml-2 text-sm text-stone-600">Loading ribbon options...</span>
         </div>
       }
     >

@@ -37,7 +37,7 @@ export function KeyboardNavigationGrid({
       ) as HTMLElement[];
       setGridItems(items);
     }
-  }, [children]);
+  }, []);
 
   const handleItemActivate = useCallback(
     (index: number, element: HTMLElement) => {
@@ -79,7 +79,7 @@ export function KeyboardNavigationGrid({
       role: "gridcell" as const,
       "aria-setsize": children.length,
       "aria-posinset": index + 1,
-      ...({ 'data-grid-item': true } as any),
+      ...({ "data-grid-item": true } as any),
       onFocus: () => {
         if (currentIndex !== index) {
           focusItem(index);

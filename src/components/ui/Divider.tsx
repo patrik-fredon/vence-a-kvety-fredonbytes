@@ -49,7 +49,6 @@ export function Divider({
         "high-contrast:border-WindowText",
         className
       )}
-      role="separator"
       {...props}
     />
   );

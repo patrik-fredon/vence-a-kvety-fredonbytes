@@ -61,7 +61,7 @@ class ErrorLogger {
     this.addToLocalStorage(errorLog);
 
     // Send to server if not in development
-    if (process.env['NODE_ENV'] !== "development") {
+    if (process.env.NODE_ENV !== "development") {
       try {
         await this.sendToServer(errorLog);
       } catch (serverError) {
@@ -70,7 +70,7 @@ class ErrorLogger {
     }
 
     // Log to console in development with safe stack trace handling
-    if (process.env['NODE_ENV'] === "development") {
+    if (process.env.NODE_ENV === "development") {
       console.group(`🚨 Error [${errorLog.level}] - ${errorLog.id}`);
       console.error("Message:", errorLog.message);
 
@@ -79,7 +79,10 @@ class ErrorLogger {
         try {
           console.error("Stack:", errorLog.stack);
         } catch (stackError) {
-          console.error("Stack trace unavailable (logging error):", stackError instanceof Error ? stackError.message : String(stackError));
+          console.error(
+            "Stack trace unavailable (logging error):",
+            stackError instanceof Error ? stackError.message : String(stackError)
+          );
         }
       } else {
         console.error("Stack trace unavailable");
@@ -130,7 +133,7 @@ class ErrorLogger {
     unit: string = "ms"
   ) {
     // Circuit breaker: Stop logging performance errors in development after threshold
-    if (process.env['NODE_ENV'] === "development") {
+    if (process.env.NODE_ENV === "development") {
       if (this.performanceErrorCount >= this.maxPerformanceErrors) {
         return; // Stop logging to prevent cascading errors
       }
@@ -150,7 +153,6 @@ class ErrorLogger {
             : val > 1024
               ? `${(val / 1024).toFixed(2)}KB`
               : `${val}B`;
-        case "ms":
         default:
           return `${val}ms`;
       }
@@ -237,7 +239,7 @@ class ErrorLogger {
     if (typeof window !== "undefined") {
       try {
         localStorage.setItem("error_logs", JSON.stringify(this.errors));
-      } catch (e) {
+      } catch (_e) {
         // localStorage might be full, clear old errors
         this.errors = this.errors.slice(-50);
         localStorage.setItem("error_logs", JSON.stringify(this.errors));
@@ -319,16 +321,26 @@ class ErrorLogger {
  * Enhanced Production Error Logger with Core Web Vitals integration
  */
 class ProductionErrorLogger extends ErrorLogger {
-  private coreWebVitalsErrors: Array<{ metric: string; value: number; threshold: number; timestamp: number }> = [];
+  private coreWebVitalsErrors: Array<{
+    metric: string;
+    value: number;
+    threshold: number;
+    timestamp: number;
+  }> = [];
   private navigationErrors: Array<{ route: string; error: string; timestamp: number }> = [];
-  private paymentErrors: Array<{ step: string; error: string; amount?: number; timestamp: number }> = [];
+  private paymentErrors: Array<{
+    step: string;
+    error: string;
+    amount?: number;
+    timestamp: number;
+  }> = [];
   private imageLoadErrors: Array<{ src: string; error: string; timestamp: number }> = [];
 
   /**
    * Log Core Web Vitals performance issues
    */
   async logCoreWebVitalsIssue(
-    metric: 'LCP' | 'FID' | 'CLS' | 'INP' | 'FCP' | 'TTFB',
+    metric: "LCP" | "FID" | "CLS" | "INP" | "FCP" | "TTFB",
     value: number,
     threshold: number,
     context?: string
@@ -348,16 +360,16 @@ class ProductionErrorLogger extends ErrorLogger {
     const error = new Error(
       `Core Web Vitals threshold exceeded: ${metric} = ${value}ms (threshold: ${threshold}ms)`
     );
-    error.name = 'CoreWebVitalsError';
+    error.name = "CoreWebVitalsError";
 
     return this.logError(error, {
-      level: 'performance',
-      context: context || 'Core Web Vitals Monitoring',
+      level: "performance",
+      context: context || "Core Web Vitals Monitoring",
       additionalData: {
         metric,
         value,
         threshold,
-        type: 'core-web-vitals',
+        type: "core-web-vitals",
         rating: this.getPerformanceRating(metric, value),
       },
     });
@@ -379,12 +391,12 @@ class ProductionErrorLogger extends ErrorLogger {
     }
 
     return this.logError(error, {
-      level: 'navigation',
-      context: context || 'Navigation Error',
+      level: "navigation",
+      context: context || "Navigation Error",
       additionalData: {
         route,
-        type: 'navigation',
-        userAgent: typeof window !== 'undefined' ? window.navigator.userAgent : 'unknown',
+        type: "navigation",
+        userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       },
     });
   }
@@ -393,7 +405,7 @@ class ProductionErrorLogger extends ErrorLogger {
    * Log payment processing errors
    */
   async logPaymentError(
-    step: 'initialization' | 'processing' | 'confirmation' | 'webhook',
+    step: "initialization" | "processing" | "confirmation" | "webhook",
     error: Error,
     amount?: number,
     paymentMethod?: string,
@@ -412,13 +424,13 @@ class ProductionErrorLogger extends ErrorLogger {
     }
 
     return this.logError(error, {
-      level: 'critical',
-      context: context || 'Payment Processing Error',
+      level: "critical",
+      context: context || "Payment Processing Error",
       additionalData: {
         step,
         amount,
         paymentMethod,
-        type: 'payment',
+        type: "payment",
         // Don't log sensitive payment data
         sanitized: true,
       },
@@ -441,12 +453,12 @@ class ProductionErrorLogger extends ErrorLogger {
     }
 
     return this.logError(error, {
-      level: 'component',
-      context: context || 'Image Loading Error',
+      level: "component",
+      context: context || "Image Loading Error",
       additionalData: {
         src: this.sanitizeImageUrl(src),
         loadTime,
-        type: 'image-load',
+        type: "image-load",
       },
     });
   }
@@ -455,22 +467,22 @@ class ProductionErrorLogger extends ErrorLogger {
    * Log checkout flow optimization data
    */
   async logCheckoutFlowIssue(
-    step: 'cart' | 'shipping' | 'payment' | 'confirmation',
+    step: "cart" | "shipping" | "payment" | "confirmation",
     issue: string,
     userInteraction?: string,
     context?: string
   ) {
     const error = new Error(`Checkout flow issue at ${step}: ${issue}`);
-    error.name = 'CheckoutFlowError';
+    error.name = "CheckoutFlowError";
 
     return this.logError(error, {
-      level: 'business',
-      context: context || 'Checkout Flow Optimization',
+      level: "business",
+      context: context || "Checkout Flow Optimization",
       additionalData: {
         step,
         issue,
         userInteraction,
-        type: 'checkout-flow',
+        type: "checkout-flow",
       },
     });
   }
@@ -506,7 +518,10 @@ class ProductionErrorLogger extends ErrorLogger {
   /**
    * Private helper methods
    */
-  private getPerformanceRating(metric: string, value: number): 'good' | 'needs-improvement' | 'poor' {
+  private getPerformanceRating(
+    metric: string,
+    value: number
+  ): "good" | "needs-improvement" | "poor" {
     const thresholds = {
       LCP: { good: 2500, poor: 4000 },
       FID: { good: 100, poor: 300 },
@@ -517,23 +532,23 @@ class ProductionErrorLogger extends ErrorLogger {
     };
 
     const threshold = thresholds[metric as keyof typeof thresholds];
-    if (!threshold) return 'good';
+    if (!threshold) return "good";
 
-    if (value <= threshold.good) return 'good';
-    if (value <= threshold.poor) return 'needs-improvement';
-    return 'poor';
+    if (value <= threshold.good) return "good";
+    if (value <= threshold.poor) return "needs-improvement";
+    return "poor";
   }
 
   private sanitizeImageUrl(url: string | undefined): string {
     // Remove query parameters that might contain sensitive data
-    if (!url || typeof url !== 'string') return '';
+    if (!url || typeof url !== "string") return "";
     try {
       const urlObj = new URL(url);
       return `${urlObj.origin}${urlObj.pathname}`;
     } catch {
       // At this point, url is guaranteed to be a string due to the check above
       const safeUrl = url as string; // Type assertion since we know it's a string
-      return safeUrl.includes('?') ? (safeUrl.split('?')[0] || safeUrl) : safeUrl;
+      return safeUrl.includes("?") ? safeUrl.split("?")[0] || safeUrl : safeUrl;
     }
   }
 
@@ -587,37 +602,52 @@ class ProductionErrorLogger extends ErrorLogger {
 }
 
 // Create singleton instance
-const errorLogger = new ProductionErrorLogger();;
+const errorLogger = new ProductionErrorLogger();
 // Enhanced production monitoring functions
 export const logCoreWebVitalsIssue = (
-  metric: 'LCP' | 'FID' | 'CLS' | 'INP' | 'FCP' | 'TTFB',
+  metric: "LCP" | "FID" | "CLS" | "INP" | "FCP" | "TTFB",
   value: number,
   threshold: number,
   context?: string
-) => (errorLogger as ProductionErrorLogger).logCoreWebVitalsIssue(metric, value, threshold, context);
+) =>
+  (errorLogger as ProductionErrorLogger).logCoreWebVitalsIssue(metric, value, threshold, context);
 
 export const logNavigationError = (route: string, error: Error, context?: string) =>
   (errorLogger as ProductionErrorLogger).logNavigationError(route, error, context);
 
 export const logPaymentError = (
-  step: 'initialization' | 'processing' | 'confirmation' | 'webhook',
+  step: "initialization" | "processing" | "confirmation" | "webhook",
   error: Error,
   amount?: number,
   paymentMethod?: string,
   context?: string
-) => (errorLogger as ProductionErrorLogger).logPaymentError(step, error, amount, paymentMethod, context);
+) =>
+  (errorLogger as ProductionErrorLogger).logPaymentError(
+    step,
+    error,
+    amount,
+    paymentMethod,
+    context
+  );
 
 export const logImageLoadError = (src: string, error: Error, loadTime?: number, context?: string) =>
   (errorLogger as ProductionErrorLogger).logImageLoadError(src, error, loadTime, context);
 
 export const logCheckoutFlowIssue = (
-  step: 'cart' | 'shipping' | 'payment' | 'confirmation',
+  step: "cart" | "shipping" | "payment" | "confirmation",
   issue: string,
   userInteraction?: string,
   context?: string
-) => (errorLogger as ProductionErrorLogger).logCheckoutFlowIssue(step, issue, userInteraction, context);
+) =>
+  (errorLogger as ProductionErrorLogger).logCheckoutFlowIssue(
+    step,
+    issue,
+    userInteraction,
+    context
+  );
 
-export const getPerformanceInsights = () => (errorLogger as ProductionErrorLogger).getPerformanceInsights();
+export const getPerformanceInsights = () =>
+  (errorLogger as ProductionErrorLogger).getPerformanceInsights();
 
 // Initialize on import
 if (typeof window !== "undefined") {

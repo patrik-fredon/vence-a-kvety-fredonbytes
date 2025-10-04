@@ -10,13 +10,72 @@
 // =============================================================================
 
 /**
+ * @deprecated Color definitions have been migrated to globals.css using TailwindCSS 4 @theme directive.
+ *
+ * **IMPORTANT: This color section is maintained for reference only.**
+ *
+ * All color definitions are now centralized in `src/app/globals.css` using the `@theme` directive
+ * with CSS custom properties. This provides better performance, maintainability, and follows
+ * TailwindCSS 4 best practices.
+ *
+ * ## Migration Guide
+ *
+ * ### Old Approach (Don't use):
+ * ```typescript
+ * import { stoneColors } from '@/lib/design-tokens';
+ * const color = stoneColors[800]; // "#292524"
+ * ```
+ *
+ * ### New Approach (Use this):
+ * ```tsx
+ * // In components, use Tailwind utility classes:
+ * <div className="bg-stone-800 text-amber-100">
+ *
+ * // Or access CSS custom properties directly:
+ * <div style={{ backgroundColor: 'var(--color-stone-800)' }}>
+ * ```
+ *
+ * ## Where Colors Are Defined
+ *
+ * - **Primary Source**: `src/app/globals.css` - All colors in `@theme` directive
+ * - **Documentation**: `docs/COLOR_SYSTEM.md` - Usage examples and guidelines
+ * - **This File**: Reference only - kept for backwards compatibility
+ *
+ * ## Available Color Palettes
+ *
+ * - `teal` (50-950): Primary palette for funeral-appropriate design
+ * - `amber` (50-950): Accent palette for warm, golden highlights
+ * - `stone` (50-950): Neutral palette for backgrounds and text
+ * - Semantic colors: `primary`, `accent`, etc.
+ * - Gradients: `funeral-gold`, `funeral-teal`
+ *
+ * ## How to Use Colors
+ *
+ * 1. **Tailwind Utility Classes** (Recommended):
+ *    - `bg-teal-800`, `text-amber-100`, `border-stone-200`
+ *    - `bg-funeral-gold` (for golden gradient)
+ *
+ * 2. **CSS Custom Properties** (When needed):
+ *    - `var(--color-teal-800)`
+ *    - `var(--gradient-funeral-gold)`
+ *
+ * 3. **Never** import from this file for new code
+ *
+ * @see {@link file://./src/app/globals.css} - Primary color definitions
+ * @see {@link file://./docs/COLOR_SYSTEM.md} - Complete documentation
+ */
+
+/**
  * Stone color palette - Primary neutral colors
  * Foundation for backgrounds, text, and borders
+ *
+ * @deprecated Use Tailwind utility classes (bg-stone-800) or CSS variables (var(--color-stone-800)) instead.
+ * @see {@link file://./src/app/globals.css} for the source of truth
  */
 export const stoneColors = {
-  50: "#00302D",
-  100: "#00302D",
-  200: "#00302D",
+  50: "#fafaf9",
+  100: "#f5f5f4",
+  200: "#e7e5e4",
   300: "#D6D3D1",
   400: "#A8A29E",
   500: "#78716C",
@@ -30,55 +89,84 @@ export const stoneColors = {
 /**
  * Amber color palette - Accent colors
  * Used for highlights, CTAs, and important elements
+ *
+ * @deprecated Use Tailwind utility classes (bg-amber-200) or CSS variables (var(--color-amber-200)) instead.
+ * @see {@link file://./src/app/globals.css} for the source of truth
  */
 export const amberColors = {
-  50: "#f0fdfa",
-  100: "#FEF3C6",
-  200: "#99f6e4",
-  300: "#5eead4",
-  400: "#2dd4bf",
-  500: "#14b8a6",
-  600: "#0d9488",
-  700: "#0f766e",
-  800: "#115e59",
-  900: "#134e4a",
-  950: "#013029",
+  50: "#fffbeb",
+  100: "#fef3c7",
+  200: "#fde68a",
+  300: "#fcd34d",
+  400: "#fbbf24",
+  500: "#f59e0b",
+  600: "#d97706",
+  700: "#b45309",
+  800: "#92400e",
+  900: "#78350f",
+  950: "#451a03",
 } as const;
 
 /**
  * White color for clean backgrounds and text
+ *
+ * @deprecated Use Tailwind utility classes (bg-white, text-white) instead.
  */
 export const whiteColor = "#FFFFFF" as const;
 
 /**
  * Black color for text and high contrast elements
+ *
+ * @deprecated Use Tailwind utility classes (bg-black, text-black) instead.
  */
 export const blackColor = "#000000" as const;
 
 /**
  * Funeral-specific color palette
  * Professional colors appropriate for funeral services and memorial products
+ * Now using CSS custom properties for consistency with Tailwind CSS 4
+ *
+ * @deprecated These colors reference CSS variables defined in globals.css.
+ * Use Tailwind utility classes directly instead of importing this object.
+ *
+ * Examples:
+ * - Instead of `funeralColors.hero`, use `bg-teal-900` class
+ * - Instead of `funeralColors.backgroundLight`, use `bg-funeral-gold` class
+ * - Instead of `funeralColors.textOnHero`, use `text-stone-50` class
+ *
+ * @see {@link file://./src/app/globals.css} for color definitions
  */
 export const funeralColors = {
-  // Hero section background - dark green-gray (#00302D)
-  hero: "#C6C7A5",
-  // Page background - muted olive-gold (#9B9259)
-  background: "#00302D",
+  // Hero section background - using CSS variable
+  hero: "var(--color-teal-900)",
+  // Page background - using CSS variable
+  background: "var(--color-teal-900)",
   // Complementary shades for the funeral palette
-  heroLight: "#1A3D36", // Lighter variant of hero color
-  heroDark: "#0A1A15", // Darker variant of hero color
-  backgroundLight: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)", // Lighter variant of background color
-  backgroundDark: "#7A7347", // Darker variant of background color
+  heroLight: "var(--color-teal-800)", // Lighter variant of hero color
+  heroDark: "var(--color-teal-950)", // Darker variant of hero color
+  backgroundLight: "var(--gradient-funeral-gold)", // Gradient background using CSS variable
+  backgroundDark: "var(--color-amber-700)", // Darker variant of background color using CSS variable
   // Text colors that work well with funeral palette
-  textOnHero: "#FFFFFF", // White text on hero background
-  textOnBackground: "#2D2D2D", // Dark text on page background
-  textSecondary: "#F5F5DC", // Beige for secondary text
-  accent: "#D4AF37", // Gold accent for highlights
+  textOnHero: "var(--color-stone-50)", // Light text on hero background using CSS variable
+  textOnBackground: "var(--color-stone-800)", // Dark text on page background using CSS variable
+  textSecondary: "var(--color-amber-50)", // Light beige for secondary text using CSS variable
+  accent: "var(--color-accent)", // Accent color using CSS variable
 } as const;
 
 /**
  * Semantic colors for states and feedback
  * Using green for success, amber for warning, red for error, blue for info
+ *
+ * @deprecated Use Tailwind utility classes for semantic colors.
+ *
+ * Examples:
+ * - Success: `bg-green-500`, `text-green-700`
+ * - Warning: `bg-amber-500`, `text-amber-700`
+ * - Error: `bg-red-500`, `text-red-700`
+ * - Info: `bg-blue-500`, `text-blue-700`
+ *
+ * Note: These colors are still defined here as they are not part of the primary
+ * teal/amber/stone palette in globals.css, but should be used via Tailwind classes.
  */
 export const semanticColors = {
   success: {
@@ -364,8 +452,27 @@ export const timingFunction = {
 
 /**
  * Complete design token system for stone/amber design with funeral-appropriate colors
+ *
+ * @deprecated The `colors` section is deprecated. Use Tailwind utility classes instead.
+ *
+ * **Color Migration Status:**
+ * - ❌ `designTokens.colors.*` - Deprecated, use Tailwind classes
+ * - ✅ `designTokens.typography.*` - Still valid
+ * - ✅ `designTokens.spacing` - Still valid
+ * - ✅ `designTokens.borderRadius` - Still valid
+ * - ✅ `designTokens.boxShadow` - Still valid
+ * - ✅ `designTokens.breakpoints` - Still valid
+ * - ✅ `designTokens.zIndex` - Still valid
+ * - ✅ `designTokens.animation.*` - Still valid
+ *
+ * @see {@link file://./src/app/globals.css} for color definitions
+ * @see {@link file://./docs/COLOR_SYSTEM.md} for migration guide
  */
 export const designTokens = {
+  /**
+   * @deprecated Use Tailwind utility classes for colors instead.
+   * See the deprecation notice at the top of this file for migration guidance.
+   */
   colors: {
     stone: stoneColors,
     amber: amberColors,

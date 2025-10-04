@@ -1,8 +1,7 @@
 "use client";
 
-import React from "react";
 import { useTranslations } from "next-intl";
-import { useCallback, useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCart } from "@/lib/cart/context";
 import type { Product } from "@/types/product";
@@ -13,7 +12,10 @@ interface RandomProductTeasersProps {
   count?: number;
 }
 
-const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, count = 3 }: RandomProductTeasersProps) {
+const RandomProductTeasers = React.memo(function RandomProductTeasers({
+  locale,
+  count = 3,
+}: RandomProductTeasersProps) {
   const t = useTranslations("home");
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
@@ -54,28 +56,31 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
     fetchRandomProducts();
   }, [fetchRandomProducts]);
 
-  const handleAddToCart = useCallback(async (product: Product) => {
-    try {
-      console.log("🛒 [RandomProductTeasers] Starting add to cart for product:", product.id);
-      setAddingToCart(product.id);
+  const handleAddToCart = useCallback(
+    async (product: Product) => {
+      try {
+        console.log("🛒 [RandomProductTeasers] Starting add to cart for product:", product.id);
+        setAddingToCart(product.id);
 
-      const success = await addToCart({
-        productId: product.id,
-        quantity: 1,
-        customizations: [],
-      });
+        const success = await addToCart({
+          productId: product.id,
+          quantity: 1,
+          customizations: [],
+        });
 
-      if (success) {
-        console.log("✅ [RandomProductTeasers] Successfully added product to cart:", product.id);
-      } else {
-        console.error("❌ [RandomProductTeasers] Failed to add product to cart:", product.id);
+        if (success) {
+          console.log("✅ [RandomProductTeasers] Successfully added product to cart:", product.id);
+        } else {
+          console.error("❌ [RandomProductTeasers] Failed to add product to cart:", product.id);
+        }
+      } catch (error) {
+        console.error("💥 [RandomProductTeasers] Error adding to cart:", error);
+      } finally {
+        setAddingToCart(null);
       }
-    } catch (error) {
-      console.error("💥 [RandomProductTeasers] Error adding to cart:", error);
-    } finally {
-      setAddingToCart(null);
-    }
-  }, [addToCart]);
+    },
+    [addToCart]
+  );
 
   const handleRetry = useCallback(() => {
     setRetryCount((prev) => prev + 1);
@@ -91,7 +96,11 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
         >
           {t("featuredProducts.title")}
         </h2>
-        <div className="flex justify-center items-center py-12" role="status" aria-label={t("loading")}>
+        <div
+          className="flex justify-center items-center py-12"
+          role="status"
+          aria-label={t("loading")}
+        >
           <LoadingSpinner size="lg" />
         </div>
       </section>
@@ -108,7 +117,9 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({ locale, 
           {t("featuredProducts.title")}
         </h2>
         <div className="text-center py-12 bg-funeral-gold rounded-xl shadow-soft border border-stone-200 p-8">
-          <p className="text-stone-600 mb-4" role="alert">{error}</p>
+          <p className="text-stone-600 mb-4" role="alert">
+            {error}
+          </p>
           <button
             onClick={handleRetry}
             className="text-amber-600 hover:text-amber-700 font-medium transition-colors focus:outline-none focus:ring-2 focus:ring-amber-500 focus:ring-offset-2 rounded-md px-2 py-1"

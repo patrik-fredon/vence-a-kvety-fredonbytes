@@ -17,8 +17,6 @@ export const LazyStripePaymentForm = dynamic(
   }
 );
 
-
-
 // Dynamic import for Stripe Elements provider
 export const LazyStripeElementsProvider = dynamic(
   () => import("@stripe/react-stripe-js").then((mod) => ({ default: mod.Elements })),

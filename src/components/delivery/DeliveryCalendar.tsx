@@ -5,16 +5,12 @@
  * Displays available delivery dates with visual indicators for holidays and weekends
  */
 
-import { ChevronLeftIcon, ChevronRightIcon } from "@/lib/icons";
 import { clsx } from "clsx";
 import { useTranslations } from "next-intl";
 import { useCallback, useEffect, useState } from "react";
+import { ChevronLeftIcon, ChevronRightIcon } from "@/lib/icons";
 import { generateAvailableDeliveryDates } from "@/lib/utils/delivery-calculator";
-import {
-  type DeliveryAvailability,
-  type DeliveryTimeSlot,
-  type DeliveryUrgency,
-} from "@/types/delivery";
+import type { DeliveryAvailability, DeliveryTimeSlot, DeliveryUrgency } from "@/types/delivery";
 
 interface DeliveryCalendarProps {
   selectedDate?: Date | undefined;

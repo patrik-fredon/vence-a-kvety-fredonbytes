@@ -28,7 +28,10 @@ export const LazyMonitoringProvider = dynamic(
 
 // Dynamic import for performance monitoring example
 export const LazyPerformanceMonitoringExample = dynamic(
-  () => import("../examples/PerformanceMonitoringExample").then((mod) => ({ default: mod.PerformanceMonitoringExample })),
+  () =>
+    import("../examples/PerformanceMonitoringExample").then((mod) => ({
+      default: mod.PerformanceMonitoringExample,
+    })),
   {
     loading: () => (
       <div className="flex items-center justify-center p-6 border border-stone-200 rounded-lg">

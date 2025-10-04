@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { generateAboutPageMetadata } from "@/components/seo/PageMetadata";
 import {
@@ -36,21 +37,21 @@ export default async function AboutPage({ params }: AboutPageProps) {
           <div className="max-w-4xl mx-auto text-center mb-16">
             <div className="bg-funeral-teal rounded-lg p-8 mb-8">
               <h1 className="text-4xl md:text-5xl font-light mb-8 text-amber-100 leading-tight text-balance">
-                {tAbout('title')}
+                {tAbout("title")}
               </h1>
-              <p className="text-lg text-amber-200 leading-relaxed mb-8">
-                {tAbout('mission')}
-              </p>
+              <p className="text-lg text-amber-200 leading-relaxed mb-8">{tAbout("mission")}</p>
             </div>
           </div>
 
           {/* Main Image */}
           <div className="mb-16">
-            <div className="aspect-[16/9] bg-funeral-gold rounded-lg overflow-hidden">
-              <img
+            <div className="aspect-[16/9] bg-funeral-gold rounded-lg overflow-hidden relative">
+              <Image
                 src="https://cdn.fredonbytes.com/lily-arrangement-with-greenery-studio.webp"
-                alt={tAbout('companyDescription')}
-                className="w-full h-full object-cover"
+                alt={tAbout("companyDescription")}
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
               />
             </div>
           </div>
@@ -58,17 +59,11 @@ export default async function AboutPage({ params }: AboutPageProps) {
           {/* Story Content */}
           <div className="max-w-3xl mx-auto mb-16">
             <div className="prose prose-lg prose-stone mx-auto">
-              <p className="text-teal-800 leading-relaxed mb-6">
-                {tAbout('story')}
-              </p>
+              <p className="text-teal-800 leading-relaxed mb-6">{tAbout("story")}</p>
 
-              <p className="text-teal-800 leading-relaxed mb-6">
-                {tAbout('values')}
-              </p>
+              <p className="text-teal-800 leading-relaxed mb-6">{tAbout("values")}</p>
 
-              <p className="text-teal-800 leading-relaxed">
-                {tAbout('commitment')}
-              </p>
+              <p className="text-teal-800 leading-relaxed">{tAbout("commitment")}</p>
             </div>
           </div>
 
@@ -83,12 +78,13 @@ export default async function AboutPage({ params }: AboutPageProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-funeral-gold relative">
-                <img
+                <Image
                   src="https://cdn.fredonbytes.com/dewy-white-lilies-floral-design.webp"
-                  alt={tAbout('companyDescription')}
-                  className="w-full h-full object-cover"
+                  alt={tAbout("companyDescription")}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
-
               </div>
             </AboutCard>
 
@@ -96,22 +92,22 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-funeral-gold rounded-full"></div>
+                    <div className="w-6 h-6 bg-funeral-gold rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{tAbout('valuesTitle')}</h3>
-                  <p className="text-sm text-teal-900">
-                    {tAbout('companyDescription')}
-                  </p>
+                  <h3 className="text-lg font-medium mb-2">{tAbout("valuesTitle")}</h3>
+                  <p className="text-sm text-teal-900">{tAbout("companyDescription")}</p>
                 </div>
               </div>
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-funeral-gold relative">
-                <img
+                <Image
                   src="https://cdn.fredonbytes.com/handmade-lily-wreath-with-twine-rustic.webp"
-                  alt={tAbout('companyDescription')}
-                  className="w-full h-full object-cover"
+                  alt={tAbout("companyDescription")}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
             </AboutCard>
@@ -120,24 +116,23 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-funeral-gold rounded-full"></div>
+                    <div className="w-6 h-6 bg-funeral-gold rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{tAbout('storyTitle')}</h3>
-                  <p className="text-sm text-teal-900">
-                    {tAbout('companyDescription')}
-                  </p>
+                  <h3 className="text-lg font-medium mb-2">{tAbout("storyTitle")}</h3>
+                  <p className="text-sm text-teal-900">{tAbout("companyDescription")}</p>
                 </div>
               </div>
             </AboutCard>
 
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-funeral-gold relative">
-                <img
+                <Image
                   src="https://cdn.fredonbytes.com/lily-funeral-wreath-making-process.webp"
-                  alt={tAbout('companyDescription')}
-                  className="w-full h-full object-cover"
+                  alt={tAbout("companyDescription")}
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
-
               </div>
             </AboutCard>
 
@@ -145,12 +140,10 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
                 <div className="text-center">
                   <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-funeral-gold rounded-full"></div>
+                    <div className="w-6 h-6 bg-funeral-gold rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{tAbout('commitmentTitle')}</h3>
-                  <p className="text-sm text-teal-900">
-                    {tAbout('companyDescription')}
-                  </p>
+                  <h3 className="text-lg font-medium mb-2">{tAbout("commitmentTitle")}</h3>
+                  <p className="text-sm text-teal-900">{tAbout("companyDescription")}</p>
                 </div>
               </div>
             </AboutCard>
@@ -159,5 +152,4 @@ export default async function AboutPage({ params }: AboutPageProps) {
       </div>
     </>
   );
-
 }

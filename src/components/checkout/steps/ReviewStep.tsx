@@ -2,7 +2,6 @@
 
 import { CheckCircleIcon, CreditCardIcon, MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import React from "react";
 
 import type { CartItem } from "@/types/cart";
 import type { CheckoutFormData } from "@/types/order";

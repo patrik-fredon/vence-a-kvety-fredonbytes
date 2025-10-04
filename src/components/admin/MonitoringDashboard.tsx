@@ -66,15 +66,9 @@ export function MonitoringDashboard() {
   const [recentMetrics, setRecentMetrics] = useState<PerformanceMetric[]>([]);
   const [performanceInsights, setPerformanceInsights] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "errors" | "performance" | "insights">("overview");
-
-  useEffect(() => {
-    fetchMonitoringData();
-
-    // Refresh data every 30 seconds
-    const interval = setInterval(fetchMonitoringData, 30000);
-    return () => clearInterval(interval);
-  }, []);
+  const [activeTab, setActiveTab] = useState<
+    "overview" | "errors" | "performance" | "insights"
+  >("overview");
 
   const fetchMonitoringData = async () => {
     try {
@@ -97,8 +91,11 @@ export function MonitoringDashboard() {
         // Calculate enhanced stats
         const errorStats = {
           total: errorsData.errors?.length || 0,
-          unresolved: errorsData.errors?.filter((e: ErrorLog) => !e.resolved).length || 0,
-          critical: errorsData.errors?.filter((e: ErrorLog) => e.level === "critical").length || 0,
+          unresolved:
+            errorsData.errors?.filter((e: ErrorLog) => !e.resolved).length || 0,
+          critical:
+            errorsData.errors?.filter((e: ErrorLog) => e.level === "critical")
+              .length || 0,
           last24h:
             errorsData.errors?.filter((e: ErrorLog) => {
               const errorTime = new Date(e.created_at).getTime();
@@ -106,10 +103,18 @@ export function MonitoringDashboard() {
               return errorTime > dayAgo;
             }).length || 0,
           // New error categories
-          navigation: errorsData.errors?.filter((e: ErrorLog) => e.level === "navigation").length || 0,
-          payment: errorsData.errors?.filter((e: ErrorLog) => e.level === "critical" &&
-            e.additionalData?.type === "payment").length || 0,
-          performance: errorsData.errors?.filter((e: ErrorLog) => e.level === "performance").length || 0,
+          navigation:
+            errorsData.errors?.filter((e: ErrorLog) => e.level === "navigation")
+              .length || 0,
+          payment:
+            errorsData.errors?.filter(
+              (e: ErrorLog) =>
+                e.level === "critical" && e.additionalData?.type === "payment"
+            ).length || 0,
+          performance:
+            errorsData.errors?.filter(
+              (e: ErrorLog) => e.level === "performance"
+            ).length || 0,
         };
 
         setStats({
@@ -128,6 +133,14 @@ export function MonitoringDashboard() {
     }
   };
 
+  useEffect(() => {
+    fetchMonitoringData();
+
+    // Refresh data every 30 seconds
+    const interval = setInterval(fetchMonitoringData, 30000);
+    return () => clearInterval(interval);
+  }, [fetchMonitoringData]);
+
   const resolveError = async (errorId: string) => {
     try {
       const response = await fetch(`/api/monitoring/errors/${errorId}`, {
@@ -138,7 +151,9 @@ export function MonitoringDashboard() {
 
       if (response.ok) {
         setRecentErrors((prev) =>
-          prev.map((error) => (error.error_id === errorId ? { ...error, resolved: true } : error))
+          prev.map((error) =>
+            error.error_id === errorId ? { ...error, resolved: true } : error
+          )
         );
       }
     } catch (error) {
@@ -184,14 +199,20 @@ export function MonitoringDashboard() {
 
   const renderInsightsTab = () => {
     if (!performanceInsights) {
-      return <div className="text-center py-8 text-gray-500">Žádné insights k dispozici</div>;
+      return (
+        <div className="text-center py-8 text-gray-500">
+          Žádné insights k dispozici
+        </div>
+      );
     }
 
     return (
       <div className="space-y-6">
         {/* Core Web Vitals Insights */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Core Web Vitals</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">
+            Core Web Vitals
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             <div className="bg-blue-50 p-4 rounded-lg">
               <div className="text-2xl font-bold text-blue-600">
@@ -199,9 +220,13 @@ export function MonitoringDashboard() {
               </div>
               <div className="text-sm text-blue-600">Celkem problémů</div>
             </div>
-            {Object.entries(performanceInsights.coreWebVitals.metrics || {}).map(([metric, data]: [string, any]) => (
+            {Object.entries(
+              performanceInsights.coreWebVitals.metrics || {}
+            ).map(([metric, data]: [string, any]) => (
               <div key={metric} className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-lg font-semibold text-gray-900">{metric}</div>
+                <div className="text-lg font-semibold text-gray-900">
+                  {metric}
+                </div>
                 <div className="text-sm text-gray-600">
                   Průměr: {data.avgValue?.toFixed(0)}ms
                 </div>
@@ -218,18 +243,31 @@ export function MonitoringDashboard() {
           <h3 className="text-lg font-medium text-gray-900 mb-4">Navigace</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Problematické stránky</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Problematické stránky
+              </h4>
               <div className="space-y-2">
-                {performanceInsights.navigation.mostProblematicRoutes?.map((route: any, index: number) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <span className="text-sm text-gray-900">{route.route}</span>
-                    <span className="text-sm font-medium text-red-600">{route.count} chyb</span>
-                  </div>
-                ))}
+                {performanceInsights.navigation.mostProblematicRoutes?.map(
+                  (route: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm text-gray-900">
+                        {route.route}
+                      </span>
+                      <span className="text-sm font-medium text-red-600">
+                        {route.count} chyb
+                      </span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Statistiky</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Statistiky
+              </h4>
               <div className="bg-red-50 p-4 rounded-lg">
                 <div className="text-2xl font-bold text-red-600">
                   {performanceInsights.navigation.errors}
@@ -245,18 +283,31 @@ export function MonitoringDashboard() {
           <h3 className="text-lg font-medium text-gray-900 mb-4">Platby</h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Chyby podle kroků</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Chyby podle kroků
+              </h4>
               <div className="space-y-2">
-                {Object.entries(performanceInsights.payments.errorsByStep || {}).map(([step, count]: [string, any]) => (
-                  <div key={step} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <span className="text-sm text-gray-900 capitalize">{step}</span>
-                    <span className="text-sm font-medium text-red-600">{count} chyb</span>
+                {Object.entries(
+                  performanceInsights.payments.errorsByStep || {}
+                ).map(([step, count]: [string, any]) => (
+                  <div
+                    key={step}
+                    className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                  >
+                    <span className="text-sm text-gray-900 capitalize">
+                      {step}
+                    </span>
+                    <span className="text-sm font-medium text-red-600">
+                      {count} chyb
+                    </span>
                   </div>
                 ))}
               </div>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Celkové statistiky</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Celkové statistiky
+              </h4>
               <div className="bg-red-50 p-4 rounded-lg">
                 <div className="text-2xl font-bold text-red-600">
                   {performanceInsights.payments.errors}
@@ -269,21 +320,36 @@ export function MonitoringDashboard() {
 
         {/* Image Loading Insights */}
         <div className="bg-white shadow rounded-lg p-6">
-          <h3 className="text-lg font-medium text-gray-900 mb-4">Načítání obrázků</h3>
+          <h3 className="text-lg font-medium text-gray-900 mb-4">
+            Načítání obrázků
+          </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Problematické obrázky</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Problematické obrázky
+              </h4>
               <div className="space-y-2">
-                {performanceInsights.images.mostProblematicImages?.map((image: any, index: number) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <span className="text-sm text-gray-900 truncate">{image.src}</span>
-                    <span className="text-sm font-medium text-red-600">{image.count} chyb</span>
-                  </div>
-                ))}
+                {performanceInsights.images.mostProblematicImages?.map(
+                  (image: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm text-gray-900 truncate">
+                        {image.src}
+                      </span>
+                      <span className="text-sm font-medium text-red-600">
+                        {image.count} chyb
+                      </span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div>
-              <h4 className="text-sm font-medium text-gray-700 mb-2">Statistiky</h4>
+              <h4 className="text-sm font-medium text-gray-700 mb-2">
+                Statistiky
+              </h4>
               <div className="bg-orange-50 p-4 rounded-lg">
                 <div className="text-2xl font-bold text-orange-600">
                   {performanceInsights.images.errors}
@@ -301,7 +367,9 @@ export function MonitoringDashboard() {
     return (
       <div className="flex items-center justify-center p-8">
         <ArrowPathIcon className="w-8 h-8 animate-spin text-primary-600" />
-        <span className="ml-2 text-gray-600">Načítání monitorovacích dat...</span>
+        <span className="ml-2 text-gray-600">
+          Načítání monitorovacích dat...
+        </span>
       </div>
     );
   }
@@ -331,10 +399,11 @@ export function MonitoringDashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`${activeTab === tab.id
-                ? "border-primary-500 text-primary-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center`}
+              className={`${
+                activeTab === tab.id
+                  ? "border-primary-500 text-primary-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center`}
             >
               <tab.icon className="w-4 h-4 mr-2" />
               {tab.label}
@@ -357,8 +426,12 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Celkem chyb</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.total}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Celkem chyb
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.total}
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -373,8 +446,12 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Nevyřešené</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.unresolved}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Nevyřešené
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.unresolved}
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -389,8 +466,12 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Kritické</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.critical}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Kritické
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.critical}
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -405,8 +486,12 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Za 24h</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.last24h}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Za 24h
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.last24h}
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -422,8 +507,12 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Navigační</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.navigation}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Navigační
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.navigation}
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -438,8 +527,12 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Platební</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.payment}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Platební
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.payment}
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -454,8 +547,12 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Výkonové</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.performance}</dd>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Výkonové
+                    </dt>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.performance}
+                    </dd>
                   </dl>
                 </div>
               </div>
@@ -470,7 +567,9 @@ export function MonitoringDashboard() {
                 </div>
                 <div className="ml-5 w-0 flex-1">
                   <dl>
-                    <dt className="text-sm font-medium text-gray-500 truncate">Dobrý výkon</dt>
+                    <dt className="text-sm font-medium text-gray-500 truncate">
+                      Dobrý výkon
+                    </dt>
                     <dd className="text-lg font-medium text-gray-900">
                       {stats.performance.ratingDistribution.good}
                     </dd>
@@ -486,7 +585,9 @@ export function MonitoringDashboard() {
       {activeTab === "errors" && (
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <div className="px-4 py-5 sm:px-6">
-            <h3 className="text-lg leading-6 font-medium text-gray-900">Nedávné chyby</h3>
+            <h3 className="text-lg leading-6 font-medium text-gray-900">
+              Nedávné chyby
+            </h3>
             <p className="mt-1 max-w-2xl text-sm text-gray-500">
               Seznam posledních chyb v aplikaci
             </p>
@@ -498,19 +599,27 @@ export function MonitoringDashboard() {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center space-x-3">
                       <span
-                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getLevelColor(error.level)}`}
+                        className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getLevelColor(
+                          error.level
+                        )}`}
                       >
                         {error.level}
                       </span>
-                      {error.resolved && <CheckCircleIcon className="w-5 h-5 text-green-500" />}
+                      {error.resolved && (
+                        <CheckCircleIcon className="w-5 h-5 text-green-500" />
+                      )}
                     </div>
-                    <p className="text-sm font-medium text-gray-900 mt-2">{error.message}</p>
+                    <p className="text-sm font-medium text-gray-900 mt-2">
+                      {error.message}
+                    </p>
                     <div className="mt-2 flex items-center text-sm text-gray-500 space-x-4">
                       <span>ID: {error.error_id}</span>
                       <span>{formatTimestamp(error.created_at)}</span>
                       {error.context && <span>Kontext: {error.context}</span>}
                     </div>
-                    <p className="text-xs text-gray-400 mt-1 truncate">{error.url}</p>
+                    <p className="text-xs text-gray-400 mt-1 truncate">
+                      {error.url}
+                    </p>
                   </div>
                   {!error.resolved && (
                     <button
@@ -533,8 +642,12 @@ export function MonitoringDashboard() {
           {/* Web Vitals Summary */}
           <div className="bg-white shadow overflow-hidden sm:rounded-lg">
             <div className="px-4 py-5 sm:px-6">
-              <h3 className="text-lg leading-6 font-medium text-gray-900">Web Vitals</h3>
-              <p className="mt-1 max-w-2xl text-sm text-gray-500">Klíčové metriky výkonu webu</p>
+              <h3 className="text-lg leading-6 font-medium text-gray-900">
+                Web Vitals
+              </h3>
+              <p className="mt-1 max-w-2xl text-sm text-gray-500">
+                Klíčové metriky výkonu webu
+              </p>
             </div>
             <div className="border-t border-gray-200">
               <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 p-6">
@@ -542,7 +655,9 @@ export function MonitoringDashboard() {
                   const value = stats?.performance.averageValues[metric];
                   return (
                     <div key={metric} className="text-center">
-                      <dt className="text-sm font-medium text-gray-500">{metric}</dt>
+                      <dt className="text-sm font-medium text-gray-500">
+                        {metric}
+                      </dt>
                       <dd className="mt-1 text-2xl font-semibold text-gray-900">
                         {value ? Math.round(value) : "-"}
                         <span className="text-sm text-gray-500 ml-1">
@@ -569,9 +684,13 @@ export function MonitoringDashboard() {
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center space-x-3">
-                        <span className="text-sm font-medium text-gray-900">{metric.name}</span>
+                        <span className="text-sm font-medium text-gray-900">
+                          {metric.name}
+                        </span>
                         <span
-                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRatingColor(metric.rating)}`}
+                          className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${getRatingColor(
+                            metric.rating
+                          )}`}
                         >
                           {metric.rating}
                         </span>
@@ -583,7 +702,9 @@ export function MonitoringDashboard() {
                         </span>
                         <span>{formatTimestamp(metric.timestamp)}</span>
                       </div>
-                      <p className="text-xs text-gray-400 mt-1 truncate">{metric.url}</p>
+                      <p className="text-xs text-gray-400 mt-1 truncate">
+                        {metric.url}
+                      </p>
                     </div>
                   </div>
                 </li>

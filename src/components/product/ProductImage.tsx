@@ -1,7 +1,7 @@
 "use client";
 
-import React, { useState, useCallback, useMemo, useRef, useEffect } from "react";
 import Image from "next/image";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { ProductImage as ProductImageType } from "@/types/product";
 
@@ -56,8 +56,8 @@ const generateBlurDataURL = (width: number = 8, height: number = 8): string => {
     `<svg width="${width}" height="${height}" xmlns="http://www.w3.org/2000/svg">
       <defs>
         <linearGradient id="grad" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" style="stop-color:#f5f5f4;stop-opacity:1" />
-          <stop offset="100%" style="stop-color:#e7e5e4;stop-opacity:1" />
+          <stop offset="0%" style="stop-color:var(--color-stone-100, #f5f5f4);stop-opacity:1" />
+          <stop offset="100%" style="stop-color:var(--color-stone-200, #e7e5e4);stop-opacity:1" />
         </linearGradient>
       </defs>
       <rect width="100%" height="100%" fill="url(#grad)" />
@@ -70,17 +70,17 @@ const DEFAULT_FALLBACK_IMAGE = `data:image/svg+xml;base64,${Buffer.from(
   `<svg width="400" height="400" xmlns="http://www.w3.org/2000/svg">
     <defs>
       <linearGradient id="fallback" x1="0%" y1="0%" x2="100%" y2="100%">
-        <stop offset="0%" style="stop-color:#f5f5f4;stop-opacity:1" />
-        <stop offset="100%" style="stop-color:#d6d3d1;stop-opacity:1" />
+        <stop offset="0%" style="stop-color:var(--color-stone-100, #f5f5f4);stop-opacity:1" />
+        <stop offset="100%" style="stop-color:var(--color-stone-300, #d6d3d1);stop-opacity:1" />
       </linearGradient>
     </defs>
     <rect width="100%" height="100%" fill="url(#fallback)" />
     <g transform="translate(150, 150)">
-      <circle cx="50" cy="50" r="40" fill="#a8a29e" opacity="0.3"/>
-      <path d="M30 40 L50 20 L70 40 L60 40 L60 70 L40 70 L40 40 Z" fill="#78716c" opacity="0.5"/>
-      <circle cx="45" cy="35" r="3" fill="#78716c" opacity="0.7"/>
+      <circle cx="50" cy="50" r="40" fill="var(--color-stone-400, #a8a29e)" opacity="0.3"/>
+      <path d="M30 40 L50 20 L70 40 L60 40 L60 70 L40 70 L40 40 Z" fill="var(--color-stone-500, #78716c)" opacity="0.5"/>
+      <circle cx="45" cy="35" r="3" fill="var(--color-stone-500, #78716c)" opacity="0.7"/>
     </g>
-    <text x="200" y="350" text-anchor="middle" fill="#78716c" font-family="Arial, sans-serif" font-size="14" opacity="0.6">
+    <text x="200" y="350" text-anchor="middle" fill="var(--color-stone-500, #78716c)" font-family="Arial, sans-serif" font-size="14" opacity="0.6">
       Obrázek není dostupný
     </text>
   </svg>`
@@ -107,12 +107,14 @@ const getSizesForVariant = (variant: ProductImageProps["variant"]): string => {
 };
 
 // Quality settings based on variant for optimal file size vs quality balance
-const getQualityForVariant = (variant: ProductImageProps["variant"]): number => {
+const getQualityForVariant = (
+  variant: ProductImageProps["variant"]
+): number => {
   switch (variant) {
     case "product":
       return 85; // High quality for product images - balance between quality and file size
     case "thumbnail":
-      return 75; // Medium quality for thumbnails - prioritize loading speed
+      return 70; // Medium quality for thumbnails - prioritize loading speed
     case "hero":
       return 90; // Highest quality for hero images - visual impact priority
     case "gallery":
@@ -172,18 +174,18 @@ export function ProductImage({
 
   // Enhanced Intersection Observer for optimized lazy loading
   useEffect(() => {
-    if (!enableIntersectionObserver || !imageRef.current) return;
+    if (!(enableIntersectionObserver && imageRef.current)) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        if (entry && entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           setIsInView(true);
           observer.disconnect();
         }
       },
       {
-        rootMargin: '100px', // Increased margin for better UX
+        rootMargin: "100px", // Increased margin for better UX
         threshold: 0.1,
       }
     );
@@ -223,7 +225,7 @@ export function ProductImage({
   const altText = useMemo(() => {
     if (image.alt) return image.alt;
     // Use locale for appropriate language
-    const fallbackText = locale === 'cs' ? 'produkt obrázek' : 'product image';
+    const fallbackText = locale === "cs" ? "produkt obrázek" : "product image";
     return `${productName} - ${fallbackText}`;
   }, [image.alt, productName, locale]);
 
@@ -246,12 +248,20 @@ export function ProductImage({
     if (loadStartTime) {
       // Log slow loading images for optimization
       if (loadDuration > 1000) {
-        console.warn(`Slow image load detected: ${image.url} took ${loadDuration.toFixed(2)}ms`);
+        console.warn(
+          `Slow image load detected: ${image.url} took ${loadDuration.toFixed(
+            2
+          )}ms`
+        );
       }
 
       // Track Core Web Vitals impact
       if (shouldLoadWithPriority && loadDuration > 2500) {
-        console.warn(`Critical image load exceeded LCP threshold: ${image.url} (${loadDuration.toFixed(2)}ms)`);
+        console.warn(
+          `Critical image load exceeded LCP threshold: ${
+            image.url
+          } (${loadDuration.toFixed(2)}ms)`
+        );
       }
     }
 
@@ -272,7 +282,14 @@ export function ProductImage({
     });
 
     onError?.();
-  }, [onError, image.url, variant, shouldLoadWithPriority, isAboveFold, productName]);
+  }, [
+    onError,
+    image.url,
+    variant,
+    shouldLoadWithPriority,
+    isAboveFold,
+    productName,
+  ]);
 
   // Determine final image source with fallback
   const imageSrc = useMemo(() => {
@@ -285,19 +302,19 @@ export function ProductImage({
   // Enhanced preloading for critical images with resource hints
   useEffect(() => {
     if (preload && shouldLoadWithPriority && image.url) {
-      const link = document.createElement('link');
-      link.rel = 'preload';
-      link.as = 'image';
+      const link = document.createElement("link");
+      link.rel = "preload";
+      link.as = "image";
       link.href = image.url;
 
       // Add fetchpriority for critical images
-      if (variant === 'hero' || isAboveFold) {
-        link.setAttribute('fetchpriority', 'high');
+      if (variant === "hero" || isAboveFold) {
+        link.setAttribute("fetchpriority", "high");
       }
 
       // Add responsive image attributes for better preloading
       if (optimizedSizes) {
-        link.setAttribute('imagesizes', optimizedSizes);
+        link.setAttribute("imagesizes", optimizedSizes);
       }
 
       document.head.appendChild(link);
@@ -309,7 +326,14 @@ export function ProductImage({
       };
     }
     return undefined;
-  }, [preload, shouldLoadWithPriority, image.url, variant, isAboveFold, optimizedSizes]);
+  }, [
+    preload,
+    shouldLoadWithPriority,
+    image.url,
+    variant,
+    isAboveFold,
+    optimizedSizes,
+  ]);
 
   // Error fallback component
   if (hasError && !showErrorFallback) {
@@ -321,7 +345,11 @@ export function ProductImage({
           className
         )}
         role="img"
-        aria-label={locale === 'cs' ? `Obrázek produktu ${productName} se nepodařilo načíst` : `Failed to load image for ${productName}`}
+        aria-label={
+          locale === "cs"
+            ? `Obrázek produktu ${productName} se nepodařilo načíst`
+            : `Failed to load image for ${productName}`
+        }
       >
         <svg
           className="w-8 h-8"
@@ -342,10 +370,7 @@ export function ProductImage({
   }
 
   return (
-    <div
-      ref={imageRef}
-      className={cn("relative", !fill && "w-full h-full")}
-    >
+    <div ref={imageRef} className={cn("relative", !fill && "w-full h-full")}>
       {/* Loading spinner */}
       {isLoading && showLoadingSpinner && (
         <div
@@ -388,6 +413,6 @@ export function ProductImage({
       )}
     </div>
   );
-};
+}
 
 export default ProductImage;

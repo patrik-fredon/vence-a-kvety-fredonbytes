@@ -1,9 +1,9 @@
+import { customizationCache } from "@/lib/cache/customization-cache";
 import {
   batchCacheProductCustomizations,
   // Removed unused getCachedProductCustomizations
 } from "@/lib/cache/product-cache";
 import { getFrequentCustomizationOptions } from "./customization-queries";
-import { customizationCache } from "@/lib/cache/customization-cache";
 
 /**
  * Cache warming utilities for performance optimization
@@ -44,7 +44,7 @@ export async function warmUpCategoryCache(category: string): Promise<void> {
     }
 
     if (products && products.length > 0) {
-      const productIds = products.map(p => p.id);
+      const productIds = products.map((p) => p.id);
       await batchCacheProductCustomizations(productIds);
 
       console.log(`Cache warmed up for ${products.length} ${category} products`);
@@ -78,7 +78,11 @@ export async function warmUpUserBasedCache(userId?: string): Promise<void> {
     }
 
     if (recentProducts && recentProducts.length > 0) {
-      const productIds = [...new Set(recentProducts.map(item => item.product_id).filter((id): id is string => id !== null))];
+      const productIds = [
+        ...new Set(
+          recentProducts.map((item) => item.product_id).filter((id): id is string => id !== null)
+        ),
+      ];
       await batchCacheProductCustomizations(productIds);
 
       console.log(`Cache warmed up for ${productIds.length} user-specific products`);
@@ -98,19 +102,22 @@ export function schedulePeriodicCacheWarming(): void {
   }
 
   // Warm up cache every 30 minutes
-  setInterval(async () => {
-    try {
-      await warmUpWreathCache();
-      await warmUpCategoryCache("wreaths");
+  setInterval(
+    async () => {
+      try {
+        await warmUpWreathCache();
+        await warmUpCategoryCache("wreaths");
 
-      // Clean up expired cache entries
-      customizationCache.cleanup();
+        // Clean up expired cache entries
+        customizationCache.cleanup();
 
-      console.log("Periodic cache warming completed");
-    } catch (error) {
-      console.error("Error during periodic cache warming:", error);
-    }
-  }, 30 * 60 * 1000); // 30 minutes
+        console.log("Periodic cache warming completed");
+      } catch (error) {
+        console.error("Error during periodic cache warming:", error);
+      }
+    },
+    30 * 60 * 1000
+  ); // 30 minutes
 }
 
 /**

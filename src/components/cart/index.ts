@@ -1,11 +1,11 @@
-export { CartIcon } from "./CartIcon";
-export { CartItemImage } from "./CartItemImage";
-export { ShoppingCart } from "./ShoppingCart";
 export {
-  CartAnimationProvider,
-  useCartAnimation,
   AnimatedCartIcon,
+  CartAnimationProvider,
   ProductToCartAnimation,
+  useCartAnimation,
   useProductToCartAnimation,
 } from "./animations";
+export { CartIcon } from "./CartIcon";
+export { CartItemImage } from "./CartItemImage";
 export { useAnimationSequence } from "./hooks";
+export { ShoppingCart } from "./ShoppingCart";

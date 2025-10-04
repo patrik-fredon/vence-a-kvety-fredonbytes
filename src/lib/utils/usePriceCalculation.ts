@@ -1,11 +1,11 @@
 "use client";
 
-import { useMemo, useState, useEffect } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { Customization, CustomizationOption } from "@/types/product";
 import {
-  calculateTotalPriceWithOptions,
+  type CustomizationPriceBreakdown,
   calculateCustomizationPriceModifiers,
-  type CustomizationPriceBreakdown
+  calculateTotalPriceWithOptions,
 } from "./price-calculator";
 
 interface PriceCalculationResult {
@@ -39,7 +39,7 @@ export function usePriceCalculation(
       totalPrice,
       totalModifier,
       breakdown,
-      basePrice
+      basePrice,
     };
   }, [basePrice, customizations, customizationOptions]);
 }
@@ -85,14 +85,12 @@ export function usePriceCalculationWithSize(
 
     if (selectedSize && sizeOption) {
       // Remove any existing size customization
-      const filteredCustomizations = allCustomizations.filter(
-        c => c.optionId !== sizeOption.id
-      );
+      const filteredCustomizations = allCustomizations.filter((c) => c.optionId !== sizeOption.id);
 
       // Add the selected size
       filteredCustomizations.push({
         optionId: sizeOption.id,
-        choiceIds: [selectedSize]
+        choiceIds: [selectedSize],
       });
 
       return filteredCustomizations;

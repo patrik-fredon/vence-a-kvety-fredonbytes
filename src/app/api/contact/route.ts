@@ -42,7 +42,7 @@ export async function POST(request: NextRequest) {
     let body: ContactFormRequest;
     try {
       body = await request.json();
-    } catch (error) {
+    } catch (_error) {
       return NextResponse.json(
         {
           success: false,
@@ -76,7 +76,7 @@ export async function POST(request: NextRequest) {
       errors.push("Zpráva musí mít alespoň 10 znaků");
     }
 
-    if (phone && phone.trim() && !/^(\+420)?[0-9\s\-()]{9,}$/.test(phone.trim())) {
+    if (phone?.trim() && !/^(\+420)?[0-9\s\-()]{9,}$/.test(phone.trim())) {
       errors.push("Telefon není ve správném formátu");
     }
 

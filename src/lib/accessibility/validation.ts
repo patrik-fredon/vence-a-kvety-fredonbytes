@@ -14,10 +14,10 @@ export class ColorContrast {
     const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
     return result
       ? {
-        r: Number.parseInt(result[1]!, 16),
-        g: Number.parseInt(result[2]!, 16),
-        b: Number.parseInt(result[3]!, 16),
-      }
+          r: Number.parseInt(result[1]!, 16),
+          g: Number.parseInt(result[2]!, 16),
+          b: Number.parseInt(result[3]!, 16),
+        }
       : null;
   }
 
@@ -26,7 +26,7 @@ export class ColorContrast {
    */
   private static getLuminance(r: number, g: number, b: number): number {
     const [rs, gs, bs] = [r, g, b].map((c) => {
-      c = c / 255;
+      c /= 255;
       return c <= 0.03928 ? c / 12.92 : ((c + 0.055) / 1.055) ** 2.4;
     }) as [number, number, number];
     return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
@@ -113,7 +113,7 @@ export class ARIAValidator {
     const labelledBy = element.getAttribute("aria-labelledby");
     if (labelledBy) {
       const labelElement = document.getElementById(labelledBy);
-      if (labelElement && labelElement.textContent?.trim()) return true;
+      if (labelElement?.textContent?.trim()) return true;
     }
 
     // Check associated label for form elements
@@ -121,7 +121,7 @@ export class ARIAValidator {
       const id = element.getAttribute("id");
       if (id) {
         const label = document.querySelector(`label[for="${id}"]`);
-        if (label && label.textContent?.trim()) return true;
+        if (label?.textContent?.trim()) return true;
       }
     }
 
@@ -256,7 +256,7 @@ export class KeyboardValidator {
 
     // Check for proper tabindex usage
     const tabIndex = element.getAttribute("tabindex");
-    if (tabIndex && Number.parseInt(tabIndex) < -1) {
+    if (tabIndex && Number.parseInt(tabIndex, 10) < -1) {
       errors.push("Invalid tabindex value (should be -1, 0, or positive integer)");
     }
 
@@ -300,7 +300,7 @@ export class KeyboardValidator {
     if (tabIndex === "-1") return true;
 
     // Elements with positive tabindex are focusable
-    if (tabIndex && Number.parseInt(tabIndex) >= 0) return true;
+    if (tabIndex && Number.parseInt(tabIndex, 10) >= 0) return true;
 
     // Naturally focusable elements
     const focusableTags = ["button", "input", "select", "textarea", "a"];
@@ -395,7 +395,7 @@ export function auditAccessibility(container: HTMLElement = document.body): {
   const headings = container.querySelectorAll("h1, h2, h3, h4, h5, h6");
   let previousLevel = 0;
   headings.forEach((heading, index) => {
-    const level = Number.parseInt(heading.tagName.charAt(1));
+    const level = Number.parseInt(heading.tagName.charAt(1), 10);
     if (index === 0 && level !== 1) {
       warnings.push(`Heading ${index + 1}: Page should start with h1`);
     } else if (level > previousLevel + 1) {

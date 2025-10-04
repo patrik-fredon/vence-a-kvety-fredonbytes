@@ -178,13 +178,15 @@ export const getImageOptimizations = () => ({
     productDetail: "(min-width: 1200px) 600px, (min-width: 768px) 80vw, 100vw",
     thumbnail: "(min-width: 768px) 150px, 100px",
   },
-});;
+});
 /**
  * Generate preload hints for critical images
  */
-export const getCriticalImagePreloads = (images: Array<{ url: string; alt: string; priority?: boolean }>) => {
+export const getCriticalImagePreloads = (
+  images: Array<{ url: string; alt: string; priority?: boolean }>
+) => {
   const config = getImageOptimizations();
-  
+
   return images
     .filter((_, index) => index < config.preloading.aboveFoldCount)
     .map((image, index) => ({
@@ -192,7 +194,8 @@ export const getCriticalImagePreloads = (images: Array<{ url: string; alt: strin
       as: "image" as const,
       href: image.url,
       // Use fetchpriority for the first few images
-      fetchpriority: (index < 2 && config.preloading.useFetchPriority) ? "high" as const : undefined,
+      fetchpriority:
+        index < 2 && config.preloading.useFetchPriority ? ("high" as const) : undefined,
       // Add responsive image hints
       imagesrcset: generateResponsiveImageSrcSet(image.url),
       imagesizes: config.responsiveSizes.productGrid,
@@ -206,7 +209,7 @@ const generateResponsiveImageSrcSet = (baseUrl: string) => {
   const config = getImageOptimizations();
   return config.deviceSizes
     .slice(0, 4) // Limit to first 4 sizes for preloading
-    .map(size => `${baseUrl}?w=${size}&q=${config.quality.product} ${size}w`)
+    .map((size) => `${baseUrl}?w=${size}&q=${config.quality.product} ${size}w`)
     .join(", ");
 };
 
@@ -214,26 +217,26 @@ const generateResponsiveImageSrcSet = (baseUrl: string) => {
  * Preload critical images in the browser
  */
 export const preloadCriticalImages = (images: Array<{ url: string; priority?: boolean }>) => {
-  if (typeof window === 'undefined') return;
-  
+  if (typeof window === "undefined") return;
+
   const config = getImageOptimizations();
   const criticalImages = images.slice(0, config.preloading.aboveFoldCount);
-  
+
   criticalImages.forEach((image, index) => {
-    const link = document.createElement('link');
-    link.rel = 'preload';
-    link.as = 'image';
+    const link = document.createElement("link");
+    link.rel = "preload";
+    link.as = "image";
     link.href = image.url;
-    
+
     // Add fetchpriority for critical images
     if (index < 2 && config.preloading.useFetchPriority) {
-      link.setAttribute('fetchpriority', 'high');
+      link.setAttribute("fetchpriority", "high");
     }
-    
+
     // Add responsive image attributes
-    link.setAttribute('imagesrcset', generateResponsiveImageSrcSet(image.url));
-    link.setAttribute('imagesizes', config.responsiveSizes.productGrid);
-    
+    link.setAttribute("imagesrcset", generateResponsiveImageSrcSet(image.url));
+    link.setAttribute("imagesizes", config.responsiveSizes.productGrid);
+
     document.head.appendChild(link);
   });
 };

@@ -30,7 +30,9 @@ export const generateLQIP = (_originalUrl: string): string => {
 };
 
 // Determine optimal image sizes based on viewport and usage
-export const getOptimalImageSizes = (variant: "product" | "thumbnail" | "hero" | "avatar"): string => {
+export const getOptimalImageSizes = (
+  variant: "product" | "thumbnail" | "hero" | "avatar"
+): string => {
   switch (variant) {
     case "product":
       return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw";
@@ -143,9 +145,9 @@ export const trackImagePerformance = (
   // Try to get file size from performance API
   if (typeof window !== "undefined" && window.performance) {
     const resourceEntries = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
-    const imageEntry = resourceEntries.find(entry => entry.name.includes(url));
+    const imageEntry = resourceEntries.find((entry) => entry.name.includes(url));
 
-    if (imageEntry && imageEntry.transferSize) {
+    if (imageEntry?.transferSize) {
       metrics.fileSize = imageEntry.transferSize;
     }
   }

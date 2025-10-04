@@ -7,6 +7,7 @@ import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { OptimizedImage } from "@/components/ui/OptimizedImage";
 import { cn } from "@/lib/utils";
+import { resolvePrimaryProductImage } from "@/lib/utils/product-image-utils";
 import type { Product } from "@/types/product";
 
 export type ProductCardVariant = "grid" | "teaser" | "list";
@@ -47,10 +48,15 @@ export function ProductCardLayout({
   const tCurrency = useTranslations("currency");
   const [isHovered, setIsHovered] = useState(false);
   const [_imageLoading, setImageLoading] = useState(true);
+  const [imageError, setImageError] = useState(false);
 
   const productName = product.name[locale as keyof typeof product.name];
-  const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
-  const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
+
+  // Use image resolution utility for primary image with fallback chain
+  const resolvedPrimaryImage = resolvePrimaryProductImage(product, locale);
+
+  // Get secondary image for hover effect (if available)
+  const secondaryImage = product.images?.find((img) => !img.isPrimary) || product.images?.[1];
 
   const formatPrice = useCallback(
     (price: number) => {
@@ -203,48 +209,53 @@ export function ProductCardLayout({
   // Render product image with optimized loading
   const renderImage = () => (
     <div className={getImageContainerStyles()}>
-      {primaryImage && (
-        <>
-          <OptimizedImage
-            src={primaryImage.url}
-            alt={primaryImage.alt || productName}
-            fill
-            variant={variant === "list" ? "thumbnail" : "product"}
-            sizes={
-              variant === "list"
-                ? "96px"
-                : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
-            }
-            className={cn(
-              "object-cover transition-all duration-500",
-              variant !== "list" && isHovered && secondaryImage && "opacity-0"
-            )}
-            onLoad={() => setImageLoading(false)}
-            priority={featured || loading === false} // Prioritize featured products and initially visible items
-            loading={featured ? "eager" : "lazy"}
-            quality={variant === "list" ? 75 : 85} // Lower quality for thumbnails
-            placeholder="blur"
-          />
-
-          {/* Secondary image on hover for grid/teaser variants with lazy loading */}
-          {variant !== "list" && secondaryImage && (
-            <OptimizedImage
-              src={secondaryImage.url}
-              alt={secondaryImage.alt || productName}
-              fill
-              variant="product"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
-              className={cn(
-                "object-cover transition-all duration-500 absolute inset-0",
-                !isHovered && "opacity-0"
-              )}
-              priority={false} // Secondary images are never priority
-              loading="lazy" // Always lazy load secondary images
-              quality={80}
-              placeholder="blur"
-            />
+      {/* Primary image with error handling and fallback */}
+      <div className="absolute inset-0 z-0">
+        <OptimizedImage
+          src={imageError ? "/placeholder-product.jpg" : resolvedPrimaryImage.url}
+          alt={resolvedPrimaryImage.alt}
+          fill
+          variant={variant === "list" ? "thumbnail" : "product"}
+          sizes={
+            variant === "list"
+              ? "96px"
+              : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
+          }
+          className={cn(
+            "object-cover transition-all duration-500",
+            variant !== "list" && isHovered && secondaryImage && "opacity-0"
           )}
-        </>
+          onLoad={() => setImageLoading(false)}
+          onError={() => {
+            console.error(`Failed to load image for product: ${product.slug}`);
+            setImageError(true);
+          }}
+          priority={featured || loading === false} // Prioritize featured products and initially visible items
+          loading={featured ? "eager" : "lazy"}
+          quality={variant === "list" ? 75 : 85} // Lower quality for thumbnails
+          placeholder="blur"
+        />
+      </div>
+
+      {/* Secondary image on hover for grid/teaser variants with lazy loading (z-10 overlay) */}
+      {variant !== "list" && secondaryImage && !imageError && (
+        <div className="absolute inset-0 z-10">
+          <OptimizedImage
+            src={secondaryImage.url}
+            alt={secondaryImage.alt || productName}
+            fill
+            variant="product"
+            sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
+            className={cn("object-cover transition-all duration-500", !isHovered && "opacity-0")}
+            priority={false} // Secondary images are never priority
+            loading="lazy" // Always lazy load secondary images
+            quality={80}
+            placeholder="blur"
+            onError={() => {
+              // Silently fail for secondary image - OptimizedImage handles fallback
+            }}
+          />
+        </div>
       )}
 
       {/* Featured Badge */}
@@ -387,7 +398,9 @@ export function ProductCardLayout({
           "text-xs font-medium",
           product.availability.inStock ? "text-green-700" : "text-red-700"
         )}
-        aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
+        aria-label={`${t("availability")}: ${
+          product.availability.inStock ? t("inStock") : t("outOfStock")
+        }`}
       >
         {product.availability.inStock
           ? product.availability.stockQuantity && product.availability.stockQuantity <= 5

@@ -14,13 +14,13 @@ export interface AnimationState {
 }
 
 export type AnimationStep =
-  | 'idle'
-  | 'product-shrinking'
-  | 'package-dropping'
-  | 'cart-bouncing'
-  | 'cart-shaking'
-  | 'count-animating'
-  | 'cleanup';
+  | "idle"
+  | "product-shrinking"
+  | "package-dropping"
+  | "cart-bouncing"
+  | "cart-shaking"
+  | "count-animating"
+  | "cleanup";
 
 export interface ProductToCartAnimationProps {
   productElement: HTMLElement;

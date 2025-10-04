@@ -121,7 +121,12 @@ export type ButtonVariant = "default" | "destructive" | "outline" | "secondary" 
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
-export interface ButtonProps extends Omit<ComponentPropsWithoutRef<"button">, "size" | "disabled" | "className" | "aria-label">, Omit<AtomProps, "size" | "disabled"> {
+export interface ButtonProps
+  extends Omit<
+      ComponentPropsWithoutRef<"button">,
+      "size" | "disabled" | "className" | "aria-label"
+    >,
+    Omit<AtomProps, "size" | "disabled"> {
   variant?: ButtonVariant;
   size?: ButtonSize;
   disabled?: boolean;
@@ -140,8 +145,11 @@ export type InputType = "text" | "email" | "password" | "number" | "tel" | "url"
 export type InputVariant = "default" | "filled" | "outline";
 
 export interface InputProps
-  extends Omit<ComponentPropsWithoutRef<"input">, "size" | "type" | "disabled" | "className" | "aria-label">,
-  Omit<AtomProps, "disabled"> {
+  extends Omit<
+      ComponentPropsWithoutRef<"input">,
+      "size" | "type" | "disabled" | "className" | "aria-label"
+    >,
+    Omit<AtomProps, "disabled"> {
   type?: InputType;
   variant?: InputVariant;
   disabled?: boolean;
@@ -548,7 +556,7 @@ export interface ProductReference {
   };
   description: string; // Localized description
   category?: string;
-  slug?: string; // For potential navigation
+  slug: string; // Required for navigation to product detail page
 }
 
 /**

@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useCallback, useRef, useEffect, useMemo } from "react";
+import type React from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
-import { ProductImage } from "./ProductImage";
 import type { ProductImage as ProductImageType } from "@/types/product";
+import { ProductImage } from "./ProductImage";
 
 interface ProductImageHoverProps {
   /** Primary product image */
@@ -67,20 +68,23 @@ export function ProductImageHover({
   // Detect touch device capability
   useEffect(() => {
     const checkTouchDevice = () => {
-      setIsTouchDevice('ontouchstart' in window || navigator.maxTouchPoints > 0);
+      setIsTouchDevice("ontouchstart" in window || navigator.maxTouchPoints > 0);
     };
 
     checkTouchDevice();
-    window.addEventListener('resize', checkTouchDevice);
+    window.addEventListener("resize", checkTouchDevice);
 
-    return () => window.removeEventListener('resize', checkTouchDevice);
+    return () => window.removeEventListener("resize", checkTouchDevice);
   }, []);
 
   // Handle hover state changes
-  const handleHoverChange = useCallback((hovered: boolean) => {
-    setIsHovered(hovered);
-    onHoverChange?.(hovered);
-  }, [onHoverChange]);
+  const handleHoverChange = useCallback(
+    (hovered: boolean) => {
+      setIsHovered(hovered);
+      onHoverChange?.(hovered);
+    },
+    [onHoverChange]
+  );
 
   // Mouse event handlers
   const handleMouseEnter = useCallback(() => {
@@ -96,24 +100,27 @@ export function ProductImageHover({
   }, [isTouchDevice, handleHoverChange]);
 
   // Touch event handlers for hover simulation
-  const handleTouchStart = useCallback((_e: React.TouchEvent) => {
-    if (!enableTouchHover || !secondaryImage) return;
+  const handleTouchStart = useCallback(
+    (_e: React.TouchEvent) => {
+      if (!(enableTouchHover && secondaryImage)) return;
 
-    // Clear any existing timeout
-    if (touchTimeoutRef.current) {
-      clearTimeout(touchTimeoutRef.current);
-    }
+      // Clear any existing timeout
+      if (touchTimeoutRef.current) {
+        clearTimeout(touchTimeoutRef.current);
+      }
 
-    // Activate touch hover
-    setTouchHoverActive(true);
-    handleHoverChange(true);
+      // Activate touch hover
+      setTouchHoverActive(true);
+      handleHoverChange(true);
 
-    // Auto-deactivate after 2 seconds
-    touchTimeoutRef.current = setTimeout(() => {
-      setTouchHoverActive(false);
-      handleHoverChange(false);
-    }, 2000);
-  }, [enableTouchHover, secondaryImage, handleHoverChange]);
+      // Auto-deactivate after 2 seconds
+      touchTimeoutRef.current = setTimeout(() => {
+        setTouchHoverActive(false);
+        handleHoverChange(false);
+      }, 2000);
+    },
+    [enableTouchHover, secondaryImage, handleHoverChange]
+  );
 
   const handleTouchEnd = useCallback(() => {
     // Don't immediately deactivate on touch end to allow for tap-to-hover
@@ -121,16 +128,19 @@ export function ProductImageHover({
   }, []);
 
   // Click handler
-  const handleClick = useCallback((e: React.MouseEvent) => {
-    // On touch devices, first tap shows hover, second tap triggers click
-    if (isTouchDevice && enableTouchHover && secondaryImage && !touchHoverActive) {
-      e.preventDefault();
-      handleTouchStart(e as any);
-      return;
-    }
+  const handleClick = useCallback(
+    (e: React.MouseEvent) => {
+      // On touch devices, first tap shows hover, second tap triggers click
+      if (isTouchDevice && enableTouchHover && secondaryImage && !touchHoverActive) {
+        e.preventDefault();
+        handleTouchStart(e as any);
+        return;
+      }
 
-    onClick?.(e);
-  }, [isTouchDevice, enableTouchHover, secondaryImage, touchHoverActive, onClick, handleTouchStart]);
+      onClick?.(e);
+    },
+    [isTouchDevice, enableTouchHover, secondaryImage, touchHoverActive, onClick, handleTouchStart]
+  );
 
   // Cleanup timeout on unmount
   useEffect(() => {
@@ -169,7 +179,7 @@ export function ProductImageHover({
       onTouchEnd={handleTouchEnd}
       onClick={handleClick}
       style={{
-        cursor: onClick ? 'pointer' : 'default',
+        cursor: onClick ? "pointer" : "default",
       }}
     >
       {/* Primary Image */}
@@ -257,10 +267,9 @@ export function ProductImageHover({
       <div className="sr-only" aria-live="polite">
         {showSecondaryImage && (
           <span>
-            {locale === 'cs'
+            {locale === "cs"
               ? `Zobrazuje se alternativní obrázek produktu ${productName}`
-              : `Showing alternative image for ${productName}`
-            }
+              : `Showing alternative image for ${productName}`}
           </span>
         )}
       </div>

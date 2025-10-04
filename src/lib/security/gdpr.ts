@@ -138,8 +138,8 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
       addresses: Array.isArray(userProfile.addresses) ? (userProfile.addresses as any[]) : [],
       preferences:
         typeof userProfile.preferences === "object" &&
-          userProfile.preferences !== null &&
-          !Array.isArray(userProfile.preferences)
+        userProfile.preferences !== null &&
+        !Array.isArray(userProfile.preferences)
           ? (userProfile.preferences as { language: string; currency: string; notifications: any })
           : { language: "cs", currency: "CZK", notifications: {} },
       activityLog:

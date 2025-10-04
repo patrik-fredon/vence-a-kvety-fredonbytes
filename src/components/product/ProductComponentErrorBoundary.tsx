@@ -1,7 +1,7 @@
 "use client";
 
 import { Component, type ReactNode } from "react";
-import { ExclamationTriangleIcon, ArrowPathIcon } from "@/lib/icons";
+import { ArrowPathIcon, ExclamationTriangleIcon } from "@/lib/icons";
 
 import { logError } from "@/lib/monitoring/error-logger";
 
@@ -98,15 +98,12 @@ export function ProductErrorFallback({
         <ExclamationTriangleIcon className="w-6 h-6 text-teal-600" />
       </div>
 
-      <h3 className="text-lg font-semibold text-stone-800 mb-2">
-        Komponenta se nepodařila načíst
-      </h3>
+      <h3 className="text-lg font-semibold text-stone-800 mb-2">Komponenta se nepodařila načíst</h3>
 
       <p className="text-stone-600 mb-4 text-sm">
         {componentName
           ? `Při načítání komponenty "${componentName}" došlo k chybě.`
-          : "Při načítání této části produktu došlo k chybě."
-        }
+          : "Při načítání této části produktu došlo k chybě."}
       </p>
 
       {errorId && (
@@ -126,7 +123,7 @@ export function ProductErrorFallback({
         </button>
       )}
 
-      {process.env['NODE_ENV'] === "development" && error && (
+      {process.env.NODE_ENV === "development" && error && (
         <details className="mt-4 text-left">
           <summary className="cursor-pointer text-sm text-stone-500 hover:text-stone-700">
             Zobrazit technické detaily
@@ -158,13 +155,9 @@ export function ProductCardErrorFallback({
         <ExclamationTriangleIcon className="w-4 h-4 text-teal-900" />
       </div>
 
-      <h4 className="text-sm font-medium text-stone-800 mb-2">
-        Produkt se nepodařilo načíst
-      </h4>
+      <h4 className="text-sm font-medium text-stone-800 mb-2">Produkt se nepodařilo načíst</h4>
 
-      <p className="text-xs text-amber-100 mb-3">
-        Při načítání tohoto produktu došlo k chybě.
-      </p>
+      <p className="text-xs text-amber-100 mb-3">Při načítání tohoto produktu došlo k chybě.</p>
 
       {onRetry && (
         <button
@@ -196,9 +189,7 @@ export function ProductFiltersErrorFallback({
     >
       <div className="flex items-center justify-center space-x-2 mb-3">
         <ExclamationTriangleIcon className="w-5 h-5 text-teal-900" />
-        <span className="text-sm font-medium text-teal-800">
-          Filtry se nepodařilo načíst
-        </span>
+        <span className="text-sm font-medium text-teal-800">Filtry se nepodařilo načíst</span>
       </div>
 
       <p className="text-xs text-teal-800 mb-3">
@@ -236,7 +227,7 @@ export function withProductErrorBoundary<P extends object>(
     </ProductComponentErrorBoundary>
   );
 
-  WrappedComponent.displayName = `withProductErrorBoundary(${Component.displayName || Component.name || 'Component'})`;
+  WrappedComponent.displayName = `withProductErrorBoundary(${Component.displayName || Component.name || "Component"})`;
 
   return WrappedComponent;
 }
@@ -322,18 +313,15 @@ export function ProductGridErrorFallback({
         <ExclamationTriangleIcon className="w-8 h-8 text-teal-600" />
       </div>
 
-      <h3 className="text-xl font-semibold text-stone-800 mb-3">
-        Produkty se nepodařilo načíst
-      </h3>
+      <h3 className="text-xl font-semibold text-stone-800 mb-3">Produkty se nepodařilo načíst</h3>
 
       <p className="text-stone-600 mb-6 max-w-md">
-        Při načítání seznamu produktů došlo k chybě. Zkuste to prosím znovu nebo kontaktujte podporu.
+        Při načítání seznamu produktů došlo k chybě. Zkuste to prosím znovu nebo kontaktujte
+        podporu.
       </p>
 
       {gridSize && (
-        <p className="text-sm text-stone-500 mb-4">
-          Očekávaný počet produktů: {gridSize}
-        </p>
+        <p className="text-sm text-stone-500 mb-4">Očekávaný počet produktů: {gridSize}</p>
       )}
 
       {errorId && (
@@ -363,7 +351,7 @@ export function ProductGridErrorFallback({
         </button>
       </div>
 
-      {process.env['NODE_ENV'] === "development" && error && (
+      {process.env.NODE_ENV === "development" && error && (
         <details className="mt-6 text-left w-full max-w-2xl">
           <summary className="cursor-pointer text-sm text-stone-500 hover:text-stone-700">
             Zobrazit technické detaily
@@ -458,9 +446,7 @@ export function NavigationErrorFallback({
         <ExclamationTriangleIcon className="w-6 h-6 text-amber-600" />
       </div>
 
-      <h3 className="text-lg font-semibold text-amber-800 mb-2">
-        Navigace se nezdařila
-      </h3>
+      <h3 className="text-lg font-semibold text-amber-800 mb-2">Navigace se nezdařila</h3>
 
       <p className="text-amber-700 mb-4 text-sm">
         Při přechodu na požadovanou stránku došlo k chybě.
@@ -499,7 +485,7 @@ export function NavigationErrorFallback({
         </button>
       </div>
 
-      {process.env['NODE_ENV'] === "development" && error && (
+      {process.env.NODE_ENV === "development" && error && (
         <details className="mt-4 text-left">
           <summary className="cursor-pointer text-sm text-amber-600 hover:text-amber-800">
             Zobrazit technické detaily
@@ -594,14 +580,10 @@ export function ImageErrorFallback({
         <ExclamationTriangleIcon className="w-4 h-4 text-stone-500" />
       </div>
 
-      <p className="text-xs text-stone-600 text-center mb-2">
-        Obrázek se nepodařilo načíst
-      </p>
+      <p className="text-xs text-stone-600 text-center mb-2">Obrázek se nepodařilo načíst</p>
 
       {imageSrc && (
-        <p className="text-xs text-stone-400 text-center mb-3 truncate max-w-full">
-          {imageSrc}
-        </p>
+        <p className="text-xs text-stone-400 text-center mb-3 truncate max-w-full">{imageSrc}</p>
       )}
 
       {onRetry && (

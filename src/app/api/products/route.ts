@@ -34,13 +34,11 @@ async function getProducts(request: NextRequest) {
 
     // Parse query parameters
     const params: ProductSearchParams = {
-      page: Number.parseInt(searchParams.get("page") || "1"),
-      limit: Math.min(Number.parseInt(searchParams.get("limit") || "12"), 100), // Max 100 items per page
+      page: Number.parseInt(searchParams.get("page") || "1", 10),
+      limit: Math.min(Number.parseInt(searchParams.get("limit") || "12", 10), 100), // Max 100 items per page
       categoryId: searchParams.get("categoryId") || "",
       categorySlug: searchParams.get("categorySlug") || "",
-      minPrice: searchParams.get("minPrice")
-        ? Number.parseFloat(searchParams.get("minPrice")!)
-        : 0,
+      minPrice: searchParams.get("minPrice") ? Number.parseFloat(searchParams.get("minPrice")!) : 0,
       maxPrice: searchParams.get("maxPrice")
         ? Number.parseFloat(searchParams.get("maxPrice")!)
         : 999999,

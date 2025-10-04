@@ -24,23 +24,23 @@ export function SignUpForm() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
 
-    if (!(formData as any)['email']) {
+    if (!(formData as any).email) {
       errors['email'] = "E-mail je povinný";
-    } else if (!/\S+@\S+\.\S+/.test((formData as any)['email'])) {
+    } else if (!/\S+@\S+\.\S+/.test((formData as any).email)) {
       errors['email'] = "E-mail není ve správném formátu";
     }
 
-    if (!(formData as any)['password']) {
+    if (!(formData as any).password) {
       errors['password'] = "Heslo je povinné";
-    } else if ((formData as any)['password'].length < 6) {
+    } else if ((formData as any).password.length < 6) {
       errors['password'] = "Heslo musí mít alespoň 6 znaků";
     }
 
-    if ((formData as any)['password'] !== (formData as any)['confirmPassword']) {
+    if ((formData as any).password !== (formData as any).confirmPassword) {
       errors['confirmPassword'] = "Hesla se neshodují";
     }
 
-    if (!(formData as any)['name']) {
+    if (!(formData as any).name) {
       errors['name'] = "Jméno je povinné";
     }
 
@@ -56,10 +56,10 @@ export function SignUpForm() {
     }
 
     const result = await signUp({
-      email: (formData as any)['email'],
-      password: (formData as any)['password'],
-      name: (formData as any)['name'],
-      phone: (formData as any)['phone'] || "",
+      email: (formData as any).email,
+      password: (formData as any).password,
+      name: (formData as any).name,
+      phone: (formData as any).phone || "",
     });
 
     if (result.success) {
@@ -99,7 +99,7 @@ export function SignUpForm() {
               name="name"
               type="text"
               label="Jméno a příjmení"
-              value={(formData as any)['name']}
+              value={(formData as any).name}
               onChange={handleChange}
               error={validationErrors['name'] || ""}
               required
@@ -113,7 +113,7 @@ export function SignUpForm() {
               name="email"
               type="email"
               label="E-mailová adresa"
-              value={(formData as any)['email']}
+              value={(formData as any).email}
               onChange={handleChange}
               error={validationErrors['email'] || ""}
               required
@@ -127,7 +127,7 @@ export function SignUpForm() {
               name="phone"
               type="tel"
               label="Telefon (volitelné)"
-              value={(formData as any)['phone']}
+              value={(formData as any).phone}
               onChange={handleChange}
               autoComplete="tel"
               disabled={loading}
@@ -140,7 +140,7 @@ export function SignUpForm() {
               name="password"
               type="password"
               label="Heslo"
-              value={(formData as any)['password']}
+              value={(formData as any).password}
               onChange={handleChange}
               error={validationErrors['password'] || ""}
               required
@@ -155,7 +155,7 @@ export function SignUpForm() {
               name="confirmPassword"
               type="password"
               label="Potvrzení hesla"
-              value={(formData as any)['confirmPassword']}
+              value={(formData as any).confirmPassword}
               onChange={handleChange}
               error={validationErrors['confirmPassword'] || ""}
               required

@@ -1,6 +1,6 @@
-import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
 import { getTranslations } from "next-intl/server";
 import { ContactForm } from "@/components/contact";
+import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
 
 interface ContactPageProps {
   params: Promise<{ locale: string }>;
@@ -109,7 +109,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 {tContact("contactForm")}
               </h2>
 
-              <p className="text-teal-800 mb-6">{tContact("formDescription")}</p>
+              <p className="text-teal-800 mb-6">
+                {tContact("formDescription")}
+              </p>
 
               <ContactForm locale={locale} />
             </div>

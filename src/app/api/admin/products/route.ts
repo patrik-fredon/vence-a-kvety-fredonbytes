@@ -12,8 +12,8 @@ export const GET = withAdminAuth(async (request: NextRequest) => {
     const active = searchParams.get("active");
     const featured = searchParams.get("featured");
     const lowStock = searchParams.get("lowStock");
-    const limit = Number.parseInt(searchParams.get("limit") || "20");
-    const page = Number.parseInt(searchParams.get("page") || "1");
+    const limit = Number.parseInt(searchParams.get("limit") || "20", 10);
+    const page = Number.parseInt(searchParams.get("page") || "1", 10);
     const offset = (page - 1) * limit;
 
     const filters: {
@@ -77,7 +77,7 @@ export const GET = withAdminAuth(async (request: NextRequest) => {
       { status: 500 }
     );
   }
-});;
+});
 
 /**
  * Create new product (Admin only)

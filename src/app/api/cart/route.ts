@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
-import { type CartSummary } from "@/types/cart";
+import type { CartSummary } from "@/types/cart";
 import type { Product } from "@/types/product";
 
 /**
@@ -31,7 +31,7 @@ export async function GET(request: NextRequest) {
 
     // Try to get cached cart configuration first
     try {
-      const { getCachedCartConfiguration } = await import('@/lib/cache/cart-cache');
+      const { getCachedCartConfiguration } = await import("@/lib/cache/cart-cache");
       const cachedCart = await getCachedCartConfiguration(session?.user?.id || null, sessionId);
 
       if (cachedCart) {
@@ -40,7 +40,9 @@ export async function GET(request: NextRequest) {
         const maxCacheAge = 5 * 60 * 1000; // 5 minutes in milliseconds
 
         if (cacheAge < maxCacheAge) {
-          console.log(`✅ [API] Returning cached cart configuration (age: ${Math.floor(cacheAge / 1000)}s)`);
+          console.log(
+            `✅ [API] Returning cached cart configuration (age: ${Math.floor(cacheAge / 1000)}s)`
+          );
           return NextResponse.json({
             success: true,
             cart: {
@@ -50,12 +52,14 @@ export async function GET(request: NextRequest) {
               total: cachedCart.totalPrice,
             },
             fromCache: true,
-            cacheAge: Math.floor(cacheAge / 1000)
+            cacheAge: Math.floor(cacheAge / 1000),
           });
         } else {
-          console.log(`⏰ [API] Cache is stale (age: ${Math.floor(cacheAge / 1000)}s), fetching fresh data`);
+          console.log(
+            `⏰ [API] Cache is stale (age: ${Math.floor(cacheAge / 1000)}s), fetching fresh data`
+          );
           // Clear stale cache and fetch fresh data
-          const { invalidateCartCache } = await import('@/lib/cache/cart-cache');
+          const { invalidateCartCache } = await import("@/lib/cache/cart-cache");
           await invalidateCartCache(session?.user?.id || null, sessionId);
         }
       }
@@ -99,14 +103,14 @@ export async function GET(request: NextRequest) {
     }
 
     // Use the new price calculation service for accurate pricing
-    const { batchCalculateCartItemPrices } = await import('@/lib/services/cart-price-service');
+    const { batchCalculateCartItemPrices } = await import("@/lib/services/cart-price-service");
 
     // Prepare items for batch price calculation
     const itemsForPriceCalculation = (cartItems || []).map((item: any) => ({
       productId: item.product_id,
       basePrice: Number.parseFloat(item.products.base_price.toString()),
       customizations: item.customizations || [],
-      quantity: item.quantity
+      quantity: item.quantity,
     }));
 
     // Calculate prices for all items
@@ -123,7 +127,7 @@ export async function GET(request: NextRequest) {
         totalPrice: Number.parseFloat(product.base_price.toString()) * item.quantity,
         basePrice: Number.parseFloat(product.base_price.toString()),
         customizationModifier: 0,
-        priceBreakdown: []
+        priceBreakdown: [],
       };
 
       return {
@@ -176,14 +180,14 @@ export async function GET(request: NextRequest) {
 
     // Cache the cart configuration for future requests
     try {
-      const { cacheCartConfiguration } = await import('@/lib/cache/cart-cache');
+      const { cacheCartConfiguration } = await import("@/lib/cache/cart-cache");
 
       await cacheCartConfiguration(session?.user?.id || null, sessionId, {
         items: items as any[], // Type conversion for caching
         totalItems: itemCount,
         totalPrice: total,
         lastUpdated: new Date().toISOString(),
-        version: 1
+        version: 1,
       });
 
       console.log("🗄️ [API] Cart configuration cached successfully");
@@ -196,13 +200,13 @@ export async function GET(request: NextRequest) {
       itemCount,
       subtotal,
       total,
-      itemsWithCustomizations: items.filter(item => item.customizations.length > 0).length
+      itemsWithCustomizations: items.filter((item) => item.customizations.length > 0).length,
     });
 
     return NextResponse.json({
       success: true,
       cart: cartSummary,
-      fromCache: false
+      fromCache: false,
     });
   } catch (error) {
     console.error("💥 [API] Cart API error:", error);

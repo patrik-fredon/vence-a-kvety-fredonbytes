@@ -11,10 +11,7 @@ import {
   generateAvailableDeliveryDates,
 } from "@/lib/utils/delivery-calculator";
 import type { ApiResponse } from "@/types";
-import {
-  type DeliveryCalendarData,
-  type DeliveryCalendarResponse,
-} from "@/types/delivery";
+import type { DeliveryCalendarData, DeliveryCalendarResponse } from "@/types/delivery";
 
 /**
  * GET /api/delivery/calendar
@@ -25,8 +22,14 @@ export async function GET(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // Parse query parameters
-    const month = Number.parseInt(searchParams.get("month") || new Date().getMonth().toString());
-    const year = Number.parseInt(searchParams.get("year") || new Date().getFullYear().toString());
+    const month = Number.parseInt(
+      searchParams.get("month") || new Date().getMonth().toString(),
+      10
+    );
+    const year = Number.parseInt(
+      searchParams.get("year") || new Date().getFullYear().toString(),
+      10
+    );
     const postalCode = searchParams.get("postalCode") || undefined;
 
     // Validate parameters

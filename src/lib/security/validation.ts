@@ -254,7 +254,7 @@ export function validateNumber(
 ): ValidationResult<number> {
   const num = Number(value);
 
-  if (isNaN(num)) {
+  if (Number.isNaN(num)) {
     return {
       isValid: false,
       errors: [
@@ -299,7 +299,7 @@ export function validateDate(
 ): ValidationResult<Date> {
   const date = new Date(value);
 
-  if (isNaN(date.getTime())) {
+  if (Number.isNaN(date.getTime())) {
     return {
       isValid: false,
       errors: [
@@ -450,7 +450,7 @@ export async function validateRequestBody<T>(
   try {
     const body = await request.json();
     return validator(body);
-  } catch (error) {
+  } catch (_error) {
     return {
       isValid: false,
       errors: [{ field: "body", message: "Invalid JSON body", code: "INVALID_JSON" }],

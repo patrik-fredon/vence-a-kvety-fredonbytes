@@ -1,15 +1,15 @@
 "use client";
 
-import { useTranslations } from "next-intl";
 import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
 import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { useImageOptimization } from "@/lib/hooks/useImageOptimization";
-// Removed unused import: useCoreWebVitals
-import { useJavaScriptOptimization, debounce } from "@/lib/utils/javascript-optimization";
 import { cn } from "@/lib/utils";
+// Removed unused import: useCoreWebVitals
+import { debounce, useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
 import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";
 import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
 import { ProductCard } from "./ProductCard";
@@ -71,53 +71,64 @@ const ProductGrid = React.memo(function ProductGrid({
   // Removed unused coreWebVitals variable
 
   // JavaScript optimization
-  const { measureExecution } = useJavaScriptOptimization('ProductGrid');
+  const { measureExecution } = useJavaScriptOptimization("ProductGrid");
 
   // Navigation error handler
-  const handleNavigationError = useCallback((error: Error, productSlug: string, context: string) => {
-    console.error(`Navigation error in ${context}:`, error);
-    setError(`Navigation failed for product ${productSlug}. Please try again.`);
+  const handleNavigationError = useCallback(
+    (error: Error, productSlug: string, context: string) => {
+      console.error(`Navigation error in ${context}:`, error);
+      setError(`Navigation failed for product ${productSlug}. Please try again.`);
 
-    // Report error for monitoring
-    if (typeof window !== 'undefined' && 'gtag' in window && typeof (window as any).gtag === 'function') {
-      (window as any).gtag('event', 'navigation_error', {
-        event_category: 'ProductGrid',
-        event_label: context,
-        product_slug: productSlug,
-        error_message: error.message,
-      });
-    }
-  }, []);
+      // Report error for monitoring
+      if (
+        typeof window !== "undefined" &&
+        "gtag" in window &&
+        typeof (window as any).gtag === "function"
+      ) {
+        (window as any).gtag("event", "navigation_error", {
+          event_category: "ProductGrid",
+          event_label: context,
+          product_slug: productSlug,
+          error_message: error.message,
+        });
+      }
+    },
+    []
+  );
 
   // Test navigation with different product types and customization requirements
-  const testProductNavigation = useCallback(async (product: Product) => {
-    const hasCustomizationOptions = hasRequiredCustomizations(product) || hasCustomizations(product);
+  const testProductNavigation = useCallback(
+    async (product: Product) => {
+      const hasCustomizationOptions =
+        hasRequiredCustomizations(product) || hasCustomizations(product);
 
-    // Log product navigation test for debugging
-    console.log('Testing navigation for product:', {
-      slug: product.slug,
-      name: product.name,
-      hasCustomizations: hasCustomizationOptions,
-      inStock: product.availability.inStock,
-      category: product.category?.name,
-    });
+      // Log product navigation test for debugging
+      console.log("Testing navigation for product:", {
+        slug: product.slug,
+        name: product.name,
+        hasCustomizations: hasCustomizationOptions,
+        inStock: product.availability.inStock,
+        category: product.category?.name,
+      });
 
-    // Validate product slug format
-    if (!product.slug || typeof product.slug !== 'string' || product.slug.trim() === '') {
-      throw new Error(`Invalid product slug: ${product.slug}`);
-    }
+      // Validate product slug format
+      if (!product.slug || typeof product.slug !== "string" || product.slug.trim() === "") {
+        throw new Error(`Invalid product slug: ${product.slug}`);
+      }
 
-    // Validate locale
-    if (!locale || (locale !== 'cs' && locale !== 'en')) {
-      throw new Error(`Invalid locale: ${locale}`);
-    }
+      // Validate locale
+      if (!locale || (locale !== "cs" && locale !== "en")) {
+        throw new Error(`Invalid locale: ${locale}`);
+      }
 
-    return {
-      shouldNavigateToDetail: hasCustomizationOptions || !onAddToCart,
-      targetUrl: `/${locale}/products/${product.slug}`,
-      navigationMethod: hasCustomizationOptions ? 'customization_required' : 'default_behavior'
-    };
-  }, [locale, onAddToCart]);
+      return {
+        shouldNavigateToDetail: hasCustomizationOptions || !onAddToCart,
+        targetUrl: `/${locale}/products/${product.slug}`,
+        navigationMethod: hasCustomizationOptions ? "customization_required" : "default_behavior",
+      };
+    },
+    [locale, onAddToCart]
+  );
 
   // Ref to track ongoing requests for cleanup
   const abortControllerRef = useRef<AbortController | null>(null);
@@ -150,7 +161,7 @@ const ProductGrid = React.memo(function ProductGrid({
   // Optimized view mode change handler with useCallback
   const handleViewModeChange = useCallback(
     async (mode: "grid" | "list") => {
-      await measureExecution('viewModeChange', async () => {
+      await measureExecution("viewModeChange", async () => {
         setViewMode(mode);
         localStorage.setItem("product-view-mode", mode);
         announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
@@ -295,65 +306,62 @@ const ProductGrid = React.memo(function ProductGrid({
   // Debounced filter change handler with useCallback
   const handleFiltersChange = useCallback(
     debounce(async (newFilters: ProductFilters) => {
-      await measureExecution('filtersChange', async () => {
+      await measureExecution("filtersChange", async () => {
         setFilters(newFilters);
         setCurrentPage(1);
         // fetchProducts will be called by useEffect due to filters dependency
       });
     }, 30),
-    [measureExecution]
+    []
   );
 
   // Debounced sort change handler with useCallback
   const handleSortChange = useCallback(
     debounce(async (newSort: ProductSortOptions) => {
-      await measureExecution('sortChange', async () => {
+      await measureExecution("sortChange", async () => {
         setSortOptions(newSort);
         setCurrentPage(1);
         // fetchProducts will be called by useEffect due to sortOptions dependency
       });
     }, 200),
-    [measureExecution]
+    []
   );
 
   // Optimized load more function with useCallback
-  const loadMore = useCallback(
-    async () => {
-      if (loading) return; // Prevent multiple simultaneous loads
+  const loadMore = useCallback(async () => {
+    if (loading) return; // Prevent multiple simultaneous loads
 
-      await measureExecution('loadMore', async () => {
-        if (canLoadMore) {
-          // Load 4 more products from current products array (1 additional row)
-          const newDisplayedCount = Math.min(displayedCount + 4, products.length);
-          setDisplayedCount(newDisplayedCount);
+    await measureExecution("loadMore", async () => {
+      if (canLoadMore) {
+        // Load 4 more products from current products array (1 additional row)
+        const newDisplayedCount = Math.min(displayedCount + 4, products.length);
+        setDisplayedCount(newDisplayedCount);
 
-          // Announce to screen readers
-          announce(
-            t("loadedMoreProducts", {
-              count: newDisplayedCount - displayedCount,
-              total: products.length,
-            }),
-            "polite"
-          );
-        } else if (hasMore) {
-          // Fetch more products from API
-          await fetchProducts(currentPage + 1, false);
-        }
-      });
-    },
-    [
-      loading,
-      canLoadMore,
-      displayedCount,
-      products.length,
-      hasMore,
-      currentPage,
-      fetchProducts,
-      announce,
-      t,
-      measureExecution,
-    ]
-  );
+        // Announce to screen readers
+        announce(
+          t("loadedMoreProducts", {
+            count: newDisplayedCount - displayedCount,
+            total: products.length,
+          }),
+          "polite"
+        );
+      } else if (hasMore) {
+        // Fetch more products from API
+        await fetchProducts(currentPage + 1, false);
+      }
+    });
+  }, [
+    loading,
+    canLoadMore,
+    displayedCount,
+    products.length,
+    hasMore,
+    currentPage,
+    fetchProducts,
+    announce,
+    t,
+    measureExecution,
+  ]);
 
   // Optimized add to cart handler with useCallback
   const handleAddToCart = useCallback(
@@ -368,11 +376,11 @@ const ProductGrid = React.memo(function ProductGrid({
         // If product has customization options, redirect to product detail page instead of adding to cart
         if (hasRequiredCustomizations(product) || hasCustomizations(product)) {
           // Use Next.js router for navigation with error handling
-          await measureExecution('navigationToCustomization', async () => {
+          await measureExecution("navigationToCustomization", async () => {
             try {
               await router.push(navigationTest.targetUrl);
             } catch (error) {
-              handleNavigationError(error as Error, product.slug, 'customization_navigation');
+              handleNavigationError(error as Error, product.slug, "customization_navigation");
               // Fallback to window.location if router fails
               window.location.href = navigationTest.targetUrl;
             }
@@ -382,33 +390,33 @@ const ProductGrid = React.memo(function ProductGrid({
 
         // Only add directly to cart if no customization is needed
         if (onAddToCart) {
-          await measureExecution('directAddToCart', async () => {
+          await measureExecution("directAddToCart", async () => {
             onAddToCart(product);
           });
         } else {
           // Default behavior - redirect to product detail page for safety
-          await measureExecution('navigationToProduct', async () => {
+          await measureExecution("navigationToProduct", async () => {
             try {
               await router.push(navigationTest.targetUrl);
             } catch (error) {
-              handleNavigationError(error as Error, product.slug, 'product_detail_navigation');
+              handleNavigationError(error as Error, product.slug, "product_detail_navigation");
               // Fallback to window.location if router fails
               window.location.href = navigationTest.targetUrl;
             }
           });
         }
       } catch (error) {
-        console.error('Error in handleAddToCart:', error);
-        handleNavigationError(error as Error, product.slug, 'add_to_cart_handler');
+        console.error("Error in handleAddToCart:", error);
+        handleNavigationError(error as Error, product.slug, "add_to_cart_handler");
         // Final fallback - always try to navigate to product page
         window.location.href = `/${locale}/products/${product.slug}`;
       }
     },
     [locale, onAddToCart, router, measureExecution, handleNavigationError, testProductNavigation]
-  );;;;
+  );
 
   return (
-    <section className={cn("bg-teal-800 py-12 rounded-2xl", className)}>
+    <section className={cn("bg-primary py-12 rounded-2xl shadow-xl", className)}>
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Filters */}
         <div className="mb-8">
@@ -426,7 +434,7 @@ const ProductGrid = React.memo(function ProductGrid({
         <div className="flex items-center justify-between mb-8">
           <div>
             {totalProducts > 0 && (
-              <p className="text-lg font-medium text-amber-800">
+              <p className="text-lg font-medium text-accent">
                 {t("showingResults", {
                   count: displayedProducts.length,
                   total: totalProducts,
@@ -437,7 +445,7 @@ const ProductGrid = React.memo(function ProductGrid({
 
           {/* View Mode Switcher */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-amber-700">{t("viewMode")}:</span>
+            <span className="text-sm font-medium text-accent">{t("viewMode")}:</span>
             <div className="flex bg-white border border-amber-200 rounded-lg overflow-hidden shadow-sm">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
@@ -487,9 +495,9 @@ const ProductGrid = React.memo(function ProductGrid({
               className={cn(
                 viewMode === "grid"
                   ? // Optimized 4-column responsive grid layout
-                  "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4"
+                    "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4"
                   : // List view: Clean single column layout
-                  "flex flex-col gap-6 mb-12"
+                    "flex flex-col gap-6 mb-12"
               )}
             >
               {displayedProducts.map((product, index) => (
@@ -522,8 +530,8 @@ const ProductGrid = React.memo(function ProductGrid({
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-amber-800 mb-3">{t("noResults")}</h3>
-              <p className="text-amber-600 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
+              <h3 className="text-xl font-semibold text-accent mb-3">{t("noResults")}</h3>
+              <p className="text-accent mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
               <Button
                 variant="outline"
                 size="lg"
@@ -556,8 +564,8 @@ const ProductGrid = React.memo(function ProductGrid({
             ) : (
               <div className="flex justify-center py-8">
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-amber-600">{tCommon("loading")}</span>
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                  <span className="text-sm text-accent">{tCommon("loading")}</span>
                 </div>
               </div>
             )}
@@ -570,15 +578,15 @@ const ProductGrid = React.memo(function ProductGrid({
             {/* Progress indicator */}
             {totalProducts > 0 && (
               <div className="text-center mb-4">
-                <p className="text-sm text-amber-700 mb-2">
+                <p className="text-sm text-accent mb-2">
                   {t("showingOf", {
                     showing: displayedProducts.length,
                     total: totalProducts,
                   })}
                 </p>
-                <div className="w-64 bg-amber-100 rounded-full h-2 mx-auto">
+                <div className="w-64 bg-accent rounded-full h-2 mx-auto">
                   <div
-                    className="bg-amber-600 h-2 rounded-full transition-all duration-300 ease-out"
+                    className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
                     style={{
                       width: `${Math.min((displayedProducts.length / totalProducts) * 100, 100)}%`,
                     }}
@@ -604,9 +612,9 @@ const ProductGrid = React.memo(function ProductGrid({
               loadingText={t("loadingMore")}
               className={cn(
                 "px-8 py-3 min-w-[200px] font-medium",
-                "bg-white border-2 border-amber-600 text-amber-700",
-                "hover:bg-amber-50 hover:border-amber-700 hover:text-amber-800",
-                "focus:ring-2 focus:ring-amber-500 focus:ring-offset-2",
+                "bg-white border-2 border-primary text-primary",
+                "hover:bg-accent-light hover:border-primary hover:text-primary",
+                "focus:ring-2 focus:ring-primary-light focus:ring-offset-2",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
                 "transition-all duration-200 ease-in-out",
                 "shadow-sm hover:shadow-md"
@@ -615,7 +623,7 @@ const ProductGrid = React.memo(function ProductGrid({
             >
               {loading ? (
                 <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-amber-600 border-t-transparent rounded-full animate-spin" />
+                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
                   <span>{t("loadingMore")}</span>
                 </div>
               ) : (
@@ -642,17 +650,19 @@ const ProductGrid = React.memo(function ProductGrid({
             {/* Accessible description */}
             <p
               id={loadMoreDescriptionId}
-              className="text-xs text-amber-600 text-center max-w-md sr-only"
+              className="text-xs text-accent text-center max-w-md sr-only"
             >
               {canLoadMore
-                ? t("loadMoreFromCurrent", { remaining: products.length - displayedCount })
+                ? t("loadMoreFromCurrent", {
+                    remaining: products.length - displayedCount,
+                  })
                 : t("loadMoreFromServer")}
             </p>
 
             {/* Show when no more products available */}
             {!(hasMore || canLoadMore) && (
               <div className="text-center py-4">
-                <p className="text-sm text-amber-600 font-medium">{t("allProductsLoaded")}</p>
+                <p className="text-sm text-accent font-medium">{t("allProductsLoaded")}</p>
               </div>
             )}
           </div>

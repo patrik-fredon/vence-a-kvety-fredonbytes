@@ -1,8 +1,10 @@
 "use client";
 
-
-import { useEffect, useState } from "react";
-import { LazyInventoryManagement, LazyMonitoringDashboard } from "@/components/dynamic";
+import { useCallback, useEffect, useState } from "react";
+import {
+  LazyInventoryManagement,
+  LazyMonitoringDashboard,
+} from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import AdminActivityLog from "./AdminActivityLog";
 import AdminHeader from "./AdminHeader";
@@ -11,7 +13,13 @@ import DashboardOverview from "./DashboardOverview";
 import OrderManagement from "./OrderManagement";
 import ProductManagement from "./ProductManagement";
 
-type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
+type AdminView =
+  | "overview"
+  | "products"
+  | "orders"
+  | "inventory"
+  | "activity"
+  | "monitoring";
 
 interface DashboardStats {
   orders: {
@@ -59,11 +67,7 @@ export default function AdminDashboard() {
   const [loading, setLoading] = useState(true);
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  useEffect(() => {
-    fetchDashboardStats();
-  }, []);
-
-  const fetchDashboardStats = async () => {
+  const fetchDashboardStats = useCallback(async () => {
     try {
       const response = await fetch("/api/admin/dashboard/stats");
       if (response.ok) {
@@ -75,12 +79,18 @@ export default function AdminDashboard() {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    fetchDashboardStats();
+  }, [fetchDashboardStats]);
 
   const renderCurrentView = () => {
     switch (currentView) {
       case "overview":
-        return <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />;
+        return (
+          <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />
+        );
       case "products":
         return <ProductManagement />;
       case "orders":
@@ -92,7 +102,9 @@ export default function AdminDashboard() {
       case "monitoring":
         return <LazyMonitoringDashboard />;
       default:
-        return <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />;
+        return (
+          <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />
+        );
     }
   };
 
@@ -117,7 +129,10 @@ export default function AdminDashboard() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader currentView={currentView} onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
+        <AdminHeader
+          currentView={currentView}
+          onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
+        />
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-stone-50 p-6">
           {renderCurrentView()}

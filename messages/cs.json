@@ -178,6 +178,8 @@
     "customMessage": "Vlastní vzkaz",
     "andMore": "a dalších {count} položek",
     "clearCart": "Vyprázdnit košík",
+    "clearAll": "Vymazat vše",
+    "clearAllConfirm": "Opravdu chcete odstranit všechny položky?",
     "clearCartConfirmTitle": "Vyprázdnit košík?",
     "clearCartConfirmMessage": "Opravdu chcete odstranit všechny položky z košíku? Tuto akci nelze vrátit zpět.",
     "clearCartConfirm": "Ano, vyprázdnit košík",
@@ -536,6 +538,10 @@
     "optional": "volitelné"
   },
   "accessibility": {
+    "toolbar": {
+      "title": "Možnosti přístupnosti",
+      "footerLink": "Přístupnost"
+    },
     "accessibilityOptions": "Možnosti přístupnosti",
     "toolbarDescription": "Přizpůsobte si prohlížení pomocí funkcí pro přístupnost",
     "toolbarOpened": "Panel přístupnosti otevřen",

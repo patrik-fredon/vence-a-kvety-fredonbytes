@@ -46,9 +46,10 @@ export function LanguageToggle({
             disabled={isLoading || locale === currentLocale}
             className={`
               px-3 py-1 text-sm font-medium rounded-md transition-colors
-              ${locale === currentLocale
-                ? "bg-teal-900 text-amber-100 cursor-default"
-                : "bg-teal-900 text-amber-100 hover:bg-primary-50 hover:text-primary-700 border border-neutral-300"
+              ${
+                locale === currentLocale
+                  ? "bg-teal-900 text-amber-100 cursor-default"
+                  : "bg-teal-900 text-amber-100 hover:bg-primary-50 hover:text-primary-700 border border-neutral-300"
               }
               ${isLoading ? "opacity-50 cursor-not-allowed" : ""}
               focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
@@ -58,8 +59,10 @@ export function LanguageToggle({
           >
             {isLoading && locale !== currentLocale ? (
               <LoadingSpinner size="sm" />
+            ) : showLabels ? (
+              localeNames[locale]
             ) : (
-              <>{showLabels ? localeNames[locale] : locale.toUpperCase()}</>
+              locale.toUpperCase()
             )}
           </button>
         ))}

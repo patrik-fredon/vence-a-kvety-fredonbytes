@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -46,11 +45,7 @@ export function ContactForm({ locale }: ContactFormProps) {
     }
 
     // Phone validation (optional)
-    if (
-      formData.phone &&
-      formData.phone.trim() &&
-      !/^(\+420)?[0-9\s\-()]{9,}$/.test(formData.phone.trim())
-    ) {
+    if (formData.phone?.trim() && !/^(\+420)?[0-9\s\-()]{9,}$/.test(formData.phone.trim())) {
       newErrors.phone =
         locale === "cs" ? "Telefon není ve správném formátu" : "Invalid phone format";
     }
@@ -133,9 +128,9 @@ export function ContactForm({ locale }: ContactFormProps) {
       } else {
         setSubmitError(
           result.message ||
-          (locale === "cs"
-            ? "Došlo k chybě při odesílání zprávy"
-            : "An error occurred while sending the message")
+            (locale === "cs"
+              ? "Došlo k chybě při odesílání zprávy"
+              : "An error occurred while sending the message")
         );
       }
     } catch (error) {
@@ -153,25 +148,25 @@ export function ContactForm({ locale }: ContactFormProps) {
   const subjectOptions =
     locale === "cs"
       ? [
-        { value: "", label: "Vyberte předmět zprávy" },
-        { value: "Dotaz na pohřební věnce", label: "Dotaz na pohřební věnce" },
-        { value: "Objednávka věnce", label: "Objednávka věnce" },
-        { value: "Individuální požadavek", label: "Individuální požadavek" },
-        { value: "Dodání a doručení", label: "Dodání a doručení" },
-        { value: "Reklamace", label: "Reklamace" },
-        { value: "Platba a fakturace", label: "Platba a fakturace" },
-        { value: "Jiné", label: "Jiné" },
-      ]
+          { value: "", label: "Vyberte předmět zprávy" },
+          { value: "Dotaz na pohřební věnce", label: "Dotaz na pohřební věnce" },
+          { value: "Objednávka věnce", label: "Objednávka věnce" },
+          { value: "Individuální požadavek", label: "Individuální požadavek" },
+          { value: "Dodání a doručení", label: "Dodání a doručení" },
+          { value: "Reklamace", label: "Reklamace" },
+          { value: "Platba a fakturace", label: "Platba a fakturace" },
+          { value: "Jiné", label: "Jiné" },
+        ]
       : [
-        { value: "", label: "Select message subject" },
-        { value: "Funeral wreaths inquiry", label: "Funeral wreaths inquiry" },
-        { value: "Wreath order", label: "Wreath order" },
-        { value: "Individual request", label: "Individual request" },
-        { value: "Delivery and shipping", label: "Delivery and shipping" },
-        { value: "Complaint", label: "Complaint" },
-        { value: "Payment and billing", label: "Payment and billing" },
-        { value: "Other", label: "Other" },
-      ];
+          { value: "", label: "Select message subject" },
+          { value: "Funeral wreaths inquiry", label: "Funeral wreaths inquiry" },
+          { value: "Wreath order", label: "Wreath order" },
+          { value: "Individual request", label: "Individual request" },
+          { value: "Delivery and shipping", label: "Delivery and shipping" },
+          { value: "Complaint", label: "Complaint" },
+          { value: "Payment and billing", label: "Payment and billing" },
+          { value: "Other", label: "Other" },
+        ];
 
   return (
     <>
@@ -249,7 +244,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                   "shadow-sm focus:shadow-md",
                   "font-normal text-sm leading-normal",
                   errors.subject &&
-                  "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
+                    "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
                 )}
                 disabled={isSubmitting}
                 aria-invalid={errors.subject ? "true" : "false"}
@@ -290,7 +285,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                   "shadow-sm focus:shadow-md",
                   "font-normal text-sm leading-normal resize-vertical",
                   errors.message &&
-                  "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
+                    "border-error-500 focus:border-error-500 focus:ring-error-500/20 bg-error-50/30"
                 )}
                 placeholder={
                   locale === "cs" ? "Napište nám svou zprávu..." : "Write your message..."

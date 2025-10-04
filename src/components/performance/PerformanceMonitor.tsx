@@ -39,7 +39,10 @@ const VITALS_THRESHOLDS = {
 /**
  * Get rating based on metric value and thresholds
  */
-function getMetricRating(name: WebVitalsMetric["name"], value: number): WebVitalsMetric["rating"] {
+function getMetricRating(
+  name: WebVitalsMetric["name"],
+  value: number
+): WebVitalsMetric["rating"] {
   const thresholds = VITALS_THRESHOLDS[name];
   if (value <= thresholds.good) return "good";
   if (value <= thresholds.poor) return "needs-improvement";
@@ -69,7 +72,7 @@ function sendToAnalytics(metric: WebVitalsMetric) {
 export function PerformanceMonitor({
   enabled = true,
   onMetric,
-  debug = process.env['NODE_ENV'] === "development",
+  debug = process.env.NODE_ENV === "development",
 }: PerformanceMonitorProps) {
   useEffect(() => {
     if (!enabled || typeof window === "undefined") return;
@@ -90,7 +93,9 @@ export function PerformanceMonitor({
           // Log to console in debug mode
           if (debug) {
             console.log(`[Performance] ${metric.name}:`, {
-              value: `${Math.round(metric.value)}${metric.name === "CLS" ? "" : "ms"}`,
+              value: `${Math.round(metric.value)}${
+                metric.name === "CLS" ? "" : "ms"
+              }`,
               rating: webVitalsMetric.rating,
               delta: metric.delta,
             });
@@ -141,11 +146,13 @@ export function usePerformanceMetrics() {
 
   const getLatestMetrics = () => {
     const metrics = getMetrics();
-    const latest: Partial<Record<WebVitalsMetric["name"], WebVitalsMetric>> = {};
+    const latest: Partial<Record<WebVitalsMetric["name"], WebVitalsMetric>> =
+      {};
 
     // Get the most recent metric for each type
     metrics.forEach((metric) => {
-      if (!latest[metric.name] || metric.timestamp > latest[metric.name]!.timestamp) {
+      const existingMetric = latest[metric.name];
+      if (!existingMetric || metric.timestamp > existingMetric.timestamp) {
         latest[metric.name] = metric;
       }
     });
@@ -167,7 +174,7 @@ export function PerformanceSummary() {
   const { getLatestMetrics } = usePerformanceMetrics();
   const metrics = getLatestMetrics();
 
-  if (process.env['NODE_ENV'] !== "development") {
+  if (process.env.NODE_ENV !== "development") {
     return null;
   }
 
@@ -182,8 +189,8 @@ export function PerformanceSummary() {
               metric.rating === "good"
                 ? "text-green-400"
                 : metric.rating === "needs-improvement"
-                  ? "text-yellow-400"
-                  : "text-red-400"
+                ? "text-yellow-400"
+                : "text-red-400"
             }
           >
             {Math.round(metric.value)}

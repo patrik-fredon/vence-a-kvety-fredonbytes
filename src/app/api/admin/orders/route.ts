@@ -52,8 +52,8 @@ export async function GET(request: NextRequest) {
         : null;
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
-    const limit = Number.parseInt(searchParams.get("limit") || "20");
-    const offset = Number.parseInt(searchParams.get("offset") || "0");
+    const limit = Number.parseInt(searchParams.get("limit") || "20", 10);
+    const offset = Number.parseInt(searchParams.get("offset") || "0", 10);
 
     // Get orders with filters
     const { data: orders, error } = await orderUtils.getAllOrders({
@@ -77,24 +77,24 @@ export async function GET(request: NextRequest) {
 
     // Transform orders for admin view
     const transformedOrders = orders.map((order) => {
-      const customerInfo = order.customer_info as any;
-      const deliveryInfo = order.delivery_info as any;
-      const paymentInfo = order.payment_info as any;
-      const itemsData = order.items as any;
+      const customerInfo = order.customer_info as Record<string, unknown>;
+      const deliveryInfo = order.delivery_info as Record<string, unknown>;
+      const paymentInfo = order.payment_info as Record<string, unknown>;
+      const itemsData = order.items as Record<string, unknown>;
 
       return {
         id: order.id,
-        orderNumber: customerInfo.orderNumber || order.id.slice(-8).toUpperCase(),
-        customerName: `${customerInfo.firstName} ${customerInfo.lastName}`,
-        customerEmail: customerInfo.email,
-        customerPhone: customerInfo.phone,
+        orderNumber: customerInfo["orderNumber"] || order.id.slice(-8).toUpperCase(),
+        customerName: `${customerInfo["firstName"]} ${customerInfo["lastName"]}`,
+        customerEmail: customerInfo["email"],
+        customerPhone: customerInfo["phone"],
         status: order.status,
         totalAmount: order.total_amount,
-        itemCount: itemsData.itemCount || 0,
-        paymentMethod: paymentInfo.method,
-        paymentStatus: paymentInfo.status,
-        deliveryAddress: `${deliveryInfo.address.city}, ${deliveryInfo.address.postalCode}`,
-        preferredDate: deliveryInfo.preferredDate,
+        itemCount: itemsData["itemCount"] || 0,
+        paymentMethod: paymentInfo["method"],
+        paymentStatus: paymentInfo["status"],
+        deliveryAddress: `${(deliveryInfo["address"] as any)["city"]}, ${(deliveryInfo["address"] as any)["postalCode"]}`,
+        preferredDate: deliveryInfo["preferredDate"],
         createdAt: order.created_at,
         updatedAt: order.updated_at,
         confirmedAt: undefined,

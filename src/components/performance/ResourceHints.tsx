@@ -64,12 +64,15 @@ export function ResourceHints({
         onLoad={(e) => {
           const target = e.target as HTMLLinkElement;
           target.onload = null;
-          target.rel = 'stylesheet';
+          target.rel = "stylesheet";
         }}
       />
 
       {/* Viewport meta for proper responsive behavior */}
-      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+      <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1, viewport-fit=cover"
+      />
 
       {/* Performance hints */}
       <meta httpEquiv="x-dns-prefetch-control" content="on" />
@@ -95,7 +98,7 @@ export function CriticalCSS() {
 
           /* Hero section critical styles */
           #hero-section {
-            background-color: #102724;
+            background-color: var(--color-teal-950, #013029);
             min-height: 100vh;
             display: flex;
             align-items: center;
@@ -122,7 +125,7 @@ export function CriticalCSS() {
             align-items: center;
             justify-content: center;
             padding: 0.75rem 1.5rem;
-            background-color: #d97706;
+            background-color: var(--color-amber-600, #d97706);
             color: white;
             text-decoration: none;
             border-radius: 0.5rem;
@@ -132,7 +135,7 @@ export function CriticalCSS() {
           }
 
           .cta-button:hover {
-            background-color: #b45309;
+            background-color: var(--color-amber-700, #b45309);
           }
 
           /* Prevent layout shift */

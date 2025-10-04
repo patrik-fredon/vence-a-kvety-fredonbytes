@@ -42,7 +42,7 @@ export class CartSyncManager {
   constructor(
     private userId?: string,
     private sessionId?: string
-  ) { }
+  ) {}
 
   /**
    * Initialize WebSocket connection for real-time updates
@@ -176,7 +176,7 @@ export class CartSyncManager {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
-    this.eventListeners.get(event)!.push(listener);
+    this.eventListeners.get(event)?.push(listener);
   }
 
   /**

@@ -29,10 +29,10 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     // For now, any authenticated user can update contact form status
 
     // Parse request body
-    let body;
+    let body: { status?: string };
     try {
       body = await request.json();
-    } catch (error) {
+    } catch (_error) {
       return NextResponse.json(
         {
           success: false,
@@ -50,7 +50,9 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
       return NextResponse.json(
         {
           success: false,
-          message: "Invalid status. Must be one of: " + validStatuses.join(", "),
+          message: `Invalid status. Must be one of: ${validStatuses.join(
+            ", "
+          )}`,
         },
         { status: 400 }
       );
@@ -61,7 +63,7 @@ export async function PATCH(request: NextRequest, { params }: RouteParams) {
     const { data, error } = await supabase
       .from("contact_forms")
       .update({
-        status,
+        status: status as "new" | "read" | "replied" | "archived",
         updated_at: new Date().toISOString(),
       })
       .eq("id", id)

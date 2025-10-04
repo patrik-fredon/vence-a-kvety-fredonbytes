@@ -1,9 +1,9 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import type { CustomizationPriceBreakdown } from "@/lib/utils/price-calculator";
 import { Card, CardContent } from "@/components/ui/Card";
 import { cn } from "@/lib/utils";
+import type { CustomizationPriceBreakdown } from "@/lib/utils/price-calculator";
 
 interface PriceBreakdownProps {
   basePrice?: number;
@@ -20,13 +20,13 @@ export function PriceBreakdown({
   totalPrice = 0,
   locale,
   className,
-  showDetails = false
+  showDetails = false,
 }: PriceBreakdownProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
 
   const formatPrice = (price: number | undefined | null) => {
-    if (price === undefined || price === null || isNaN(price)) {
+    if (price === undefined || price === null || Number.isNaN(price)) {
       return tCurrency("format", {
         amount: "0",
       });
@@ -62,12 +62,18 @@ export function PriceBreakdown({
                     <span className="text-sm text-stone-600">
                       {item.optionName[locale as keyof typeof item.optionName]}
                     </span>
-                    <span className={cn(
-                      "text-sm font-medium",
-                      item.totalModifier > 0 ? "text-amber-600" :
-                        item.totalModifier < 0 ? "text-green-600" : "text-stone-500"
-                    )}>
-                      {item.totalModifier > 0 ? "+" : ""}{formatPrice(item.totalModifier)}
+                    <span
+                      className={cn(
+                        "text-sm font-medium",
+                        item.totalModifier > 0
+                          ? "text-amber-600"
+                          : item.totalModifier < 0
+                            ? "text-green-600"
+                            : "text-stone-500"
+                      )}
+                    >
+                      {item.totalModifier > 0 ? "+" : ""}
+                      {formatPrice(item.totalModifier)}
                     </span>
                   </div>
 
@@ -78,7 +84,8 @@ export function PriceBreakdown({
                         {choice.label[locale as keyof typeof choice.label]}
                       </span>
                       <span className="text-xs text-stone-400">
-                        {choice.priceModifier > 0 ? "+" : ""}{formatPrice(choice.priceModifier)}
+                        {choice.priceModifier > 0 ? "+" : ""}
+                        {formatPrice(choice.priceModifier)}
                       </span>
                     </div>
                   ))}
@@ -86,9 +93,7 @@ export function PriceBreakdown({
                   {/* Custom Value */}
                   {item.customValue && (
                     <div className="ml-4">
-                      <span className="text-xs text-stone-500 italic">
-                        "{item.customValue}"
-                      </span>
+                      <span className="text-xs text-stone-500 italic">"{item.customValue}"</span>
                     </div>
                   )}
                 </div>

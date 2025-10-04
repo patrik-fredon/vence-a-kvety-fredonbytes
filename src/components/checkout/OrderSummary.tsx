@@ -3,12 +3,10 @@
 import { ShoppingCartIcon } from "@heroicons/react/24/outline";
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import React from "react";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/types/cart";
-
 
 interface OrderSummaryProps {
   items: CartItem[];

@@ -73,7 +73,7 @@ export const useImageOptimization = (
 
   // Register image element for observation
   const registerImage = useCallback((element: HTMLElement | null, index: number) => {
-    if (!element || !observerRef.current) return;
+    if (!(element && observerRef.current)) return;
 
     // Store element reference
     imageElementsRef.current.set(index, element);
@@ -94,46 +94,64 @@ export const useImageOptimization = (
   }, []);
 
   // Determine if image should have priority loading
-  const shouldPrioritize = useCallback((index: number): boolean => {
-    return index < priorityCount;
-  }, [priorityCount]);
+  const shouldPrioritize = useCallback(
+    (index: number): boolean => {
+      return index < priorityCount;
+    },
+    [priorityCount]
+  );
 
   // Determine if image should be lazy loaded
-  const shouldLazyLoad = useCallback((index: number): boolean => {
-    if (!enableLazyLoading) return false;
-    return index >= priorityCount;
-  }, [enableLazyLoading, priorityCount]);
+  const shouldLazyLoad = useCallback(
+    (index: number): boolean => {
+      if (!enableLazyLoading) return false;
+      return index >= priorityCount;
+    },
+    [enableLazyLoading, priorityCount]
+  );
 
   // Check if image is currently visible
-  const isImageVisible = useCallback((index: number): boolean => {
-    return visibleImages.has(index);
-  }, [visibleImages]);
+  const isImageVisible = useCallback(
+    (index: number): boolean => {
+      return visibleImages.has(index);
+    },
+    [visibleImages]
+  );
 
   // Get optimized loading strategy
-  const getLoadingStrategy = useCallback((index: number): "eager" | "lazy" => {
-    return shouldPrioritize(index) ? "eager" : "lazy";
-  }, [shouldPrioritize]);
+  const getLoadingStrategy = useCallback(
+    (index: number): "eager" | "lazy" => {
+      return shouldPrioritize(index) ? "eager" : "lazy";
+    },
+    [shouldPrioritize]
+  );
 
   // Get priority setting
-  const getPriority = useCallback((index: number): boolean => {
-    return shouldPrioritize(index);
-  }, [shouldPrioritize]);
+  const getPriority = useCallback(
+    (index: number): boolean => {
+      return shouldPrioritize(index);
+    },
+    [shouldPrioritize]
+  );
 
-  return useMemo(() => ({
-    shouldPrioritize,
-    shouldLazyLoad,
-    registerImage,
-    isImageVisible,
-    getLoadingStrategy,
-    getPriority,
-  }), [
-    shouldPrioritize,
-    shouldLazyLoad,
-    registerImage,
-    isImageVisible,
-    getLoadingStrategy,
-    getPriority,
-  ]);
+  return useMemo(
+    () => ({
+      shouldPrioritize,
+      shouldLazyLoad,
+      registerImage,
+      isImageVisible,
+      getLoadingStrategy,
+      getPriority,
+    }),
+    [
+      shouldPrioritize,
+      shouldLazyLoad,
+      registerImage,
+      isImageVisible,
+      getLoadingStrategy,
+      getPriority,
+    ]
+  );
 };
 
 export default useImageOptimization;

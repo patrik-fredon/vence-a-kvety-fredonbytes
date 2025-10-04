@@ -29,8 +29,10 @@ interface PageMetadataProps {
  * Generate comprehensive metadata for different page types
  */
 export function generatePageMetadata(props: PageMetadataProps): Metadata {
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
-  const fullUrl = props.canonicalUrl || `${baseUrl}/${props.locale}${props.path}`;
+  const baseUrl =
+    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const fullUrl =
+    props.canonicalUrl || `${baseUrl}/${props.locale}${props.path}`;
 
   // Generate enhanced meta tags
   // const metaTags = generateEnhancedMetaTags(props); // TODO: Use this for enhanced meta tags
@@ -63,13 +65,15 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       url: fullUrl,
       images: props.image
         ? [
-          {
-            url: props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`,
-            width: 1200,
-            height: 630,
-            alt: props.openGraph?.title || props.title,
-          },
-        ]
+            {
+              url: props.image.startsWith("http")
+                ? props.image
+                : `${baseUrl}${props.image}`,
+              width: 1200,
+              height: 630,
+              alt: props.openGraph?.title || props.title,
+            },
+          ]
         : [],
     },
     twitter: {
@@ -77,15 +81,19 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       title: props.title,
       description: props.description,
       images: props.image
-        ? [props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`]
+        ? [
+            props.image.startsWith("http")
+              ? props.image
+              : `${baseUrl}${props.image}`,
+          ]
         : [],
       site: "@ketingmar", // Add when Twitter account is available
       creator: "@ketingmar",
     },
     other: {
-      // Theme and app meta tags
-      "theme-color": "#1f2937",
-      "msapplication-TileColor": "#1f2937",
+      // Theme and app meta tags - using teal-800 from color system
+      "theme-color": "#115e59",
+      "msapplication-TileColor": "#115e59",
       "apple-mobile-web-app-capable": "yes",
       "apple-mobile-web-app-status-bar-style": "default",
       "format-detection": "telephone=no",
@@ -93,35 +101,35 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       // Product-specific meta tags
       ...(props.type === "product" &&
         props.price && {
-        "product:price:amount": props.price.toString(),
-        "product:price:currency": "CZK",
-      }),
+          "product:price:amount": props.price.toString(),
+          "product:price:currency": "CZK",
+        }),
       ...(props.type === "product" &&
         props.availability && {
-        "product:availability": props.availability,
-      }),
+          "product:availability": props.availability,
+        }),
       ...(props.type === "product" &&
         props.brand && {
-        "product:brand": props.brand,
-      }),
+          "product:brand": props.brand,
+        }),
       ...(props.type === "product" &&
         props.category && {
-        "product:category": props.category,
-      }),
+          "product:category": props.category,
+        }),
 
       // Article-specific meta tags
       ...(props.type === "article" &&
         props.publishedTime && {
-        "article:published_time": props.publishedTime,
-      }),
+          "article:published_time": props.publishedTime,
+        }),
       ...(props.type === "article" &&
         props.modifiedTime && {
-        "article:modified_time": props.modifiedTime,
-      }),
+          "article:modified_time": props.modifiedTime,
+        }),
       ...(props.type === "article" &&
         props.author && {
-        "article:author": props.author,
-      }),
+          "article:author": props.author,
+        }),
     },
   };
 
@@ -185,8 +193,8 @@ export function generateProductMetadata(params: {
       product.availability === "InStock"
         ? "in stock"
         : product.availability === "OutOfStock"
-          ? "out of stock"
-          : "preorder",
+        ? "out of stock"
+        : "preorder",
     brand: product.brand || "Ketingmar s.r.o.",
     ...(product.category && { category: product.category }),
   });
@@ -210,7 +218,9 @@ export function generateCategoryMetadata(params: {
   const title = `${category.name} | Pohřební věnce | Ketingmar s.r.o.`;
   const description =
     category.description ||
-    `Prohlédněte si naši kolekci ${category.name.toLowerCase()}. ${category.productCount} produktů k dispozici. Ruční výroba, rychlé dodání.`;
+    `Prohlédněte si naši kolekci ${category.name.toLowerCase()}. ${
+      category.productCount
+    } produktů k dispozici. Ruční výroba, rychlé dodání.`;
 
   const categoryKeywords = [
     category.name.toLowerCase(),
@@ -234,7 +244,9 @@ export function generateCategoryMetadata(params: {
 /**
  * Generate metadata for homepage using i18n content
  */
-export async function generateHomepageMetadata(locale: string): Promise<Metadata> {
+export async function generateHomepageMetadata(
+  locale: string
+): Promise<Metadata> {
   // Import translations dynamically
   const messages = await import(`../../../messages/${locale}.json`);
   const seoData = messages.default.seo.home;
@@ -254,7 +266,9 @@ export async function generateHomepageMetadata(locale: string): Promise<Metadata
 /**
  * Generate metadata for FAQ page using i18n content
  */
-export async function generateFAQPageMetadata(locale: string): Promise<Metadata> {
+export async function generateFAQPageMetadata(
+  locale: string
+): Promise<Metadata> {
   // Import translations dynamically
   const messages = await import(`../../../messages/${locale}.json`);
   const seoData = messages.default.seo.faq;
@@ -287,21 +301,21 @@ export async function generateLegalMetadata(locale: string): Promise<Metadata> {
   const keywords =
     locale === "cs"
       ? [
-        "obchodní podmínky",
-        "GDPR",
-        "ochrana údajů",
-        "cookies",
-        "pohřební věnce",
-        "právní informace",
-      ]
+          "obchodní podmínky",
+          "GDPR",
+          "ochrana údajů",
+          "cookies",
+          "pohřební věnce",
+          "právní informace",
+        ]
       : [
-        "terms conditions",
-        "GDPR",
-        "privacy policy",
-        "cookies",
-        "funeral wreaths",
-        "legal information",
-      ];
+          "terms conditions",
+          "GDPR",
+          "privacy policy",
+          "cookies",
+          "funeral wreaths",
+          "legal information",
+        ];
 
   return generatePageMetadata({
     title,
@@ -316,7 +330,9 @@ export async function generateLegalMetadata(locale: string): Promise<Metadata> {
 /**
  * Generate metadata for About page using i18n content
  */
-export async function generateAboutPageMetadata(locale: string): Promise<Metadata> {
+export async function generateAboutPageMetadata(
+  locale: string
+): Promise<Metadata> {
   // Import translations dynamically
   const messages = await import(`../../../messages/${locale}.json`);
   const seoData = messages.default.seo.aboutPage;

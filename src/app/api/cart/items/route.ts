@@ -1,12 +1,12 @@
-import { randomUUID } from "crypto";
+import { randomUUID } from "node:crypto";
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import { createServerClient } from "@/lib/supabase/server";
 import type { Json } from "@/lib/supabase/database.types";
+import { createServerClient } from "@/lib/supabase/server";
 import {
-  validateCartOperation,
   createValidationErrorResponse,
   sanitizeCustomizations,
+  validateCartOperation,
 } from "@/lib/validation/api-validation";
 import type { AddToCartRequest } from "@/types/cart";
 
@@ -50,14 +50,12 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "Product not found",
-          code: 'PRODUCT_NOT_FOUND',
-          userFriendlyMessage: "The requested product could not be found"
+          code: "PRODUCT_NOT_FOUND",
+          userFriendlyMessage: "The requested product could not be found",
         },
         { status: 404 }
       );
     }
-
-
 
     // Comprehensive validation using the validation system
     const validationResult = validateCartOperation(
@@ -78,7 +76,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Calculate proper price with customizations using the price service
-    const { calculateCartItemPrice } = await import('@/lib/services/cart-price-service');
+    const { calculateCartItemPrice } = await import("@/lib/services/cart-price-service");
 
     const basePrice = Number.parseFloat(product.base_price.toString());
     const priceCalculation = await calculateCartItemPrice(
@@ -95,7 +93,7 @@ export async function POST(request: NextRequest) {
       customizationModifier: priceCalculation.customizationModifier,
       unitPrice: priceCalculation.unitPrice,
       totalPrice: priceCalculation.totalPrice,
-      fromCache: priceCalculation.fromCache
+      fromCache: priceCalculation.fromCache,
     });
 
     // Check if item already exists in cart
@@ -149,9 +147,9 @@ export async function POST(request: NextRequest) {
           {
             success: false,
             error: "Failed to update cart item",
-            code: 'UPDATE_FAILED',
+            code: "UPDATE_FAILED",
             retryable: true,
-            userFriendlyMessage: "Failed to update cart, please try again"
+            userFriendlyMessage: "Failed to update cart, please try again",
           },
           { status: 500 }
         );
@@ -163,7 +161,7 @@ export async function POST(request: NextRequest) {
       // Create new cart item with calculated prices and proper JSON type casting
       const cartItemData = {
         user_id: session?.user?.id || null,
-        session_id: session?.user?.id ? null : (sessionId || null),
+        session_id: session?.user?.id ? null : sessionId || null,
         product_id: body.productId,
         quantity: body.quantity,
         unit_price: priceCalculation.unitPrice,
@@ -188,9 +186,9 @@ export async function POST(request: NextRequest) {
           {
             success: false,
             error: "Failed to add item to cart",
-            code: 'INSERT_FAILED',
+            code: "INSERT_FAILED",
             retryable: true,
-            userFriendlyMessage: "Failed to add item to cart, please try again"
+            userFriendlyMessage: "Failed to add item to cart, please try again",
           },
           { status: 500 }
         );
@@ -202,12 +200,12 @@ export async function POST(request: NextRequest) {
 
     // Update cart cache after successful addition
     try {
-      const { updateCachedCartAfterItemChange } = await import('@/lib/cache/cart-cache');
+      const { updateCachedCartAfterItemChange } = await import("@/lib/cache/cart-cache");
 
       await updateCachedCartAfterItemChange(
         session?.user?.id || null,
         sessionId || null,
-        'add',
+        "add",
         result.id
       );
 
@@ -224,7 +222,7 @@ export async function POST(request: NextRequest) {
       unitPrice: result.unit_price,
       totalPrice: result.total_price,
       customizationModifier: priceCalculation.customizationModifier,
-      hadWarnings: validationResult.warnings && validationResult.warnings.length > 0
+      hadWarnings: validationResult.warnings && validationResult.warnings.length > 0,
     });
 
     // Set session cookie for guest users
@@ -248,19 +246,19 @@ export async function POST(request: NextRequest) {
         unitPrice: priceCalculation.unitPrice,
         totalPrice: priceCalculation.totalPrice,
         fromCache: priceCalculation.fromCache,
-        priceBreakdown: priceCalculation.priceBreakdown
+        priceBreakdown: priceCalculation.priceBreakdown,
       },
       validation: {
         hadWarnings: validationResult.warnings && validationResult.warnings.length > 0,
-        warnings: validationResult.warnings
-      }
+        warnings: validationResult.warnings,
+      },
     });
 
     if (!session?.user?.id && sessionId) {
       console.log("🍪 [API] Setting cart-session cookie for guest user:", sessionId);
       response.cookies.set("cart-session", sessionId, {
         httpOnly: false, // Allow JavaScript access for client-side cart management
-        secure: process.env['NODE_ENV'] === "production",
+        secure: process.env.NODE_ENV === "production",
         sameSite: "lax",
         maxAge: 60 * 60 * 24 * 30, // 30 days
       });
@@ -273,16 +271,16 @@ export async function POST(request: NextRequest) {
     // Enhanced error handling with user-friendly messages
     let errorMessage = "Internal server error";
     let userFriendlyMessage = "A system error occurred, please try again";
-    let retryable = true;
+    const retryable = true;
 
     if (error instanceof Error) {
-      if (error.message.includes('network') || error.message.includes('connection')) {
+      if (error.message.includes("network") || error.message.includes("connection")) {
         errorMessage = "Network error";
         userFriendlyMessage = "Connection error, please check your internet connection";
-      } else if (error.message.includes('timeout')) {
+      } else if (error.message.includes("timeout")) {
         errorMessage = "Request timeout";
         userFriendlyMessage = "Request timed out, please try again";
-      } else if (error.message.includes('price') || error.message.includes('calculation')) {
+      } else if (error.message.includes("price") || error.message.includes("calculation")) {
         errorMessage = "Price calculation error";
         userFriendlyMessage = "Error calculating price, please try again";
       }
@@ -293,7 +291,7 @@ export async function POST(request: NextRequest) {
         success: false,
         error: errorMessage,
         userFriendlyMessage,
-        retryable
+        retryable,
       },
       { status: 500 }
     );

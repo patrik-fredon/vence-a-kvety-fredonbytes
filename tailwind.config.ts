@@ -14,35 +14,6 @@ const config: Config = {
         xs: "475px", // Extra small screens (larger phones)
         // Default breakpoints are still available: sm, md, lg, xl, 2xl
       },
-      colors: {
-        // Stone/amber color palette from design tokens
-        stone: designTokens.colors.stone,
-        amber: designTokens.colors.amber,
-        white: designTokens.colors.white,
-        black: designTokens.colors.black,
-        // Funeral-specific color palette
-        funeral: {
-          hero: designTokens.colors.funeral.hero,
-          background: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
-          heroLight: designTokens.colors.funeral.heroLight,
-          heroDark: designTokens.colors.funeral.heroDark,
-          backgroundLight: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
-          backgroundDark: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
-          textOnHero: designTokens.colors.funeral.textOnHero,
-          textOnBackground: designTokens.colors.funeral.textOnBackground,
-          textSecondary: designTokens.colors.funeral.textSecondary,
-          accent: designTokens.colors.funeral.accent,
-          green: designTokens.colors.funeral.hero,
-          gold: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
-          lightGold: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)",
-        },
-        // Semantic colors
-        success: designTokens.colors.semantic.success,
-        warning: designTokens.colors.semantic.warning,
-        error: designTokens.colors.semantic.error,
-        info: designTokens.colors.semantic.info,
-        // Legacy funeral colors (maintained for backward compatibility)
-      },
       fontFamily: designTokens.typography.fontFamily,
       fontSize: designTokens.typography.fontSize,
       fontWeight: designTokens.typography.fontWeight,
@@ -110,11 +81,6 @@ const config: Config = {
           "0%, 100%": { boxShadow: "0 0 5px rgba(45, 80, 22, 0.3)" },
           "50%": { boxShadow: "0 0 20px rgba(45, 80, 22, 0.6)" },
         },
-      },
-      backgroundImage: {
-        // Centralized gradient system for consistent branding
-        "funeral-gold": "linear-gradient(to right, #AE8625, #F7EF8A, #D2AC47)",
-        "funeral-teal": "linear-gradient(to right, #0f766e, #14b8a6, #0d9488)",
       },
     },
   },

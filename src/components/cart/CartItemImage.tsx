@@ -1,11 +1,11 @@
 "use client";
 
-import { ShoppingCartIcon } from "@/lib/icons";
-import { resolveCartItemImage } from "@/lib/cart/image-utils";
-import type { CartItem } from "@/types/cart";
 import Image from "next/image";
-import React, { useState } from "react";
+import { useState } from "react";
+import { resolveCartItemImage } from "@/lib/cart/image-utils";
+import { ShoppingCartIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
+import type { CartItem } from "@/types/cart";
 
 /**
  * Size variants for cart item images
@@ -66,13 +66,7 @@ function ImageSkeleton({ size }: { size: CartItemImageSize }) {
 /**
  * Fallback image component for errors or missing images
  */
-function FallbackImage({
-  size,
-  alt,
-}: {
-  size: CartItemImageSize;
-  alt: string;
-}) {
+function FallbackImage({ size, alt }: { size: CartItemImageSize; alt: string }) {
   const config = SIZE_CONFIG[size];
   return (
     <div
@@ -99,12 +93,7 @@ function FallbackImage({
  * <CartItemImage item={cartItem} locale="cs" size="md" />
  * ```
  */
-export function CartItemImage({
-  item,
-  locale,
-  size = "md",
-  className,
-}: CartItemImageProps) {
+export function CartItemImage({ item, locale, size = "md", className }: CartItemImageProps) {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 

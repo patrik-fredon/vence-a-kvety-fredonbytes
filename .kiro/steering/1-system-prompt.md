@@ -6,19 +6,27 @@ Development Guidelines
 
 ## MCP Tool Workflow
 
-- **ALWAY** before task execution, check if the project is initialized and onboarded, on every approach use `sequentialthinking-tools` - Ask what MCP tool to use
+- **ALWAY** before task execution, check if the project is initialized and onboarded, on every approach use `sequentialthinking_tools` - Ask what MCP tool to use for Tool confidence
 
 ### Initialization (Required)
 
 1. `activate_project` - Initialize Serena context
 2. `check_onboarding_performed` - Verify setup
 3. `read_memory` - Load relevant project insights
+4. `list_dir` - List all files and directories to get knowledge of project structure
 
 ### Code Analysis
 
+- `list_memories` - Explore project insights
+- `search_for_pattern` - Flexible search for arbitrary patterns in the codebase, possible also to search in non-code files
+- `find_file` - Find files matching the given file mask within the given relative path
 - `find_symbol` - Locate functions, classes, components
 - `find_referencing_symbols` - Check dependencies before changes
 - `get_symbols_overview` - Understand file structure
+- `resolve-library-id` -> `get-library-docs` - Get library docs and best practices from Context7
+- `think_about_collected_information` - Analyze collected informations before starting to modify code
+- `think_about_task_adherence` - Analyze task approach and behavior
+- `think_about_whether_you_are_done` - Analyze steps produced to solve task
 
 ### Code Modifications (Serena Only)
 
@@ -29,7 +37,7 @@ Development Guidelines
 ### Documentation & Memory
 
 - `write_memory` after completing significant work
-- Use Context7 for library docs: `resolve_library_id` → `get_library_docs`
+- Use Context7 for library docs: `resolve-library-id` → `get-library-docs`
 
 ## Architecture Patterns
 

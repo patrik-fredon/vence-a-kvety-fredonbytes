@@ -2,6 +2,8 @@
  * Payment error page
  */
 
+import type { Metadata } from "next";
+import { Button } from "@/components/ui/Button";
 import {
   ArrowPathIcon,
   EnvelopeIcon,
@@ -9,9 +11,6 @@ import {
   PhoneIcon,
   ShoppingCartIcon,
 } from "@/lib/icons";
-import type { Metadata } from "next";
-import React from "react";
-import { Button } from "@/components/ui/Button";
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -66,10 +65,10 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
     error && commonErrors[error]
       ? commonErrors[error]
       : {
-        title: "Neočekávaná chyba",
-        description: "Došlo k neočekávané chybě při zpracování platby.",
-        solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
-      };
+          title: "Neočekávaná chyba",
+          description: "Došlo k neočekávané chybě při zpracování platby.",
+          solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
+        };
 
   return (
     <div className="min-h-screen bg-teal-50 py-12">
@@ -80,13 +79,9 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
             <ExclamationTriangleIcon className="w-12 h-12 text-red-600" />
           </div>
 
-          <h1 className="text-elegant text-3xl font-bold text-teal-800 mb-4">
-            Chyba při platbě
-          </h1>
+          <h1 className="text-elegant text-3xl font-bold text-teal-800 mb-4">Chyba při platbě</h1>
 
-          <p className="text-lg text-teal-600 mb-2">
-            Bohužel se nepodařilo zpracovat vaši platbu.
-          </p>
+          <p className="text-lg text-teal-600 mb-2">Bohužel se nepodařilo zpracovat vaši platbu.</p>
 
           {orderId && <p className="text-sm text-teal-500">Objednávka #{orderId}</p>}
         </div>

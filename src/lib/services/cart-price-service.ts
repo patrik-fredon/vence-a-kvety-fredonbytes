@@ -3,14 +3,17 @@
  * Handles price calculations with customizations and caching
  */
 
-import { calculateTotalPriceWithOptions, calculateCustomizationPriceModifiers } from '@/lib/utils/price-calculator';
-import { getProductCustomizationOptions } from '@/lib/utils/customization-queries';
 import {
   cachePriceCalculation,
   getCachedPriceCalculation,
   // Removed unused CachedPriceCalculation type
-} from '@/lib/cache/cart-cache';
-import type { Customization } from '@/types/product';
+} from "@/lib/cache/cart-cache";
+import { getProductCustomizationOptions } from "@/lib/utils/customization-queries";
+import {
+  calculateCustomizationPriceModifiers,
+  calculateTotalPriceWithOptions,
+} from "@/lib/utils/price-calculator";
+import type { Customization } from "@/types/product";
 // Removed unused LocalizedContent import
 
 /**
@@ -50,7 +53,10 @@ export async function calculateCartItemPrice(
   sessionId?: string | null
 ): Promise<CartPriceCalculationResult> {
   try {
-    console.log(`🧮 [PriceService] Calculating price for product:${productId} with ${customizations.length} customizations:`, customizations);
+    console.log(
+      `🧮 [PriceService] Calculating price for product:${productId} with ${customizations.length} customizations:`,
+      customizations
+    );
 
     // Check cache first
     const cachedPrice = await getCachedPriceCalculation(productId, customizations);
@@ -65,19 +71,23 @@ export async function calculateCartItemPrice(
         priceBreakdown: {
           basePrice: cachedPrice.basePrice,
           customizations: [], // Simplified for cached results
-          totalModifier: cachedPrice.customizationModifier
+          totalModifier: cachedPrice.customizationModifier,
         },
-        fromCache: true
+        fromCache: true,
       };
     }
 
     // Get customization options for the product
     console.log(`🔍 [PriceService] Fetching customization options for product:${productId}`);
     const customizationOptions = await getProductCustomizationOptions(productId);
-    console.log(`📋 [PriceService] Retrieved ${customizationOptions.length} customization options for product:${productId}`);
+    console.log(
+      `📋 [PriceService] Retrieved ${customizationOptions.length} customization options for product:${productId}`
+    );
 
     if (!customizationOptions || customizationOptions.length === 0) {
-      console.log(`⚠️ [PriceService] No customization options found for product:${productId}, using base price`);
+      console.log(
+        `⚠️ [PriceService] No customization options found for product:${productId}, using base price`
+      );
 
       const result = {
         unitPrice: basePrice,
@@ -87,19 +97,25 @@ export async function calculateCartItemPrice(
         priceBreakdown: {
           basePrice,
           customizations: [],
-          totalModifier: 0
+          totalModifier: 0,
         },
-        fromCache: false
+        fromCache: false,
       };
 
       // Cache the base price calculation with user/session tracking
-      await cachePriceCalculation(productId, customizations, {
-        unitPrice: basePrice,
-        totalPrice: basePrice,
-        basePrice,
-        customizationModifier: 0,
-        calculatedAt: new Date().toISOString()
-      }, userId, sessionId);
+      await cachePriceCalculation(
+        productId,
+        customizations,
+        {
+          unitPrice: basePrice,
+          totalPrice: basePrice,
+          basePrice,
+          customizationModifier: 0,
+          calculatedAt: new Date().toISOString(),
+        },
+        userId,
+        sessionId
+      );
 
       return result;
     }
@@ -122,7 +138,7 @@ export async function calculateCartItemPrice(
       basePrice,
       customizationModifier: totalModifier,
       unitPrice,
-      totalPrice
+      totalPrice,
     });
 
     const result: CartPriceCalculationResult = {
@@ -132,32 +148,43 @@ export async function calculateCartItemPrice(
       customizationModifier: totalModifier,
       priceBreakdown: {
         basePrice,
-        customizations: breakdown.map(item => ({
+        customizations: breakdown.map((item) => ({
           optionId: item.optionId,
-          optionName: typeof item.optionName === 'string' ? item.optionName : item.optionName.cs || item.optionName.en || '',
+          optionName:
+            typeof item.optionName === "string"
+              ? item.optionName
+              : item.optionName.cs || item.optionName.en || "",
           totalModifier: item.totalModifier,
-          choices: item.choices.map(choice => ({
+          choices: item.choices.map((choice) => ({
             choiceId: choice.choiceId,
-            label: typeof choice.label === 'string' ? choice.label : choice.label.cs || choice.label.en || '',
-            priceModifier: choice.priceModifier
-          }))
+            label:
+              typeof choice.label === "string"
+                ? choice.label
+                : choice.label.cs || choice.label.en || "",
+            priceModifier: choice.priceModifier,
+          })),
         })),
-        totalModifier
+        totalModifier,
       },
-      fromCache: false
+      fromCache: false,
     };
 
     // Cache the calculation result with user/session tracking
-    await cachePriceCalculation(productId, customizations, {
-      unitPrice,
-      totalPrice: unitPrice, // Store unit price, not total (quantity-independent)
-      basePrice,
-      customizationModifier: totalModifier,
-      calculatedAt: new Date().toISOString()
-    }, userId, sessionId);
+    await cachePriceCalculation(
+      productId,
+      customizations,
+      {
+        unitPrice,
+        totalPrice: unitPrice, // Store unit price, not total (quantity-independent)
+        basePrice,
+        customizationModifier: totalModifier,
+        calculatedAt: new Date().toISOString(),
+      },
+      userId,
+      sessionId
+    );
 
     return result;
-
   } catch (error) {
     console.error(`❌ [PriceService] Error calculating price for product:${productId}:`, error);
 
@@ -175,9 +202,9 @@ export async function calculateCartItemPrice(
       priceBreakdown: {
         basePrice: fallbackBasePrice,
         customizations: [],
-        totalModifier: 0
+        totalModifier: 0,
       },
-      fromCache: false
+      fromCache: false,
     };
   }
 }
@@ -199,7 +226,7 @@ export async function batchCalculateCartItemPrices(
     console.log(`🧮 [PriceService] Batch calculating prices for ${items.length} items`);
 
     const results = await Promise.all(
-      items.map(item =>
+      items.map((item) =>
         calculateCartItemPrice(
           item.productId,
           item.basePrice,
@@ -213,9 +240,8 @@ export async function batchCalculateCartItemPrices(
 
     console.log(`✅ [PriceService] Batch price calculation completed for ${items.length} items`);
     return results;
-
   } catch (error) {
-    console.error('❌ [PriceService] Error in batch price calculation:', error);
+    console.error("❌ [PriceService] Error in batch price calculation:", error);
 
     // Fallback to individual calculations
     const results: CartPriceCalculationResult[] = [];
@@ -231,7 +257,10 @@ export async function batchCalculateCartItemPrices(
         );
         results.push(result);
       } catch (itemError) {
-        console.error(`❌ [PriceService] Error calculating price for item ${item.productId}:`, itemError);
+        console.error(
+          `❌ [PriceService] Error calculating price for item ${item.productId}:`,
+          itemError
+        );
         // Add fallback result with safe price handling
         const fallbackBasePrice = item.basePrice && item.basePrice > 0 ? item.basePrice : 0;
         results.push({
@@ -242,9 +271,9 @@ export async function batchCalculateCartItemPrices(
           priceBreakdown: {
             basePrice: fallbackBasePrice,
             customizations: [],
-            totalModifier: 0
+            totalModifier: 0,
           },
-          fromCache: false
+          fromCache: false,
         });
       }
     }
@@ -263,23 +292,29 @@ export function validatePriceCalculation(
   try {
     // Basic validation checks
     if (result.unitPrice < expectedMinPrice) {
-      console.warn(`⚠️ [PriceService] Unit price ${result.unitPrice} is below minimum ${expectedMinPrice}`);
+      console.warn(
+        `⚠️ [PriceService] Unit price ${result.unitPrice} is below minimum ${expectedMinPrice}`
+      );
       return false;
     }
 
     if (result.totalPrice < result.unitPrice) {
-      console.warn(`⚠️ [PriceService] Total price ${result.totalPrice} is less than unit price ${result.unitPrice}`);
+      console.warn(
+        `⚠️ [PriceService] Total price ${result.totalPrice} is less than unit price ${result.unitPrice}`
+      );
       return false;
     }
 
     if (result.basePrice + result.customizationModifier !== result.unitPrice) {
-      console.warn(`⚠️ [PriceService] Price calculation mismatch: ${result.basePrice} + ${result.customizationModifier} ≠ ${result.unitPrice}`);
+      console.warn(
+        `⚠️ [PriceService] Price calculation mismatch: ${result.basePrice} + ${result.customizationModifier} ≠ ${result.unitPrice}`
+      );
       return false;
     }
 
     return true;
   } catch (error) {
-    console.error('❌ [PriceService] Error validating price calculation:', error);
+    console.error("❌ [PriceService] Error validating price calculation:", error);
     return false;
   }
 }

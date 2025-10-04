@@ -11,6 +11,7 @@ import {
   useState,
 } from "react";
 import { useAuthContext } from "@/components/auth";
+import { supabase } from "@/lib/supabase/client";
 import type {
   AddToCartRequest,
   CartItem,
@@ -28,9 +29,7 @@ import {
   getCartSessionId,
   setCartSessionId,
   validateConditionalCustomizations,
-  calculateCustomizationPriceModifier as _calculateCustomizationPriceModifier,
 } from "./utils";
-import { supabase } from "@/lib/supabase/client";
 
 // Enhanced cart actions with optimistic updates
 type CartAction =
@@ -273,7 +272,7 @@ export function CartProvider({ children }: CartProviderProps) {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, [isRealTimeEnabled]);
+  }, [isRealTimeEnabled]); // syncWithServer is stable via useCallback
 
   // Enhanced fetch cart with retry logic
   const fetchCart = useCallback(
@@ -427,6 +426,109 @@ export function CartProvider({ children }: CartProviderProps) {
     [fetchCart, user, isOnline]
   );
 
+  // Enhanced remove item from cart with optimistic updates
+  const removeItem = useCallback(
+    async (itemId: string): Promise<boolean> => {
+      // Apply optimistic update immediately
+      dispatch({
+        type: "OPTIMISTIC_REMOVE_ITEM",
+        payload: { itemId },
+      });
+
+      try {
+        const response = await fetch(`/api/cart/items/${itemId}`, {
+          method: "DELETE",
+          credentials: "include",
+        });
+
+        const data = await response.json();
+
+        if (data.success) {
+          // Confirm optimistic update
+          dispatch({
+            type: "CONFIRM_OPTIMISTIC",
+            payload: { tempId: itemId },
+          });
+
+          // Check if cart becomes empty after removal
+          const remainingItems = state.items.filter(
+            (item) => item.id !== itemId
+          );
+
+          if (remainingItems.length === 0) {
+            console.log(
+              "🧹 [Cart] Cart is now empty, clearing cache and localStorage"
+            );
+
+            // Clear LocalStorage completely when cart becomes empty
+            CartPersistenceManager.clearCartState();
+
+            // Call explicit cache clear endpoint when cart becomes empty
+            try {
+              const cacheResponse = await fetch("/api/cart/clear-cache", {
+                method: "POST",
+                credentials: "include",
+              });
+
+              const cacheData = await cacheResponse.json();
+
+              if (cacheData.success) {
+                console.log(
+                  "✅ [Cart] Cache cleared successfully for empty cart"
+                );
+              } else {
+                console.warn(
+                  "⚠️ [Cart] Cache clear failed (non-critical):",
+                  cacheData.error
+                );
+              }
+            } catch (cacheError) {
+              console.error(
+                "⚠️ [Cart] Error clearing cache (non-critical):",
+                cacheError
+              );
+              // Don't fail the operation if cache clearing fails
+            }
+          }
+
+          // Refresh cart to get updated totals
+          await fetchCart();
+          return true;
+        } else {
+          // Revert optimistic update on failure
+          dispatch({
+            type: "REVERT_OPTIMISTIC",
+            payload: { itemId },
+          });
+          dispatch({
+            type: "SET_ERROR",
+            payload: data.error || "Failed to remove item",
+          });
+          return false;
+        }
+      } catch (error) {
+        console.error("Error removing cart item:", error);
+
+        // Revert optimistic update on error
+        dispatch({
+          type: "REVERT_OPTIMISTIC",
+          payload: { itemId },
+        });
+
+        if (!isOnline) {
+          dispatch({
+            type: "SET_ERROR",
+            payload: "No internet connection. Changes will sync when online.",
+          });
+        } else {
+          dispatch({ type: "SET_ERROR", payload: "Failed to remove item" });
+        }
+        return false;
+      }
+    },
+    [fetchCart, isOnline, state.items]
+  );
+
   // Enhanced update item quantity with optimistic updates
   const updateQuantity = useCallback(
     async (itemId: string, quantity: number): Promise<boolean> => {
@@ -495,96 +597,8 @@ export function CartProvider({ children }: CartProviderProps) {
         return false;
       }
     },
-    [fetchCart, isOnline]
+    [fetchCart, isOnline, removeItem]
   );
-
-  // Enhanced remove item from cart with optimistic updates
-  const removeItem = useCallback(
-    async (itemId: string): Promise<boolean> => {
-      // Apply optimistic update immediately
-      dispatch({
-        type: "OPTIMISTIC_REMOVE_ITEM",
-        payload: { itemId },
-      });
-
-      try {
-        const response = await fetch(`/api/cart/items/${itemId}`, {
-          method: "DELETE",
-          credentials: "include",
-        });
-
-        const data = await response.json();
-
-        if (data.success) {
-          // Confirm optimistic update
-          dispatch({
-            type: "CONFIRM_OPTIMISTIC",
-            payload: { tempId: itemId },
-          });
-
-          // Check if cart becomes empty after removal
-          const remainingItems = state.items.filter(item => item.id !== itemId);
-
-          if (remainingItems.length === 0) {
-            console.log("🧹 [Cart] Cart is now empty, clearing cache explicitly");
-
-            // Call explicit cache clear endpoint when cart becomes empty
-            try {
-              const cacheResponse = await fetch("/api/cart/clear-cache", {
-                method: "POST",
-                credentials: "include",
-              });
-
-              const cacheData = await cacheResponse.json();
-
-              if (cacheData.success) {
-                console.log("✅ [Cart] Cache cleared successfully for empty cart");
-              } else {
-                console.warn("⚠️ [Cart] Cache clear failed (non-critical):", cacheData.error);
-              }
-            } catch (cacheError) {
-              console.error("⚠️ [Cart] Error clearing cache (non-critical):", cacheError);
-              // Don't fail the operation if cache clearing fails
-            }
-          }
-
-          // Refresh cart to get updated totals
-          await fetchCart();
-          return true;
-        } else {
-          // Revert optimistic update on failure
-          dispatch({
-            type: "REVERT_OPTIMISTIC",
-            payload: { itemId },
-          });
-          dispatch({
-            type: "SET_ERROR",
-            payload: data.error || "Failed to remove item",
-          });
-          return false;
-        }
-      } catch (error) {
-        console.error("Error removing cart item:", error);
-
-        // Revert optimistic update on error
-        dispatch({
-          type: "REVERT_OPTIMISTIC",
-          payload: { itemId },
-        });
-
-        if (!isOnline) {
-          dispatch({
-            type: "SET_ERROR",
-            payload: "No internet connection. Changes will sync when online.",
-          });
-        } else {
-          dispatch({ type: "SET_ERROR", payload: "Failed to remove item" });
-        }
-        return false;
-      }
-    },
-    [fetchCart, isOnline, state.items]
-  );;
 
   // Clear cart (local state only)
   const clearCart = useCallback(() => {
@@ -604,8 +618,42 @@ export function CartProvider({ children }: CartProviderProps) {
       const data = await response.json();
 
       if (data.success) {
+        console.log(
+          "🧹 [Cart] Clearing all items, removing cache and localStorage"
+        );
+
         // Clear local state
         dispatch({ type: "CLEAR_CART" });
+
+        // Clear LocalStorage completely when cart is cleared
+        CartPersistenceManager.clearCartState();
+
+        // Call explicit cache clear endpoint after DELETE all API
+        try {
+          const cacheResponse = await fetch("/api/cart/clear-cache", {
+            method: "POST",
+            credentials: "include",
+          });
+
+          const cacheData = await cacheResponse.json();
+
+          if (cacheData.success) {
+            console.log(
+              "✅ [Cart] Cache cleared successfully after clearing all items"
+            );
+          } else {
+            console.warn(
+              "⚠️ [Cart] Cache clear failed (non-critical):",
+              cacheData.error
+            );
+          }
+        } catch (cacheError) {
+          console.error(
+            "⚠️ [Cart] Error clearing cache (non-critical):",
+            cacheError
+          );
+          // Don't fail the operation if cache clearing fails
+        }
 
         // Refresh cart to confirm empty state
         await fetchCart();
@@ -697,7 +745,7 @@ export function CartProvider({ children }: CartProviderProps) {
     } finally {
       dispatch({ type: "SET_SYNCING", payload: false });
     }
-  }, [fetchCart, isOnline, state.items, cartVersion]);
+  }, [isOnline, state.items, cartVersion]);
 
   // Periodic sync to detect server-side changes
   useEffect(() => {
@@ -718,7 +766,7 @@ export function CartProvider({ children }: CartProviderProps) {
     if (!loading) {
       fetchCart();
     }
-  }, [loading, user, fetchCart]);
+  }, [loading, fetchCart]);
 
   // Real-time synchronization management
   const enableRealTime = useCallback(() => {
@@ -801,7 +849,7 @@ export function CartProvider({ children }: CartProviderProps) {
       };
       CartPersistenceManager.saveCartState(cartSummary, cartVersion);
     }
-  }, [state.items, state.lastUpdated, cartVersion]);
+  }, [state.items, cartVersion]);
 
   // Restore cart from localStorage on mount if needed with version checking
   useEffect(() => {

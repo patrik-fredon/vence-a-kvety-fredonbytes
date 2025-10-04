@@ -17,7 +17,7 @@ export interface ValidationError {
   field: string;
   message: string;
   code: string;
-  severity: 'error' | 'warning' | 'info';
+  severity: "error" | "warning" | "info";
 }
 
 export interface ValidationWarning {
@@ -28,21 +28,21 @@ export interface ValidationWarning {
 
 // Product-related type guards
 export function isValidProduct(value: unknown): value is Product {
-  if (!value || typeof value !== 'object') {
+  if (!value || typeof value !== "object") {
     return false;
   }
 
   const product = value as any;
 
   return (
-    typeof product.id === 'string' &&
-    typeof product.slug === 'string' &&
-    typeof product.name_cs === 'string' &&
-    typeof product.name_en === 'string' &&
-    typeof product.price === 'number' &&
+    typeof product.id === "string" &&
+    typeof product.slug === "string" &&
+    typeof product.name_cs === "string" &&
+    typeof product.name_en === "string" &&
+    typeof product.price === "number" &&
     product.price >= 0 &&
     Array.isArray(product.images) &&
-    (product.category === null || typeof product.category === 'object')
+    (product.category === null || typeof product.category === "object")
   );
 }
 
@@ -51,29 +51,29 @@ export function isValidProductArray(value: unknown): value is Product[] {
 }
 
 export function isValidProductImage(value: unknown): value is ProductImage {
-  if (!value || typeof value !== 'object') {
+  if (!value || typeof value !== "object") {
     return false;
   }
 
   const image = value as any;
 
   return (
-    typeof image.id === 'string' &&
-    typeof image.url === 'string' &&
-    typeof image.alt_cs === 'string' &&
-    typeof image.alt_en === 'string' &&
-    typeof image.isPrimary === 'boolean' &&
-    typeof image.sortOrder === 'number'
+    typeof image.id === "string" &&
+    typeof image.url === "string" &&
+    typeof image.alt_cs === "string" &&
+    typeof image.alt_en === "string" &&
+    typeof image.isPrimary === "boolean" &&
+    typeof image.sortOrder === "number"
   );
 }
 
 // Navigation-related type guards
-export function isValidLocale(value: unknown): value is 'cs' | 'en' {
-  return value === 'cs' || value === 'en';
+export function isValidLocale(value: unknown): value is "cs" | "en" {
+  return value === "cs" || value === "en";
 }
 
 export function isValidProductSlug(value: unknown): value is string {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return false;
   }
 
@@ -83,16 +83,13 @@ export function isValidProductSlug(value: unknown): value is string {
 }
 
 export function isValidNavigationParams(value: unknown): value is { locale: string; slug: string } {
-  if (!value || typeof value !== 'object') {
+  if (!value || typeof value !== "object") {
     return false;
   }
 
   const params = value as any;
 
-  return (
-    isValidLocale(params.locale) &&
-    isValidProductSlug(params.slug)
-  );
+  return isValidLocale(params.locale) && isValidProductSlug(params.slug);
 }
 
 // API response type guards
@@ -100,26 +97,26 @@ export function isValidApiResponse<T>(
   value: unknown,
   dataValidator: (data: unknown) => data is T
 ): value is { data: T; success: boolean } {
-  if (!value || typeof value !== 'object') {
+  if (!value || typeof value !== "object") {
     return false;
   }
 
   const response = value as any;
 
   return (
-    typeof response.success === 'boolean' &&
+    typeof response.success === "boolean" &&
     (response.success === false || dataValidator(response.data))
   );
 }
 
 export function isValidErrorResponse(value: unknown): value is { error: string; message?: string } {
-  if (!value || typeof value !== 'object') {
+  if (!value || typeof value !== "object") {
     return false;
   }
 
   const response = value as any;
 
-  return typeof response.error === 'string';
+  return typeof response.error === "string";
 }
 
 // Database query result type guards
@@ -127,7 +124,7 @@ export function isValidDatabaseResult<T>(
   value: unknown,
   dataValidator: (data: unknown) => data is T
 ): value is { data: T | null; error: null } | { data: null; error: Error } {
-  if (!value || typeof value !== 'object') {
+  if (!value || typeof value !== "object") {
     return false;
   }
 
@@ -140,7 +137,7 @@ export function isValidDatabaseResult<T>(
 
   // Valid error result
   if (result.data === null) {
-    return result.error instanceof Error || typeof result.error === 'object';
+    return result.error instanceof Error || typeof result.error === "object";
   }
 
   return false;
@@ -148,7 +145,7 @@ export function isValidDatabaseResult<T>(
 
 // User input validation type guards
 export function isValidEmail(value: unknown): value is string {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return false;
   }
 
@@ -157,17 +154,17 @@ export function isValidEmail(value: unknown): value is string {
 }
 
 export function isValidPhoneNumber(value: unknown): value is string {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return false;
   }
 
   // Czech phone number pattern (simplified)
   const phonePattern = /^(\+420)?[0-9]{9}$/;
-  return phonePattern.test(value.replace(/\s/g, ''));
+  return phonePattern.test(value.replace(/\s/g, ""));
 }
 
 export function isValidPostalCode(value: unknown): value is string {
-  if (typeof value !== 'string') {
+  if (typeof value !== "string") {
     return false;
   }
 
@@ -187,28 +184,28 @@ export async function safeAsyncOperation<T>(
     return {
       isValid: true,
       data,
-      errors: []
+      errors: [],
     };
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown error";
     const validationError: ValidationError = {
-      field: 'operation',
+      field: "operation",
       message: errorMessage,
-      code: 'ASYNC_OPERATION_FAILED',
-      severity: 'error'
+      code: "ASYNC_OPERATION_FAILED",
+      severity: "error",
     };
 
     // Log the error for monitoring
     await logError(error instanceof Error ? error : new Error(errorMessage), {
-      level: 'component',
+      level: "component",
       context: `async-operation-${context}`,
-      additionalData: { context, fallback: fallback !== undefined }
+      additionalData: { context, fallback: fallback !== undefined },
     });
 
     return {
       isValid: false,
       data: fallback as T,
-      errors: [validationError]
+      errors: [validationError],
     };
   }
 }
@@ -227,45 +224,45 @@ export function safeTransform<T, U>(
       return {
         isValid: true,
         data: result,
-        errors: []
+        errors: [],
       };
     } else {
       const validationError: ValidationError = {
-        field: 'transformation',
-        message: 'Transformation result failed validation',
-        code: 'TRANSFORMATION_VALIDATION_FAILED',
-        severity: 'error'
+        field: "transformation",
+        message: "Transformation result failed validation",
+        code: "TRANSFORMATION_VALIDATION_FAILED",
+        severity: "error",
       };
 
-      logError(new Error('Transformation validation failed'), {
-        level: 'component',
+      logError(new Error("Transformation validation failed"), {
+        level: "component",
         context: `data-transformation-${context}`,
-        additionalData: { originalData: data, transformedResult: result }
+        additionalData: { originalData: data, transformedResult: result },
       });
 
       return {
         isValid: false,
-        errors: [validationError]
+        errors: [validationError],
       };
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown transformation error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown transformation error";
     const validationError: ValidationError = {
-      field: 'transformation',
+      field: "transformation",
       message: errorMessage,
-      code: 'TRANSFORMATION_ERROR',
-      severity: 'error'
+      code: "TRANSFORMATION_ERROR",
+      severity: "error",
     };
 
     logError(error instanceof Error ? error : new Error(errorMessage), {
-      level: 'component',
+      level: "component",
       context: `data-transformation-${context}`,
-      additionalData: { originalData: data }
+      additionalData: { originalData: data },
     });
 
     return {
       isValid: false,
-      errors: [validationError]
+      errors: [validationError],
     };
   }
 }
@@ -280,26 +277,26 @@ export async function validateApiResponse<T>(
     if (!response.ok) {
       const errorText = await response.text();
       const validationError: ValidationError = {
-        field: 'response',
+        field: "response",
         message: `API request failed: ${response.status} ${response.statusText}`,
-        code: 'API_REQUEST_FAILED',
-        severity: 'error'
+        code: "API_REQUEST_FAILED",
+        severity: "error",
       };
 
       await logError(new Error(`API request failed: ${response.status}`), {
-        level: 'api',
+        level: "api",
         context: `api-response-${context}`,
         additionalData: {
           status: response.status,
           statusText: response.statusText,
           errorText,
-          url: response.url
-        }
+          url: response.url,
+        },
       });
 
       return {
         isValid: false,
-        errors: [validationError]
+        errors: [validationError],
       };
     }
 
@@ -309,45 +306,45 @@ export async function validateApiResponse<T>(
       return {
         isValid: true,
         data,
-        errors: []
+        errors: [],
       };
     } else {
       const validationError: ValidationError = {
-        field: 'data',
-        message: 'API response data failed validation',
-        code: 'API_DATA_VALIDATION_FAILED',
-        severity: 'error'
+        field: "data",
+        message: "API response data failed validation",
+        code: "API_DATA_VALIDATION_FAILED",
+        severity: "error",
       };
 
-      await logError(new Error('API response validation failed'), {
-        level: 'api',
+      await logError(new Error("API response validation failed"), {
+        level: "api",
         context: `api-response-${context}`,
-        additionalData: { responseData: data, url: response.url }
+        additionalData: { responseData: data, url: response.url },
       });
 
       return {
         isValid: false,
-        errors: [validationError]
+        errors: [validationError],
       };
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown API error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown API error";
     const validationError: ValidationError = {
-      field: 'response',
+      field: "response",
       message: errorMessage,
-      code: 'API_RESPONSE_ERROR',
-      severity: 'error'
+      code: "API_RESPONSE_ERROR",
+      severity: "error",
     };
 
     await logError(error instanceof Error ? error : new Error(errorMessage), {
-      level: 'api',
+      level: "api",
       context: `api-response-${context}`,
-      additionalData: { url: response.url }
+      additionalData: { url: response.url },
     });
 
     return {
       isValid: false,
-      errors: [validationError]
+      errors: [validationError],
     };
   }
 }
@@ -363,21 +360,21 @@ export async function validateDatabaseQuery<T>(
 
     if (result.error) {
       const validationError: ValidationError = {
-        field: 'query',
-        message: `Database query failed: ${result.error.message || 'Unknown database error'}`,
-        code: 'DATABASE_QUERY_FAILED',
-        severity: 'error'
+        field: "query",
+        message: `Database query failed: ${result.error.message || "Unknown database error"}`,
+        code: "DATABASE_QUERY_FAILED",
+        severity: "error",
       };
 
-      await logError(new Error(result.error.message || 'Database query failed'), {
-        level: 'api',
+      await logError(new Error(result.error.message || "Database query failed"), {
+        level: "api",
         context: `database-query-${context}`,
-        additionalData: { error: result.error }
+        additionalData: { error: result.error },
       });
 
       return {
         isValid: false,
-        errors: [validationError]
+        errors: [validationError],
       };
     }
 
@@ -385,7 +382,7 @@ export async function validateDatabaseQuery<T>(
       return {
         isValid: true,
         data: undefined as any, // null result is valid for some queries
-        errors: []
+        errors: [],
       };
     }
 
@@ -393,56 +390,56 @@ export async function validateDatabaseQuery<T>(
       return {
         isValid: true,
         data: result.data,
-        errors: []
+        errors: [],
       };
     } else {
       const validationError: ValidationError = {
-        field: 'data',
-        message: 'Database query result failed validation',
-        code: 'DATABASE_DATA_VALIDATION_FAILED',
-        severity: 'error'
+        field: "data",
+        message: "Database query result failed validation",
+        code: "DATABASE_DATA_VALIDATION_FAILED",
+        severity: "error",
       };
 
-      await logError(new Error('Database query result validation failed'), {
-        level: 'api',
+      await logError(new Error("Database query result validation failed"), {
+        level: "api",
         context: `database-query-${context}`,
-        additionalData: { queryResult: result.data }
+        additionalData: { queryResult: result.data },
       });
 
       return {
         isValid: false,
-        errors: [validationError]
+        errors: [validationError],
       };
     }
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown database error';
+    const errorMessage = error instanceof Error ? error.message : "Unknown database error";
     const validationError: ValidationError = {
-      field: 'query',
+      field: "query",
       message: errorMessage,
-      code: 'DATABASE_QUERY_ERROR',
-      severity: 'error'
+      code: "DATABASE_QUERY_ERROR",
+      severity: "error",
     };
 
     await logError(error instanceof Error ? error : new Error(errorMessage), {
-      level: 'api',
-      context: `database-query-${context}`
+      level: "api",
+      context: `database-query-${context}`,
     });
 
     return {
       isValid: false,
-      errors: [validationError]
+      errors: [validationError],
     };
   }
 }
 
 // Utility function to collect validation errors
 export function collectValidationErrors(...results: ValidationResult[]): ValidationError[] {
-  return results.flatMap(result => result.errors);
+  return results.flatMap((result) => result.errors);
 }
 
 // Utility function to check if any validation failed
 export function hasValidationErrors(...results: ValidationResult[]): boolean {
-  return results.some(result => !result.isValid);
+  return results.some((result) => !result.isValid);
 }
 
 // Import types from existing files

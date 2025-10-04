@@ -21,11 +21,13 @@ export interface SecurityOptions {
 }
 
 export interface SecurityContext {
-  user: {
-    id: string;
-    email: string | undefined;
-    role: string | undefined;
-  } | undefined;
+  user:
+    | {
+        id: string;
+        email: string | undefined;
+        role: string | undefined;
+      }
+    | undefined;
   clientIP: string;
   userAgent: string;
   isAuthenticated: boolean;
@@ -197,7 +199,7 @@ export async function sanitizeRequestBody(request: NextRequest): Promise<any> {
   try {
     const body = await request.json();
     return sanitizeObject(body);
-  } catch (error) {
+  } catch (_error) {
     throw new Error("Invalid JSON body");
   }
 }

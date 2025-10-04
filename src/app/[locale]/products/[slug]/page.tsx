@@ -7,9 +7,15 @@ import {
   generateProductStructuredData,
   StructuredData,
 } from "@/components/seo/StructuredData";
-import { cacheProductBySlug, getCachedProductBySlug } from "@/lib/cache/product-cache";
+import {
+  cacheProductBySlug,
+  getCachedProductBySlug,
+} from "@/lib/cache/product-cache";
 import { createServerClient } from "@/lib/supabase/server";
-import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
+import {
+  transformCategoryRow,
+  transformProductRow,
+} from "@/lib/utils/product-transforms";
 
 interface ProductDetailPageProps {
   params: Promise<{
@@ -19,12 +25,14 @@ interface ProductDetailPageProps {
 }
 
 // Enable dynamic rendering for all product pages
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 // Disable static generation to avoid conflicts
 export const dynamicParams = true;
 
-export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
+export default async function ProductDetailPage({
+  params,
+}: ProductDetailPageProps) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "navigation" });
 
@@ -49,7 +57,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
 
     const { data, error } = await supabase
       .from("products")
-      .select(`
+      .select(
+        `
         *,
         categories (
           id,
@@ -65,7 +74,8 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
           created_at,
           updated_at
         )
-      `)
+      `
+      )
       .eq("slug", slug)
       .eq("active", true)
       .single();
@@ -73,16 +83,21 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     console.log(`🔍 [ProductDetailPage] Database query result:`, {
       hasData: !!data,
       error: error?.message,
-      productName: data?.name_cs
+      productName: data?.name_cs,
     });
 
     if (error || !data) {
-      console.log(`❌ [ProductDetailPage] Product not found, calling notFound()`);
+      console.log(
+        `❌ [ProductDetailPage] Product not found, calling notFound()`
+      );
       notFound();
     }
 
     // Transform the data
-    const category = (data.categories && !('error' in data.categories)) ? transformCategoryRow(data.categories) : undefined;
+    const category =
+      data.categories && !("error" in data.categories)
+        ? transformCategoryRow(data.categories)
+        : undefined;
     product = transformProductRow(data, category);
 
     // Ensure product has required arrays to prevent map errors
@@ -95,11 +110,13 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   // Generate structured data
-  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl =
+    process.env[".NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const productUrl = `${baseUrl}/${locale}/products/${slug}`;
 
   const productName = locale === "cs" ? product.name.cs : product.name.en;
-  const productDescription = locale === "cs" ? product.description?.cs : product.description?.en;
+  const productDescription =
+    locale === "cs" ? product.description?.cs : product.description?.en;
   const categoryName = product.category
     ? locale === "cs"
       ? product.category.name.cs
@@ -140,7 +157,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     url: `/products/${slug}`,
   });
 
-  const breadcrumbStructuredData = generateBreadcrumbStructuredData(breadcrumbs, locale);
+  const breadcrumbStructuredData = generateBreadcrumbStructuredData(
+    breadcrumbs,
+    locale
+  );
 
   return (
     <>
@@ -160,7 +180,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 
   const { data } = await supabase
     .from("products")
-    .select(`
+    .select(
+      `
       name_cs,
       name_en,
       description_cs,
@@ -173,7 +194,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
         name_en,
         slug
       )
-    `)
+    `
+    )
     .eq("slug", slug)
     .eq("active", true)
     .single();
@@ -185,7 +207,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   }
 
   const name = locale === "cs" ? data.name_cs : data.name_en;
-  const description = locale === "cs" ? data.description_cs : data.description_en;
+  const description =
+    locale === "cs" ? data.description_cs : data.description_en;
   const categoryName = data.categories
     ? locale === "cs"
       ? data.categories.name_cs
@@ -193,9 +216,14 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
     : "";
 
   // Type-safe handling of seo_metadata
-  const seoMetadata = data.seo_metadata as any;
-  const seoTitle = seoMetadata?.title?.[locale] as string;
-  const seoDescription = seoMetadata?.description?.[locale] as string;
+  const seoMetadata = data.seo_metadata as Record<
+    string,
+    Record<string, string>
+  > | null;
+  const seoTitle = seoMetadata?.["title"]?.[locale] as string | undefined;
+  const seoDescription = seoMetadata?.["description"]?.[locale] as
+    | string
+    | undefined;
 
   // Get first product image
   const productImages = Array.isArray(data.images) ? data.images : [];
@@ -204,18 +232,30 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   return generateProductMetadata({
     product: {
       name: seoTitle || name,
-      ...(seoDescription || description ? { description: (seoDescription || description)! } : {}),
+      ...(seoDescription || description
+        ? { description: (seoDescription || description) as string }
+        : {}),
       price: data.base_price,
       category: categoryName,
-      images: productImages.length > 0 ? productImages.map((img) => {
-        if (img && typeof img === 'object' && 'url' in img && 'alt' in img) {
-          return {
-            url: typeof img['url'] === 'string' ? img['url'] : '',
-            alt: (typeof img['alt'] === 'string' ? img['alt'] : null) || name
-          };
-        }
-        return { url: '', alt: name };
-      }) : [],
+      images:
+        productImages.length > 0
+          ? productImages.map((img) => {
+              if (
+                img &&
+                typeof img === "object" &&
+                "url" in img &&
+                "alt" in img
+              ) {
+                return {
+                  url: typeof img["url"] === "string" ? img["url"] : "",
+                  alt:
+                    (typeof img["alt"] === "string" ? img["alt"] : null) ||
+                    name,
+                };
+              }
+              return { url: "", alt: name };
+            })
+          : [],
       availability: "InStock", // This should be dynamic based on actual availability
       brand: "Ketingmar s.r.o.",
     },

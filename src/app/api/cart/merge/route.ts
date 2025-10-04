@@ -127,7 +127,7 @@ export async function POST(request: NextRequest) {
 
     // Clear cache for both guest session and user
     try {
-      const { clearCartCache } = await import('@/lib/cache/cart-cache');
+      const { clearCartCache } = await import("@/lib/cache/cart-cache");
 
       // Clear guest cart cache
       await clearCartCache(null, body.sessionId);

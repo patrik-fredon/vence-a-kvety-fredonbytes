@@ -16,7 +16,7 @@
 
 import type React from "react";
 import { ComponentErrorFallback, ErrorBoundary } from "@/components/ui/ErrorBoundary";
-import { type Locale } from "@/i18n/config";
+import type { Locale } from "@/i18n/config";
 import { funeralColors } from "@/lib/design-tokens";
 import { logErrorWithContext } from "@/lib/utils/fallback-utils";
 import { LazyProductReferencesSection } from "./LazyProductReferencesSection";
@@ -90,7 +90,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
       </section>
 
       {/* Product References Section */}
-      <section aria-labelledby="products-heading" role="region" className="relative">
+      <section aria-labelledby="products-heading" className="relative">
         <ErrorBoundary
           level="component"
           context="LazyProductReferencesSection"
@@ -122,7 +122,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
 
       {/* Additional content if provided */}
       {children && (
-        <section role="region" aria-label="Additional content" className="relative">
+        <section aria-label="Additional content" className="relative">
           <ErrorBoundary
             level="component"
             context="AdditionalContent"

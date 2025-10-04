@@ -302,14 +302,15 @@ export function calculateCartTotals(items: any[]): {
 export function formatCustomizationForDisplay(
   customization: Customization,
   customizationOptions: CustomizationOption[],
-  locale: string = 'en'
+  locale: string = "en"
 ): string | null {
-  const option = customizationOptions.find(opt => opt.id === customization.optionId);
+  const option = customizationOptions.find((opt) => opt.id === customization.optionId);
   if (!option) return null;
 
-  const optionName = typeof option.name === 'string'
-    ? option.name
-    : (option.name as any)[locale] || (option.name as any).en || (option.name as any).cs;
+  const optionName =
+    typeof option.name === "string"
+      ? option.name
+      : (option.name as any)[locale] || (option.name as any).en || (option.name as any).cs;
 
   // Handle custom text input (like ribbon text)
   if (customization.customValue) {
@@ -319,11 +320,13 @@ export function formatCustomizationForDisplay(
   // Handle choice selections
   if (customization.choiceIds && customization.choiceIds.length > 0) {
     const selectedChoices = customization.choiceIds
-      .map(choiceId => {
-        const choice = option.choices.find(c => c.id === choiceId);
-        return choice ? (typeof choice.label === 'string'
-          ? choice.label
-          : (choice.label as any)[locale] || (choice.label as any).en || (choice.label as any).cs) : null;
+      .map((choiceId) => {
+        const choice = option.choices.find((c) => c.id === choiceId);
+        return choice
+          ? typeof choice.label === "string"
+            ? choice.label
+            : (choice.label as any)[locale] || (choice.label as any).en || (choice.label as any).cs
+          : null;
       })
       .filter(Boolean);
 
@@ -345,13 +348,13 @@ export function validateConditionalCustomizations(
   const errors: string[] = [];
 
   for (const customization of customizations) {
-    const option = customizationOptions.find(opt => opt.id === customization.optionId);
+    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
     if (!option) continue;
 
     // Check if this customization depends on another
     if (option.dependsOn) {
       const dependentCustomization = customizations.find(
-        c => c.optionId === option.dependsOn!.optionId
+        (c) => c.optionId === option.dependsOn?.optionId
       );
 
       if (!dependentCustomization) {
@@ -360,8 +363,8 @@ export function validateConditionalCustomizations(
       }
 
       // Check if the required choices are selected
-      const hasRequiredChoices = option.dependsOn.requiredChoiceIds.some(
-        requiredChoiceId => dependentCustomization.choiceIds.includes(requiredChoiceId)
+      const hasRequiredChoices = option.dependsOn.requiredChoiceIds.some((requiredChoiceId) =>
+        dependentCustomization.choiceIds.includes(requiredChoiceId)
       );
 
       if (!hasRequiredChoices) {
@@ -372,7 +375,7 @@ export function validateConditionalCustomizations(
 
   return {
     isValid: errors.length === 0,
-    errors
+    errors,
   };
 }
 
@@ -393,43 +396,45 @@ export function validateCustomizationIntegrity(customizations: any[]): {
   const issues: string[] = [];
   const fixedCustomizations: any[] = [];
 
-
   if (!Array.isArray(customizations)) {
     return {
       isValid: false,
-      issues: ['Customizations must be an array'],
+      issues: ["Customizations must be an array"],
     };
   }
 
   for (const customization of customizations) {
-    if (!customization || typeof customization !== 'object') {
-      issues.push('Invalid customization object found');
+    if (!customization || typeof customization !== "object") {
+      issues.push("Invalid customization object found");
       continue;
     }
 
     const fixed = { ...customization };
 
     // Validate required fields
-    if (!customization.optionId || typeof customization.optionId !== 'string') {
+    if (!customization.optionId || typeof customization.optionId !== "string") {
       issues.push(`Missing or invalid optionId: ${customization.optionId}`);
     }
 
-    if (!customization.choiceIds || !Array.isArray(customization.choiceIds)) {
+    if (!(customization.choiceIds && Array.isArray(customization.choiceIds))) {
       issues.push(`Missing or invalid choiceIds for option: ${customization.optionId}`);
       fixed.choiceIds = [];
     }
 
     // Validate price modifier
-    if (customization.priceModifier !== undefined && typeof customization.priceModifier !== 'number') {
+    if (
+      customization.priceModifier !== undefined &&
+      typeof customization.priceModifier !== "number"
+    ) {
       issues.push(`Invalid priceModifier for option: ${customization.optionId}`);
       fixed.priceModifier = 0;
     }
 
     // Validate custom value if present
     if (customization.customValue !== undefined) {
-      if (typeof customization.customValue !== 'string') {
+      if (typeof customization.customValue !== "string") {
         issues.push(`Invalid customValue for option: ${customization.optionId}`);
-        fixed.customValue = String(customization.customValue || '');
+        fixed.customValue = String(customization.customValue || "");
       } else if (customization.customValue.length > 100) {
         issues.push(`CustomValue too long for option: ${customization.optionId}`);
         fixed.customValue = customization.customValue.substring(0, 100);
@@ -457,7 +462,7 @@ export function transferCustomizationsToOrder(cartCustomizations: any[]): any[] 
     return [];
   }
 
-  return cartCustomizations.map(customization => ({
+  return cartCustomizations.map((customization) => ({
     optionId: customization.optionId,
     choiceIds: customization.choiceIds || [],
     priceModifier: customization.priceModifier || 0,
@@ -477,9 +482,9 @@ export function cleanupOrphanedCustomizations(customizations: any[]): any[] {
     return [];
   }
 
-  return customizations.filter(customization => {
+  return customizations.filter((customization) => {
     // Remove customizations without required fields
-    if (!customization?.optionId || !customization?.choiceIds) {
+    if (!(customization?.optionId && customization?.choiceIds)) {
       return false;
     }
 
@@ -510,41 +515,41 @@ export function validateWreathCustomizations(customizations: any[]): {
 
   for (const customization of customizations) {
     // Check for size selection (required for wreaths)
-    if (customization.optionId === 'size') {
+    if (customization.optionId === "size") {
       hasSizeSelection = customization.choiceIds && customization.choiceIds.length > 0;
       if (!hasSizeSelection) {
-        errors.push('Size selection is required for wreaths');
+        errors.push("Size selection is required for wreaths");
       }
     }
 
     // Check for ribbon selection
-    if (customization.optionId === 'ribbon') {
-      hasRibbon = customization.choiceIds && customization.choiceIds.includes('ribbon_yes');
+    if (customization.optionId === "ribbon") {
+      hasRibbon = customization.choiceIds?.includes("ribbon_yes");
     }
   }
 
   // If ribbon is selected, validate ribbon configuration
   if (hasRibbon) {
-    const ribbonColor = customizations.find(c => c.optionId === 'ribbon_color');
-    const ribbonText = customizations.find(c => c.optionId === 'ribbon_text');
+    const ribbonColor = customizations.find((c) => c.optionId === "ribbon_color");
+    const ribbonText = customizations.find((c) => c.optionId === "ribbon_text");
 
-    if (!ribbonColor || !ribbonColor.choiceIds || ribbonColor.choiceIds.length === 0) {
-      errors.push('Ribbon color selection is required when ribbon is selected');
+    if (!ribbonColor?.choiceIds || ribbonColor.choiceIds.length === 0) {
+      errors.push("Ribbon color selection is required when ribbon is selected");
       hasValidRibbonConfig = false;
     }
 
-    if (!ribbonText || !ribbonText.choiceIds || ribbonText.choiceIds.length === 0) {
-      errors.push('Ribbon text selection is required when ribbon is selected');
+    if (!ribbonText?.choiceIds || ribbonText.choiceIds.length === 0) {
+      errors.push("Ribbon text selection is required when ribbon is selected");
       hasValidRibbonConfig = false;
     }
 
     // Validate custom text if selected
-    if (ribbonText?.choiceIds?.includes('text_custom')) {
+    if (ribbonText?.choiceIds?.includes("text_custom")) {
       if (!ribbonText.customValue || ribbonText.customValue.trim().length === 0) {
-        errors.push('Custom text is required when custom text option is selected');
+        errors.push("Custom text is required when custom text option is selected");
         hasValidRibbonConfig = false;
       } else if (ribbonText.customValue.length > 50) {
-        errors.push('Custom text cannot exceed 50 characters');
+        errors.push("Custom text cannot exceed 50 characters");
         hasValidRibbonConfig = false;
       }
     }
@@ -570,10 +575,10 @@ export function validateWreathCustomizations(customizations: any[]): {
 export async function performCustomizationIntegrityCheck(supabaseClient: any): Promise<{
   success: boolean;
   issues: Array<{
-    type: 'orphaned_customizations' | 'invalid_format' | 'missing_required' | 'data_corruption';
+    type: "orphaned_customizations" | "invalid_format" | "missing_required" | "data_corruption";
     description: string;
     affectedItems: string[];
-    severity: 'low' | 'medium' | 'high';
+    severity: "low" | "medium" | "high";
   }>;
   fixedItems: string[];
   summary: {
@@ -591,9 +596,9 @@ export async function performCustomizationIntegrityCheck(supabaseClient: any): P
   try {
     // Get all cart items with customizations
     const { data: cartItems, error } = await supabaseClient
-      .from('cart_items')
-      .select('*')
-      .not('customizations', 'is', null);
+      .from("cart_items")
+      .select("*")
+      .not("customizations", "is", null);
 
     if (error) {
       throw new Error(`Failed to fetch cart items: ${error.message}`);
@@ -616,17 +621,21 @@ export async function performCustomizationIntegrityCheck(supabaseClient: any): P
     }
 
     for (const item of cartItems) {
-      if (item.customizations && Array.isArray(item.customizations) && item.customizations.length > 0) {
+      if (
+        item.customizations &&
+        Array.isArray(item.customizations) &&
+        item.customizations.length > 0
+      ) {
         itemsWithCustomizations++;
 
         // Check for data format issues
         const validation = validateCustomizationIntegrity(item.customizations);
         if (!validation.isValid) {
           issues.push({
-            type: 'invalid_format',
+            type: "invalid_format",
             description: `Cart item ${item.id} has invalid customization format`,
             affectedItems: [item.id],
-            severity: 'medium',
+            severity: "medium",
             details: validation.issues,
           });
 
@@ -634,9 +643,9 @@ export async function performCustomizationIntegrityCheck(supabaseClient: any): P
           if (validation.fixedCustomizations) {
             try {
               const { error: updateError } = await supabaseClient
-                .from('cart_items')
+                .from("cart_items")
                 .update({ customizations: validation.fixedCustomizations })
-                .eq('id', item.id);
+                .eq("id", item.id);
 
               if (!updateError) {
                 fixedItems.push(item.id);
@@ -650,31 +659,31 @@ export async function performCustomizationIntegrityCheck(supabaseClient: any): P
         // Check for orphaned customizations (references to non-existent products)
         if (item.product_id) {
           const { data: product, error: productError } = await supabaseClient
-            .from('products')
-            .select('customization_options')
-            .eq('id', item.product_id)
+            .from("products")
+            .select("customization_options")
+            .eq("id", item.product_id)
             .single();
 
           if (productError || !product) {
             issues.push({
-              type: 'orphaned_customizations',
+              type: "orphaned_customizations",
               description: `Cart item ${item.id} references non-existent product ${item.product_id}`,
               affectedItems: [item.id],
-              severity: 'high',
+              severity: "high",
             });
           } else if (product.customization_options) {
             // Validate customizations against product options
             const validOptionIds = product.customization_options.map((opt: any) => opt.id);
-            const invalidCustomizations = item.customizations.filter((custom: any) =>
-              !validOptionIds.includes(custom.optionId)
+            const invalidCustomizations = item.customizations.filter(
+              (custom: any) => !validOptionIds.includes(custom.optionId)
             );
 
             if (invalidCustomizations.length > 0) {
               issues.push({
-                type: 'data_corruption',
+                type: "data_corruption",
                 description: `Cart item ${item.id} has customizations for non-existent product options`,
                 affectedItems: [item.id],
-                severity: 'medium',
+                severity: "medium",
                 details: invalidCustomizations.map((c: any) => c.optionId),
               });
             }
@@ -686,10 +695,10 @@ export async function performCustomizationIntegrityCheck(supabaseClient: any): P
           const wreathValidation = validateWreathCustomizations(item.customizations);
           if (!wreathValidation.isValid) {
             issues.push({
-              type: 'missing_required',
+              type: "missing_required",
               description: `Cart item ${item.id} has incomplete wreath customizations`,
               affectedItems: [item.id],
-              severity: 'low',
+              severity: "low",
               details: wreathValidation.errors,
             });
           }
@@ -708,17 +717,18 @@ export async function performCustomizationIntegrityCheck(supabaseClient: any): P
         issuesFixed: fixedItems.length,
       },
     };
-
   } catch (error) {
-    console.error('Customization integrity check failed:', error);
+    console.error("Customization integrity check failed:", error);
     return {
       success: false,
-      issues: [{
-        type: 'data_corruption',
-        description: `Integrity check failed: ${error instanceof Error ? error.message : 'Unknown error'}`,
-        affectedItems: [],
-        severity: 'high',
-      }],
+      issues: [
+        {
+          type: "data_corruption",
+          description: `Integrity check failed: ${error instanceof Error ? error.message : "Unknown error"}`,
+          affectedItems: [],
+          severity: "high",
+        },
+      ],
       fixedItems: [],
       summary: {
         totalCartItems: 0,
@@ -751,11 +761,11 @@ export async function cleanupAbandonedCustomizations(
 
     // Get abandoned cart items with customizations
     const { data: abandonedItems, error: fetchError } = await supabaseClient
-      .from('cart_items')
-      .select('*')
-      .lt('created_at', cutoffDate.toISOString())
-      .is('user_id', null) // Only anonymous carts
-      .not('customizations', 'is', null);
+      .from("cart_items")
+      .select("*")
+      .lt("created_at", cutoffDate.toISOString())
+      .is("user_id", null) // Only anonymous carts
+      .not("customizations", "is", null);
 
     if (fetchError) {
       throw new Error(`Failed to fetch abandoned items: ${fetchError.message}`);
@@ -775,13 +785,18 @@ export async function cleanupAbandonedCustomizations(
     }, 0);
 
     // Log cleanup operation
-    console.log(`Cleaning up ${abandonedItems.length} abandoned cart items with ${customizationsRemoved} customizations older than ${daysOld} days`);
+    console.log(
+      `Cleaning up ${abandonedItems.length} abandoned cart items with ${customizationsRemoved} customizations older than ${daysOld} days`
+    );
 
     // Delete abandoned cart items (customizations are deleted automatically)
     const { error: deleteError } = await supabaseClient
-      .from('cart_items')
+      .from("cart_items")
       .delete()
-      .in('id', abandonedItems.map((item: any) => item.id));
+      .in(
+        "id",
+        abandonedItems.map((item: any) => item.id)
+      );
 
     if (deleteError) {
       throw new Error(`Failed to delete abandoned items: ${deleteError.message}`);
@@ -794,14 +809,13 @@ export async function cleanupAbandonedCustomizations(
       cleanedItems: abandonedItems.length,
       customizationsRemoved,
     };
-
   } catch (error) {
-    console.error('Abandoned customization cleanup failed:', error);
+    console.error("Abandoned customization cleanup failed:", error);
     return {
       success: false,
       cleanedItems: 0,
       customizationsRemoved: 0,
-      error: error instanceof Error ? error.message : 'Unknown error',
+      error: error instanceof Error ? error.message : "Unknown error",
     };
   }
 }
@@ -809,9 +823,7 @@ export async function cleanupAbandonedCustomizations(
 /**
  * Calculates total price modifier from customizations
  */
-export function calculateCustomizationPriceModifier(
-  customizations: Customization[]
-): number {
+export function calculateCustomizationPriceModifier(customizations: Customization[]): number {
   return customizations.reduce((total, customization) => {
     return total + (customization.priceModifier || 0);
   }, 0);

@@ -1,10 +1,10 @@
 "use client";
 
-import { ChevronDownIcon } from "@/lib/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { ChevronDownIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
@@ -20,9 +20,21 @@ const mockCategories = [
     name: { cs: "Klasické věnce", en: "Classic Wreaths" },
     slug: "classic-wreaths",
     subcategories: [
-      { id: "1-1", name: { cs: "Růžové věnce", en: "Rose Wreaths" }, slug: "rose-wreaths" },
-      { id: "1-2", name: { cs: "Bílé věnce", en: "White Wreaths" }, slug: "white-wreaths" },
-      { id: "1-3", name: { cs: "Smíšené věnce", en: "Mixed Wreaths" }, slug: "mixed-wreaths" },
+      {
+        id: "1-1",
+        name: { cs: "Růžové věnce", en: "Rose Wreaths" },
+        slug: "rose-wreaths",
+      },
+      {
+        id: "1-2",
+        name: { cs: "Bílé věnce", en: "White Wreaths" },
+        slug: "white-wreaths",
+      },
+      {
+        id: "1-3",
+        name: { cs: "Smíšené věnce", en: "Mixed Wreaths" },
+        slug: "mixed-wreaths",
+      },
     ],
   },
   {
@@ -30,8 +42,16 @@ const mockCategories = [
     name: { cs: "Moderní aranžmá", en: "Modern Arrangements" },
     slug: "modern-arrangements",
     subcategories: [
-      { id: "2-1", name: { cs: "Minimalistické", en: "Minimalist" }, slug: "minimalist" },
-      { id: "2-2", name: { cs: "Designové", en: "Designer" }, slug: "designer" },
+      {
+        id: "2-1",
+        name: { cs: "Minimalistické", en: "Minimalist" },
+        slug: "minimalist",
+      },
+      {
+        id: "2-2",
+        name: { cs: "Designové", en: "Designer" },
+        slug: "designer",
+      },
     ],
   },
   {
@@ -74,7 +94,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
   }, [mobile]);
 
   const isActiveLink = (href: string) => {
-    return pathname === href || pathname.startsWith(href + "/");
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   const handleDropdownToggle = (categoryId: string) => {
@@ -96,7 +116,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
   // For mobile navigation, use enhanced stone-based design
   if (mobile) {
     return (
-      <nav className="space-y-1" role="navigation" aria-label={tAccessibility("mobileNavigation")}>
+      <nav className="space-y-1" aria-label={tAccessibility("mobileNavigation")}>
         {navItems.map((item) => (
           <div key={item.href}>
             {item.hasDropdown ? (
@@ -106,8 +126,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                   className={cn(
                     "w-full flex items-center justify-between p-4 text-left rounded-lg transition-all duration-200",
                     isActiveLink(item.href)
-                      ? "text-stone-900 bg-amber-100 font-semibold shadow-sm"
-                      : "text-stone-700 hover:text-stone-900 hover:bg-stone-50 font-medium"
+                      ? "text-stone-900 bg-accent font-semibold shadow-xl"
+                      : "text-stone-700 hover:text-primary-light hover:bg-stone-50 font-medium"
                   )}
                 >
                   <span className="text-base">{item.label}</span>
@@ -123,7 +143,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                   <div className="mt-2 ml-4 space-y-1 animate-slide-down">
                     <Link
                       href={`/${locale}/products`}
-                      className="block p-3 text-sm text-teal-900 hover:text-stone-900 hover:bg-amber-100 rounded-lg transition-colors duration-200 font-medium"
+                      className="block p-3 text-sm text-primary hover:text-accent-light hover:bg-accent rounded-lg transition-colors duration-200 font-medium shadow-xl"
                       onClick={handleLinkClick}
                     >
                       {tProduct("allProducts")}
@@ -137,8 +157,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                 className={cn(
                   "block p-4 rounded-lg transition-all duration-200 text-base",
                   isActiveLink(item.href)
-                    ? "text-teal-900 bg-amber-100 font-semibold shadow-sm"
-                    : "text-teal-700 hover:text-stone-900 hover:bg-amber-100 font-medium"
+                    ? "text-primary bg-accent font-semibold shadow-xl"
+                    : "text-primary-dark hover:text-primary-light hover:bg-accent font-medium"
                 )}
                 onClick={handleLinkClick}
               >
@@ -158,7 +178,6 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
       id="main-navigation"
       className="flex items-center space-x-8"
       ref={dropdownRef}
-      role="navigation"
       aria-label={tAccessibility("mainNavigation")}
     >
       {navItems.map((item) => (
@@ -188,8 +207,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                   "flex items-center space-x-1 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                   "focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2",
                   isActiveLink(item.href)
-                    ? "text-teal-900 bg-amber-100"
-                    : "text-teal-900 hover:text-stone-900 hover:bg-stone-50"
+                    ? "text-primary bg-accent"
+                    : "text-accent hover:text-primary-light hover:bg-stone-50"
                 )}
                 aria-expanded={openDropdown === "products"}
                 aria-haspopup="true"
@@ -226,7 +245,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                         <div key={category.id}>
                           <Link
                             href={`/${locale}/products/${category.slug}`}
-                            className="block p-2 text-sm font-medium text-teal-800 hover:text-stone-900 hover:bg-stone-50 rounded-lg transition-colors"
+                            className="block p-2 text-sm font-medium text-primary-dark hover:text-primary-light hover:bg-stone-50 rounded-lg transition-colors"
                             onClick={handleLinkClick}
                           >
                             {category.name[locale as "cs" | "en"]}
@@ -236,7 +255,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
                               <Link
                                 key={subcategory.id}
                                 href={`/${locale}/products/${category.slug}/${subcategory.slug}`}
-                                className="block p-1.5 text-sm text-teal-600 hover:text-stone-900 hover:bg-amber-100 rounded transition-colors"
+                                className="block p-1.5 text-sm text-primary-dark hover:text-accent-light hover:bg-accent rounded transition-colors"
                                 onClick={handleLinkClick}
                               >
                                 {subcategory.name[locale as "cs" | "en"]}
@@ -256,8 +275,8 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
               className={cn(
                 "px-3 py-2 text-sm font-medium rounded-lg transition-colors",
                 isActiveLink(item.href)
-                  ? "text-teal-900 bg-amber-100"
-                  : "text-teal-700 hover:text-stone-900 hover:bg-amber-100"
+                  ? "text-primary bg-accent"
+                  : "text-accent hover:text-primary-light hover:bg-accent"
               )}
               onClick={handleLinkClick}
             >

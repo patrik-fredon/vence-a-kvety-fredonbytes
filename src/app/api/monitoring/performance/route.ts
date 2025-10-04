@@ -70,8 +70,8 @@ export async function POST(request: NextRequest) {
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
-    const hours = Number.parseInt(searchParams.get("hours") || "24");
-    const limit = Number.parseInt(searchParams.get("limit") || "100");
+    const hours = Number.parseInt(searchParams.get("hours") || "24", 10);
+    const limit = Number.parseInt(searchParams.get("limit") || "100", 10);
     const metric = searchParams.get("metric");
 
     const supabase = createClient();
