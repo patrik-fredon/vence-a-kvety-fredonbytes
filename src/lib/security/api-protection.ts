@@ -199,7 +199,7 @@ export async function sanitizeRequestBody(request: NextRequest): Promise<any> {
   try {
     const body = await request.json();
     return sanitizeObject(body);
-  } catch (error) {
+  } catch (_error) {
     throw new Error("Invalid JSON body");
   }
 }

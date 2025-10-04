@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useCart } from "@/lib/cart/context";
 import { ShoppingCartIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
@@ -95,7 +95,7 @@ export function AnimatedCartIcon({ locale, className = "" }: AnimatedCartIconPro
         element.style.transform = "";
       }, config.countAnimationDuration);
     }
-  }, [animationState.currentStep, config.countAnimationDuration, itemCount]);
+  }, [animationState.currentStep, config.countAnimationDuration]);
 
   return (
     <Link

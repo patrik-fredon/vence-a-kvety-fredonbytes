@@ -83,7 +83,7 @@ export function ProductImageGallery({
       document.removeEventListener("keydown", handleKeyDown);
       document.body.style.overflow = "";
     };
-  }, [isFullscreen]);
+  }, [isFullscreen, handleNext, handlePrevious]);
 
   const handlePrevious = () => {
     setSelectedImageIndex((prev) => (prev === 0 ? relevantImages.length - 1 : prev - 1));

@@ -42,7 +42,7 @@ export default function DashboardOverview({ stats, onRefresh }: DashboardOvervie
 
   useEffect(() => {
     fetchRecentOrders();
-  }, []);
+  }, [fetchRecentOrders]);
 
   const fetchRecentOrders = async () => {
     try {

@@ -6,7 +6,7 @@ import {
   ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LazyStripePaymentForm } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { PaymentMethod } from "@/types/order";
@@ -55,7 +55,7 @@ export function PaymentStep({
     if (paymentMethod && orderId && amount && customerEmail) {
       initializePayment();
     }
-  }, [paymentMethod, orderId, amount, customerEmail]);
+  }, [paymentMethod, orderId, amount, customerEmail, initializePayment]);
 
   const initializePayment = async () => {
     if (!(paymentMethod && orderId && amount && customerEmail)) {

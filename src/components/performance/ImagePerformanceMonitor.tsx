@@ -31,7 +31,7 @@ interface PerformanceStats {
 }
 
 export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = ({
-  enabled = process.env["NODE_ENV"] === "development",
+  enabled = process.env.NODE_ENV === "development",
   logToConsole = true,
   onMetrics,
   maxMetrics = 100,
@@ -132,7 +132,7 @@ export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = (
         <span className="font-semibold">Image Performance</span>
       </div>
 
-      {stats && stats.slowestImage && stats.fastestImage ? (
+      {stats?.slowestImage && stats.fastestImage ? (
         <div className="space-y-1">
           <div>Images: {stats.totalImages}</div>
           <div>Avg Load: {stats.averageLoadTime.toFixed(1)}ms</div>

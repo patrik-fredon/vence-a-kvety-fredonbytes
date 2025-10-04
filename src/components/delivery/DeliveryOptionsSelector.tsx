@@ -74,7 +74,6 @@ export function DeliveryOptionsSelector({
         return <ClockIcon className="w-5 h-5" />;
       case "express":
         return <TruckIcon className="w-5 h-5" />;
-      case "standard":
       default:
         return <TruckIcon className="w-5 h-5" />;
     }
@@ -90,7 +89,6 @@ export function DeliveryOptionsSelector({
           return `${baseClasses} border-red-500 bg-red-50 text-red-900`;
         case "express":
           return `${baseClasses} border-orange-500 bg-orange-50 text-orange-900`;
-        case "standard":
         default:
           return `${baseClasses} border-blue-500 bg-blue-50 text-blue-900`;
       }

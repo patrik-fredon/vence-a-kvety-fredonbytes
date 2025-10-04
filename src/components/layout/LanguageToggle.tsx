@@ -59,8 +59,10 @@ export function LanguageToggle({
           >
             {isLoading && locale !== currentLocale ? (
               <LoadingSpinner size="sm" />
+            ) : showLabels ? (
+              localeNames[locale]
             ) : (
-              <>{showLabels ? localeNames[locale] : locale.toUpperCase()}</>
+              locale.toUpperCase()
             )}
           </button>
         ))}

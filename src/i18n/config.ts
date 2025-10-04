@@ -36,12 +36,12 @@ export const i18nConfig = {
   // Fallback settings
   fallback: {
     enabled: true,
-    showMissingKeys: process.env["NODE_ENV"] === "development",
-    logMissingKeys: process.env["NODE_ENV"] === "development",
+    showMissingKeys: process.env.NODE_ENV === "development",
+    logMissingKeys: process.env.NODE_ENV === "development",
   },
   // Validation settings
   validation: {
-    enabled: process.env["NODE_ENV"] === "development",
+    enabled: process.env.NODE_ENV === "development",
     strictMode: false, // Set to true to throw errors on missing keys
   },
 } as const;

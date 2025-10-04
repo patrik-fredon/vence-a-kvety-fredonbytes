@@ -189,7 +189,7 @@ function PaymentForm({
     await new Promise((resolve) => setTimeout(resolve, 1000));
 
     setIsRetrying(false);
-  }, [retryCount, maxRetries]);
+  }, [retryCount]);
 
   const handlePaymentElementReady = useCallback(() => {
     setPaymentElementReady(true);

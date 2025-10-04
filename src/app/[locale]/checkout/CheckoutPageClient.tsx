@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { CartItemImage } from "@/components/cart/CartItemImage";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { CompactOrderSummary } from "@/components/checkout/OrderSummary";
@@ -100,6 +100,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
           <div className="flex items-center justify-between h-16">
             <div className="flex items-center space-x-4">
               <button
+                type="button"
                 onClick={handleBackToCart}
                 className="flex items-center text-amber-100 hover:text-amber-200 transition-colors"
               >

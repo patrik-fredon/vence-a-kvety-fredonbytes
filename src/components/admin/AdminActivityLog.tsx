@@ -28,7 +28,7 @@ export default function AdminActivityLog() {
 
   useEffect(() => {
     fetchActivities();
-  }, [currentPage]);
+  }, [fetchActivities]);
 
   const fetchActivities = async () => {
     try {

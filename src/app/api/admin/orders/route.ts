@@ -52,8 +52,8 @@ export async function GET(request: NextRequest) {
         : null;
     const dateFrom = searchParams.get("dateFrom");
     const dateTo = searchParams.get("dateTo");
-    const limit = Number.parseInt(searchParams.get("limit") || "20");
-    const offset = Number.parseInt(searchParams.get("offset") || "0");
+    const limit = Number.parseInt(searchParams.get("limit") || "20", 10);
+    const offset = Number.parseInt(searchParams.get("offset") || "0", 10);
 
     // Get orders with filters
     const { data: orders, error } = await orderUtils.getAllOrders({

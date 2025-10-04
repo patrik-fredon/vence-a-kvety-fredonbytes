@@ -72,7 +72,7 @@ export function useWreathValidation({
     const ribbonCustomization = customizations.find(
       (c) => c.optionId === wreathOptions.ribbonOption?.id
     );
-    return ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
+    return ribbonCustomization?.choiceIds.includes("ribbon_yes");
   }, [customizations, wreathOptions.ribbonOption]);
 
   // Validate all wreath customizations
@@ -274,6 +274,7 @@ export function useEnhancedWreathValidation({
     enableRecovery,
     enableFallback,
     options,
+    enableImmediateFeedback,
   ]);
 
   // Recovery function for specific errors
@@ -393,7 +394,7 @@ export function useEnhancedWreathValidation({
       (option) => option.type === "ribbon" || option.id === "ribbon"
     );
     const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption?.id);
-    return ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
+    return ribbonCustomization?.choiceIds.includes("ribbon_yes");
   }, [customizations, customizationOptions]);
 
   return {
@@ -440,7 +441,7 @@ export function useValidationErrorHandler(locale: string = "cs") {
         recoveryLabel: error.retryable ? messages.tryAgain : messages.contactSupport,
       };
     },
-    [locale, t]
+    [locale]
   );
 
   // Handle error recovery with progress tracking
@@ -492,7 +493,7 @@ export function useValidationErrorHandler(locale: string = "cs") {
   const isErrorRecoverable = useCallback(
     (error: EnhancedValidationError) => {
       return (
-        error.recoverable && !error.context?.["recoveryFailed"] && recoveryInProgress !== error.code
+        error.recoverable && !error.context?.recoveryFailed && recoveryInProgress !== error.code
       );
     },
     [recoveryInProgress]

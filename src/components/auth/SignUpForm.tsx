@@ -24,24 +24,24 @@ export function SignUpForm() {
   const validateForm = () => {
     const errors: Record<string, string> = {};
 
-    if (!(formData as any)["email"]) {
-      errors["email"] = "E-mail je povinný";
-    } else if (!/\S+@\S+\.\S+/.test((formData as any)["email"])) {
-      errors["email"] = "E-mail není ve správném formátu";
+    if (!(formData as any).email) {
+      errors.email = "E-mail je povinný";
+    } else if (!/\S+@\S+\.\S+/.test((formData as any).email)) {
+      errors.email = "E-mail není ve správném formátu";
     }
 
-    if (!(formData as any)["password"]) {
-      errors["password"] = "Heslo je povinné";
-    } else if ((formData as any)["password"].length < 6) {
-      errors["password"] = "Heslo musí mít alespoň 6 znaků";
+    if (!(formData as any).password) {
+      errors.password = "Heslo je povinné";
+    } else if ((formData as any).password.length < 6) {
+      errors.password = "Heslo musí mít alespoň 6 znaků";
     }
 
-    if ((formData as any)["password"] !== (formData as any)["confirmPassword"]) {
-      errors["confirmPassword"] = "Hesla se neshodují";
+    if ((formData as any).password !== (formData as any).confirmPassword) {
+      errors.confirmPassword = "Hesla se neshodují";
     }
 
-    if (!(formData as any)["name"]) {
-      errors["name"] = "Jméno je povinné";
+    if (!(formData as any).name) {
+      errors.name = "Jméno je povinné";
     }
 
     setValidationErrors(errors);
@@ -56,10 +56,10 @@ export function SignUpForm() {
     }
 
     const result = await signUp({
-      email: (formData as any)["email"],
-      password: (formData as any)["password"],
-      name: (formData as any)["name"],
-      phone: (formData as any)["phone"] || "",
+      email: (formData as any).email,
+      password: (formData as any).password,
+      name: (formData as any).name,
+      phone: (formData as any).phone || "",
     });
 
     if (result.success) {
@@ -99,9 +99,9 @@ export function SignUpForm() {
               name="name"
               type="text"
               label="Jméno a příjmení"
-              value={(formData as any)["name"]}
+              value={(formData as any).name}
               onChange={handleChange}
-              error={validationErrors["name"] || ""}
+              error={validationErrors.name || ""}
               required
               autoComplete="name"
               disabled={loading}
@@ -113,9 +113,9 @@ export function SignUpForm() {
               name="email"
               type="email"
               label="E-mailová adresa"
-              value={(formData as any)["email"]}
+              value={(formData as any).email}
               onChange={handleChange}
-              error={validationErrors["email"] || ""}
+              error={validationErrors.email || ""}
               required
               autoComplete="email"
               disabled={loading}
@@ -127,7 +127,7 @@ export function SignUpForm() {
               name="phone"
               type="tel"
               label="Telefon (volitelné)"
-              value={(formData as any)["phone"]}
+              value={(formData as any).phone}
               onChange={handleChange}
               autoComplete="tel"
               disabled={loading}
@@ -140,9 +140,9 @@ export function SignUpForm() {
               name="password"
               type="password"
               label="Heslo"
-              value={(formData as any)["password"]}
+              value={(formData as any).password}
               onChange={handleChange}
-              error={validationErrors["password"] || ""}
+              error={validationErrors.password || ""}
               required
               autoComplete="new-password"
               disabled={loading}
@@ -155,9 +155,9 @@ export function SignUpForm() {
               name="confirmPassword"
               type="password"
               label="Potvrzení hesla"
-              value={(formData as any)["confirmPassword"]}
+              value={(formData as any).confirmPassword}
               onChange={handleChange}
-              error={validationErrors["confirmPassword"] || ""}
+              error={validationErrors.confirmPassword || ""}
               required
               autoComplete="new-password"
               disabled={loading}

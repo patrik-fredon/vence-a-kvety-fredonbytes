@@ -20,7 +20,6 @@ import {
   CartSyncManager,
 } from "./realtime-sync";
 import {
-  calculateCustomizationPriceModifier as _calculateCustomizationPriceModifier,
   generateCartSessionId,
   getCartSessionId,
   setCartSessionId,
@@ -260,7 +259,10 @@ export function CartProvider({ children }: CartProviderProps) {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, [isRealTimeEnabled]);
+  }, [
+    isRealTimeEnabled, // Sync when coming back online
+    syncWithServer,
+  ]);
 
   // Enhanced fetch cart with retry logic
   const fetchCart = useCallback(
@@ -482,7 +484,7 @@ export function CartProvider({ children }: CartProviderProps) {
         return false;
       }
     },
-    [fetchCart, isOnline]
+    [fetchCart, isOnline, removeItem]
   );
 
   // Enhanced remove item from cart with optimistic updates
@@ -702,7 +704,7 @@ export function CartProvider({ children }: CartProviderProps) {
     } finally {
       dispatch({ type: "SET_SYNCING", payload: false });
     }
-  }, [fetchCart, isOnline, state.items, cartVersion]);
+  }, [isOnline, state.items, cartVersion]);
 
   // Periodic sync to detect server-side changes
   useEffect(() => {
@@ -723,7 +725,7 @@ export function CartProvider({ children }: CartProviderProps) {
     if (!loading) {
       fetchCart();
     }
-  }, [loading, user, fetchCart]);
+  }, [loading, fetchCart]);
 
   // Real-time synchronization management
   const enableRealTime = useCallback(() => {
@@ -795,7 +797,7 @@ export function CartProvider({ children }: CartProviderProps) {
       };
       CartPersistenceManager.saveCartState(cartSummary, cartVersion);
     }
-  }, [state.items, state.lastUpdated, cartVersion]);
+  }, [state.items, cartVersion]);
 
   // Restore cart from localStorage on mount if needed with version checking
   useEffect(() => {

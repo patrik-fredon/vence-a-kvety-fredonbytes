@@ -84,7 +84,7 @@ export const authUtils = {
       }
 
       return { user: authData.user, error: null };
-    } catch (error) {
+    } catch (_error) {
       return { user: null, error: "An unexpected error occurred" };
     }
   },
@@ -101,7 +101,7 @@ export const authUtils = {
       }
 
       return { user: authData.user, error: null };
-    } catch (error) {
+    } catch (_error) {
       return { user: null, error: "An unexpected error occurred" };
     }
   },
@@ -113,7 +113,7 @@ export const authUtils = {
         return { error: error.message };
       }
       return { error: null };
-    } catch (error) {
+    } catch (_error) {
       return { error: "An unexpected error occurred" };
     }
   },
@@ -129,7 +129,7 @@ export const authUtils = {
       }
 
       return { error: null };
-    } catch (error) {
+    } catch (_error) {
       return { error: "An unexpected error occurred" };
     }
   },
@@ -149,7 +149,7 @@ export const authUtils = {
       }
 
       return { error: null };
-    } catch (error) {
+    } catch (_error) {
       return { error: "An unexpected error occurred" };
     }
   },
@@ -193,7 +193,7 @@ export const authUtils = {
       }
 
       return { error: null };
-    } catch (error) {
+    } catch (_error) {
       return { error: "An unexpected error occurred" };
     }
   },
@@ -227,14 +227,14 @@ export const authUtils = {
       const authUser: AuthUser = {
         id: user.id,
         email: user.email!,
-        name: profile?.name || user.user_metadata?.["name"] || null,
-        phone: profile?.phone || user.user_metadata?.["phone"] || null,
+        name: profile?.name || user.user_metadata?.name || null,
+        phone: profile?.phone || user.user_metadata?.phone || null,
         addresses: (profile?.addresses as unknown as Address[]) || [],
         preferences: (profile?.preferences as unknown as UserPreferences) || defaultUserPreferences,
       };
 
       return { user: authUser, error: null };
-    } catch (error) {
+    } catch (_error) {
       return { user: null, error: "An unexpected error occurred" };
     }
   },
@@ -252,7 +252,7 @@ export const authUtils = {
       }
 
       return { profile, error: null };
-    } catch (error) {
+    } catch (_error) {
       return { profile: null, error: "An unexpected error occurred" };
     }
   },

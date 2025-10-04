@@ -82,7 +82,7 @@ const ProductReferenceCard = ({
         const fallbackImage = getFallbackImage("product");
 
         // Validate fallback image before setting
-        if (fallbackImage && fallbackImage.src) {
+        if (fallbackImage?.src) {
           setCurrentImageSrc(fallbackImage.src);
         } else {
           // Use a safe default if fallback fails
@@ -218,10 +218,8 @@ const ProductReferenceCard = ({
         prefersReducedMotion && "hover:shadow-lg hover:bg-white/15",
         "cursor-pointer"
       )}
-      role="gridcell"
       aria-rowindex={Math.floor(index / 4) + 1}
       aria-colindex={(index % 4) + 1}
-      tabIndex={0}
       onKeyDown={handleKeyDown}
       onClick={handleClick}
       aria-labelledby={`product-name-${product.id}`}
@@ -454,7 +452,6 @@ export const ProductReferencesSection = ({
         )}
         aria-labelledby="products-heading"
         aria-describedby="products-loading"
-        role="region"
       >
         <div
           className={cn(
@@ -535,7 +532,6 @@ export const ProductReferencesSection = ({
         )}
         aria-labelledby="products-heading"
         aria-describedby="products-error"
-        role="region"
       >
         <div
           className={cn(
@@ -658,7 +654,6 @@ export const ProductReferencesSection = ({
       )}
       aria-labelledby="products-heading"
       aria-describedby="products-description"
-      role="region"
     >
       <div
         className={cn(
@@ -707,8 +702,6 @@ export const ProductReferencesSection = ({
               // Accessibility
               "focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
             )}
-            tabIndex={0}
-            role="heading"
             aria-level={2}
           >
             {safeT("heading")}
@@ -739,7 +732,6 @@ export const ProductReferencesSection = ({
               // Accessibility
               "focus:outline-none focus:ring-2 focus:ring-white focus:ring-opacity-50"
             )}
-            tabIndex={0}
           >
             {safeT("description")}
           </p>

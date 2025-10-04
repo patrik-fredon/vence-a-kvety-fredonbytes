@@ -59,7 +59,7 @@ export function OptimizedProductCustomizer({
       }
 
       const dependentCustomization = customizations.find(
-        (c) => c.optionId === option.dependsOn!.optionId
+        (c) => c.optionId === option.dependsOn?.optionId
       );
 
       if (!dependentCustomization) {
@@ -94,7 +94,7 @@ export function OptimizedProductCustomizer({
       for (const dependentOption of dependentOptions) {
         const shouldBeVisible = dependentOption.dependsOn?.requiredChoiceIds.some((requiredId) => {
           const parentCustomization = cleanedCustomizations.find(
-            (c) => c.optionId === dependentOption.dependsOn!.optionId
+            (c) => c.optionId === dependentOption.dependsOn?.optionId
           );
           return parentCustomization?.choiceIds.includes(requiredId);
         });
@@ -124,7 +124,7 @@ export function OptimizedProductCustomizer({
           existing.choiceIds = [choiceId];
           // Clear custom value when selecting predefined option
           if (existing.customValue) {
-            delete existing.customValue;
+            existing.customValue = undefined;
           }
         } else {
           if (existing.choiceIds.includes(choiceId)) {

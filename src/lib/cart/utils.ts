@@ -354,7 +354,7 @@ export function validateConditionalCustomizations(
     // Check if this customization depends on another
     if (option.dependsOn) {
       const dependentCustomization = customizations.find(
-        (c) => c.optionId === option.dependsOn!.optionId
+        (c) => c.optionId === option.dependsOn?.optionId
       );
 
       if (!dependentCustomization) {
@@ -524,7 +524,7 @@ export function validateWreathCustomizations(customizations: any[]): {
 
     // Check for ribbon selection
     if (customization.optionId === "ribbon") {
-      hasRibbon = customization.choiceIds && customization.choiceIds.includes("ribbon_yes");
+      hasRibbon = customization.choiceIds?.includes("ribbon_yes");
     }
   }
 
@@ -533,12 +533,12 @@ export function validateWreathCustomizations(customizations: any[]): {
     const ribbonColor = customizations.find((c) => c.optionId === "ribbon_color");
     const ribbonText = customizations.find((c) => c.optionId === "ribbon_text");
 
-    if (!(ribbonColor && ribbonColor.choiceIds) || ribbonColor.choiceIds.length === 0) {
+    if (!ribbonColor?.choiceIds || ribbonColor.choiceIds.length === 0) {
       errors.push("Ribbon color selection is required when ribbon is selected");
       hasValidRibbonConfig = false;
     }
 
-    if (!(ribbonText && ribbonText.choiceIds) || ribbonText.choiceIds.length === 0) {
+    if (!ribbonText?.choiceIds || ribbonText.choiceIds.length === 0) {
       errors.push("Ribbon text selection is required when ribbon is selected");
       hasValidRibbonConfig = false;
     }

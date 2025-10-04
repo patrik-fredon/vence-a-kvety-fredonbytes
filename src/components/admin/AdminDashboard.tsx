@@ -60,7 +60,7 @@ export default function AdminDashboard() {
 
   useEffect(() => {
     fetchDashboardStats();
-  }, []);
+  }, [fetchDashboardStats]);
 
   const fetchDashboardStats = async () => {
     try {

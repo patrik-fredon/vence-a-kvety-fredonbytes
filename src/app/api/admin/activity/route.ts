@@ -8,8 +8,8 @@ import { adminUtils } from "@/lib/supabase/utils";
 export const GET = withAdminAuth(async (request: NextRequest) => {
   try {
     const { searchParams } = new URL(request.url);
-    const limit = Number.parseInt(searchParams.get("limit") || "50");
-    const page = Number.parseInt(searchParams.get("page") || "1");
+    const limit = Number.parseInt(searchParams.get("limit") || "50", 10);
+    const page = Number.parseInt(searchParams.get("page") || "1", 10);
     const offset = (page - 1) * limit;
 
     const { data: activities, error } = await adminUtils.getActivityLog(limit, offset);

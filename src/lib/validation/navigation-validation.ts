@@ -123,7 +123,7 @@ export async function validateNavigationParams(
     // Validate page parameter if present
     if (navParams.page !== undefined) {
       const pageNum = Number.parseInt(navParams.page, 10);
-      if (isNaN(pageNum) || pageNum < 1) {
+      if (Number.isNaN(pageNum) || pageNum < 1) {
         errors.push({
           field: "page",
           message: "Invalid page number",
@@ -282,10 +282,10 @@ export function validateSearchParams(
           code: "QUERY_TOO_LONG",
           severity: "warning",
         });
-        validatedParams["q"] = query.substring(0, 100);
+        validatedParams.q = query.substring(0, 100);
       } else if (query.length > 0) {
         // Sanitize search query
-        validatedParams["q"] = query.replace(/[<>]/g, "");
+        validatedParams.q = query.replace(/[<>]/g, "");
       }
     }
 
@@ -300,7 +300,7 @@ export function validateSearchParams(
           severity: "warning",
         });
       } else {
-        validatedParams["category"] = category;
+        validatedParams.category = category;
       }
     }
 
@@ -316,7 +316,7 @@ export function validateSearchParams(
           severity: "warning",
         });
       } else {
-        validatedParams["sort"] = sort;
+        validatedParams.sort = sort;
       }
     }
 
@@ -324,16 +324,16 @@ export function validateSearchParams(
     const page = searchParams.get("page");
     if (page !== null) {
       const pageNum = Number.parseInt(page, 10);
-      if (isNaN(pageNum) || pageNum < 1) {
+      if (Number.isNaN(pageNum) || pageNum < 1) {
         errors.push({
           field: "page",
           message: "Invalid page number",
           code: "INVALID_PAGE_NUMBER",
           severity: "warning",
         });
-        validatedParams["page"] = "1";
+        validatedParams.page = "1";
       } else {
-        validatedParams["page"] = Math.min(pageNum, 1000).toString(); // Cap at 1000 pages
+        validatedParams.page = Math.min(pageNum, 1000).toString(); // Cap at 1000 pages
       }
     }
 

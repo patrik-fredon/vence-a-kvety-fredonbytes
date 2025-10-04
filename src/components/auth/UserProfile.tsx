@@ -15,7 +15,7 @@ export function UserProfile() {
   const { updateProfile, loading: updateLoading, error: updateError } = useUpdateProfile();
   const { signOut, loading: signOutLoading } = useSignOut();
   const params = useParams();
-  const locale = (params?.["locale"] as string) || "cs";
+  const locale = (params?.locale as string) || "cs";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -38,7 +38,7 @@ export function UserProfile() {
       });
       loadUserProfile();
     }
-  }, [user]);
+  }, [user, loadUserProfile]);
 
   const loadUserProfile = async () => {
     try {

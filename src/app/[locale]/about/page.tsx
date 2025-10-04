@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { generateAboutPageMetadata } from "@/components/seo/PageMetadata";
 import {
@@ -44,11 +45,13 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
           {/* Main Image */}
           <div className="mb-16">
-            <div className="aspect-[16/9] bg-funeral-gold rounded-lg overflow-hidden">
-              <img
+            <div className="aspect-[16/9] bg-funeral-gold rounded-lg overflow-hidden relative">
+              <Image
                 src="https://cdn.fredonbytes.com/lily-arrangement-with-greenery-studio.webp"
                 alt={tAbout("companyDescription")}
-                className="w-full h-full object-cover"
+                fill
+                className="object-cover"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
               />
             </div>
           </div>
@@ -75,10 +78,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-funeral-gold relative">
-                <img
+                <Image
                   src="https://cdn.fredonbytes.com/dewy-white-lilies-floral-design.webp"
                   alt={tAbout("companyDescription")}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
             </AboutCard>
@@ -97,10 +102,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-funeral-gold relative">
-                <img
+                <Image
                   src="https://cdn.fredonbytes.com/handmade-lily-wreath-with-twine-rustic.webp"
                   alt={tAbout("companyDescription")}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
             </AboutCard>
@@ -119,10 +126,12 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
             <AboutCard className="overflow-hidden border-0">
               <div className="aspect-square bg-funeral-gold relative">
-                <img
+                <Image
                   src="https://cdn.fredonbytes.com/lily-funeral-wreath-making-process.webp"
                   alt={tAbout("companyDescription")}
-                  className="w-full h-full object-cover"
+                  fill
+                  className="object-cover"
+                  sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
             </AboutCard>

@@ -367,7 +367,7 @@ async function trackPriceCalculationKey(identifier: string, cacheKey: string): P
     if (existingKeys) {
       try {
         keyList = JSON.parse(existingKeys);
-      } catch (parseError) {
+      } catch (_parseError) {
         console.warn(`⚠️ [Cache] Could not parse existing tracked keys, starting fresh`);
         keyList = [];
       }

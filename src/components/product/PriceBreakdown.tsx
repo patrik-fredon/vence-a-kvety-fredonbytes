@@ -26,7 +26,7 @@ export function PriceBreakdown({
   const tCurrency = useTranslations("currency");
 
   const formatPrice = (price: number | undefined | null) => {
-    if (price === undefined || price === null || isNaN(price)) {
+    if (price === undefined || price === null || Number.isNaN(price)) {
       return tCurrency("format", {
         amount: "0",
       });

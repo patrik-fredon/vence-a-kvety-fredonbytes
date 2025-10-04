@@ -9,7 +9,7 @@ export async function POST(request: NextRequest) {
   try {
     // Verify this is a cron job request
     const authHeader = request.headers.get("authorization");
-    if (authHeader !== `Bearer ${process.env["CRON_SECRET"]}`) {
+    if (authHeader !== `Bearer ${process.env.CRON_SECRET}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
 
@@ -54,7 +54,7 @@ export async function POST(request: NextRequest) {
             // Note: This would need actual inventory tracking implementation
             // For now, we just count the items that would be restored
             if (item && typeof item === "object" && "quantity" in item) {
-              restoredInventory += ((item as any)["quantity"] as number) || 1;
+              restoredInventory += ((item as any).quantity as number) || 1;
             } else {
               restoredInventory += 1;
             }

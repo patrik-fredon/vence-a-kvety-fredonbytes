@@ -226,7 +226,7 @@ export async function executeDatabaseOperation<T>(
  */
 export async function executeApiRequest<T>(
   url: string,
-  options: RequestInit = {},
+  options: RequestInit,
   context: string,
   requestOptions: AsyncOperationOptions = {}
 ): Promise<ValidationResult<T>> {

@@ -20,13 +20,7 @@ export function MainLayout({ children, locale }: MainLayoutProps) {
 
       <Header locale={locale as Locale} />
 
-      <main
-        id="main-content"
-        className="flex-1"
-        tabIndex={-1}
-        role="main"
-        aria-label={t("mainContent")}
-      >
+      <main id="main-content" className="flex-1" tabIndex={-1} aria-label={t("mainContent")}>
         {children}
       </main>
 

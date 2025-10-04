@@ -76,7 +76,7 @@ export function MonitoringDashboard() {
     // Refresh data every 30 seconds
     const interval = setInterval(fetchMonitoringData, 30000);
     return () => clearInterval(interval);
-  }, []);
+  }, [fetchMonitoringData]);
 
   const fetchMonitoringData = async () => {
     try {

@@ -61,7 +61,7 @@ export default function OrderManagement() {
 
   useEffect(() => {
     fetchOrders();
-  }, [currentPage, statusFilter, dateFrom, dateTo]);
+  }, [fetchOrders]);
 
   const fetchOrders = async () => {
     try {

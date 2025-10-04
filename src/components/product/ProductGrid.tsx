@@ -312,7 +312,7 @@ const ProductGrid = React.memo(function ProductGrid({
         // fetchProducts will be called by useEffect due to filters dependency
       });
     }, 30),
-    [measureExecution]
+    []
   );
 
   // Debounced sort change handler with useCallback
@@ -324,7 +324,7 @@ const ProductGrid = React.memo(function ProductGrid({
         // fetchProducts will be called by useEffect due to sortOptions dependency
       });
     }, 200),
-    [measureExecution]
+    []
   );
 
   // Optimized load more function with useCallback

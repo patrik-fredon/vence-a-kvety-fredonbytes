@@ -428,7 +428,7 @@ export function sanitizeCustomizations(customizations: Customization[]): Customi
     };
 
     // Only add customValue if it exists and is not empty
-    if (customization.customValue && customization.customValue.trim()) {
+    if (customization.customValue?.trim()) {
       sanitized.customValue = customization.customValue.trim().substring(0, 50);
     }
 

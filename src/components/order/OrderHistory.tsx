@@ -48,11 +48,11 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
 
   useEffect(() => {
     fetchOrderHistory();
-  }, []);
+  }, [fetchOrderHistory]);
 
   useEffect(() => {
     applyFiltersAndSort();
-  }, [allOrders, filter, sort, searchTerm]);
+  }, [applyFiltersAndSort]);
 
   const fetchOrderHistory = async () => {
     try {

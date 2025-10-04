@@ -44,7 +44,7 @@ class CustomizationPerformanceMonitor {
     }
 
     // Log slow operations in development
-    if (process.env["NODE_ENV"] === "development" && metric.duration > 100) {
+    if (process.env.NODE_ENV === "development" && metric.duration > 100) {
       console.warn(
         `Slow customization operation: ${metric.operation} took ${metric.duration.toFixed(2)}ms`,
         metric.metadata

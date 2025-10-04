@@ -227,7 +227,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             console.log("🛒 [ProductDetail] Starting animation with:", {
               productElement: productImageRef.current.tagName,
               cartIcon: cartIcon.tagName,
-              imageSrc: imageSrc?.substring(0, 50) + "...",
+              imageSrc: `${imageSrc?.substring(0, 50)}...`,
             });
 
             startProductToCartAnimation(productImageRef.current, cartIcon, imageSrc);

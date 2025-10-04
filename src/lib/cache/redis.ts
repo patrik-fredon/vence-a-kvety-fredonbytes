@@ -14,8 +14,8 @@ let redis: Redis | null = null;
 export function getRedisClient(): Redis {
   if (!redis) {
     // Use Upstash standard environment variables
-    const redisUrl = process.env["UPSTASH_REDIS_REST_URL"] || process.env["REDIS_URL"];
-    const redisToken = process.env["UPSTASH_REDIS_REST_TOKEN"] || process.env["REDIS_TOKEN"];
+    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.REDIS_URL;
+    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.REDIS_TOKEN;
 
     if (!redisUrl) {
       throw new Error("UPSTASH_REDIS_REST_URL or REDIS_URL environment variable is not set");
@@ -213,7 +213,7 @@ export function getCacheClient(): CacheClient {
   if (!cacheClient) {
     try {
       // Try to use Redis if available
-      if (process.env["REDIS_URL"]) {
+      if (process.env.REDIS_URL) {
         cacheClient = new RedisCacheClient();
       } else {
         console.warn("Redis not configured, using in-memory cache");

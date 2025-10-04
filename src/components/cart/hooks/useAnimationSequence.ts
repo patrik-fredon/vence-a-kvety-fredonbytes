@@ -13,7 +13,7 @@ export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
       console.log("🎯 [useAnimationSequence] startProductToCartAnimation called:", {
         productElement: productElement?.tagName,
         cartElement: cartElement?.tagName,
-        productImageSrc: productImageSrc?.substring(0, 50) + "...",
+        productImageSrc: `${productImageSrc?.substring(0, 50)}...`,
         isAnimating: state.isAnimating,
       });
 
@@ -48,7 +48,7 @@ export function useAnimationSequence(options: AnimationSequenceOptions = {}) {
       startAnimation(productElement, cartElement, productImageSrc);
       console.log("🎯 [useAnimationSequence] startAnimation called successfully");
     },
-    [startAnimation, options.skipReducedMotion, state.isAnimating]
+    [startAnimation, options.skipReducedMotion, state.isAnimating, state]
   );
 
   const cancelAnimation = useCallback(() => {

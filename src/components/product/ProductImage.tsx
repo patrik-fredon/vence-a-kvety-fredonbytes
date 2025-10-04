@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { ProductImage as ProductImageType } from "@/types/product";
 
@@ -177,7 +177,7 @@ export function ProductImage({
     const observer = new IntersectionObserver(
       (entries) => {
         const [entry] = entries;
-        if (entry && entry.isIntersecting) {
+        if (entry?.isIntersecting) {
           setIsInView(true);
           observer.disconnect();
         }

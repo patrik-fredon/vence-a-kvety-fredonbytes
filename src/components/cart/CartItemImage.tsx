@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import React, { useState } from "react";
+import { useState } from "react";
 import { resolveCartItemImage } from "@/lib/cart/image-utils";
 import { ShoppingCartIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";

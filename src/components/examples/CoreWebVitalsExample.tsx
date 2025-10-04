@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useCallback, useState } from "react";
+import { useCallback, useState } from "react";
 import { OptimizedImage } from "@/components/ui";
 import { Button } from "@/components/ui/Button";
 import { Card } from "@/components/ui/Card";

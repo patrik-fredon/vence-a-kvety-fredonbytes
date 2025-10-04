@@ -98,7 +98,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
   }
 
   // Generate structured data
-  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
   const productUrl = `${baseUrl}/${locale}/products/${slug}`;
 
   const productName = locale === "cs" ? product.name.cs : product.name.en;
@@ -215,8 +215,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
           ? productImages.map((img) => {
               if (img && typeof img === "object" && "url" in img && "alt" in img) {
                 return {
-                  url: typeof img["url"] === "string" ? img["url"] : "",
-                  alt: (typeof img["alt"] === "string" ? img["alt"] : null) || name,
+                  url: typeof img.url === "string" ? img.url : "",
+                  alt: (typeof img.alt === "string" ? img.alt : null) || name,
                 };
               }
               return { url: "", alt: name };

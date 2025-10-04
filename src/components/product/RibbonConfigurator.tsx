@@ -74,7 +74,7 @@ export function RibbonConfigurator({
           existing.choiceIds = [choiceId];
           // Clear custom value when selecting predefined option
           if (existing.customValue) {
-            delete existing.customValue;
+            existing.customValue = undefined;
           }
         } else {
           // Multiple selection - toggle
@@ -333,7 +333,6 @@ export function RibbonConfigurator({
     <section
       className={cn("space-y-6 p-4 bg-stone-50 rounded-lg border", className)}
       aria-labelledby={`${sectionId}-title`}
-      role="region"
     >
       <div className="space-y-4">
         <h4

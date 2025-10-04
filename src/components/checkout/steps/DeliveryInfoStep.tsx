@@ -2,7 +2,7 @@
 
 import { CalendarIcon, ClockIcon, MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { DeliveryCalendar } from "@/components/delivery/DeliveryCalendar";
 import { DeliveryOptionsSelector } from "@/components/delivery/DeliveryOptionsSelector";
 import { Input } from "@/components/ui/Input";

@@ -58,7 +58,7 @@ export default function ProductManagement() {
   useEffect(() => {
     fetchProducts();
     fetchCategories();
-  }, [currentPage, selectedCategory, showActiveOnly]);
+  }, [fetchCategories, fetchProducts]);
 
   const fetchProducts = async () => {
     try {

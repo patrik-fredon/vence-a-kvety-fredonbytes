@@ -14,7 +14,7 @@ const performanceConfig = {
   },
   development: {
     debug: {
-      showWebVitalsOverlay: process.env["NODE_ENV"] === "development",
+      showWebVitalsOverlay: process.env.NODE_ENV === "development",
     },
   },
   monitoring: {
@@ -170,7 +170,7 @@ export function WebVitalsTracker({
       window.removeEventListener("beforeunload", handleBeforeUnload);
       clearInterval(reportingInterval);
     };
-  }, [endpoint, sampleRate, autoReport, onMetric]);
+  }, [sampleRate, autoReport, onMetric, queueMetricForReporting, sendMetricsToServer]);
 
   /**
    * Queue metric for batch reporting

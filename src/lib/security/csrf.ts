@@ -3,7 +3,7 @@
  * Provides utilities for generating and validating CSRF tokens
  */
 
-import { createHash, randomBytes } from "crypto";
+import { createHash, randomBytes } from "node:crypto";
 import type { NextRequest } from "next/server";
 import { auth } from "@/lib/auth/config";
 

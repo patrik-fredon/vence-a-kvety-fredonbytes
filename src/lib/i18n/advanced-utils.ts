@@ -270,7 +270,6 @@ export function pluralize(
       return translations.few || translations.other;
     case "many":
       return translations.many || translations.other;
-    case "other":
     default:
       return translations.other;
   }

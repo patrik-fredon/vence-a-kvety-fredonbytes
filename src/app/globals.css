@@ -163,26 +163,26 @@ h1 {
 
 .high-contrast * {
   /* Ensure text has sufficient contrast */
-  color: inherit !important;
-  border-color: currentColor !important;
+  color: inherit;
+  border-color: currentColor;
 }
 
 .high-contrast button,
 .high-contrast input,
 .high-contrast select,
 .high-contrast textarea {
-  border: 2px solid currentColor !important;
-  background: transparent !important;
+  border: 2px solid currentColor;
+  background: transparent;
 }
 
 .high-contrast button:hover,
 .high-contrast button:focus {
-  background: Highlight !important;
-  color: HighlightText !important;
+  background: Highlight;
+  color: HighlightText;
 }
 
 .high-contrast a {
-  text-decoration: underline !important;
+  text-decoration: underline;
 }
 
 .high-contrast img {

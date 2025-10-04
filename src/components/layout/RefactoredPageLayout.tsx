@@ -90,7 +90,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
       </section>
 
       {/* Product References Section */}
-      <section aria-labelledby="products-heading" role="region" className="relative">
+      <section aria-labelledby="products-heading" className="relative">
         <ErrorBoundary
           level="component"
           context="LazyProductReferencesSection"
@@ -122,7 +122,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
 
       {/* Additional content if provided */}
       {children && (
-        <section role="region" aria-label="Additional content" className="relative">
+        <section aria-label="Additional content" className="relative">
           <ErrorBoundary
             level="component"
             context="AdditionalContent"

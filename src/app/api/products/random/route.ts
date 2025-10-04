@@ -9,7 +9,7 @@ export async function GET(request: NextRequest) {
     const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
 
-    const count = Math.min(Number.parseInt(searchParams.get("count") || "3"), 10); // Max 10 products
+    const count = Math.min(Number.parseInt(searchParams.get("count") || "3", 10), 10); // Max 10 products
 
     // Get random products that are active and in stock
     // Use a more sophisticated random selection algorithm
@@ -50,7 +50,7 @@ export async function GET(request: NextRequest) {
 
     // Filter products that are in stock
     const availableProducts = products.filter(
-      (product) => (product.availability as any)?.["inStock"] !== false
+      (product) => (product.availability as any)?.inStock !== false
     );
 
     if (availableProducts.length === 0) {

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import { useEffect, useRef } from "react";
 import { useCartAnimation } from "./CartAnimationProvider";
 import type { ProductToCartAnimationProps } from "./types";
 
@@ -21,7 +21,7 @@ export function ProductToCartAnimation({
         productElement: productElement?.tagName,
         cartElement: cartElement?.tagName,
         animationElement: !!animationElementRef.current,
-        productImageSrc: productImageSrc?.substring(0, 50) + "...",
+        productImageSrc: `${productImageSrc?.substring(0, 50)}...`,
       });
 
       if (!(productElement && cartElement && animationElementRef.current)) {

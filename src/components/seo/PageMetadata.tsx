@@ -29,7 +29,7 @@ interface PageMetadataProps {
  * Generate comprehensive metadata for different page types
  */
 export function generatePageMetadata(props: PageMetadataProps): Metadata {
-  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
   const fullUrl = props.canonicalUrl || `${baseUrl}/${props.locale}${props.path}`;
 
   // Generate enhanced meta tags

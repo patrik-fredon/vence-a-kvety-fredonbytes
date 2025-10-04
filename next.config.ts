@@ -1,6 +1,6 @@
+import path from "node:path";
 import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
-import path from "path";
 import {
   BUNDLE_ANALYZER_CONFIG,
   OPTIMIZE_PACKAGE_IMPORTS,
@@ -184,7 +184,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
     // Bundle analyzer configuration for monitoring bundle size
-    if (process.env["ANALYZE"] === "true") {
+    if (process.env.ANALYZE === "true") {
       const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
       config.plugins.push(
         new BundleAnalyzerPlugin({
@@ -226,7 +226,7 @@ const nextConfig: NextConfig = {
 
   // Environment variables that should be available on the client
   env: {
-    CUSTOM_KEY: process.env["CUSTOM_KEY"],
+    CUSTOM_KEY: process.env.CUSTOM_KEY,
   },
 
   // Redirects for SEO and user experience

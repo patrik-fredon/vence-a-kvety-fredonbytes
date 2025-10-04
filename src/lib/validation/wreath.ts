@@ -68,8 +68,7 @@ export function validateWreathCustomizations(
 
   // 2. Check if ribbon is selected - specifically check for "ribbon_yes" choice
   const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption?.id);
-  const isRibbonSelected =
-    ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   // 3. Validate ribbon dependency requirements
   if (isRibbonSelected) {
@@ -284,8 +283,7 @@ export function validateRibbonDependencies(
   }
 
   const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption.id);
-  const isRibbonSelected =
-    ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   if (isRibbonSelected) {
     // Check ribbon color
@@ -661,12 +659,12 @@ function generateFallbackConfiguration(
 
   // Apply fallback strategies based on errors
   errors.forEach((error) => {
-    if (error.fallbackAction && error.context?.["fallbackValue"] !== undefined) {
+    if (error.fallbackAction && error.context?.fallbackValue !== undefined) {
       switch (error.fallbackAction) {
         case "select_default_size": {
           // Add default size if missing
           const sizeOption = customizationOptions.find((opt) => opt.type === "size");
-          if (sizeOption && sizeOption.choices && sizeOption.choices.length > 0) {
+          if (sizeOption?.choices && sizeOption.choices.length > 0) {
             const existingSizeIndex = fallbackCustomizations.findIndex(
               (c) => c.optionId === sizeOption.id
             );
@@ -705,7 +703,7 @@ function generateFallbackConfiguration(
         case "use_predefined_text": {
           // Replace custom text with first predefined option
           const textOption = customizationOptions.find((opt) => opt.type === "ribbon_text");
-          if (textOption && textOption.choices) {
+          if (textOption?.choices) {
             const predefinedChoice = textOption.choices.find((c) => c.id !== "text_custom");
             if (predefinedChoice) {
               const textIndex = fallbackCustomizations.findIndex(
@@ -713,7 +711,7 @@ function generateFallbackConfiguration(
               );
               if (textIndex >= 0 && fallbackCustomizations[textIndex]) {
                 fallbackCustomizations[textIndex].choiceIds = [predefinedChoice.id];
-                delete fallbackCustomizations[textIndex].customValue;
+                fallbackCustomizations[textIndex].customValue = undefined;
                 hasChanges = true;
               }
             }

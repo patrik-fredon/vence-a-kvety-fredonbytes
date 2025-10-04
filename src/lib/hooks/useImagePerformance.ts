@@ -43,7 +43,7 @@ export const useImagePerformance = (
 ): ImagePerformanceResult => {
   const {
     enabled = true,
-    logMetrics = process.env["NODE_ENV"] === "development",
+    logMetrics = process.env.NODE_ENV === "development",
     onMetrics,
   } = options;
 
@@ -103,7 +103,7 @@ export const useImagePerformance = (
         ) as PerformanceResourceTiming[];
         const imageEntry = resourceEntries.find((entry) => entry.name.includes(imageSrc));
 
-        if (imageEntry && imageEntry.transferSize) {
+        if (imageEntry?.transferSize) {
           updatedMetrics.fileSize = imageEntry.transferSize;
         }
       }

@@ -147,7 +147,7 @@ export const trackImagePerformance = (
     const resourceEntries = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
     const imageEntry = resourceEntries.find((entry) => entry.name.includes(url));
 
-    if (imageEntry && imageEntry.transferSize) {
+    if (imageEntry?.transferSize) {
       metrics.fileSize = imageEntry.transferSize;
     }
   }

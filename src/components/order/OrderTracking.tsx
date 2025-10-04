@@ -36,7 +36,7 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
 
   useEffect(() => {
     fetchOrderHistory();
-  }, [orderId]);
+  }, [fetchOrderHistory]);
 
   const fetchOrderHistory = async () => {
     try {

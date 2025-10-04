@@ -94,7 +94,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
   }, [mobile]);
 
   const isActiveLink = (href: string) => {
-    return pathname === href || pathname.startsWith(href + "/");
+    return pathname === href || pathname.startsWith(`${href}/`);
   };
 
   const handleDropdownToggle = (categoryId: string) => {
@@ -116,7 +116,7 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
   // For mobile navigation, use enhanced stone-based design
   if (mobile) {
     return (
-      <nav className="space-y-1" role="navigation" aria-label={tAccessibility("mobileNavigation")}>
+      <nav className="space-y-1" aria-label={tAccessibility("mobileNavigation")}>
         {navItems.map((item) => (
           <div key={item.href}>
             {item.hasDropdown ? (
@@ -178,7 +178,6 @@ export function Navigation({ locale, mobile = false, onItemClick }: NavigationPr
       id="main-navigation"
       className="flex items-center space-x-8"
       ref={dropdownRef}
-      role="navigation"
       aria-label={tAccessibility("mainNavigation")}
     >
       {navItems.map((item) => (

@@ -45,11 +45,7 @@ export function ContactForm({ locale }: ContactFormProps) {
     }
 
     // Phone validation (optional)
-    if (
-      formData.phone &&
-      formData.phone.trim() &&
-      !/^(\+420)?[0-9\s\-()]{9,}$/.test(formData.phone.trim())
-    ) {
+    if (formData.phone?.trim() && !/^(\+420)?[0-9\s\-()]{9,}$/.test(formData.phone.trim())) {
       newErrors.phone =
         locale === "cs" ? "Telefon není ve správném formátu" : "Invalid phone format";
     }

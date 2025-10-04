@@ -166,7 +166,6 @@ export function calculateEarliestDeliveryDate(
     case "express":
       hoursToAdd = settings.expressDeliveryHours;
       break;
-    case "standard":
     default:
       hoursToAdd = settings.standardDeliveryHours;
       break;
@@ -176,7 +175,7 @@ export function calculateEarliestDeliveryDate(
 
   // For same-day delivery, check if it's still possible today
   if (urgency === "same-day") {
-    const endOfWorkingHours = Number.parseInt(settings.workingHours.end.split(":")[0] || "18");
+    const endOfWorkingHours = Number.parseInt(settings.workingHours.end.split(":")[0] || "18", 10);
     if (currentHour >= endOfWorkingHours - settings.sameDayDeliveryHours) {
       // Too late for same-day, move to next working day
       return getNextWorkingDay(now, settings);

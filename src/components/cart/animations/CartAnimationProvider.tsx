@@ -79,7 +79,7 @@ export function CartAnimationProvider({ children, config = {} }: CartAnimationPr
       console.log("🎬 [CartAnimationProvider] Starting animation:", {
         productElement: productElement?.tagName,
         cartElement: cartElement?.tagName,
-        productImageSrc: productImageSrc?.substring(0, 50) + "...",
+        productImageSrc: `${productImageSrc?.substring(0, 50)}...`,
         hasElements: !!productElement && !!cartElement,
       });
 

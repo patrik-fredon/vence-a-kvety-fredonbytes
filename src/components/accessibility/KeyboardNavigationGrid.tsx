@@ -37,7 +37,7 @@ export function KeyboardNavigationGrid({
       ) as HTMLElement[];
       setGridItems(items);
     }
-  }, [children]);
+  }, []);
 
   const handleItemActivate = useCallback(
     (index: number, element: HTMLElement) => {

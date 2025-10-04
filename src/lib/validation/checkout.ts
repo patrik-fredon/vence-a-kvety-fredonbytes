@@ -189,8 +189,7 @@ export function validateWreathCustomizations(
 
   // 2. Check if ribbon is selected
   const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption?.id);
-  const isRibbonSelected =
-    ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   // 3. Validate ribbon dependency requirements
   if (isRibbonSelected) {
@@ -405,8 +404,7 @@ export function validateRibbonDependencies(
   }
 
   const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption.id);
-  const isRibbonSelected =
-    ribbonCustomization && ribbonCustomization.choiceIds.includes("ribbon_yes");
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   if (isRibbonSelected) {
     // Check ribbon color

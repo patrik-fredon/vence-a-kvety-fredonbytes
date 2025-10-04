@@ -176,7 +176,7 @@ export class CartSyncManager {
     if (!this.eventListeners.has(event)) {
       this.eventListeners.set(event, []);
     }
-    this.eventListeners.get(event)!.push(listener);
+    this.eventListeners.get(event)?.push(listener);
   }
 
   /**

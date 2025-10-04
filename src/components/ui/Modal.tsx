@@ -93,7 +93,7 @@ export function Modal({
       previousActiveElement.current.focus();
       previousActiveElement.current = null;
     }
-  }, [isOpen, announce, title, initialFocus]);
+  }, [isOpen, announce, title, initialFocus, modalRef.current, t]);
 
   const handleOverlayClick = (event: React.MouseEvent) => {
     if (closeOnOverlayClick && event.target === event.currentTarget) {

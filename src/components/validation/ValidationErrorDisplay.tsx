@@ -120,7 +120,7 @@ export function ValidationErrorDisplay({
                     </div>
 
                     {/* Recovery Actions */}
-                    {strategy && strategy.canRecover && (
+                    {strategy?.canRecover && (
                       <div className="flex items-center gap-2 ml-4">
                         <Button
                           variant="outline"
@@ -201,7 +201,7 @@ export function ValidationErrorDisplay({
                       </button>
                     </div>
 
-                    {strategy && strategy.canRecover && (
+                    {strategy?.canRecover && (
                       <div className="ml-4">
                         <Button
                           variant="outline"

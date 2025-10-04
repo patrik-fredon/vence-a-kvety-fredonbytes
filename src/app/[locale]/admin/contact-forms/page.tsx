@@ -101,7 +101,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             </div>
             <div>
               <p className="text-sm font-medium text-teal-800 truncate">New</p>
-              <p className="text-2xl font-semibold text-neutral-900">{stats?.["new"] || 0}</p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.new || 0}</p>
             </div>
           </div>
         </div>
@@ -133,7 +133,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             </div>
             <div>
               <p className="text-sm font-medium text-teal-800 truncate">Read</p>
-              <p className="text-2xl font-semibold text-neutral-900">{stats?.["read"] || 0}</p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.read || 0}</p>
             </div>
           </div>
         </div>
@@ -159,7 +159,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             </div>
             <div>
               <p className="text-sm font-medium text-teal-800 truncate">Replied</p>
-              <p className="text-2xl font-semibold text-neutral-900">{stats?.["replied"] || 0}</p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.replied || 0}</p>
             </div>
           </div>
         </div>
@@ -185,7 +185,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
             </div>
             <div>
               <p className="text-sm font-medium text-teal-800 truncate">Archived</p>
-              <p className="text-2xl font-semibold text-neutral-900">{stats?.["archived"] || 0}</p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.archived || 0}</p>
             </div>
           </div>
         </div>

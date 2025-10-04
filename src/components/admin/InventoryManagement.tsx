@@ -45,7 +45,7 @@ export default function InventoryManagement() {
   useEffect(() => {
     fetchAlerts();
     fetchInventoryProducts();
-  }, [showAcknowledged]);
+  }, [fetchAlerts, fetchInventoryProducts]);
 
   const fetchAlerts = async () => {
     try {
@@ -303,7 +303,7 @@ export default function InventoryManagement() {
                               min="0"
                               value={product.stock_quantity}
                               onChange={(e) => {
-                                const newValue = Number.parseInt(e.target.value) || 0;
+                                const newValue = Number.parseInt(e.target.value, 10) || 0;
                                 if (newValue !== product.stock_quantity) {
                                   handleUpdateStock(product.id, newValue);
                                 }

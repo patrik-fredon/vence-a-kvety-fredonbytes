@@ -33,7 +33,7 @@ export function DateDisplay({
 
   const dateObj = typeof date === "string" ? new Date(date) : date;
 
-  if (isNaN(dateObj.getTime())) {
+  if (Number.isNaN(dateObj.getTime())) {
     return (
       <span className={className} data-testid="date-display">
         -
@@ -154,7 +154,7 @@ export function formatDate(
 
   const dateObj = typeof date === "string" ? new Date(date) : date;
 
-  if (isNaN(dateObj.getTime())) return "-";
+  if (Number.isNaN(dateObj.getTime())) return "-";
 
   // Handle relative dates
   if (relative) {
