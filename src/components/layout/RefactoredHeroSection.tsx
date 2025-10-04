@@ -161,19 +161,19 @@ export function RefactoredHeroSection({
         </div>
 
         {/* Main Heading - Mobile-first responsive typography with staggered fade-in */}
-        <h1
+        <p
           id="hero-heading"
           className={cn(
             "font-serif font-bold",
             // Mobile-first font sizes (320px-767px)
-            "text-2xl", // 24px on very small screens
-            "xs:text-3xl", // 30px for 375px+
-            "sm:text-4xl", // 36px for small screens (640px+)
+            "text-xs", // 24px on very small screens
+            "xs:text-sm", // 30px for 375px+
+            "sm:text-md", // 36px for small screens (640px+)
             // Tablet font sizes (768px-1023px)
-            "md:text-5xl", // 48px for tablets
+            "md:text-xl", // 48px for tablets
             // Desktop font sizes (1024px+)
-            "lg:text-6xl", // 60px for desktop
-            "xl:text-7xl", // 72px for large screens
+            "lg:text-2xl", // 60px for desktop
+            "xl:text-4xl", // 72px for large screens
             // Mobile-first line heights
             "leading-tight", // 1.25 for mobile
             "md:leading-tight", // Maintain tight leading on tablet
@@ -185,7 +185,7 @@ export function RefactoredHeroSection({
             "md:mb-8", // More generous on tablet
             "lg:mb-10", // Ample spacing on desktop
             // Text color
-            "text-amber-100",
+            "text-amber-200",
             // Staggered fade-in animation (respecting reduced motion)
             !prefersReducedMotion && animationStarted
               ? "animate-fade-in-up-delay-1"
@@ -193,7 +193,7 @@ export function RefactoredHeroSection({
           )}
         >
           {safeT("heading")}
-        </h1>
+        </p>
 
         {/* Subheading - Mobile-first responsive typography with staggered fade-in */}
         <p
@@ -201,13 +201,13 @@ export function RefactoredHeroSection({
           className={cn(
             // Mobile-first font sizes (320px-767px)
             "text-base", // 16px on very small screens
-            "xs:text-lg", // 18px for 375px+
-            "sm:text-xl", // 20px for small screens (640px+)
+            "xs:text-xs", // 18px for 375px+
+            "sm:text-xs", // 20px for small screens (640px+)
             // Tablet font sizes (768px-1023px)
-            "md:text-2xl", // 24px for tablets
+            "md:text-sm", // 24px for tablets
             // Desktop font sizes (1024px+)
-            "lg:text-3xl", // 30px for desktop
-            "xl:text-4xl", // 36px for large screens
+            "lg:text-md", // 30px for desktop
+            "xl:text-xl", // 36px for large screens
             // Mobile-first line heights
             "leading-relaxed", // 1.625 for mobile
             "md:leading-relaxed", // Maintain relaxed leading on tablet
@@ -219,8 +219,10 @@ export function RefactoredHeroSection({
             "md:mb-10", // More generous on tablet
             "lg:mb-12", // Ample spacing on desktop
             "xl:mb-14", // Maximum spacing for large screens
+            "font-thin",
+            "italic",
             // Text color - updated to amber-200 for hierarchy
-            "text-amber-200",
+            "text-amber-200/50",
             // Staggered fade-in animation (respecting reduced motion)
             !prefersReducedMotion && animationStarted
               ? "animate-fade-in-up-delay-2"
