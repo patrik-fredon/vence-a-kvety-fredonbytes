@@ -77,14 +77,7 @@ export function RefactoredHeroSection({
       className={cn(
         // Background color - using teal-800 solid color (exception to gradient rule)
         "bg-teal-800",
-        // Mobile-first responsive height (320px-767px)
-        "min-h-[600px]", // Increased height on mobile for impact
-        "sm:min-h-[650px]", // Small screens (640px+)
-        // Tablet optimizations (768px-1023px)
-        "md:min-h-[700px]", // Increased height for tablet viewing
-        // Desktop layout with proper space utilization (1024px+)
-        "lg:min-h-[750px]", // Larger hero on desktop
-        "xl:min-h-[800px]", // Maximum height for very large screens
+        "min-h-screen",
         // Flexbox layout for centering
         "flex items-center justify-center",
         // Mobile-first responsive padding
@@ -185,7 +178,7 @@ export function RefactoredHeroSection({
             "md:mb-8", // More generous on tablet
             "lg:mb-10", // Ample spacing on desktop
             // Text color
-            "text-amber-200",
+            "text-amber-300",
             // Staggered fade-in animation (respecting reduced motion)
             !prefersReducedMotion && animationStarted
               ? "animate-fade-in-up-delay-1"
@@ -219,7 +212,7 @@ export function RefactoredHeroSection({
             "md:mb-10", // More generous on tablet
             "lg:mb-12", // Ample spacing on desktop
             "xl:mb-14", // Maximum spacing for large screens
-            "font-thin",
+            "font-light",
             "italic",
             // Text color - updated to amber-200 for hierarchy
             "text-amber-200/50",
@@ -255,7 +248,7 @@ export function RefactoredHeroSection({
             // Font weight and styling
             "font-semibold",
             // Background and text colors - updated to use teal-900 for text
-            "bg-amber-200 text-teal-900",
+            "bg-funeral-gold text-teal-900",
             // Border radius
             "rounded-lg",
             // Hover state - updated to amber-300
