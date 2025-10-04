@@ -90,7 +90,7 @@ function testContrast(
     meetsAA,
     meetsNonText,
     status: passes ? "✅ Pass" : "❌ Fail",
-    notes,
+    ...(notes !== undefined && { notes }),
   };
 }
 
