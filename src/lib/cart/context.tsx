@@ -272,10 +272,7 @@ export function CartProvider({ children }: CartProviderProps) {
       window.removeEventListener("online", handleOnline);
       window.removeEventListener("offline", handleOffline);
     };
-  }, [
-    isRealTimeEnabled, // Sync when coming back online
-    syncWithServer,
-  ]);
+  }, [isRealTimeEnabled]); // syncWithServer is stable via useCallback
 
   // Enhanced fetch cart with retry logic
   const fetchCart = useCallback(

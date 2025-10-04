@@ -6,7 +6,7 @@ import {
   ShieldCheckIcon,
 } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { LazyStripePaymentForm } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { PaymentMethod } from "@/types/order";
@@ -41,7 +41,9 @@ export function PaymentStep({
     paymentId?: string;
   } | null>(null);
   const [isInitializing, setIsInitializing] = useState(false);
-  const [initializationError, setInitializationError] = useState<string | null>(null);
+  const [initializationError, setInitializationError] = useState<string | null>(
+    null
+  );
 
   // Auto-select Stripe as the only payment method
   useEffect(() => {
@@ -50,14 +52,7 @@ export function PaymentStep({
     }
   }, [paymentMethod, onChange]);
 
-  // Initialize payment when method is selected and we have required data
-  useEffect(() => {
-    if (paymentMethod && orderId && amount && customerEmail) {
-      initializePayment();
-    }
-  }, [paymentMethod, orderId, amount, customerEmail, initializePayment]);
-
-  const initializePayment = async () => {
+  const initializePayment = useCallback(async () => {
     if (!(paymentMethod && orderId && amount && customerEmail)) {
       return;
     }
@@ -101,7 +96,22 @@ export function PaymentStep({
     } finally {
       setIsInitializing(false);
     }
-  };
+  }, [
+    paymentMethod,
+    orderId,
+    amount,
+    currency,
+    customerEmail,
+    locale,
+    onPaymentError,
+  ]);
+
+  // Initialize payment when method is selected and we have required data
+  useEffect(() => {
+    if (paymentMethod && orderId && amount && customerEmail) {
+      initializePayment();
+    }
+  }, [paymentMethod, orderId, amount, customerEmail, initializePayment]);
 
   const handlePaymentSuccess = (result: any) => {
     console.log("Payment successful:", result);
@@ -130,7 +140,9 @@ export function PaymentStep({
         <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-2">
           {t("paymentInfo")}
         </h2>
-        <p className="text-neutral-600">Vyberte způsob platby pro dokončení objednávky.</p>
+        <p className="text-neutral-600">
+          Vyberte způsob platby pro dokončení objednávky.
+        </p>
       </div>
 
       {/* Payment Options */}
@@ -170,7 +182,9 @@ export function PaymentStep({
                   }
                 `}
                 >
-                  {paymentMethod === option.id && <div className="w-2 h-2 rounded-full bg-white" />}
+                  {paymentMethod === option.id && (
+                    <div className="w-2 h-2 rounded-full bg-white" />
+                  )}
                 </div>
               </div>
 
@@ -191,7 +205,9 @@ export function PaymentStep({
               {/* Content */}
               <div className="flex-1 min-w-0">
                 <div className="flex items-center justify-between mb-2">
-                  <h3 className="text-lg font-semibold text-neutral-900">{option.name}</h3>
+                  <h3 className="text-lg font-semibold text-neutral-900">
+                    {option.name}
+                  </h3>
                 </div>
 
                 <p className="text-neutral-600 mb-3">{option.description}</p>
@@ -225,7 +241,9 @@ export function PaymentStep({
         <div className="flex items-start space-x-3">
           <ShieldCheckIcon className="w-6 h-6 text-green-600 flex-shrink-0 mt-0.5" />
           <div>
-            <h3 className="text-lg font-semibold text-green-800 mb-2">Bezpečné platby</h3>
+            <h3 className="text-lg font-semibold text-green-800 mb-2">
+              Bezpečné platby
+            </h3>
             <div className="space-y-2 text-sm text-green-700">
               <p>• Všechny platby jsou šifrovány pomocí SSL certifikátu</p>
               <p>• Neukládáme údaje o platebních kartách</p>
@@ -239,10 +257,13 @@ export function PaymentStep({
       {/* Payment Method Details */}
       {paymentMethod === "stripe" && (
         <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-semibold text-blue-800 mb-2">Platba kartou přes Stripe</h4>
+          <h4 className="font-semibold text-blue-800 mb-2">
+            Platba kartou přes Stripe
+          </h4>
           <p className="text-sm text-blue-700">
-            Po dokončení objednávky budete přesměrováni na bezpečnou platební bránu Stripe, kde
-            zadáte údaje své platební karty. Platba bude zpracována okamžitě.
+            Po dokončení objednávky budete přesměrováni na bezpečnou platební
+            bránu Stripe, kde zadáte údaje své platební karty. Platba bude
+            zpracována okamžitě.
           </p>
         </div>
       )}
@@ -264,8 +285,12 @@ export function PaymentStep({
               <div className="flex items-start space-x-3">
                 <ExclamationTriangleIcon className="w-5 h-5 text-red-600 flex-shrink-0 mt-0.5" />
                 <div>
-                  <h4 className="text-sm font-medium text-red-800">Chyba inicializace platby</h4>
-                  <p className="text-sm text-red-700 mt-1">{initializationError}</p>
+                  <h4 className="text-sm font-medium text-red-800">
+                    Chyba inicializace platby
+                  </h4>
+                  <p className="text-sm text-red-700 mt-1">
+                    {initializationError}
+                  </p>
                 </div>
               </div>
             </div>
@@ -291,11 +316,17 @@ export function PaymentStep({
       <div className="bg-neutral-50 border border-neutral-200 rounded-lg p-4">
         <p className="text-sm text-neutral-700">
           Dokončením objednávky souhlasíte s našimi{" "}
-          <a href="/terms" className="text-primary-600 hover:text-primary-700 underline">
+          <a
+            href="/terms"
+            className="text-primary-600 hover:text-primary-700 underline"
+          >
             obchodními podmínkami
           </a>{" "}
           a{" "}
-          <a href="/privacy" className="text-primary-600 hover:text-primary-700 underline">
+          <a
+            href="/privacy"
+            className="text-primary-600 hover:text-primary-700 underline"
+          >
             zásadami ochrany osobních údajů
           </a>
           .

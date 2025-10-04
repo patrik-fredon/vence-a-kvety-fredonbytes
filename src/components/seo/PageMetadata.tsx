@@ -29,8 +29,10 @@ interface PageMetadataProps {
  * Generate comprehensive metadata for different page types
  */
 export function generatePageMetadata(props: PageMetadataProps): Metadata {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
-  const fullUrl = props.canonicalUrl || `${baseUrl}/${props.locale}${props.path}`;
+  const baseUrl =
+    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const fullUrl =
+    props.canonicalUrl || `${baseUrl}/${props.locale}${props.path}`;
 
   // Generate enhanced meta tags
   // const metaTags = generateEnhancedMetaTags(props); // TODO: Use this for enhanced meta tags
@@ -64,7 +66,9 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       images: props.image
         ? [
             {
-              url: props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`,
+              url: props.image.startsWith("http")
+                ? props.image
+                : `${baseUrl}${props.image}`,
               width: 1200,
               height: 630,
               alt: props.openGraph?.title || props.title,
@@ -77,7 +81,11 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       title: props.title,
       description: props.description,
       images: props.image
-        ? [props.image.startsWith("http") ? props.image : `${baseUrl}${props.image}`]
+        ? [
+            props.image.startsWith("http")
+              ? props.image
+              : `${baseUrl}${props.image}`,
+          ]
         : [],
       site: "@ketingmar", // Add when Twitter account is available
       creator: "@ketingmar",
@@ -185,8 +193,8 @@ export function generateProductMetadata(params: {
       product.availability === "InStock"
         ? "in stock"
         : product.availability === "OutOfStock"
-          ? "out of stock"
-          : "preorder",
+        ? "out of stock"
+        : "preorder",
     brand: product.brand || "Ketingmar s.r.o.",
     ...(product.category && { category: product.category }),
   });
@@ -210,7 +218,9 @@ export function generateCategoryMetadata(params: {
   const title = `${category.name} | Pohřební věnce | Ketingmar s.r.o.`;
   const description =
     category.description ||
-    `Prohlédněte si naši kolekci ${category.name.toLowerCase()}. ${category.productCount} produktů k dispozici. Ruční výroba, rychlé dodání.`;
+    `Prohlédněte si naši kolekci ${category.name.toLowerCase()}. ${
+      category.productCount
+    } produktů k dispozici. Ruční výroba, rychlé dodání.`;
 
   const categoryKeywords = [
     category.name.toLowerCase(),
@@ -234,7 +244,9 @@ export function generateCategoryMetadata(params: {
 /**
  * Generate metadata for homepage using i18n content
  */
-export async function generateHomepageMetadata(locale: string): Promise<Metadata> {
+export async function generateHomepageMetadata(
+  locale: string
+): Promise<Metadata> {
   // Import translations dynamically
   const messages = await import(`../../../messages/${locale}.json`);
   const seoData = messages.default.seo.home;
@@ -254,7 +266,9 @@ export async function generateHomepageMetadata(locale: string): Promise<Metadata
 /**
  * Generate metadata for FAQ page using i18n content
  */
-export async function generateFAQPageMetadata(locale: string): Promise<Metadata> {
+export async function generateFAQPageMetadata(
+  locale: string
+): Promise<Metadata> {
   // Import translations dynamically
   const messages = await import(`../../../messages/${locale}.json`);
   const seoData = messages.default.seo.faq;
@@ -316,7 +330,9 @@ export async function generateLegalMetadata(locale: string): Promise<Metadata> {
 /**
  * Generate metadata for About page using i18n content
  */
-export async function generateAboutPageMetadata(locale: string): Promise<Metadata> {
+export async function generateAboutPageMetadata(
+  locale: string
+): Promise<Metadata> {
   // Import translations dynamically
   const messages = await import(`../../../messages/${locale}.json`);
   const seoData = messages.default.seo.aboutPage;

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, useCallback } from "react";
 import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
 
 // Performance configuration - inline to avoid build issues
@@ -60,19 +60,75 @@ export function WebVitalsTracker({
   debug = performanceConfig.development?.debug?.showWebVitalsOverlay ?? false,
   endpoint = performanceConfig.monitoring?.webVitalsTracking?.endpoint ??
     "/api/monitoring/web-vitals",
-  sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ?? 0.1,
-  autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ?? true,
+  sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ??
+    0.1,
+  autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ??
+    true,
   onMetric,
 }: WebVitalsTrackerProps) {
   const [vitals, setVitals] = useState<WebVitalsData>({});
   const [isVisible, setIsVisible] = useState(debug);
-  const [isMounted, setIsMounted] = useState(false);
   const reportedMetrics = useRef(new Set<string>());
   const metricsQueue = useRef<WebVitalsMetric[]>([]);
 
-  useEffect(() => {
-    setIsMounted(true);
+  /**
+   * Queue metric for batch reporting
+   */
+  const queueMetricForReporting = useCallback((metric: WebVitalsMetric) => {
+    const metricKey = `${metric.name}-${metric.id}`;
+
+    if (!reportedMetrics.current.has(metricKey)) {
+      metricsQueue.current.push(metric);
+      reportedMetrics.current.add(metricKey);
+    }
   }, []);
+
+  /**
+   * Send metrics to server
+   */
+  const sendMetricsToServer = useCallback(
+    async (metrics: WebVitalsMetric[], useBeacon = false) => {
+      if (metrics.length === 0) return;
+
+      const payload = {
+        metrics: metrics.map((metric) => ({
+          name: metric.name,
+          value: metric.value,
+          rating: metric.rating,
+          timestamp: Date.now(),
+          url: window.location.href,
+          id: metric.id,
+          navigationType: metric.navigationType,
+          userAgent: navigator.userAgent,
+        })),
+        timestamp: Date.now(),
+        sessionId: getSessionId(),
+      };
+
+      try {
+        if (useBeacon && "sendBeacon" in navigator) {
+          // Use sendBeacon for reliable delivery on page unload
+          navigator.sendBeacon(
+            endpoint,
+            new Blob([JSON.stringify(payload)], { type: "application/json" })
+          );
+        } else {
+          // Use fetch for regular reporting
+          await fetch(endpoint, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(payload),
+            keepalive: true,
+          });
+        }
+      } catch (error) {
+        console.warn("Failed to send Web Vitals metrics:", error);
+      }
+    },
+    [endpoint]
+  );
 
   useEffect(() => {
     let webVitalsModule: any = null;
@@ -170,70 +226,23 @@ export function WebVitalsTracker({
       window.removeEventListener("beforeunload", handleBeforeUnload);
       clearInterval(reportingInterval);
     };
-  }, [sampleRate, autoReport, onMetric, queueMetricForReporting, sendMetricsToServer]);
-
-  /**
-   * Queue metric for batch reporting
-   */
-  const queueMetricForReporting = (metric: WebVitalsMetric) => {
-    const metricKey = `${metric.name}-${metric.id}`;
-
-    if (!reportedMetrics.current.has(metricKey)) {
-      metricsQueue.current.push(metric);
-      reportedMetrics.current.add(metricKey);
-    }
-  };
-
-  /**
-   * Send metrics to server
-   */
-  const sendMetricsToServer = async (metrics: WebVitalsMetric[], useBeacon = false) => {
-    if (metrics.length === 0) return;
-
-    const payload = {
-      metrics: metrics.map((metric) => ({
-        name: metric.name,
-        value: metric.value,
-        rating: metric.rating,
-        timestamp: Date.now(),
-        url: window.location.href,
-        id: metric.id,
-        navigationType: metric.navigationType,
-        userAgent: navigator.userAgent,
-      })),
-      timestamp: Date.now(),
-      sessionId: getSessionId(),
-    };
-
-    try {
-      if (useBeacon && "sendBeacon" in navigator) {
-        // Use sendBeacon for reliable delivery on page unload
-        navigator.sendBeacon(
-          endpoint,
-          new Blob([JSON.stringify(payload)], { type: "application/json" })
-        );
-      } else {
-        // Use fetch for regular reporting
-        await fetch(endpoint, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(payload),
-          keepalive: true,
-        });
-      }
-    } catch (error) {
-      console.warn("Failed to send Web Vitals metrics:", error);
-    }
-  };
+  }, [
+    sampleRate,
+    autoReport,
+    onMetric,
+    queueMetricForReporting,
+    sendMetricsToServer,
+  ]);
 
   /**
    * Get or create session ID
    */
   const getSessionId = () => {
     // Check if we're in the browser environment
-    if (typeof window === "undefined" || typeof sessionStorage === "undefined") {
+    if (
+      typeof window === "undefined" ||
+      typeof sessionStorage === "undefined"
+    ) {
       return null; // Return null for server-side rendering
     }
 
@@ -309,113 +318,45 @@ export function WebVitalsTracker({
           <button
             onClick={() => setIsVisible(false)}
             style={{
-              background: "none",
+              background: "transparent",
               border: "none",
               color: "white",
               cursor: "pointer",
+              padding: "0",
               fontSize: "16px",
             }}
           >
             ×
           </button>
         </div>
-
-        {Object.entries(vitals).map(([name, metric]) => (
-          <div
-            key={name}
-            style={{ marginBottom: "8px", display: "flex", justifyContent: "space-between" }}
-          >
-            <span>{name}:</span>
-            <span style={{ color: getRatingColor(metric.rating) }}>
-              {formatValue(name, metric.value)}
-              {getUnit(name)}
-            </span>
-          </div>
-        ))}
-
-        {Object.keys(vitals).length === 0 && (
-          <div style={{ color: "#9ca3af", fontStyle: "italic" }}>Collecting metrics...</div>
-        )}
-
-        <div style={{ marginTop: "12px", fontSize: "10px", color: "#9ca3af" }}>
-          Session: {isMounted ? getSessionId()?.split("-")[0] || "N/A" : "Loading..."}
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+          {Object.entries(vitals).map(([name, metric]) => (
+            <div
+              key={name}
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "center",
+                padding: "4px 0",
+                borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+              }}
+            >
+              <span style={{ fontWeight: "bold" }}>{name}</span>
+              <span
+                style={{
+                  color: getRatingColor(metric.rating),
+                  fontWeight: "bold",
+                }}
+              >
+                {formatValue(name, metric.value)}
+                {getUnit(name)}
+              </span>
+            </div>
+          ))}
         </div>
       </div>
     );
   }
 
-  // Toggle button for debug mode
-  if (debug && !isVisible) {
-    return (
-      <button
-        onClick={() => setIsVisible(true)}
-        style={{
-          position: "fixed",
-          bottom: "20px",
-          right: "20px",
-          background: "#2563eb",
-          color: "white",
-          border: "none",
-          borderRadius: "50%",
-          width: "48px",
-          height: "48px",
-          cursor: "pointer",
-          fontSize: "20px",
-          zIndex: 9999,
-          boxShadow: "0 2px 8px rgba(0, 0, 0, 0.2)",
-        }}
-        title="Show Web Vitals"
-      >
-        📊
-      </button>
-    );
-  }
-
-  // Return null for production mode
   return null;
 }
-
-/**
- * Hook for accessing Web Vitals data
- */
-export function useWebVitals() {
-  const [vitals, setVitals] = useState<WebVitalsData>({});
-
-  useEffect(() => {
-    const initializeWebVitals = async () => {
-      try {
-        const webVitalsModule = await import("web-vitals");
-
-        const handleMetric = (metric: any) => {
-          setVitals((prev) => ({
-            ...prev,
-            [metric.name]: {
-              name: metric.name,
-              value: metric.value,
-              rating: metric.rating,
-              delta: metric.delta,
-              id: metric.id,
-              navigationType: metric.navigationType || "unknown",
-            },
-          }));
-        };
-
-        // Initialize all metrics
-        if (webVitalsModule.onCLS) webVitalsModule.onCLS(handleMetric);
-        if (webVitalsModule.onINP) webVitalsModule.onINP(handleMetric);
-        if (webVitalsModule.onFCP) webVitalsModule.onFCP(handleMetric);
-        if (webVitalsModule.onLCP) webVitalsModule.onLCP(handleMetric);
-        if (webVitalsModule.onTTFB) webVitalsModule.onTTFB(handleMetric);
-        // Note: onFID has been deprecated in favor of onINP
-      } catch (error) {
-        console.warn("Web Vitals library not available:", error);
-      }
-    };
-
-    initializeWebVitals();
-  }, []);
-
-  return vitals;
-}
-
-export default WebVitalsTracker;

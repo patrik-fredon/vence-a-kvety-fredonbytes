@@ -4,7 +4,11 @@ import { useTranslations } from "next-intl";
 import { useCallback, useMemo } from "react";
 import { useCustomizationCache } from "@/lib/cache/customization-cache";
 import { useDebouncedPriceCalculation } from "@/lib/utils/usePriceCalculation";
-import type { Customization, CustomizationOption, Product } from "@/types/product";
+import type {
+  Customization,
+  CustomizationOption,
+  Product,
+} from "@/types/product";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 import { SizeSelector } from "./SizeSelector";
 
@@ -92,12 +96,13 @@ export function OptimizedProductCustomizer({
       let cleanedCustomizations = [...customizations];
 
       for (const dependentOption of dependentOptions) {
-        const shouldBeVisible = dependentOption.dependsOn?.requiredChoiceIds.some((requiredId) => {
-          const parentCustomization = cleanedCustomizations.find(
-            (c) => c.optionId === dependentOption.dependsOn?.optionId
-          );
-          return parentCustomization?.choiceIds.includes(requiredId);
-        });
+        const shouldBeVisible =
+          dependentOption.dependsOn?.requiredChoiceIds.some((requiredId) => {
+            const parentCustomization = cleanedCustomizations.find(
+              (c) => c.optionId === dependentOption.dependsOn?.optionId
+            );
+            return parentCustomization?.choiceIds.includes(requiredId);
+          });
 
         if (!shouldBeVisible) {
           cleanedCustomizations = cleanedCustomizations.filter(
@@ -115,7 +120,9 @@ export function OptimizedProductCustomizer({
   const handleChoiceSelection = useCallback(
     (optionId: string, choiceId: string, option: CustomizationOption) => {
       const newCustomizations = [...customizations];
-      const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
+      const existingIndex = newCustomizations.findIndex(
+        (c) => c.optionId === optionId
+      );
 
       if (existingIndex >= 0) {
         const existing = newCustomizations[existingIndex]!;
@@ -124,13 +131,18 @@ export function OptimizedProductCustomizer({
           existing.choiceIds = [choiceId];
           // Clear custom value when selecting predefined option
           if (existing.customValue) {
-            existing.customValue = undefined;
+            delete existing.customValue;
           }
         } else {
           if (existing.choiceIds.includes(choiceId)) {
-            existing.choiceIds = existing.choiceIds.filter((id) => id !== choiceId);
+            existing.choiceIds = existing.choiceIds.filter(
+              (id) => id !== choiceId
+            );
           } else {
-            if (!option.maxSelections || existing.choiceIds.length < option.maxSelections) {
+            if (
+              !option.maxSelections ||
+              existing.choiceIds.length < option.maxSelections
+            ) {
               existing.choiceIds.push(choiceId);
             }
           }
@@ -142,30 +154,40 @@ export function OptimizedProductCustomizer({
         });
       }
 
-      const updatedCustomizations = cleanupDependentCustomizations(newCustomizations, optionId);
+      const updatedCustomizations = cleanupDependentCustomizations(
+        newCustomizations,
+        optionId
+      );
       onCustomizationChange(updatedCustomizations);
     },
     [customizations, onCustomizationChange, cleanupDependentCustomizations]
   );
 
   // Memoize size and ribbon options for better performance
-  const { sizeOption, ribbonOption, ribbonColorOption, ribbonTextOption } = useMemo(() => {
-    const size = visibleOptions.find((opt) => opt.type === "size");
-    const ribbon = visibleOptions.find((opt) => opt.type === "ribbon");
-    const ribbonColor = visibleOptions.find((opt) => opt.type === "ribbon_color");
-    const ribbonText = visibleOptions.find((opt) => opt.type === "ribbon_text");
+  const { sizeOption, ribbonOption, ribbonColorOption, ribbonTextOption } =
+    useMemo(() => {
+      const size = visibleOptions.find((opt) => opt.type === "size");
+      const ribbon = visibleOptions.find((opt) => opt.type === "ribbon");
+      const ribbonColor = visibleOptions.find(
+        (opt) => opt.type === "ribbon_color"
+      );
+      const ribbonText = visibleOptions.find(
+        (opt) => opt.type === "ribbon_text"
+      );
 
-    return {
-      sizeOption: size,
-      ribbonOption: ribbon,
-      ribbonColorOption: ribbonColor,
-      ribbonTextOption: ribbonText,
-    };
-  }, [visibleOptions]);
+      return {
+        sizeOption: size,
+        ribbonOption: ribbon,
+        ribbonColorOption: ribbonColor,
+        ribbonTextOption: ribbonText,
+      };
+    }, [visibleOptions]);
 
   // Memoize current customizations for better performance
   const currentCustomizations = useMemo(() => {
-    const customizationMap = new Map(customizations.map((c) => [c.optionId, c]));
+    const customizationMap = new Map(
+      customizations.map((c) => [c.optionId, c])
+    );
     return customizationMap;
   }, [customizations]);
 
@@ -184,8 +206,12 @@ export function OptimizedProductCustomizer({
       {sizeOption && (
         <SizeSelector
           sizeOption={sizeOption}
-          selectedSize={currentCustomizations.get(sizeOption.id)?.choiceIds[0] || null}
-          onSizeChange={(sizeId) => handleChoiceSelection(sizeOption.id, sizeId, sizeOption)}
+          selectedSize={
+            currentCustomizations.get(sizeOption.id)?.choiceIds[0] || null
+          }
+          onSizeChange={(sizeId) =>
+            handleChoiceSelection(sizeOption.id, sizeId, sizeOption)
+          }
           locale={locale}
           basePrice={product.basePrice}
           className="mb-6"
@@ -207,7 +233,13 @@ export function OptimizedProductCustomizer({
                 <button
                   key={choice.id}
                   type="button"
-                  onClick={() => handleChoiceSelection(ribbonOption.id, choice.id, ribbonOption)}
+                  onClick={() =>
+                    handleChoiceSelection(
+                      ribbonOption.id,
+                      choice.id,
+                      ribbonOption
+                    )
+                  }
                   className={`w-full p-3 text-left rounded-lg border-2 transition-colors ${
                     isSelected
                       ? "border-stone-900 bg-funeral-gold"
@@ -225,8 +257,8 @@ export function OptimizedProductCustomizer({
       {/* Lazy-loaded Ribbon Configurator */}
       {ribbonColorOption && ribbonTextOption && (
         <LazyRibbonConfigurator
-          isVisible={isRibbonSelected}
-          isRibbonSelected={isRibbonSelected}
+          isVisible={isRibbonSelected ?? false}
+          isRibbonSelected={isRibbonSelected ?? false}
           colorOption={ribbonColorOption}
           textOption={ribbonTextOption}
           customizations={customizations}
@@ -239,26 +271,37 @@ export function OptimizedProductCustomizer({
       {/* Price Display */}
       <div className="mt-6 p-4 bg-funeral-gold rounded-lg">
         <div className="flex justify-between items-center">
-          <span className="text-lg font-semibold text-stone-900">{t("totalPrice")}</span>
+          <span className="text-lg font-semibold text-stone-900">
+            {t("totalPrice")}
+          </span>
           <span className="text-xl font-bold text-stone-900">
-            {priceCalculation.totalPrice.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
-              style: "currency",
-              currency: "CZK",
-            })}
+            {priceCalculation.totalPrice.toLocaleString(
+              locale === "cs" ? "cs-CZ" : "en-US",
+              {
+                style: "currency",
+                currency: "CZK",
+              }
+            )}
           </span>
         </div>
         {priceCalculation.totalModifier > 0 && (
           <div className="text-sm text-amber-100 mt-1">
             {t("basePrice")}:{" "}
-            {priceCalculation.basePrice.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
-              style: "currency",
-              currency: "CZK",
-            })}{" "}
+            {priceCalculation.basePrice.toLocaleString(
+              locale === "cs" ? "cs-CZ" : "en-US",
+              {
+                style: "currency",
+                currency: "CZK",
+              }
+            )}{" "}
             +{" "}
-            {priceCalculation.totalModifier.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
-              style: "currency",
-              currency: "CZK",
-            })}
+            {priceCalculation.totalModifier.toLocaleString(
+              locale === "cs" ? "cs-CZ" : "en-US",
+              {
+                style: "currency",
+                currency: "CZK",
+              }
+            )}
           </div>
         )}
       </div>

@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { OrderStatus } from "@/types/order";
 
@@ -46,15 +46,7 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
   const [sort, setSort] = useState<OrderSort>("newest");
   const [searchTerm, setSearchTerm] = useState("");
 
-  useEffect(() => {
-    fetchOrderHistory();
-  }, [fetchOrderHistory]);
-
-  useEffect(() => {
-    applyFiltersAndSort();
-  }, [applyFiltersAndSort]);
-
-  const fetchOrderHistory = async () => {
+  const fetchOrderHistory = useCallback(async () => {
     try {
       setLoading(true);
       setError(null);
@@ -64,18 +56,25 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
 
       if (data.success && data.orders) {
         // Transform orders for display
-        const transformedOrders: OrderSummary[] = data.orders.map((order: any) => ({
-          id: order.id,
-          orderNumber: order.customer_info?.orderNumber || order.id.slice(-8).toUpperCase(),
-          status: order.status,
-          totalAmount: order.total_amount,
-          itemCount: order.items?.itemCount || 0,
-          createdAt: order.created_at,
-          deliveryAddress: `${order.delivery_info?.address?.city || ""}, ${order.delivery_info?.address?.postalCode || ""}`,
-          customerName:
-            `${order.customer_info?.firstName || ""} ${order.customer_info?.lastName || ""}`.trim(),
-          items: order.items?.items || [],
-        }));
+        const transformedOrders: OrderSummary[] = data.orders.map(
+          (order: any) => ({
+            id: order.id,
+            orderNumber:
+              order.customer_info?.orderNumber ||
+              order.id.slice(-8).toUpperCase(),
+            status: order.status,
+            totalAmount: order.total_amount,
+            itemCount: order.items?.itemCount || 0,
+            createdAt: order.created_at,
+            deliveryAddress: `${order.delivery_info?.address?.city || ""}, ${
+              order.delivery_info?.address?.postalCode || ""
+            }`,
+            customerName: `${order.customer_info?.firstName || ""} ${
+              order.customer_info?.lastName || ""
+            }`.trim(),
+            items: order.items?.items || [],
+          })
+        );
         setAllOrders(transformedOrders);
       } else {
         setError(data.error || "Nepodařilo se načíst historii objednávek");
@@ -86,7 +85,56 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
     } finally {
       setLoading(false);
     }
-  };
+  }, []);
+
+  const applyFiltersAndSort = useCallback(() => {
+    let filtered = [...allOrders];
+
+    // Apply status filter
+    if (filter !== "all") {
+      filtered = filtered.filter((order) => order.status === filter);
+    }
+
+    // Apply search filter
+    if (searchTerm) {
+      const term = searchTerm.toLowerCase();
+      filtered = filtered.filter(
+        (order) =>
+          order.orderNumber.toLowerCase().includes(term) ||
+          order.deliveryAddress.toLowerCase().includes(term)
+      );
+    }
+
+    // Apply sorting
+    filtered.sort((a, b) => {
+      switch (sort) {
+        case "newest":
+          return (
+            new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
+          );
+        case "oldest":
+          return (
+            new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime()
+          );
+        case "amount-high":
+          return b.totalAmount - a.totalAmount;
+        case "amount-low":
+          return a.totalAmount - b.totalAmount;
+        default:
+          return 0;
+      }
+    });
+
+    setFilteredOrders(filtered);
+  }, [allOrders, filter, searchTerm, sort]);
+
+  useEffect(() => {
+    fetchOrderHistory();
+  }, [fetchOrderHistory]);
+
+  useEffect(() => {
+    applyFiltersAndSort();
+  }, [applyFiltersAndSort]);
 
   const getStatusColor = (status: OrderStatus): string => {
     switch (status) {
@@ -130,43 +178,6 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
     });
   };
 
-  const applyFiltersAndSort = () => {
-    let filtered = [...allOrders];
-
-    // Apply status filter
-    if (filter !== "all") {
-      filtered = filtered.filter((order) => order.status === filter);
-    }
-
-    // Apply search filter
-    if (searchTerm) {
-      const term = searchTerm.toLowerCase();
-      filtered = filtered.filter(
-        (order) =>
-          order.orderNumber.toLowerCase().includes(term) ||
-          order.deliveryAddress.toLowerCase().includes(term)
-      );
-    }
-
-    // Apply sorting
-    filtered.sort((a, b) => {
-      switch (sort) {
-        case "newest":
-          return new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime();
-        case "oldest":
-          return new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime();
-        case "amount-high":
-          return b.totalAmount - a.totalAmount;
-        case "amount-low":
-          return a.totalAmount - b.totalAmount;
-        default:
-          return 0;
-      }
-    });
-
-    setFilteredOrders(filtered);
-  };
-
   const getFilterLabel = (filterValue: OrderFilter): string => {
     const labels: Record<OrderFilter, string> = {
       all: locale === "cs" ? "Všechny" : "All",
@@ -203,7 +214,11 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
       <div className="bg-red-50 border border-red-200 rounded-lg p-6">
         <div className="flex items-center">
           <div className="flex-shrink-0">
-            <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+            <svg
+              className="h-5 w-5 text-red-400"
+              viewBox="0 0 20 20"
+              fill="currentColor"
+            >
               <path
                 fillRule="evenodd"
                 d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
@@ -273,7 +288,12 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
             disabled={loading}
             className="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50"
           >
-            <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
               <path
                 strokeLinecap="round"
                 strokeLinejoin="round"
@@ -351,13 +371,13 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
               onChange={(e) => setSort(e.target.value as OrderSort)}
               className="block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
             >
-              {(["newest", "oldest", "amount-high", "amount-low"] as OrderSort[]).map(
-                (sortOption) => (
-                  <option key={sortOption} value={sortOption}>
-                    {getSortLabel(sortOption)}
-                  </option>
-                )
-              )}
+              {(
+                ["newest", "oldest", "amount-high", "amount-low"] as OrderSort[]
+              ).map((sortOption) => (
+                <option key={sortOption} value={sortOption}>
+                  {getSortLabel(sortOption)}
+                </option>
+              ))}
             </select>
           </div>
         </div>
@@ -389,7 +409,9 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
             />
           </svg>
           <h3 className="mt-2 text-sm font-medium text-gray-900">
-            {locale === "cs" ? "Žádné objednávky nenalezeny" : "No orders found"}
+            {locale === "cs"
+              ? "Žádné objednávky nenalezeny"
+              : "No orders found"}
           </h3>
           <p className="mt-1 text-sm text-gray-500">
             {locale === "cs"
@@ -431,7 +453,9 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                             #{order.orderNumber}
                           </p>
                           <div
-                            className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(order.status)}`}
+                            className={`ml-2 inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium border ${getStatusColor(
+                              order.status
+                            )}`}
                           >
                             {getStatusLabel(order.status)}
                           </div>
@@ -459,8 +483,8 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                                 ? "položka"
                                 : "item"
                               : locale === "cs"
-                                ? "položek"
-                                : "items"}
+                              ? "položek"
+                              : "items"}
                           </p>
                           {order.deliveryAddress && (
                             <>

@@ -9,4 +9,4 @@ export {
   useErrorReporting,
   usePerformanceReporting,
 } from "./MonitoringProvider";
-export { useWebVitals, WebVitalsTracker } from "./WebVitalsTracker";
+export { WebVitalsTracker } from "./WebVitalsTracker";

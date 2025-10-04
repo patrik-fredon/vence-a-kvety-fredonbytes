@@ -87,7 +87,6 @@
 
 /* Headings with elegant serif font */
 
-h2,
 h3,
 h4,
 h5,
@@ -97,11 +96,12 @@ h6 {
   line-height: 1.2;
   color: var(--color-teal-800);
 }
-h1 {
+h1,
+h2 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.4;
-  color: var(--color-amber-200);
+  color: var(--color-teal-900);
 }
 
 /* Focus styles for accessibility */
@@ -135,8 +135,8 @@ h1 {
     20px 100%,
     0 calc(100% - 20px)
   );
+  box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.1);
 }
-
 /* High contrast mode styles */
 @media (prefers-contrast: high), (forced-colors: active) {
   :root {
@@ -264,11 +264,19 @@ h1 {
 }
 
 .gradient-memorial {
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50) 0%,
+    var(--color-neutral-100) 100%
+  );
 }
 
 .bg-gradient-memorial {
-  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
+  background: linear-gradient(
+    135deg,
+    var(--color-primary-50) 0%,
+    var(--color-neutral-100) 100%
+  );
 }
 
 /* Line clamp utilities */
