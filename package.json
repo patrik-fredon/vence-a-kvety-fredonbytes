@@ -22,7 +22,12 @@
     "test:run": "vitest run",
     "test:coverage": "vitest run --coverage",
     "test:ui": "vitest --ui",
-    "test:watch": "vitest --watch"
+    "test:watch": "vitest --watch",
+    "test:contrast": "npx tsx scripts/test-contrast-ratios.ts",
+    "test:gradient-contrast": "npx tsx scripts/test-gradient-contrast-comprehensive.ts",
+    "test:interactive-contrast": "npx tsx scripts/test-interactive-contrast.ts",
+    "test:focus-visibility": "npx tsx scripts/test-focus-state-visibility.ts",
+    "test:accessibility": "npm run test:contrast && npm run test:gradient-contrast && npm run test:interactive-contrast && npm run test:focus-visibility"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",

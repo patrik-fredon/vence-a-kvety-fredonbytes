@@ -260,13 +260,13 @@ export function WebVitalsTracker({
   const getRatingColor = (rating: string) => {
     switch (rating) {
       case "good":
-        return "#10b981";
+        return "var(--success, #22c55e)";
       case "needs-improvement":
-        return "#f59e0b";
+        return "var(--color-amber-500, #f59e0b)";
       case "poor":
-        return "#ef4444";
+        return "var(--error, #ef4444)";
       default:
-        return "#6b7280";
+        return "var(--color-stone-500, #78716c)";
     }
   };
 

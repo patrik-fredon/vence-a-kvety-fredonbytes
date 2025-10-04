@@ -70,16 +70,23 @@ export function ProductToCartAnimation({
       // Add temporary border for debugging (remove in production)
       animationElement.style.border = "3px solid red";
 
-      console.log("🎭 [ProductToCartAnimation] Background image set:", productImageSrc);
+      console.log(
+        "🎭 [ProductToCartAnimation] Background image set:",
+        productImageSrc
+      );
 
       // Calculate target position (cart center)
       const targetX = cartRect.left + cartRect.width / 2 - imageRect.width / 4; // Quarter size
       const targetY = cartRect.top + cartRect.height / 2 - imageRect.height / 4;
 
       // Start animation
-      console.log("🎭 [ProductToCartAnimation] Starting product shrink animation");
+      console.log(
+        "🎭 [ProductToCartAnimation] Starting product shrink animation"
+      );
       animationElement.style.transition = `all ${config.productShrinkDuration}ms cubic-bezier(0.25, 0.46, 0.45, 0.94)`;
-      animationElement.style.transform = `translate(${targetX - imageRect.left}px, ${targetY - imageRect.top}px) scale(0.25)`;
+      animationElement.style.transform = `translate(${
+        targetX - imageRect.left
+      }px, ${targetY - imageRect.top}px) scale(0.25)`;
       animationElement.style.opacity = "0.8";
 
       // After product shrink animation, start package drop
@@ -89,11 +96,13 @@ export function ProductToCartAnimation({
         // Create package drop element
         const packageElement = document.createElement("div");
         packageElement.style.position = "fixed";
-        packageElement.style.left = `${cartRect.left + cartRect.width / 2 - 8}px`;
+        packageElement.style.left = `${
+          cartRect.left + cartRect.width / 2 - 8
+        }px`;
         packageElement.style.top = `${cartRect.top - 20}px`;
         packageElement.style.width = "16px";
         packageElement.style.height = "16px";
-        packageElement.style.backgroundColor = "#d97706"; // amber-600
+        packageElement.style.backgroundColor = "var(--color-amber-600)"; // amber-600
         packageElement.style.borderRadius = "4px";
         packageElement.style.zIndex = "9998";
         packageElement.style.boxShadow = "0 2px 4px rgba(0, 0, 0, 0.1)";
@@ -104,7 +113,9 @@ export function ProductToCartAnimation({
 
         // Animate package drop
         packageElement.style.transition = `transform ${config.packageDropDuration}ms cubic-bezier(0.55, 0.085, 0.68, 0.53)`;
-        packageElement.style.transform = `translateY(${cartRect.height + 10}px) rotate(180deg)`;
+        packageElement.style.transform = `translateY(${
+          cartRect.height + 10
+        }px) rotate(180deg)`;
 
         // After package drop, start cart bounce
         const timeout2 = setTimeout(() => {
@@ -159,7 +170,10 @@ export function ProductToCartAnimation({
           // Use modern remove() method instead of parentNode.removeChild()
           packageElementRef.current.remove();
         } catch (error) {
-          console.warn("🎭 [ProductToCartAnimation] Package element already removed:", error);
+          console.warn(
+            "🎭 [ProductToCartAnimation] Package element already removed:",
+            error
+          );
         }
         packageElementRef.current = null;
       }
@@ -177,7 +191,11 @@ export function ProductToCartAnimation({
   ]);
 
   return (
-    <div ref={animationElementRef} className="pointer-events-none" style={{ display: "block" }} />
+    <div
+      ref={animationElementRef}
+      className="pointer-events-none"
+      style={{ display: "block" }}
+    />
   );
 }
 
@@ -195,7 +213,9 @@ export function useProductToCartAnimation() {
     }
 
     // Check for reduced motion
-    const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const prefersReducedMotion = window.matchMedia(
+      "(prefers-reduced-motion: reduce)"
+    ).matches;
     if (prefersReducedMotion) {
       return;
     }

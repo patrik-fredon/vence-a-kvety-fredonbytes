@@ -362,9 +362,9 @@ export function StripePaymentForm({
     appearance: {
       theme: "stripe" as const,
       variables: {
-        colorPrimary: "#D97706", // amber-600
+        colorPrimary: "var(--color-amber-600, #d97706)",
         colorBackground: "#ffffff",
-        colorText: "#1C1917", // stone-900
+        colorText: "var(--color-stone-900, #1c1917)",
         colorDanger: "#dc2626",
         fontFamily: "Inter, system-ui, sans-serif",
         spacingUnit: "4px",

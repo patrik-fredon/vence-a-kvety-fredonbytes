@@ -91,9 +91,9 @@ export function generatePageMetadata(props: PageMetadataProps): Metadata {
       creator: "@ketingmar",
     },
     other: {
-      // Theme and app meta tags
-      "theme-color": "#1f2937",
-      "msapplication-TileColor": "#1f2937",
+      // Theme and app meta tags - using teal-800 from color system
+      "theme-color": "#115e59",
+      "msapplication-TileColor": "#115e59",
       "apple-mobile-web-app-capable": "yes",
       "apple-mobile-web-app-status-bar-style": "default",
       "format-detection": "telephone=no",
