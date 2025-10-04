@@ -102,7 +102,8 @@ const nextConfig: NextConfig = {
           // Restrict browser features
           {
             key: "Permissions-Policy",
-            value: "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
+            value:
+              "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
           },
           // Enable XSS protection
           {
@@ -184,7 +185,7 @@ const nextConfig: NextConfig = {
   // Webpack configuration for better bundle optimization and tree-shaking
   webpack: (config, { dev, isServer }) => {
     // Bundle analyzer configuration for monitoring bundle size
-    if (process.env.ANALYZE === "true") {
+    if (process.env["ANALYZE"] === "true") {
       const { BundleAnalyzerPlugin } = require("webpack-bundle-analyzer");
       config.plugins.push(
         new BundleAnalyzerPlugin({
@@ -204,7 +205,8 @@ const nextConfig: NextConfig = {
       config.optimization.sideEffects = WEBPACK_OPTIMIZATION.sideEffects;
 
       // Module concatenation for better tree-shaking
-      config.optimization.concatenateModules = WEBPACK_OPTIMIZATION.concatenateModules;
+      config.optimization.concatenateModules =
+        WEBPACK_OPTIMIZATION.concatenateModules;
     }
 
     // Resolve alias for better tree-shaking
@@ -226,7 +228,7 @@ const nextConfig: NextConfig = {
 
   // Environment variables that should be available on the client
   env: {
-    CUSTOM_KEY: process.env.CUSTOM_KEY,
+    CUSTOM_KEY: process.env["CUSTOM_KEY"],
   },
 
   // Redirects for SEO and user experience

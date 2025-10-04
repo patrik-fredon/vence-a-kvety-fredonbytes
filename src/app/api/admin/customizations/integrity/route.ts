@@ -48,7 +48,7 @@ export async function GET() {
       profile.preferences &&
       typeof profile.preferences === "object" &&
       "isAdmin" in profile.preferences &&
-      profile.preferences.isAdmin === true;
+      profile.preferences["isAdmin"] === true;
     if (!isAdmin) {
       return NextResponse.json(
         {
@@ -63,9 +63,9 @@ export async function GET() {
     const integrityResult = await performCustomizationIntegrityCheck(supabase);
 
     // Also run database-level integrity check
-    const { data: dbIntegrityResult, error: dbError } = await supabase.rpc(
-      "check_customization_integrity" as any
-    );
+    const { data: dbIntegrityResult, error: dbError } = await (
+      supabase.rpc as any
+    )("check_customization_integrity");
 
     if (dbError) {
       console.error("Database integrity check failed:", dbError);
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
       profile.preferences &&
       typeof profile.preferences === "object" &&
       "isAdmin" in profile.preferences &&
-      (profile.preferences as Record<string, any>).isAdmin === true;
+      (profile.preferences as Record<string, unknown>)["isAdmin"] === true;
     if (!isAdmin) {
       return NextResponse.json(
         {
@@ -145,7 +145,12 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const results: any = {
+    const results: {
+      timestamp: string;
+      operations: Array<{ type: string; result: any; error?: string | null }>;
+      errors?: string[];
+      postCheck?: any;
+    } = {
       timestamp: new Date().toISOString(),
       operations: [],
     };
@@ -153,7 +158,10 @@ export async function POST(request: NextRequest) {
     // Cleanup abandoned customizations if requested
     if (body.cleanupAbandoned !== false) {
       const daysOld = body.daysOld || 7;
-      const cleanupResult = await cleanupAbandonedCustomizations(supabase, daysOld);
+      const cleanupResult = await cleanupAbandonedCustomizations(
+        supabase,
+        daysOld
+      );
       results.operations.push({
         type: "cleanup_abandoned",
         result: cleanupResult,
@@ -162,9 +170,9 @@ export async function POST(request: NextRequest) {
 
     // Fix integrity issues if requested
     if (body.fixIntegrityIssues === true) {
-      const { data: dbFixResult, error: dbFixError } = await supabase.rpc(
-        "cleanup_invalid_customizations" as any
-      );
+      const { data: dbFixResult, error: dbFixError } = await (
+        supabase.rpc as any
+      )("cleanup_invalid_customizations");
 
       results.operations.push({
         type: "fix_integrity_issues",
@@ -175,7 +183,9 @@ export async function POST(request: NextRequest) {
 
     // Run post-cleanup integrity check
     if (body.runPostCheck !== false) {
-      const postCheckResult = await performCustomizationIntegrityCheck(supabase);
+      const postCheckResult = await performCustomizationIntegrityCheck(
+        supabase
+      );
       results.postCheck = postCheckResult;
     }
 

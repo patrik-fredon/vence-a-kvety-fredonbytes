@@ -15,7 +15,10 @@ import {
   getCachedProductsList,
 } from "@/lib/cache/product-cache";
 import { createServerClient } from "@/lib/supabase/server";
-import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
+import {
+  transformCategoryRow,
+  transformProductRow,
+} from "@/lib/utils/product-transforms";
 import type { Product } from "@/types/product";
 
 interface ProductsPageProps {
@@ -27,7 +30,10 @@ interface ProductsPageProps {
 export const revalidate = 1800;
 
 // Generate metadata for products page using i18n content
-export async function generateMetadata({ params, searchParams }: ProductsPageProps) {
+export async function generateMetadata({
+  params,
+  searchParams,
+}: ProductsPageProps) {
   const { locale } = await params;
   const { category } = await searchParams;
 
@@ -50,9 +56,12 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
       .single();
 
     if (categoryData) {
-      const categoryName = locale === "cs" ? categoryData.name_cs : categoryData.name_en;
+      const categoryName =
+        locale === "cs" ? categoryData.name_cs : categoryData.name_en;
       const categoryDesc =
-        locale === "cs" ? categoryData.description_cs : categoryData.description_en;
+        locale === "cs"
+          ? categoryData.description_cs
+          : categoryData.description_en;
 
       title = `${categoryName} | ${seoData.title}`;
       description = categoryDesc || description;
@@ -70,7 +79,10 @@ export async function generateMetadata({ params, searchParams }: ProductsPagePro
   });
 }
 
-export default async function ProductsPage({ params, searchParams }: ProductsPageProps) {
+export default async function ProductsPage({
+  params,
+  searchParams,
+}: ProductsPageProps) {
   const { locale } = await params;
   const { category } = await searchParams;
   const t = await getTranslations("product");
@@ -106,7 +118,8 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
     const supabase = createServerClient();
     const { data: productsData } = await supabase
       .from("products")
-      .select(`
+      .select(
+        `
         *,
         categories (
           id,
@@ -115,21 +128,24 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
           slug,
           description_cs,
           description_en,
-          images,
+          image_url,
           parent_id,
           sort_order,
           active,
           created_at,
           updated_at
         )
-      `)
+      `
+      )
       .eq("active", true)
       .order("created_at", { ascending: false })
       .limit(12);
 
     // Transform the data
-    products = (productsData || []).map((row: any) => {
-      const category = row.categories ? transformCategoryRow(row.categories) : undefined;
+    products = (productsData || []).map((row) => {
+      const category = row.categories
+        ? transformCategoryRow(row.categories)
+        : undefined;
       return transformProductRow(row, category);
     });
 
@@ -147,7 +163,8 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
   if (category && typeof category === "string") {
     const categoryData = categories.find((cat) => cat.slug === category);
     if (categoryData) {
-      const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
+      const categoryName =
+        locale === "cs" ? categoryData.name.cs : categoryData.name.en;
       breadcrumbs.push({
         name: categoryName,
         url: `/products?category=${category}`,
@@ -155,12 +172,16 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
     }
   }
 
-  const breadcrumbStructuredData = generateBreadcrumbStructuredData(breadcrumbs, locale);
+  const breadcrumbStructuredData = generateBreadcrumbStructuredData(
+    breadcrumbs,
+    locale
+  );
   const websiteStructuredData = generateWebsiteStructuredData(locale);
 
   // Generate ItemList structured data for products
   const productItems = products.map((product) => {
-    const description = locale === "cs" ? product.description?.cs : product.description?.en;
+    const description =
+      locale === "cs" ? product.description?.cs : product.description?.en;
     return {
       name: locale === "cs" ? product.name.cs : product.name.en,
       url: `/${locale}/products/${product.slug}`,
@@ -170,16 +191,22 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
     };
   });
 
-  const itemListStructuredData = generateItemListStructuredData(productItems, t("collectionTitle"));
+  const itemListStructuredData = generateItemListStructuredData(
+    productItems,
+    t("collectionTitle")
+  );
 
   // Generate CollectionPage structured data if filtering by category
   let collectionPageStructuredData = null;
   if (category && typeof category === "string") {
     const categoryData = categories.find((cat) => cat.slug === category);
     if (categoryData) {
-      const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
+      const categoryName =
+        locale === "cs" ? categoryData.name.cs : categoryData.name.en;
       const categoryDescription =
-        locale === "cs" ? categoryData.description?.cs : categoryData.description?.en;
+        locale === "cs"
+          ? categoryData.description?.cs
+          : categoryData.description?.en;
 
       collectionPageStructuredData = generateCollectionPageStructuredData(
         {
@@ -198,7 +225,9 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
       <StructuredData data={breadcrumbStructuredData} />
       <StructuredData data={websiteStructuredData} />
       <StructuredData data={itemListStructuredData} />
-      {collectionPageStructuredData && <StructuredData data={collectionPageStructuredData} />}
+      {collectionPageStructuredData && (
+        <StructuredData data={collectionPageStructuredData} />
+      )}
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="m-8 text-center justify-center">

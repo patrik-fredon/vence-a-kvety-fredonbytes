@@ -31,7 +31,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
         <div className="bg-funeral-teal rounded-lg p-8 mb-12">
-          <h1 className="text-center text-4xl font-semibold text-amber-100">{tContact("title")}</h1>
+          <h1 className="text-center text-4xl font-semibold text-amber-100">
+            {tContact("title")}
+          </h1>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
@@ -58,7 +60,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 <div className="flex items-start space-x-3">
                   <PhoneIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-teal-900 text-sm mb-1">{tContact("phone")}</h3>
+                    <h3 className="font-medium text-teal-900 text-sm mb-1">
+                      {tContact("phone")}
+                    </h3>
                     <a
                       href={`tel:${contactInfo.phone}`}
                       className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium"
@@ -71,7 +75,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 <div className="flex items-start space-x-3">
                   <EnvelopeIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-teal-900 text-sm mb-1">{tContact("email")}</h3>
+                    <h3 className="font-medium text-teal-900 text-sm mb-1">
+                      {tContact("email")}
+                    </h3>
                     <a
                       href={`mailto:${contactInfo.email}`}
                       className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium break-all"
@@ -84,7 +90,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 <div className="flex items-start space-x-3">
                   <ClockIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-teal-900 text-sm mb-1">{tContact("hours")}</h3>
+                    <h3 className="font-medium text-teal-900 text-sm mb-1">
+                      {tContact("hours")}
+                    </h3>
                     <p className="text-teal-800 text-sm leading-relaxed">
                       {contactInfo.hours[locale as "cs" | "en"]}
                     </p>
@@ -101,7 +109,9 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 {tContact("contactForm")}
               </h2>
 
-              <p className="text-teal-800 mb-6">{tContact("formDescription")}</p>
+              <p className="text-teal-800 mb-6">
+                {tContact("formDescription")}
+              </p>
 
               <ContactForm locale={locale} />
             </div>
