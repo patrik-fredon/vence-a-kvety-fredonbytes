@@ -6,8 +6,8 @@ import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import Stripe from "stripe";
 
 // Server-side Stripe instance
-export const stripe = process.env.STRIPE_SECRET_KEY
-  ? new Stripe(process.env.STRIPE_SECRET_KEY, {
+export const stripe = process.env["STRIPE_SECRET_KEY"]
+  ? new Stripe(process.env["STRIPE_SECRET_KEY"], {
       apiVersion: "2025-08-27.basil",
       typescript: true,
     })
@@ -18,7 +18,9 @@ let stripePromise: Promise<any> | null = null;
 
 export const getStripe = () => {
   if (!stripePromise) {
-    stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+    stripePromise = loadStripe(
+      process.env["NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"]!
+    );
   }
   return stripePromise;
 };
@@ -72,10 +74,19 @@ export async function createPaymentIntent(
   options: CreatePaymentIntentOptions
 ): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
+    throw new Error(
+      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
+    );
   }
 
-  const { amount, currency = "czk", orderId, customerEmail, customerName, metadata = {} } = options;
+  const {
+    amount,
+    currency = "czk",
+    orderId,
+    customerEmail,
+    customerName,
+    metadata = {},
+  } = options;
 
   try {
     const paymentIntent = await stripe.paymentIntents.create({
@@ -108,7 +119,9 @@ export async function retrievePaymentIntent(
   paymentIntentId: string
 ): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
+    throw new Error(
+      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
+    );
   }
 
   try {
@@ -127,7 +140,9 @@ export async function confirmPaymentIntent(
   paymentMethodId: string
 ): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
+    throw new Error(
+      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
+    );
   }
 
   try {
@@ -149,7 +164,9 @@ export function verifyWebhookSignature(
   secret: string
 ): Stripe.Event {
   if (!stripe) {
-    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
+    throw new Error(
+      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
+    );
   }
 
   try {
@@ -163,8 +180,10 @@ export function verifyWebhookSignature(
 /**
  * Handle successful payment
  */
-export async function handleSuccessfulPayment(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata.orderId;
+export async function handleSuccessfulPayment(
+  paymentIntent: Stripe.PaymentIntent
+) {
+  const orderId = paymentIntent.metadata["orderId"];
 
   if (!orderId) {
     throw new Error("Order ID not found in payment intent metadata");
@@ -186,13 +205,16 @@ export async function handleSuccessfulPayment(paymentIntent: Stripe.PaymentInten
  * Handle failed payment
  */
 export async function handleFailedPayment(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata.orderId;
+  const orderId = paymentIntent.metadata["orderId"];
 
   if (!orderId) {
     throw new Error("Order ID not found in payment intent metadata");
   }
 
-  console.log(`Payment failed for order ${orderId}:`, paymentIntent.last_payment_error?.message);
+  console.log(
+    `Payment failed for order ${orderId}:`,
+    paymentIntent.last_payment_error?.message
+  );
 
   return {
     orderId,

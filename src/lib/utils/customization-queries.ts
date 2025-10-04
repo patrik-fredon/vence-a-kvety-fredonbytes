@@ -12,9 +12,8 @@ export async function getProductCustomizationOptions(
   productId: string
 ): Promise<CustomizationOption[]> {
   // Import server-side cache utilities
-  const { getCachedCustomizationOptions, setCachedCustomizationOptions } = await import(
-    "@/lib/cache/server-customization-cache"
-  );
+  const { getCachedCustomizationOptions, setCachedCustomizationOptions } =
+    await import("@/lib/cache/server-customization-cache");
 
   // Check Redis cache first
   const cached = await getCachedCustomizationOptions(productId);
@@ -39,27 +38,37 @@ export async function getProductCustomizationOptions(
     .single();
 
   if (error) {
-    console.error("❌ [CustomizationQuery] Error fetching customization options:", error);
+    console.error(
+      "❌ [CustomizationQuery] Error fetching customization options:",
+      error
+    );
     return [];
   }
 
   // Proper JSON type casting with validation using bracket notation
   let options: CustomizationOption[] = [];
   try {
-    if (data?.customization_options && typeof data.customization_options === "object") {
+    if (
+      data?.customization_options &&
+      typeof data.customization_options === "object"
+    ) {
       // Handle both array and object cases with bracket notation
       if (Array.isArray(data.customization_options)) {
-        options = data.customization_options as unknown as CustomizationOption[];
+        options =
+          data.customization_options as unknown as CustomizationOption[];
       } else {
         // If it's an object, try to extract array from it using bracket notation
         const optionsData = data.customization_options as Record<string, any>;
-        if (optionsData && Array.isArray(optionsData.options)) {
-          options = optionsData.options as unknown as CustomizationOption[];
+        if (optionsData && Array.isArray(optionsData["options"])) {
+          options = optionsData["options"] as unknown as CustomizationOption[];
         }
       }
     }
   } catch (parseError) {
-    console.error("❌ [CustomizationQuery] Error parsing customization options:", parseError);
+    console.error(
+      "❌ [CustomizationQuery] Error parsing customization options:",
+      parseError
+    );
     options = [];
   }
 
@@ -80,9 +89,8 @@ export async function getBatchProductCustomizationOptions(
   productIds: string[]
 ): Promise<Record<string, CustomizationOption[]>> {
   // Import server-side cache utilities
-  const { getCachedCustomizationOptions, batchCacheCustomizationOptions } = await import(
-    "@/lib/cache/server-customization-cache"
-  );
+  const { getCachedCustomizationOptions, batchCacheCustomizationOptions } =
+    await import("@/lib/cache/server-customization-cache");
 
   const result: Record<string, CustomizationOption[]> = {};
   const uncachedIds: string[] = [];
@@ -111,27 +119,42 @@ export async function getBatchProductCustomizationOptions(
       .in("id", uncachedIds);
 
     if (error) {
-      console.error("❌ [CustomizationQuery] Error fetching batch customization options:", error);
+      console.error(
+        "❌ [CustomizationQuery] Error fetching batch customization options:",
+        error
+      );
       // Return cached results even if batch fetch fails
       return result;
     }
 
     // Process batch results with proper JSON type casting using bracket notation
-    const productOptions: Array<{ productId: string; options: CustomizationOption[] }> = [];
+    const productOptions: Array<{
+      productId: string;
+      options: CustomizationOption[];
+    }> = [];
 
     for (const product of data || []) {
       let options: CustomizationOption[] = [];
 
       try {
-        if (product.customization_options && typeof product.customization_options === "object") {
+        if (
+          product.customization_options &&
+          typeof product.customization_options === "object"
+        ) {
           // Handle both array and object cases with bracket notation
           if (Array.isArray(product.customization_options)) {
-            options = product.customization_options as unknown as CustomizationOption[];
+            options =
+              product.customization_options as unknown as CustomizationOption[];
           } else {
             // If it's an object, try to extract array from it using bracket notation
-            const optionsData = product.customization_options as Record<string, any>;
-            if (optionsData && Array.isArray(optionsData.options)) {
-              options = optionsData.options as unknown as CustomizationOption[];
+            const optionsData = product.customization_options as Record<
+              string,
+              any
+            >;
+            if (optionsData && Array.isArray(optionsData["options"])) {
+              options = optionsData[
+                "options"
+              ] as unknown as CustomizationOption[];
             }
           }
         }
@@ -166,7 +189,9 @@ export async function getBatchProductCustomizationOptions(
  */
 export async function getFrequentCustomizationOptions(): Promise<void> {
   // Import server-side cache utilities
-  const { batchCacheCustomizationOptions } = await import("@/lib/cache/server-customization-cache");
+  const { batchCacheCustomizationOptions } = await import(
+    "@/lib/cache/server-customization-cache"
+  );
 
   const supabase = createClient();
 
@@ -180,26 +205,41 @@ export async function getFrequentCustomizationOptions(): Promise<void> {
     .limit(20); // Limit to most common products
 
   if (error) {
-    console.error("❌ [CustomizationQuery] Error pre-loading customization options:", error);
+    console.error(
+      "❌ [CustomizationQuery] Error pre-loading customization options:",
+      error
+    );
     return;
   }
 
   // Pre-populate Redis cache with proper JSON type casting using bracket notation
-  const productOptions: Array<{ productId: string; options: CustomizationOption[] }> = [];
+  const productOptions: Array<{
+    productId: string;
+    options: CustomizationOption[];
+  }> = [];
 
   for (const product of data || []) {
     let options: CustomizationOption[] = [];
 
     try {
-      if (product.customization_options && typeof product.customization_options === "object") {
+      if (
+        product.customization_options &&
+        typeof product.customization_options === "object"
+      ) {
         // Handle both array and object cases with bracket notation
         if (Array.isArray(product.customization_options)) {
-          options = product.customization_options as unknown as CustomizationOption[];
+          options =
+            product.customization_options as unknown as CustomizationOption[];
         } else {
           // If it's an object, try to extract array from it using bracket notation
-          const optionsData = product.customization_options as Record<string, any>;
-          if (optionsData && Array.isArray(optionsData.options)) {
-            options = optionsData.options as unknown as CustomizationOption[];
+          const optionsData = product.customization_options as Record<
+            string,
+            any
+          >;
+          if (optionsData && Array.isArray(optionsData["options"])) {
+            options = optionsData[
+              "options"
+            ] as unknown as CustomizationOption[];
           }
         }
       }
@@ -231,7 +271,8 @@ export async function getCartCustomizationData(userId: string) {
   // Use index-optimized query
   const { data, error } = await supabase
     .from("cart_items")
-    .select(`
+    .select(
+      `
       id,
       product_id,
       customizations,
@@ -239,7 +280,8 @@ export async function getCartCustomizationData(userId: string) {
         id,
         customization_options
       )
-    `)
+    `
+    )
     .eq("user_id", userId)
     .not("customizations", "is", null);
 
@@ -282,8 +324,8 @@ export async function getOrderCustomizationData(orderId: string) {
     } else if (typeof order.items === "object" && order.items !== null) {
       // Handle case where items might be wrapped in an object using bracket notation
       const itemsData = order.items as Record<string, any>;
-      if (Array.isArray(itemsData.items)) {
-        orderItems = itemsData.items;
+      if (Array.isArray(itemsData["items"])) {
+        orderItems = itemsData["items"];
       }
     }
 

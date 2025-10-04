@@ -24,7 +24,8 @@ export async function generateLocalizedMetadata({
 }: MetadataParams): Promise<Metadata> {
   const t = await getTranslations({ locale, namespace: "meta" });
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl =
+    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const fullUrl = `${baseUrl}/${locale}${path}`;
 
   const defaultTitle = t("title");
@@ -35,7 +36,9 @@ export async function generateLocalizedMetadata({
 
   const finalTitle = title ? `${title} | ${defaultTitle}` : defaultTitle;
   const finalDescription = description || defaultDescription;
-  const finalKeywords = keywords ? [...keywords, ...defaultKeywords] : defaultKeywords;
+  const finalKeywords = keywords
+    ? [...keywords, ...defaultKeywords]
+    : defaultKeywords;
 
   return {
     title: finalTitle,
@@ -145,7 +148,8 @@ export function generateProductStructuredData(
   },
   locale: Locale
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl =
+    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -173,7 +177,8 @@ export function generateBreadcrumbStructuredData(
   breadcrumbs: Array<{ name: string; url: string }>,
   locale: Locale
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl =
+    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",

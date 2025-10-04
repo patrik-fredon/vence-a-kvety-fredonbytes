@@ -6,13 +6,13 @@ import { Resend } from "resend";
 import type { AdminNotificationData, ContactEmailData } from "@/types/contact";
 
 // Initialize Resend client
-const resend = new Resend(process.env.RESEND_API_KEY);
+const resend = new Resend(process.env["RESEND_API_KEY"]);
 
 // Email configuration
 const EMAIL_CONFIG = {
-  from: process.env.RESEND_FROM_EMAIL || "noreply@pohrebni-vence.cz",
-  adminEmail: process.env.ADMIN_EMAIL || "admin@pohrebni-vence.cz",
-  replyTo: process.env.RESEND_REPLY_TO || "info@pohrebni-vence.cz",
+  from: process.env["RESEND_FROM_EMAIL"] || "noreply@pohrebni-vence.cz",
+  adminEmail: process.env["ADMIN_EMAIL"] || "admin@pohrebni-vence.cz",
+  replyTo: process.env["RESEND_REPLY_TO"] || "info@pohrebni-vence.cz",
 };
 
 /**
@@ -150,7 +150,11 @@ function generateCustomerThankYouTemplate(data: ContactEmailData): string {
         <ul>
           <li><strong>Předmět:</strong> ${data.subject}</li>
           <li><strong>E-mail:</strong> ${data.customerEmail}</li>
-          ${data.customerPhone ? `<li><strong>Telefon:</strong> ${data.customerPhone}</li>` : ""}
+          ${
+            data.customerPhone
+              ? `<li><strong>Telefon:</strong> ${data.customerPhone}</li>`
+              : ""
+          }
         </ul>
 
         <p><strong>Zpráva:</strong></p>
@@ -186,7 +190,9 @@ function generateCustomerThankYouTemplate(data: ContactEmailData): string {
 /**
  * Generate admin notification email template
  */
-function generateAdminNotificationTemplate(data: AdminNotificationData): string {
+function generateAdminNotificationTemplate(
+  data: AdminNotificationData
+): string {
   return `
     <!DOCTYPE html>
     <html lang="cs">
@@ -305,8 +311,12 @@ ${data.message}
 
         <div class="technical-info">
           <h4 style="margin-top: 0;">Technické informace:</h4>
-          <p style="margin: 5px 0;"><strong>IP adresa:</strong> ${data.ipAddress || "Neznámá"}</p>
-          <p style="margin: 5px 0;"><strong>User Agent:</strong> ${data.userAgent || "Neznámý"}</p>
+          <p style="margin: 5px 0;"><strong>IP adresa:</strong> ${
+            data.ipAddress || "Neznámá"
+          }</p>
+          <p style="margin: 5px 0;"><strong>User Agent:</strong> ${
+            data.userAgent || "Neznámý"
+          }</p>
         </div>
 
         <div style="background: #dbeafe; padding: 20px; border-radius: 6px; margin: 20px 0; border-left: 4px solid #3b82f6;">
@@ -336,15 +346,15 @@ ${data.message}
 export function validateEmailConfig(): { isValid: boolean; errors: string[] } {
   const errors: string[] = [];
 
-  if (!process.env.RESEND_API_KEY) {
+  if (!process.env["RESEND_API_KEY"]) {
     errors.push("RESEND_API_KEY is not configured");
   }
 
-  if (!process.env.RESEND_FROM_EMAIL) {
+  if (!process.env["RESEND_FROM_EMAIL"]) {
     errors.push("RESEND_FROM_EMAIL is not configured");
   }
 
-  if (!process.env.ADMIN_EMAIL) {
+  if (!process.env["ADMIN_EMAIL"]) {
     errors.push("ADMIN_EMAIL is not configured");
   }
 

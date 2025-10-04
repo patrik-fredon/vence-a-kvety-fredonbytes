@@ -14,15 +14,21 @@ let redis: Redis | null = null;
 export function getRedisClient(): Redis {
   if (!redis) {
     // Use Upstash standard environment variables
-    const redisUrl = process.env.UPSTASH_REDIS_REST_URL || process.env.REDIS_URL;
-    const redisToken = process.env.UPSTASH_REDIS_REST_TOKEN || process.env.REDIS_TOKEN;
+    const redisUrl =
+      process.env["UPSTASH_REDIS_REST_URL"] || process.env["REDIS_URL"];
+    const redisToken =
+      process.env["UPSTASH_REDIS_REST_TOKEN"] || process.env["REDIS_TOKEN"];
 
     if (!redisUrl) {
-      throw new Error("UPSTASH_REDIS_REST_URL or REDIS_URL environment variable is not set");
+      throw new Error(
+        "UPSTASH_REDIS_REST_URL or REDIS_URL environment variable is not set"
+      );
     }
 
     if (!redisToken) {
-      throw new Error("UPSTASH_REDIS_REST_TOKEN or REDIS_TOKEN environment variable is not set");
+      throw new Error(
+        "UPSTASH_REDIS_REST_TOKEN or REDIS_TOKEN environment variable is not set"
+      );
     }
 
     // Initialize Upstash Redis client
@@ -129,7 +135,9 @@ class RedisCacheClient implements CacheClient {
     try {
       // Note: Upstash Redis doesn't support SCAN, so we'll need to track keys manually
       // For now, we'll implement a simple pattern-based deletion
-      console.warn("Pattern-based flush not fully supported with Upstash Redis");
+      console.warn(
+        "Pattern-based flush not fully supported with Upstash Redis"
+      );
     } catch (error) {
       console.error("Redis FLUSH PATTERN error:", error);
     }
@@ -213,14 +221,17 @@ export function getCacheClient(): CacheClient {
   if (!cacheClient) {
     try {
       // Try to use Redis if available
-      if (process.env.REDIS_URL) {
+      if (process.env["REDIS_URL"]) {
         cacheClient = new RedisCacheClient();
       } else {
         console.warn("Redis not configured, using in-memory cache");
         cacheClient = new MemoryCacheClient();
       }
     } catch (error) {
-      console.error("Failed to initialize Redis, falling back to memory cache:", error);
+      console.error(
+        "Failed to initialize Redis, falling back to memory cache:",
+        error
+      );
       cacheClient = new MemoryCacheClient();
     }
   }
@@ -284,7 +295,10 @@ export const CACHE_TTL = {
 /**
  * Generate cache key with prefix
  */
-export function generateCacheKey(prefix: string, ...parts: (string | number)[]): string {
+export function generateCacheKey(
+  prefix: string,
+  ...parts: (string | number)[]
+): string {
   return [prefix, ...parts].join(":");
 }
 
@@ -298,7 +312,12 @@ export function serializeForCache(data: any): string {
 
     // Validate that it's not "[object Object]"
     if (serialized === "[object Object]" || serialized.startsWith("[object ")) {
-      console.error("Invalid serialization result:", serialized, "Original data:", data);
+      console.error(
+        "Invalid serialization result:",
+        serialized,
+        "Original data:",
+        data
+      );
       throw new Error("Invalid serialization result");
     }
 
@@ -306,7 +325,10 @@ export function serializeForCache(data: any): string {
   } catch (error) {
     console.error("Failed to serialize data for cache:", error, "Data:", data);
     // Return a safe fallback
-    return JSON.stringify({ error: "serialization_failed", timestamp: Date.now() });
+    return JSON.stringify({
+      error: "serialization_failed",
+      timestamp: Date.now(),
+    });
   }
 }
 
@@ -331,7 +353,12 @@ export function deserializeFromCache<T>(data: string | null): T | null {
 
     return JSON.parse(data);
   } catch (error) {
-    console.error("Failed to deserialize cache data:", error, "Data:", data?.substring(0, 100));
+    console.error(
+      "Failed to deserialize cache data:",
+      error,
+      "Data:",
+      data?.substring(0, 100)
+    );
     return null;
   }
 }

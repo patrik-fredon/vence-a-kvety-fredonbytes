@@ -30,7 +30,12 @@ export function withCache<T = any>(
     request: NextRequest,
     context?: any
   ): Promise<NextResponse<T>> {
-    const { ttl = CACHE_TTL.MEDIUM, keyPrefix = "api", skipCache = false, varyBy = [] } = options;
+    const {
+      ttl = CACHE_TTL.MEDIUM,
+      keyPrefix = "api",
+      skipCache = false,
+      varyBy = [],
+    } = options;
 
     // Skip caching for non-GET requests or when explicitly disabled
     if (request.method !== "GET" || skipCache) {
@@ -172,7 +177,10 @@ export async function warmApiCache(
 
   for (const endpoint of endpoints) {
     try {
-      const url = new URL(endpoint.path, process.env.NEXTAUTH_URL || "http://localhost:3000");
+      const url = new URL(
+        endpoint.path,
+        process.env["NEXTAUTH_URL"] || "http://localhost:3000"
+      );
 
       if (endpoint.params) {
         Object.entries(endpoint.params).forEach(([key, value]) => {
@@ -231,7 +239,11 @@ export function setCacheHeaders(
     mustRevalidate?: boolean;
   } = {}
 ): NextResponse {
-  const { maxAge = 3600, staleWhileRevalidate = 86400, mustRevalidate = false } = options;
+  const {
+    maxAge = 3600,
+    staleWhileRevalidate = 86400,
+    mustRevalidate = false,
+  } = options;
 
   const cacheControl = [
     `max-age=${maxAge}`,
