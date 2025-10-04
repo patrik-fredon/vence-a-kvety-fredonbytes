@@ -13,9 +13,7 @@ export default function GradientTestPage() {
   return (
     <div className="min-h-screen bg-white">
       <div className="container mx-auto py-8">
-        <h1 className="text-4xl font-bold text-stone-900 mb-8">
-          Centralized Gradient System Test
-        </h1>
+        <h1 className="text-4xl font-bold text-stone-900 mb-8">Centralized Gradient System Test</h1>
         <GradientTest />
       </div>
     </div>

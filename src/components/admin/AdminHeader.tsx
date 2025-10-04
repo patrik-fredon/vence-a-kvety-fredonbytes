@@ -1,15 +1,9 @@
 "use client";
 
 import { Menu, Transition } from "@headlessui/react";
-import {
-  ArrowRightOnRectangleIcon,
-  Bars3Icon,
-  BellIcon,
-  UserCircleIcon,
-} from "@/lib/icons";
 import { signOut, useSession } from "next-auth/react";
-
 import { Fragment } from "react";
+import { ArrowRightOnRectangleIcon, Bars3Icon, BellIcon, UserCircleIcon } from "@/lib/icons";
 
 type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 
@@ -86,8 +80,9 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                     {({ active }) => (
                       <a
                         href="/"
-                        className={`${active ? "bg-stone-100" : ""
-                          } flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
+                        className={`${
+                          active ? "bg-stone-100" : ""
+                        } flex items-center px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
                       >
                         <UserCircleIcon className="h-4 w-4 mr-3" />
                         Zobrazit web
@@ -101,8 +96,9 @@ export default function AdminHeader({ currentView, onMenuToggle }: AdminHeaderPr
                     {({ active }) => (
                       <button
                         onClick={handleSignOut}
-                        className={`${active ? "bg-stone-100" : ""
-                          } flex items-center w-full px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
+                        className={`${
+                          active ? "bg-stone-100" : ""
+                        } flex items-center w-full px-4 py-2 text-sm text-stone-700 hover:bg-stone-100 transition-colors`}
                       >
                         <ArrowRightOnRectangleIcon className="h-4 w-4 mr-3" />
                         Odhlásit se

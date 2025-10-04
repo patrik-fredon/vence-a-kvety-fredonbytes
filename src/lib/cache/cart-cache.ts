@@ -3,9 +3,15 @@
  * Handles cart configurations, price calculations, and session management
  */
 
-import { getCacheClient, CACHE_KEYS, generateCacheKey, serializeForCache, deserializeFromCache } from './redis';
-import type { Customization } from '@/types/product';
-import type { CartItem } from '@/types/cart';
+import type { CartItem } from "@/types/cart";
+import type { Customization } from "@/types/product";
+import {
+  CACHE_KEYS,
+  deserializeFromCache,
+  generateCacheKey,
+  getCacheClient,
+  serializeForCache,
+} from "./redis";
 
 // Cache TTL constants (in seconds)
 const CART_CONFIG_TTL = 24 * 60 * 60; // 24 hours
@@ -15,8 +21,8 @@ const PRICE_CALCULATION_TTL = 60 * 60; // 1 hour
  * Generate cache key for cart configuration
  */
 function getCartConfigKey(userId: string | null, sessionId: string | null): string {
-  const identifier = userId || sessionId || 'anonymous';
-  return generateCacheKey(CACHE_KEYS.CART, 'config', identifier);
+  const identifier = userId || sessionId || "anonymous";
+  return generateCacheKey(CACHE_KEYS.CART, "config", identifier);
 }
 
 /**
@@ -24,8 +30,8 @@ function getCartConfigKey(userId: string | null, sessionId: string | null): stri
  */
 function getPriceCalculationKey(productId: string, customizations: Customization[]): string {
   // Create a hash of customizations for consistent caching
-  const customizationHash = Buffer.from(JSON.stringify(customizations)).toString('base64');
-  return generateCacheKey(CACHE_KEYS.CART, 'price', productId, customizationHash);
+  const customizationHash = Buffer.from(JSON.stringify(customizations)).toString("base64");
+  return generateCacheKey(CACHE_KEYS.CART, "price", productId, customizationHash);
 }
 
 /**
@@ -65,14 +71,18 @@ export async function cacheCartConfiguration(
     const dataToCache = {
       ...cartData,
       lastUpdated: new Date().toISOString(),
-      version: cartData.version || 1
+      version: cartData.version || 1,
     };
 
     await client.set(key, serializeForCache(dataToCache), CART_CONFIG_TTL);
 
-    console.log(`✅ [Cache] Cart configuration cached for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+    console.log(
+      `✅ [Cache] Cart configuration cached for ${
+        userId ? `user:${userId}` : `session:${sessionId}`
+      }`
+    );
   } catch (error) {
-    console.error('❌ [Cache] Error caching cart configuration:', error);
+    console.error("❌ [Cache] Error caching cart configuration:", error);
     // Don't throw - caching is not critical for functionality
   }
 }
@@ -98,10 +108,14 @@ export async function getCachedCartConfiguration(
       return null;
     }
 
-    console.log(`✅ [Cache] Cart configuration retrieved from cache for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+    console.log(
+      `✅ [Cache] Cart configuration retrieved from cache for ${
+        userId ? `user:${userId}` : `session:${sessionId}`
+      }`
+    );
     return data;
   } catch (error) {
-    console.error('❌ [Cache] Error retrieving cached cart configuration:', error);
+    console.error("❌ [Cache] Error retrieving cached cart configuration:", error);
     return null;
   }
 }
@@ -122,18 +136,18 @@ export async function cachePriceCalculation(
 
     const dataToCache = {
       ...priceData,
-      calculatedAt: new Date().toISOString()
+      calculatedAt: new Date().toISOString(),
     };
 
     await client.set(key, serializeForCache(dataToCache), PRICE_CALCULATION_TTL);
 
     // Track this cache key for later cleanup
-    const identifier = userId || sessionId || 'anonymous';
+    const identifier = userId || sessionId || "anonymous";
     await trackPriceCalculationKey(identifier, key);
 
     console.log(`✅ [Cache] Price calculation cached and tracked for product:${productId}`);
   } catch (error) {
-    console.error('❌ [Cache] Error caching price calculation:', error);
+    console.error("❌ [Cache] Error caching price calculation:", error);
     // Don't throw - caching is not critical for functionality
   }
 }
@@ -162,7 +176,7 @@ export async function getCachedPriceCalculation(
     console.log(`✅ [Cache] Price calculation retrieved from cache for product:${productId}`);
     return data;
   } catch (error) {
-    console.error('❌ [Cache] Error retrieving cached price calculation:', error);
+    console.error("❌ [Cache] Error retrieving cached price calculation:", error);
     return null;
   }
 }
@@ -180,9 +194,11 @@ export async function invalidateCartCache(
 
     await client.del(key);
 
-    console.log(`✅ [Cache] Cart cache invalidated for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+    console.log(
+      `✅ [Cache] Cart cache invalidated for ${userId ? `user:${userId}` : `session:${sessionId}`}`
+    );
   } catch (error) {
-    console.error('❌ [Cache] Error invalidating cart cache:', error);
+    console.error("❌ [Cache] Error invalidating cart cache:", error);
     // Don't throw - cache invalidation failure shouldn't break functionality
   }
 }
@@ -197,9 +213,11 @@ export async function clearCartCache(
   try {
     await invalidateCartCache(userId, sessionId);
 
-    console.log(`✅ [Cache] All cart cache cleared for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+    console.log(
+      `✅ [Cache] All cart cache cleared for ${userId ? `user:${userId}` : `session:${sessionId}`}`
+    );
   } catch (error) {
-    console.error('❌ [Cache] Error clearing cart cache:', error);
+    console.error("❌ [Cache] Error clearing cart cache:", error);
   }
 }
 /**
@@ -209,14 +227,18 @@ export async function clearCartCache(
 export async function updateCachedCartAfterItemChange(
   userId: string | null,
   sessionId: string | null,
-  changeType: 'add' | 'update' | 'remove',
+  changeType: "add" | "update" | "remove",
   itemId?: string
 ): Promise<void> {
   try {
     // Always invalidate cache to ensure consistency
     await invalidateCartCache(userId, sessionId);
 
-    console.log(`🔄 [Cache] Cart cache invalidated after ${changeType} operation${itemId ? ` for item:${itemId}` : ''}`);
+    console.log(
+      `🔄 [Cache] Cart cache invalidated after ${changeType} operation${
+        itemId ? ` for item:${itemId}` : ""
+      }`
+    );
   } catch (error) {
     console.error(`❌ [Cache] Error updating cart cache after ${changeType}:`, error);
     // Re-throw to ensure calling code knows cache invalidation failed
@@ -234,9 +256,11 @@ export async function forceClearCartCache(
 ): Promise<void> {
   try {
     const client = getCacheClient();
-    const identifier = userId || sessionId || 'anonymous';
+    const identifier = userId || sessionId || "anonymous";
 
-    console.log(`🔄 [Cache] Starting force clear for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+    console.log(
+      `🔄 [Cache] Starting force clear for ${userId ? `user:${userId}` : `session:${sessionId}`}`
+    );
 
     // Clear cart configuration cache
     const configKey = getCartConfigKey(userId, sessionId);
@@ -254,19 +278,25 @@ export async function forceClearCartCache(
       console.warn(`⚠️ [Cache] Config cache key still exists after deletion attempt: ${configKey}`);
       // Try again
       await client.del(configKey);
-      
+
       // Verify again
       const stillExists = await client.exists(configKey);
       if (stillExists) {
-        console.error(`❌ [Cache] Config cache key STILL exists after second deletion attempt: ${configKey}`);
+        console.error(
+          `❌ [Cache] Config cache key STILL exists after second deletion attempt: ${configKey}`
+        );
       } else {
         console.log(`✅ [Cache] Config cache key successfully deleted on second attempt`);
       }
     }
 
-    console.log(`✅ [Cache] Force cleared ALL cart cache (config + prices) for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+    console.log(
+      `✅ [Cache] Force cleared ALL cart cache (config + prices) for ${
+        userId ? `user:${userId}` : `session:${sessionId}`
+      }`
+    );
   } catch (error) {
-    console.error('❌ [Cache] Error force clearing cart cache:', error);
+    console.error("❌ [Cache] Error force clearing cart cache:", error);
     throw error;
   }
 }
@@ -283,7 +313,7 @@ export async function clearAllPriceCalculationCache(identifier: string): Promise
     const client = getCacheClient();
 
     // Get the tracking set key for this user/session
-    const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
+    const trackingKey = generateCacheKey(CACHE_KEYS.CART, "price-keys", identifier);
 
     // Get all tracked price cache keys for this user/session
     const trackedKeys = await client.get(trackingKey);
@@ -294,12 +324,16 @@ export async function clearAllPriceCalculationCache(identifier: string): Promise
 
         if (keyList.length > 0) {
           // Delete all tracked price cache keys in batch
-          console.log(`🧹 [Cache] Deleting ${keyList.length} price calculation cache entries for ${identifier}`);
-          
-          // Delete keys in batch for better performance
-          await Promise.all(keyList.map(key => client.del(key)));
+          console.log(
+            `🧹 [Cache] Deleting ${keyList.length} price calculation cache entries for ${identifier}`
+          );
 
-          console.log(`✅ [Cache] Cleared ${keyList.length} price calculation cache entries for ${identifier}`);
+          // Delete keys in batch for better performance
+          await Promise.all(keyList.map((key) => client.del(key)));
+
+          console.log(
+            `✅ [Cache] Cleared ${keyList.length} price calculation cache entries for ${identifier}`
+          );
         }
       } catch (parseError) {
         console.warn(`⚠️ [Cache] Could not parse tracked keys for ${identifier}:`, parseError);
@@ -313,7 +347,7 @@ export async function clearAllPriceCalculationCache(identifier: string): Promise
 
     console.log(`✅ [Cache] Cleared price calculation tracking for ${identifier}`);
   } catch (error) {
-    console.error('❌ [Cache] Error clearing price calculation cache:', error);
+    console.error("❌ [Cache] Error clearing price calculation cache:", error);
     // Don't throw - this is a cleanup operation
   }
 }
@@ -324,7 +358,7 @@ export async function clearAllPriceCalculationCache(identifier: string): Promise
 async function trackPriceCalculationKey(identifier: string, cacheKey: string): Promise<void> {
   try {
     const client = getCacheClient();
-    const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
+    const trackingKey = generateCacheKey(CACHE_KEYS.CART, "price-keys", identifier);
 
     // Get existing tracked keys
     const existingKeys = await client.get(trackingKey);
@@ -347,7 +381,7 @@ async function trackPriceCalculationKey(identifier: string, cacheKey: string): P
       await client.set(trackingKey, JSON.stringify(keyList), PRICE_CALCULATION_TTL);
     }
   } catch (error) {
-    console.error('❌ [Cache] Error tracking price calculation key:', error);
+    console.error("❌ [Cache] Error tracking price calculation key:", error);
     // Don't throw - tracking failure shouldn't break functionality
   }
 }
@@ -365,7 +399,7 @@ export async function hasCartCache(
 
     return await client.exists(key);
   } catch (error) {
-    console.error('❌ [Cache] Error checking cart cache existence:', error);
+    console.error("❌ [Cache] Error checking cart cache existence:", error);
     return false;
   }
 }
@@ -393,10 +427,10 @@ export async function getCartCacheStats(
     return {
       hasCache: true,
       cacheAge: Math.floor(cacheAge / 1000), // Age in seconds
-      itemCount: cachedCart.totalItems
+      itemCount: cachedCart.totalItems,
     };
   } catch (error) {
-    console.error('❌ [Cache] Error getting cart cache stats:', error);
+    console.error("❌ [Cache] Error getting cart cache stats:", error);
     return null;
   }
 }
@@ -411,9 +445,9 @@ export async function verifyCacheOperation(
 ): Promise<boolean> {
   try {
     const client = getCacheClient();
-    const identifier = userId || sessionId || 'anonymous';
+    const identifier = userId || sessionId || "anonymous";
     const configKey = getCartConfigKey(userId, sessionId);
-    const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
+    const trackingKey = generateCacheKey(CACHE_KEYS.CART, "price-keys", identifier);
 
     const configExists = await client.exists(configKey);
     const priceKeysExist = await client.exists(trackingKey);
@@ -422,14 +456,14 @@ export async function verifyCacheOperation(
       identifier: userId ? `user:${userId}` : `session:${sessionId}`,
       configExists,
       priceKeysExist,
-      success: !configExists && !priceKeysExist
+      success: !(configExists || priceKeysExist),
     });
 
     // Return true if both config and price keys are cleared (for clear operations)
     // or if config exists (for set operations)
-    return operation.includes('clear') ? (!configExists && !priceKeysExist) : configExists;
+    return operation.includes("clear") ? !(configExists || priceKeysExist) : configExists;
   } catch (error) {
-    console.error('❌ [Cache] Error verifying cache operation:', error);
+    console.error("❌ [Cache] Error verifying cache operation:", error);
     return false;
   }
 }
@@ -451,9 +485,9 @@ export async function debugCacheState(
 }> {
   try {
     const client = getCacheClient();
-    const identifier = userId || sessionId || 'anonymous';
+    const identifier = userId || sessionId || "anonymous";
     const configKey = getCartConfigKey(userId, sessionId);
-    const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
+    const trackingKey = generateCacheKey(CACHE_KEYS.CART, "price-keys", identifier);
 
     const configExists = await client.exists(configKey);
     const priceKeysExist = await client.exists(trackingKey);
@@ -472,27 +506,38 @@ export async function debugCacheState(
         itemCount = data?.totalItems || 0;
         totalPrice = data?.totalPrice || 0;
         lastUpdated = data?.lastUpdated;
-        
+
         console.log(`🐛 [Cache Debug] Data:`, {
           itemCount,
           totalPrice,
           lastUpdated,
-          version: data?.version
+          version: data?.version,
         });
       }
     }
 
-    return {
+    const result: {
+      configExists: boolean;
+      priceKeysExist: boolean;
+      identifier: string;
+      configKey: string;
+      itemCount?: number;
+      totalPrice?: number;
+      lastUpdated?: string;
+    } = {
       configExists,
       priceKeysExist,
       identifier,
       configKey,
-      itemCount,
-      totalPrice,
-      lastUpdated
     };
+
+    if (itemCount !== undefined) result.itemCount = itemCount;
+    if (totalPrice !== undefined) result.totalPrice = totalPrice;
+    if (lastUpdated !== undefined) result.lastUpdated = lastUpdated;
+
+    return result;
   } catch (error) {
-    console.error('❌ [Cache Debug] Error debugging cache state:', error);
+    console.error("❌ [Cache Debug] Error debugging cache state:", error);
     throw error;
   }
 }

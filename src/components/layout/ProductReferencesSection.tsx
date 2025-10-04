@@ -12,19 +12,12 @@ import {
   logErrorWithContext,
   safeTranslate,
 } from "@/lib/utils/fallback-utils";
-import type {
-  ProductReference,
-  ProductReferencesSectionProps,
-} from "@/types/components";
+import type { ProductReference, ProductReferencesSectionProps } from "@/types/components";
 
 // Utility function to transform Product to ProductReference
-const transformProductToReference = (
-  product: any,
-  locale: string
-): ProductReference => {
+const transformProductToReference = (product: any, locale: string): ProductReference => {
   // Get the primary image or first available image
-  const primaryImage =
-    product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
+  const primaryImage = product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
 
   // Fallback image for products without images
   const fallbackImage = {
@@ -36,10 +29,7 @@ const transformProductToReference = (
 
   return {
     id: product.id,
-    name:
-      locale === "cs"
-        ? product.name?.cs || product.nameCs
-        : product.name?.en || product.nameEn,
+    name: locale === "cs" ? product.name?.cs || product.nameCs : product.name?.en || product.nameEn,
     image: primaryImage
       ? {
           src: primaryImage.url,
@@ -57,8 +47,7 @@ const transformProductToReference = (
           product.descriptionEn ||
           "Beautiful funeral wreath crafted with love and care",
     category:
-      product.category?.name?.[locale] ||
-      (locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths"),
+      product.category?.name?.[locale] || (locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths"),
     slug: product.slug,
   };
 };
@@ -80,8 +69,7 @@ const ProductReferenceCard = ({
 
   // Safe translation function with fallbacks (memoized to prevent re-renders)
   const safeT = useCallback(
-    (key: string, values?: Record<string, any>) =>
-      safeTranslate(t, key, locale, values),
+    (key: string, values?: Record<string, any>) => safeTranslate(t, key, locale, values),
     [t, locale]
   );
 
@@ -226,8 +214,7 @@ const ProductReferenceCard = ({
         "group bg-funeral-gold backdrop-blur-sm overflow-hidden shadow-2xl relative clip-corners",
         // Enhanced hover effects with motion preference support
         "transition-all duration-300 ease-in-out",
-        !prefersReducedMotion &&
-          "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
+        !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
         prefersReducedMotion && "hover:shadow-lg hover:bg-white/15",
         "cursor-pointer"
       )}
@@ -359,9 +346,7 @@ export const ProductReferencesSection = ({
   className,
 }: ProductReferencesSectionProps) => {
   const t = useTranslations("home.productReferences");
-  const [products, setProducts] = useState<ProductReference[]>(
-    propProducts || []
-  );
+  const [products, setProducts] = useState<ProductReference[]>(propProducts || []);
   const [loading, setLoading] = useState(!propProducts);
   const [error, setError] = useState<string | null>(null);
   const [retryCount, setRetryCount] = useState(0);
@@ -418,15 +403,11 @@ export const ProductReferencesSection = ({
 
       // Set user-friendly error message
       if (error.name === "AbortError") {
-        setError(
-          safeTranslate(t, "timeoutError", locale) || "Request timed out"
-        );
+        setError(safeTranslate(t, "timeoutError", locale) || "Request timed out");
       } else if (isRecoverableError(error)) {
         setError(safeTranslate(t, "loadingError", locale));
       } else {
-        setError(
-          safeTranslate(t, "criticalError", locale) || "Critical error occurred"
-        );
+        setError(safeTranslate(t, "criticalError", locale) || "Critical error occurred");
       }
     } finally {
       setLoading(false);
@@ -436,8 +417,7 @@ export const ProductReferencesSection = ({
 
   // Safe translation function with fallbacks (memoized to prevent infinite loops)
   const safeT = useCallback(
-    (key: string, values?: Record<string, any>) =>
-      safeTranslate(t, key, locale, values),
+    (key: string, values?: Record<string, any>) => safeTranslate(t, key, locale, values),
     [t, locale]
   );
 
@@ -518,11 +498,7 @@ export const ProductReferencesSection = ({
               {t("heading")}
             </h2>
           </div>
-          <div
-            className="flex justify-center items-center py-12"
-            role="status"
-            aria-live="polite"
-          >
+          <div className="flex justify-center items-center py-12" role="status" aria-live="polite">
             <div
               className="animate-spin rounded-full h-12 w-12 border-b-2 border-white"
               aria-hidden="true"
@@ -593,11 +569,7 @@ export const ProductReferencesSection = ({
             >
               {t("heading")}
             </h2>
-            <div
-              role="alert"
-              aria-live="assertive"
-              className="text-center py-12"
-            >
+            <div role="alert" aria-live="assertive" className="text-center py-12">
               <p
                 id="products-error"
                 className={cn(
@@ -632,9 +604,7 @@ export const ProductReferencesSection = ({
                   )}
                   aria-describedby="retry-description"
                 >
-                  {isRetrying
-                    ? safeT("retrying") || "Retrying..."
-                    : safeT("tryAgain")}
+                  {isRetrying ? safeT("retrying") || "Retrying..." : safeT("tryAgain")}
                 </button>
 
                 {/* Alternative action - go to products page */}
@@ -648,9 +618,7 @@ export const ProductReferencesSection = ({
                   )}
                 >
                   {safeT("viewAllProducts") ||
-                    (locale === "cs"
-                      ? "Zobrazit všechny produkty"
-                      : "View All Products")}
+                    (locale === "cs" ? "Zobrazit všechny produkty" : "View All Products")}
                 </button>
               </div>
               <div id="retry-description" className="sr-only">

@@ -60,11 +60,7 @@ async function listAllProducts() {
 
     console.log(`✅ Found ${data.length} products:`);
     data.forEach((product, index) => {
-      console.log(
-        `${index + 1}. ${product.slug} - ${product.name_cs} / ${
-          product.name_en
-        }`
-      );
+      console.log(`${index + 1}. ${product.slug} - ${product.name_cs} / ${product.name_en}`);
     });
   } catch (err) {
     console.error("💥 Unexpected error:", err);

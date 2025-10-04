@@ -1,9 +1,8 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { type OrderStatus } from "@/types/order";
+import type { OrderStatus } from "@/types/order";
 
 interface OrderTrackingProps {
   orderId: string;
@@ -198,8 +197,9 @@ export function OrderTracking({ orderId, locale }: OrderTrackingProps) {
                       <div className="relative flex space-x-3">
                         <div>
                           <span
-                            className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white ${item.status === order.status ? "bg-green-500" : "bg-gray-400"
-                              }`}
+                            className={`h-8 w-8 rounded-full flex items-center justify-center ring-8 ring-white ${
+                              item.status === order.status ? "bg-green-500" : "bg-gray-400"
+                            }`}
                           >
                             <svg
                               className="h-4 w-4 text-white"

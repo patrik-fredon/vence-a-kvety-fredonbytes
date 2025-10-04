@@ -1,10 +1,10 @@
-export { CartAnimationProvider, useCartAnimation } from './CartAnimationProvider';
-export { AnimatedCartIcon } from './AnimatedCartIcon';
-export { ProductToCartAnimation, useProductToCartAnimation } from './ProductToCartAnimation';
+export { AnimatedCartIcon } from "./AnimatedCartIcon";
+export { CartAnimationProvider, useCartAnimation } from "./CartAnimationProvider";
+export { ProductToCartAnimation, useProductToCartAnimation } from "./ProductToCartAnimation";
 export type {
-  CartAnimationConfig,
+  AnimationSequenceOptions,
   AnimationState,
   AnimationStep,
+  CartAnimationConfig,
   ProductToCartAnimationProps,
-  AnimationSequenceOptions
-} from './types';
+} from "./types";

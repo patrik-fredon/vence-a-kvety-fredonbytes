@@ -19,16 +19,20 @@ export interface PerformanceProfile {
     optimizationOpportunities: string[];
     criticalIssues: string[];
   };
-  memoryUsage: {
-    usedJSHeapSize: number;
-    totalJSHeapSize: number;
-    jsHeapSizeLimit: number;
-  } | undefined;
-  networkMetrics: {
-    resourceCount: number;
-    totalTransferSize: number;
-    slowResources: string[];
-  } | undefined;
+  memoryUsage:
+    | {
+        usedJSHeapSize: number;
+        totalJSHeapSize: number;
+        jsHeapSizeLimit: number;
+      }
+    | undefined;
+  networkMetrics:
+    | {
+        resourceCount: number;
+        totalTransferSize: number;
+        slowResources: string[];
+      }
+    | undefined;
 }
 
 /**
@@ -76,7 +80,7 @@ export const usePerformanceProfiler = (
 ): UsePerformanceProfilerResult => {
   const {
     componentName,
-    enabled = process.env['NODE_ENV'] === "development",
+    enabled = process.env["NODE_ENV"] === "development",
     trackMemory = true,
     trackNetwork = true,
     sampleRate = 1.0,
@@ -89,7 +93,14 @@ export const usePerformanceProfiler = (
   // Tracking refs
   const renderTimesRef = useRef<number[]>([]);
   const profilingStartTimeRef = useRef<number | null>(null);
-  const memorySnapshotsRef = useRef<Array<{ usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number; timestamp: number }>>([]);
+  const memorySnapshotsRef = useRef<
+    Array<{
+      usedJSHeapSize: number;
+      totalJSHeapSize: number;
+      jsHeapSizeLimit: number;
+      timestamp: number;
+    }>
+  >([]);
   const networkResourcesRef = useRef<PerformanceResourceTiming[]>([]);
 
   // Use component performance monitoring
@@ -132,7 +143,7 @@ export const usePerformanceProfiler = (
     performanceMonitor.startTracking();
     lighthouseOptimization.startOptimizationTracking();
 
-    if (process.env['NODE_ENV'] === "development") {
+    if (process.env["NODE_ENV"] === "development") {
       console.log(`🔬 [PerformanceProfiler] Started profiling: ${componentName}`);
     }
   }, [enabled, sampleRate, componentName, performanceMonitor, lighthouseOptimization]);
@@ -160,24 +171,46 @@ export const usePerformanceProfiler = (
 
     // Get Lighthouse metrics
     const lighthouseMetrics = {
-      performanceScore: calculatePerformanceScore(renderMetrics, lighthouseOptimization.metrics ? {
-        ...(lighthouseOptimization.metrics.clsContribution !== undefined && { clsContribution: lighthouseOptimization.metrics.clsContribution }),
-        ...(lighthouseOptimization.metrics.lcpContribution !== undefined && { lcpContribution: lighthouseOptimization.metrics.lcpContribution }),
-        ...(lighthouseOptimization.metrics.tbtContribution !== undefined && { tbtContribution: lighthouseOptimization.metrics.tbtContribution }),
-      } : null),
+      performanceScore: calculatePerformanceScore(
+        renderMetrics,
+        lighthouseOptimization.metrics
+          ? {
+              ...(lighthouseOptimization.metrics.clsContribution !== undefined && {
+                clsContribution: lighthouseOptimization.metrics.clsContribution,
+              }),
+              ...(lighthouseOptimization.metrics.lcpContribution !== undefined && {
+                lcpContribution: lighthouseOptimization.metrics.lcpContribution,
+              }),
+              ...(lighthouseOptimization.metrics.tbtContribution !== undefined && {
+                tbtContribution: lighthouseOptimization.metrics.tbtContribution,
+              }),
+            }
+          : null
+      ),
       optimizationOpportunities: lighthouseOptimization.getOptimizationRecommendations(),
-      criticalIssues: getCriticalIssues(renderMetrics, lighthouseOptimization.metrics ? {
-        ...(lighthouseOptimization.metrics.clsContribution !== undefined && { clsContribution: lighthouseOptimization.metrics.clsContribution }),
-        ...(lighthouseOptimization.metrics.lcpContribution !== undefined && { lcpContribution: lighthouseOptimization.metrics.lcpContribution }),
-        ...(lighthouseOptimization.metrics.tbtContribution !== undefined && { tbtContribution: lighthouseOptimization.metrics.tbtContribution }),
-      } : null),
+      criticalIssues: getCriticalIssues(
+        renderMetrics,
+        lighthouseOptimization.metrics
+          ? {
+              ...(lighthouseOptimization.metrics.clsContribution !== undefined && {
+                clsContribution: lighthouseOptimization.metrics.clsContribution,
+              }),
+              ...(lighthouseOptimization.metrics.lcpContribution !== undefined && {
+                lcpContribution: lighthouseOptimization.metrics.lcpContribution,
+              }),
+              ...(lighthouseOptimization.metrics.tbtContribution !== undefined && {
+                tbtContribution: lighthouseOptimization.metrics.tbtContribution,
+              }),
+            }
+          : null
+      ),
     };
 
     // Get memory metrics
-    const memoryUsage = trackMemory ? (getCurrentMemoryUsage() || undefined) : undefined;
+    const memoryUsage = trackMemory ? getCurrentMemoryUsage() || undefined : undefined;
 
     // Get network metrics
-    const networkMetrics = trackNetwork ? (getNetworkMetrics() || undefined) : undefined;
+    const networkMetrics = trackNetwork ? getNetworkMetrics() || undefined : undefined;
 
     const newProfile: PerformanceProfile = {
       componentName,
@@ -190,7 +223,7 @@ export const usePerformanceProfiler = (
     setProfile(newProfile);
 
     // Log profile summary
-    if (process.env['NODE_ENV'] === "development") {
+    if (process.env["NODE_ENV"] === "development") {
       console.log(`📊 [PerformanceProfiler] Profile complete for ${componentName}:`, {
         profilingDuration: `${profilingDuration.toFixed(2)}ms`,
         averageRenderTime: `${renderMetrics.averageRenderTime.toFixed(2)}ms`,
@@ -347,7 +380,11 @@ export const usePerformanceProfiler = (
  */
 function calculatePerformanceScore(
   renderMetrics: PerformanceProfile["renderMetrics"],
-  lighthouseMetrics: { clsContribution?: number; lcpContribution?: number; tbtContribution?: number } | null
+  lighthouseMetrics: {
+    clsContribution?: number;
+    lcpContribution?: number;
+    tbtContribution?: number;
+  } | null
 ): number {
   let score = 100;
 
@@ -374,7 +411,11 @@ function calculatePerformanceScore(
  */
 function getCriticalIssues(
   renderMetrics: PerformanceProfile["renderMetrics"],
-  lighthouseMetrics: { clsContribution?: number; lcpContribution?: number; tbtContribution?: number } | null
+  lighthouseMetrics: {
+    clsContribution?: number;
+    lcpContribution?: number;
+    tbtContribution?: number;
+  } | null
 ): string[] {
   const issues: string[] = [];
 
@@ -403,7 +444,11 @@ function getCriticalIssues(
 function getCurrentMemoryUsage() {
   if (typeof window === "undefined" || !("performance" in window)) return null;
 
-  const memory = (performance as { memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number } }).memory;
+  const memory = (
+    performance as {
+      memory?: { usedJSHeapSize: number; totalJSHeapSize: number; jsHeapSizeLimit: number };
+    }
+  ).memory;
   if (!memory) return null;
 
   return {

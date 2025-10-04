@@ -14,7 +14,7 @@ const performanceConfig = {
   },
   development: {
     debug: {
-      showWebVitalsOverlay: process.env['NODE_ENV'] === "development",
+      showWebVitalsOverlay: process.env["NODE_ENV"] === "development",
     },
   },
   monitoring: {
@@ -59,7 +59,7 @@ interface WebVitalsTrackerProps {
 export function WebVitalsTracker({
   debug = performanceConfig.development?.debug?.showWebVitalsOverlay ?? false,
   endpoint = performanceConfig.monitoring?.webVitalsTracking?.endpoint ??
-  "/api/monitoring/web-vitals",
+    "/api/monitoring/web-vitals",
   sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ?? 0.1,
   autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ?? true,
   onMetric,

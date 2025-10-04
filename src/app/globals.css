@@ -264,19 +264,11 @@ h1 {
 }
 
 .gradient-memorial {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-50) 0%,
-    var(--color-neutral-100) 100%
-  );
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
 }
 
 .bg-gradient-memorial {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-50) 0%,
-    var(--color-neutral-100) 100%
-  );
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
 }
 
 /* Line clamp utilities */

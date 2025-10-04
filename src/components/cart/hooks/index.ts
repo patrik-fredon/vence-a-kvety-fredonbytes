@@ -1,1 +1,1 @@
-export { useAnimationSequence } from './useAnimationSequence';
+export { useAnimationSequence } from "./useAnimationSequence";

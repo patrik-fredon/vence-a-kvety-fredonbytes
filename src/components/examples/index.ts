@@ -1,2 +1,2 @@
-export { PerformanceMonitoringExample } from './PerformanceMonitoringExample';
-export { CoreWebVitalsExample } from './CoreWebVitalsExample';
+export { CoreWebVitalsExample } from "./CoreWebVitalsExample";
+export { PerformanceMonitoringExample } from "./PerformanceMonitoringExample";

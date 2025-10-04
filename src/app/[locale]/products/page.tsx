@@ -170,10 +170,7 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
     };
   });
 
-  const itemListStructuredData = generateItemListStructuredData(
-    productItems,
-    t("collectionTitle")
-  );
+  const itemListStructuredData = generateItemListStructuredData(productItems, t("collectionTitle"));
 
   // Generate CollectionPage structured data if filtering by category
   let collectionPageStructuredData = null;
@@ -206,7 +203,9 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
         {/* Page Header */}
         <div className="m-8 text-center justify-center">
           <div className="bg-funeral-teal rounded-lg p-8 mb-8">
-            <h2 className="text-elegant text-4xl font-semibold mb-4 text-amber-100">{t("title")}</h2>
+            <h2 className="text-elegant text-4xl font-semibold mb-4 text-amber-100">
+              {t("title")}
+            </h2>
             <p className="text-lg text-amber-200">{t("pageDescription")}</p>
           </div>
         </div>

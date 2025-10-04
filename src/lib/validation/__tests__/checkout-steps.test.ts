@@ -3,43 +3,43 @@
  * These tests verify that each step only validates its own fields
  */
 
-import { describe, it, expect } from 'vitest';
+import { describe, expect, it } from "vitest";
+import type { CheckoutFormData } from "@/types/order";
 import {
+  formatStepValidationErrors,
+  hasStepValidationErrors,
   STEP_FIELDS,
+  stepValidationSchema,
   validateCustomerStep,
   validateDeliveryStep,
   validatePaymentStep,
   validateReviewStep,
-  stepValidationSchema,
-  hasStepValidationErrors,
-  formatStepValidationErrors,
-} from '../checkout-steps';
-import type { CheckoutFormData } from '@/types/order';
+} from "../checkout-steps";
 
-describe('STEP_FIELDS constant', () => {
-  it('should define fields for each step', () => {
-    expect(STEP_FIELDS.customer).toContain('email');
-    expect(STEP_FIELDS.customer).toContain('firstName');
-    expect(STEP_FIELDS.customer).toContain('lastName');
-    expect(STEP_FIELDS.customer).toContain('phone');
+describe("STEP_FIELDS constant", () => {
+  it("should define fields for each step", () => {
+    expect(STEP_FIELDS.customer).toContain("email");
+    expect(STEP_FIELDS.customer).toContain("firstName");
+    expect(STEP_FIELDS.customer).toContain("lastName");
+    expect(STEP_FIELDS.customer).toContain("phone");
 
-    expect(STEP_FIELDS.delivery).toContain('address');
-    expect(STEP_FIELDS.delivery).toContain('urgency');
+    expect(STEP_FIELDS.delivery).toContain("address");
+    expect(STEP_FIELDS.delivery).toContain("urgency");
 
-    expect(STEP_FIELDS.payment).toContain('paymentMethod');
+    expect(STEP_FIELDS.payment).toContain("paymentMethod");
 
     expect(STEP_FIELDS.review).toEqual([]);
   });
 });
 
-describe('validateCustomerStep', () => {
-  it('should validate only customer fields', () => {
+describe("validateCustomerStep", () => {
+  it("should validate only customer fields", () => {
     const data: CheckoutFormData = {
       customerInfo: {
-        email: 'invalid-email',
-        firstName: '',
-        lastName: 'Doe',
-        phone: '123',
+        email: "invalid-email",
+        firstName: "",
+        lastName: "Doe",
+        phone: "123",
       },
       deliveryInfo: {
         // These should NOT be validated in customer step
@@ -63,13 +63,13 @@ describe('validateCustomerStep', () => {
     expect(errors.general).toBeUndefined();
   });
 
-  it('should pass with valid customer data', () => {
+  it("should pass with valid customer data", () => {
     const data: CheckoutFormData = {
       customerInfo: {
-        email: 'test@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '+420123456789',
+        email: "test@example.com",
+        firstName: "John",
+        lastName: "Doe",
+        phone: "+420123456789",
       },
       deliveryInfo: {},
       agreeToTerms: false,
@@ -81,13 +81,13 @@ describe('validateCustomerStep', () => {
   });
 });
 
-describe('validateDeliveryStep', () => {
-  it('should validate only delivery fields', () => {
+describe("validateDeliveryStep", () => {
+  it("should validate only delivery fields", () => {
     const data: CheckoutFormData = {
       customerInfo: {
         // These should NOT be validated in delivery step
-        email: '',
-        firstName: '',
+        email: "",
+        firstName: "",
       },
       deliveryInfo: {
         address: undefined as any,
@@ -108,17 +108,17 @@ describe('validateDeliveryStep', () => {
     expect(errors.customerInfo).toBeUndefined();
   });
 
-  it('should pass with valid delivery data', () => {
+  it("should pass with valid delivery data", () => {
     const data: CheckoutFormData = {
       customerInfo: {},
       deliveryInfo: {
         address: {
-          street: '123 Main St',
-          city: 'Prague',
-          postalCode: '12345',
-          country: 'Czech Republic',
+          street: "123 Main St",
+          city: "Prague",
+          postalCode: "12345",
+          country: "Czech Republic",
         },
-        urgency: 'standard',
+        urgency: "standard",
       },
       agreeToTerms: false,
       subscribeNewsletter: false,
@@ -129,12 +129,12 @@ describe('validateDeliveryStep', () => {
   });
 });
 
-describe('validatePaymentStep', () => {
-  it('should validate only payment method', () => {
+describe("validatePaymentStep", () => {
+  it("should validate only payment method", () => {
     const data: CheckoutFormData = {
       customerInfo: {
         // These should NOT be validated in payment step
-        email: '',
+        email: "",
       },
       deliveryInfo: {
         // These should NOT be validated in payment step
@@ -148,18 +148,18 @@ describe('validatePaymentStep', () => {
 
     // Should have payment error
     expect(errors.general).toBeDefined();
-    expect(errors.general?.[0]).toContain('platby');
+    expect(errors.general?.[0]).toContain("platby");
 
     // Should NOT have customer or delivery errors
     expect(errors.customerInfo).toBeUndefined();
     expect(errors.deliveryInfo).toBeUndefined();
   });
 
-  it('should pass with valid payment method', () => {
+  it("should pass with valid payment method", () => {
     const data: CheckoutFormData = {
       customerInfo: {},
       deliveryInfo: {},
-      paymentMethod: 'stripe',
+      paymentMethod: "stripe",
       agreeToTerms: false,
       subscribeNewsletter: false,
     };
@@ -169,12 +169,12 @@ describe('validatePaymentStep', () => {
   });
 });
 
-describe('validateReviewStep', () => {
-  it('should validate all fields from all steps', () => {
+describe("validateReviewStep", () => {
+  it("should validate all fields from all steps", () => {
     const data: CheckoutFormData = {
       customerInfo: {
-        email: 'invalid',
-        firstName: '',
+        email: "invalid",
+        firstName: "",
       },
       deliveryInfo: {
         address: undefined as any,
@@ -191,24 +191,24 @@ describe('validateReviewStep', () => {
     expect(errors.general).toBeDefined();
   });
 
-  it('should pass with all valid data', () => {
+  it("should pass with all valid data", () => {
     const data: CheckoutFormData = {
       customerInfo: {
-        email: 'test@example.com',
-        firstName: 'John',
-        lastName: 'Doe',
-        phone: '+420123456789',
+        email: "test@example.com",
+        firstName: "John",
+        lastName: "Doe",
+        phone: "+420123456789",
       },
       deliveryInfo: {
         address: {
-          street: '123 Main St',
-          city: 'Prague',
-          postalCode: '12345',
-          country: 'Czech Republic',
+          street: "123 Main St",
+          city: "Prague",
+          postalCode: "12345",
+          country: "Czech Republic",
         },
-        urgency: 'standard',
+        urgency: "standard",
       },
-      paymentMethod: 'stripe',
+      paymentMethod: "stripe",
       agreeToTerms: true,
       subscribeNewsletter: false,
     };
@@ -220,8 +220,8 @@ describe('validateReviewStep', () => {
   });
 });
 
-describe('stepValidationSchema', () => {
-  it('should provide validation functions for all steps', () => {
+describe("stepValidationSchema", () => {
+  it("should provide validation functions for all steps", () => {
     expect(stepValidationSchema.customer).toBe(validateCustomerStep);
     expect(stepValidationSchema.delivery).toBe(validateDeliveryStep);
     expect(stepValidationSchema.payment).toBe(validatePaymentStep);
@@ -229,32 +229,32 @@ describe('stepValidationSchema', () => {
   });
 });
 
-describe('hasStepValidationErrors', () => {
-  it('should return true when errors exist', () => {
+describe("hasStepValidationErrors", () => {
+  it("should return true when errors exist", () => {
     const errors = {
-      customerInfo: { email: 'Invalid email' },
+      customerInfo: { email: "Invalid email" },
     };
     expect(hasStepValidationErrors(errors)).toBe(true);
   });
 
-  it('should return false when no errors exist', () => {
+  it("should return false when no errors exist", () => {
     const errors = {};
     expect(hasStepValidationErrors(errors)).toBe(false);
   });
 });
 
-describe('formatStepValidationErrors', () => {
-  it('should format all error messages', () => {
+describe("formatStepValidationErrors", () => {
+  it("should format all error messages", () => {
     const errors = {
-      customerInfo: { email: 'Invalid email', firstName: 'Required' },
-      deliveryInfo: { address: 'Required' },
-      general: ['Terms required'],
+      customerInfo: { email: "Invalid email", firstName: "Required" },
+      deliveryInfo: { address: "Required" },
+      general: ["Terms required"],
     };
 
     const messages = formatStepValidationErrors(errors);
     expect(messages).toHaveLength(4);
-    expect(messages).toContain('Invalid email');
-    expect(messages).toContain('Required');
-    expect(messages).toContain('Terms required');
+    expect(messages).toContain("Invalid email");
+    expect(messages).toContain("Required");
+    expect(messages).toContain("Terms required");
   });
 });

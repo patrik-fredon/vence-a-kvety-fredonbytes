@@ -12,7 +12,7 @@ export interface ImagePerformanceMetrics {
   /** Image file size in bytes (if available) */
   fileSize?: number;
   /** Image dimensions */
-  dimensions: { width: number; height: number; } | undefined;
+  dimensions: { width: number; height: number } | undefined;
 }
 
 export interface UseImagePerformanceOptions {
@@ -43,7 +43,7 @@ export const useImagePerformance = (
 ): ImagePerformanceResult => {
   const {
     enabled = true,
-    logMetrics = process.env['NODE_ENV'] === "development",
+    logMetrics = process.env["NODE_ENV"] === "development",
     onMetrics,
   } = options;
 
@@ -73,51 +73,60 @@ export const useImagePerformance = (
   }, [enabled, imageSrc, logMetrics]);
 
   // Mark image as successfully loaded
-  const markLoaded = useCallback((image?: HTMLImageElement) => {
-    if (!enabled || !startTimeRef.current) return;
+  const markLoaded = useCallback(
+    (image?: HTMLImageElement) => {
+      if (!(enabled && startTimeRef.current)) return;
 
-    const endTime = performance.now();
-    const duration = endTime - startTimeRef.current;
+      const endTime = performance.now();
+      const duration = endTime - startTimeRef.current;
 
-    const updatedMetrics: ImagePerformanceMetrics = {
-      loadStartTime: startTimeRef.current,
-      loadEndTime: endTime,
-      loadDuration: duration,
-      loadSuccess: true,
-      dimensions: image ? {
-        width: image.naturalWidth,
-        height: image.naturalHeight,
-      } : undefined,
-    };
+      const updatedMetrics: ImagePerformanceMetrics = {
+        loadStartTime: startTimeRef.current,
+        loadEndTime: endTime,
+        loadDuration: duration,
+        loadSuccess: true,
+        dimensions: image
+          ? {
+              width: image.naturalWidth,
+              height: image.naturalHeight,
+            }
+          : undefined,
+      };
 
-    setMetrics(updatedMetrics);
-    setIsTracking(false);
+      setMetrics(updatedMetrics);
+      setIsTracking(false);
 
-    // Try to get file size from performance API
-    if (typeof window !== "undefined" && window.performance) {
-      const resourceEntries = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
-      const imageEntry = resourceEntries.find(entry => entry.name.includes(imageSrc));
+      // Try to get file size from performance API
+      if (typeof window !== "undefined" && window.performance) {
+        const resourceEntries = performance.getEntriesByType(
+          "resource"
+        ) as PerformanceResourceTiming[];
+        const imageEntry = resourceEntries.find((entry) => entry.name.includes(imageSrc));
 
-      if (imageEntry && imageEntry.transferSize) {
-        updatedMetrics.fileSize = imageEntry.transferSize;
+        if (imageEntry && imageEntry.transferSize) {
+          updatedMetrics.fileSize = imageEntry.transferSize;
+        }
       }
-    }
 
-    if (logMetrics) {
-      console.log(`🖼️ [ImagePerformance] Loaded successfully:`, {
-        src: imageSrc,
-        duration: `${duration.toFixed(2)}ms`,
-        dimensions: updatedMetrics.dimensions,
-        fileSize: updatedMetrics.fileSize ? `${(updatedMetrics.fileSize / 1024).toFixed(2)}KB` : 'unknown',
-      });
-    }
+      if (logMetrics) {
+        console.log(`🖼️ [ImagePerformance] Loaded successfully:`, {
+          src: imageSrc,
+          duration: `${duration.toFixed(2)}ms`,
+          dimensions: updatedMetrics.dimensions,
+          fileSize: updatedMetrics.fileSize
+            ? `${(updatedMetrics.fileSize / 1024).toFixed(2)}KB`
+            : "unknown",
+        });
+      }
 
-    onMetrics?.(updatedMetrics);
-  }, [enabled, imageSrc, logMetrics, onMetrics]);
+      onMetrics?.(updatedMetrics);
+    },
+    [enabled, imageSrc, logMetrics, onMetrics]
+  );
 
   // Mark image as failed to load
   const markError = useCallback(() => {
-    if (!enabled || !startTimeRef.current) return;
+    if (!(enabled && startTimeRef.current)) return;
 
     const endTime = performance.now();
     const duration = endTime - startTimeRef.current;
@@ -158,6 +167,6 @@ export const useImagePerformance = (
     isTracking,
   };
 };
-export { default as usePerformanceMonitor } from './usePerformanceMonitor';
-export { default as useLighthouseOptimization } from './useLighthouseOptimization';
-export { default as usePerformanceProfiler } from './usePerformanceProfiler';
+export { default as useLighthouseOptimization } from "./useLighthouseOptimization";
+export { default as usePerformanceMonitor } from "./usePerformanceMonitor";
+export { default as usePerformanceProfiler } from "./usePerformanceProfiler";

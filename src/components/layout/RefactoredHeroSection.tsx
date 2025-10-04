@@ -1,16 +1,12 @@
 "use client";
 
 import Image from "next/image";
+import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { CTAButton } from "@/components/ui/CTAButton";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
-import {
-  getFallbackImage,
-  logErrorWithContext,
-  safeTranslate,
-} from "@/lib/utils/fallback-utils";
+import { getFallbackImage, logErrorWithContext, safeTranslate } from "@/lib/utils/fallback-utils";
 
 interface RefactoredHeroSectionProps {
   locale: string;
@@ -187,9 +183,7 @@ export function RefactoredHeroSection({
             // Text color
             "text-amber-100",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-1"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-1" : "opacity-100"
           )}
         >
           {safeT("heading")}
@@ -222,9 +216,7 @@ export function RefactoredHeroSection({
             // Text color
             "text-amber-100",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-2"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-2" : "opacity-100"
           )}
         >
           {safeT("subheading")}
@@ -262,29 +254,18 @@ export function RefactoredHeroSection({
             "transition-colors duration-200",
             // Focus state for accessibility
             "focus:outline-none focus:ring-2 focus:ring-amber-100 focus:ring-offset-2 focus:ring-offset-teal-900",
+            // Orientation adjustments
+            "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
+            "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
+            // Hover animation enhancement
+            "hover:scale-105 hover:bg-amber-100/60 transition-transform duration-200",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-3"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-3" : "opacity-100"
           )}
           aria-label={safeT("ctaAriaLabel")}
         >
           {safeT("cta")}
         </Link>
-      </div>
-    </section>
-  );
-}
-              // Orientation adjustments
-              "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
-              "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
-              // Hover animation enhancement
-              "hover:scale-105 hover:bg-amber-100/60 transition-transform duration-200"
-            )}
-          >
-            {safeT("ctaButton")}
-          </CTAButton>
-        </div>
       </div>
     </section>
   );

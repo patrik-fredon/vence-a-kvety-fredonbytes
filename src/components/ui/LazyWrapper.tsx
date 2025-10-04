@@ -228,7 +228,7 @@ export function LazyImage({ src, alt, className, width, height, placeholder }: L
           isInView
             ? src
             : placeholder ||
-            "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
+              "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7"
         }
         alt={alt}
         width={width}

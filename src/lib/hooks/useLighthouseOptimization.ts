@@ -86,7 +86,9 @@ export const useLighthouseOptimization = (
 
   // Refs for tracking various metrics
   const layoutShiftsRef = useRef<number[]>([]);
-  const imageLoadsRef = useRef<Array<{ src: string; loadTime: number; size: number | undefined }>>([]);
+  const imageLoadsRef = useRef<Array<{ src: string; loadTime: number; size: number | undefined }>>(
+    []
+  );
   const jsExecutionsRef = useRef<Array<{ script: string; time: number }>>([]);
   const startTimeRef = useRef<number | null>(null);
 
@@ -120,7 +122,7 @@ export const useLighthouseOptimization = (
 
     setMetrics(initialMetrics);
 
-    if (process.env['NODE_ENV'] === "development") {
+    if (process.env["NODE_ENV"] === "development") {
       console.log(`🔍 [LighthouseOptimization] Started tracking: ${componentName}`);
     }
   }, [enabled, componentName]);
@@ -152,7 +154,7 @@ export const useLighthouseOptimization = (
         `Component: ${componentName}`
       );
 
-      if (process.env['NODE_ENV'] === "development" && shift > 0.1) {
+      if (process.env["NODE_ENV"] === "development" && shift > 0.1) {
         console.warn(
           `📐 [LighthouseOptimization] Layout shift detected in ${componentName}: ${shift}`
         );

@@ -38,9 +38,7 @@ async function getProducts(request: NextRequest) {
       limit: Math.min(Number.parseInt(searchParams.get("limit") || "12"), 100), // Max 100 items per page
       categoryId: searchParams.get("categoryId") || "",
       categorySlug: searchParams.get("categorySlug") || "",
-      minPrice: searchParams.get("minPrice")
-        ? Number.parseFloat(searchParams.get("minPrice")!)
-        : 0,
+      minPrice: searchParams.get("minPrice") ? Number.parseFloat(searchParams.get("minPrice")!) : 0,
       maxPrice: searchParams.get("maxPrice")
         ? Number.parseFloat(searchParams.get("maxPrice")!)
         : 999999,

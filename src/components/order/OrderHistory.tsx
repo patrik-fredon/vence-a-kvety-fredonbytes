@@ -4,7 +4,7 @@ import Link from "next/link";
 
 import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
-import { type OrderStatus } from "@/types/order";
+import type { OrderStatus } from "@/types/order";
 
 interface OrderHistoryProps {
   locale: string;

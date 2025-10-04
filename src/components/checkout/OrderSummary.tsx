@@ -9,7 +9,6 @@ import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { formatPrice } from "@/lib/utils";
 import type { CartItem } from "@/types/cart";
 
-
 interface OrderSummaryProps {
   items: CartItem[];
   subtotal: number;

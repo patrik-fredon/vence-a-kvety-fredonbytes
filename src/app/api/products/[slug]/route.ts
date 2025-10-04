@@ -12,11 +12,7 @@ import {
   validateProductData,
 } from "@/lib/utils/product-transforms";
 import type { ApiResponse } from "@/types";
-import {
-  type Product,
-  type ProductRow,
-  type UpdateProductRequest,
-} from "@/types/product";
+import type { Product, ProductRow, UpdateProductRequest } from "@/types/product";
 
 interface RouteContext {
   params: Promise<{

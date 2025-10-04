@@ -5,11 +5,7 @@ import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils/price-calculator";
 import { validateCustomRibbonText } from "@/lib/validation/wreath";
-import type {
-  Customization,
-  CustomizationChoice,
-  CustomizationOption,
-} from "@/types/product";
+import type { Customization, CustomizationChoice, CustomizationOption } from "@/types/product";
 
 export interface RibbonConfiguratorProps {
   /** Whether the ribbon configurator should be visible */
@@ -29,8 +25,6 @@ export interface RibbonConfiguratorProps {
   /** Whether ribbon is actually selected (for conditional requirements) */
   isRibbonSelected?: boolean;
 }
-
-
 
 export function RibbonConfigurator({
   isVisible,
@@ -71,7 +65,11 @@ export function RibbonConfigurator({
         const existing = newCustomizations[existingIndex]!;
 
         // For text options, always enforce single selection (maxSelections = 1)
-        if (option.maxSelections === 1 || option.type === 'ribbon_text' || option.id === 'ribbon_text') {
+        if (
+          option.maxSelections === 1 ||
+          option.type === "ribbon_text" ||
+          option.id === "ribbon_text"
+        ) {
           // Single selection - replace
           existing.choiceIds = [choiceId];
           // Clear custom value when selecting predefined option
@@ -164,9 +162,7 @@ export function RibbonConfigurator({
               )}
               aria-hidden="true"
             >
-              {isSelected && (
-                <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />
-              )}
+              {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />}
             </div>
             <div className="text-left">
               <div id={`${choiceId}-label`} className="font-medium">
@@ -286,7 +282,9 @@ export function RibbonConfigurator({
               >
                 {customTextValidation.errors.map((error, index) => (
                   <div key={index} className="flex items-start gap-1">
-                    <span className="text-red-500 mt-0.5" aria-hidden="true">•</span>
+                    <span className="text-red-500 mt-0.5" aria-hidden="true">
+                      •
+                    </span>
                     <span>{error}</span>
                   </div>
                 ))}
@@ -303,7 +301,9 @@ export function RibbonConfigurator({
               >
                 {customTextValidation.warnings.map((warning, index) => (
                   <div key={index} className="flex items-start gap-1">
-                    <span className="text-amber-500 mt-0.5" aria-hidden="true">⚠</span>
+                    <span className="text-amber-500 mt-0.5" aria-hidden="true">
+                      ⚠
+                    </span>
                     <span>{warning}</span>
                   </div>
                 ))}
@@ -313,7 +313,13 @@ export function RibbonConfigurator({
         </div>
       );
     },
-    [getCurrentCustomization, handleCustomValueChangeWithValidation, t, customTextValidation, tAccessibility]
+    [
+      getCurrentCustomization,
+      handleCustomValueChangeWithValidation,
+      t,
+      customTextValidation,
+      tAccessibility,
+    ]
   );
 
   // Don't render if not visible
@@ -353,13 +359,12 @@ export function RibbonConfigurator({
 
             <div className="flex items-center justify-between">
               <div>
-                <h5
-                  id={`${colorOption.id}-title`}
-                  className="font-medium text-stone-800"
-                >
+                <h5 id={`${colorOption.id}-title`} className="font-medium text-stone-800">
                   {colorOption.name[locale as keyof typeof colorOption.name]}
                   {colorOption.required && (
-                    <span className="text-red-500 ml-1" aria-label={tAccessibility("required")}>*</span>
+                    <span className="text-red-500 ml-1" aria-label={tAccessibility("required")}>
+                      *
+                    </span>
                   )}
                 </h5>
                 {colorOption.description && (
@@ -382,17 +387,15 @@ export function RibbonConfigurator({
             </div>
 
             {/* Validation for color - only show if ribbon is selected */}
-            {colorOption.required && isRibbonSelected && !getCurrentCustomization(colorOption.id)?.choiceIds.length && (
-              <div
-                className="text-sm text-red-600"
-                role="alert"
-                aria-live="polite"
-              >
-                {t("validation.conditionalRequired", {
-                  option: colorOption.name[locale as keyof typeof colorOption.name],
-                })}
-              </div>
-            )}
+            {colorOption.required &&
+              isRibbonSelected &&
+              !getCurrentCustomization(colorOption.id)?.choiceIds.length && (
+                <div className="text-sm text-red-600" role="alert" aria-live="polite">
+                  {t("validation.conditionalRequired", {
+                    option: colorOption.name[locale as keyof typeof colorOption.name],
+                  })}
+                </div>
+              )}
           </fieldset>
         )}
 
@@ -406,13 +409,12 @@ export function RibbonConfigurator({
 
             <div className="flex items-center justify-between">
               <div>
-                <h5
-                  id={`${textOption.id}-title`}
-                  className="font-medium text-stone-800"
-                >
+                <h5 id={`${textOption.id}-title`} className="font-medium text-stone-800">
                   {textOption.name[locale as keyof typeof textOption.name]}
                   {textOption.required && (
-                    <span className="text-red-500 ml-1" aria-label={tAccessibility("required")}>*</span>
+                    <span className="text-red-500 ml-1" aria-label={tAccessibility("required")}>
+                      *
+                    </span>
                   )}
                 </h5>
                 {textOption.description && (
@@ -438,17 +440,15 @@ export function RibbonConfigurator({
             </div>
 
             {/* Validation for text - only show if ribbon is selected */}
-            {textOption.required && isRibbonSelected && !getCurrentCustomization(textOption.id)?.choiceIds.length && (
-              <div
-                className="text-sm text-red-600"
-                role="alert"
-                aria-live="polite"
-              >
-                {t("validation.conditionalRequired", {
-                  option: textOption.name[locale as keyof typeof textOption.name],
-                })}
-              </div>
-            )}
+            {textOption.required &&
+              isRibbonSelected &&
+              !getCurrentCustomization(textOption.id)?.choiceIds.length && (
+                <div className="text-sm text-red-600" role="alert" aria-live="polite">
+                  {t("validation.conditionalRequired", {
+                    option: textOption.name[locale as keyof typeof textOption.name],
+                  })}
+                </div>
+              )}
           </fieldset>
         )}
       </div>

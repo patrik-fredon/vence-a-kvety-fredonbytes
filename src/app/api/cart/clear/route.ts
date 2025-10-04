@@ -1,7 +1,7 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import { createServerClient } from "@/lib/supabase/server";
 import { clearCartCache } from "@/lib/cache/cart-cache";
+import { createServerClient } from "@/lib/supabase/server";
 
 /**
  * POST /api/cart/clear - Clear all items from user's cart
@@ -55,10 +55,7 @@ export async function POST(request: NextRequest) {
       await clearCartCache(session?.user?.id || null, sessionId);
       console.log("✅ [API] Redis cache cleared successfully");
     } catch (cacheError) {
-      console.error(
-        "⚠️ [API] Cache clearing failed (non-critical):",
-        cacheError
-      );
+      console.error("⚠️ [API] Cache clearing failed (non-critical):", cacheError);
       // Don't fail the request if cache clearing fails
     }
 

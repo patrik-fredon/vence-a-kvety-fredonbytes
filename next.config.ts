@@ -2,9 +2,9 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 import path from "path";
 import {
+  BUNDLE_ANALYZER_CONFIG,
   OPTIMIZE_PACKAGE_IMPORTS,
   WEBPACK_OPTIMIZATION,
-  BUNDLE_ANALYZER_CONFIG,
 } from "./src/lib/config/bundle-optimization";
 
 const withNextIntl = createNextIntlPlugin("./src/i18n/request.ts");
@@ -102,8 +102,7 @@ const nextConfig: NextConfig = {
           // Restrict browser features
           {
             key: "Permissions-Policy",
-            value:
-              "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
+            value: "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
           },
           // Enable XSS protection
           {
@@ -205,8 +204,7 @@ const nextConfig: NextConfig = {
       config.optimization.sideEffects = WEBPACK_OPTIMIZATION.sideEffects;
 
       // Module concatenation for better tree-shaking
-      config.optimization.concatenateModules =
-        WEBPACK_OPTIMIZATION.concatenateModules;
+      config.optimization.concatenateModules = WEBPACK_OPTIMIZATION.concatenateModules;
     }
 
     // Resolve alias for better tree-shaking

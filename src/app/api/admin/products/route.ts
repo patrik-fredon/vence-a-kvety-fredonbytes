@@ -77,7 +77,7 @@ export const GET = withAdminAuth(async (request: NextRequest) => {
       { status: 500 }
     );
   }
-});;
+});
 
 /**
  * Create new product (Admin only)

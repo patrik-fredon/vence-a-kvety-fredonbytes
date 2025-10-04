@@ -21,11 +21,13 @@ export interface SecurityOptions {
 }
 
 export interface SecurityContext {
-  user: {
-    id: string;
-    email: string | undefined;
-    role: string | undefined;
-  } | undefined;
+  user:
+    | {
+        id: string;
+        email: string | undefined;
+        role: string | undefined;
+      }
+    | undefined;
   clientIP: string;
   userAgent: string;
   isAuthenticated: boolean;

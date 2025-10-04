@@ -15,11 +15,8 @@
 "use client";
 
 import type React from "react";
-import {
-  ComponentErrorFallback,
-  ErrorBoundary,
-} from "@/components/ui/ErrorBoundary";
-import { type Locale } from "@/i18n/config";
+import { ComponentErrorFallback, ErrorBoundary } from "@/components/ui/ErrorBoundary";
+import type { Locale } from "@/i18n/config";
 import { funeralColors } from "@/lib/design-tokens";
 import { logErrorWithContext } from "@/lib/utils/fallback-utils";
 import { LazyProductReferencesSection } from "./LazyProductReferencesSection";
@@ -65,11 +62,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
       aria-label="Home page content"
     >
       {/* Hero Section with centered logo and messaging */}
-      <section
-        aria-labelledby="hero-heading"
-        role="banner"
-        className="relative"
-      >
+      <section aria-labelledby="hero-heading" role="banner" className="relative">
         <ErrorBoundary
           level="component"
           context="RefactoredHeroSection"
@@ -97,11 +90,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
       </section>
 
       {/* Product References Section */}
-      <section
-        aria-labelledby="products-heading"
-        role="region"
-        className="relative"
-      >
+      <section aria-labelledby="products-heading" role="region" className="relative">
         <ErrorBoundary
           level="component"
           context="LazyProductReferencesSection"
@@ -109,11 +98,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
           fallback={
             <ComponentErrorFallback
               className="min-h-[400px] flex items-center justify-center"
-              title={
-                locale === "cs"
-                  ? "Produkty se nepodařily načíst"
-                  : "Products failed to load"
-              }
+              title={locale === "cs" ? "Produkty se nepodařily načíst" : "Products failed to load"}
               message={
                 locale === "cs"
                   ? "Při načítání produktů došlo k chybě. Můžete zkusit přejít přímo na stránku produktů."
@@ -123,8 +108,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
               onRetry={() => window.location.reload()}
               recoveryActions={[
                 {
-                  label:
-                    locale === "cs" ? "Přejít na produkty" : "Go to Products",
+                  label: locale === "cs" ? "Přejít na produkty" : "Go to Products",
                   action: () => (window.location.href = `/${locale}/products`),
                   primary: true,
                 },
@@ -138,11 +122,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
 
       {/* Additional content if provided */}
       {children && (
-        <section
-          role="region"
-          aria-label="Additional content"
-          className="relative"
-        >
+        <section role="region" aria-label="Additional content" className="relative">
           <ErrorBoundary
             level="component"
             context="AdditionalContent"
@@ -150,11 +130,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
             fallback={
               <ComponentErrorFallback
                 className="min-h-[200px] flex items-center justify-center"
-                title={
-                  locale === "cs"
-                    ? "Obsah se nepodařil načíst"
-                    : "Content failed to load"
-                }
+                title={locale === "cs" ? "Obsah se nepodařil načíst" : "Content failed to load"}
                 message={
                   locale === "cs"
                     ? "Při načítání obsahu došlo k chybě."

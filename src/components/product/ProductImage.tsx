@@ -1,13 +1,7 @@
 "use client";
 
-import React, {
-  useState,
-  useCallback,
-  useMemo,
-  useRef,
-  useEffect,
-} from "react";
 import Image from "next/image";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import type { ProductImage as ProductImageType } from "@/types/product";
 
@@ -113,9 +107,7 @@ const getSizesForVariant = (variant: ProductImageProps["variant"]): string => {
 };
 
 // Quality settings based on variant for optimal file size vs quality balance
-const getQualityForVariant = (
-  variant: ProductImageProps["variant"]
-): number => {
+const getQualityForVariant = (variant: ProductImageProps["variant"]): number => {
   switch (variant) {
     case "product":
       return 85; // High quality for product images - balance between quality and file size
@@ -180,7 +172,7 @@ export function ProductImage({
 
   // Enhanced Intersection Observer for optimized lazy loading
   useEffect(() => {
-    if (!enableIntersectionObserver || !imageRef.current) return;
+    if (!(enableIntersectionObserver && imageRef.current)) return;
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -254,19 +246,13 @@ export function ProductImage({
     if (loadStartTime) {
       // Log slow loading images for optimization
       if (loadDuration > 1000) {
-        console.warn(
-          `Slow image load detected: ${image.url} took ${loadDuration.toFixed(
-            2
-          )}ms`
-        );
+        console.warn(`Slow image load detected: ${image.url} took ${loadDuration.toFixed(2)}ms`);
       }
 
       // Track Core Web Vitals impact
       if (shouldLoadWithPriority && loadDuration > 2500) {
         console.warn(
-          `Critical image load exceeded LCP threshold: ${
-            image.url
-          } (${loadDuration.toFixed(2)}ms)`
+          `Critical image load exceeded LCP threshold: ${image.url} (${loadDuration.toFixed(2)}ms)`
         );
       }
     }
@@ -288,14 +274,7 @@ export function ProductImage({
     });
 
     onError?.();
-  }, [
-    onError,
-    image.url,
-    variant,
-    shouldLoadWithPriority,
-    isAboveFold,
-    productName,
-  ]);
+  }, [onError, image.url, variant, shouldLoadWithPriority, isAboveFold, productName]);
 
   // Determine final image source with fallback
   const imageSrc = useMemo(() => {
@@ -332,14 +311,7 @@ export function ProductImage({
       };
     }
     return undefined;
-  }, [
-    preload,
-    shouldLoadWithPriority,
-    image.url,
-    variant,
-    isAboveFold,
-    optimizedSizes,
-  ]);
+  }, [preload, shouldLoadWithPriority, image.url, variant, isAboveFold, optimizedSizes]);
 
   // Error fallback component
   if (hasError && !showErrorFallback) {

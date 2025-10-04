@@ -2,12 +2,12 @@
  * Payment success page
  */
 
-import { CheckCircleIcon, EnvelopeIcon, PhoneIcon } from "@/lib/icons";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 import React from "react";
 import { Button } from "@/components/ui/Button";
+import { CheckCircleIcon, EnvelopeIcon, PhoneIcon } from "@/lib/icons";
 
 interface PageProps {
   params: Promise<{ locale: string }>;

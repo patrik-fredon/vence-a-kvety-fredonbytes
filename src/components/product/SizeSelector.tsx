@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { CustomizationOption, CustomizationChoice } from "@/types/product";
 import { formatPrice } from "@/lib/utils/price-calculator";
+import type { CustomizationChoice, CustomizationOption } from "@/types/product";
 
 interface SizeSelectorProps {
   sizeOption: CustomizationOption;
@@ -72,10 +72,7 @@ export function SizeSelector({
     <div className={cn("space-y-4", className)}>
       {/* Header with required indicator */}
       <div className="flex items-center gap-2">
-        <h3
-          id={`${sectionId}-title`}
-          className="text-lg font-semibold text-stone-900"
-        >
+        <h3 id={`${sectionId}-title`} className="text-lg font-semibold text-stone-900">
           {sizeOption.name?.[locale as keyof typeof sizeOption.name] || "Size"}
         </h3>
         {sizeOption.required && (
@@ -174,24 +171,18 @@ export function SizeSelector({
                     <div className="text-lg font-bold text-stone-900">
                       {getDisplayPrice(choice)}
                     </div>
-                    {priceModifier && (
-                      <div className="text-sm text-stone-600">
-                        {priceModifier}
-                      </div>
-                    )}
+                    {priceModifier && <div className="text-sm text-stone-600">{priceModifier}</div>}
                   </div>
 
                   {!choice.available && (
-                    <div className="text-sm text-red-600 mt-2">
-                      {t("unavailable")}
-                    </div>
+                    <div className="text-sm text-red-600 mt-2">{t("unavailable")}</div>
                   )}
                 </div>
 
                 {/* Screen reader description */}
                 <div id={`${choiceId}-description`} className="sr-only">
-                  {choice.label?.[locale as keyof typeof choice.label] || choice.id}
-                  , {getDisplayPrice(choice)}
+                  {choice.label?.[locale as keyof typeof choice.label] || choice.id},{" "}
+                  {getDisplayPrice(choice)}
                   {priceModifier && `, ${priceModifier}`}
                   {!choice.available && `, ${t("unavailable")}`}
                   {isSelected && ` - ${tAccessibility("selected")}`}

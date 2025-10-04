@@ -87,8 +87,6 @@ export function ProductFilters({
     onFiltersChange(newFilters);
   };
 
-
-
   const clearFilters = () => {
     const clearedFilters: ProductFiltersType = {};
     setLocalFilters(clearedFilters);
@@ -140,11 +138,13 @@ export function ProductFilters({
           {hasActiveFilters && (
             <span
               className="ml-2 px-2 py-1 bg-teal-800 text-amber-100 text-xs rounded-full"
-              aria-label={`${Object.keys(localFilters).filter(
-                (key) =>
-                  localFilters[key as keyof ProductFiltersType] !== undefined &&
-                  localFilters[key as keyof ProductFiltersType] !== ""
-              ).length} active filters`}
+              aria-label={`${
+                Object.keys(localFilters).filter(
+                  (key) =>
+                    localFilters[key as keyof ProductFiltersType] !== undefined &&
+                    localFilters[key as keyof ProductFiltersType] !== ""
+                ).length
+              } active filters`}
             >
               {
                 Object.keys(localFilters).filter(
@@ -168,7 +168,9 @@ export function ProductFilters({
         >
           {/* Close Button */}
           <div className="flex items-center justify-between">
-            <h3 id="filters-heading" className="text-sm font-medium text-amber-100">{t("searchAndFilters")}</h3>
+            <h3 id="filters-heading" className="text-sm font-medium text-amber-100">
+              {t("searchAndFilters")}
+            </h3>
             <Button
               variant="ghost"
               size="sm"
@@ -194,7 +196,12 @@ export function ProductFilters({
               aria-describedby={searchValue ? "search-status" : undefined}
             />
             {searchValue && (
-              <div id="search-status" className="mt-2 text-xs text-amber-100" role="status" aria-live="polite">
+              <div
+                id="search-status"
+                className="mt-2 text-xs text-amber-100"
+                role="status"
+                aria-live="polite"
+              >
                 {t("searchingFor", { query: searchValue })}
               </div>
             )}
@@ -202,7 +209,10 @@ export function ProductFilters({
 
           {/* Category Filter */}
           <div>
-            <label htmlFor="category-filter" className="block text-sm font-medium text-amber-100 mb-2">
+            <label
+              htmlFor="category-filter"
+              className="block text-sm font-medium text-amber-100 mb-2"
+            >
               {t("filterByCategory")}
             </label>
             <select

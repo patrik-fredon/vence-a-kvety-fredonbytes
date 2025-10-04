@@ -29,7 +29,7 @@ export function useProductErrorHandler() {
     });
 
     // In development, also log to console for debugging
-    if (process.env['NODE_ENV'] === "development") {
+    if (process.env["NODE_ENV"] === "development") {
       console.error("Product component async error:", {
         error,
         context,
@@ -55,7 +55,7 @@ export function useProductErrorHandler() {
       url: typeof window !== "undefined" ? window.location.href : "unknown",
     });
 
-    if (process.env['NODE_ENV'] === "development") {
+    if (process.env["NODE_ENV"] === "development") {
       console.error("Product component async error (non-throwing):", {
         error,
         context,
@@ -94,7 +94,7 @@ export function withProductErrorHandling<T extends (...args: any[]) => Promise<a
         url: typeof window !== "undefined" ? window.location.href : "unknown",
       });
 
-      if (process.env['NODE_ENV'] === "development") {
+      if (process.env["NODE_ENV"] === "development") {
         console.error("Product async function error:", {
           error,
           context,

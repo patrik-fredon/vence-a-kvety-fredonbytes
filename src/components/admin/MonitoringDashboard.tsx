@@ -66,7 +66,9 @@ export function MonitoringDashboard() {
   const [recentMetrics, setRecentMetrics] = useState<PerformanceMetric[]>([]);
   const [performanceInsights, setPerformanceInsights] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"overview" | "errors" | "performance" | "insights">("overview");
+  const [activeTab, setActiveTab] = useState<"overview" | "errors" | "performance" | "insights">(
+    "overview"
+  );
 
   useEffect(() => {
     fetchMonitoringData();
@@ -106,10 +108,14 @@ export function MonitoringDashboard() {
               return errorTime > dayAgo;
             }).length || 0,
           // New error categories
-          navigation: errorsData.errors?.filter((e: ErrorLog) => e.level === "navigation").length || 0,
-          payment: errorsData.errors?.filter((e: ErrorLog) => e.level === "critical" &&
-            e.additionalData?.type === "payment").length || 0,
-          performance: errorsData.errors?.filter((e: ErrorLog) => e.level === "performance").length || 0,
+          navigation:
+            errorsData.errors?.filter((e: ErrorLog) => e.level === "navigation").length || 0,
+          payment:
+            errorsData.errors?.filter(
+              (e: ErrorLog) => e.level === "critical" && e.additionalData?.type === "payment"
+            ).length || 0,
+          performance:
+            errorsData.errors?.filter((e: ErrorLog) => e.level === "performance").length || 0,
         };
 
         setStats({
@@ -199,17 +205,17 @@ export function MonitoringDashboard() {
               </div>
               <div className="text-sm text-blue-600">Celkem problémů</div>
             </div>
-            {Object.entries(performanceInsights.coreWebVitals.metrics || {}).map(([metric, data]: [string, any]) => (
-              <div key={metric} className="bg-gray-50 p-4 rounded-lg">
-                <div className="text-lg font-semibold text-gray-900">{metric}</div>
-                <div className="text-sm text-gray-600">
-                  Průměr: {data.avgValue?.toFixed(0)}ms
+            {Object.entries(performanceInsights.coreWebVitals.metrics || {}).map(
+              ([metric, data]: [string, any]) => (
+                <div key={metric} className="bg-gray-50 p-4 rounded-lg">
+                  <div className="text-lg font-semibold text-gray-900">{metric}</div>
+                  <div className="text-sm text-gray-600">Průměr: {data.avgValue?.toFixed(0)}ms</div>
+                  <div className="text-sm text-gray-600">
+                    Nejhorší: {data.worstValue?.toFixed(0)}ms
+                  </div>
                 </div>
-                <div className="text-sm text-gray-600">
-                  Nejhorší: {data.worstValue?.toFixed(0)}ms
-                </div>
-              </div>
-            ))}
+              )
+            )}
           </div>
         </div>
 
@@ -220,12 +226,17 @@ export function MonitoringDashboard() {
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-2">Problematické stránky</h4>
               <div className="space-y-2">
-                {performanceInsights.navigation.mostProblematicRoutes?.map((route: any, index: number) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <span className="text-sm text-gray-900">{route.route}</span>
-                    <span className="text-sm font-medium text-red-600">{route.count} chyb</span>
-                  </div>
-                ))}
+                {performanceInsights.navigation.mostProblematicRoutes?.map(
+                  (route: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm text-gray-900">{route.route}</span>
+                      <span className="text-sm font-medium text-red-600">{route.count} chyb</span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div>
@@ -247,12 +258,17 @@ export function MonitoringDashboard() {
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-2">Chyby podle kroků</h4>
               <div className="space-y-2">
-                {Object.entries(performanceInsights.payments.errorsByStep || {}).map(([step, count]: [string, any]) => (
-                  <div key={step} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <span className="text-sm text-gray-900 capitalize">{step}</span>
-                    <span className="text-sm font-medium text-red-600">{count} chyb</span>
-                  </div>
-                ))}
+                {Object.entries(performanceInsights.payments.errorsByStep || {}).map(
+                  ([step, count]: [string, any]) => (
+                    <div
+                      key={step}
+                      className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm text-gray-900 capitalize">{step}</span>
+                      <span className="text-sm font-medium text-red-600">{count} chyb</span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div>
@@ -274,12 +290,17 @@ export function MonitoringDashboard() {
             <div>
               <h4 className="text-sm font-medium text-gray-700 mb-2">Problematické obrázky</h4>
               <div className="space-y-2">
-                {performanceInsights.images.mostProblematicImages?.map((image: any, index: number) => (
-                  <div key={index} className="flex justify-between items-center p-2 bg-gray-50 rounded">
-                    <span className="text-sm text-gray-900 truncate">{image.src}</span>
-                    <span className="text-sm font-medium text-red-600">{image.count} chyb</span>
-                  </div>
-                ))}
+                {performanceInsights.images.mostProblematicImages?.map(
+                  (image: any, index: number) => (
+                    <div
+                      key={index}
+                      className="flex justify-between items-center p-2 bg-gray-50 rounded"
+                    >
+                      <span className="text-sm text-gray-900 truncate">{image.src}</span>
+                      <span className="text-sm font-medium text-red-600">{image.count} chyb</span>
+                    </div>
+                  )
+                )}
               </div>
             </div>
             <div>
@@ -331,10 +352,11 @@ export function MonitoringDashboard() {
             <button
               key={tab.id}
               onClick={() => setActiveTab(tab.id as any)}
-              className={`${activeTab === tab.id
-                ? "border-primary-500 text-primary-600"
-                : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
-                } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center`}
+              className={`${
+                activeTab === tab.id
+                  ? "border-primary-500 text-primary-600"
+                  : "border-transparent text-gray-500 hover:text-gray-700 hover:border-gray-300"
+              } whitespace-nowrap py-2 px-1 border-b-2 font-medium text-sm flex items-center`}
             >
               <tab.icon className="w-4 h-4 mr-2" />
               {tab.label}
@@ -455,7 +477,9 @@ export function MonitoringDashboard() {
                 <div className="ml-5 w-0 flex-1">
                   <dl>
                     <dt className="text-sm font-medium text-gray-500 truncate">Výkonové</dt>
-                    <dd className="text-lg font-medium text-gray-900">{stats.errors.performance}</dd>
+                    <dd className="text-lg font-medium text-gray-900">
+                      {stats.errors.performance}
+                    </dd>
                   </dl>
                 </div>
               </div>

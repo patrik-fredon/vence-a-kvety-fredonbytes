@@ -1,12 +1,12 @@
 "use client";
 
-import { useCallback, useMemo } from "react";
 import { useTranslations } from "next-intl";
-import type { Product, Customization, CustomizationOption } from "@/types/product";
-import { SizeSelector } from "./SizeSelector";
-import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
-import { useDebouncedPriceCalculation } from "@/lib/utils/usePriceCalculation";
+import { useCallback, useMemo } from "react";
 import { useCustomizationCache } from "@/lib/cache/customization-cache";
+import { useDebouncedPriceCalculation } from "@/lib/utils/usePriceCalculation";
+import type { Customization, CustomizationOption, Product } from "@/types/product";
+import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
+import { SizeSelector } from "./SizeSelector";
 
 interface OptimizedProductCustomizerProps {
   product: Product;
@@ -148,8 +148,6 @@ export function OptimizedProductCustomizer({
     [customizations, onCustomizationChange, cleanupDependentCustomizations]
   );
 
-
-
   // Memoize size and ribbon options for better performance
   const { sizeOption, ribbonOption, ribbonColorOption, ribbonTextOption } = useMemo(() => {
     const size = visibleOptions.find((opt) => opt.type === "size");
@@ -167,9 +165,7 @@ export function OptimizedProductCustomizer({
 
   // Memoize current customizations for better performance
   const currentCustomizations = useMemo(() => {
-    const customizationMap = new Map(
-      customizations.map((c) => [c.optionId, c])
-    );
+    const customizationMap = new Map(customizations.map((c) => [c.optionId, c]));
     return customizationMap;
   }, [customizations]);
 
@@ -179,7 +175,7 @@ export function OptimizedProductCustomizer({
     const ribbonCustomization = currentCustomizations.get(ribbonOption.id);
     return ribbonCustomization?.choiceIds.some((id) =>
       ribbonOption.choices.some((choice) => choice.id === id)
-    ) || false;
+    );
   }, [ribbonOption, currentCustomizations]);
 
   return (
@@ -204,16 +200,19 @@ export function OptimizedProductCustomizer({
           </h3>
           <div className="space-y-2">
             {ribbonOption.choices.map((choice) => {
-              const isSelected = currentCustomizations.get(ribbonOption.id)?.choiceIds.includes(choice.id);
+              const isSelected = currentCustomizations
+                .get(ribbonOption.id)
+                ?.choiceIds.includes(choice.id);
               return (
                 <button
                   key={choice.id}
                   type="button"
                   onClick={() => handleChoiceSelection(ribbonOption.id, choice.id, ribbonOption)}
-                  className={`w-full p-3 text-left rounded-lg border-2 transition-colors ${isSelected
-                    ? "border-stone-900 bg-funeral-gold"
-                    : "border-stone-200 hover:border-stone-300"
-                    }`}
+                  className={`w-full p-3 text-left rounded-lg border-2 transition-colors ${
+                    isSelected
+                      ? "border-stone-900 bg-funeral-gold"
+                      : "border-stone-200 hover:border-stone-300"
+                  }`}
                 >
                   {choice.label[locale as keyof typeof choice.label]}
                 </button>
@@ -240,9 +239,7 @@ export function OptimizedProductCustomizer({
       {/* Price Display */}
       <div className="mt-6 p-4 bg-funeral-gold rounded-lg">
         <div className="flex justify-between items-center">
-          <span className="text-lg font-semibold text-stone-900">
-            {t("totalPrice")}
-          </span>
+          <span className="text-lg font-semibold text-stone-900">{t("totalPrice")}</span>
           <span className="text-xl font-bold text-stone-900">
             {priceCalculation.totalPrice.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
               style: "currency",
@@ -252,10 +249,13 @@ export function OptimizedProductCustomizer({
         </div>
         {priceCalculation.totalModifier > 0 && (
           <div className="text-sm text-amber-100 mt-1">
-            {t("basePrice")}: {priceCalculation.basePrice.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
+            {t("basePrice")}:{" "}
+            {priceCalculation.basePrice.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
               style: "currency",
               currency: "CZK",
-            })} + {priceCalculation.totalModifier.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
+            })}{" "}
+            +{" "}
+            {priceCalculation.totalModifier.toLocaleString(locale === "cs" ? "cs-CZ" : "en-US", {
               style: "currency",
               currency: "CZK",
             })}

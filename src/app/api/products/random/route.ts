@@ -49,7 +49,9 @@ export async function GET(request: NextRequest) {
     }
 
     // Filter products that are in stock
-    const availableProducts = products.filter((product) => (product.availability as any)?.['inStock'] !== false);
+    const availableProducts = products.filter(
+      (product) => (product.availability as any)?.["inStock"] !== false
+    );
 
     if (availableProducts.length === 0) {
       return NextResponse.json({

@@ -72,7 +72,10 @@ export async function POST(request: NextRequest) {
     // Convert cart items to order items
     const orderItems: OrderItem[] = body.items.map((item: CartItem) => {
       // Import customization utilities
-      const { transferCustomizationsToOrder, validateCustomizationIntegrity } = require('@/lib/cart/utils');
+      const {
+        transferCustomizationsToOrder,
+        validateCustomizationIntegrity,
+      } = require("@/lib/cart/utils");
 
       // Validate and transfer customizations
       let processedCustomizations = item.customizations || [];
@@ -82,7 +85,10 @@ export async function POST(request: NextRequest) {
         const validation = validateCustomizationIntegrity(processedCustomizations);
 
         if (!validation.isValid) {
-          console.warn(`Customization validation issues for cart item ${item.id}:`, validation.issues);
+          console.warn(
+            `Customization validation issues for cart item ${item.id}:`,
+            validation.issues
+          );
           // Use fixed customizations if available
           if (validation.fixedCustomizations) {
             processedCustomizations = validation.fixedCustomizations;
@@ -223,8 +229,7 @@ export async function POST(request: NextRequest) {
 
     // Post-order cleanup: Remove cart items, customization cache, and clear Redis cache
     try {
-
-      const { clearCartCache } = await import('@/lib/cache/cart-cache');
+      const { clearCartCache } = await import("@/lib/cache/cart-cache");
 
       // Get current user or session for cart cleanup
       const {
@@ -250,25 +255,34 @@ export async function POST(request: NextRequest) {
           return count + (Array.isArray(item.customizations) ? item.customizations.length : 0);
         }, 0);
 
-        console.log(`🧹 [Cleanup] Post-order cleanup: Removing ${cartItems.length} cart items with ${customizationCount} customizations for order ${order.id}`);
+        console.log(
+          `🧹 [Cleanup] Post-order cleanup: Removing ${cartItems.length} cart items with ${customizationCount} customizations for order ${order.id}`
+        );
 
         // Delete cart items (this automatically removes associated customizations)
         const { error: deleteError } = await supabase
           .from("cart_items")
           .delete()
-          .in("id", cartItems.map(item => item.id));
+          .in(
+            "id",
+            cartItems.map((item) => item.id)
+          );
 
         if (deleteError) {
           console.error("❌ [Cleanup] Error during post-order cart cleanup:", deleteError);
           // Don't fail the order creation if cleanup fails
         } else {
-          console.log(`✅ [Cleanup] Successfully cleaned up cart items after order ${order.id} creation`);
+          console.log(
+            `✅ [Cleanup] Successfully cleaned up cart items after order ${order.id} creation`
+          );
         }
 
         // Clear Redis cache for the cart
         try {
           await clearCartCache(user?.id || null, sessionId);
-          console.log(`🗄️ [Cleanup] Successfully cleared cart cache after order ${order.id} creation`);
+          console.log(
+            `🗄️ [Cleanup] Successfully cleared cart cache after order ${order.id} creation`
+          );
         } catch (cacheError) {
           console.error("⚠️ [Cleanup] Error clearing cart cache (non-critical):", cacheError);
           // Don't fail the order creation if cache cleanup fails
@@ -410,7 +424,7 @@ async function createStripePaymentSession(
 ): Promise<string> {
   try {
     // Initialize payment through our payment API
-    const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000";
+    const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/payments/initialize`, {
       method: "POST",
       headers: {
@@ -440,5 +454,3 @@ async function createStripePaymentSession(
     return `/cs/checkout/error?orderId=${orderId}&error=stripe_init_failed`;
   }
 }
-
-

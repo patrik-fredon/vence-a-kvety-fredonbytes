@@ -1,11 +1,11 @@
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
+import { customizationCache } from "@/lib/cache/customization-cache";
 import { createClient } from "@/lib/supabase/server";
 import {
-  triggerManualCacheWarming,
   getCacheWarmingStats,
-  warmUpCategoryCache
+  triggerManualCacheWarming,
+  warmUpCategoryCache,
 } from "@/lib/utils/cache-warming";
-import { customizationCache } from "@/lib/cache/customization-cache";
 
 /**
  * Admin API for managing customization cache
@@ -44,10 +44,7 @@ export async function GET(_request: NextRequest) {
     });
   } catch (error) {
     console.error("Cache stats error:", error);
-    return NextResponse.json(
-      { error: "Failed to get cache statistics" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Failed to get cache statistics" }, { status: 500 });
   }
 }
 
@@ -56,7 +53,10 @@ export async function POST(request: NextRequest) {
     const supabase = createClient();
 
     // Check if user is admin
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -104,25 +104,20 @@ export async function POST(request: NextRequest) {
           });
         }
 
-      case "stats":
+      case "stats": {
         const stats = getCacheWarmingStats();
         return NextResponse.json({
           success: true,
           stats,
         });
+      }
 
       default:
-        return NextResponse.json(
-          { error: "Invalid action" },
-          { status: 400 }
-        );
+        return NextResponse.json({ error: "Invalid action" }, { status: 400 });
     }
   } catch (error) {
     console.error("Error managing cache:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }
 
@@ -131,7 +126,10 @@ export async function DELETE() {
     const supabase = createClient();
 
     // Check if user is admin
-    const { data: { user }, error: authError } = await supabase.auth.getUser();
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser();
     if (authError || !user) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
     }
@@ -156,9 +154,6 @@ export async function DELETE() {
     });
   } catch (error) {
     console.error("Error clearing cache:", error);
-    return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 }
-    );
+    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
   }
 }

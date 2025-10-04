@@ -42,7 +42,7 @@ export class CartSyncManager {
   constructor(
     private userId?: string,
     private sessionId?: string
-  ) { }
+  ) {}
 
   /**
    * Initialize WebSocket connection for real-time updates

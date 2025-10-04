@@ -1,16 +1,16 @@
 "use client";
 
-import { ArrowLeftIcon, ShoppingCartIcon } from "@/lib/icons";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import React, { useEffect, useState } from "react";
+import { CartItemImage } from "@/components/cart/CartItemImage";
 import { CheckoutForm } from "@/components/checkout/CheckoutForm";
 import { CompactOrderSummary } from "@/components/checkout/OrderSummary";
 import { Button } from "@/components/ui/Button";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCart } from "@/lib/cart/context";
+import { ArrowLeftIcon, ShoppingCartIcon } from "@/lib/icons";
 import type { CartItem } from "@/types/cart";
-import { CartItemImage } from "@/components/cart/CartItemImage";
 
 interface CheckoutPageClientProps {
   locale: string;
@@ -78,18 +78,11 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
             <ShoppingCartIcon className="w-8 h-8 text-teal-500" />
           </div>
 
-          <h1 className="text-2xl font-semibold text-teal-800 mb-4">
-            Košík je prázdný
-          </h1>
+          <h1 className="text-2xl font-semibold text-teal-800 mb-4">Košík je prázdný</h1>
 
-          <p className="text-teal-800 mb-8">
-            Nemůžete pokračovat k objednávce s prázdným košíkem.
-          </p>
+          <p className="text-teal-800 mb-8">Nemůžete pokračovat k objednávce s prázdným košíkem.</p>
 
-          <Button
-            onClick={() => router.push(`/${locale}/products`)}
-            className="w-full"
-          >
+          <Button onClick={() => router.push(`/${locale}/products`)} className="w-full">
             Pokračovat v nákupu
           </Button>
         </div>
@@ -114,9 +107,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                 Zpět do košíku
               </button>
             </div>
-            <h1 className="text-xl font-semibold text-amber-100">
-              {t("title")}
-            </h1>
+            <h1 className="text-xl font-semibold text-amber-100">{t("title")}</h1>
             <div className="w-24" /> {/* Spacer for centering */}
           </div>
         </div>
@@ -128,11 +119,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
           {/* Checkout Form - Takes 2 columns on large screens */}
           <div className="lg:col-span-2">
             <div className="bg-funeral-gold rounded-lg shadow-soft p-6 lg:p-8">
-              <CheckoutForm
-                items={items}
-                locale={locale}
-                onOrderComplete={handleOrderComplete}
-              />
+              <CheckoutForm items={items} locale={locale} onOrderComplete={handleOrderComplete} />
             </div>
           </div>
 
@@ -153,28 +140,21 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
               {/* Desktop: Full Summary */}
               <div className="hidden lg:block">
                 <div className="bg-funeral-gold rounded-lg shadow-soft p-6">
-                  <h2 className="text-lg font-semibold text-teal-800 mb-4">
-                    Shrnutí objednávky
-                  </h2>
+                  <h2 className="text-lg font-semibold text-teal-800 mb-4">Shrnutí objednávky</h2>
 
                   <div className="space-y-4">
                     {items.map((item) => {
                       const product = item.product;
                       if (!product) return null;
 
-                      const productName =
-                        locale === "cs" ? product.name.cs : product.name.en;
+                      const productName = locale === "cs" ? product.name.cs : product.name.en;
 
                       return (
                         <div
                           key={item.id}
                           className="flex items-start space-x-3 pb-4 border-b border-teal-100 last:border-b-0 last:pb-0"
                         >
-                          <CartItemImage
-                            item={item}
-                            locale={locale}
-                            size="sm"
-                          />
+                          <CartItemImage item={item} locale={locale} size="sm" />
                           <div className="flex-1 min-w-0">
                             <h4 className="text-sm font-medium text-teal-900 truncate">
                               {productName}
@@ -183,8 +163,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                               {tCart("quantity")}: {item.quantity}
                             </p>
                             <p className="text-sm font-medium text-teal-900 mt-1">
-                              {(item.totalPrice || 0).toLocaleString("cs-CZ")}{" "}
-                              Kč
+                              {(item.totalPrice || 0).toLocaleString("cs-CZ")} Kč
                             </p>
                           </div>
                         </div>

@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useEffect, useState } from "react";
 import { LazyInventoryManagement, LazyMonitoringDashboard } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";

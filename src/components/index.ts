@@ -32,7 +32,6 @@ export * from "./seo";
 // ORGANISMS - Complex UI Sections
 // =============================================================================
 
-
 // Utility organisms
 export * from "./accessibility";
 // Admin organisms

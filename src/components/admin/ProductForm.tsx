@@ -121,32 +121,32 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
   const validateForm = () => {
     const newErrors: Record<string, string> = {};
 
-    if (!(formData as any)['name_cs'].trim()) {
-      newErrors['name_cs'] = "Český název je povinný";
+    if (!(formData as any)["name_cs"].trim()) {
+      newErrors["name_cs"] = "Český název je povinný";
     }
 
-    if (!(formData as any)['name_en'].trim()) {
-      newErrors['name_en'] = "Anglický název je povinný";
+    if (!(formData as any)["name_en"].trim()) {
+      newErrors["name_en"] = "Anglický název je povinný";
     }
 
-    if (!(formData as any)['slug'].trim()) {
-      newErrors['slug'] = "URL slug je povinný";
+    if (!(formData as any)["slug"].trim()) {
+      newErrors["slug"] = "URL slug je povinný";
     }
 
-    if ((formData as any)['base_price'] <= 0) {
-      newErrors['base_price'] = "Cena musí být větší než 0";
+    if ((formData as any)["base_price"] <= 0) {
+      newErrors["base_price"] = "Cena musí být větší než 0";
     }
 
-    if (!(formData as any)['category_id']) {
-      newErrors['category_id'] = "Kategorie je povinná";
+    if (!(formData as any)["category_id"]) {
+      newErrors["category_id"] = "Kategorie je povinná";
     }
 
-    if ((formData as any)['track_inventory'] && (formData as any)['stock_quantity'] < 0) {
-      newErrors['stock_quantity'] = "Počet kusů nemůže být záporný";
+    if ((formData as any)["track_inventory"] && (formData as any)["stock_quantity"] < 0) {
+      newErrors["stock_quantity"] = "Počet kusů nemůže být záporný";
     }
 
-    if ((formData as any)['track_inventory'] && (formData as any)['low_stock_threshold'] < 0) {
-      newErrors['low_stock_threshold'] = "Práh pro upozornění nemůže být záporný";
+    if ((formData as any)["track_inventory"] && (formData as any)["low_stock_threshold"] < 0) {
+      newErrors["low_stock_threshold"] = "Práh pro upozornění nemůže být záporný";
     }
 
     setErrors(newErrors);
@@ -198,13 +198,16 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               </label>
               <input
                 type="text"
-                value={(formData as any)['name_cs']}
+                value={(formData as any)["name_cs"]}
                 onChange={(e) => handleInputChange("name_cs", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['name_cs'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any)["name_cs"] ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="Název produktu v češtině"
               />
-              {(errors as any)['name_cs'] && <p className="mt-1 text-sm text-red-600">{(errors as any)['name_cs']}</p>}
+              {(errors as any)["name_cs"] && (
+                <p className="mt-1 text-sm text-red-600">{(errors as any)["name_cs"]}</p>
+              )}
             </div>
 
             {/* English name */}
@@ -214,13 +217,16 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               </label>
               <input
                 type="text"
-                value={(formData as any)['name_en']}
+                value={(formData as any)["name_en"]}
                 onChange={(e) => handleInputChange("name_en", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['name_en'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any)["name_en"] ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="Product name in English"
               />
-              {(errors as any)['name_en'] && <p className="mt-1 text-sm text-red-600">{(errors as any)['name_en']}</p>}
+              {(errors as any)["name_en"] && (
+                <p className="mt-1 text-sm text-red-600">{(errors as any)["name_en"]}</p>
+              )}
             </div>
 
             {/* Slug */}
@@ -228,23 +234,27 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
               <label className="block text-sm font-medium text-gray-700 mb-2">URL slug *</label>
               <input
                 type="text"
-                value={(formData as any)['slug']}
+                value={(formData as any)["slug"]}
                 onChange={(e) => handleInputChange("slug", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['slug'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any)["slug"] ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="url-slug-produktu"
               />
-              {(errors as any)['slug'] && <p className="mt-1 text-sm text-red-600">{(errors as any)['slug']}</p>}
+              {(errors as any)["slug"] && (
+                <p className="mt-1 text-sm text-red-600">{(errors as any)["slug"]}</p>
+              )}
             </div>
 
             {/* Category */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Kategorie *</label>
               <select
-                value={(formData as any)['category_id']}
+                value={(formData as any)["category_id"]}
                 onChange={(e) => handleInputChange("category_id", e.target.value)}
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['category_id'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any)["category_id"] ? "border-red-300" : "border-gray-300"
+                }`}
               >
                 <option value="">Vyberte kategorii</option>
                 {categories.map((category) => (
@@ -253,8 +263,8 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                   </option>
                 ))}
               </select>
-              {(errors as any)['category_id'] && (
-                <p className="mt-1 text-sm text-red-600">{(errors as any)['category_id']}</p>
+              {(errors as any)["category_id"] && (
+                <p className="mt-1 text-sm text-red-600">{(errors as any)["category_id"]}</p>
               )}
             </div>
 
@@ -267,16 +277,17 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                 type="number"
                 min="0"
                 step="0.01"
-                value={(formData as any)['base_price']}
+                value={(formData as any)["base_price"]}
                 onChange={(e) =>
                   handleInputChange("base_price", Number.parseFloat(e.target.value) || 0)
                 }
-                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${(errors as any)['base_price'] ? "border-red-300" : "border-gray-300"
-                  }`}
+                className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                  (errors as any)["base_price"] ? "border-red-300" : "border-gray-300"
+                }`}
                 placeholder="0.00"
               />
-              {(errors as any)['base_price'] && (
-                <p className="mt-1 text-sm text-red-600">{(errors as any)['base_price']}</p>
+              {(errors as any)["base_price"] && (
+                <p className="mt-1 text-sm text-red-600">{(errors as any)["base_price"]}</p>
               )}
             </div>
           </div>
@@ -335,15 +346,16 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                   <input
                     type="number"
                     min="0"
-                    value={(formData as any)['stock_quantity']}
+                    value={(formData as any)["stock_quantity"]}
                     onChange={(e) =>
                       handleInputChange("stock_quantity", Number.parseInt(e.target.value) || 0)
                     }
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors['stock_quantity'] ? "border-red-300" : "border-gray-300"
-                      }`}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      errors["stock_quantity"] ? "border-red-300" : "border-gray-300"
+                    }`}
                   />
-                  {errors['stock_quantity'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['stock_quantity']}</p>
+                  {errors["stock_quantity"] && (
+                    <p className="mt-1 text-sm text-red-600">{errors["stock_quantity"]}</p>
                   )}
                 </div>
 
@@ -354,15 +366,16 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                   <input
                     type="number"
                     min="0"
-                    value={(formData as any)['low_stock_threshold']}
+                    value={(formData as any)["low_stock_threshold"]}
                     onChange={(e) =>
                       handleInputChange("low_stock_threshold", Number.parseInt(e.target.value) || 0)
                     }
-                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${errors['low_stock_threshold'] ? "border-red-300" : "border-gray-300"
-                      }`}
+                    className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
+                      errors["low_stock_threshold"] ? "border-red-300" : "border-gray-300"
+                    }`}
                   />
-                  {errors['low_stock_threshold'] && (
-                    <p className="mt-1 text-sm text-red-600">{errors['low_stock_threshold']}</p>
+                  {errors["low_stock_threshold"] && (
+                    <p className="mt-1 text-sm text-red-600">{errors["low_stock_threshold"]}</p>
                   )}
                 </div>
               </div>

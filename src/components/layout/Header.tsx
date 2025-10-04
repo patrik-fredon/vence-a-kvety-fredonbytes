@@ -1,6 +1,5 @@
 "use client";
 
-import { Bars3Icon, XMarkIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
@@ -9,6 +8,7 @@ import { AnimatedCartIcon } from "@/components/cart";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import type { Locale } from "@/i18n/config";
+import { Bars3Icon, XMarkIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { Navigation } from "./Navigation";
 
@@ -88,11 +88,7 @@ export function Header({ locale }: HeaderProps) {
                 className="flex items-center hover:opacity-80 transition-opacity duration-200 rounded-lg px-2 py-1"
                 aria-label={t("home")}
               >
-                <img
-                  src="/logo.svg"
-                  alt="Logo"
-                  className="h-10 w-auto sm:h-12 md:h-14"
-                />
+                <img src="/logo.svg" alt="Logo" className="h-10 w-auto sm:h-12 md:h-14" />
               </Link>
             </div>
 
@@ -153,9 +149,7 @@ export function Header({ locale }: HeaderProps) {
                 aria-expanded={isMobileMenuOpen}
                 aria-controls="mobile-menu"
                 aria-label={
-                  isMobileMenuOpen
-                    ? tAccessibility("closeMenu")
-                    : tAccessibility("openMenu")
+                  isMobileMenuOpen ? tAccessibility("closeMenu") : tAccessibility("openMenu")
                 }
               >
                 {isMobileMenuOpen ? (
@@ -190,9 +184,7 @@ export function Header({ locale }: HeaderProps) {
           <div className="flex flex-col h-full">
             {/* Mobile menu header */}
             <div className="flex items-center justify-between p-4 border-b border-stone-200 bg-amber-100">
-              <span className="text-lg font-light text-stone-900">
-                {tUI("menu")}
-              </span>
+              <span className="text-lg font-light text-stone-900">{tUI("menu")}</span>
               <button
                 onClick={closeMobileMenu}
                 className="p-2 text-teal-900 hover:text-amber-100 hover:bg-stone-100 transition-colors duration-200 rounded-lg"
@@ -211,20 +203,14 @@ export function Header({ locale }: HeaderProps) {
                   </div>
                 }
               >
-                <Navigation
-                  locale={locale}
-                  mobile={true}
-                  onItemClick={closeMobileMenu}
-                />
+                <Navigation locale={locale} mobile={true} onItemClick={closeMobileMenu} />
               </ErrorBoundary>
             </div>
 
             {/* Mobile menu footer */}
             <div className="border-t border-stone-200 p-4 space-y-4 bg-amber-100">
               <div className="flex items-center justify-between">
-                <span className="text-sm font-medium text-teal-900">
-                  {tUI("language")}:
-                </span>
+                <span className="text-sm font-medium text-teal-900">{tUI("language")}:</span>
                 <LanguageSwitcher currentLocale={locale} />
               </div>
 

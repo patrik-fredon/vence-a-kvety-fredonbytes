@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { useState, useCallback } from 'react';
-import { useTranslations } from 'next-intl';
-import { Button } from '@/components/ui/Button';
-import { Card, CardContent } from '@/components/ui/Card';
+import { useTranslations } from "next-intl";
+import { useCallback, useState } from "react";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent } from "@/components/ui/Card";
 import {
-  EnhancedValidationError,
-  ErrorRecoveryStrategy,
+  type EnhancedValidationError,
+  type ErrorRecoveryStrategy,
   ValidationErrorSeverity,
-  WREATH_VALIDATION_MESSAGES
-} from '@/lib/validation/wreath';
+  WREATH_VALIDATION_MESSAGES,
+} from "@/lib/validation/wreath";
 
 interface ValidationErrorDisplayProps {
   errors: EnhancedValidationError[];
@@ -25,64 +25,73 @@ interface ValidationErrorDisplayProps {
 export function ValidationErrorDisplay({
   errors,
   recoveryStrategies = [],
-  locale = 'cs',
+  locale = "cs",
   onRecovery,
   onRetry,
   onApplyFallback,
   fallbackAvailable = false,
-  className = ''
+  className = "",
 }: ValidationErrorDisplayProps) {
-  const t = useTranslations('product.validation');
+  const t = useTranslations("product.validation");
   const [recoveryInProgress, setRecoveryInProgress] = useState<string | null>(null);
   const [dismissedErrors, setDismissedErrors] = useState<Set<string>>(new Set());
 
   const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
 
   // Handle error recovery
-  const handleRecovery = useCallback(async (errorIndex: number, strategy: ErrorRecoveryStrategy) => {
-    const error = errors[errorIndex];
-    if (!error || recoveryInProgress) return;
+  const handleRecovery = useCallback(
+    async (errorIndex: number, strategy: ErrorRecoveryStrategy) => {
+      const error = errors[errorIndex];
+      if (!error || recoveryInProgress) return;
 
-    setRecoveryInProgress(error.code);
+      setRecoveryInProgress(error.code);
 
-    try {
-      if (onRecovery) {
-        await onRecovery(errorIndex, strategy);
+      try {
+        if (onRecovery) {
+          await onRecovery(errorIndex, strategy);
+        }
+
+        // Mark error as dismissed after successful recovery
+        setDismissedErrors((prev) => new Set([...prev, error.code]));
+      } catch (recoveryError) {
+        console.error("Recovery failed:", recoveryError);
+      } finally {
+        setRecoveryInProgress(null);
       }
-
-      // Mark error as dismissed after successful recovery
-      setDismissedErrors(prev => new Set([...prev, error.code]));
-    } catch (recoveryError) {
-      console.error('Recovery failed:', recoveryError);
-    } finally {
-      setRecoveryInProgress(null);
-    }
-  }, [errors, recoveryInProgress, onRecovery]);
+    },
+    [errors, recoveryInProgress, onRecovery]
+  );
 
   // Dismiss error manually
   const dismissError = useCallback((errorCode: string) => {
-    setDismissedErrors(prev => new Set([...prev, errorCode]));
+    setDismissedErrors((prev) => new Set([...prev, errorCode]));
   }, []);
 
   // Filter out dismissed errors
-  const visibleErrors = errors.filter(error => !dismissedErrors.has(error.code));
+  const visibleErrors = errors.filter((error) => !dismissedErrors.has(error.code));
 
   if (visibleErrors.length === 0) {
     return null;
   }
 
   // Group errors by severity
-  const errorsByType = visibleErrors.reduce((acc, error, index) => {
-    const key = error.severity;
-    if (!acc[key]) acc[key] = [];
-    const strategy = recoveryStrategies[index];
-    acc[key].push({ 
-      error, 
-      index, 
-      ...(strategy !== undefined && { strategy })
-    });
-    return acc;
-  }, {} as Record<ValidationErrorSeverity, Array<{ error: EnhancedValidationError; index: number; strategy?: ErrorRecoveryStrategy }>>);;
+  const errorsByType = visibleErrors.reduce(
+    (acc, error, index) => {
+      const key = error.severity;
+      if (!acc[key]) acc[key] = [];
+      const strategy = recoveryStrategies[index];
+      acc[key].push({
+        error,
+        index,
+        ...(strategy !== undefined && { strategy }),
+      });
+      return acc;
+    },
+    {} as Record<
+      ValidationErrorSeverity,
+      Array<{ error: EnhancedValidationError; index: number; strategy?: ErrorRecoveryStrategy }>
+    >
+  );
 
   return (
     <div className={`space-y-4 ${className}`}>
@@ -95,16 +104,12 @@ export function ValidationErrorDisplay({
                 <div className="w-2 h-2 bg-red-600 rounded-full" />
               </div>
               <div className="flex-1 space-y-3">
-                <h4 className="text-sm font-medium text-red-800">
-                  {t('title')}
-                </h4>
+                <h4 className="text-sm font-medium text-red-800">{t("title")}</h4>
 
                 {errorsByType[ValidationErrorSeverity.ERROR].map(({ error, index, strategy }) => (
                   <div key={error.code} className="space-y-2">
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm text-red-700 flex-1">
-                        • {error.message}
-                      </p>
+                      <p className="text-sm text-red-700 flex-1">• {error.message}</p>
                       <button
                         onClick={() => dismissError(error.code)}
                         className="text-red-400 hover:text-red-600 text-xs"
@@ -134,10 +139,8 @@ export function ValidationErrorDisplay({
                           )}
                         </Button>
 
-                        {strategy.recoveryAction === 'contact_support' && (
-                          <span className="text-xs text-red-600">
-                            {messages.fallbackMessage}
-                          </span>
+                        {strategy.recoveryAction === "contact_support" && (
+                          <span className="text-xs text-red-600">{messages.fallbackMessage}</span>
                         )}
                       </div>
                     )}
@@ -183,16 +186,12 @@ export function ValidationErrorDisplay({
                 <div className="w-2 h-2 bg-amber-600 rounded-full" />
               </div>
               <div className="flex-1 space-y-2">
-                <h4 className="text-sm font-medium text-amber-800">
-                  {t('warnings')}
-                </h4>
+                <h4 className="text-sm font-medium text-amber-800">{t("warnings")}</h4>
 
                 {errorsByType[ValidationErrorSeverity.WARNING].map(({ error, index, strategy }) => (
                   <div key={error.code} className="space-y-2">
                     <div className="flex items-start justify-between gap-3">
-                      <p className="text-sm text-amber-700 flex-1">
-                        • {error.message}
-                      </p>
+                      <p className="text-sm text-amber-700 flex-1">• {error.message}</p>
                       <button
                         onClick={() => dismissError(error.code)}
                         className="text-amber-400 hover:text-amber-600 text-xs"
@@ -239,15 +238,11 @@ export function ValidationErrorDisplay({
                 <div className="w-2 h-2 bg-blue-600 rounded-full" />
               </div>
               <div className="flex-1 space-y-2">
-                <h4 className="text-sm font-medium text-blue-800">
-                  Information
-                </h4>
+                <h4 className="text-sm font-medium text-blue-800">Information</h4>
 
                 {errorsByType[ValidationErrorSeverity.INFO].map(({ error }) => (
                   <div key={error.code} className="flex items-start justify-between gap-3">
-                    <p className="text-sm text-blue-700 flex-1">
-                      • {error.message}
-                    </p>
+                    <p className="text-sm text-blue-700 flex-1">• {error.message}</p>
                     <button
                       onClick={() => dismissError(error.code)}
                       className="text-blue-400 hover:text-blue-600 text-xs"

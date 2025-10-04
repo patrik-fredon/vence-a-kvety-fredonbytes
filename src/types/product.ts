@@ -5,7 +5,14 @@
 import type { BaseEntity, ImageData, LocalizedContent, SEOMetadata } from "./index";
 
 // Customization option types
-export type CustomizationType = "size" | "flowers" | "ribbon" | "ribbon_color" | "ribbon_text" | "message" | "delivery";
+export type CustomizationType =
+  | "size"
+  | "flowers"
+  | "ribbon"
+  | "ribbon_color"
+  | "ribbon_text"
+  | "message"
+  | "delivery";
 
 export interface CustomizationChoice {
   id: string;

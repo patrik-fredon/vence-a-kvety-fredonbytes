@@ -11,10 +11,7 @@ import {
   generateAvailableDeliveryDates,
 } from "@/lib/utils/delivery-calculator";
 import type { ApiResponse } from "@/types";
-import {
-  type DeliveryCalendarData,
-  type DeliveryCalendarResponse,
-} from "@/types/delivery";
+import type { DeliveryCalendarData, DeliveryCalendarResponse } from "@/types/delivery";
 
 /**
  * GET /api/delivery/calendar

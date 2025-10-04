@@ -3,7 +3,6 @@ import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
 import type { UpdateCartItemRequest } from "@/types/cart";
 
-
 interface RouteParams {
   params: Promise<{ id: string }>;
 }
@@ -45,14 +44,17 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     }
 
     // Verify ownership of cart item and get product info for price recalculation
-    let query = supabase.from("cart_items").select(`
+    let query = supabase
+      .from("cart_items")
+      .select(`
       *,
       products (
         id,
         base_price,
         customization_options
       )
-    `).eq("id", id);
+    `)
+      .eq("id", id);
 
     if (session?.user?.id) {
       query = query.eq("user_id", session.user.id);
@@ -85,18 +87,18 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     let totalPrice = unitPrice * body.quantity;
 
     try {
-      const { calculateCartItemPrice } = await import('@/lib/services/cart-price-service');
+      const { calculateCartItemPrice } = await import("@/lib/services/cart-price-service");
 
       // Handle product data from the join query
       const productData = existingItem.products;
       if (!productData) {
-        throw new Error('Product data not found in cart item');
+        throw new Error("Product data not found in cart item");
       }
 
       const basePrice = Number.parseFloat(productData.base_price.toString());
 
       if (!existingItem.product_id) {
-        throw new Error('Product ID is required for price calculation');
+        throw new Error("Product ID is required for price calculation");
       }
 
       const priceCalculation = await calculateCartItemPrice(
@@ -114,10 +116,13 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
       console.log(`💰 [CartUpdate] Recalculated price for quantity ${body.quantity}:`, {
         unitPrice,
         totalPrice,
-        fromCache: priceCalculation.fromCache
+        fromCache: priceCalculation.fromCache,
       });
     } catch (priceError) {
-      console.error("⚠️ [CartUpdate] Price recalculation failed, using existing unit price:", priceError);
+      console.error(
+        "⚠️ [CartUpdate] Price recalculation failed, using existing unit price:",
+        priceError
+      );
       // Fallback to simple calculation with existing unit price
       totalPrice = unitPrice * body.quantity;
     }
@@ -148,12 +153,12 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
 
     // Update cart cache after successful update
     try {
-      const { updateCachedCartAfterItemChange } = await import('@/lib/cache/cart-cache');
+      const { updateCachedCartAfterItemChange } = await import("@/lib/cache/cart-cache");
 
       await updateCachedCartAfterItemChange(
         session?.user?.id || null,
         sessionId,
-        'update',
+        "update",
         id as string
       );
 
@@ -166,7 +171,7 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
     console.log(`✅ [CartUpdate] Successfully updated cart item ${id}:`, {
       quantity: data.quantity,
       unitPrice: data.unit_price,
-      totalPrice: data.total_price
+      totalPrice: data.total_price,
     });
 
     return NextResponse.json({
@@ -248,7 +253,11 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Log customization cleanup for audit trail
-    if (existingItem.customizations && Array.isArray(existingItem.customizations) && existingItem.customizations.length > 0) {
+    if (
+      existingItem.customizations &&
+      Array.isArray(existingItem.customizations) &&
+      existingItem.customizations.length > 0
+    ) {
       console.log(`🧹 [CartDelete] Cleaning up customizations for cart item ${id}:`, {
         itemId: id,
         productId: existingItem.product_id,
@@ -262,12 +271,16 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // FIRST: Clear cache BEFORE deleting from database to prevent race conditions
     try {
-      const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+      const { forceClearCartCache, verifyCacheOperation } = await import("@/lib/cache/cart-cache");
 
       await forceClearCartCache(session?.user?.id || null, sessionId);
 
       // Verify cache was actually cleared - only pass the verification message
-      const cacheExists = await verifyCacheOperation(session?.user?.id || null, sessionId, 'pre-deletion clear');
+      const cacheExists = await verifyCacheOperation(
+        session?.user?.id || null,
+        sessionId,
+        "pre-deletion clear"
+      );
       if (cacheExists) {
         console.warn(`⚠️ [CartDelete] Cache still exists after force clear, trying again`);
         await forceClearCartCache(session?.user?.id || null, sessionId);
@@ -295,7 +308,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
     // THIRD: Check if cart is now empty and ensure cache is cleared
     try {
-      let emptyCheckQuery = supabase.from("cart_items").select("id", { count: 'exact' });
+      let emptyCheckQuery = supabase.from("cart_items").select("id", { count: "exact" });
 
       if (session?.user?.id) {
         emptyCheckQuery = emptyCheckQuery.eq("user_id", session.user.id);
@@ -311,24 +324,30 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         console.log(`🧹 [CartDelete] Cart is now empty, ensuring all cache is cleared`);
 
         // Clear all cart-related cache (config + price calculations)
-        const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+        const { forceClearCartCache, verifyCacheOperation } = await import(
+          "@/lib/cache/cart-cache"
+        );
 
         // Clear cart configuration cache
         await forceClearCartCache(session?.user?.id || null, sessionId);
 
         // Clear all price calculation cache for this user/session using the correct identifier
         const cacheIdentifier = session?.user?.id || sessionId;
-        if (cacheIdentifier && typeof cacheIdentifier === 'string') {
-          const { clearAllPriceCalculationCache } = await import('@/lib/cache/cart-cache');
+        if (cacheIdentifier && typeof cacheIdentifier === "string") {
+          const { clearAllPriceCalculationCache } = await import("@/lib/cache/cart-cache");
           await clearAllPriceCalculationCache(cacheIdentifier);
         }
 
         // Verify cache is actually cleared
-        const cacheExists = await verifyCacheOperation(session?.user?.id || null, sessionId, 'empty cart clear');
+        const cacheExists = await verifyCacheOperation(
+          session?.user?.id || null,
+          sessionId,
+          "empty cart clear"
+        );
         if (cacheExists) {
           console.error(`❌ [CartDelete] Cache still exists after clearing empty cart!`);
           // Try one more time with debug info
-          const { debugCacheState } = await import('@/lib/cache/cart-cache');
+          const { debugCacheState } = await import("@/lib/cache/cart-cache");
           await debugCacheState(session?.user?.id || null, sessionId);
           await forceClearCartCache(session?.user?.id || null, sessionId);
         }
@@ -336,11 +355,13 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
         console.log(`✅ [CartDelete] All cart cache cleared - cart is empty`);
       } else {
         // If cart is not empty, still clear cache to ensure fresh data on next fetch
-        const { forceClearCartCache, verifyCacheOperation } = await import('@/lib/cache/cart-cache');
+        const { forceClearCartCache, verifyCacheOperation } = await import(
+          "@/lib/cache/cart-cache"
+        );
         await forceClearCartCache(session?.user?.id || null, sessionId);
 
         // Verify cache was cleared
-        await verifyCacheOperation(session?.user?.id || null, sessionId, 'non-empty cart clear');
+        await verifyCacheOperation(session?.user?.id || null, sessionId, "non-empty cart clear");
 
         console.log(`🔄 [CartDelete] Cache cleared for non-empty cart (${count} items remaining)`);
       }
@@ -349,7 +370,7 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
 
       // If we can't check if cart is empty, force clear cache anyway
       try {
-        const { forceClearCartCache } = await import('@/lib/cache/cart-cache');
+        const { forceClearCartCache } = await import("@/lib/cache/cart-cache");
         await forceClearCartCache(session?.user?.id || null, sessionId);
         console.log(`🔄 [CartDelete] Force cleared cache due to empty check failure`);
       } catch (fallbackCacheError) {
@@ -358,7 +379,9 @@ export async function DELETE(request: NextRequest, { params }: RouteParams) {
     }
 
     // Log successful cleanup
-    console.log(`✅ [CartDelete] Successfully removed cart item ${id} with comprehensive cache cleanup`);
+    console.log(
+      `✅ [CartDelete] Successfully removed cart item ${id} with comprehensive cache cleanup`
+    );
 
     return NextResponse.json({
       success: true,

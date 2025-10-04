@@ -1,12 +1,17 @@
 "use client";
 
-import React, { createContext, useContext, useReducer, useCallback, useState } from 'react';
-import type { AnimationState, AnimationStep, CartAnimationConfig } from './types';
-import { ProductToCartAnimation } from './ProductToCartAnimation';
+import type React from "react";
+import { createContext, useCallback, useContext, useReducer, useState } from "react";
+import { ProductToCartAnimation } from "./ProductToCartAnimation";
+import type { AnimationState, AnimationStep, CartAnimationConfig } from "./types";
 
 interface CartAnimationContextType {
   state: AnimationState;
-  startAnimation: (productElement: HTMLElement, cartElement: HTMLElement, productImageSrc: string) => void;
+  startAnimation: (
+    productElement: HTMLElement,
+    cartElement: HTMLElement,
+    productImageSrc: string
+  ) => void;
   updateAnimationStep: (step: AnimationStep) => void;
   resetAnimation: () => void;
   config: CartAnimationConfig;
@@ -15,9 +20,9 @@ interface CartAnimationContextType {
 const CartAnimationContext = createContext<CartAnimationContextType | null>(null);
 
 type AnimationAction =
-  | { type: 'START_ANIMATION'; payload: { productElement: HTMLElement; cartElement: HTMLElement } }
-  | { type: 'UPDATE_STEP'; payload: AnimationStep }
-  | { type: 'RESET' };
+  | { type: "START_ANIMATION"; payload: { productElement: HTMLElement; cartElement: HTMLElement } }
+  | { type: "UPDATE_STEP"; payload: AnimationStep }
+  | { type: "RESET" };
 
 const defaultConfig: CartAnimationConfig = {
   productShrinkDuration: 300,
@@ -29,26 +34,26 @@ const defaultConfig: CartAnimationConfig = {
 
 const initialState: AnimationState = {
   isAnimating: false,
-  currentStep: 'idle',
+  currentStep: "idle",
 };
 
 function animationReducer(state: AnimationState, action: AnimationAction): AnimationState {
   switch (action.type) {
-    case 'START_ANIMATION':
+    case "START_ANIMATION":
       return {
         ...state,
         isAnimating: true,
-        currentStep: 'product-shrinking',
+        currentStep: "product-shrinking",
         productElement: action.payload.productElement,
         targetCartElement: action.payload.cartElement,
       };
-    case 'UPDATE_STEP':
+    case "UPDATE_STEP":
       return {
         ...state,
         currentStep: action.payload,
-        isAnimating: action.payload !== 'idle',
+        isAnimating: action.payload !== "idle",
       };
-    case 'RESET':
+    case "RESET":
       return initialState;
     default:
       return state;
@@ -69,49 +74,58 @@ export function CartAnimationProvider({ children, config = {} }: CartAnimationPr
   } | null>(null);
   const finalConfig = { ...defaultConfig, ...config };
 
-  const startAnimation = useCallback((
-    productElement: HTMLElement,
-    cartElement: HTMLElement,
-    productImageSrc: string
-  ) => {
-    console.log('🎬 [CartAnimationProvider] Starting animation:', {
-      productElement: productElement?.tagName,
-      cartElement: cartElement?.tagName,
-      productImageSrc: productImageSrc?.substring(0, 50) + '...',
-      hasElements: !!productElement && !!cartElement
-    });
+  const startAnimation = useCallback(
+    (productElement: HTMLElement, cartElement: HTMLElement, productImageSrc: string) => {
+      console.log("🎬 [CartAnimationProvider] Starting animation:", {
+        productElement: productElement?.tagName,
+        cartElement: cartElement?.tagName,
+        productImageSrc: productImageSrc?.substring(0, 50) + "...",
+        hasElements: !!productElement && !!cartElement,
+      });
 
-    // Check for reduced motion preference
-    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (prefersReducedMotion) {
-      console.log('🎬 [CartAnimationProvider] Skipping animation due to reduced motion preference');
-      // Skip animation, just update cart immediately
-      return;
-    }
+      // Check for reduced motion preference
+      const prefersReducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (prefersReducedMotion) {
+        console.log(
+          "🎬 [CartAnimationProvider] Skipping animation due to reduced motion preference"
+        );
+        // Skip animation, just update cart immediately
+        return;
+      }
 
-    if (!productElement || !cartElement) {
-      console.error('🎬 [CartAnimationProvider] Missing required elements:', { productElement, cartElement });
-      return;
-    }
+      if (!(productElement && cartElement)) {
+        console.error("🎬 [CartAnimationProvider] Missing required elements:", {
+          productElement,
+          cartElement,
+        });
+        return;
+      }
 
-    // Set the current animation data
-    setCurrentAnimation({ productElement, cartElement, productImageSrc });
+      // Set the current animation data
+      setCurrentAnimation({ productElement, cartElement, productImageSrc });
 
-    dispatch({
-      type: 'START_ANIMATION',
-      payload: { productElement, cartElement }
-    });
+      dispatch({
+        type: "START_ANIMATION",
+        payload: { productElement, cartElement },
+      });
 
-    console.log('🎬 [CartAnimationProvider] Animation state updated, ProductToCartAnimation should render');
-    console.log('🎬 [CartAnimationProvider] Current animation data:', { productElement: productElement?.tagName, cartElement: cartElement?.tagName });
-  }, []);
+      console.log(
+        "🎬 [CartAnimationProvider] Animation state updated, ProductToCartAnimation should render"
+      );
+      console.log("🎬 [CartAnimationProvider] Current animation data:", {
+        productElement: productElement?.tagName,
+        cartElement: cartElement?.tagName,
+      });
+    },
+    []
+  );
 
   const updateAnimationStep = useCallback((step: AnimationStep) => {
-    dispatch({ type: 'UPDATE_STEP', payload: step });
+    dispatch({ type: "UPDATE_STEP", payload: step });
   }, []);
 
   const resetAnimation = useCallback(() => {
-    dispatch({ type: 'RESET' });
+    dispatch({ type: "RESET" });
     setCurrentAnimation(null);
   }, []);
 
@@ -142,7 +156,7 @@ export function CartAnimationProvider({ children, config = {} }: CartAnimationPr
 export function useCartAnimation() {
   const context = useContext(CartAnimationContext);
   if (!context) {
-    throw new Error('useCartAnimation must be used within a CartAnimationProvider');
+    throw new Error("useCartAnimation must be used within a CartAnimationProvider");
   }
   return context;
 }

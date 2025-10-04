@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ClockIcon,
-  PencilIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { ClockIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useEffect, useState } from "react";
 
 interface ActivityLogEntry {
@@ -226,13 +221,13 @@ export default function AdminActivityLog() {
                           ))}
                           {(formatChanges(activity.old_values, activity.new_values)?.length || 0) >
                             3 && (
-                              <button
-                                onClick={() => setSelectedActivity(activity)}
-                                className="text-xs text-blue-600 hover:text-blue-800"
-                              >
-                                Zobrazit všechny změny...
-                              </button>
-                            )}
+                            <button
+                              onClick={() => setSelectedActivity(activity)}
+                              className="text-xs text-blue-600 hover:text-blue-800"
+                            >
+                              Zobrazit všechny změny...
+                            </button>
+                          )}
                         </div>
                       )}
 

@@ -25,20 +25,20 @@ interface BaseFieldProps {
 
 interface InputFieldProps
   extends BaseFieldProps,
-  Omit<InputHTMLAttributes<HTMLInputElement>, "id"> {
+    Omit<InputHTMLAttributes<HTMLInputElement>, "id"> {
   type?: "text" | "email" | "password" | "tel" | "url" | "search" | "number";
 }
 
 interface TextareaFieldProps
   extends BaseFieldProps,
-  Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "id"> {
+    Omit<TextareaHTMLAttributes<HTMLTextAreaElement>, "id"> {
   type: "textarea";
   rows?: number;
 }
 
 interface SelectFieldProps
   extends BaseFieldProps,
-  Omit<SelectHTMLAttributes<HTMLSelectElement>, "id"> {
+    Omit<SelectHTMLAttributes<HTMLSelectElement>, "id"> {
   type: "select";
   options: Array<{ value: string; label: string; disabled?: boolean }>;
   placeholder?: string;
@@ -47,15 +47,7 @@ interface SelectFieldProps
 type FormFieldProps = InputFieldProps | TextareaFieldProps | SelectFieldProps;
 
 export function FormField(props: FormFieldProps) {
-  const {
-    label,
-    error,
-    helpText,
-    required,
-    icon,
-    iconPosition = "left",
-    className,
-  } = props;
+  const { label, error, helpText, required, icon, iconPosition = "left", className } = props;
 
   const t = useTranslations("accessibility");
   const fieldId = useId("field");
@@ -97,12 +89,34 @@ export function FormField(props: FormFieldProps) {
 
   const renderField = () => {
     if (props.type === "textarea") {
-      const { type, label, error, helpText, required, icon, iconPosition, className, ...textareaProps } = props as TextareaFieldProps;
+      const {
+        type,
+        label,
+        error,
+        helpText,
+        required,
+        icon,
+        iconPosition,
+        className,
+        ...textareaProps
+      } = props as TextareaFieldProps;
       return <textarea {...commonProps} {...textareaProps} rows={textareaProps.rows || 4} />;
     }
 
     if (props.type === "select") {
-      const { type, options, placeholder, label, error, helpText, required, icon, iconPosition, className, ...selectProps } = props as SelectFieldProps;
+      const {
+        type,
+        options,
+        placeholder,
+        label,
+        error,
+        helpText,
+        required,
+        icon,
+        iconPosition,
+        className,
+        ...selectProps
+      } = props as SelectFieldProps;
       return (
         <select {...commonProps} {...selectProps}>
           {placeholder && (
@@ -119,7 +133,17 @@ export function FormField(props: FormFieldProps) {
       );
     }
 
-    const { type = "text", label: _label, error: _error, helpText: _helpText, required: _required, icon: _icon, iconPosition: _iconPosition, className: _className, ...inputProps } = props as InputFieldProps;
+    const {
+      type = "text",
+      label: _label,
+      error: _error,
+      helpText: _helpText,
+      required: _required,
+      icon: _icon,
+      iconPosition: _iconPosition,
+      className: _className,
+      ...inputProps
+    } = props as InputFieldProps;
     return <input {...commonProps} {...inputProps} type={type} />;
   };
 

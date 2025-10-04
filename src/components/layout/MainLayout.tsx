@@ -1,7 +1,7 @@
 import { useTranslations } from "next-intl";
 import { AccessibilityToolbar } from "@/components/accessibility/AccessibilityToolbar";
 import { SkipLinks } from "@/components/accessibility/SkipLinks";
-import { type Locale } from "@/i18n/config";
+import type { Locale } from "@/i18n/config";
 import { Footer } from "./Footer";
 import { Header } from "./Header";
 

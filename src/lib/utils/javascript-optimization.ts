@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 /**
  * JavaScript optimization utilities for improving FID and INP
@@ -8,10 +8,10 @@
  * Break up long tasks using scheduler.postTask or setTimeout
  */
 export function yieldToMain(): Promise<void> {
-  return new Promise(resolve => {
+  return new Promise((resolve) => {
     // Use scheduler.postTask if available (Chrome 94+)
-    if ('scheduler' in window && 'postTask' in (window as any).scheduler) {
-      (window as any).scheduler.postTask(() => resolve(), { priority: 'user-blocking' });
+    if ("scheduler" in window && "postTask" in (window as any).scheduler) {
+      (window as any).scheduler.postTask(() => resolve(), { priority: "user-blocking" });
     } else {
       // Fallback to setTimeout
       setTimeout(resolve, 0);
@@ -115,7 +115,7 @@ export function throttle<T extends (...args: any[]) => any>(
     if (!inThrottle) {
       func(...args);
       inThrottle = true;
-      setTimeout(() => inThrottle = false, limit);
+      setTimeout(() => (inThrottle = false), limit);
     }
   };
 }
@@ -127,7 +127,7 @@ export function requestIdleCallback(
   callback: (deadline: { timeRemaining: () => number; didTimeout: boolean }) => void,
   options: { timeout?: number } = {}
 ): number {
-  if ('requestIdleCallback' in window) {
+  if ("requestIdleCallback" in window) {
     return (window as any).requestIdleCallback(callback, options);
   } else {
     // Fallback for browsers without requestIdleCallback
@@ -145,7 +145,7 @@ export function requestIdleCallback(
  * Cancel idle callback with fallback
  */
 export function cancelIdleCallback(id: number): void {
-  if ('cancelIdleCallback' in window) {
+  if ("cancelIdleCallback" in window) {
     (window as any).cancelIdleCallback(id);
   } else {
     clearTimeout(id);
@@ -186,21 +186,21 @@ export function optimizeEventHandler<T extends Event>(
  */
 export function preloadResource(
   href: string,
-  as: 'script' | 'style' | 'image' | 'font' | 'fetch',
+  as: "script" | "style" | "image" | "font" | "fetch",
   options: {
-    crossorigin?: 'anonymous' | 'use-credentials';
+    crossorigin?: "anonymous" | "use-credentials";
     type?: string;
     media?: string;
   } = {}
 ): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
 
   // Check if already preloaded
   const existing = document.querySelector(`link[rel="preload"][href="${href}"]`);
   if (existing) return;
 
-  const link = document.createElement('link');
-  link.rel = 'preload';
+  const link = document.createElement("link");
+  link.rel = "preload";
   link.href = href;
   link.as = as;
 
@@ -223,14 +223,14 @@ export function preloadResource(
  * Prefetch resources for future navigation
  */
 export function prefetchResource(href: string): void {
-  if (typeof document === 'undefined') return;
+  if (typeof document === "undefined") return;
 
   // Check if already prefetched
   const existing = document.querySelector(`link[rel="prefetch"][href="${href}"]`);
   if (existing) return;
 
-  const link = document.createElement('link');
-  link.rel = 'prefetch';
+  const link = document.createElement("link");
+  link.rel = "prefetch";
   link.href = href;
 
   document.head.appendChild(link);
@@ -245,10 +245,7 @@ export class JavaScriptProfiler {
   /**
    * Measure execution time of a function
    */
-  async measure<T>(
-    name: string,
-    fn: () => T | Promise<T>
-  ): Promise<T> {
+  async measure<T>(name: string, fn: () => T | Promise<T>): Promise<T> {
     const startTime = performance.now();
 
     try {
@@ -262,7 +259,7 @@ export class JavaScriptProfiler {
       this.measurements.get(name)!.push(duration);
 
       // Log slow executions in development
-      if (process.env['NODE_ENV'] === 'development' && duration > 50) {
+      if (process.env["NODE_ENV"] === "development" && duration > 50) {
         console.warn(`🐌 [JSProfiler] Slow execution: ${name} took ${duration.toFixed(2)}ms`);
       }
 
@@ -310,8 +307,8 @@ export class JavaScriptProfiler {
   /**
    * Get all measurements
    */
-  getAllStats(): Record<string, ReturnType<JavaScriptProfiler['getStats']>> {
-    const stats: Record<string, ReturnType<JavaScriptProfiler['getStats']>> = {};
+  getAllStats(): Record<string, ReturnType<JavaScriptProfiler["getStats"]>> {
+    const stats: Record<string, ReturnType<JavaScriptProfiler["getStats"]>> = {};
 
     for (const [name] of this.measurements) {
       stats[name] = this.getStats(name);
@@ -335,10 +332,7 @@ export const jsProfiler = new JavaScriptProfiler();
  * React hook for optimizing component JavaScript execution
  */
 export function useJavaScriptOptimization(componentName: string) {
-  const measureExecution = async <T>(
-    taskName: string,
-    fn: () => T | Promise<T>
-  ): Promise<T> => {
+  const measureExecution = async <T>(taskName: string, fn: () => T | Promise<T>): Promise<T> => {
     return jsProfiler.measure(`${componentName}_${taskName}`, fn);
   };
 

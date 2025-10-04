@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useCart } from "@/lib/cart/context";
 import type { Category, Product } from "@/types/product";
 import { ProductGrid } from "./ProductGrid";
@@ -28,15 +27,17 @@ export function ProductGridWithCart({
       productId: product.id,
       quantity: 1,
       customizations: [],
-    }).then((success) => {
-      if (success) {
-        console.log("✅ [ProductGridWithCart] Successfully added product to cart:", product.id);
-      } else {
-        console.error("❌ [ProductGridWithCart] Failed to add product to cart:", product.id);
-      }
-    }).catch((error) => {
-      console.error("❌ [ProductGridWithCart] Error adding product to cart:", product.id, error);
-    });
+    })
+      .then((success) => {
+        if (success) {
+          console.log("✅ [ProductGridWithCart] Successfully added product to cart:", product.id);
+        } else {
+          console.error("❌ [ProductGridWithCart] Failed to add product to cart:", product.id);
+        }
+      })
+      .catch((error) => {
+        console.error("❌ [ProductGridWithCart] Error adding product to cart:", product.id, error);
+      });
   };
 
   return (

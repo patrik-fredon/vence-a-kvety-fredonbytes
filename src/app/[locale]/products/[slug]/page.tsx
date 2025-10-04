@@ -19,7 +19,7 @@ interface ProductDetailPageProps {
 }
 
 // Enable dynamic rendering for all product pages
-export const dynamic = 'force-dynamic';
+export const dynamic = "force-dynamic";
 
 // Disable static generation to avoid conflicts
 export const dynamicParams = true;
@@ -73,7 +73,7 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     console.log(`🔍 [ProductDetailPage] Database query result:`, {
       hasData: !!data,
       error: error?.message,
-      productName: data?.name_cs
+      productName: data?.name_cs,
     });
 
     if (error || !data) {
@@ -82,7 +82,10 @@ export default async function ProductDetailPage({ params }: ProductDetailPagePro
     }
 
     // Transform the data
-    const category = (data.categories && !('error' in data.categories)) ? transformCategoryRow(data.categories) : undefined;
+    const category =
+      data.categories && !("error" in data.categories)
+        ? transformCategoryRow(data.categories)
+        : undefined;
     product = transformProductRow(data, category);
 
     // Ensure product has required arrays to prevent map errors
@@ -207,15 +210,18 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       ...(seoDescription || description ? { description: (seoDescription || description)! } : {}),
       price: data.base_price,
       category: categoryName,
-      images: productImages.length > 0 ? productImages.map((img) => {
-        if (img && typeof img === 'object' && 'url' in img && 'alt' in img) {
-          return {
-            url: typeof img['url'] === 'string' ? img['url'] : '',
-            alt: (typeof img['alt'] === 'string' ? img['alt'] : null) || name
-          };
-        }
-        return { url: '', alt: name };
-      }) : [],
+      images:
+        productImages.length > 0
+          ? productImages.map((img) => {
+              if (img && typeof img === "object" && "url" in img && "alt" in img) {
+                return {
+                  url: typeof img["url"] === "string" ? img["url"] : "",
+                  alt: (typeof img["alt"] === "string" ? img["alt"] : null) || name,
+                };
+              }
+              return { url: "", alt: name };
+            })
+          : [],
       availability: "InStock", // This should be dynamic based on actual availability
       brand: "Ketingmar s.r.o.",
     },

@@ -1,10 +1,10 @@
 "use client";
 
-import { ShoppingCartIcon } from "@/lib/icons";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import React from "react";
 import { useCart } from "@/lib/cart/context";
+import { ShoppingCartIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 interface CartIconProps {

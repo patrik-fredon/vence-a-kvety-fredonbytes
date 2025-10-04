@@ -1,7 +1,8 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { useCoreWebVitals, type CoreWebVitalsMetrics } from '@/lib/hooks';
+import type React from "react";
+import { createContext, useContext, useEffect, useState } from "react";
+import { type CoreWebVitalsMetrics, useCoreWebVitals } from "@/lib/hooks";
 
 interface CoreWebVitalsContextType {
   metrics: CoreWebVitalsMetrics | null;
@@ -28,7 +29,7 @@ interface CoreWebVitalsProviderProps {
  */
 export function CoreWebVitalsProvider({
   children,
-  componentName = 'App',
+  componentName = "App",
   enabled = true,
   onMetricsUpdate,
   onOptimizationFound,
@@ -53,13 +54,13 @@ export function CoreWebVitalsProvider({
 
   // Log performance summary in development
   useEffect(() => {
-    if (process.env['NODE_ENV'] === 'development' && coreWebVitals.metrics) {
+    if (process.env["NODE_ENV"] === "development" && coreWebVitals.metrics) {
       const { metrics } = coreWebVitals;
-      console.log('🚀 [CoreWebVitals] Performance Summary:', {
-        LCP: metrics.lcp ? `${metrics.lcp.toFixed(0)}ms (${metrics.ratings.lcp})` : 'N/A',
-        FID: metrics.fid ? `${metrics.fid.toFixed(0)}ms (${metrics.ratings.fid})` : 'N/A',
-        INP: metrics.inp ? `${metrics.inp.toFixed(0)}ms (${metrics.ratings.inp})` : 'N/A',
-        CLS: metrics.cls ? `${metrics.cls.toFixed(3)} (${metrics.ratings.cls})` : 'N/A',
+      console.log("🚀 [CoreWebVitals] Performance Summary:", {
+        LCP: metrics.lcp ? `${metrics.lcp.toFixed(0)}ms (${metrics.ratings.lcp})` : "N/A",
+        FID: metrics.fid ? `${metrics.fid.toFixed(0)}ms (${metrics.ratings.fid})` : "N/A",
+        INP: metrics.inp ? `${metrics.inp.toFixed(0)}ms (${metrics.ratings.inp})` : "N/A",
+        CLS: metrics.cls ? `${metrics.cls.toFixed(3)} (${metrics.ratings.cls})` : "N/A",
         optimizations: coreWebVitals.getOptimizations().length,
       });
     }
@@ -75,9 +76,7 @@ export function CoreWebVitalsProvider({
   };
 
   return (
-    <CoreWebVitalsContext.Provider value={contextValue}>
-      {children}
-    </CoreWebVitalsContext.Provider>
+    <CoreWebVitalsContext.Provider value={contextValue}>{children}</CoreWebVitalsContext.Provider>
   );
 }
 
@@ -88,7 +87,7 @@ export function useCoreWebVitalsContext(): CoreWebVitalsContextType {
   const context = useContext(CoreWebVitalsContext);
 
   if (!context) {
-    throw new Error('useCoreWebVitalsContext must be used within a CoreWebVitalsProvider');
+    throw new Error("useCoreWebVitalsContext must be used within a CoreWebVitalsProvider");
   }
 
   return context;
@@ -107,13 +106,10 @@ export function withCoreWebVitals<P extends object>(
   } = {}
 ) {
   const WrappedComponent = (props: P) => {
-    const { componentName = Component.displayName || Component.name || 'Component' } = options;
+    const { componentName = Component.displayName || Component.name || "Component" } = options;
 
     return (
-      <CoreWebVitalsProvider
-        componentName={componentName}
-        enabled={true}
-      >
+      <CoreWebVitalsProvider componentName={componentName} enabled={true}>
         <Component {...props} />
       </CoreWebVitalsProvider>
     );

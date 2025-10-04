@@ -64,7 +64,7 @@ export function ResourceHints({
         onLoad={(e) => {
           const target = e.target as HTMLLinkElement;
           target.onload = null;
-          target.rel = 'stylesheet';
+          target.rel = "stylesheet";
         }}
       />
 

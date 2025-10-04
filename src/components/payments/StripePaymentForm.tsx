@@ -1,18 +1,12 @@
 "use client";
 
-import { CreditCardIcon, ExclamationTriangleIcon } from "@/lib/icons";
-import {
-  Elements,
-  PaymentElement,
-  useElements,
-  useStripe,
-} from "@stripe/react-stripe-js";
-
+import { Elements, PaymentElement, useElements, useStripe } from "@stripe/react-stripe-js";
 import type React from "react";
 import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { CreditCardIcon, ExclamationTriangleIcon } from "@/lib/icons";
 import { getStripe } from "@/lib/payments/stripe";
 
 interface StripePaymentFormProps {
@@ -181,16 +175,18 @@ function PaymentForm({
 
   const handleRetry = useCallback(async () => {
     if (retryCount >= maxRetries) {
-      setErrorMessage("Dosáhli jste maximálního počtu pokusů. Zkuste to později nebo použijte jinou kartu.");
+      setErrorMessage(
+        "Dosáhli jste maximálního počtu pokusů. Zkuste to později nebo použijte jinou kartu."
+      );
       return;
     }
 
     setIsRetrying(true);
     setErrorMessage(null);
-    setRetryCount(prev => prev + 1);
+    setRetryCount((prev) => prev + 1);
 
     // Wait a bit before retrying
-    await new Promise(resolve => setTimeout(resolve, 1000));
+    await new Promise((resolve) => setTimeout(resolve, 1000));
 
     setIsRetrying(false);
   }, [retryCount, maxRetries]);
@@ -223,8 +219,11 @@ function PaymentForm({
             </div>
           )}
 
-          <div className={`p-4 border-2 border-stone-200 rounded-lg bg-white transition-opacity ${paymentElementReady ? 'opacity-100' : 'opacity-0 absolute'
-            }`}>
+          <div
+            className={`p-4 border-2 border-stone-200 rounded-lg bg-white transition-opacity ${
+              paymentElementReady ? "opacity-100" : "opacity-0 absolute"
+            }`}
+          >
             <PaymentElement
               onReady={handlePaymentElementReady}
               options={{
@@ -332,15 +331,9 @@ function PaymentForm({
 
           {/* Security Notice */}
           <div className="text-xs text-stone-500 text-center space-y-1">
-            <p>
-              🔒 Vaše platební údaje jsou chráněny 256-bit SSL šifrováním.
-            </p>
-            <p>
-              Údaje karet nejsou ukládány na našich serverech.
-            </p>
-            <p>
-              Platby zpracovává Stripe - certifikovaný PCI DSS poskytovatel.
-            </p>
+            <p>🔒 Vaše platební údaje jsou chráněny 256-bit SSL šifrováním.</p>
+            <p>Údaje karet nejsou ukládány na našich serverech.</p>
+            <p>Platby zpracovává Stripe - certifikovaný PCI DSS poskytovatel.</p>
           </div>
         </CardFooter>
       </form>

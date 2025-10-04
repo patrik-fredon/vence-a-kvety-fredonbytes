@@ -292,12 +292,13 @@ export default function ProductManagement() {
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-900">
                       {product.track_inventory ? (
                         <span
-                          className={`${product.stock_quantity === 0
-                            ? "text-red-600"
-                            : product.stock_quantity <= 5
-                              ? "text-amber-600"
-                              : "text-green-600"
-                            }`}
+                          className={`${
+                            product.stock_quantity === 0
+                              ? "text-red-600"
+                              : product.stock_quantity <= 5
+                                ? "text-amber-600"
+                                : "text-green-600"
+                          }`}
                         >
                           {product.stock_quantity} {t("pieces")}
                         </span>
@@ -308,10 +309,11 @@ export default function ProductManagement() {
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center space-x-2">
                         <span
-                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${product.active
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
-                            }`}
+                          className={`inline-flex px-2 py-1 text-xs font-semibold rounded-full ${
+                            product.active
+                              ? "bg-green-100 text-green-800"
+                              : "bg-red-100 text-red-800"
+                          }`}
                         >
                           {product.active ? t("active") : t("inactive")}
                         </span>

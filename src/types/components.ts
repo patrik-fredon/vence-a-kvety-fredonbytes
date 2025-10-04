@@ -3,11 +3,7 @@
  * Following atomic design principles: Atoms -> Molecules -> Organisms -> Templates -> Pages
  */
 
-import type {
-  ComponentPropsWithoutRef,
-  HTMLAttributes,
-  ReactNode,
-} from "react";
+import type { ComponentPropsWithoutRef, HTMLAttributes, ReactNode } from "react";
 import type { JSX } from "react/jsx-runtime";
 import type { Locale } from "./index";
 
@@ -121,13 +117,7 @@ export interface TemplateProps extends OrganismProps {
 /**
  * Button component variants and sizes for stone/amber design system
  */
-export type ButtonVariant =
-  | "default"
-  | "destructive"
-  | "outline"
-  | "secondary"
-  | "ghost"
-  | "link";
+export type ButtonVariant = "default" | "destructive" | "outline" | "secondary" | "ghost" | "link";
 
 export type ButtonSize = "xs" | "sm" | "md" | "lg" | "xl";
 
@@ -150,14 +140,7 @@ export interface ButtonProps
 /**
  * Input component types and variants
  */
-export type InputType =
-  | "text"
-  | "email"
-  | "password"
-  | "number"
-  | "tel"
-  | "url"
-  | "search";
+export type InputType = "text" | "email" | "password" | "number" | "tel" | "url" | "search";
 
 export type InputVariant = "default" | "filled" | "outline";
 

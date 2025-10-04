@@ -1,10 +1,10 @@
 "use client";
 
-import { ChevronDownIcon } from "@/lib/icons";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef, useState } from "react";
+import { ChevronDownIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 
 interface NavigationProps {
@@ -67,11 +67,7 @@ const mockCategories = [
   },
 ];
 
-export function Navigation({
-  locale,
-  mobile = false,
-  onItemClick,
-}: NavigationProps) {
+export function Navigation({ locale, mobile = false, onItemClick }: NavigationProps) {
   const t = useTranslations("navigation");
   const tAccessibility = useTranslations("accessibility");
   const tProduct = useTranslations("product");
@@ -82,10 +78,7 @@ export function Navigation({
   // Close dropdown when clicking outside
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(event.target as Node)
-      ) {
+      if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
         setOpenDropdown(null);
       }
     }
@@ -123,11 +116,7 @@ export function Navigation({
   // For mobile navigation, use enhanced stone-based design
   if (mobile) {
     return (
-      <nav
-        className="space-y-1"
-        role="navigation"
-        aria-label={tAccessibility("mobileNavigation")}
-      >
+      <nav className="space-y-1" role="navigation" aria-label={tAccessibility("mobileNavigation")}>
         {navItems.map((item) => (
           <div key={item.href}>
             {item.hasDropdown ? (

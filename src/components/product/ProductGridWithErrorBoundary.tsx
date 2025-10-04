@@ -1,11 +1,14 @@
 "use client";
 
 import React from "react";
-import { ProductGrid } from "./ProductGrid";
-import { ProductComponentErrorBoundary, ProductFiltersErrorFallback } from "./ProductComponentErrorBoundary";
-import { useProductErrorHandler } from "./useProductErrorHandler";
-import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
 import type { Category, Product } from "@/types";
+import {
+  ProductComponentErrorBoundary,
+  ProductFiltersErrorFallback,
+} from "./ProductComponentErrorBoundary";
+import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
+import { ProductGrid } from "./ProductGrid";
+import { useProductErrorHandler } from "./useProductErrorHandler";
 
 interface ProductGridWithErrorBoundaryProps {
   initialProducts?: Product[];
@@ -22,18 +25,21 @@ interface ProductGridWithErrorBoundaryProps {
 export function ProductGridWithErrorBoundary(props: ProductGridWithErrorBoundaryProps) {
   const { handleAsyncError } = useProductErrorHandler();
 
-  const handleAddToCartWithErrorHandling = React.useCallback((product: Product) => {
-    try {
-      props.onAddToCart?.(product);
-    } catch (error) {
-      handleAsyncError(error as Error, {
-        componentName: "ProductGrid",
-        action: "addToCart",
-        productId: product.id,
-        additionalData: { productSlug: product.slug },
-      });
-    }
-  }, [props.onAddToCart, handleAsyncError]);
+  const handleAddToCartWithErrorHandling = React.useCallback(
+    (product: Product) => {
+      try {
+        props.onAddToCart?.(product);
+      } catch (error) {
+        handleAsyncError(error as Error, {
+          componentName: "ProductGrid",
+          action: "addToCart",
+          productId: product.id,
+          additionalData: { productSlug: product.slug },
+        });
+      }
+    },
+    [props.onAddToCart, handleAsyncError]
+  );
 
   return (
     <ProductComponentErrorBoundary
@@ -52,7 +58,9 @@ export function ProductGridWithErrorBoundary(props: ProductGridWithErrorBoundary
       }}
     >
       <ProductGrid
-        {...(props.onAddToCart ? { ...props, onAddToCart: handleAddToCartWithErrorHandling } : props)}
+        {...(props.onAddToCart
+          ? { ...props, onAddToCart: handleAddToCartWithErrorHandling }
+          : props)}
       />
     </ProductComponentErrorBoundary>
   );

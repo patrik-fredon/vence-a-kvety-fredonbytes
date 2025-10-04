@@ -4,11 +4,7 @@
 
 "use client";
 
-import {
-  AdjustmentsHorizontalIcon,
-  EyeIcon,
-  XMarkIcon,
-} from "@heroicons/react/24/outline";
+import { AdjustmentsHorizontalIcon, EyeIcon, XMarkIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
@@ -18,8 +14,7 @@ import { useSkipLinks } from "@/lib/accessibility/hooks";
 export function AccessibilityToolbar() {
   const t = useTranslations("accessibility");
   const [isOpen, setIsOpen] = useState(false);
-  const { isHighContrast, toggleHighContrast, announceMessage } =
-    useAccessibility();
+  const { isHighContrast, toggleHighContrast, announceMessage } = useAccessibility();
   const { skipToContent, skipToNavigation } = useSkipLinks();
 
   const handleToggleToolbar = () => {
@@ -29,10 +24,7 @@ export function AccessibilityToolbar() {
 
   const handleHighContrastToggle = () => {
     toggleHighContrast();
-    announceMessage(
-      isHighContrast ? t("highContrastOff") : t("highContrastOn"),
-      "assertive"
-    );
+    announceMessage(isHighContrast ? t("highContrastOff") : t("highContrastOn"), "assertive");
   };
 
   const handleSkipToContent = () => {
@@ -62,11 +54,7 @@ export function AccessibilityToolbar() {
           }
           focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2
         `}
-        aria-label={
-          isOpen
-            ? t("closeAccessibilityToolbar")
-            : t("openAccessibilityToolbar")
-        }
+        aria-label={isOpen ? t("closeAccessibilityToolbar") : t("openAccessibilityToolbar")}
         aria-expanded={isOpen}
         aria-controls="accessibility-panel"
       >
@@ -94,17 +82,11 @@ export function AccessibilityToolbar() {
           aria-describedby="accessibility-toolbar-description"
         >
           <div className="p-4">
-            <h2
-              id="accessibility-toolbar-title"
-              className="text-lg font-semibold mb-2"
-            >
+            <h2 id="accessibility-toolbar-title" className="text-lg font-semibold mb-2">
               {t("toolbar.title")}
             </h2>
 
-            <p
-              id="accessibility-toolbar-description"
-              className="text-sm text-neutral-600 mb-4"
-            >
+            <p id="accessibility-toolbar-description" className="text-sm text-neutral-600 mb-4">
               {t("toolbarDescription")}
             </p>
 
@@ -149,46 +131,32 @@ export function AccessibilityToolbar() {
                   aria-pressed={isHighContrast}
                 >
                   <EyeIcon className="w-4 h-4 mr-2" aria-hidden="true" />
-                  {isHighContrast
-                    ? t("disableHighContrast")
-                    : t("enableHighContrast")}
+                  {isHighContrast ? t("disableHighContrast") : t("enableHighContrast")}
                 </Button>
               </div>
 
               {/* Keyboard Shortcuts Info */}
               <div className="space-y-2">
-                <h3 className="text-sm font-medium">
-                  {t("keyboardShortcuts")}
-                </h3>
+                <h3 className="text-sm font-medium">{t("keyboardShortcuts")}</h3>
                 <div className="text-xs space-y-1 text-neutral-600">
                   <div>
-                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">
-                      Tab
-                    </kbd>{" "}
+                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">Tab</kbd>{" "}
                     {t("navigateForward")}
                   </div>
                   <div>
-                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">
-                      Shift+Tab
-                    </kbd>{" "}
+                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">Shift+Tab</kbd>{" "}
                     {t("navigateBackward")}
                   </div>
                   <div>
-                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">
-                      Enter
-                    </kbd>{" "}
+                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">Enter</kbd>{" "}
                     {t("activate")}
                   </div>
                   <div>
-                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">
-                      Esc
-                    </kbd>{" "}
+                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">Esc</kbd>{" "}
                     {t("close")}
                   </div>
                   <div>
-                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">
-                      ↑↓←→
-                    </kbd>{" "}
+                    <kbd className="px-1 py-0.5 bg-neutral-100 rounded text-xs">↑↓←→</kbd>{" "}
                     {t("navigateArrows")}
                   </div>
                 </div>

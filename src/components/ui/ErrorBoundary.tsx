@@ -1,12 +1,7 @@
 "use client";
 
-import {
-  ArrowPathIcon,
-  ExclamationTriangleIcon,
-  HomeIcon,
-  PhoneIcon,
-} from "@/lib/icons";
 import { Component, type ReactNode } from "react";
+import { ArrowPathIcon, ExclamationTriangleIcon, HomeIcon, PhoneIcon } from "@/lib/icons";
 import { logError } from "@/lib/monitoring/error-logger";
 import { getErrorMessage } from "@/lib/monitoring/error-messages";
 
@@ -76,11 +71,7 @@ export class ErrorBoundary extends Component<ErrorBoundaryProps, ErrorBoundarySt
       }
 
       if (level === "critical") {
-        return (
-          <CriticalErrorFallback
-            errorId={this.state.errorId || "unknown"}
-          />
-        );
+        return <CriticalErrorFallback errorId={this.state.errorId || "unknown"} />;
       }
 
       return (
@@ -161,7 +152,7 @@ export function ErrorFallback({
           </p>
         )}
 
-        {process.env['NODE_ENV'] === "development" && error && (
+        {process.env["NODE_ENV"] === "development" && error && (
           <details className="mb-6 text-left">
             <summary className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700">
               Zobrazit technické detaily
@@ -187,10 +178,11 @@ export function ErrorFallback({
             <button
               key={index}
               onClick={action.action}
-              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${action.primary
-                ? "bg-primary-600 hover:bg-primary-700 text-white"
-                : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700"
-                }`}
+              className={`inline-flex items-center justify-center space-x-2 px-4 py-2 rounded-lg font-medium transition-colors ${
+                action.primary
+                  ? "bg-primary-600 hover:bg-primary-700 text-white"
+                  : "bg-neutral-100 hover:bg-neutral-200 text-neutral-700"
+              }`}
             >
               {action.icon && <action.icon className="w-4 h-4" />}
               <span>{action.label}</span>
@@ -268,7 +260,7 @@ export function ComponentErrorFallback({
   );
 }
 
-export function CriticalErrorFallback({ errorId }: Pick<ErrorFallbackProps, 'errorId'>) {
+export function CriticalErrorFallback({ errorId }: Pick<ErrorFallbackProps, "errorId">) {
   const handleContactSupport = () => {
     const subject = encodeURIComponent(`Kritická chyba - ${errorId || "neznámé ID"}`);
     const body = encodeURIComponent(

@@ -33,7 +33,7 @@ export async function POST(request: NextRequest) {
     // Clear all cart-related cache (config + price calculations)
     try {
       console.log(`🧹 [API] Clearing cart cache for ${identifier}`);
-      
+
       await forceClearCartCache(userId, sessionId);
 
       console.log(`✅ [API] Cart cache cleared successfully for ${identifier}`);
@@ -49,11 +49,13 @@ export async function POST(request: NextRequest) {
           {
             configExists: cacheState.configExists,
             priceKeysExist: cacheState.priceKeysExist,
-            identifier
+            identifier,
           }
         );
       } else {
-        console.log(`✅ [API] Cache verification passed: All cache entries cleared for ${identifier}`);
+        console.log(
+          `✅ [API] Cache verification passed: All cache entries cleared for ${identifier}`
+        );
       }
 
       return NextResponse.json({
@@ -63,8 +65,8 @@ export async function POST(request: NextRequest) {
           configExists: cacheState.configExists,
           priceKeysExist: cacheState.priceKeysExist,
           identifier: cacheState.identifier,
-          verified: !cacheState.configExists && !cacheState.priceKeysExist
-        }
+          verified: !(cacheState.configExists || cacheState.priceKeysExist),
+        },
       });
     } catch (cacheError) {
       console.error("❌ [API] Cache clearing failed:", cacheError);
@@ -73,7 +75,7 @@ export async function POST(request: NextRequest) {
         {
           success: false,
           error: "Failed to clear cart cache",
-          details: cacheError instanceof Error ? cacheError.message : "Unknown error"
+          details: cacheError instanceof Error ? cacheError.message : "Unknown error",
         },
         { status: 500 }
       );
@@ -84,7 +86,7 @@ export async function POST(request: NextRequest) {
       {
         success: false,
         error: "Internal server error",
-        details: error instanceof Error ? error.message : "Unknown error"
+        details: error instanceof Error ? error.message : "Unknown error",
       },
       { status: 500 }
     );

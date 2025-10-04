@@ -10,11 +10,7 @@ export async function GET() {
   try {
     // Check database connectivity
     const supabase = createClient();
-    const { error: dbError } = await supabase
-      .from("categories")
-      .select("count")
-      .limit(1)
-      .single();
+    const { error: dbError } = await supabase.from("categories").select("count").limit(1).single();
 
     if (dbError) {
       throw new Error(`Database check failed: ${dbError.message}`);
@@ -22,11 +18,11 @@ export async function GET() {
 
     // Check Redis connectivity (if configured)
     let redisStatus = "not_configured";
-    if (process.env['REDIS_URL']) {
+    if (process.env["REDIS_URL"]) {
       try {
         // Import Redis dynamically to avoid issues if not configured
         const { Redis } = await import("ioredis");
-        const redis = new Redis(process.env['REDIS_URL']);
+        const redis = new Redis(process.env["REDIS_URL"]);
         await redis.ping();
         await redis.disconnect();
         redisStatus = "healthy";
@@ -50,8 +46,8 @@ export async function GET() {
     const healthData = {
       status: "healthy",
       timestamp: new Date().toISOString(),
-      version: process.env['npm_package_version'] || "1.0.0",
-      environment: process.env['NODE_ENV'] || "development",
+      version: process.env["npm_package_version"] || "1.0.0",
+      environment: process.env["NODE_ENV"] || "development",
       uptime: process.uptime(),
       responseTime: `${responseTime}ms`,
       checks: {

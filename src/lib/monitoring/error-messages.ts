@@ -47,10 +47,7 @@ export function getErrorMessage(error: Error, context: ErrorContext = {}): Error
   }
 
   // Payment errors
-  if (
-    error.message.includes("payment") ||
-    error.message.includes("stripe")
-  ) {
+  if (error.message.includes("payment") || error.message.includes("stripe")) {
     return {
       title: "Chyba při platbě",
       message: "Při zpracování platby došlo k chybě. Vaše karta nebyla zatížena.",

@@ -3,8 +3,8 @@
  * Handles caching of product data, categories, and search results
  */
 
-import type { Category, Product } from "@/types/product";
 import { createClient } from "@/lib/supabase/server";
+import type { Category, Product } from "@/types/product";
 import {
   CACHE_KEYS,
   CACHE_TTL,

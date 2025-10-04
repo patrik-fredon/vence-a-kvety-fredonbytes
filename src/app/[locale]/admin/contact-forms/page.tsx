@@ -8,10 +8,7 @@ interface ContactFormsPageProps {
   searchParams: Promise<{ page?: string; status?: string; search?: string }>;
 }
 
-export default async function ContactFormsPage({
-  params,
-  searchParams,
-}: ContactFormsPageProps) {
+export default async function ContactFormsPage({ params, searchParams }: ContactFormsPageProps) {
   const { locale } = await params;
   const searchParamsResolved = await searchParams;
   const page = searchParamsResolved.page || "1";
@@ -27,9 +24,7 @@ export default async function ContactFormsPage({
   const supabase = await createServerClient();
 
   // Build query
-  let query = supabase
-    .from("contact_forms")
-    .select("*", { count: "exact" });
+  let query = supabase.from("contact_forms").select("*", { count: "exact" });
 
   // Apply filters
   if (status !== "all" && typeof status === "string") {

@@ -6,7 +6,7 @@
  * Generate canonical URL for a given path and locale
  */
 export function generateCanonicalUrl(path: string, locale: string): string {
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   return `${baseUrl}/${locale}${cleanPath}`;
 }
@@ -15,7 +15,7 @@ export function generateCanonicalUrl(path: string, locale: string): string {
  * Generate alternate language URLs
  */
 export function generateAlternateUrls(path: string): Record<string, string> {
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
 
   return {
@@ -226,7 +226,7 @@ export function extractKeywords(content: string, maxKeywords: number = 10): stri
  * Generate Open Graph image URL
  */
 export function generateOgImageUrl(title: string, subtitle?: string, imageUrl?: string): string {
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   // If a specific image is provided, use it
   if (imageUrl) {
@@ -270,7 +270,7 @@ export function generateDynamicOgImage(params: {
   price?: number;
   locale: string;
 }): string {
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   const searchParams = new URLSearchParams({
     title: params.title.substring(0, 60),
@@ -302,7 +302,7 @@ export function generateEnhancedMetaTags(params: {
   modifiedTime?: string;
   author?: string;
 }) {
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const fullUrl = `${baseUrl}/${params.locale}${params.path}`;
 
   const metaTags: Record<string, string> = {
@@ -432,7 +432,7 @@ export function optimizeUrlStructure(path: string, params?: Record<string, any>)
  * Generate hreflang attributes for multilingual pages
  */
 export function generateHreflangAttributes(path: string): Record<string, string> {
-  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     cs: `${baseUrl}/cs${path}`,

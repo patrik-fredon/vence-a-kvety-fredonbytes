@@ -10,7 +10,6 @@ import Link from "next/link";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
 
-
 interface CTAButtonProps {
   /** Button text content */
   children: React.ReactNode;

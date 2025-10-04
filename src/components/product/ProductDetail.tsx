@@ -1,27 +1,22 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { useCallback, useState, useMemo, useRef } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
+import { useAnimationSequence } from "@/components/cart/hooks";
 import { LazyProductCustomizer } from "@/components/dynamic";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { useCart } from "@/lib/cart/context";
 import { cn } from "@/lib/utils";
-import { useAnimationSequence } from "@/components/cart/hooks";
-
-import {
-  validateWreathConfiguration,
-  WREATH_VALIDATION_MESSAGES,
-} from "@/lib/validation/wreath";
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
+import { validateWreathConfiguration, WREATH_VALIDATION_MESSAGES } from "@/lib/validation/wreath";
 import type { Customization, Product } from "@/types/product";
-
-import { ProductInfo } from "./ProductInfo";
-import { PriceBreakdown } from "./PriceBreakdown";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
-import { SizeSelector } from "./SizeSelector";
+import { PriceBreakdown } from "./PriceBreakdown";
 import { ProductDetailImageGrid } from "./ProductDetailImageGrid";
+import { ProductInfo } from "./ProductInfo";
+import { SizeSelector } from "./SizeSelector";
 
 interface ProductDetailProps {
   product: Product;
@@ -29,11 +24,7 @@ interface ProductDetailProps {
   className?: string;
 }
 
-export function ProductDetail({
-  product,
-  locale,
-  className,
-}: ProductDetailProps) {
+export function ProductDetail({ product, locale, className }: ProductDetailProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
   const { addToCart } = useCart();
@@ -58,10 +49,7 @@ export function ProductDetail({
 
   // Find size option from customization options
   const sizeOption = useMemo(
-    () =>
-      customizationOptions.find(
-        (option) => option.type === "size" || option.id === "size"
-      ),
+    () => customizationOptions.find((option) => option.type === "size" || option.id === "size"),
     [customizationOptions]
   );
 
@@ -76,18 +64,14 @@ export function ProductDetail({
 
   // Find ribbon-related options
   const ribbonOption = useMemo(
-    () =>
-      customizationOptions.find(
-        (option) => option.type === "ribbon" || option.id === "ribbon"
-      ),
+    () => customizationOptions.find((option) => option.type === "ribbon" || option.id === "ribbon"),
     [customizationOptions]
   );
 
   const ribbonColorOption = useMemo(
     () =>
       customizationOptions.find(
-        (option) =>
-          option.type === "ribbon_color" || option.id === "ribbon_color"
+        (option) => option.type === "ribbon_color" || option.id === "ribbon_color"
       ) || null,
     [customizationOptions]
   );
@@ -107,7 +91,7 @@ export function ProductDetail({
     );
 
     // Only return true if "ribbon_yes" is specifically selected
-    return ribbonCustomization?.choiceIds.includes("ribbon_yes") || false;
+    return ribbonCustomization?.choiceIds.includes("ribbon_yes");
   }, [customizations, ribbonOption?.id]);
 
   // Get non-ribbon, non-size customization options for the general customizer
@@ -138,17 +122,14 @@ export function ProductDetail({
   }, []);
 
   // Handle customization changes
-  const handleCustomizationChange = useCallback(
-    (newCustomizations: Customization[]) => {
-      setCustomizations(newCustomizations);
-      // Price calculation is now automatic via usePriceCalculationWithSize hook
+  const handleCustomizationChange = useCallback((newCustomizations: Customization[]) => {
+    setCustomizations(newCustomizations);
+    // Price calculation is now automatic via usePriceCalculationWithSize hook
 
-      // Clear validation errors and warnings when customizations change
-      setValidationErrors([]);
-      setValidationWarnings([]);
-    },
-    []
-  );
+    // Clear validation errors and warnings when customizations change
+    setValidationErrors([]);
+    setValidationWarnings([]);
+  }, []);
 
   // Enhanced validation using wreath-specific validation system
   const validateCustomizations = useCallback(() => {
@@ -173,11 +154,7 @@ export function ProductDetail({
       setValidationWarnings([]);
 
       // Apply recovery strategies based on error type
-      if (
-        errorType === "size" &&
-        sizeOption?.choices &&
-        sizeOption.choices.length > 0
-      ) {
+      if (errorType === "size" && sizeOption?.choices && sizeOption.choices.length > 0) {
         // Auto-select first available size with proper null checking
         const firstChoice = sizeOption.choices[0];
         if (firstChoice?.id) {
@@ -185,9 +162,7 @@ export function ProductDetail({
         }
       } else if (errorType === "ribbon") {
         // Remove all ribbon-related customizations
-        setCustomizations((prev) =>
-          prev.filter((c) => !c.optionId.includes("ribbon"))
-        );
+        setCustomizations((prev) => prev.filter((c) => !c.optionId.includes("ribbon")));
       }
 
       // Re-validate after recovery
@@ -241,20 +216,13 @@ export function ProductDetail({
         console.log("🛒 [ProductDetail] Attempting to trigger cart animation");
         if (productImageRef.current && addToCartButtonRef.current) {
           // Find the cart icon in the header
-          const cartIcon = document.querySelector(
-            '[href*="/cart"]'
-          ) as HTMLElement;
-          console.log(
-            "🛒 [ProductDetail] Cart icon found:",
-            !!cartIcon,
-            cartIcon?.tagName
-          );
+          const cartIcon = document.querySelector('[href*="/cart"]') as HTMLElement;
+          console.log("🛒 [ProductDetail] Cart icon found:", !!cartIcon, cartIcon?.tagName);
 
           if (cartIcon) {
             // Get the product image source
             const productImage = productImageRef.current.querySelector("img");
-            const imageSrc =
-              productImage?.src || product.images?.[0]?.url || "";
+            const imageSrc = productImage?.src || product.images?.[0]?.url || "";
 
             console.log("🛒 [ProductDetail] Starting animation with:", {
               productElement: productImageRef.current.tagName,
@@ -262,11 +230,7 @@ export function ProductDetail({
               imageSrc: imageSrc?.substring(0, 50) + "...",
             });
 
-            startProductToCartAnimation(
-              productImageRef.current,
-              cartIcon,
-              imageSrc
-            );
+            startProductToCartAnimation(productImageRef.current, cartIcon, imageSrc);
           } else {
             console.warn("🛒 [ProductDetail] Cart icon not found in DOM");
           }
@@ -282,19 +246,12 @@ export function ProductDetail({
           alert(t("addedToCart"));
         }, 1200); // After animation completes
       } else {
-        console.error(
-          "❌ [ProductDetail] Failed to add product to cart:",
-          product.id
-        );
+        console.error("❌ [ProductDetail] Failed to add product to cart:", product.id);
 
         // Show user-friendly error message with recovery option
         const messages =
-          WREATH_VALIDATION_MESSAGES[
-            locale as keyof typeof WREATH_VALIDATION_MESSAGES
-          ];
-        const errorMessage = String(
-          messages.systemError || t("addToCartError")
-        );
+          WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
+        const errorMessage = String(messages.systemError || t("addToCartError"));
 
         if (confirm(`${errorMessage}\n\n${messages.tryAgain}?`)) {
           handleRetryValidation();
@@ -305,16 +262,11 @@ export function ProductDetail({
 
       // Handle different types of errors gracefully
       const messages =
-        WREATH_VALIDATION_MESSAGES[
-          locale as keyof typeof WREATH_VALIDATION_MESSAGES
-        ];
+        WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
       let errorMessage = String(messages.systemError || t("addToCartError"));
 
       if (error instanceof Error) {
-        if (
-          error.message.includes("network") ||
-          error.message.includes("connection")
-        ) {
+        if (error.message.includes("network") || error.message.includes("connection")) {
           errorMessage = String(messages.networkError);
         } else if (error.message.includes("session")) {
           errorMessage = String(messages.sessionExpired);
@@ -350,11 +302,7 @@ export function ProductDetail({
         {/* Right Column - Product Info and Actions */}
         <div className="space-y-6">
           {/* Product Basic Info */}
-          <ProductInfo
-            product={product}
-            locale={locale}
-            finalPrice={priceCalculation.totalPrice}
-          />
+          <ProductInfo product={product} locale={locale} finalPrice={priceCalculation.totalPrice} />
 
           {/* Size Selection */}
           {sizeOption && (
@@ -377,9 +325,7 @@ export function ProductDetail({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("ribbon")}</span>
-                  <span className="text-sm font-normal text-amber-100">
-                    ({t("optional")})
-                  </span>
+                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -417,9 +363,7 @@ export function ProductDetail({
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("customize")}</span>
-                  <span className="text-sm font-normal text-amber-100">
-                    ({t("optional")})
-                  </span>
+                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -445,19 +389,12 @@ export function ProductDetail({
                     <div className="w-2 h-2 bg-red-600 rounded-full" />
                   </div>
                   <div className="flex-1 space-y-3">
-                    <h4 className="text-sm font-medium text-red-800">
-                      {t("validation.title")}
-                    </h4>
+                    <h4 className="text-sm font-medium text-red-800">{t("validation.title")}</h4>
 
                     <div className="space-y-2">
                       {validationErrors.map((error, index) => (
-                        <div
-                          key={index}
-                          className="flex items-start justify-between gap-3"
-                        >
-                          <p className="text-sm text-red-700 flex-1">
-                            • {error}
-                          </p>
+                        <div key={index} className="flex items-start justify-between gap-3">
+                          <p className="text-sm text-red-700 flex-1">• {error}</p>
                         </div>
                       ))}
                     </div>
@@ -478,8 +415,7 @@ export function ProductDetail({
                       </Button>
 
                       {validationErrors.some(
-                        (error) =>
-                          error.includes("velikost") || error.includes("size")
+                        (error) => error.includes("velikost") || error.includes("size")
                       ) && (
                         <Button
                           variant="outline"
@@ -492,8 +428,7 @@ export function ProductDetail({
                       )}
 
                       {validationErrors.some(
-                        (error) =>
-                          error.includes("stuhy") || error.includes("ribbon")
+                        (error) => error.includes("stuhy") || error.includes("ribbon")
                       ) && (
                         <Button
                           variant="outline"
@@ -537,13 +472,8 @@ export function ProductDetail({
 
                     <div className="space-y-2">
                       {validationWarnings.map((warning, index) => (
-                        <div
-                          key={index}
-                          className="flex items-start justify-between gap-3"
-                        >
-                          <p className="text-sm text-teal-800 flex-1">
-                            • {warning}
-                          </p>
+                        <div key={index} className="flex items-start justify-between gap-3">
+                          <p className="text-sm text-teal-800 flex-1">• {warning}</p>
                         </div>
                       ))}
                     </div>
@@ -570,9 +500,7 @@ export function ProductDetail({
           <Card>
             <CardContent className="py-6 space-y-4">
               <div className="text-center">
-                <div className="text-sm text-amber-100 mb-2">
-                  {t("totalPrice")}
-                </div>
+                <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
                 <div className="text-3xl font-bold text-teal-900">
                   {formatPrice(priceCalculation.totalPrice)}
                 </div>
@@ -596,9 +524,7 @@ export function ProductDetail({
               </Button>
 
               {!selectedSize && (
-                <p className="text-sm text-red-600 text-center">
-                  {t("selectSizeFirst")}
-                </p>
+                <p className="text-sm text-red-600 text-center">{t("selectSizeFirst")}</p>
               )}
             </CardContent>
           </Card>

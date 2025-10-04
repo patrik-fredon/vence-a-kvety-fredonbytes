@@ -47,9 +47,7 @@ export function resolvePrimaryProductImage(
   }
 
   // Try to find explicitly marked primary image
-  const primaryImage = product.images.find(
-    (img: ProductImage) => img.isPrimary
-  );
+  const primaryImage = product.images.find((img: ProductImage) => img.isPrimary);
   if (primaryImage?.url) {
     return {
       url: primaryImage.url,

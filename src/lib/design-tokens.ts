@@ -142,14 +142,7 @@ export const fontFamily = {
     "sans-serif",
   ],
   serif: ["Georgia", "Cambria", "Times New Roman", "Times", "serif"],
-  mono: [
-    "Menlo",
-    "Monaco",
-    "Consolas",
-    "Liberation Mono",
-    "Courier New",
-    "monospace",
-  ],
+  mono: ["Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
 } as const;
 
 /**

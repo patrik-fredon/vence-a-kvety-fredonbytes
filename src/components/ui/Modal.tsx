@@ -5,11 +5,11 @@
 
 "use client";
 
-import { XMarkIcon } from "@/lib/icons";
 import { useTranslations } from "next-intl";
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
 import { useAnnouncer, useFocusTrap } from "@/lib/accessibility/hooks";
+import { XMarkIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import { Button } from "./Button";
 

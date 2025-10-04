@@ -1,5 +1,5 @@
-import type { Customization, CustomizationOption } from "@/types/product";
 import type { LocalizedContent } from "@/types";
+import type { Customization, CustomizationOption } from "@/types/product";
 
 export interface Address {
   street: string;
@@ -63,7 +63,7 @@ export function calculateCustomizationPriceModifiers(
 
   for (const customization of customizations) {
     // Find the corresponding customization option
-    const option = customizationOptions.find(opt => opt.id === customization.optionId);
+    const option = customizationOptions.find((opt) => opt.id === customization.optionId);
     if (!option) continue;
 
     let customizationModifier = 0;
@@ -71,19 +71,18 @@ export function calculateCustomizationPriceModifiers(
 
     // Calculate price modifier for each selected choice
     for (const choiceId of customization.choiceIds) {
-      const choice = option.choices.find(c => c.id === choiceId);
+      const choice = option.choices.find((c) => c.id === choiceId);
       if (choice) {
         customizationModifier += choice.priceModifier;
-        
+
         // Ensure label is LocalizedContent
-        const label: LocalizedContent = typeof choice.label === 'string' 
-          ? { cs: choice.label, en: choice.label } 
-          : choice.label;
-        
+        const label: LocalizedContent =
+          typeof choice.label === "string" ? { cs: choice.label, en: choice.label } : choice.label;
+
         choiceBreakdown.push({
           choiceId: choice.id,
           label,
-          priceModifier: choice.priceModifier
+          priceModifier: choice.priceModifier,
         });
       }
     }
@@ -97,16 +96,15 @@ export function calculateCustomizationPriceModifiers(
 
     if (customizationModifier !== 0 || choiceBreakdown.length > 0) {
       // Ensure optionName is LocalizedContent
-      const optionName: LocalizedContent = typeof option.name === 'string' 
-        ? { cs: option.name, en: option.name } 
-        : option.name;
-      
+      const optionName: LocalizedContent =
+        typeof option.name === "string" ? { cs: option.name, en: option.name } : option.name;
+
       breakdown.push({
         optionId: customization.optionId,
         optionName,
         totalModifier: customizationModifier,
         choices: choiceBreakdown,
-        customValue: customization.customValue
+        customValue: customization.customValue,
       });
     }
   }
@@ -123,7 +121,10 @@ export function calculateTotalPriceWithOptions(
   customizationOptions?: CustomizationOption[]
 ): number {
   if (customizationOptions && customizationOptions.length > 0) {
-    const { totalModifier } = calculateCustomizationPriceModifiers(customizations, customizationOptions);
+    const { totalModifier } = calculateCustomizationPriceModifiers(
+      customizations,
+      customizationOptions
+    );
     return Math.max(0, basePrice + totalModifier);
   }
 

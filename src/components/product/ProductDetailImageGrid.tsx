@@ -1,8 +1,8 @@
 "use client";
 
 import Image from "next/image";
-import type { ProductImage } from "@/types/product";
 import { cn } from "@/lib/utils";
+import type { ProductImage } from "@/types/product";
 
 interface ProductDetailImageGridProps {
   images: ProductImage[];

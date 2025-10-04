@@ -2,7 +2,7 @@
  * Utility functions for product customization logic
  */
 
-import type { Product, CustomizationOption } from "@/types/product";
+import type { CustomizationOption, Product } from "@/types/product";
 
 /**
  * Check if a product has any required customization options
@@ -12,7 +12,9 @@ export function hasRequiredCustomizations(product: Product): boolean {
     return false;
   }
 
-  return product.customizationOptions.some((option: CustomizationOption) => option.required === true);
+  return product.customizationOptions.some(
+    (option: CustomizationOption) => option.required === true
+  );
 }
 
 /**

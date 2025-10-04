@@ -1,9 +1,10 @@
 "use client";
 
-import React, { useState, useCallback, useMemo } from "react";
 import Image from "next/image";
-import { cn } from "@/lib/utils";
+import type React from "react";
+import { useCallback, useMemo, useState } from "react";
 import { useCoreWebVitals } from "@/lib/hooks";
+import { cn } from "@/lib/utils";
 
 interface OptimizedImageProps {
   src: string;
@@ -129,7 +130,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
 
   // CLS prevention styles
   const clsPreventionStyles = useMemo(() => {
-    if (!enableCoreWebVitals || !width || !height) return {};
+    if (!(enableCoreWebVitals && width && height)) return {};
     return coreWebVitals.reserveImageSpace(width, height);
   }, [enableCoreWebVitals, width, height, coreWebVitals]);
 
@@ -190,10 +191,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }
 
   return (
-    <div
-      className={cn("relative", !fill && "w-full h-full")}
-      style={clsPreventionStyles}
-    >
+    <div className={cn("relative", !fill && "w-full h-full")} style={clsPreventionStyles}>
       <Image
         src={src}
         alt={alt}

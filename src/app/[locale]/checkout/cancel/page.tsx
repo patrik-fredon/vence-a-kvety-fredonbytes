@@ -150,9 +150,7 @@ export default async function CheckoutCancelPage({ params, searchParams }: PageP
 
         {/* Contact Information */}
         <div className="text-center pt-8 border-t border-teal-200">
-          <p className="text-sm text-teal-600 mb-4">
-            Potřebujete pomoc s dokončením objednávky?
-          </p>
+          <p className="text-sm text-teal-600 mb-4">Potřebujete pomoc s dokončením objednávky?</p>
 
           <div className="bg-white rounded-lg border border-teal-200 p-4 inline-block">
             <h4 className="font-medium text-teal-800 mb-2">Kontaktujte zákaznickou podporu</h4>

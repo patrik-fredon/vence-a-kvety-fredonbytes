@@ -184,7 +184,7 @@ export async function GET(request: NextRequest) {
 
 // Development helper endpoint - only available in development
 export async function POST(request: NextRequest) {
-  if (process.env['NODE_ENV'] !== "development") {
+  if (process.env["NODE_ENV"] !== "development") {
     return NextResponse.json({ error: "Not available in production" }, { status: 403 });
   }
 

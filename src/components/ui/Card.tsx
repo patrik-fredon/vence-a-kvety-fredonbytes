@@ -1,5 +1,5 @@
+import type * as React from "react";
 import type { HTMLAttributes, ReactNode } from "react";
-import * as React from "react";
 import { cn } from "@/lib/utils";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
@@ -73,17 +73,11 @@ export function Card({
   );
 }
 
-export function AboutCard({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function AboutCard({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
-      className={cn(
-        "bg-card text-card-foreground flex flex-col gap-2",
-        className
-      )}
+      className={cn("bg-card text-card-foreground flex flex-col gap-2", className)}
       {...props}
     />
   );

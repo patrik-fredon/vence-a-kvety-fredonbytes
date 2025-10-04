@@ -92,8 +92,6 @@ export class PaymentService {
     }
   }
 
-
-
   /**
    * Get Stripe payment status
    */
@@ -140,7 +138,7 @@ export class PaymentService {
     }
 
     return {
-      orderId: paymentIntent.metadata['orderId'] || "",
+      orderId: paymentIntent.metadata["orderId"] || "",
       transactionId: paymentIntent.id,
       amount: paymentIntent.amount / 100,
       currency: paymentIntent.currency,
@@ -149,8 +147,6 @@ export class PaymentService {
       error: paymentIntent.last_payment_error?.message,
     };
   }
-
-
 
   /**
    * Process Stripe webhook notification
@@ -181,7 +177,7 @@ export class PaymentService {
   ): Promise<PaymentResult | null> {
     const { verifyWebhookSignature } = await import("./stripe");
 
-    const event = verifyWebhookSignature(payload, signature, process.env['STRIPE_WEBHOOK_SECRET']!);
+    const event = verifyWebhookSignature(payload, signature, process.env["STRIPE_WEBHOOK_SECRET"]!);
 
     if (event.type === "payment_intent.succeeded") {
       const paymentIntent = event.data.object;
@@ -213,8 +209,6 @@ export class PaymentService {
 
     return null;
   }
-
-
 
   /**
    * Create payment info object for database storage
