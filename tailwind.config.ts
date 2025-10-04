@@ -35,7 +35,8 @@ const config: Config = {
         ...designTokens.boxShadow,
         // Custom funeral-appropriate shadows
         soft: "0 2px 15px -3px rgba(0, 0, 0, 0.07), 0 10px 20px -2px rgba(0, 0, 0, 0.04)",
-        elegant: "0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 30px -5px rgba(0, 0, 0, 0.04)",
+        elegant:
+          "0 4px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 30px -5px rgba(0, 0, 0, 0.04)",
         memorial: "0 8px 40px -12px rgba(0, 0, 0, 0.15)",
       },
       zIndex: designTokens.zIndex,
@@ -80,11 +81,6 @@ const config: Config = {
           "0%, 100%": { boxShadow: "0 0 5px rgba(45, 80, 22, 0.3)" },
           "50%": { boxShadow: "0 0 20px rgba(45, 80, 22, 0.6)" },
         },
-      },
-      backgroundImage: {
-        // Centralized gradient system for consistent branding
-        "funeral-gold": "linear-gradient(to right, #AE8625, #F7EF8A, #D2AC47)",
-        "funeral-teal": "linear-gradient(to right, #0f766e, #14b8a6, #0d9488)",
       },
     },
   },

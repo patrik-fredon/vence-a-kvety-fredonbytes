@@ -6,7 +6,11 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
-import { getFallbackImage, logErrorWithContext, safeTranslate } from "@/lib/utils/fallback-utils";
+import {
+  getFallbackImage,
+  logErrorWithContext,
+  safeTranslate,
+} from "@/lib/utils/fallback-utils";
 
 interface RefactoredHeroSectionProps {
   locale: string;
@@ -71,8 +75,8 @@ export function RefactoredHeroSection({
     <section
       id="hero-section"
       className={cn(
-        // Background color - using teal-900 solid color (exception to gradient rule)
-        "bg-teal-900",
+        // Background color - using teal-800 solid color (exception to gradient rule)
+        "bg-teal-800",
         // Mobile-first responsive height (320px-767px)
         "min-h-screen", // Full height on mobile for impact
         "sm:min-h-[90vh]", // Slightly reduced on small screens (640px+)
@@ -183,7 +187,9 @@ export function RefactoredHeroSection({
             // Text color
             "text-amber-100",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-1" : "opacity-100"
+            !prefersReducedMotion && animationStarted
+              ? "animate-fade-in-up-delay-1"
+              : "opacity-100"
           )}
         >
           {safeT("heading")}
@@ -213,10 +219,12 @@ export function RefactoredHeroSection({
             "md:mb-10", // More generous on tablet
             "lg:mb-12", // Ample spacing on desktop
             "xl:mb-14", // Maximum spacing for large screens
-            // Text color
-            "text-amber-100",
+            // Text color - updated to amber-200 for hierarchy
+            "text-amber-200",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-2" : "opacity-100"
+            !prefersReducedMotion && animationStarted
+              ? "animate-fade-in-up-delay-2"
+              : "opacity-100"
           )}
         >
           {safeT("subheading")}
@@ -244,23 +252,25 @@ export function RefactoredHeroSection({
             "lg:text-3xl", // 30px for desktop
             // Font weight and styling
             "font-semibold",
-            // Background and text colors
-            "bg-amber-200 text-stone-900",
+            // Background and text colors - updated to use teal-900 for text
+            "bg-amber-200 text-teal-900",
             // Border radius
             "rounded-lg",
-            // Hover state
-            "hover:bg-amber-100",
+            // Hover state - updated to amber-300
+            "hover:bg-amber-300",
             // Transition
             "transition-colors duration-200",
-            // Focus state for accessibility
-            "focus:outline-none focus:ring-2 focus:ring-amber-100 focus:ring-offset-2 focus:ring-offset-teal-900",
+            // Focus state for accessibility - updated ring offset to teal-800
+            "focus:outline-none focus:ring-2 focus:ring-amber-100 focus:ring-offset-2 focus:ring-offset-teal-800",
             // Orientation adjustments
             "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
             "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
             // Hover animation enhancement
-            "hover:scale-105 hover:bg-amber-100/60 transition-transform duration-200",
+            "hover:scale-105 transition-transform duration-200",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-3" : "opacity-100"
+            !prefersReducedMotion && animationStarted
+              ? "animate-fade-in-up-delay-3"
+              : "opacity-100"
           )}
           aria-label={safeT("ctaAriaLabel")}
         >
