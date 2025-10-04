@@ -1,0 +1,19 @@
+{
+  "enabled": true,
+  "name": "TypeScript Error Solver",
+  "description": "Automatically detects TypeScript errors in modified files and provides intelligent fixes based on the project's TypeScript configuration and codebase patterns",
+  "version": "1",
+  "when": {
+    "type": "userTriggered",
+    "patterns": [
+      "src/**/*.ts",
+      "src/**/*.tsx",
+      "*.ts",
+      "*.tsx"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A TypeScript file has been modified. Please:\n\n1. Run `npm run type-check` to identify any TypeScript errors in the modified files\n2. Analyze the errors using `get_symbols_overview` and `find_referencing_symbols` to understand the context\n3. Check related type definitions in `src/types/` and `src/lib/supabase/database.types.ts`\n4. Use `resolve-library-id` and `get-library-docs` if the error involves external libraries\n5. Fix the errors using Serena's code modification tools (`replace_symbol_body`, `insert_after_symbol`, etc.)\n6. Ensure fixes follow the project's TypeScript strict mode standards\n7. Verify the fix by running type-check again\n8. Write a memory note if the fix reveals a pattern that should be remembered\n\nFocus on:\n- Type safety (no `any` types)\n- Proper null/undefined handling\n- Correct import paths and type imports\n- Alignment with existing type definitions\n- Server vs Client Component patterns in Next.js 15"
+  }
+}

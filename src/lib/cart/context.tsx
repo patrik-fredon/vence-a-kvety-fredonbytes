@@ -526,7 +526,10 @@ export function CartProvider({ children }: CartProviderProps) {
           const remainingItems = state.items.filter(item => item.id !== itemId);
 
           if (remainingItems.length === 0) {
-            console.log("🧹 [Cart] Cart is now empty, clearing cache explicitly");
+            console.log("🧹 [Cart] Cart is now empty, clearing cache and localStorage");
+
+            // Clear LocalStorage completely when cart becomes empty
+            CartPersistenceManager.clearCartState();
 
             // Call explicit cache clear endpoint when cart becomes empty
             try {
@@ -584,7 +587,7 @@ export function CartProvider({ children }: CartProviderProps) {
       }
     },
     [fetchCart, isOnline, state.items]
-  );;
+  );;;
 
   // Clear cart (local state only)
   const clearCart = useCallback(() => {
@@ -604,8 +607,32 @@ export function CartProvider({ children }: CartProviderProps) {
       const data = await response.json();
 
       if (data.success) {
+        console.log("🧹 [Cart] Clearing all items, removing cache and localStorage");
+
         // Clear local state
         dispatch({ type: "CLEAR_CART" });
+
+        // Clear LocalStorage completely when cart is cleared
+        CartPersistenceManager.clearCartState();
+
+        // Call explicit cache clear endpoint after DELETE all API
+        try {
+          const cacheResponse = await fetch("/api/cart/clear-cache", {
+            method: "POST",
+            credentials: "include",
+          });
+
+          const cacheData = await cacheResponse.json();
+
+          if (cacheData.success) {
+            console.log("✅ [Cart] Cache cleared successfully after clearing all items");
+          } else {
+            console.warn("⚠️ [Cart] Cache clear failed (non-critical):", cacheData.error);
+          }
+        } catch (cacheError) {
+          console.error("⚠️ [Cart] Error clearing cache (non-critical):", cacheError);
+          // Don't fail the operation if cache clearing fails
+        }
 
         // Refresh cart to confirm empty state
         await fetchCart();

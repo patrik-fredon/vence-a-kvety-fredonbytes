@@ -178,6 +178,8 @@
     "customMessage": "Custom message",
     "andMore": "and {count} more items",
     "clearCart": "Clear Cart",
+    "clearAll": "Clear All",
+    "clearAllConfirm": "Are you sure you want to remove all items?",
     "clearCartConfirmTitle": "Clear Cart?",
     "clearCartConfirmMessage": "Are you sure you want to remove all items from your cart? This action cannot be undone.",
     "clearCartConfirm": "Yes, Clear Cart",
@@ -536,6 +538,10 @@
     "optional": "optional"
   },
   "accessibility": {
+    "toolbar": {
+      "title": "Accessibility Options",
+      "footerLink": "Accessibility"
+    },
     "accessibilityOptions": "Accessibility Options",
     "toolbarDescription": "Customize your browsing experience with accessibility features",
     "toolbarOpened": "Accessibility toolbar opened",

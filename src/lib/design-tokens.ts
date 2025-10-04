@@ -58,22 +58,23 @@ export const blackColor = "#000000" as const;
 /**
  * Funeral-specific color palette
  * Professional colors appropriate for funeral services and memorial products
+ * Now using CSS custom properties for consistency with Tailwind CSS 4
  */
 export const funeralColors = {
-  // Hero section background - dark green-gray (#00302D)
-  hero: "#C6C7A5",
-  // Page background - muted olive-gold (#9B9259)
-  background: "#00302D",
+  // Hero section background - using CSS variable
+  hero: "var(--color-teal-900)",
+  // Page background - using CSS variable
+  background: "var(--color-teal-900)",
   // Complementary shades for the funeral palette
-  heroLight: "#1A3D36", // Lighter variant of hero color
-  heroDark: "#0A1A15", // Darker variant of hero color
-  backgroundLight: "linear-gradient(to right,#AE8625,#F7EF8A,#D2AC47)", // Lighter variant of background color
+  heroLight: "var(--color-teal-800)", // Lighter variant of hero color
+  heroDark: "var(--color-teal-950)", // Darker variant of hero color
+  backgroundLight: "linear-gradient(to right, #AE8625, #F7EF8A, #D2AC47)", // Gradient background
   backgroundDark: "#7A7347", // Darker variant of background color
   // Text colors that work well with funeral palette
   textOnHero: "#FFFFFF", // White text on hero background
   textOnBackground: "#2D2D2D", // Dark text on page background
   textSecondary: "#F5F5DC", // Beige for secondary text
-  accent: "#D4AF37", // Gold accent for highlights
+  accent: "var(--color-accent)", // Accent color using CSS variable
 } as const;
 
 /**

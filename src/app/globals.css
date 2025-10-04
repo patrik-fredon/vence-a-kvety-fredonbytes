@@ -1,7 +1,25 @@
 @import "tailwindcss";
 @import "../styles/mobile-optimizations.css";
 
-:root {
+@theme {
+  /* Primary color palette (teal) */
+  --color-primary: #134e4a;
+  --color-primary-light: #2dd4bf;
+  --color-primary-dark: #115e59;
+
+  /* Accent color palette (amber) */
+  --color-accent: #fef3c7;
+  --color-accent-light: #fde68a;
+
+  /* Teal color palette */
+  --color-teal-900: #134e4a;
+  --color-teal-800: #115e59;
+  --color-teal-400: #2dd4bf;
+
+  /* Amber color palette */
+  --color-amber-100: #fef3c7;
+  --color-amber-200: #fde68a;
+
   /* Stone color palette (primary neutral colors) */
   --color-stone-50: #fafaf9;
   --color-stone-100: #f5f5f4;
@@ -14,21 +32,19 @@
   --color-stone-800: #292524;
   --color-stone-900: #1c1917;
   --color-stone-950: #0c0a09;
-  --color-amber-100: #fef3c6;
-  --color-amber-200: #b8b676;
-  /* Teal color palette (accent colors) */
+
+  /* Teal extended palette */
   --color-teal-50: #f0fdfa;
   --color-teal-100: #ccfbf1;
   --color-teal-200: #99f6e4;
   --color-teal-300: #5eead4;
-  --color-teal-400: #2dd4bf;
   --color-teal-500: #14b8a6;
   --color-teal-600: #0d9488;
   --color-teal-700: #0f766e;
-  --color-teal-800: #00302d;
-  --color-teal-900: #134e4a;
   --color-teal-950: #013029;
+}
 
+:root {
   /* Background and foreground using stone palette */
   --background: var(--color-amber-100);
   --foreground: var(--color-teal-900);
@@ -47,23 +63,26 @@
   --info: #3b82f6;
 }
 
-* {
-  box-sizing: border-box;
-}
+@layer base {
+  * {
+    box-sizing: border-box;
+  }
 
-html {
-  scroll-behavior: smooth;
-}
+  html {
+    scroll-behavior: smooth;
+  }
 
-body {
-  background: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47);
-  color: var(--foreground);
-  font-family: "Inter", system-ui, sans-serif;
-  font-feature-settings: "cv11", "ss01";
-  font-variation-settings: "opsz" 32;
-  line-height: 1.6;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  body {
+    background: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47);
+    background-attachment: fixed;
+    color: var(--foreground);
+    font-family: "Inter", system-ui, sans-serif;
+    font-feature-settings: "cv11", "ss01";
+    font-variation-settings: "opsz" 32;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
 }
 
 /* Headings with elegant serif font */
@@ -102,6 +121,20 @@ h1 {
     0% 15px
   );
   box-shadow: 0 4px 20px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Corner clipping container for product cards */
+.corner-clip-container {
+  clip-path: polygon(
+    0 20px,
+    20px 0,
+    calc(100% - 20px) 0,
+    100% 20px,
+    100% calc(100% - 20px),
+    calc(100% - 20px) 100%,
+    20px 100%,
+    0 calc(100% - 20px)
+  );
 }
 
 /* High contrast mode styles */

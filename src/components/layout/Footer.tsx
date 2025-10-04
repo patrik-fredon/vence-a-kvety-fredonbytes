@@ -179,38 +179,41 @@ export function Footer({ locale }: FooterProps) {
                 </Link>
               </nav>
 
-              {/* Accessibility Link */}
-              <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-amber-100">
-                {tAccessibility("accessibility")}
-              </h4>
-              <nav
-                className="space-y-1 sm:space-y-2"
-                aria-label={tAccessibility("accessibilityOptions")}
-              >
-                <button
-                  onClick={() => {
-                    const toolbarButton = document.querySelector(
-                      '[aria-controls="accessibility-toolbar"]'
-                    ) as HTMLButtonElement;
-                    if (toolbarButton) {
-                      toolbarButton.scrollIntoView({
-                        behavior: "smooth",
-                        block: "center",
-                      });
-                      toolbarButton.focus();
-                      // Trigger click to open toolbar if it's closed
-                      if (
-                        toolbarButton.getAttribute("aria-expanded") === "false"
-                      ) {
-                        toolbarButton.click();
-                      }
-                    }
-                  }}
-                  className="block text-left text-amber-200 hover:text-amber-100 transition-colors duration-200  rounded px-1 py-0.5"
+              {/* Accessibility Link - Desktop Only */}
+              <div className="hidden md:block">
+                <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 mt-6 sm:mt-8 text-amber-100">
+                  {tAccessibility("accessibility")}
+                </h4>
+                <nav
+                  className="space-y-1 sm:space-y-2"
+                  aria-label={tAccessibility("accessibilityOptions")}
                 >
-                  {tAccessibility("openAccessibilityToolbar")}
-                </button>
-              </nav>
+                  <button
+                    onClick={() => {
+                      const toolbarButton = document.querySelector(
+                        '[aria-controls="accessibility-panel"]'
+                      ) as HTMLButtonElement;
+                      if (toolbarButton) {
+                        toolbarButton.scrollIntoView({
+                          behavior: "smooth",
+                          block: "center",
+                        });
+                        toolbarButton.focus();
+                        // Trigger click to open toolbar if it's closed
+                        if (
+                          toolbarButton.getAttribute("aria-expanded") ===
+                          "false"
+                        ) {
+                          toolbarButton.click();
+                        }
+                      }
+                    }}
+                    className="block text-left text-amber-200 hover:text-amber-100 transition-colors duration-200  rounded px-1 py-0.5"
+                  >
+                    {tAccessibility("openAccessibilityToolbar")}
+                  </button>
+                </nav>
+              </div>
             </div>
           </div>
 

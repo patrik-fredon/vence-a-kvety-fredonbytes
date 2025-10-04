@@ -236,12 +236,16 @@ export async function forceClearCartCache(
     const client = getCacheClient();
     const identifier = userId || sessionId || 'anonymous';
 
+    console.log(`🔄 [Cache] Starting force clear for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+
     // Clear cart configuration cache
     const configKey = getCartConfigKey(userId, sessionId);
+    console.log(`🗑️ [Cache] Deleting cart config key: ${configKey}`);
     await client.del(configKey);
 
     // Clear all price calculation caches for this user/session
     // Since Upstash Redis doesn't support SCAN, we need to track and clear known patterns
+    console.log(`🗑️ [Cache] Clearing all price calculation caches for ${identifier}`);
     await clearAllPriceCalculationCache(identifier);
 
     // Verify configuration cache is actually deleted
@@ -250,6 +254,14 @@ export async function forceClearCartCache(
       console.warn(`⚠️ [Cache] Config cache key still exists after deletion attempt: ${configKey}`);
       // Try again
       await client.del(configKey);
+      
+      // Verify again
+      const stillExists = await client.exists(configKey);
+      if (stillExists) {
+        console.error(`❌ [Cache] Config cache key STILL exists after second deletion attempt: ${configKey}`);
+      } else {
+        console.log(`✅ [Cache] Config cache key successfully deleted on second attempt`);
+      }
     }
 
     console.log(`✅ [Cache] Force cleared ALL cart cache (config + prices) for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
@@ -280,15 +292,20 @@ export async function clearAllPriceCalculationCache(identifier: string): Promise
       try {
         const keyList: string[] = JSON.parse(trackedKeys);
 
-        // Delete all tracked price cache keys
-        for (const key of keyList) {
-          await client.del(key);
-        }
+        if (keyList.length > 0) {
+          // Delete all tracked price cache keys in batch
+          console.log(`🧹 [Cache] Deleting ${keyList.length} price calculation cache entries for ${identifier}`);
+          
+          // Delete keys in batch for better performance
+          await Promise.all(keyList.map(key => client.del(key)));
 
-        console.log(`🧹 [Cache] Cleared ${keyList.length} price calculation cache entries for ${identifier}`);
+          console.log(`✅ [Cache] Cleared ${keyList.length} price calculation cache entries for ${identifier}`);
+        }
       } catch (parseError) {
         console.warn(`⚠️ [Cache] Could not parse tracked keys for ${identifier}:`, parseError);
       }
+    } else {
+      console.log(`ℹ️ [Cache] No price calculation cache entries found for ${identifier}`);
     }
 
     // Clear the tracking set itself
@@ -394,13 +411,23 @@ export async function verifyCacheOperation(
 ): Promise<boolean> {
   try {
     const client = getCacheClient();
-    const key = getCartConfigKey(userId, sessionId);
+    const identifier = userId || sessionId || 'anonymous';
+    const configKey = getCartConfigKey(userId, sessionId);
+    const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
 
-    const exists = await client.exists(key);
+    const configExists = await client.exists(configKey);
+    const priceKeysExist = await client.exists(trackingKey);
 
-    console.log(`🔍 [Cache] Verification after ${operation}: Cache ${exists ? 'EXISTS' : 'DOES NOT EXIST'} for ${userId ? `user:${userId}` : `session:${sessionId}`}`);
+    console.log(`🔍 [Cache] Verification after ${operation}:`, {
+      identifier: userId ? `user:${userId}` : `session:${sessionId}`,
+      configExists,
+      priceKeysExist,
+      success: !configExists && !priceKeysExist
+    });
 
-    return exists;
+    // Return true if both config and price keys are cleared (for clear operations)
+    // or if config exists (for set operations)
+    return operation.includes('clear') ? (!configExists && !priceKeysExist) : configExists;
   } catch (error) {
     console.error('❌ [Cache] Error verifying cache operation:', error);
     return false;
@@ -413,27 +440,59 @@ export async function verifyCacheOperation(
 export async function debugCacheState(
   userId: string | null,
   sessionId: string | null
-): Promise<void> {
+): Promise<{
+  configExists: boolean;
+  priceKeysExist: boolean;
+  identifier: string;
+  configKey: string;
+  itemCount?: number;
+  totalPrice?: number;
+  lastUpdated?: string;
+}> {
   try {
     const client = getCacheClient();
-    const key = getCartConfigKey(userId, sessionId);
+    const identifier = userId || sessionId || 'anonymous';
+    const configKey = getCartConfigKey(userId, sessionId);
+    const trackingKey = generateCacheKey(CACHE_KEYS.CART, 'price-keys', identifier);
 
-    const exists = await client.exists(key);
-    console.log(`🐛 [Cache Debug] Key: ${key}, Exists: ${exists}`);
+    const configExists = await client.exists(configKey);
+    const priceKeysExist = await client.exists(trackingKey);
 
-    if (exists) {
-      const cached = await client.get(key);
+    console.log(`🐛 [Cache Debug] Key: ${configKey}, Exists: ${configExists}`);
+    console.log(`🐛 [Cache Debug] Price tracking key: ${trackingKey}, Exists: ${priceKeysExist}`);
+
+    let itemCount: number | undefined;
+    let totalPrice: number | undefined;
+    let lastUpdated: string | undefined;
+
+    if (configExists) {
+      const cached = await client.get(configKey);
       if (cached) {
         const data = deserializeFromCache<CachedCartConfig>(cached);
+        itemCount = data?.totalItems || 0;
+        totalPrice = data?.totalPrice || 0;
+        lastUpdated = data?.lastUpdated;
+        
         console.log(`🐛 [Cache Debug] Data:`, {
-          itemCount: data?.totalItems || 0,
-          totalPrice: data?.totalPrice || 0,
-          lastUpdated: data?.lastUpdated,
+          itemCount,
+          totalPrice,
+          lastUpdated,
           version: data?.version
         });
       }
     }
+
+    return {
+      configExists,
+      priceKeysExist,
+      identifier,
+      configKey,
+      itemCount,
+      totalPrice,
+      lastUpdated
+    };
   } catch (error) {
     console.error('❌ [Cache Debug] Error debugging cache state:', error);
+    throw error;
   }
 }

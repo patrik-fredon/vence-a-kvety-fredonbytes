@@ -54,6 +54,7 @@ export function AccessibilityToolbar() {
         onClick={handleToggleToolbar}
         className={`
           fixed top-20 right-4 z-40 p-3 rounded-full shadow-lg transition-all duration-200
+          opacity-0 focus:opacity-100
           ${
             isHighContrast
               ? "bg-black text-white border-2 border-white"
@@ -67,7 +68,7 @@ export function AccessibilityToolbar() {
             : t("openAccessibilityToolbar")
         }
         aria-expanded={isOpen}
-        aria-controls="accessibility-toolbar"
+        aria-controls="accessibility-panel"
       >
         {isOpen ? (
           <XMarkIcon className="w-6 h-6" aria-hidden="true" />
@@ -79,7 +80,7 @@ export function AccessibilityToolbar() {
       {/* Accessibility Toolbar Panel */}
       {isOpen && (
         <div
-          id="accessibility-toolbar"
+          id="accessibility-panel"
           className={`
             fixed top-24 right-4 z-40 w-80 max-w-[calc(100vw-2rem)] rounded-lg shadow-elegant pt-16
             ${
@@ -97,7 +98,7 @@ export function AccessibilityToolbar() {
               id="accessibility-toolbar-title"
               className="text-lg font-semibold mb-2"
             >
-              {t("accessibilityOptions")}
+              {t("toolbar.title")}
             </h2>
 
             <p

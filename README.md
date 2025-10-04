@@ -403,85 +403,45 @@ The project uses a custom design system tailored for funeral wreaths, emphasizin
 
 ## 🔌 API Documentation
 
-### Public API Endpoints
+For complete API documentation with request/response examples, authentication details, and error handling, see **[API Reference](docs/API_REFERENCE.md)**.
 
-#### Products
+### Quick Reference
 
-- `GET /api/products` - List products with filtering and pagination
-- `GET /api/products/[slug]` - Get product details
-- `GET /api/products/random` - Get random products for homepage
+#### Public Endpoints
 
-#### Categories
+- **Products**: List, search, filter, and get product details
+- **Categories**: Browse product categories
+- **Cart**: Manage shopping cart (session or authenticated)
+- **Orders**: Create and track orders
+- **Payments**: Initialize payments and handle webhooks (Stripe, GoPay)
+- **Delivery**: Calculate costs and check availability
+- **Contact**: Submit inquiries
+- **GDPR**: Manage consent, export, and deletion requests
 
-- `GET /api/categories` - List all categories
-- `GET /api/categories/[slug]` - Get category with products
+#### Admin Endpoints (Authentication Required)
 
-#### Cart
+- **Dashboard**: Statistics and analytics
+- **Product Management**: CRUD operations for products
+- **Order Management**: Process and track orders
+- **Contact Forms**: Manage customer inquiries
+- **Monitoring**: Performance metrics and error tracking
+- **Cache Management**: Clear and manage Redis cache
 
-- `GET /api/cart` - Get current cart contents
-- `POST /api/cart/items` - Add item to cart
-- `PUT /api/cart/items/[id]` - Update cart item
-- `DELETE /api/cart/items/[id]` - Remove cart item
-- `POST /api/cart/merge` - Merge guest cart with user cart
+#### Monitoring Endpoints
 
-#### Orders
+- **Performance**: Core Web Vitals and component metrics
+- **Errors**: Log and track application errors
+- **Health**: System health checks
 
-- `POST /api/orders` - Create new order
-- `GET /api/orders/[id]` - Get order details (authenticated)
+### Rate Limiting
 
-#### Payments
-
-- `POST /api/payments/initialize` - Initialize payment session
-- `GET /api/payments/status` - Check payment status
-- `POST /api/payments/webhook/stripe` - Stripe webhook handler
-- `POST /api/payments/webhook/gopay` - GoPay webhook handler
-
-#### Delivery
-
-- `POST /api/delivery/estimate` - Calculate delivery cost and time
-- `GET /api/delivery/calendar` - Get available delivery slots
-
-#### Contact & GDPR
-
-- `POST /api/contact` - Submit contact form
-- `POST /api/gdpr/consent` - Update consent preferences
-- `POST /api/gdpr/export` - Request data export
-- `POST /api/gdpr/delete` - Request data deletion
-
-### Admin API Endpoints
-
-#### Dashboard
-
-- `GET /api/admin/dashboard/stats` - Get dashboard statistics
-
-#### Product Management
-
-- `GET /api/admin/products` - List all products (admin)
-- `POST /api/admin/products` - Create new product
-- `PUT /api/admin/products/[id]` - Update product
-- `DELETE /api/admin/products/[id]` - Delete product
-- `GET /api/admin/products/[id]/inventory` - Get inventory status
-
-#### Order Management
-
-- `GET /api/admin/orders` - List all orders
-- `PUT /api/admin/orders/[id]/status` - Update order status
-- `GET /api/admin/orders/stats` - Get order statistics
-
-#### Contact Forms
-
-- `GET /api/admin/contact-forms` - List contact form submissions
-- `PUT /api/admin/contact-forms/[id]/status` - Update form status
-
-#### Monitoring
-
-- `GET /api/admin/activity` - Get system activity log
-- `POST /api/monitoring/errors` - Log application errors
-- `GET /api/monitoring/performance` - Get performance metrics
+- **Anonymous**: 100 requests per 15 minutes
+- **Authenticated**: 1000 requests per 15 minutes
+- **Admin**: 5000 requests per 15 minutes
 
 ### Authentication
 
-All admin endpoints require authentication. User-specific endpoints (cart, orders) require either authentication or valid session.
+Admin endpoints require authentication via NextAuth.js session. User-specific endpoints (cart, orders) work with either authenticated sessions or guest sessions.
 
 ## 🌍 Internationalization
 
@@ -655,6 +615,18 @@ npm run deploy:verify      # Verify deployment configuration
 - **CSRF Protection**: Built-in CSRF token validation
 - **Rate Limiting**: API endpoint protection
 - **Environment Isolation**: Separate staging and production environments
+
+## 📚 Documentation
+
+Comprehensive documentation is available in the `docs/` directory:
+
+- **[Architecture](docs/ARCHITECTURE.md)**: System architecture, design patterns, and best practices
+- **[API Reference](docs/API_REFERENCE.md)**: Complete API endpoint documentation with examples
+- **[Performance Monitoring](docs/PERFORMANCE_MONITORING.md)**: Performance tracking, Core Web Vitals, and optimization
+- **[Caching Strategy](docs/CACHING_STRATEGY.md)**: Redis caching implementation and patterns
+- **[Bundle Optimization](docs/BUNDLE_OPTIMIZATION.md)**: Bundle size optimization and code splitting
+- **[Gradient System](docs/GRADIENT_SYSTEM.md)**: Centralized gradient system documentation
+- **[Contributing Guide](CONTRIBUTING.md)**: Development workflow and coding standards
 
 ## 📋 Implementation Status
 

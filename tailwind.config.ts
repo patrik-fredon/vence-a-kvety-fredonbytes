@@ -14,42 +14,6 @@ const config: Config = {
         xs: "475px", // Extra small screens (larger phones)
         // Default breakpoints are still available: sm, md, lg, xl, 2xl
       },
-      colors: {
-        // Stone/amber color palette from design tokens
-        stone: designTokens.colors.stone,
-        amber: designTokens.colors.amber,
-        white: designTokens.colors.white,
-        black: designTokens.colors.black,
-        // Centralized primary color palette (teal)
-        primary: {
-          DEFAULT: "#134e4a", // teal-900
-          light: "#2dd4bf", // teal-400
-          dark: "#115e59", // teal-800
-        },
-        // Centralized accent color palette (amber)
-        accent: {
-          DEFAULT: "#fef3c7", // amber-100
-          light: "#fde68a", // amber-200
-        },
-        // Funeral-specific color palette (legacy - maintained for backward compatibility)
-        funeral: {
-          hero: designTokens.colors.funeral.hero,
-          heroLight: designTokens.colors.funeral.heroLight,
-          heroDark: designTokens.colors.funeral.heroDark,
-          textOnHero: designTokens.colors.funeral.textOnHero,
-          textOnBackground: designTokens.colors.funeral.textOnBackground,
-          textSecondary: designTokens.colors.funeral.textSecondary,
-          accent: designTokens.colors.funeral.accent,
-          "funeral-gold":
-            "linear-gradient(to right, #AE8625, #F7EF8A, #D2AC47)",
-        },
-        // Semantic colors
-        success: designTokens.colors.semantic.success,
-        warning: designTokens.colors.semantic.warning,
-        error: designTokens.colors.semantic.error,
-        info: designTokens.colors.semantic.info,
-        // Legacy funeral colors (maintained for backward compatibility)
-      },
       fontFamily: designTokens.typography.fontFamily,
       fontSize: designTokens.typography.fontSize,
       fontWeight: designTokens.typography.fontWeight,

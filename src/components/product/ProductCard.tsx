@@ -3,13 +3,13 @@
 // Removed unused Image import
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, useCallback } from "react";
+import { useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
-import type { Product } from "@/types/product";
-import { LazyProductQuickView } from "./LazyProductQuickView";
 // Removed unused useCoreWebVitals import
 import { useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
+import type { Product } from "@/types/product";
+import { LazyProductQuickView } from "./LazyProductQuickView";
 import { ProductImageHover } from "./ProductImageHover";
 
 interface ProductCardProps {
@@ -44,10 +44,8 @@ export function ProductCard({
   const { measureExecution } = useJavaScriptOptimization("ProductCard");
 
   // Image resolution for ProductImageHover component
-  const primaryImage =
-    product.images?.find((img) => img.isPrimary) || product.images?.[0];
-  const secondaryImage =
-    product.images?.find((img) => !img.isPrimary) || product.images?.[1];
+  const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
+  const secondaryImage = product.images?.find((img) => !img.isPrimary) || product.images?.[1];
 
   const formatPrice = (price: number) => {
     return tCurrency("format", {
@@ -194,11 +192,7 @@ export function ProductCard({
 
             {product.category && (
               <p className="text-accent mb-1 text-xs">
-                {
-                  product.category.name[
-                    locale as keyof typeof product.category.name
-                  ]
-                }
+                {product.category.name[locale as keyof typeof product.category.name]}
               </p>
             )}
 
@@ -218,14 +212,11 @@ export function ProductCard({
               <span
                 className={cn(
                   "text-xs font-medium",
-                  product.availability.inStock
-                    ? "text-green-700"
-                    : "text-red-700"
+                  product.availability.inStock ? "text-green-700" : "text-red-700"
                 )}
               >
                 {product.availability.inStock
-                  ? product.availability.stockQuantity &&
-                    product.availability.stockQuantity <= 5
+                  ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
                     ? t("limitedStock")
                     : t("inStock")
                   : t("outOfStock")}
@@ -242,9 +233,7 @@ export function ProductCard({
               size="sm"
             >
               <span className="text-xs sm:text-sm">
-                {product.availability.inStock
-                  ? t("addToCart")
-                  : t("outOfStock")}
+                {product.availability.inStock ? t("addToCart") : t("outOfStock")}
               </span>
             </Button>
           </div>
@@ -269,7 +258,7 @@ export function ProductCard({
         className={cn(
           // Base card styles with increased height (h-96) for better visual impact
           "group relative overflow-hidden transition-all duration-300 shadow-lg cursor-pointer",
-          "clip-corners rounded-lg h-96 hover:-translate-y-1 hover:shadow-xl",
+          "rounded-lg h-96 hover:-translate-y-1 hover:shadow-xl",
           className
         )}
         onMouseEnter={() => setIsHovered(true)}
@@ -277,44 +266,49 @@ export function ProductCard({
         onClick={handleProductClick}
         aria-labelledby={`product-${product.id}-title`}
       >
-        {/* Full Coverage Product Image - Takes up most of the h-96 space */}
-        {/* Image Layer (z-0) - Fills card container with absolute positioning */}
-        <div className="absolute inset-0 z-0 bg-accent">
-          {primaryImage && (
-            <ProductImageHover
-              primaryImage={primaryImage}
-              secondaryImage={secondaryImage}
-              productName={product.name[locale as keyof typeof product.name]}
-              locale={locale}
-              fill
-              onClick={handleImageClick}
-              priority={featured}
-              isAboveFold={featured}
-              variant="product"
-              transitionDuration={500}
-              enableTouchHover={true}
-              onHoverChange={(hovered) => setIsHovered(hovered)}
-            />
-          )}
-
-          {/* Featured Badge (z-10) */}
-          {featured && (
-            <div className="absolute top-3 left-3 z-10">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent text-primary-dark border border-accent-light shadow-sm">
-                {t("featured")}
-              </span>
-            </div>
-          )}
-        </div>
-
-        {/* Stock Status Overlay (z-10) - Positioned above image layer */}
-        {!product.availability.inStock && (
-          <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-            <span className="text-accent font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
-              {t("outOfStock")}
-            </span>
+        {/* Corner Clipping Container - Applies clip-path to create cropped corners */}
+        <div className="corner-clip-container relative h-full">
+          {/* Image Layer (z-0) - Fills container with absolute positioning */}
+          <div className="absolute inset-0 z-0 bg-accent">
+            {primaryImage && (
+              <ProductImageHover
+                primaryImage={primaryImage}
+                secondaryImage={secondaryImage}
+                productName={product.name[locale as keyof typeof product.name]}
+                locale={locale}
+                fill
+                onClick={handleImageClick}
+                priority={featured}
+                isAboveFold={featured}
+                variant="product"
+                transitionDuration={500}
+                enableTouchHover={true}
+                onHoverChange={(hovered) => setIsHovered(hovered)}
+              />
+            )}
           </div>
-        )}
+
+          {/* Overlay Layer (z-10) - Contains badges and status overlays */}
+          <div className="absolute inset-0 z-10 pointer-events-none">
+            {/* Featured Badge */}
+            {featured && (
+              <div className="absolute top-3 left-3 pointer-events-auto">
+                <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-accent text-primary-dark border border-accent-light shadow-sm">
+                  {t("featured")}
+                </span>
+              </div>
+            )}
+
+            {/* Stock Status Overlay */}
+            {!product.availability.inStock && (
+              <div className="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-auto">
+                <span className="text-accent font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
+                  {t("outOfStock")}
+                </span>
+              </div>
+            )}
+          </div>
+        </div>
 
         {/* Info Overlay (z-20) - Bottom positioned with backdrop blur for readability */}
         <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
@@ -335,12 +329,11 @@ export function ProductCard({
                 <span className="font-bold text-stone-900 text-lg sm:text-xl">
                   {formatPrice(product.basePrice)}
                 </span>
-                {product.finalPrice &&
-                  product.finalPrice < product.basePrice && (
-                    <span className="text-stone-500 line-through text-sm">
-                      {formatPrice(product.basePrice)}
-                    </span>
-                  )}
+                {product.finalPrice && product.finalPrice < product.basePrice && (
+                  <span className="text-stone-500 line-through text-sm">
+                    {formatPrice(product.basePrice)}
+                  </span>
+                )}
               </div>
 
               {/* QuickView Icon Button - Slightly larger for better visibility */}
@@ -350,12 +343,7 @@ export function ProductCard({
                 onClick={handleQuickView}
                 aria-label={t("quickView")}
               >
-                <svg
-                  className="w-4 h-4"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
+                <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <title>Quick View</title>
                   <path
                     strokeLinecap="round"
@@ -384,17 +372,14 @@ export function ProductCard({
               <output
                 className={cn(
                   "text-xs font-medium",
-                  product.availability.inStock
-                    ? "text-green-700"
-                    : "text-red-700"
+                  product.availability.inStock ? "text-green-700" : "text-red-700"
                 )}
                 aria-label={`${t("availability")}: ${
                   product.availability.inStock ? t("inStock") : t("outOfStock")
                 }`}
               >
                 {product.availability.inStock
-                  ? product.availability.stockQuantity &&
-                    product.availability.stockQuantity <= 5
+                  ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
                     ? t("limitedStock")
                     : t("inStock")
                   : t("outOfStock")}
