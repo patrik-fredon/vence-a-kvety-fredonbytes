@@ -2,6 +2,7 @@
 
 import { useCart } from "@/lib/cart/context";
 import type { Category, Product } from "@/types/product";
+import { ProductComponentErrorBoundary } from "./ProductComponentErrorBoundary";
 import { ProductGrid } from "./ProductGrid";
 
 interface ProductGridWithCartProps {
@@ -30,23 +31,48 @@ export function ProductGridWithCart({
     })
       .then((success) => {
         if (success) {
-          console.log("✅ [ProductGridWithCart] Successfully added product to cart:", product.id);
+          console.log(
+            "✅ [ProductGridWithCart] Successfully added product to cart:",
+            product.id
+          );
         } else {
-          console.error("❌ [ProductGridWithCart] Failed to add product to cart:", product.id);
+          console.error(
+            "❌ [ProductGridWithCart] Failed to add product to cart:",
+            product.id
+          );
         }
       })
       .catch((error) => {
-        console.error("❌ [ProductGridWithCart] Error adding product to cart:", product.id, error);
+        console.error(
+          "❌ [ProductGridWithCart] Error adding product to cart:",
+          product.id,
+          error
+        );
       });
   };
 
   return (
-    <ProductGrid
-      initialProducts={initialProducts}
-      initialCategories={initialCategories}
-      locale={locale}
-      {...(className && { className })}
-      onAddToCart={handleAddToCart}
-    />
+    <ProductComponentErrorBoundary
+      componentName="ProductGridWithCart"
+      onError={(error, errorInfo) => {
+        console.error("ProductGridWithCart error:", { error, errorInfo });
+
+        // Report to analytics if available
+        if (typeof window !== "undefined" && (window as any).gtag) {
+          (window as any).gtag("event", "exception", {
+            description: `ProductGridWithCart error: ${error.message}`,
+            fatal: false,
+          });
+        }
+      }}
+    >
+      <ProductGrid
+        initialProducts={initialProducts}
+        initialCategories={initialCategories}
+        locale={locale}
+        {...(className && { className })}
+        onAddToCart={handleAddToCart}
+      />
+    </ProductComponentErrorBoundary>
   );
 }

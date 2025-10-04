@@ -160,6 +160,14 @@
 
 /* Headings with elegant serif font */
 
+h1,
+h2 {
+  font-family: "Playfair Display", Georgia, serif;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--color-teal-800);
+}
+
 h3,
 h4,
 h5,
@@ -167,14 +175,12 @@ h6 {
   font-family: "Playfair Display", Georgia, serif;
   font-weight: 700;
   line-height: 1.2;
-  color: var(--color-teal-800);
+  color: var(--color-amber-100);
 }
-h1,
-h2 {
-  font-family: "Playfair Display", Georgia, serif;
-  font-weight: 700;
-  line-height: 1.4;
-  color: var(--color-teal-900);
+
+p {
+  color: var(--color-amber-100);
+  line-height: 1.625;
 }
 
 /* Focus styles for accessibility */

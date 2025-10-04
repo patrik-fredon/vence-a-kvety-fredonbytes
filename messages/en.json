@@ -393,7 +393,10 @@
     },
     "refactoredHero": {
       "heading": "Funeral wreaths with love and respect",
+      "subheading": "Beautiful floral arrangements for dignified farewell",
       "description": "Beautiful floral arrangements for dignified farewell",
+      "cta": "Browse Wreaths",
+      "ctaAriaLabel": "Navigate to funeral wreaths page",
       "ctaText": "Browse Wreaths",
       "ctaButton": "Browse Wreaths",
       "logoAlt": "Company logo specializing in funeral wreaths and floral arrangements",
@@ -538,6 +541,7 @@
     "optional": "optional"
   },
   "accessibility": {
+    "accessibility": "Accessibility",
     "toolbar": {
       "title": "Accessibility Options",
       "footerLink": "Accessibility"

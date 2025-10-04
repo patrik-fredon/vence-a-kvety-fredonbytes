@@ -43,17 +43,30 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </div>
           </div>
 
-          {/* Main Image */}
+          {/* Main Image - Reduced height */}
           <div className="mb-16">
-            <div className="aspect-[16/9] bg-funeral-gold rounded-lg overflow-hidden relative">
+            <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96 bg-funeral-gold rounded-lg overflow-hidden">
               <Image
                 src="https://cdn.fredonbytes.com/lily-arrangement-with-greenery-studio.webp"
                 alt={tAbout("companyDescription")}
                 fill
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
+                priority
               />
             </div>
+          </div>
+
+          {/* Logo Section - Integrated into design */}
+          <div className="flex items-center justify-center mb-16">
+            <Image
+              src="/logo.svg"
+              alt="Vence a kvety logo"
+              width={256}
+              height={100}
+              className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+              priority
+            />
           </div>
 
           {/* Story Content */}
@@ -67,16 +80,9 @@ export default async function AboutPage({ params }: AboutPageProps) {
             </div>
           </div>
 
-          {/* Brand Logo */}
-          <div className="text-center mb-16">
-            <div className="inline-flex items-center justify-center w-24 h-24 bg-funeral-gold rounded-full mb-4">
-              <div className="text-2xl font-light text-teal-900">BL</div>
-            </div>
-          </div>
-
-          {/* Image Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mb-16">
-            <AboutCard className="overflow-hidden border-0">
+          {/* Image Grid with Gold-Outlined Cards */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+            <div className="overflow-hidden rounded-lg">
               <div className="aspect-square bg-funeral-gold relative">
                 <Image
                   src="https://cdn.fredonbytes.com/dewy-white-lilies-floral-design.webp"
@@ -86,21 +92,21 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
-            </AboutCard>
+            </div>
 
-            <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
+            <div className="border-2 border-amber-300 bg-teal-800/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
+              <div className="aspect-square flex items-center justify-center p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-funeral-gold rounded-full" />
+                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-amber-300 rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{tAbout("valuesTitle")}</h3>
-                  <p className="text-sm text-teal-900">{tAbout("companyDescription")}</p>
+                  <h3 className="text-lg font-medium mb-2 text-amber-100">{tAbout("valuesTitle")}</h3>
+                  <p className="text-sm text-amber-100">{tAbout("companyDescription")}</p>
                 </div>
               </div>
-            </AboutCard>
+            </div>
 
-            <AboutCard className="overflow-hidden border-0">
+            <div className="overflow-hidden rounded-lg">
               <div className="aspect-square bg-funeral-gold relative">
                 <Image
                   src="https://cdn.fredonbytes.com/handmade-lily-wreath-with-twine-rustic.webp"
@@ -110,21 +116,21 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
-            </AboutCard>
+            </div>
 
-            <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
+            <div className="border-2 border-amber-300 bg-teal-800/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
+              <div className="aspect-square flex items-center justify-center p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-funeral-gold rounded-full" />
+                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-amber-300 rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{tAbout("storyTitle")}</h3>
-                  <p className="text-sm text-teal-900">{tAbout("companyDescription")}</p>
+                  <h3 className="text-lg font-medium mb-2 text-amber-100">{tAbout("storyTitle")}</h3>
+                  <p className="text-sm text-amber-100">{tAbout("companyDescription")}</p>
                 </div>
               </div>
-            </AboutCard>
+            </div>
 
-            <AboutCard className="overflow-hidden border-0">
+            <div className="overflow-hidden rounded-lg">
               <div className="aspect-square bg-funeral-gold relative">
                 <Image
                   src="https://cdn.fredonbytes.com/lily-funeral-wreath-making-process.webp"
@@ -134,19 +140,19 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               </div>
-            </AboutCard>
+            </div>
 
-            <AboutCard className="overflow-hidden border-0">
-              <div className="aspect-square bg-teal-900 flex items-center justify-center text-teal-900 p-6">
+            <div className="border-2 border-amber-300 bg-teal-800/50 backdrop-blur-sm rounded-lg overflow-hidden hover:border-amber-200 transition-colors duration-300">
+              <div className="aspect-square flex items-center justify-center p-6">
                 <div className="text-center">
-                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-400 rounded-full flex items-center justify-center">
-                    <div className="w-6 h-6 bg-funeral-gold rounded-full" />
+                  <div className="w-12 h-12 mx-auto mb-4 border-2 border-amber-300 rounded-full flex items-center justify-center">
+                    <div className="w-6 h-6 bg-amber-300 rounded-full" />
                   </div>
-                  <h3 className="text-lg font-medium mb-2">{tAbout("commitmentTitle")}</h3>
-                  <p className="text-sm text-teal-900">{tAbout("companyDescription")}</p>
+                  <h3 className="text-lg font-medium mb-2 text-amber-100">{tAbout("commitmentTitle")}</h3>
+                  <p className="text-sm text-amber-100">{tAbout("companyDescription")}</p>
                 </div>
               </div>
-            </AboutCard>
+            </div>
           </div>
         </div>
       </div>

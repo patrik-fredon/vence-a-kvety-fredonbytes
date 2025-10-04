@@ -13,10 +13,10 @@ interface ProductDetailImageGridProps {
 /**
  * ProductDetailImageGrid Component
  *
- * Displays product images in a responsive CSS Grid layout for the product detail page.
- * - Desktop: 2 columns
- * - Mobile: 1 column
- * - Max height constraint to match right column
+ * Displays product images in a flexible layout for the product detail page.
+ * - Removes artificial height constraints for large monitors
+ * - Main image displayed prominently with aspect-square ratio
+ * - Thumbnail grid for additional images (responsive: 2/3/4 columns)
  * - First image loads with priority, rest are lazy loaded
  * - Quality 70 for optimized performance
  */
@@ -31,7 +31,7 @@ export function ProductDetailImageGrid({
       <div
         className={cn(
           "flex items-center justify-center bg-teal-900 rounded-lg",
-          "min-h-[400px] max-h-[700px]",
+          "min-h-[400px]",
           className
         )}
       >
@@ -43,43 +43,67 @@ export function ProductDetailImageGrid({
     );
   }
 
-  return (
-    <div
-      className={cn(
-        // Grid layout: 2 cols desktop, 1 col mobile
-        "grid grid-cols-1 md:grid-cols-2 gap-4",
-        // Max height constraint to match right column
-        "max-h-[700px] overflow-y-auto",
-        // Scrollbar styling
-        "scrollbar-thin scrollbar-thumb-teal-800 scrollbar-track-teal-900",
-        className
-      )}
-    >
-      {images.map((image, index) => (
-        <div
-          key={image.id || index}
-          className={cn(
-            "relative overflow-hidden rounded-lg bg-teal-900",
-            // Aspect ratio for consistent sizing
-            "aspect-square",
-            // First image spans full width on mobile for emphasis
-            index === 0 && "md:col-span-2"
-          )}
-        >
+  // Single image - display large
+  if (images.length === 1) {
+    return (
+      <div className={cn("w-full", className)}>
+        <div className="relative overflow-hidden rounded-lg bg-teal-900 aspect-square w-full">
           <Image
-            src={image.url}
-            alt={image.alt || productName}
+            src={images[0].url}
+            alt={images[0].alt || productName}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
             className="object-cover"
             quality={70}
-            // Priority load first image only
-            priority={index === 0}
-            // Lazy load subsequent images
-            loading={index === 0 ? undefined : "lazy"}
+            priority
           />
         </div>
-      ))}
+      </div>
+    );
+  }
+
+  // Multiple images - flexible grid layout
+  return (
+    <div className={cn("space-y-4", className)}>
+      {/* Main image - first image displayed prominently */}
+      <div className="relative overflow-hidden rounded-lg bg-teal-900 aspect-square w-full">
+        <Image
+          src={images[0].url}
+          alt={images[0].alt || productName}
+          fill
+          sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 600px"
+          className="object-cover"
+          quality={70}
+          priority
+        />
+      </div>
+
+      {/* Thumbnail grid - remaining images in responsive grid */}
+      {images.length > 1 && (
+        <div
+          className={cn(
+            "grid gap-2",
+            // Responsive grid: 2 cols mobile, 3 cols tablet, 4 cols desktop
+            "grid-cols-2 sm:grid-cols-3 md:grid-cols-4"
+          )}
+        >
+          {images.slice(1).map((image, index) => (
+            <div
+              key={image.id || index}
+              className="relative overflow-hidden rounded-md bg-teal-900 aspect-square"
+            >
+              <Image
+                src={image.url}
+                alt={image.alt || productName}
+                fill
+                sizes="(max-width: 640px) 50vw, (max-width: 768px) 33vw, 25vw"
+                className="object-cover"
+                quality={70}
+              />
+            </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

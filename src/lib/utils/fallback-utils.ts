@@ -11,7 +11,8 @@ export const FALLBACK_IMAGES = {
     width: 400,
     height: 400,
   },
-  logoSvg: `data:image/svg+xml;base64,${Buffer.from(`
+  logoSvg: `data:image/svg+xml;base64,${Buffer.from(
+    `
     <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 120">
       <rect width="200" height="120" fill="#102724" rx="8"/>
       <text x="100" y="60" text-anchor="middle" dominant-baseline="middle"
@@ -23,14 +24,16 @@ export const FALLBACK_IMAGES = {
       <circle cx="50" cy="90" r="8" fill="#9B9259" opacity="0.7"/>
       <circle cx="150" cy="90" r="8" fill="#9B9259" opacity="0.7"/>
     </svg>
-  `).toString("base64")}`,
+  `
+  ).toString("base64")}`,
   product: {
     src: "https://cdn.fredonbytes.com/cross-shaped-funeral-arrangement-red-white-roses-black-ribbon_thumb.webp",
     alt: "Funeral Wreath",
     width: 400,
     height: 400,
   },
-  productSvg: `data:image/svg+xml;base64,${Buffer.from(`
+  productSvg: `data:image/svg+xml;base64,${Buffer.from(
+    `
     <svg width="400" height="400" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400">
       <rect width="400" height="400" fill="#f3f4f6" rx="8"/>
       <circle cx="200" cy="200" r="120" fill="none" stroke="#9B9259" stroke-width="8"/>
@@ -46,32 +49,50 @@ export const FALLBACK_IMAGES = {
         Funeral Wreath
       </text>
     </svg>
-  `).toString("base64")}`,
+  `
+  ).toString("base64")}`,
 } as const;
 
 // Fallback translations for different locales
 export const FALLBACK_TRANSLATIONS = {
   en: {
     "home.refactoredHero.heading": "Funeral wreaths with love and respect",
-    "home.refactoredHero.description": "Beautiful floral arrangements for dignified farewell",
+    "home.refactoredHero.subheading":
+      "Beautiful floral arrangements for dignified farewell",
+    "home.refactoredHero.description":
+      "Beautiful floral arrangements for dignified farewell",
+    "home.refactoredHero.cta": "Browse Wreaths",
+    "home.refactoredHero.ctaAriaLabel": "Navigate to funeral wreaths page",
     "home.refactoredHero.ctaButton": "Browse Wreaths",
-    "home.refactoredHero.logoAlt": "Company logo specializing in funeral wreaths",
+    "home.refactoredHero.logoAlt":
+      "Company logo specializing in funeral wreaths",
+    "accessibility.accessibility": "Accessibility",
     "home.productReferences.heading": "Our Products",
-    "home.productReferences.description": "Discover our carefully curated collection",
+    "home.productReferences.description":
+      "Discover our carefully curated collection",
     "home.productReferences.loading": "Loading products...",
     "home.productReferences.loadingError": "Failed to load products",
     "home.productReferences.tryAgain": "Try again",
-    "home.productReferences.productImageAlt": "Funeral wreath from our collection",
+    "home.productReferences.productImageAlt":
+      "Funeral wreath from our collection",
     "common.loading": "Loading...",
     "common.error": "Error",
   },
   cs: {
     "home.refactoredHero.heading": "Pohřební věnce s láskou a úctou",
-    "home.refactoredHero.description": "Krásné květinové aranžmá pro důstojné rozloučení",
+    "home.refactoredHero.subheading":
+      "Krásné květinové aranžmá pro důstojné rozloučení",
+    "home.refactoredHero.description":
+      "Krásné květinové aranžmá pro důstojné rozloučení",
+    "home.refactoredHero.cta": "Prohlédnout věnce",
+    "home.refactoredHero.ctaAriaLabel": "Přejít na stránku s pohřebními věnci",
     "home.refactoredHero.ctaButton": "Prohlédnout věnce",
-    "home.refactoredHero.logoAlt": "Logo společnosti specializující se na pohřební věnce",
+    "home.refactoredHero.logoAlt":
+      "Logo společnosti specializující se na pohřební věnce",
+    "accessibility.accessibility": "Přístupnost",
     "home.productReferences.heading": "Naše produkty",
-    "home.productReferences.description": "Objevte naši pečlivě vybranou kolekci",
+    "home.productReferences.description":
+      "Objevte naši pečlivě vybranou kolekci",
     "home.productReferences.loading": "Načítání produktů...",
     "home.productReferences.loadingError": "Nepodařilo se načíst produkty",
     "home.productReferences.tryAgain": "Zkusit znovu",
@@ -84,9 +105,13 @@ export const FALLBACK_TRANSLATIONS = {
 /**
  * Get fallback translation for a given key and locale
  */
-export function getFallbackTranslation(key: string, locale: string = "en"): string {
+export function getFallbackTranslation(
+  key: string,
+  locale: string = "en"
+): string {
   const translations =
-    FALLBACK_TRANSLATIONS[locale as keyof typeof FALLBACK_TRANSLATIONS] || FALLBACK_TRANSLATIONS.en;
+    FALLBACK_TRANSLATIONS[locale as keyof typeof FALLBACK_TRANSLATIONS] ||
+    FALLBACK_TRANSLATIONS.en;
   return translations[key as keyof typeof translations] || key;
 }
 
@@ -140,9 +165,9 @@ export function createImageErrorHandler(
 ) {
   return (event: Event) => {
     const img = event.target as HTMLImageElement;
-    if (img && !img.dataset['fallbackApplied']) {
+    if (img && !img.dataset["fallbackApplied"]) {
       // Mark as fallback applied to prevent infinite loops
-      img.dataset['fallbackApplied'] = "true";
+      img.dataset["fallbackApplied"] = "true";
 
       // Try the fallback image first
       const fallback = getFallbackImage(type);
@@ -151,8 +176,8 @@ export function createImageErrorHandler(
 
       // If fallback image also fails, use SVG
       img.onerror = () => {
-        if (!img.dataset['svgFallbackApplied']) {
-          img.dataset['svgFallbackApplied'] = "true";
+        if (!img.dataset["svgFallbackApplied"]) {
+          img.dataset["svgFallbackApplied"] = "true";
           img.src = getFallbackSvg(type);
         }
       };
@@ -254,7 +279,13 @@ export function createDebouncedRetry(fn: () => void, delay: number = 1000) {
  * Check if an error is recoverable
  */
 export function isRecoverableError(error: Error): boolean {
-  const recoverablePatterns = [/network/i, /fetch/i, /timeout/i, /connection/i, /load/i];
+  const recoverablePatterns = [
+    /network/i,
+    /fetch/i,
+    /timeout/i,
+    /connection/i,
+    /load/i,
+  ];
 
   return recoverablePatterns.some(
     (pattern) => pattern.test(error.message) || pattern.test(error.name)
@@ -281,7 +312,8 @@ export function logErrorWithContext(
     context: {
       ...context,
       timestamp: context.timestamp || new Date().toISOString(),
-      userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
+      userAgent:
+        typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
     },
   };

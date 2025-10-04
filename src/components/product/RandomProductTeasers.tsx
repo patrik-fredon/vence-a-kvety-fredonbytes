@@ -29,9 +29,12 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
       setLoading(true);
       setError(null);
 
-      const response = await fetch(`/api/products/random?count=${count}&locale=${locale}`, {
-        cache: "no-store", // Ensure fresh data on each request for rotation
-      });
+      const response = await fetch(
+        `/api/products/random?count=${count}&locale=${locale}`,
+        {
+          cache: "no-store", // Ensure fresh data on each request for rotation
+        }
+      );
 
       if (!response.ok) {
         throw new Error(`HTTP ${response.status}: Failed to fetch products`);
@@ -59,7 +62,10 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
   const handleAddToCart = useCallback(
     async (product: Product) => {
       try {
-        console.log("🛒 [RandomProductTeasers] Starting add to cart for product:", product.id);
+        console.log(
+          "🛒 [RandomProductTeasers] Starting add to cart for product:",
+          product.id
+        );
         setAddingToCart(product.id);
 
         const success = await addToCart({
@@ -69,9 +75,15 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
         });
 
         if (success) {
-          console.log("✅ [RandomProductTeasers] Successfully added product to cart:", product.id);
+          console.log(
+            "✅ [RandomProductTeasers] Successfully added product to cart:",
+            product.id
+          );
         } else {
-          console.error("❌ [RandomProductTeasers] Failed to add product to cart:", product.id);
+          console.error(
+            "❌ [RandomProductTeasers] Failed to add product to cart:",
+            product.id
+          );
         }
       } catch (error) {
         console.error("💥 [RandomProductTeasers] Error adding to cart:", error);
@@ -89,7 +101,10 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
 
   if (loading) {
     return (
-      <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+      <section
+        className="mt-20 max-w-6xl mx-auto px-4"
+        aria-labelledby="featured-products-title"
+      >
         <h2
           id="featured-products-title"
           className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"
@@ -109,7 +124,10 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
 
   if (error) {
     return (
-      <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+      <section
+        className="mt-20 max-w-6xl mx-auto px-4"
+        aria-labelledby="featured-products-title"
+      >
         <h2
           id="featured-products-title"
           className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"
@@ -129,7 +147,9 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
           </button>
           {retryCount > 0 && (
             <p className="text-sm text-stone-500 mt-2">
-              {locale === "cs" ? `Pokus ${retryCount + 1}` : `Attempt ${retryCount + 1}`}
+              {locale === "cs"
+                ? `Pokus ${retryCount + 1}`
+                : `Attempt ${retryCount + 1}`}
             </p>
           )}
         </div>
@@ -139,7 +159,10 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
 
   if (products.length === 0) {
     return (
-      <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+      <section
+        className="mt-20 max-w-6xl mx-auto px-4"
+        aria-labelledby="featured-products-title"
+      >
         <h2
           id="featured-products-title"
           className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"
@@ -154,7 +177,10 @@ const RandomProductTeasers = React.memo(function RandomProductTeasers({
   }
 
   return (
-    <section className="mt-20 max-w-6xl mx-auto px-4" aria-labelledby="featured-products-title">
+    <section
+      className="mt-20 max-w-6xl mx-auto px-4"
+      aria-labelledby="featured-products-title"
+    >
       <h2
         id="featured-products-title"
         className="text-elegant text-3xl md:text-4xl font-semibold text-stone-800 text-center mb-12"

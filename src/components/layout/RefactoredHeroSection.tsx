@@ -78,13 +78,13 @@ export function RefactoredHeroSection({
         // Background color - using teal-800 solid color (exception to gradient rule)
         "bg-teal-800",
         // Mobile-first responsive height (320px-767px)
-        "min-h-screen", // Full height on mobile for impact
-        "sm:min-h-[90vh]", // Slightly reduced on small screens (640px+)
+        "min-h-[600px]", // Increased height on mobile for impact
+        "sm:min-h-[650px]", // Small screens (640px+)
         // Tablet optimizations (768px-1023px)
-        "md:min-h-[85vh]", // Optimized for tablet viewing
+        "md:min-h-[700px]", // Increased height for tablet viewing
         // Desktop layout with proper space utilization (1024px+)
-        "lg:min-h-[80vh]", // More compact on desktop
-        "xl:min-h-[700px]", // Fixed minimum for very large screens
+        "lg:min-h-[750px]", // Larger hero on desktop
+        "xl:min-h-[800px]", // Maximum height for very large screens
         // Flexbox layout for centering
         "flex items-center justify-center",
         // Mobile-first responsive padding
@@ -146,12 +146,12 @@ export function RefactoredHeroSection({
             className={cn(
               "mx-auto",
               // Mobile-first responsive sizing
-              "w-48 h-auto", // 192px width on mobile (320px+)
-              "xs:w-56", // 224px for 375px+
-              "sm:w-64", // 256px for small screens (640px+)
-              "md:w-72", // 288px for tablets
-              "lg:w-80", // 320px for desktop
-              "xl:w-96", // 384px for large screens
+              "w-56 h-auto", // 224px width on mobile (320px+) - increased from w-48
+              "xs:w-64", // 256px for 375px+
+              "sm:w-72", // 288px for small screens (640px+)
+              "md:w-80", // 320px for tablets - increased from w-72
+              "lg:w-96", // 384px for desktop - increased from w-80
+              "xl:w-[28rem]", // 448px for large screens - increased from w-96
               // Fade-in animation (respecting reduced motion)
               !prefersReducedMotion && animationStarted && logoLoaded
                 ? "animate-gentle-fade"

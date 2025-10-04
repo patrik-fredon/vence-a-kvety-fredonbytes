@@ -393,7 +393,10 @@
     },
     "refactoredHero": {
       "heading": "Pohřební věnce s láskou a úctou",
+      "subheading": "Krásné květinové aranžmá pro důstojné rozloučení",
       "description": "Krásné květinové aranžmá pro důstojné rozloučení",
+      "cta": "Prohlédnout věnce",
+      "ctaAriaLabel": "Přejít na stránku s pohřebními věnci",
       "ctaText": "Prohlédnout věnce",
       "ctaButton": "Prohlédnout věnce",
       "logoAlt": "Logo společnosti specializující se na pohřební věnce a květinové aranžmá",
@@ -538,6 +541,7 @@
     "optional": "volitelné"
   },
   "accessibility": {
+    "accessibility": "Přístupnost",
     "toolbar": {
       "title": "Možnosti přístupnosti",
       "footerLink": "Přístupnost"

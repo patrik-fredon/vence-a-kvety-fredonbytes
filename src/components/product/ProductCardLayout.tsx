@@ -11,7 +11,11 @@ import { resolvePrimaryProductImage } from "@/lib/utils/product-image-utils";
 import type { Product } from "@/types/product";
 
 export type ProductCardVariant = "grid" | "teaser" | "list";
-export type ProductCardActionType = "addToCart" | "customize" | "quickView" | "viewDetails";
+export type ProductCardActionType =
+  | "addToCart"
+  | "customize"
+  | "quickView"
+  | "viewDetails";
 
 export interface ProductCardLayoutProps {
   product: Product;
@@ -56,7 +60,8 @@ export function ProductCardLayout({
   const resolvedPrimaryImage = resolvePrimaryProductImage(product, locale);
 
   // Get secondary image for hover effect (if available)
-  const secondaryImage = product.images?.find((img) => !img.isPrimary) || product.images?.[1];
+  const secondaryImage =
+    product.images?.find((img) => !img.isPrimary) || product.images?.[1];
 
   const formatPrice = useCallback(
     (price: number) => {
@@ -148,7 +153,7 @@ export function ProductCardLayout({
   // Variant-specific styling
   const getCardStyles = () => {
     const baseStyles = cn(
-      "group relative bg-teal-900 transition-all duration-300 shadow-lg border border-stone-200",
+      "group relative bg-teal-800 clip-corners transition-all duration-300 shadow-lg border border-stone-200",
       "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
       className
     );
@@ -169,7 +174,10 @@ export function ProductCardLayout({
         );
 
       case "list":
-        return cn(baseStyles, "rounded-lg flex flex-row items-center gap-4 p-4 hover:shadow-lg");
+        return cn(
+          baseStyles,
+          "rounded-lg flex flex-row items-center gap-4 p-4 hover:shadow-lg"
+        );
 
       default:
         return baseStyles;
@@ -181,7 +189,7 @@ export function ProductCardLayout({
       case "grid":
       case "teaser":
         return "relative aspect-square bg-funeral-gold overflow-hidden";
-
+      // TODO possible issue why not rendering image
       case "list":
         return "relative overflow-hidden bg-funeral-gold w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md";
 
@@ -212,7 +220,9 @@ export function ProductCardLayout({
       {/* Primary image with error handling and fallback */}
       <div className="absolute inset-0 z-0">
         <OptimizedImage
-          src={imageError ? "/placeholder-product.jpg" : resolvedPrimaryImage.url}
+          src={
+            imageError ? "/placeholder-product.jpg" : resolvedPrimaryImage.url
+          }
           alt={resolvedPrimaryImage.alt}
           fill
           variant={variant === "list" ? "thumbnail" : "product"}
@@ -246,7 +256,10 @@ export function ProductCardLayout({
             fill
             variant="product"
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
-            className={cn("object-cover transition-all duration-500", !isHovered && "opacity-0")}
+            className={cn(
+              "object-cover transition-all duration-500",
+              !isHovered && "opacity-0"
+            )}
             priority={false} // Secondary images are never priority
             loading="lazy" // Always lazy load secondary images
             quality={80}
@@ -291,9 +304,11 @@ export function ProductCardLayout({
       id={`product-${product.id}-title`}
       className={cn(
         "font-semibold text-stone-900 transition-colors",
-        variant === "grid" && "text-sm sm:text-base mb-2 line-clamp-2 leading-tight",
+        variant === "grid" &&
+          "text-sm sm:text-base mb-2 line-clamp-2 leading-tight",
         variant === "teaser" && "text-xl mb-2 line-clamp-2 min-h-[3.5rem]",
-        variant === "list" && "text-sm sm:text-base mb-1 truncate group-hover:text-stone-700"
+        variant === "list" &&
+          "text-sm sm:text-base mb-1 truncate group-hover:text-stone-700"
       )}
     >
       {productName}
@@ -338,7 +353,9 @@ export function ProductCardLayout({
           </span>
         )}
         {variant === "teaser" && primaryAction.type === "customize" && (
-          <span className="text-sm text-teal-800 ml-2">{locale === "cs" ? "od" : "from"}</span>
+          <span className="text-sm text-teal-800 ml-2">
+            {locale === "cs" ? "od" : "from"}
+          </span>
         )}
       </div>
 
@@ -403,7 +420,8 @@ export function ProductCardLayout({
         }`}
       >
         {product.availability.inStock
-          ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
+          ? product.availability.stockQuantity &&
+            product.availability.stockQuantity <= 5
             ? t("limitedStock")
             : t("inStock")
           : t("outOfStock")}
@@ -417,7 +435,11 @@ export function ProductCardLayout({
     loading,
     className: variant === "teaser" ? "w-full" : "",
     variant: primaryAction.variant || "default",
-    size: (variant === "list" ? "sm" : "default") as "default" | "sm" | "lg" | "icon",
+    size: (variant === "list" ? "sm" : "default") as
+      | "default"
+      | "sm"
+      | "lg"
+      | "icon",
     icon: primaryAction.icon,
     iconPosition: "left" as const,
   });
@@ -426,14 +448,19 @@ export function ProductCardLayout({
   const renderCustomizeButton = () => (
     <Link href={`/${locale}/products/${product.slug}`}>
       <Button {...getButtonProps()}>
-        <span className={variant === "list" ? "text-xs sm:text-sm" : ""}>{primaryAction.text}</span>
+        <span className={variant === "list" ? "text-xs sm:text-sm" : ""}>
+          {primaryAction.text}
+        </span>
       </Button>
     </Link>
   );
 
   // Render add to cart button
   const renderAddToCartButton = () => (
-    <Button {...getButtonProps()} onClick={() => handleAction(primaryAction.type)}>
+    <Button
+      {...getButtonProps()}
+      onClick={() => handleAction(primaryAction.type)}
+    >
       <span className={variant === "list" ? "text-xs sm:text-sm" : ""}>
         {product.availability.inStock ? primaryAction.text : t("outOfStock")}
       </span>
@@ -446,7 +473,9 @@ export function ProductCardLayout({
 
     return (
       <div className={variant === "list" ? "flex-shrink-0" : ""}>
-        {primaryAction.type === "customize" ? renderCustomizeButton() : renderAddToCartButton()}
+        {primaryAction.type === "customize"
+          ? renderCustomizeButton()
+          : renderAddToCartButton()}
       </div>
     );
   };
@@ -501,7 +530,10 @@ export function ProductCardLayout({
       aria-labelledby={`product-${product.id}-title`}
     >
       {variant === "grid" ? (
-        <Link href={`/${locale}/products/${product.slug}`} className="block w-full h-full relative">
+        <Link
+          href={`/${locale}/products/${product.slug}`}
+          className="block w-full h-full relative"
+        >
           {renderImage()}
           {renderContent()}
           {/* Hover Overlay */}
