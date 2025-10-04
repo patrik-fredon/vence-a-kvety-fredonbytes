@@ -30,7 +30,7 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
  * Formula from WCAG 2.1: https://www.w3.org/TR/WCAG21/#dfn-relative-luminance
  */
 function getLuminance(r: number, g: number, b: number): number {
-  const [rs, gs, bs] = [r, g, b].map((c) => {
+  const [rs = 0, gs = 0, bs = 0] = [r, g, b].map((c) => {
     const sRGB = c / 255;
     return sRGB <= 0.03928
       ? sRGB / 12.92
