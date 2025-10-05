@@ -401,7 +401,7 @@ export function generateTestReport(suite: BrowserTestSuite): string {
   };
 
   for (const test of suite.tests) {
-    categories[test.category].push(test);
+    categories[test.category]?.push(test);
   }
 
   // Generate report for each category
@@ -473,7 +473,7 @@ export const browserCompatibility = {
  * Check if browser version meets minimum requirements
  */
 export function checkBrowserVersion(browserInfo: BrowserInfo): boolean {
-  const compat = browserCompatibility[browserInfo.name];
+  const compat = browserCompatibility[browserInfo.name as keyof typeof browserCompatibility];
   if (!compat) return false;
 
   const currentVersion = parseFloat(browserInfo.version);
@@ -487,7 +487,7 @@ export function checkBrowserVersion(browserInfo: BrowserInfo): boolean {
  */
 export function getBrowserRecommendations(browserInfo: BrowserInfo): string[] {
   const recommendations: string[] = [];
-  const compat = browserCompatibility[browserInfo.name];
+  const compat = browserCompatibility[browserInfo.name as keyof typeof browserCompatibility];
 
   if (!compat) {
     recommendations.push(

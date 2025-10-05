@@ -60,9 +60,7 @@ function validateTranslations(messages: any, locale: string): ValidationResult {
 // Compare two locales for missing keys
 function compareLocales(
   baseMessages: any,
-  compareMessages: any,
-  baseLoc: string,
-  compareLoc: string
+  compareMessages: any
 ): string[] {
   const baseFlat = flattenObject(baseMessages);
   const compareFlat = flattenObject(compareMessages);
@@ -79,7 +77,7 @@ function compareLocales(
 }
 
 // Verify critical keys from requirements
-function verifyCriticalKeys(messages: any, locale: string): string[] {
+function verifyCriticalKeys(messages: any): string[] {
   const criticalKeys = [
     "home.refactoredHero.heading",
     "home.refactoredHero.subheading",
@@ -145,8 +143,8 @@ function runValidation() {
 
   // Compare locales for missing keys
   console.log("\n🔄 Comparing locales for consistency...");
-  const missingInCs = compareLocales(enMessages, csMessages, "en", "cs");
-  const missingInEn = compareLocales(csMessages, enMessages, "cs", "en");
+  const missingInCs = compareLocales(enMessages, csMessages);
+  const missingInEn = compareLocales(csMessages, enMessages);
 
   if (missingInCs.length > 0) {
     console.log(`⚠️  Keys in EN but missing in CS: ${missingInCs.length}`);
@@ -173,7 +171,7 @@ function runValidation() {
   // Verify critical keys from requirements
   console.log("\n🎯 Verifying critical keys from requirements...");
 
-  const csCriticalMissing = verifyCriticalKeys(csMessages, "cs");
+  const csCriticalMissing = verifyCriticalKeys(csMessages);
   if (csCriticalMissing.length > 0) {
     console.log("❌ Critical keys missing in CS:");
     csCriticalMissing.forEach((key) => console.log(`   - ${key}`));
@@ -182,7 +180,7 @@ function runValidation() {
     console.log("✓ All critical keys present in CS");
   }
 
-  const enCriticalMissing = verifyCriticalKeys(enMessages, "en");
+  const enCriticalMissing = verifyCriticalKeys(enMessages);
   if (enCriticalMissing.length > 0) {
     console.log("❌ Critical keys missing in EN:");
     enCriticalMissing.forEach((key) => console.log(`   - ${key}`));
