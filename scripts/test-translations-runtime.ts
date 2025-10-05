@@ -42,15 +42,6 @@ function log(message: string, color: string = colors.reset) {
   console.log(`${color}${message}${colors.reset}`);
 }
 
-// Pages to test
-const testPages = [
-  { path: "/", name: "Home Page" },
-  { path: "/products", name: "Products Page" },
-  { path: "/about", name: "About Page" },
-  { path: "/contact", name: "Contact Page" },
-  { path: "/faq", name: "FAQ Page" },
-];
-
 // Locales to test
 const testLocales = ["cs", "en"];
 
@@ -218,7 +209,7 @@ async function main() {
       );
 
       for (let i = 0; i < criticalKeys.length; i++) {
-        const key = criticalKeys[i];
+        const key = criticalKeys[i]!;
         const result = testTranslationKey(translations, key, locale);
 
         summary.totalTests++;

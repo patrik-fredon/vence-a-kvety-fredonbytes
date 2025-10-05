@@ -49,8 +49,6 @@ const BASELINE_FILE = path.join(
   "vence-kvety-refactor",
   "bundle-baseline.json"
 );
-const BUILD_MANIFEST = path.join(process.cwd(), ".next", "build-manifest.json");
-const NEXT_META = path.join(process.cwd(), ".next", "next-server.js.nft.json");
 
 // Size thresholds (in KB)
 const THRESHOLDS = {
@@ -71,18 +69,6 @@ function formatSize(bytes: number): string {
   const sizes = ["B", "KB", "MB", "GB"];
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${(bytes / Math.pow(k, i)).toFixed(2)} ${sizes[i]}`;
-}
-
-/**
- * Get file size in bytes
- */
-function getFileSize(filePath: string): number {
-  try {
-    const stats = fs.statSync(filePath);
-    return stats.size;
-  } catch {
-    return 0;
-  }
 }
 
 /**
@@ -421,7 +407,7 @@ function printStats(stats: BundleStats): void {
  */
 async function main() {
   const args = process.argv.slice(2);
-  const saveBaseline = args.includes("--save-baseline");
+  const shouldSaveBaseline = args.includes("--save-baseline");
 
   console.log("🚀 Starting Bundle Size Analysis");
 
@@ -445,7 +431,7 @@ async function main() {
   }
 
   // Save baseline if requested
-  if (saveBaseline) {
+  if (shouldSaveBaseline) {
     saveBaseline(currentStats);
   }
 
