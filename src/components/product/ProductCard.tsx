@@ -185,7 +185,7 @@ export function ProductCard({
 
             {/* Stock Status Overlay */}
             {!product.availability.inStock && (
-              <div className="absolute inset-0 bg-black/50 flex items-center justify-center">
+              <div className="absolute inset-0 bg-teal-900/50 flex items-center justify-center">
                 <span className="text-white font-medium px-2 py-1 bg-red-600 rounded-full text-xs">
                   {t("outOfStock")}
                 </span>
@@ -319,7 +319,7 @@ export function ProductCard({
 
           {/* Stock Status Overlay */}
           {!product.availability.inStock && (
-            <div className="absolute inset-0 bg-black/50 flex items-center justify-center pointer-events-auto">
+            <div className="absolute inset-0 bg-teal-900/50 flex items-center justify-center pointer-events-auto">
               <span className="text-white font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
                 {t("outOfStock")}
               </span>
@@ -416,7 +416,7 @@ export function ProductCard({
 
         {/* Hover Overlay for Additional Actions - Maintained for h-96 */}
         {isHovered && (
-          <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 pointer-events-none z-10" />
+          <div className="absolute inset-0 bg-teal-900/10 transition-opacity duration-300 pointer-events-none z-10" />
         )}
       </article>
 

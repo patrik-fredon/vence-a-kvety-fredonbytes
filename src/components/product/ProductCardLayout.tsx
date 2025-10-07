@@ -153,7 +153,7 @@ export function ProductCardLayout({
   // Variant-specific styling
   const getCardStyles = () => {
     const baseStyles = cn(
-      "group relative bg-teal-800 clip-corners transition-all duration-300 shadow-lg border border-stone-200",
+      "group relative bg-teal-800 clip-corners transition-all duration-300 shadow-lg border border-amber-200",
       className
     );
 
@@ -200,7 +200,7 @@ export function ProductCardLayout({
   const getContentStyles = () => {
     switch (variant) {
       case "grid":
-        return "absolute bottom-0 left-0 right-0 p-4 z-20";
+        return "absolute bottom-0 left-0 right-0 p-4 z-0";
 
       case "teaser":
         return "p-6";

@@ -14,7 +14,12 @@ interface ProductInfoProps {
   className?: string;
 }
 
-export function ProductInfo({ product, locale, finalPrice, className }: ProductInfoProps) {
+export function ProductInfo({
+  product,
+  locale,
+  finalPrice,
+  className,
+}: ProductInfoProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
 
@@ -31,28 +36,35 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
   return (
     <div className={cn("space-y-6", className)}>
       {/* Breadcrumb */}
-      <nav className="text-sm text-stone-600" aria-label="Breadcrumb">
+      <nav className="text-sm text-amber-300" aria-label="Breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link href={`/${locale}/products`} className="hover:text-amber-600 transition-colors">
+            <Link
+              href={`/${locale}/products`}
+              className="hover:text-amber-600 transition-colors"
+            >
               {t("allProducts")}
             </Link>
           </li>
           {product.category && (
             <>
-              <li className="text-stone-400">/</li>
+              <li className="text-amber-300">/</li>
               <li>
                 <Link
                   href={`/${locale}/products?category=${product.category.slug}`}
                   className="hover:text-amber-600 transition-colors"
                 >
-                  {product.category.name[locale as keyof typeof product.category.name]}
+                  {
+                    product.category.name[
+                      locale as keyof typeof product.category.name
+                    ]
+                  }
                 </Link>
               </li>
             </>
           )}
-          <li className="text-stone-400">/</li>
-          <li className="text-stone-900 font-medium">
+          <li className="text-amber-200">/</li>
+          <li className="text-amber-300 font-medium">
             {product.name[locale as keyof typeof product.name]}
           </li>
         </ol>
@@ -61,7 +73,7 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
       {/* Product Title and Badge */}
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-4">
-          <h1 className="text-3xl font-light text-stone-900 leading-tight">
+          <h1 className="text-3xl font-light text-amber-300 leading-tight">
             {product.name[locale as keyof typeof product.name]}
           </h1>
         </div>
@@ -76,7 +88,7 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
       </div>
 
       {/* Rating and Reviews */}
-      <Card padding="sm" className="bg-stone-50">
+      <Card padding="sm" className="bg-amber-30">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
             <div className="flex items-center gap-1">
@@ -88,14 +100,14 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
                     star <= Math.floor(rating)
                       ? "text-amber-500 fill-current"
                       : star <= rating
-                        ? "text-amber-500 fill-current opacity-50"
-                        : "text-stone-300"
+                      ? "text-amber-500 fill-current opacity-50"
+                      : "text-amber-300"
                   )}
                 />
               ))}
             </div>
-            <span className="text-sm font-medium text-stone-700">{rating}</span>
-            <span className="text-sm text-stone-500">
+            <span className="text-sm font-medium text-amber-300">{rating}</span>
+            <span className="text-sm text-amber-300">
               ({reviewCount} {t("reviews")})
             </span>
           </div>
@@ -110,10 +122,10 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
         <CardContent>
           <div className="space-y-2">
             <div className="flex items-baseline gap-3">
-              <span className="text-2xl font-semibold text-stone-900">
+              <span className="text-2xl font-semibold text-amber-300">
                 {formatPrice(product.basePrice)}
               </span>
-              <span className="text-sm text-stone-600">{t("basePrice")}</span>
+              <span className="text-sm text-amber-300">{t("basePrice")}</span>
             </div>
             {finalPrice !== product.basePrice && (
               <div className="text-sm text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">
@@ -131,7 +143,7 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
             <CardTitle>{t("description")}</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="text-stone-700 leading-relaxed whitespace-pre-line">
+            <div className="text-amber-300 leading-relaxed whitespace-pre-line">
               {product.description[locale as keyof typeof product.description]}
             </div>
           </CardContent>
@@ -145,31 +157,36 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
         </CardHeader>
         <CardContent>
           <dl className="grid grid-cols-1 gap-3 text-sm">
-            <div className="flex justify-between py-2 border-b border-stone-100 last:border-b-0">
-              <dt className="text-stone-600 font-medium">{t("category")}:</dt>
-              <dd className="text-stone-900">
-                {product.category?.name[locale as keyof typeof product.category.name] ||
-                  t("uncategorized")}
+            <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
+              <dt className="text-amber-300 font-medium">{t("category")}:</dt>
+              <dd className="text-amber-300">
+                {product.category?.name[
+                  locale as keyof typeof product.category.name
+                ] || t("uncategorized")}
               </dd>
             </div>
-            <div className="flex justify-between py-2 border-b border-stone-100 last:border-b-0">
-              <dt className="text-stone-600 font-medium">{t("sku")}:</dt>
-              <dd className="text-stone-900 font-mono text-xs">
+            <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
+              <dt className="text-amber-300 font-medium">{t("sku")}:</dt>
+              <dd className="text-amber-300 font-mono text-xs">
                 {product.id.slice(-8).toUpperCase()}
               </dd>
             </div>
             {product.availability.leadTimeHours && (
-              <div className="flex justify-between py-2 border-b border-stone-100 last:border-b-0">
-                <dt className="text-stone-600 font-medium">{t("leadTime")}:</dt>
-                <dd className="text-stone-900">
+              <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
+                <dt className="text-amber-300 font-medium">{t("leadTime")}:</dt>
+                <dd className="text-amber-300">
                   {product.availability.leadTimeHours} {t("hours")}
                 </dd>
               </div>
             )}
             {product.availability.maxOrderQuantity && (
-              <div className="flex justify-between py-2 border-b border-stone-100 last:border-b-0">
-                <dt className="text-stone-600 font-medium">{t("maxQuantity")}:</dt>
-                <dd className="text-stone-900">{product.availability.maxOrderQuantity}</dd>
+              <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
+                <dt className="text-amber-300 font-medium">
+                  {t("maxQuantity")}:
+                </dt>
+                <dd className="text-amber-300">
+                  {product.availability.maxOrderQuantity}
+                </dd>
               </div>
             )}
           </dl>
@@ -179,7 +196,9 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
       {/* Availability Status */}
       <Card
         className={cn(
-          product.availability.inStock ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
+          product.availability.inStock
+            ? "bg-green-50 border-green-200"
+            : "bg-red-50 border-red-200"
         )}
       >
         <CardContent className="py-3">
@@ -194,25 +213,31 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
               <div
                 className={cn(
                   "font-medium text-sm",
-                  product.availability.inStock ? "text-green-800" : "text-red-800"
+                  product.availability.inStock
+                    ? "text-green-800"
+                    : "text-red-800"
                 )}
               >
                 {product.availability.inStock ? t("inStock") : t("outOfStock")}
               </div>
-              {product.availability.inStock && product.availability.leadTimeHours && (
-                <div className="text-xs text-green-700 mt-1">
-                  {t("leadTime", { hours: product.availability.leadTimeHours })}
-                </div>
-              )}
-              {!product.availability.inStock && product.availability.estimatedRestockDate && (
-                <div className="text-xs text-red-700 mt-1">
-                  {t("restockDate", {
-                    date: product.availability.estimatedRestockDate.toLocaleDateString(
-                      locale === "cs" ? "cs-CZ" : "en-US"
-                    ),
-                  })}
-                </div>
-              )}
+              {product.availability.inStock &&
+                product.availability.leadTimeHours && (
+                  <div className="text-xs text-green-700 mt-1">
+                    {t("leadTime", {
+                      hours: product.availability.leadTimeHours,
+                    })}
+                  </div>
+                )}
+              {!product.availability.inStock &&
+                product.availability.estimatedRestockDate && (
+                  <div className="text-xs text-red-700 mt-1">
+                    {t("restockDate", {
+                      date: product.availability.estimatedRestockDate.toLocaleDateString(
+                        locale === "cs" ? "cs-CZ" : "en-US"
+                      ),
+                    })}
+                  </div>
+                )}
             </div>
           </div>
         </CardContent>

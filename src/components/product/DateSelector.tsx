@@ -69,15 +69,17 @@ export function DateSelector({
         onClick={handleToggleCalendar}
         className={cn(
           "w-full flex items-center justify-between p-3 border rounded-lg transition-colors",
-          "border-neutral-300 bg-funeral-gold hover:border-neutral-400 hover:bg-neutral-50",
+          "border-amber-300 bg-funeral-gold hover:border-amber-400 hover:bg-amber-50",
           "focus:ring-2 focus:ring-primary-200 focus:border-primary-500"
         )}
       >
         <div className="flex items-center space-x-3">
-          <CalendarIcon className="w-5 h-5 text-neutral-500" />
+          <CalendarIcon className="w-5 h-5 text-amber-500" />
           <div className="text-left">
             {value ? (
-              <div className="font-medium text-neutral-900">{formatDateForDisplay(value)}</div>
+              <div className="font-medium text-amber-900">
+                {formatDateForDisplay(value)}
+              </div>
             ) : (
               <div className="text-teal-500">
                 {locale === "cs" ? "Vyberte datum" : "Select date"}
@@ -90,10 +92,12 @@ export function DateSelector({
 
       {/* Calendar Input */}
       {isOpen && (
-        <div className="p-4 border border-neutral-200 rounded-lg bg-funeral-gold shadow-lg">
+        <div className="p-4 border border-amber-200 rounded-lg bg-funeral-gold shadow-lg">
           <div className="space-y-3">
             <div className="text-sm font-medium text-teal-700">
-              {locale === "cs" ? "Vyberte datum dodání:" : "Select delivery date:"}
+              {locale === "cs"
+                ? "Vyberte datum dodání:"
+                : "Select delivery date:"}
             </div>
 
             <input
@@ -103,15 +107,19 @@ export function DateSelector({
               min={formatDateForInput(minDate)}
               max={formatDateForInput(maxDate)}
               className={cn(
-                "w-full p-2 border border-neutral-300 rounded-md",
+                "w-full p-2 border border-amber-300 rounded-md",
                 "focus:ring-2 focus:ring-primary-200 focus:border-primary-500"
               )}
             />
 
-            <div className="text-xs text-neutral-500">
+            <div className="text-xs text-amber-500">
               {locale === "cs"
-                ? `Dostupné termíny: ${minDate.toLocaleDateString("cs-CZ")} - ${maxDate.toLocaleDateString("cs-CZ")}`
-                : `Available dates: ${minDate.toLocaleDateString("en-US")} - ${maxDate.toLocaleDateString("en-US")}`}
+                ? `Dostupné termíny: ${minDate.toLocaleDateString(
+                    "cs-CZ"
+                  )} - ${maxDate.toLocaleDateString("cs-CZ")}`
+                : `Available dates: ${minDate.toLocaleDateString(
+                    "en-US"
+                  )} - ${maxDate.toLocaleDateString("en-US")}`}
             </div>
           </div>
         </div>

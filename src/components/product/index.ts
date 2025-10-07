@@ -1,5 +1,4 @@
 // Error testing utilities (development only)
-export { ErrorTestingDashboard, HOCErrorTest } from "./ErrorTestingUtils";
 export { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 export { OptimizedProductCustomizer } from "./OptimizedProductCustomizer";
 export { PriceBreakdown } from "./PriceBreakdown";
