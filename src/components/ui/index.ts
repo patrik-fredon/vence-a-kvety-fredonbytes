@@ -15,7 +15,6 @@
 export { Badge } from "./Badge";
 export { Button } from "./Button";
 export { CTAButton } from "./CTAButton";
-export { Divider } from "./Divider";
 export { ErrorBoundary } from "./ErrorBoundary";
 export { Heading } from "./Heading";
 export { Input } from "./Input";
@@ -33,7 +32,14 @@ export { Text } from "./Text";
 // MOLECULES - Combinations of atoms
 // =============================================================================
 
-export { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "./Card";
+export {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "./Card";
 export { FormField, FormGroup, FormSection } from "./FormField";
 export { ConfirmModal, Modal, ModalFooter } from "./Modal";
 

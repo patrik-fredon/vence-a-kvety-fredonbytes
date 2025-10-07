@@ -112,7 +112,7 @@ const getQualityForVariant = (
 ): number => {
   switch (variant) {
     case "product":
-      return 85; // High quality for product images - balance between quality and file size
+      return 70; // High quality for product images - balance between quality and file size
     case "thumbnail":
       return 70; // Medium quality for thumbnails - prioritize loading speed
     case "hero":
@@ -397,7 +397,7 @@ export function ProductImage({
           loading={loadingStrategy}
           placeholder="blur"
           blurDataURL={blurDataURL}
-          onLoadingComplete={handleLoad}
+          onLoad={handleLoad}
           onError={handleError}
           onLoadStart={handleLoadStart}
           className={cn(

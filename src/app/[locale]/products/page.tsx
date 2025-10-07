@@ -231,11 +231,11 @@ export default async function ProductsPage({
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="m-8 text-center justify-center">
-          <div className="bg-funeral-teal rounded-lg p-8 mb-8">
-            <h2 className="text-elegant text-4xl font-semibold mb-4 text-amber-100">
+          <div className=" rounded-lg p-8 mb-8">
+            <h2 className="text-elegant text-4xl font-semibold mb-4 text-teal-900">
               {t("title")}
             </h2>
-            <p className="text-lg text-amber-200">{t("pageDescription")}</p>
+            <p className="text-lg text-teal-900">{t("pageDescription")}</p>
           </div>
         </div>
 

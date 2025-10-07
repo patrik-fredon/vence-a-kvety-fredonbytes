@@ -76,7 +76,7 @@ export function RefactoredHeroSection({
       id="hero-section"
       className={cn(
         // Background color - using teal-800 solid color (exception to gradient rule)
-        "bg-teal-800",
+        "bg-funeral-teal",
         "min-h-screen",
         // Flexbox layout for centering
         "flex items-center justify-center",
@@ -90,8 +90,6 @@ export function RefactoredHeroSection({
         // Text color for contrast
         "text-amber-100",
         // Orientation handling
-        "landscape:min-h-[100vh] landscape:py-8", // Landscape mobile adjustments
-        "md:landscape:min-h-[90vh]", // Landscape tablet adjustments
         className
       )}
       aria-labelledby="hero-heading"

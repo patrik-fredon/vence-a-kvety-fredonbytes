@@ -80,7 +80,10 @@ export const supportsModernFormats = (): { avif: boolean; webp: boolean } => {
 };
 
 // Preload critical images for better performance
-export const preloadImage = (src: string, priority: boolean = false): Promise<void> => {
+export const preloadImage = (
+  src: string,
+  priority: boolean = false
+): Promise<void> => {
   return new Promise((resolve, reject) => {
     const link = document.createElement("link");
     link.rel = "preload";
@@ -144,8 +147,12 @@ export const trackImagePerformance = (
 
   // Try to get file size from performance API
   if (typeof window !== "undefined" && window.performance) {
-    const resourceEntries = performance.getEntriesByType("resource") as PerformanceResourceTiming[];
-    const imageEntry = resourceEntries.find((entry) => entry.name.includes(url));
+    const resourceEntries = performance.getEntriesByType(
+      "resource"
+    ) as PerformanceResourceTiming[];
+    const imageEntry = resourceEntries.find((entry) =>
+      entry.name.includes(url)
+    );
 
     if (imageEntry?.transferSize) {
       metrics.fileSize = imageEntry.transferSize;
@@ -156,13 +163,18 @@ export const trackImagePerformance = (
 };
 
 // Optimize image loading based on connection speed
-export const getLoadingStrategy = (connectionSpeed?: "slow" | "fast"): "eager" | "lazy" => {
+export const getLoadingStrategy = (
+  connectionSpeed?: "slow" | "fast"
+): "eager" | "lazy" => {
   if (typeof navigator !== "undefined" && "connection" in navigator) {
     const connection = (navigator as any).connection;
 
     if (connection) {
       // Slow connections: be more conservative with eager loading
-      if (connection.effectiveType === "slow-2g" || connection.effectiveType === "2g") {
+      if (
+        connection.effectiveType === "slow-2g" ||
+        connection.effectiveType === "2g"
+      ) {
         return "lazy";
       }
 

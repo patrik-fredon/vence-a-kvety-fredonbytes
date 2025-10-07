@@ -2,16 +2,35 @@
 
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
-import React, { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
+import React, {
+  useCallback,
+  useEffect,
+  useId,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { Button } from "@/components/ui/Button";
 import { ProductGridSkeleton } from "@/components/ui/LoadingSpinner";
 import { useAnnouncer } from "@/lib/accessibility/hooks";
 import { useImageOptimization } from "@/lib/hooks/useImageOptimization";
 import { cn } from "@/lib/utils";
 // Removed unused import: useCoreWebVitals
-import { debounce, useJavaScriptOptimization } from "@/lib/utils/javascript-optimization";
-import { hasCustomizations, hasRequiredCustomizations } from "@/lib/utils/productCustomization";
-import type { ApiResponse, Category, Product, ProductFilters, ProductSortOptions } from "@/types";
+import {
+  debounce,
+  useJavaScriptOptimization,
+} from "@/lib/utils/javascript-optimization";
+import {
+  hasCustomizations,
+  hasRequiredCustomizations,
+} from "@/lib/utils/productCustomization";
+import type {
+  ApiResponse,
+  Category,
+  Product,
+  ProductFilters,
+  ProductSortOptions,
+} from "@/types";
 import { ProductCard } from "./ProductCard";
 import { ProductFilters as ProductFiltersComponent } from "./ProductFilters";
 
@@ -77,7 +96,9 @@ const ProductGrid = React.memo(function ProductGrid({
   const handleNavigationError = useCallback(
     (error: Error, productSlug: string, context: string) => {
       console.error(`Navigation error in ${context}:`, error);
-      setError(`Navigation failed for product ${productSlug}. Please try again.`);
+      setError(
+        `Navigation failed for product ${productSlug}. Please try again.`
+      );
 
       // Report error for monitoring
       if (
@@ -112,7 +133,11 @@ const ProductGrid = React.memo(function ProductGrid({
       });
 
       // Validate product slug format
-      if (!product.slug || typeof product.slug !== "string" || product.slug.trim() === "") {
+      if (
+        !product.slug ||
+        typeof product.slug !== "string" ||
+        product.slug.trim() === ""
+      ) {
         throw new Error(`Invalid product slug: ${product.slug}`);
       }
 
@@ -124,7 +149,9 @@ const ProductGrid = React.memo(function ProductGrid({
       return {
         shouldNavigateToDetail: hasCustomizationOptions || !onAddToCart,
         targetUrl: `/${locale}/products/${product.slug}`,
-        navigationMethod: hasCustomizationOptions ? "customization_required" : "default_behavior",
+        navigationMethod: hasCustomizationOptions
+          ? "customization_required"
+          : "default_behavior",
       };
     },
     [locale, onAddToCart]
@@ -152,7 +179,10 @@ const ProductGrid = React.memo(function ProductGrid({
 
   // Load view mode preference from localStorage
   useEffect(() => {
-    const savedViewMode = localStorage.getItem("product-view-mode") as "grid" | "list" | null;
+    const savedViewMode = localStorage.getItem("product-view-mode") as
+      | "grid"
+      | "list"
+      | null;
     if (savedViewMode) {
       setViewMode(savedViewMode);
     }
@@ -164,7 +194,10 @@ const ProductGrid = React.memo(function ProductGrid({
       await measureExecution("viewModeChange", async () => {
         setViewMode(mode);
         localStorage.setItem("product-view-mode", mode);
-        announce(mode === "grid" ? t("switchedToGrid") : t("switchedToList"), "polite");
+        announce(
+          mode === "grid" ? t("switchedToGrid") : t("switchedToList"),
+          "polite"
+        );
       });
     },
     [announce, t, measureExecution]
@@ -195,7 +228,8 @@ const ProductGrid = React.memo(function ProductGrid({
 
         // Add filters
         if (filters.search) searchParams.set("search", filters.search);
-        if (filters.categoryId) searchParams.set("categoryId", filters.categoryId);
+        if (filters.categoryId)
+          searchParams.set("categoryId", filters.categoryId);
         if (filters.minPrice !== undefined)
           searchParams.set("minPrice", filters.minPrice.toString());
         if (filters.maxPrice !== undefined)
@@ -207,9 +241,12 @@ const ProductGrid = React.memo(function ProductGrid({
         searchParams.set("sortField", sortOptions.field);
         searchParams.set("sortDirection", sortOptions.direction);
 
-        const response = await fetch(`/api/products?${searchParams.toString()}`, {
-          signal: abortController.signal,
-        });
+        const response = await fetch(
+          `/api/products?${searchParams.toString()}`,
+          {
+            signal: abortController.signal,
+          }
+        );
 
         // Check if request was aborted
         if (abortController.signal.aborted) {
@@ -279,7 +316,12 @@ const ProductGrid = React.memo(function ProductGrid({
       // Set initial displayed count for initial products
       setDisplayedCount(INITIAL_PRODUCTS_COUNT);
     }
-  }, [initialProducts.length, hasActiveFilters, fetchProducts, initialProducts]);
+  }, [
+    initialProducts.length,
+    hasActiveFilters,
+    fetchProducts,
+    initialProducts,
+  ]);
 
   // Fetch products when filters or sort options change
   useEffect(() => {
@@ -380,7 +422,11 @@ const ProductGrid = React.memo(function ProductGrid({
             try {
               await router.push(navigationTest.targetUrl);
             } catch (error) {
-              handleNavigationError(error as Error, product.slug, "customization_navigation");
+              handleNavigationError(
+                error as Error,
+                product.slug,
+                "customization_navigation"
+              );
               // Fallback to window.location if router fails
               window.location.href = navigationTest.targetUrl;
             }
@@ -399,7 +445,11 @@ const ProductGrid = React.memo(function ProductGrid({
             try {
               await router.push(navigationTest.targetUrl);
             } catch (error) {
-              handleNavigationError(error as Error, product.slug, "product_detail_navigation");
+              handleNavigationError(
+                error as Error,
+                product.slug,
+                "product_detail_navigation"
+              );
               // Fallback to window.location if router fails
               window.location.href = navigationTest.targetUrl;
             }
@@ -407,16 +457,29 @@ const ProductGrid = React.memo(function ProductGrid({
         }
       } catch (error) {
         console.error("Error in handleAddToCart:", error);
-        handleNavigationError(error as Error, product.slug, "add_to_cart_handler");
+        handleNavigationError(
+          error as Error,
+          product.slug,
+          "add_to_cart_handler"
+        );
         // Final fallback - always try to navigate to product page
         window.location.href = `/${locale}/products/${product.slug}`;
       }
     },
-    [locale, onAddToCart, router, measureExecution, handleNavigationError, testProductNavigation]
+    [
+      locale,
+      onAddToCart,
+      router,
+      measureExecution,
+      handleNavigationError,
+      testProductNavigation,
+    ]
   );
 
   return (
-    <section className={cn("bg-primary py-12 rounded-2xl shadow-xl", className)}>
+    <section
+      className={cn("bg-primary py-12 rounded-2xl shadow-xl", className)}
+    >
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Filters */}
         <div className="mb-8">
@@ -434,7 +497,7 @@ const ProductGrid = React.memo(function ProductGrid({
         <div className="flex items-center justify-between mb-8">
           <div>
             {totalProducts > 0 && (
-              <p className="text-lg font-medium text-accent">
+              <p className="text-lg font-medium text-amber-100">
                 {t("showingResults", {
                   count: displayedProducts.length,
                   total: totalProducts,
@@ -445,7 +508,9 @@ const ProductGrid = React.memo(function ProductGrid({
 
           {/* View Mode Switcher */}
           <div className="flex items-center gap-3">
-            <span className="text-sm font-medium text-accent">{t("viewMode")}:</span>
+            <span className="text-sm font-medium text-amber-100">
+              {t("viewMode")}:
+            </span>
             <div className="flex bg-white border border-amber-200 rounded-lg overflow-hidden shadow-sm">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
@@ -454,7 +519,11 @@ const ProductGrid = React.memo(function ProductGrid({
                 className="rounded-none border-0 px-4 py-2"
                 aria-label={t("gridView")}
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
               </Button>
@@ -465,7 +534,11 @@ const ProductGrid = React.memo(function ProductGrid({
                 className="rounded-none border-0 px-4 py-2"
                 aria-label={t("listView")}
               >
-                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                <svg
+                  className="w-4 h-4"
+                  fill="currentColor"
+                  viewBox="0 0 20 20"
+                >
                   <path
                     fillRule="evenodd"
                     d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"
@@ -482,7 +555,11 @@ const ProductGrid = React.memo(function ProductGrid({
           <div className="bg-white border border-red-200 rounded-lg p-6 text-center mb-8 shadow-sm">
             <p className="text-red-600 mb-2 font-medium">{tCommon("error")}</p>
             <p className="text-sm text-red-500 mb-4">{error}</p>
-            <Button variant="outline" onClick={() => fetchProducts(1, true)} size="sm">
+            <Button
+              variant="outline"
+              onClick={() => fetchProducts(1, true)}
+              size="sm"
+            >
               {t("tryAgain")}
             </Button>
           </div>
@@ -506,7 +583,10 @@ const ProductGrid = React.memo(function ProductGrid({
                   product={product}
                   locale={locale}
                   onAddToCart={handleAddToCart}
-                  featured={product.featured || imageOptimization.shouldPrioritize(index)} // Prioritize first 8 products
+                  featured={
+                    product.featured ||
+                    imageOptimization.shouldPrioritize(index)
+                  } // Prioritize first 8 products
                   viewMode={viewMode}
                   className="transition-all duration-200 hover:scale-[1.02]"
                 />
@@ -517,7 +597,7 @@ const ProductGrid = React.memo(function ProductGrid({
             <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-amber-100">
               <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
                 <svg
-                  className="w-8 h-8 text-amber-400"
+                  className="w-8 h-8 text-amber-300"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -530,8 +610,12 @@ const ProductGrid = React.memo(function ProductGrid({
                   />
                 </svg>
               </div>
-              <h3 className="text-xl font-semibold text-accent mb-3">{t("noResults")}</h3>
-              <p className="text-accent mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
+              <h3 className="text-xl font-semibold text-amber-100 mb-3">
+                {t("noResults")}
+              </h3>
+              <p className="text-amber-100 mb-8 max-w-md mx-auto">
+                {t("noResultsDescription")}
+              </p>
               <Button
                 variant="outline"
                 size="lg"
@@ -565,7 +649,9 @@ const ProductGrid = React.memo(function ProductGrid({
               <div className="flex justify-center py-8">
                 <div className="flex items-center space-x-2">
                   <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-accent">{tCommon("loading")}</span>
+                  <span className="text-sm text-amber-100">
+                    {tCommon("loading")}
+                  </span>
                 </div>
               </div>
             )}
@@ -578,17 +664,20 @@ const ProductGrid = React.memo(function ProductGrid({
             {/* Progress indicator */}
             {totalProducts > 0 && (
               <div className="text-center mb-4">
-                <p className="text-sm text-accent mb-2">
+                <p className="text-sm text-amber-100 mb-2">
                   {t("showingOf", {
                     showing: displayedProducts.length,
                     total: totalProducts,
                   })}
                 </p>
-                <div className="w-64 bg-accent rounded-full h-2 mx-auto">
+                <div className="w-64 bg-amber-100 rounded-full h-2 mx-auto">
                   <div
                     className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
                     style={{
-                      width: `${Math.min((displayedProducts.length / totalProducts) * 100, 100)}%`,
+                      width: `${Math.min(
+                        (displayedProducts.length / totalProducts) * 100,
+                        100
+                      )}%`,
                     }}
                     role="progressbar"
                     aria-valuenow={displayedProducts.length}
@@ -613,7 +702,7 @@ const ProductGrid = React.memo(function ProductGrid({
               className={cn(
                 "px-8 py-3 min-w-[200px] font-medium",
                 "bg-white border-2 border-primary text-primary",
-                "hover:bg-accent-light hover:border-primary hover:text-primary",
+                "hover:bg-amber-100-light hover:border-primary hover:text-primary",
                 "focus:ring-2 focus:ring-primary-light focus:ring-offset-2",
                 "disabled:opacity-50 disabled:cursor-not-allowed",
                 "transition-all duration-200 ease-in-out",
@@ -650,7 +739,7 @@ const ProductGrid = React.memo(function ProductGrid({
             {/* Accessible description */}
             <p
               id={loadMoreDescriptionId}
-              className="text-xs text-accent text-center max-w-md sr-only"
+              className="text-xs text-amber-100 text-center max-w-md sr-only"
             >
               {canLoadMore
                 ? t("loadMoreFromCurrent", {
@@ -662,7 +751,9 @@ const ProductGrid = React.memo(function ProductGrid({
             {/* Show when no more products available */}
             {!(hasMore || canLoadMore) && (
               <div className="text-center py-4">
-                <p className="text-sm text-accent font-medium">{t("allProductsLoaded")}</p>
+                <p className="text-sm text-amber-100 font-medium">
+                  {t("allProductsLoaded")}
+                </p>
               </div>
             )}
           </div>

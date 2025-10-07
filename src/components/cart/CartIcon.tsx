@@ -21,8 +21,8 @@ export function CartIcon({ locale, className = "" }: CartIconProps) {
     <Link
       href={`/${locale}/cart`}
       className={cn(
-        "relative inline-flex items-center text-stone-700 hover:text-stone-900 transition-colors duration-200",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20 focus-visible:ring-offset-2 rounded-md p-2",
+        "relative inline-flex items-center text-amber-100 hover:text-amber-100 transition-colors duration-200",
+        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-150/20 focus-visible:ring-offset-2 rounded-md p-2",
         "high-contrast:text-ButtonText high-contrast:hover:text-Highlight",
         className
       )}

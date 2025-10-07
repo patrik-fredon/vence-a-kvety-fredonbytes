@@ -256,7 +256,16 @@
     "quickLinks": "Quick Links",
     "about": "About Us",
     "faq": "Frequently Asked Questions",
-    "delivery": "Shipping & Delivery"
+    "delivery": "Shipping & Delivery",
+    "copyright": "© {year} {companyName}. All rights reserved.",
+    "allRights": "All rights reserved.",
+    "quote1": "In a fragmented digital world, we are the glue—merging creativity, technology, and strategy into one unstoppable force.",
+    "quote2": "Your All-in-One IT Powerhouse.",
+    "quote3": "Code. Create. Conquer.",
+    "developed": "Developed by",
+    "fallbackQuote": "All in one IT army FredonBytes",
+    "companyName": "FredonBytes",
+    "techSupport": "Tech Support"
   },
   "delivery": {
     "calendar": {

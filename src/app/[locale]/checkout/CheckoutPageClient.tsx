@@ -58,7 +58,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
   const handleBackToCart = () => {
     router.push(`/${locale}/cart`);
   };
-
+// TODO translation next-intl
   if (isLoading) {
     return (
       <div className="min-h-screen bg-funeral-gold flex items-center justify-center">
@@ -75,7 +75,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
       <div className="min-h-screen bg-funeral-gold flex items-center justify-center">
         <div className="max-w-md mx-auto text-center p-8">
           <div className="w-16 h-16 bg-funeral-gold rounded-full flex items-center justify-center mx-auto mb-6">
-            <ShoppingCartIcon className="w-8 h-8 text-teal-500" />
+            <ShoppingCartIcon className="w-8 h-8 text-teal-800" />
           </div>
 
           <h1 className="text-2xl font-semibold text-teal-800 mb-4">Košík je prázdný</h1>
@@ -177,9 +177,6 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
                       <span>Mezisoučet:</span>
                       <span>{subtotal.toLocaleString("cs-CZ")} Kč</span>
                     </div>
-                    <p className="text-xs text-teal-500 mt-1">
-                      Cena dopravy bude vypočítana na základě adresy
-                    </p>
                   </div>
                 </div>
               </div>

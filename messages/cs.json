@@ -256,7 +256,16 @@
     "quickLinks": "Rychlé odkazy",
     "about": "O nás",
     "faq": "Často kladené otázky",
-    "delivery": "Doprava a dodání"
+    "delivery": "Doprava a dodání",
+    "copyright": "© {year} {companyName}. Všechna práva vyhrazena.",
+    "allRights": "Všechna práva vyhrazena.",
+    "quote1": "Ve světě digitální fragmentace jsme tím spojivem – slučujeme kreativitu, technologie a strategii do jedné nezastavitelné síly.",
+    "quote2": "Váš univerzální IT kolos.",
+    "quote3": "Kód. Tvořit. Dobyvat.",
+    "developed": "Vytvořil ",
+    "fallbackQuote": "All in one IT army FredonBytes",
+    "companyName": "FredonBytes",
+    "techSupport": "Nahlasit chybu"
   },
   "delivery": {
     "calendar": {

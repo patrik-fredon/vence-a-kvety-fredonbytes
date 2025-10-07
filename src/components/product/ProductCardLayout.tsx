@@ -154,7 +154,6 @@ export function ProductCardLayout({
   const getCardStyles = () => {
     const baseStyles = cn(
       "group relative bg-teal-800 clip-corners transition-all duration-300 shadow-lg border border-stone-200",
-      "focus-within:ring-2 focus-within:ring-stone-500 focus-within:ring-offset-2",
       className
     );
 

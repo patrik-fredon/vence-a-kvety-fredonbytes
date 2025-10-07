@@ -9,7 +9,9 @@ interface OrderTrackingPageProps {
   }>;
 }
 
-export async function generateMetadata({ params }: OrderTrackingPageProps): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: OrderTrackingPageProps): Promise<Metadata> {
   const { locale, id } = await params;
 
   return {
@@ -24,17 +26,20 @@ export async function generateMetadata({ params }: OrderTrackingPageProps): Prom
   };
 }
 
-export default async function OrderTrackingPage({ params }: OrderTrackingPageProps) {
+export default async function OrderTrackingPage({
+  params,
+}: OrderTrackingPageProps) {
   const { locale, id } = await params;
 
   // Validate order ID format (UUID)
-  const uuidRegex = /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[1-5][0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
   if (!uuidRegex.test(id)) {
     notFound();
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-8">
+    <div className="min-h-screen bg-funeral-gold py-8">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <OrderTracking orderId={id} locale={locale} />
       </div>

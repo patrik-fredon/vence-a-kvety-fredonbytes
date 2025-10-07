@@ -44,7 +44,9 @@ export function ProductCustomizer({
     choiceIds: string[],
     customValue?: string
   ) => {
-    const newCustomizations = customizations.filter((c) => c.optionId !== optionId);
+    const newCustomizations = customizations.filter(
+      (c) => c.optionId !== optionId
+    );
 
     if (choiceIds.length > 0 || customValue) {
       newCustomizations.push({
@@ -83,12 +85,16 @@ export function ProductCustomizer({
   };
 
   // Render a choice button for selection options
-  const renderChoice = (option: CustomizationOption, choice: CustomizationChoice) => {
+  const renderChoice = (
+    option: CustomizationOption,
+    choice: CustomizationChoice
+  ) => {
     const currentCustomization = getCurrentCustomization(option.id);
     const isSelected = currentCustomization?.choiceIds.includes(choice.id);
     const selectionCount = currentCustomization?.choiceIds.length || 0;
     const canSelect =
-      !isSelected && (!option.maxSelections || selectionCount < option.maxSelections);
+      !isSelected &&
+      (!option.maxSelections || selectionCount < option.maxSelections);
 
     return (
       <button
@@ -98,45 +104,58 @@ export function ProductCustomizer({
           if (isSelected) {
             // Remove selection
             const newChoiceIds =
-              currentCustomization?.choiceIds.filter((id) => id !== choice.id) || [];
-            handleCustomizationChange(option.id, newChoiceIds, currentCustomization?.customValue);
+              currentCustomization?.choiceIds.filter(
+                (id) => id !== choice.id
+              ) || [];
+            handleCustomizationChange(
+              option.id,
+              newChoiceIds,
+              currentCustomization?.customValue
+            );
           } else if (canSelect) {
             // Add selection
             const newChoiceIds =
               option.maxSelections === 1
                 ? [choice.id]
                 : [...(currentCustomization?.choiceIds || []), choice.id];
-            handleCustomizationChange(option.id, newChoiceIds, currentCustomization?.customValue);
+            handleCustomizationChange(
+              option.id,
+              newChoiceIds,
+              currentCustomization?.customValue
+            );
           }
         }}
         disabled={!(isSelected || canSelect)}
         className={cn(
           "flex items-center justify-between p-3 border rounded-lg transition-colors text-left",
-          "focus:outline-none focus:ring-2 focus:ring-stone-950 focus:ring-offset-2",
+          "focus:outline-none focus:ring-2 focus:ring-amber-150 focus:ring-offset-2",
           isSelected
-            ? "border-stone-900 bg-stone-50 text-stone-900"
+            ? "border-amber-100 bg-funeral-teal text-amber-100"
             : canSelect
-              ? "border-stone-300 bg-white hover:border-stone-400 hover:bg-stone-50"
-              : "border-stone-200 bg-stone-50 text-stone-400 cursor-not-allowed"
+            ? "border-amber-100 bg-white hover:border-amber-100 hover:bg-funeral-teal"
+            : "border-amber-100 bg-funeral-teal text-amber-100 cursor-not-allowed"
         )}
       >
         <div className="flex items-center space-x-3">
           <div
             className={cn(
               "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-              isSelected ? "border-stone-900" : "border-stone-300"
+              isSelected ? "border-amber-100" : "border-amber-100"
             )}
           >
-            {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-900" />}
+            {isSelected && (
+              <div className="w-2.5 h-2.5 rounded-full bg-teal-900" />
+            )}
           </div>
           <div className="text-left">
             <div className="font-medium">
               {typeof choice.label === "object"
-                ? choice.label[locale as keyof typeof choice.label] || choice.label.cs
+                ? choice.label[locale as keyof typeof choice.label] ||
+                  choice.label.cs
                 : choice.label}
             </div>
             {choice.priceModifier !== 0 && (
-              <div className="text-sm text-stone-600">
+              <div className="text-sm text-amber-100">
                 {formatPriceModifier(choice.priceModifier)}
               </div>
             )}
@@ -147,7 +166,8 @@ export function ProductCustomizer({
             src={choice.imageUrl}
             alt={
               typeof choice.label === "object"
-                ? choice.label[locale as keyof typeof choice.label] || choice.label.cs
+                ? choice.label[locale as keyof typeof choice.label] ||
+                  choice.label.cs
                 : choice.label
             }
             width={48}
@@ -160,7 +180,10 @@ export function ProductCustomizer({
   };
 
   // Render custom text input for choices that allow custom input
-  const renderCustomTextInput = (option: CustomizationOption, choice: CustomizationChoice) => {
+  const renderCustomTextInput = (
+    option: CustomizationOption,
+    choice: CustomizationChoice
+  ) => {
     const currentCustomization = getCurrentCustomization(option.id);
     const isSelected = currentCustomization?.choiceIds.includes(choice.id);
     const value = currentCustomization?.customValue || "";
@@ -175,7 +198,7 @@ export function ProductCustomizer({
           value={value}
           onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
           placeholder={t("customTextPlaceholder")}
-          className="w-full p-3 border border-stone-300 rounded-lg"
+          className="w-full p-3 border border-amber-100 rounded-lg"
           rows={2}
           maxLength={choice.maxLength || 50}
         />
@@ -190,7 +213,10 @@ export function ProductCustomizer({
   };
 
   // Render date selector for choices that require calendar
-  const renderDateSelector = (option: CustomizationOption, choice: CustomizationChoice) => {
+  const renderDateSelector = (
+    option: CustomizationOption,
+    choice: CustomizationChoice
+  ) => {
     const currentCustomization = getCurrentCustomization(option.id);
     const isSelected = currentCustomization?.choiceIds.includes(choice.id);
     const value = currentCustomization?.customValue || "";
@@ -223,7 +249,7 @@ export function ProductCustomizer({
           value={value}
           onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
           placeholder={t("messagePlaceholder")}
-          className="w-full p-3 border border-stone-300 rounded-lg "
+          className="w-full p-3 border border-amber-100 rounded-lg "
           rows={3}
           maxLength={200}
         />
@@ -236,7 +262,9 @@ export function ProductCustomizer({
   };
 
   // Filter visible options based on conditions
-  const visibleOptions = (product.customizationOptions || []).filter(isOptionVisible);
+  const visibleOptions = (product.customizationOptions || []).filter(
+    isOptionVisible
+  );
 
   // Debug logging
   console.log("🔧 [ProductCustomizer] Debug info:", {
@@ -266,15 +294,19 @@ export function ProductCustomizer({
               <div>
                 <h4 className="font-semibold text-teal-900">
                   {typeof option.name === "object"
-                    ? option.name[locale as keyof typeof option.name] || option.name.cs
+                    ? option.name[locale as keyof typeof option.name] ||
+                      option.name.cs
                     : option.name}
-                  {option.required && <span className="text-red-500 ml-1">*</span>}
+                  {option.required && (
+                    <span className="text-red-500 ml-1">*</span>
+                  )}
                 </h4>
                 {option.description && (
                   <p className="text-sm text-teal-800 mt-1">
                     {typeof option.description === "object"
-                      ? option.description[locale as keyof typeof option.description] ||
-                        option.description.cs
+                      ? option.description[
+                          locale as keyof typeof option.description
+                        ] || option.description.cs
                       : option.description}
                   </p>
                 )}
@@ -297,8 +329,10 @@ export function ProductCustomizer({
                   {(option.choices || []).map((choice) => (
                     <div key={choice.id}>
                       {renderChoice(option, choice)}
-                      {choice.allowCustomInput && renderCustomTextInput(option, choice)}
-                      {choice.requiresCalendar && renderDateSelector(option, choice)}
+                      {choice.allowCustomInput &&
+                        renderCustomTextInput(option, choice)}
+                      {choice.requiresCalendar &&
+                        renderDateSelector(option, choice)}
                     </div>
                   ))}
                 </div>
@@ -311,7 +345,8 @@ export function ProductCustomizer({
                 {t("validation.required", {
                   option:
                     typeof option.name === "object"
-                      ? option.name[locale as keyof typeof option.name] || option.name.cs
+                      ? option.name[locale as keyof typeof option.name] ||
+                        option.name.cs
                       : option.name,
                 })}
               </div>
@@ -322,7 +357,8 @@ export function ProductCustomizer({
                 {t("validation.minSelections", {
                   option:
                     typeof option.name === "object"
-                      ? option.name[locale as keyof typeof option.name] || option.name.cs
+                      ? option.name[locale as keyof typeof option.name] ||
+                        option.name.cs
                       : option.name,
                   min: option.minSelections,
                   current: selectionCount,

@@ -9,6 +9,25 @@ const config: Config = {
   ],
   theme: {
     extend: {
+      colors: {
+        "fb-blue": {
+          500: "#3b82f6", // Example blue, adjust based on final design
+          600: "#2563eb",
+        },
+        "fb-yellow": {
+          400: "#fbbf24", // Example yellow/gold
+          500: "#f59e0b",
+        },
+        "fb-dark": {
+          800: "#1f2937", // Example dark background color
+          900: "#111827",
+        },
+        "fb-light": {
+          100: "#f3f4f6", // Example light text
+          300: "#d1d5db",
+        },
+      },
+
       // Custom responsive breakpoints for mobile-first design
       screens: {
         xs: "475px", // Extra small screens (larger phones)
@@ -51,6 +70,7 @@ const config: Config = {
         "gentle-fade": "gentleFade 0.8s ease-in-out",
         "soft-slide": "softSlide 0.6s ease-out",
         "memorial-glow": "memorialGlow 2s ease-in-out infinite",
+        "fade-in-up": "fadeInUp 0.5s ease-out forwards",
       },
       keyframes: {
         fadeIn: {
@@ -80,6 +100,10 @@ const config: Config = {
         memorialGlow: {
           "0%, 100%": { boxShadow: "0 0 5px rgba(45, 80, 22, 0.3)" },
           "50%": { boxShadow: "0 0 20px rgba(45, 80, 22, 0.6)" },
+        },
+        fadeInUp: {
+          "0%": { opacity: 0, transform: "translateY(10px)" },
+          "100%": { opacity: 1, transform: "translateY(0)" },
         },
       },
     },

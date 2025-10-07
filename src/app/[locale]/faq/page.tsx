@@ -67,8 +67,9 @@ export default async function FAQPage({ params }: FAQPageProps) {
             {t("title")}
           </h1>
 
-          <p className="text-lg text-neutral-600 text-center mb-12 max-w-2xl mx-auto">
-            Odpovědi na nejčastější otázky o našich pohřebních věncích a službách.
+          <p className="text-lg text-teal-900 text-center mb-12 max-w-2xl mx-auto">
+            Odpovědi na nejčastější otázky o našich pohřebních věncích a
+            službách.
           </p>
 
           <FAQAccordion items={faqItems} />

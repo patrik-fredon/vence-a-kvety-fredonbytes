@@ -57,7 +57,7 @@ function ImageSkeleton({ size }: { size: CartItemImageSize }) {
   const config = SIZE_CONFIG[size];
   return (
     <div
-      className={cn(config.container, "bg-stone-200 animate-pulse rounded-lg")}
+      className={cn(config.container, "bg-amber-200 animate-pulse rounded-lg")}
       aria-label="Loading image"
     />
   );
@@ -66,18 +66,24 @@ function ImageSkeleton({ size }: { size: CartItemImageSize }) {
 /**
  * Fallback image component for errors or missing images
  */
-function FallbackImage({ size, alt }: { size: CartItemImageSize; alt: string }) {
+function FallbackImage({
+  size,
+  alt,
+}: {
+  size: CartItemImageSize;
+  alt: string;
+}) {
   const config = SIZE_CONFIG[size];
   return (
     <div
       className={cn(
         config.container,
-        "bg-teal-100 rounded-lg overflow-hidden flex items-center justify-center"
+        "bg-teal-900 rounded-lg overflow-hidden flex items-center justify-center"
       )}
       role="img"
       aria-label={alt}
     >
-      <ShoppingCartIcon className={cn(config.iconSize, "text-stone-400")} />
+      <ShoppingCartIcon className={cn(config.iconSize, "text-amber-100")} />
     </div>
   );
 }
@@ -93,7 +99,12 @@ function FallbackImage({ size, alt }: { size: CartItemImageSize; alt: string }) 
  * <CartItemImage item={cartItem} locale="cs" size="md" />
  * ```
  */
-export function CartItemImage({ item, locale, size = "md", className }: CartItemImageProps) {
+export function CartItemImage({
+  item,
+  locale,
+  size = "md",
+  className,
+}: CartItemImageProps) {
   const [imageError, setImageError] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
