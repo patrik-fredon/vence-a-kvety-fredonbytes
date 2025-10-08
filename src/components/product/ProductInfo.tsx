@@ -14,12 +14,7 @@ interface ProductInfoProps {
   className?: string;
 }
 
-export function ProductInfo({
-  product,
-  locale,
-  finalPrice,
-  className,
-}: ProductInfoProps) {
+export function ProductInfo({ product, locale, finalPrice, className }: ProductInfoProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
 
@@ -39,10 +34,7 @@ export function ProductInfo({
       <nav className="text-sm text-amber-300" aria-label="Breadcrumb">
         <ol className="flex items-center space-x-2">
           <li>
-            <Link
-              href={`/${locale}/products`}
-              className="hover:text-amber-600 transition-colors"
-            >
+            <Link href={`/${locale}/products`} className="hover:text-amber-600 transition-colors">
               {t("allProducts")}
             </Link>
           </li>
@@ -54,11 +46,7 @@ export function ProductInfo({
                   href={`/${locale}/products?category=${product.category.slug}`}
                   className="hover:text-amber-600 transition-colors"
                 >
-                  {
-                    product.category.name[
-                      locale as keyof typeof product.category.name
-                    ]
-                  }
+                  {product.category.name[locale as keyof typeof product.category.name]}
                 </Link>
               </li>
             </>
@@ -100,8 +88,8 @@ export function ProductInfo({
                     star <= Math.floor(rating)
                       ? "text-amber-500 fill-current"
                       : star <= rating
-                      ? "text-amber-500 fill-current opacity-50"
-                      : "text-amber-300"
+                        ? "text-amber-500 fill-current opacity-50"
+                        : "text-amber-300"
                   )}
                 />
               ))}
@@ -160,9 +148,8 @@ export function ProductInfo({
             <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
               <dt className="text-amber-300 font-medium">{t("category")}:</dt>
               <dd className="text-amber-300">
-                {product.category?.name[
-                  locale as keyof typeof product.category.name
-                ] || t("uncategorized")}
+                {product.category?.name[locale as keyof typeof product.category.name] ||
+                  t("uncategorized")}
               </dd>
             </div>
             <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
@@ -181,12 +168,8 @@ export function ProductInfo({
             )}
             {product.availability.maxOrderQuantity && (
               <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
-                <dt className="text-amber-300 font-medium">
-                  {t("maxQuantity")}:
-                </dt>
-                <dd className="text-amber-300">
-                  {product.availability.maxOrderQuantity}
-                </dd>
+                <dt className="text-amber-300 font-medium">{t("maxQuantity")}:</dt>
+                <dd className="text-amber-300">{product.availability.maxOrderQuantity}</dd>
               </div>
             )}
           </dl>
@@ -196,9 +179,7 @@ export function ProductInfo({
       {/* Availability Status */}
       <Card
         className={cn(
-          product.availability.inStock
-            ? "bg-green-50 border-green-200"
-            : "bg-red-50 border-red-200"
+          product.availability.inStock ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
         )}
       >
         <CardContent className="py-3">
@@ -213,31 +194,27 @@ export function ProductInfo({
               <div
                 className={cn(
                   "font-medium text-sm",
-                  product.availability.inStock
-                    ? "text-green-800"
-                    : "text-red-800"
+                  product.availability.inStock ? "text-green-800" : "text-red-800"
                 )}
               >
                 {product.availability.inStock ? t("inStock") : t("outOfStock")}
               </div>
-              {product.availability.inStock &&
-                product.availability.leadTimeHours && (
-                  <div className="text-xs text-green-700 mt-1">
-                    {t("leadTime", {
-                      hours: product.availability.leadTimeHours,
-                    })}
-                  </div>
-                )}
-              {!product.availability.inStock &&
-                product.availability.estimatedRestockDate && (
-                  <div className="text-xs text-red-700 mt-1">
-                    {t("restockDate", {
-                      date: product.availability.estimatedRestockDate.toLocaleDateString(
-                        locale === "cs" ? "cs-CZ" : "en-US"
-                      ),
-                    })}
-                  </div>
-                )}
+              {product.availability.inStock && product.availability.leadTimeHours && (
+                <div className="text-xs text-green-700 mt-1">
+                  {t("leadTime", {
+                    hours: product.availability.leadTimeHours,
+                  })}
+                </div>
+              )}
+              {!product.availability.inStock && product.availability.estimatedRestockDate && (
+                <div className="text-xs text-red-700 mt-1">
+                  {t("restockDate", {
+                    date: product.availability.estimatedRestockDate.toLocaleDateString(
+                      locale === "cs" ? "cs-CZ" : "en-US"
+                    ),
+                  })}
+                </div>
+              )}
             </div>
           </div>
         </CardContent>

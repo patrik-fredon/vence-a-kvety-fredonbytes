@@ -1,11 +1,6 @@
 "use client";
 
-import {
-  ClockIcon,
-  PencilIcon,
-  PlusIcon,
-  TrashIcon,
-} from "@heroicons/react/24/outline";
+import { ClockIcon, PencilIcon, PlusIcon, TrashIcon } from "@heroicons/react/24/outline";
 import { useCallback, useEffect, useState } from "react";
 
 interface ActivityLogEntry {
@@ -27,17 +22,14 @@ interface ActivityLogEntry {
 export default function AdminActivityLog() {
   const [activities, setActivities] = useState<ActivityLogEntry[]>([]);
   const [loading, setLoading] = useState(true);
-  const [selectedActivity, setSelectedActivity] =
-    useState<ActivityLogEntry | null>(null);
+  const [selectedActivity, setSelectedActivity] = useState<ActivityLogEntry | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
 
   const fetchActivities = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        `/api/admin/activity?page=${currentPage}&limit=20`
-      );
+      const response = await fetch(`/api/admin/activity?page=${currentPage}&limit=20`);
       if (response.ok) {
         const data = await response.json();
         setActivities(data.activities || []);
@@ -116,10 +108,7 @@ export default function AdminActivityLog() {
 
     if (oldValues && newValues) {
       // Update - show what changed
-      const keys = new Set([
-        ...Object.keys(oldValues),
-        ...Object.keys(newValues),
-      ]);
+      const keys = new Set([...Object.keys(oldValues), ...Object.keys(newValues)]);
       keys.forEach((key) => {
         if (oldValues[key] !== newValues[key]) {
           changes.push({
@@ -160,9 +149,7 @@ export default function AdminActivityLog() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-gray-900">
-          Aktivita administrátorů
-        </h2>
+        <h2 className="text-2xl font-bold text-gray-900">Aktivita administrátorů</h2>
         <button
           onClick={fetchActivities}
           className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -178,26 +165,17 @@ export default function AdminActivityLog() {
             <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-gray-900 mx-auto" />
           </div>
         ) : activities.length === 0 ? (
-          <div className="p-6 text-center text-gray-500">
-            Žádná aktivita k zobrazení
-          </div>
+          <div className="p-6 text-center text-gray-500">Žádná aktivita k zobrazení</div>
         ) : (
           <div className="divide-y divide-gray-200">
             {activities.map((activity) => {
               const ActionIcon = getActionIcon(activity.action);
-              const changes = formatChanges(
-                activity.old_values,
-                activity.new_values
-              );
+              const changes = formatChanges(activity.old_values, activity.new_values);
 
               return (
                 <div key={activity.id} className="p-6">
                   <div className="flex items-start space-x-4">
-                    <div
-                      className={`p-2 rounded-full ${getActionColor(
-                        activity.action
-                      )}`}
-                    >
+                    <div className={`p-2 rounded-full ${getActionColor(activity.action)}`}>
                       <ActionIcon className="h-4 w-4" />
                     </div>
 
@@ -214,14 +192,10 @@ export default function AdminActivityLog() {
                         </div>
                         <div className="text-right">
                           <p className="text-sm text-gray-500">
-                            {new Date(activity.created_at).toLocaleString(
-                              "cs-CZ"
-                            )}
+                            {new Date(activity.created_at).toLocaleString("cs-CZ")}
                           </p>
                           {activity.ip_address && (
-                            <p className="text-xs text-gray-400">
-                              IP: {activity.ip_address}
-                            </p>
+                            <p className="text-xs text-gray-400">IP: {activity.ip_address}</p>
                           )}
                         </div>
                       </div>
@@ -230,9 +204,7 @@ export default function AdminActivityLog() {
                         <div className="mt-3 space-y-1">
                           {changes.map((change, index) => (
                             <div key={index} className="text-xs text-gray-600">
-                              <span className="font-medium">
-                                {change.field}:
-                              </span>
+                              <span className="font-medium">{change.field}:</span>
                               {change.from !== null && (
                                 <span className="text-red-600 line-through ml-1">
                                   {String(change.from).substring(0, 50)}
@@ -247,10 +219,8 @@ export default function AdminActivityLog() {
                               )}
                             </div>
                           ))}
-                          {(formatChanges(
-                            activity.old_values,
-                            activity.new_values
-                          )?.length || 0) > 3 && (
+                          {(formatChanges(activity.old_values, activity.new_values)?.length || 0) >
+                            3 && (
                             <button
                               onClick={() => setSelectedActivity(activity)}
                               className="text-xs text-blue-600 hover:text-blue-800"
@@ -261,9 +231,7 @@ export default function AdminActivityLog() {
                         </div>
                       )}
 
-                      <div className="mt-2 text-xs text-gray-500">
-                        ID: {activity.resource_id}
-                      </div>
+                      <div className="mt-2 text-xs text-gray-500">ID: {activity.resource_id}</div>
                     </div>
                   </div>
                 </div>
@@ -287,9 +255,7 @@ export default function AdminActivityLog() {
                 Předchozí
               </button>
               <button
-                onClick={() =>
-                  setCurrentPage(Math.min(totalPages, currentPage + 1))
-                }
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
                 className="px-3 py-1 text-sm border border-gray-300 rounded disabled:opacity-50"
               >
@@ -316,24 +282,15 @@ export default function AdminActivityLog() {
 
             <div className="space-y-4">
               <div>
-                <h4 className="font-medium text-gray-900">
-                  Základní informace
-                </h4>
+                <h4 className="font-medium text-gray-900">Základní informace</h4>
                 <div className="mt-2 text-sm text-gray-600">
                   <p>Akce: {getActionLabel(selectedActivity.action)}</p>
                   <p>Typ: {getResourceLabel(selectedActivity.resource_type)}</p>
                   <p>ID: {selectedActivity.resource_id}</p>
                   <p>
-                    Administrátor:{" "}
-                    {selectedActivity.admin.name ||
-                      selectedActivity.admin.email}
+                    Administrátor: {selectedActivity.admin.name || selectedActivity.admin.email}
                   </p>
-                  <p>
-                    Čas:{" "}
-                    {new Date(selectedActivity.created_at).toLocaleString(
-                      "cs-CZ"
-                    )}
-                  </p>
+                  <p>Čas: {new Date(selectedActivity.created_at).toLocaleString("cs-CZ")}</p>
                 </div>
               </div>
 

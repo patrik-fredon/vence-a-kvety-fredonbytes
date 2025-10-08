@@ -34,23 +34,13 @@ export function ProductGridWithCart({
     })
       .then((success) => {
         if (success) {
-          console.log(
-            "✅ [ProductGridWithCart] Successfully added product to cart:",
-            product.id
-          );
+          console.log("✅ [ProductGridWithCart] Successfully added product to cart:", product.id);
         } else {
-          console.error(
-            "❌ [ProductGridWithCart] Failed to add product to cart:",
-            product.id
-          );
+          console.error("❌ [ProductGridWithCart] Failed to add product to cart:", product.id);
         }
       })
       .catch((error) => {
-        console.error(
-          "❌ [ProductGridWithCart] Error adding product to cart:",
-          product.id,
-          error
-        );
+        console.error("❌ [ProductGridWithCart] Error adding product to cart:", product.id, error);
       });
   };
 

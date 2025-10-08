@@ -23,10 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-export default async function CheckoutCancelPage({
-  params,
-  searchParams,
-}: PageProps) {
+export default async function CheckoutCancelPage({ params, searchParams }: PageProps) {
   const { locale } = await params;
   const { orderId } = await searchParams;
 
@@ -47,9 +44,7 @@ export default async function CheckoutCancelPage({
             Vaše platba nebyla dokončena. Objednávka zůstává aktivní.
           </p>
 
-          {orderId && (
-            <p className="text-sm text-teal-500">Objednávka #{orderId}</p>
-          )}
+          {orderId && <p className="text-sm text-teal-500">Objednávka #{orderId}</p>}
         </div>
         // TODO translation next-intl
         {/* Information Card */}
@@ -66,22 +61,17 @@ export default async function CheckoutCancelPage({
               <p>Platba byla přerušena nebo zrušena. Možné důvody:</p>
 
               <ul className="list-disc list-inside space-y-2 ml-4">
-                <li>
-                  Klikli jste na tlačítko "Zpět" nebo "Zrušit" v platební bráně
-                </li>
+                <li>Klikli jste na tlačítko "Zpět" nebo "Zrušit" v platební bráně</li>
                 <li>Vypršel časový limit pro dokončení platby</li>
                 <li>Došlo k technické chybě během zpracování</li>
                 <li>Platba byla zamítnuta bankou nebo poskytovatelem karty</li>
               </ul>
 
               <div className="bg-blue-50 border border-blue-200 rounded-lg p-4 mt-6">
-                <h3 className="font-medium text-blue-800 mb-2">
-                  Vaše objednávka je stále aktivní
-                </h3>
+                <h3 className="font-medium text-blue-800 mb-2">Vaše objednávka je stále aktivní</h3>
                 <p className="text-blue-700 text-sm">
-                  Můžete se vrátit k dokončení platby nebo zvolit jiný způsob
-                  platby. Objednávka bude automaticky zrušena po 24 hodinách,
-                  pokud nebude zaplacena.
+                  Můžete se vrátit k dokončení platby nebo zvolit jiný způsob platby. Objednávka
+                  bude automaticky zrušena po 24 hodinách, pokud nebude zaplacena.
                 </p>
               </div>
             </div>
@@ -89,9 +79,7 @@ export default async function CheckoutCancelPage({
         </div>
         {/* Next Steps */}
         <div className="bg-teal-50 border border-teal-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-teal-800 mb-4">
-            Co můžete udělat?
-          </h3>
+          <h3 className="text-lg font-semibold text-teal-800 mb-4">Co můžete udělat?</h3>
 
           <div className="space-y-3">
             <div className="flex items-start space-x-3">
@@ -101,8 +89,8 @@ export default async function CheckoutCancelPage({
               <div>
                 <p className="font-medium text-teal-800">Zkuste platbu znovu</p>
                 <p className="text-sm text-teal-600">
-                  Vraťte se k objednávce a zkuste dokončit platbu znovu se
-                  stejným nebo jiným způsobem platby.
+                  Vraťte se k objednávce a zkuste dokončit platbu znovu se stejným nebo jiným
+                  způsobem platby.
                 </p>
               </div>
             </div>
@@ -114,8 +102,7 @@ export default async function CheckoutCancelPage({
               <div>
                 <p className="font-medium text-teal-800">Kontaktujte nás</p>
                 <p className="text-sm text-teal-600">
-                  Pokud problém přetrvává, kontaktujte naši zákaznickou podporu
-                  pro pomoc.
+                  Pokud problém přetrvává, kontaktujte naši zákaznickou podporu pro pomoc.
                 </p>
               </div>
             </div>
@@ -127,8 +114,7 @@ export default async function CheckoutCancelPage({
               <div>
                 <p className="font-medium text-teal-800">Upravte objednávku</p>
                 <p className="text-sm text-teal-600">
-                  Můžete se vrátit do košíku a upravit objednávku před
-                  dokončením platby.
+                  Můžete se vrátit do košíku a upravit objednávku před dokončením platby.
                 </p>
               </div>
             </div>
@@ -153,24 +139,17 @@ export default async function CheckoutCancelPage({
           )}
 
           <a href={`/${locale}/products`}>
-            <Button
-              variant="outline"
-              className="flex items-center justify-center"
-            >
+            <Button variant="outline" className="flex items-center justify-center">
               Pokračovat v nákupu
             </Button>
           </a>
         </div>
         {/* Contact Information */}
         <div className="text-center pt-8 border-t border-teal-200">
-          <p className="text-sm text-teal-600 mb-4">
-            Potřebujete pomoc s dokončením objednávky?
-          </p>
+          <p className="text-sm text-teal-600 mb-4">Potřebujete pomoc s dokončením objednávky?</p>
 
           <div className="bg-white rounded-lg border border-teal-200 p-4 inline-block">
-            <h4 className="font-medium text-teal-800 mb-2">
-              Kontaktujte zákaznickou podporu
-            </h4>
+            <h4 className="font-medium text-teal-800 mb-2">Kontaktujte zákaznickou podporu</h4>
             <div className="space-y-2 text-sm">
               <div className="flex items-center justify-center space-x-4">
                 <a

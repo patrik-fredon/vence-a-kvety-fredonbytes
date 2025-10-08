@@ -61,27 +61,20 @@ export function validateWreathCustomizations(
     const validSizeIds = sizeOption.choices?.map((choice) => choice.id) || [];
     if (!validSizeIds.includes(selectedSize)) {
       errors.push(
-        locale === "cs"
-          ? "Vybraná velikost není dostupná"
-          : "Selected size is not available"
+        locale === "cs" ? "Vybraná velikost není dostupná" : "Selected size is not available"
       );
     }
   }
 
   // 2. Check if ribbon is selected - specifically check for "ribbon_yes" choice
-  const ribbonCustomization = customizations.find(
-    (c) => c.optionId === ribbonOption?.id
-  );
-  const isRibbonSelected =
-    ribbonCustomization?.choiceIds.includes("ribbon_yes");
+  const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption?.id);
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   // 3. Validate ribbon dependency requirements
   if (isRibbonSelected) {
     // Validate ribbon color is selected when ribbon is chosen
     if (ribbonColorOption) {
-      const colorCustomization = customizations.find(
-        (c) => c.optionId === ribbonColorOption.id
-      );
+      const colorCustomization = customizations.find((c) => c.optionId === ribbonColorOption.id);
       if (!colorCustomization || colorCustomization.choiceIds.length === 0) {
         errors.push(
           locale === "cs"
@@ -93,13 +86,10 @@ export function validateWreathCustomizations(
 
     // Validate ribbon text is selected when ribbon is chosen
     if (ribbonTextOption) {
-      const textCustomization = customizations.find(
-        (c) => c.optionId === ribbonTextOption.id
-      );
+      const textCustomization = customizations.find((c) => c.optionId === ribbonTextOption.id);
       if (
         !textCustomization ||
-        (textCustomization.choiceIds.length === 0 &&
-          !textCustomization.customValue)
+        (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)
       ) {
         errors.push(
           locale === "cs"
@@ -138,24 +128,16 @@ export function validateWreathCustomizations(
 
     const customization = customizations.find((c) => c.optionId === option.id);
 
-    if (
-      option.required &&
-      (!customization || customization.choiceIds.length === 0)
-    ) {
+    if (option.required && (!customization || customization.choiceIds.length === 0)) {
       const optionName = getLocalizedName(option.name);
       errors.push(
-        locale === "cs"
-          ? `Pole "${optionName}" je povinné`
-          : `Field "${optionName}" is required`
+        locale === "cs" ? `Pole "${optionName}" je povinné` : `Field "${optionName}" is required`
       );
     }
 
     if (customization) {
       // Validate min/max selections
-      if (
-        option.minSelections &&
-        customization.choiceIds.length < option.minSelections
-      ) {
+      if (option.minSelections && customization.choiceIds.length < option.minSelections) {
         const optionName = getLocalizedName(option.name);
         errors.push(
           locale === "cs"
@@ -164,10 +146,7 @@ export function validateWreathCustomizations(
         );
       }
 
-      if (
-        option.maxSelections &&
-        customization.choiceIds.length > option.maxSelections
-      ) {
+      if (option.maxSelections && customization.choiceIds.length > option.maxSelections) {
         const optionName = getLocalizedName(option.name);
         errors.push(
           locale === "cs"
@@ -196,9 +175,7 @@ export function validateCustomRibbonText(
   // Check if text is provided
   if (!customText || customText.trim().length === 0) {
     errors.push(
-      locale === "cs"
-        ? "Vlastní text nemůže být prázdný"
-        : "Custom text cannot be empty"
+      locale === "cs" ? "Vlastní text nemůže být prázdný" : "Custom text cannot be empty"
     );
     return { errors, warnings };
   }
@@ -244,9 +221,7 @@ export function validateCustomRibbonText(
   // Warning for very long text (approaching limit)
   if (sanitizedText.length > 40) {
     warnings.push(
-      locale === "cs"
-        ? "Text se blíží maximální délce"
-        : "Text is approaching maximum length"
+      locale === "cs" ? "Text se blíží maximální délce" : "Text is approaching maximum length"
     );
   }
 
@@ -276,10 +251,7 @@ export function validateWreathSizeSelection(
   if (sizeOption.required && !selectedSize) {
     return {
       isValid: false,
-      error:
-        locale === "cs"
-          ? "Velikost věnce je povinná"
-          : "Wreath size is required",
+      error: locale === "cs" ? "Velikost věnce je povinná" : "Wreath size is required",
     };
   }
 
@@ -289,9 +261,7 @@ export function validateWreathSizeSelection(
       return {
         isValid: false,
         error:
-          locale === "cs"
-            ? "Vybraná velikost není dostupná"
-            : "Selected size is not available",
+          locale === "cs" ? "Vybraná velikost není dostupná" : "Selected size is not available",
       };
     }
   }
@@ -312,18 +282,13 @@ export function validateRibbonDependencies(
     return { isValid: true, errors };
   }
 
-  const ribbonCustomization = customizations.find(
-    (c) => c.optionId === ribbonOption.id
-  );
-  const isRibbonSelected =
-    ribbonCustomization?.choiceIds.includes("ribbon_yes");
+  const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption.id);
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   if (isRibbonSelected) {
     // Check ribbon color
     if (ribbonColorOption) {
-      const colorCustomization = customizations.find(
-        (c) => c.optionId === ribbonColorOption.id
-      );
+      const colorCustomization = customizations.find((c) => c.optionId === ribbonColorOption.id);
       if (!colorCustomization || colorCustomization.choiceIds.length === 0) {
         errors.push(
           locale === "cs"
@@ -335,13 +300,10 @@ export function validateRibbonDependencies(
 
     // Check ribbon text
     if (ribbonTextOption) {
-      const textCustomization = customizations.find(
-        (c) => c.optionId === ribbonTextOption.id
-      );
+      const textCustomization = customizations.find((c) => c.optionId === ribbonTextOption.id);
       if (
         !textCustomization ||
-        (textCustomization.choiceIds.length === 0 &&
-          !textCustomization.customValue)
+        (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)
       ) {
         errors.push(
           locale === "cs"
@@ -433,8 +395,7 @@ export const WREATH_VALIDATION_MESSAGES = {
     sizeUnavailable: "Selected size is currently unavailable",
 
     // Ribbon validation messages
-    ribbonColorRequired:
-      "Ribbon color selection is required when adding ribbon",
+    ribbonColorRequired: "Ribbon color selection is required when adding ribbon",
     ribbonTextRequired: "Ribbon text selection is required when adding ribbon",
     ribbonColorInvalid: "Selected ribbon color is not available",
     ribbonTextInvalid: "Selected ribbon text is not available",
@@ -606,23 +567,16 @@ function createEnhancedValidationError(
     fallbackAction = "select_default_size";
     context = {
       availableSizes:
-        customizationOptions
-          .find((opt) => opt.type === "size")
-          ?.choices?.map((c) => c.id) || [],
+        customizationOptions.find((opt) => opt.type === "size")?.choices?.map((c) => c.id) || [],
       currentSelection: null,
     };
-  } else if (
-    errorMessage.includes("stuhy") ||
-    errorMessage.includes("ribbon")
-  ) {
+  } else if (errorMessage.includes("stuhy") || errorMessage.includes("ribbon")) {
     field = "ribbon";
     code = "RIBBON_VALIDATION_ERROR";
     fallbackAction = "remove_ribbon";
     context = {
       hasRibbon: customizations.some((c) => c.optionId.includes("ribbon")),
-      ribbonOptions: customizationOptions.filter((opt) =>
-        opt.type?.includes("ribbon")
-      ),
+      ribbonOptions: customizationOptions.filter((opt) => opt.type?.includes("ribbon")),
     };
   } else if (errorMessage.includes("text")) {
     field = "custom_text";
@@ -656,10 +610,7 @@ function generateRecoveryStrategy(
   customizationOptions: CustomizationOption[],
   locale: string
 ): ErrorRecoveryStrategy {
-  const messages =
-    WREATH_VALIDATION_MESSAGES[
-      locale as keyof typeof WREATH_VALIDATION_MESSAGES
-    ];
+  const messages = WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
 
   switch (error.code) {
     case "SIZE_VALIDATION_ERROR":
@@ -667,8 +618,7 @@ function generateRecoveryStrategy(
         canRecover: true,
         recoveryAction: "fallback",
         recoveryMessage: messages.tryAgain,
-        fallbackValue: customizationOptions.find((opt) => opt.type === "size")
-          ?.choices?.[0]?.id,
+        fallbackValue: customizationOptions.find((opt) => opt.type === "size")?.choices?.[0]?.id,
       };
 
     case "RIBBON_VALIDATION_ERROR":
@@ -690,9 +640,7 @@ function generateRecoveryStrategy(
       return {
         canRecover: error.recoverable,
         recoveryAction: error.retryable ? "retry" : "contact_support",
-        recoveryMessage: error.retryable
-          ? messages.tryAgain
-          : messages.contactSupport,
+        recoveryMessage: error.retryable ? messages.tryAgain : messages.contactSupport,
       };
   }
 }
@@ -711,16 +659,11 @@ function generateFallbackConfiguration(
 
   // Apply fallback strategies based on errors
   errors.forEach((error) => {
-    if (
-      error.fallbackAction &&
-      error.context?.["fallbackValue"] !== undefined
-    ) {
+    if (error.fallbackAction && error.context?.["fallbackValue"] !== undefined) {
       switch (error.fallbackAction) {
         case "select_default_size": {
           // Add default size if missing
-          const sizeOption = customizationOptions.find(
-            (opt) => opt.type === "size"
-          );
+          const sizeOption = customizationOptions.find((opt) => opt.type === "size");
           if (sizeOption?.choices && sizeOption.choices.length > 0) {
             const existingSizeIndex = fallbackCustomizations.findIndex(
               (c) => c.optionId === sizeOption.id
@@ -728,13 +671,8 @@ function generateFallbackConfiguration(
             const defaultSize = sizeOption.choices[0]?.id;
 
             if (defaultSize) {
-              if (
-                existingSizeIndex >= 0 &&
-                fallbackCustomizations[existingSizeIndex]
-              ) {
-                fallbackCustomizations[existingSizeIndex].choiceIds = [
-                  defaultSize,
-                ];
+              if (existingSizeIndex >= 0 && fallbackCustomizations[existingSizeIndex]) {
+                fallbackCustomizations[existingSizeIndex].choiceIds = [defaultSize];
               } else {
                 fallbackCustomizations.push({
                   optionId: sizeOption.id,
@@ -751,9 +689,7 @@ function generateFallbackConfiguration(
           // Remove all ribbon-related customizations
           const ribbonIndices = fallbackCustomizations
             .map((c, index) => ({ customization: c, index }))
-            .filter(({ customization }) =>
-              customization.optionId.includes("ribbon")
-            )
+            .filter(({ customization }) => customization.optionId.includes("ribbon"))
             .map(({ index }) => index)
             .sort((a, b) => b - a); // Sort in reverse order for safe removal
 
@@ -766,21 +702,15 @@ function generateFallbackConfiguration(
 
         case "use_predefined_text": {
           // Replace custom text with first predefined option
-          const textOption = customizationOptions.find(
-            (opt) => opt.type === "ribbon_text"
-          );
+          const textOption = customizationOptions.find((opt) => opt.type === "ribbon_text");
           if (textOption?.choices) {
-            const predefinedChoice = textOption.choices.find(
-              (c) => c.id !== "text_custom"
-            );
+            const predefinedChoice = textOption.choices.find((c) => c.id !== "text_custom");
             if (predefinedChoice) {
               const textIndex = fallbackCustomizations.findIndex(
                 (c) => c.optionId === textOption.id
               );
               if (textIndex >= 0 && fallbackCustomizations[textIndex]) {
-                fallbackCustomizations[textIndex].choiceIds = [
-                  predefinedChoice.id,
-                ];
+                fallbackCustomizations[textIndex].choiceIds = [predefinedChoice.id];
                 delete fallbackCustomizations[textIndex].customValue;
                 hasChanges = true;
               }
@@ -802,9 +732,8 @@ export function getValidationMessage(
   params?: Record<string, string | number>
 ): string {
   const messages =
-    WREATH_VALIDATION_MESSAGES[
-      locale as keyof typeof WREATH_VALIDATION_MESSAGES
-    ] || WREATH_VALIDATION_MESSAGES.cs;
+    WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES] ||
+    WREATH_VALIDATION_MESSAGES.cs;
   let message: string = messages[key] || key;
 
   if (params) {

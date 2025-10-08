@@ -6,11 +6,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
-import {
-  getFallbackImage,
-  logErrorWithContext,
-  safeTranslate,
-} from "@/lib/utils/fallback-utils";
+import { getFallbackImage, logErrorWithContext, safeTranslate } from "@/lib/utils/fallback-utils";
 
 interface RefactoredHeroSectionProps {
   locale: string;
@@ -178,9 +174,7 @@ export function RefactoredHeroSection({
             // Text color
             "text-amber-300",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-1"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-1" : "opacity-100"
           )}
         >
           {safeT("heading")}
@@ -215,9 +209,7 @@ export function RefactoredHeroSection({
             // Text color - updated to amber-200 for hierarchy
             "text-amber-200/50",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-2"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-2" : "opacity-100"
           )}
         >
           {safeT("subheading")}
@@ -261,9 +253,7 @@ export function RefactoredHeroSection({
             // Hover animation enhancement
             "hover:scale-105 transition-transform duration-200",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-3"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-3" : "opacity-100"
           )}
           aria-label={safeT("ctaAriaLabel")}
         >

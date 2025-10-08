@@ -52,7 +52,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   const variants = {
     default: cn(
-      "bg-amber-300 text-teal-900 hover:bg-teal-800 active:bg-teal-800",
+      "bg-teal-800 text-amber-200 border border-amber-300 hover:bg-teal-900/60 active:bg-teal-800",
       "shadow-sm hover:shadow-md transition-all duration-200",
       "focus-visible:ring-amber-300",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
@@ -81,7 +81,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     ghost: cn(
-      "text-amber-100 bg-amber-100 hover:bg-amber-100 active:bg-amber-300",
+      "text-teal-800 bg-amber-300 hover:bg-amber-100 active:bg-amber-300",
       "transition-all duration-200",
       "focus-visiblering-amber-300",
       "high-contrast:text-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"

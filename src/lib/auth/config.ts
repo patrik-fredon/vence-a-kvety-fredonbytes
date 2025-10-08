@@ -12,9 +12,7 @@ function getSupabaseConfig() {
   const supabaseServiceKey = process.env["SUPABASE_SERVICE_ROLE_KEY"];
 
   if (!(supabaseUrl && supabaseServiceKey)) {
-    console.warn(
-      "Supabase environment variables not found, auth will not work properly"
-    );
+    console.warn("Supabase environment variables not found, auth will not work properly");
     return null;
   }
 

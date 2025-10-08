@@ -102,8 +102,7 @@ const nextConfig: NextConfig = {
           // Restrict browser features
           {
             key: "Permissions-Policy",
-            value:
-              "camera=(), microphone=(), geolocation=(), payment=(self), usb=()",
+            value: "camera=(), microphone=(), geolocation=(), payment=(self), usb=()",
           },
           // Enable XSS protection
           {
@@ -205,8 +204,7 @@ const nextConfig: NextConfig = {
       config.optimization.sideEffects = WEBPACK_OPTIMIZATION.sideEffects;
 
       // Module concatenation for better tree-shaking
-      config.optimization.concatenateModules =
-        WEBPACK_OPTIMIZATION.concatenateModules;
+      config.optimization.concatenateModules = WEBPACK_OPTIMIZATION.concatenateModules;
     }
 
     // Resolve alias for better tree-shaking

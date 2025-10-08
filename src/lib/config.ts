@@ -20,14 +20,10 @@ export function validateEnv() {
     // Example: 'NEXT_PUBLIC_SUPABASE_URL'
   ];
 
-  const missingVars = requiredEnvVars.filter(
-    (varName) => !process.env[varName]
-  );
+  const missingVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 
   if (missingVars.length > 0) {
-    throw new Error(
-      `Missing required environment variables: ${missingVars.join(", ")}`
-    );
+    throw new Error(`Missing required environment variables: ${missingVars.join(", ")}`);
   }
 }
 

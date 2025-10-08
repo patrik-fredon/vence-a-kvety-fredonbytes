@@ -77,9 +77,7 @@ export function DateSelector({
           <CalendarIcon className="w-5 h-5 text-amber-500" />
           <div className="text-left">
             {value ? (
-              <div className="font-medium text-amber-900">
-                {formatDateForDisplay(value)}
-              </div>
+              <div className="font-medium text-amber-900">{formatDateForDisplay(value)}</div>
             ) : (
               <div className="text-teal-500">
                 {locale === "cs" ? "Vyberte datum" : "Select date"}
@@ -95,9 +93,7 @@ export function DateSelector({
         <div className="p-4 border border-amber-200 rounded-lg bg-funeral-gold shadow-lg">
           <div className="space-y-3">
             <div className="text-sm font-medium text-teal-700">
-              {locale === "cs"
-                ? "Vyberte datum dodání:"
-                : "Select delivery date:"}
+              {locale === "cs" ? "Vyberte datum dodání:" : "Select delivery date:"}
             </div>
 
             <input

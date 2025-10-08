@@ -60,10 +60,8 @@ export function WebVitalsTracker({
   debug = performanceConfig.development?.debug?.showWebVitalsOverlay ?? false,
   endpoint = performanceConfig.monitoring?.webVitalsTracking?.endpoint ??
     "/api/monitoring/web-vitals",
-  sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ??
-    0.1,
-  autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ??
-    true,
+  sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ?? 0.1,
+  autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ?? true,
   onMetric,
 }: WebVitalsTrackerProps) {
   const [vitals, setVitals] = useState<WebVitalsData>({});
@@ -226,23 +224,14 @@ export function WebVitalsTracker({
       window.removeEventListener("beforeunload", handleBeforeUnload);
       clearInterval(reportingInterval);
     };
-  }, [
-    sampleRate,
-    autoReport,
-    onMetric,
-    queueMetricForReporting,
-    sendMetricsToServer,
-  ]);
+  }, [sampleRate, autoReport, onMetric, queueMetricForReporting, sendMetricsToServer]);
 
   /**
    * Get or create session ID
    */
   const getSessionId = () => {
     // Check if we're in the browser environment
-    if (
-      typeof window === "undefined" ||
-      typeof sessionStorage === "undefined"
-    ) {
+    if (typeof window === "undefined" || typeof sessionStorage === "undefined") {
       return null; // Return null for server-side rendering
     }
 

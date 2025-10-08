@@ -3,12 +3,7 @@
 import Image from "next/image";
 import { useEffect, useRef, useState, useCallback } from "react";
 import { Card } from "@/components/ui/Card";
-import {
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  MagnifyingGlassIcon,
-  XMarkIcon,
-} from "@/lib/icons";
+import { ChevronLeftIcon, ChevronRightIcon, MagnifyingGlassIcon, XMarkIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
 import type { Customization, ProductImage } from "@/types/product";
 
@@ -60,15 +55,11 @@ export function ProductImageGallery({
   }, [relevantImages.length, selectedImageIndex]);
 
   const handlePrevious = useCallback(() => {
-    setSelectedImageIndex((prev) =>
-      prev === 0 ? relevantImages.length - 1 : prev - 1
-    );
+    setSelectedImageIndex((prev) => (prev === 0 ? relevantImages.length - 1 : prev - 1));
   }, [relevantImages.length]);
 
   const handleNext = useCallback(() => {
-    setSelectedImageIndex((prev) =>
-      prev === relevantImages.length - 1 ? 0 : prev + 1
-    );
+    setSelectedImageIndex((prev) => (prev === relevantImages.length - 1 ? 0 : prev + 1));
   }, [relevantImages.length]);
 
   // Handle keyboard navigation
@@ -135,10 +126,7 @@ export function ProductImageGallery({
   if (relevantImages.length === 0) {
     return (
       <Card
-        className={cn(
-          "aspect-square bg-funeral-gold flex items-center justify-center",
-          className
-        )}
+        className={cn("aspect-square bg-funeral-gold flex items-center justify-center", className)}
       >
         <div className="text-stone-400 text-center">
           <div className="text-4xl mb-2">📷</div>
@@ -184,9 +172,7 @@ export function ProductImageGallery({
               />
 
               {/* Zoom overlay */}
-              {isZoomed && (
-                <div className="absolute inset-0 bg-black/10 pointer-events-none" />
-              )}
+              {isZoomed && <div className="absolute inset-0 bg-black/10 pointer-events-none" />}
 
               {/* Navigation Arrows */}
               {relevantImages.length > 1 && (

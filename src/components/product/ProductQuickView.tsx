@@ -27,8 +27,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
 }: ProductQuickViewProps) {
   const t = useTranslations("product");
   const tCurrency = useTranslations("currency");
-  const { startProductToCartAnimation: _startProductToCartAnimation } =
-    useAnimationSequence();
+  const { startProductToCartAnimation: _startProductToCartAnimation } = useAnimationSequence();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [_isAddingToCart, _setIsAddingToCart] = useState(false);
   const [_error, _setError] = useState<string | null>(null);
@@ -91,10 +90,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   // Memoize availability status text
   const availabilityText = useMemo(() => {
     if (!product.availability.inStock) return t("outOfStock");
-    if (
-      product.availability.stockQuantity &&
-      product.availability.stockQuantity <= 5
-    ) {
+    if (product.availability.stockQuantity && product.availability.stockQuantity <= 5) {
       return t("limitedStock");
     }
     return t("inStock");
@@ -104,9 +100,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
   const availabilityStyles = useMemo(
     () => ({
       dotColor: product.availability.inStock ? "bg-green-500" : "bg-red-500",
-      textColor: product.availability.inStock
-        ? "text-green-700"
-        : "text-red-700",
+      textColor: product.availability.inStock ? "text-green-700" : "text-red-700",
     }),
     [product.availability.inStock]
   );
@@ -179,20 +173,14 @@ export const ProductQuickView = React.memo(function ProductQuickView({
         {/* Product Details */}
         <div className="flex-1 space-y-4">
           {/* Category */}
-          {categoryName && (
-            <p className="text-sm text-amber-100">{categoryName}</p>
-          )}
+          {categoryName && <p className="text-sm text-amber-100">{categoryName}</p>}
 
           {/* Price */}
           <div className="space-y-1">
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-semibold text-amber-300">
-                {formattedFinalPrice}
-              </span>
+              <span className="text-2xl font-semibold text-amber-300">{formattedFinalPrice}</span>
               {formattedBasePrice && (
-                <span className="text-lg text-amber-100 line-through">
-                  {formattedBasePrice}
-                </span>
+                <span className="text-lg text-amber-100 line-through">{formattedBasePrice}</span>
               )}
             </div>
             {product.featured && (
@@ -206,26 +194,14 @@ export const ProductQuickView = React.memo(function ProductQuickView({
           {productDescription && (
             <div className="space-y-2">
               <h3 className="font-medium text-amber-300">{t("description")}</h3>
-              <p className="text-sm text-amber-100 leading-relaxed">
-                {productDescription}
-              </p>
+              <p className="text-sm text-amber-100 leading-relaxed">{productDescription}</p>
             </div>
           )}
 
           {/* Availability */}
           <div className="flex items-center gap-2">
-            <div
-              className={cn(
-                "w-2 h-2 rounded-full",
-                availabilityStyles.dotColor
-              )}
-            />
-            <span
-              className={cn(
-                "text-sm font-medium",
-                availabilityStyles.textColor
-              )}
-            >
+            <div className={cn("w-2 h-2 rounded-full", availabilityStyles.dotColor)} />
+            <span className={cn("text-sm font-medium", availabilityStyles.textColor)}>
               {availabilityText}
             </span>
           </div>

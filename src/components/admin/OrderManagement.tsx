@@ -18,13 +18,7 @@ interface Order {
   customerName: string;
   customerEmail: string;
   customerPhone: string;
-  status:
-    | "pending"
-    | "confirmed"
-    | "processing"
-    | "shipped"
-    | "delivered"
-    | "cancelled";
+  status: "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
   totalAmount: number;
   itemCount: number;
   paymentMethod: string;
@@ -102,11 +96,7 @@ export default function OrderManagement() {
     fetchOrders();
   }, [fetchOrders]);
 
-  const handleStatusUpdate = async (
-    orderId: string,
-    newStatus: string,
-    internalNotes?: string
-  ) => {
+  const handleStatusUpdate = async (orderId: string, newStatus: string, internalNotes?: string) => {
     try {
       const response = await fetch(`/api/admin/orders/${orderId}/status`, {
         method: "PUT",
@@ -153,9 +143,7 @@ export default function OrderManagement() {
       delivered: "bg-green-100 text-green-800",
       cancelled: "bg-red-100 text-red-800",
     };
-    return (
-      colors[status as keyof typeof colors] || "bg-stone-100 text-stone-800"
-    );
+    return colors[status as keyof typeof colors] || "bg-stone-100 text-stone-800";
   };
 
   const getStatusLabel = (status: string) => {
@@ -223,9 +211,7 @@ export default function OrderManagement() {
     <div className="space-y-6">
       {/* Header */}
       <div className="flex items-center justify-between">
-        <h2 className="text-2xl font-bold text-stone-900">
-          {t("orderManagement")}
-        </h2>
+        <h2 className="text-2xl font-bold text-stone-900">{t("orderManagement")}</h2>
         <div className="text-sm text-stone-500">
           {t("total")}: {filteredOrders.length} {t("orders")}
         </div>
@@ -343,9 +329,7 @@ export default function OrderManagement() {
                         <div className="text-sm font-medium text-stone-900">
                           {order.customerName}
                         </div>
-                        <div className="text-sm text-stone-500">
-                          {order.customerEmail}
-                        </div>
+                        <div className="text-sm text-stone-500">{order.customerEmail}</div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
@@ -361,13 +345,9 @@ export default function OrderManagement() {
                       {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-stone-900">
-                        {order.deliveryAddress}
-                      </div>
+                      <div className="text-sm text-stone-900">{order.deliveryAddress}</div>
                       <div className="text-sm text-stone-500">
-                        {new Date(order.preferredDate).toLocaleDateString(
-                          "cs-CZ"
-                        )}
+                        {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-stone-500">
@@ -423,9 +403,7 @@ export default function OrderManagement() {
               <Button
                 variant="outline"
                 size="sm"
-                onClick={() =>
-                  setCurrentPage(Math.min(totalPages, currentPage + 1))
-                }
+                onClick={() => setCurrentPage(Math.min(totalPages, currentPage + 1))}
                 disabled={currentPage === totalPages}
               >
                 {t("next")}

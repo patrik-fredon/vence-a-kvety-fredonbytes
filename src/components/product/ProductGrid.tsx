@@ -418,7 +418,12 @@ const ProductGrid = React.memo(function ProductGrid({
   );
 
   return (
-    <section className={cn("bg-funeral-teal py-12 rounded-2xl shadow-xl", className)}>
+    <section
+      className={cn(
+        "bg-funeral-teal py-12 rounded-2xl shadow-2xl border-2 border-amber-300",
+        className
+      )}
+    >
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Filters */}
         <div className="mb-8">
@@ -448,7 +453,7 @@ const ProductGrid = React.memo(function ProductGrid({
           {/* View Mode Switcher */}
           <div className="flex items-center gap-3">
             <span className="text-sm font-medium text-amber-100">{t("viewMode")}:</span>
-            <div className="flex bg-white border border-amber-200 rounded-lg overflow-hidden shadow-sm">
+            <div className="flex bg-teal-800 border border-amber-200 rounded-lg overflow-hidden shadow-lg">
               <Button
                 variant={viewMode === "grid" ? "default" : "ghost"}
                 size="sm"
@@ -456,7 +461,7 @@ const ProductGrid = React.memo(function ProductGrid({
                 className="rounded-none border-0 px-4 py-2"
                 aria-label={t("gridView")}
               >
-                <svg className="w-4 h-4" fill="#01302D" viewBox="0 0 20 20">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
                 </svg>
               </Button>
@@ -467,7 +472,7 @@ const ProductGrid = React.memo(function ProductGrid({
                 className="rounded-none border-0 px-4 py-2"
                 aria-label={t("listView")}
               >
-                <svg className="w-4 h-4" fill="#01302D" viewBox="0 0 20 20">
+                <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                   <path
                     fillRule="evenodd"
                     d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z"

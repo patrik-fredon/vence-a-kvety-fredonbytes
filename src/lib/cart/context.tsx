@@ -12,12 +12,7 @@ import {
 } from "react";
 import { useAuthContext } from "@/components/auth";
 import { supabase } from "@/lib/supabase/client";
-import type {
-  AddToCartRequest,
-  CartItem,
-  CartState,
-  CartSummary,
-} from "@/types/cart";
+import type { AddToCartRequest, CartItem, CartState, CartSummary } from "@/types/cart";
 import {
   CartConflictResolver,
   CartPersistenceManager,
@@ -119,8 +114,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
       newOptimisticUpdates.set(action.payload.itemId, {
         type: "update",
         originalQuantity:
-          state.items.find((item) => item.id === action.payload.itemId)
-            ?.quantity || 0,
+          state.items.find((item) => item.id === action.payload.itemId)?.quantity || 0,
       });
       return {
         ...state,
@@ -139,9 +133,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
     }
     case "OPTIMISTIC_REMOVE_ITEM": {
       const newOptimisticUpdates = new Map(state.optimisticUpdates);
-      const itemToRemove = state.items.find(
-        (item) => item.id === action.payload.itemId
-      );
+      const itemToRemove = state.items.find((item) => item.id === action.payload.itemId);
       if (itemToRemove) {
         newOptimisticUpdates.set(action.payload.itemId, {
           type: "remove",
@@ -167,9 +159,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           // Remove optimistically added item
           return {
             ...state,
-            items: state.items.filter(
-              (item) => item.id !== action.payload.tempId
-            ),
+            items: state.items.filter((item) => item.id !== action.payload.tempId),
             optimisticUpdates: newOptimisticUpdates,
           };
         } else if (update?.type === "update" && action.payload.itemId) {
@@ -181,8 +171,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
                 ? {
                     ...item,
                     quantity: update.originalQuantity || 0,
-                    totalPrice:
-                      (item.unitPrice || 0) * (update.originalQuantity || 0),
+                    totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
                   }
                 : item
             ),
@@ -211,9 +200,7 @@ function cartReducer(state: CartState, action: CartAction): CartState {
           return {
             ...state,
             items: state.items.map((item) =>
-              item.id === action.payload.tempId
-                ? action.payload.actualItem!
-                : item
+              item.id === action.payload.tempId ? action.payload.actualItem! : item
             ),
             optimisticUpdates: newOptimisticUpdates,
           };
@@ -451,14 +438,10 @@ export function CartProvider({ children }: CartProviderProps) {
           });
 
           // Check if cart becomes empty after removal
-          const remainingItems = state.items.filter(
-            (item) => item.id !== itemId
-          );
+          const remainingItems = state.items.filter((item) => item.id !== itemId);
 
           if (remainingItems.length === 0) {
-            console.log(
-              "🧹 [Cart] Cart is now empty, clearing cache and localStorage"
-            );
+            console.log("🧹 [Cart] Cart is now empty, clearing cache and localStorage");
 
             // Clear LocalStorage completely when cart becomes empty
             CartPersistenceManager.clearCartState();
@@ -473,20 +456,12 @@ export function CartProvider({ children }: CartProviderProps) {
               const cacheData = await cacheResponse.json();
 
               if (cacheData.success) {
-                console.log(
-                  "✅ [Cart] Cache cleared successfully for empty cart"
-                );
+                console.log("✅ [Cart] Cache cleared successfully for empty cart");
               } else {
-                console.warn(
-                  "⚠️ [Cart] Cache clear failed (non-critical):",
-                  cacheData.error
-                );
+                console.warn("⚠️ [Cart] Cache clear failed (non-critical):", cacheData.error);
               }
             } catch (cacheError) {
-              console.error(
-                "⚠️ [Cart] Error clearing cache (non-critical):",
-                cacheError
-              );
+              console.error("⚠️ [Cart] Error clearing cache (non-critical):", cacheError);
               // Don't fail the operation if cache clearing fails
             }
           }
@@ -618,9 +593,7 @@ export function CartProvider({ children }: CartProviderProps) {
       const data = await response.json();
 
       if (data.success) {
-        console.log(
-          "🧹 [Cart] Clearing all items, removing cache and localStorage"
-        );
+        console.log("🧹 [Cart] Clearing all items, removing cache and localStorage");
 
         // Clear local state
         dispatch({ type: "CLEAR_CART" });
@@ -638,20 +611,12 @@ export function CartProvider({ children }: CartProviderProps) {
           const cacheData = await cacheResponse.json();
 
           if (cacheData.success) {
-            console.log(
-              "✅ [Cart] Cache cleared successfully after clearing all items"
-            );
+            console.log("✅ [Cart] Cache cleared successfully after clearing all items");
           } else {
-            console.warn(
-              "⚠️ [Cart] Cache clear failed (non-critical):",
-              cacheData.error
-            );
+            console.warn("⚠️ [Cart] Cache clear failed (non-critical):", cacheData.error);
           }
         } catch (cacheError) {
-          console.error(
-            "⚠️ [Cart] Error clearing cache (non-critical):",
-            cacheError
-          );
+          console.error("⚠️ [Cart] Error clearing cache (non-critical):", cacheError);
           // Don't fail the operation if cache clearing fails
         }
 
@@ -712,14 +677,8 @@ export function CartProvider({ children }: CartProviderProps) {
             {
               items: state.items,
               itemCount: state.items.length,
-              subtotal: state.items.reduce(
-                (sum, item) => sum + (item.totalPrice || 0),
-                0
-              ),
-              total: state.items.reduce(
-                (sum, item) => sum + (item.totalPrice || 0),
-                0
-              ),
+              subtotal: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+              total: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
             },
             data.cart,
             "merge"
@@ -730,10 +689,7 @@ export function CartProvider({ children }: CartProviderProps) {
           setCartVersion(Date.now());
 
           // Save to persistence
-          CartPersistenceManager.saveCartState(
-            resolution.resolvedCart,
-            cartVersion
-          );
+          CartPersistenceManager.saveCartState(resolution.resolvedCart, cartVersion);
 
           // Log conflicts if any
           if (resolution.conflicts.length > 0) {
@@ -773,10 +729,7 @@ export function CartProvider({ children }: CartProviderProps) {
     if (!isOnline || isRealTimeEnabled) return;
 
     const sessionId = getCartSessionId();
-    syncManagerRef.current = new CartSyncManager(
-      user?.id,
-      sessionId || undefined
-    );
+    syncManagerRef.current = new CartSyncManager(user?.id, sessionId || undefined);
 
     // Handle real-time cart updates
     syncManagerRef.current.on("sync", (event: CartSyncEvent) => {
@@ -804,9 +757,7 @@ export function CartProvider({ children }: CartProviderProps) {
   const getCartVersion = useCallback(() => cartVersion, [cartVersion]);
   const runIntegrityCheck = useCallback(async (): Promise<any> => {
     try {
-      const { performCustomizationIntegrityCheck } = await import(
-        "@/lib/cart/utils"
-      );
+      const { performCustomizationIntegrityCheck } = await import("@/lib/cart/utils");
       const supabaseClient = supabase;
 
       const result = await performCustomizationIntegrityCheck(supabaseClient);
@@ -838,14 +789,8 @@ export function CartProvider({ children }: CartProviderProps) {
       const cartSummary: CartSummary = {
         items: state.items,
         itemCount: state.items.reduce((sum, item) => sum + item.quantity, 0),
-        subtotal: state.items.reduce(
-          (sum, item) => sum + (item.totalPrice || 0),
-          0
-        ),
-        total: state.items.reduce(
-          (sum, item) => sum + (item.totalPrice || 0),
-          0
-        ),
+        subtotal: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
+        total: state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0),
       };
       CartPersistenceManager.saveCartState(cartSummary, cartVersion);
     }
@@ -891,9 +836,7 @@ export function CartProvider({ children }: CartProviderProps) {
     runIntegrityCheck,
   };
 
-  return (
-    <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>
-  );
+  return <CartContext.Provider value={contextValue}>{children}</CartContext.Provider>;
 }
 
 // Hook to use cart context

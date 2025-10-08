@@ -244,9 +244,6 @@ const ProductCardComponent = function ProductCard({
         </>
       )}
 
-
-
-
       {/* No Image Placeholder */}
       {!primaryImage && (
         <div className="absolute inset-0 bg-amber-100 flex items-center justify-center">
@@ -278,7 +275,8 @@ const ProductCardComponent = function ProductCard({
         "font-bold text-teal-800 transition-colors",
         variant === "grid" && "text-sm sm:text-xl mb-2 line-clamp-2 leading-tight",
         variant === "teaser" && "text-xl mb-2 line-clamp-2 min-h-[3.5rem]",
-        variant === "list" && "text-base sm:text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-teal-800"
+        variant === "list" &&
+          "text-base sm:text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-teal-800"
       )}
     >
       {productName}
@@ -362,8 +360,6 @@ const ProductCardComponent = function ProductCard({
     </div>
   );
 
-
-
   // Get button props based on variant
   const getButtonProps = () => ({
     disabled: !product.availability.inStock || loading,
@@ -405,7 +401,7 @@ const ProductCardComponent = function ProductCard({
           <Button
             size="sm"
             variant="outline"
-            className="bg-amber-100 hover:bg-amber-200 text-amber-100 flex-1"
+            className="bg-teal-800 hover:bg-amber-100 text-amber-100 flex-1"
             onClick={handleQuickView}
             aria-label={t("quickView")}
           >
@@ -504,8 +500,8 @@ const ProductCardComponent = function ProductCard({
         {/* Content - Right Half - Clean Modern Layout */}
         <div className="w-1/2 p-4 sm:p-6 flex flex-col relative">
           {/* Top Section: Name and Stock Badge */}
-          <div className="flex-1">
-            <div className="flex items-start justify-between gap-3 mb-3">
+          <div className="flex-1 ">
+            <div className="flex  mb-3">
               {/* Product Name - Large */}
               <h3
                 id={`product-${product.id}-title`}
@@ -513,41 +509,28 @@ const ProductCardComponent = function ProductCard({
               >
                 {productName}
               </h3>
-
-              {/* Stock Badge - Top Right */}
-              <span
-                className={cn(
-                  "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0",
-                  product.availability.inStock
-                    ? "bg-green-100 text-green-800"
-                    : "bg-red-100 text-red-800"
-                )}
-              >
-                {product.availability.inStock ? t("inStock") : t("outOfStock")}
-              </span>
             </div>
 
             {/* Category */}
             {product.category && (
-              <p className="text-sm text-teal-700 mb-3">
+              <p className="text-sm text-teal-700 mb-3 ">
                 {product.category.name[locale as keyof typeof product.category.name]}
               </p>
             )}
-
-            {/* Price - Right Aligned, Smaller */}
-            <div className="flex justify-end mb-4">
-              <div className="text-right">
-                <div className="flex items-center gap-2 justify-end">
-                  <span className="text-2xl sm:text-3xl font-bold text-teal-800">
-                    {formatPrice(product.finalPrice || product.basePrice)}
-                  </span>
-                </div>
-                {product.finalPrice && product.finalPrice < product.basePrice && (
-                  <span className="text-sm text-teal-600 line-through">
-                    {formatPrice(product.basePrice)}
-                  </span>
-                )}
+          </div>
+          {/* Price - Right Aligned, Smaller */}
+          <div className="flex justify-end mb-4">
+            <div className="text-right">
+              <div className="flex items-center gap-2 justify-end">
+                <span className="text-2xl sm:text-3xl font-bold text-teal-800">
+                  {formatPrice(product.finalPrice || product.basePrice)}
+                </span>
               </div>
+              {product.finalPrice && product.finalPrice < product.basePrice && (
+                <span className="text-sm text-teal-600 line-through">
+                  {formatPrice(product.basePrice)}
+                </span>
+              )}
             </div>
           </div>
 
@@ -581,12 +564,12 @@ const ProductCardComponent = function ProductCard({
             {onQuickView && (
               <Button
                 variant="outline"
-                className="flex-1 h-12 text-base font-semibold bg-white hover:bg-amber-50 text-teal-800 border-teal-800"
+                className="flex h-auto text-xl font-semibold bg-teal-800 hover:bg-teal-800/60 text-amber-200 border-amber-300"
                 onClick={handleQuickView}
                 aria-label={t("quickView")}
               >
                 <svg
-                  className="w-5 h-5 mr-2"
+                  className="w-5 h-5"
                   fill="none"
                   stroke="currentColor"
                   viewBox="0 0 24 24"
@@ -606,7 +589,6 @@ const ProductCardComponent = function ProductCard({
                     d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
                   />
                 </svg>
-                {t("quickView")}
               </Button>
             )}
           </div>

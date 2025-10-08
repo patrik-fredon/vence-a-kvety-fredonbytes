@@ -8,10 +8,7 @@ interface ContactFormsPageProps {
   searchParams: Promise<{ page?: string; status?: string; search?: string }>;
 }
 
-export default async function ContactFormsPage({
-  params,
-  searchParams,
-}: ContactFormsPageProps) {
+export default async function ContactFormsPage({ params, searchParams }: ContactFormsPageProps) {
   const { locale } = await params;
   const searchParamsResolved = await searchParams;
   const page = searchParamsResolved.page || "1";
@@ -31,10 +28,7 @@ export default async function ContactFormsPage({
 
   // Apply filters
   if (status !== "all" && typeof status === "string") {
-    query = query.eq(
-      "status",
-      status as "new" | "read" | "replied" | "archived"
-    );
+    query = query.eq("status", status as "new" | "read" | "replied" | "archived");
   }
 
   if (search) {
@@ -107,9 +101,7 @@ export default async function ContactFormsPage({
             </div>
             <div>
               <p className="text-sm font-medium text-teal-800 truncate">New</p>
-              <p className="text-2xl font-semibold text-neutral-900">
-                {stats?.["new"] || 0}
-              </p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.["new"] || 0}</p>
             </div>
           </div>
         </div>
@@ -141,9 +133,7 @@ export default async function ContactFormsPage({
             </div>
             <div>
               <p className="text-sm font-medium text-teal-800 truncate">Read</p>
-              <p className="text-2xl font-semibold text-neutral-900">
-                {stats?.["read"] || 0}
-              </p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.["read"] || 0}</p>
             </div>
           </div>
         </div>
@@ -168,12 +158,8 @@ export default async function ContactFormsPage({
               </svg>
             </div>
             <div>
-              <p className="text-sm font-medium text-teal-800 truncate">
-                Replied
-              </p>
-              <p className="text-2xl font-semibold text-neutral-900">
-                {stats?.["replied"] || 0}
-              </p>
+              <p className="text-sm font-medium text-teal-800 truncate">Replied</p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.["replied"] || 0}</p>
             </div>
           </div>
         </div>
@@ -198,12 +184,8 @@ export default async function ContactFormsPage({
               </svg>
             </div>
             <div>
-              <p className="text-sm font-medium text-teal-800 truncate">
-                Archived
-              </p>
-              <p className="text-2xl font-semibold text-neutral-900">
-                {stats?.["archived"] || 0}
-              </p>
+              <p className="text-sm font-medium text-teal-800 truncate">Archived</p>
+              <p className="text-2xl font-semibold text-neutral-900">{stats?.["archived"] || 0}</p>
             </div>
           </div>
         </div>

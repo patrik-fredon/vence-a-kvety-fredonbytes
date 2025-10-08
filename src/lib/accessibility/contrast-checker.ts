@@ -32,9 +32,7 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 function getLuminance(r: number, g: number, b: number): number {
   const [rs = 0, gs = 0, bs = 0] = [r, g, b].map((c) => {
     const sRGB = c / 255;
-    return sRGB <= 0.03928
-      ? sRGB / 12.92
-      : Math.pow((sRGB + 0.055) / 1.055, 2.4);
+    return sRGB <= 0.03928 ? sRGB / 12.92 : Math.pow((sRGB + 0.055) / 1.055, 2.4);
   });
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
@@ -63,20 +61,14 @@ export function getContrastRatio(color1: string, color2: string): number {
 /**
  * Check if contrast ratio meets WCAG AA standards
  */
-export function meetsWCAG_AA(
-  contrastRatio: number,
-  isLargeText: boolean = false
-): boolean {
+export function meetsWCAG_AA(contrastRatio: number, isLargeText: boolean = false): boolean {
   return isLargeText ? contrastRatio >= 3 : contrastRatio >= 4.5;
 }
 
 /**
  * Check if contrast ratio meets WCAG AAA standards
  */
-export function meetsWCAG_AAA(
-  contrastRatio: number,
-  isLargeText: boolean = false
-): boolean {
+export function meetsWCAG_AAA(contrastRatio: number, isLargeText: boolean = false): boolean {
   return isLargeText ? contrastRatio >= 4.5 : contrastRatio >= 7;
 }
 

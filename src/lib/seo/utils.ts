@@ -6,8 +6,7 @@
  * Generate canonical URL for a given path and locale
  */
 export function generateCanonicalUrl(path: string, locale: string): string {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
   return `${baseUrl}/${locale}${cleanPath}`;
 }
@@ -16,8 +15,7 @@ export function generateCanonicalUrl(path: string, locale: string): string {
  * Generate alternate language URLs
  */
 export function generateAlternateUrls(path: string): Record<string, string> {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const cleanPath = path.startsWith("/") ? path : `/${path}`;
 
   return {
@@ -60,9 +58,7 @@ export function generateSlug(text: string): string {
 /**
  * Validate and clean URL parameters for SEO
  */
-export function cleanUrlParams(
-  params: Record<string, any>
-): Record<string, string> {
+export function cleanUrlParams(params: Record<string, any>): Record<string, string> {
   const cleaned: Record<string, string> = {};
 
   for (const [key, value] of Object.entries(params)) {
@@ -82,10 +78,7 @@ export function cleanUrlParams(
 /**
  * Generate meta description from content
  */
-export function generateMetaDescription(
-  content: string,
-  maxLength: number = 160
-): string {
+export function generateMetaDescription(content: string, maxLength: number = 160): string {
   // Remove HTML tags
   const cleanContent = content.replace(/<[^>]*>/g, "");
 
@@ -108,10 +101,7 @@ export function generateMetaDescription(
 /**
  * Generate keywords from text content
  */
-export function extractKeywords(
-  content: string,
-  maxKeywords: number = 10
-): string[] {
+export function extractKeywords(content: string, maxKeywords: number = 10): string[] {
   // Remove HTML tags and convert to lowercase
   const cleanContent = content.replace(/<[^>]*>/g, "").toLowerCase();
 
@@ -235,13 +225,8 @@ export function extractKeywords(
 /**
  * Generate Open Graph image URL
  */
-export function generateOgImageUrl(
-  title: string,
-  subtitle?: string,
-  imageUrl?: string
-): string {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+export function generateOgImageUrl(title: string, subtitle?: string, imageUrl?: string): string {
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   // If a specific image is provided, use it
   if (imageUrl) {
@@ -285,8 +270,7 @@ export function generateDynamicOgImage(params: {
   price?: number;
   locale: string;
 }): string {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   const searchParams = new URLSearchParams({
     title: params.title.substring(0, 60),
@@ -318,8 +302,7 @@ export function generateEnhancedMetaTags(params: {
   modifiedTime?: string;
   author?: string;
 }) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const fullUrl = `${baseUrl}/${params.locale}${params.path}`;
 
   const metaTags: Record<string, string> = {
@@ -361,9 +344,7 @@ export function generateEnhancedMetaTags(params: {
 
   // Add image if provided
   if (params.image) {
-    const imageUrl = params.image.startsWith("http")
-      ? params.image
-      : `${baseUrl}${params.image}`;
+    const imageUrl = params.image.startsWith("http") ? params.image : `${baseUrl}${params.image}`;
     metaTags["og:image"] = imageUrl;
     metaTags["og:image:width"] = "1200";
     metaTags["og:image:height"] = "630";
@@ -413,20 +394,13 @@ export function generateJsonLdScript(data: any): string {
     return "";
   }
 
-  return `<script type="application/ld+json">${JSON.stringify(
-    data,
-    null,
-    2
-  )}</script>`;
+  return `<script type="application/ld+json">${JSON.stringify(data, null, 2)}</script>`;
 }
 
 /**
  * Optimize URL structure for SEO
  */
-export function optimizeUrlStructure(
-  path: string,
-  params?: Record<string, any>
-): string {
+export function optimizeUrlStructure(path: string, params?: Record<string, any>): string {
   let optimizedPath = path;
 
   // Remove trailing slashes
@@ -457,11 +431,8 @@ export function optimizeUrlStructure(
 /**
  * Generate hreflang attributes for multilingual pages
  */
-export function generateHreflangAttributes(
-  path: string
-): Record<string, string> {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+export function generateHreflangAttributes(path: string): Record<string, string> {
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     cs: `${baseUrl}/cs${path}`,

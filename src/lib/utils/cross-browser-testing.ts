@@ -8,13 +8,7 @@
  */
 
 // Browser detection types
-export type BrowserName =
-  | "chrome"
-  | "edge"
-  | "firefox"
-  | "safari"
-  | "mobile-safari"
-  | "unknown";
+export type BrowserName = "chrome" | "edge" | "firefox" | "safari" | "mobile-safari" | "unknown";
 export type BrowserEngine = "blink" | "gecko" | "webkit" | "unknown";
 
 export interface BrowserInfo {
@@ -266,10 +260,7 @@ export const crossBrowserTests = {
         if (!grid) return true;
 
         const styles = window.getComputedStyle(grid);
-        return (
-          styles.gridTemplateColumns.includes("1fr") ||
-          styles.display === "flex"
-        );
+        return styles.gridTemplateColumns.includes("1fr") || styles.display === "flex";
       },
     },
     {
@@ -340,9 +331,7 @@ export function runTestCategory(
         testName: test.name,
         category,
         passed: false,
-        details: `Error: ${
-          error instanceof Error ? error.message : "Unknown error"
-        }`,
+        details: `Error: ${error instanceof Error ? error.message : "Unknown error"}`,
         timestamp: new Date(),
       });
     }
@@ -383,8 +372,7 @@ export function runAllTests(): BrowserTestSuite {
  * Generate a test report in markdown format
  */
 export function generateTestReport(suite: BrowserTestSuite): string {
-  const browserName =
-    suite.browser.charAt(0).toUpperCase() + suite.browser.slice(1);
+  const browserName = suite.browser.charAt(0).toUpperCase() + suite.browser.slice(1);
 
   let report = `# Cross-Browser Test Report: ${browserName}\n\n`;
   report += `**Version**: ${suite.version}\n`;
@@ -446,9 +434,7 @@ export const browserCompatibility = {
   firefox: {
     minVersion: "88",
     features: ["webp", "avif", "grid", "flexbox", "custom-properties"],
-    knownIssues: [
-      "Clip-path rendering may differ slightly from Chromium browsers",
-    ],
+    knownIssues: ["Clip-path rendering may differ slightly from Chromium browsers"],
   },
   safari: {
     minVersion: "14",
@@ -503,15 +489,11 @@ export function getBrowserRecommendations(browserInfo: BrowserInfo): string[] {
   }
 
   if (!browserInfo.supportsWebP) {
-    recommendations.push(
-      "WebP image format not supported. JPEG/PNG fallbacks will be used."
-    );
+    recommendations.push("WebP image format not supported. JPEG/PNG fallbacks will be used.");
   }
 
   if (!browserInfo.supportsAVIF && browserInfo.name !== "safari") {
-    recommendations.push(
-      "AVIF image format not supported. WebP/JPEG fallbacks will be used."
-    );
+    recommendations.push("AVIF image format not supported. WebP/JPEG fallbacks will be used.");
   }
 
   if (compat.knownIssues.length > 0) {

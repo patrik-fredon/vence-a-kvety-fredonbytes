@@ -5,11 +5,7 @@ import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
 import { formatPrice } from "@/lib/utils/price-calculator";
 import { validateCustomRibbonText } from "@/lib/validation/wreath";
-import type {
-  Customization,
-  CustomizationChoice,
-  CustomizationOption,
-} from "@/types/product";
+import type { Customization, CustomizationChoice, CustomizationOption } from "@/types/product";
 
 export interface RibbonConfiguratorProps {
   /** Whether the ribbon configurator should be visible */
@@ -63,9 +59,7 @@ export function RibbonConfigurator({
   const handleChoiceSelection = useCallback(
     (optionId: string, choiceId: string, option: CustomizationOption) => {
       const newCustomizations = [...customizations];
-      const existingIndex = newCustomizations.findIndex(
-        (c) => c.optionId === optionId
-      );
+      const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
 
       if (existingIndex >= 0) {
         const existing = newCustomizations[existingIndex]!;
@@ -85,15 +79,10 @@ export function RibbonConfigurator({
         } else {
           // Multiple selection - toggle
           if (existing.choiceIds.includes(choiceId)) {
-            existing.choiceIds = existing.choiceIds.filter(
-              (id) => id !== choiceId
-            );
+            existing.choiceIds = existing.choiceIds.filter((id) => id !== choiceId);
           } else {
             // Check max selections limit
-            if (
-              !option.maxSelections ||
-              existing.choiceIds.length < option.maxSelections
-            ) {
+            if (!option.maxSelections || existing.choiceIds.length < option.maxSelections) {
               existing.choiceIds.push(choiceId);
             }
           }
@@ -115,9 +104,7 @@ export function RibbonConfigurator({
   const handleCustomValueChange = useCallback(
     (optionId: string, value: string) => {
       const newCustomizations = [...customizations];
-      const existingIndex = newCustomizations.findIndex(
-        (c) => c.optionId === optionId
-      );
+      const existingIndex = newCustomizations.findIndex((c) => c.optionId === optionId);
 
       if (existingIndex >= 0) {
         newCustomizations[existingIndex]!.customValue = value;
@@ -136,11 +123,7 @@ export function RibbonConfigurator({
 
   // Render a single choice
   const renderChoice = useCallback(
-    (
-      option: CustomizationOption,
-      choice: CustomizationChoice,
-      index: number
-    ) => {
+    (option: CustomizationOption, choice: CustomizationChoice, index: number) => {
       const currentCustomization = getCurrentCustomization(option.id);
       const isSelected = currentCustomization?.choiceIds.includes(choice.id);
       const choiceId = `${option.id}-choice-${choice.id}`;
@@ -179,9 +162,7 @@ export function RibbonConfigurator({
               )}
               aria-hidden="true"
             >
-              {isSelected && (
-                <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />
-              )}
+              {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-stone-900" />}
             </div>
             <div className="text-left">
               <div id={`${choiceId}-label`} className="font-medium">
@@ -198,20 +179,13 @@ export function RibbonConfigurator({
           {/* Screen reader description */}
           <div id={`${choiceId}-description`} className="sr-only">
             {choice.label[locale as keyof typeof choice.label]}
-            {choice.priceModifier !== 0 &&
-              `, ${formatPriceModifier(choice.priceModifier)}`}
+            {choice.priceModifier !== 0 && `, ${formatPriceModifier(choice.priceModifier)}`}
             {isSelected && ` - ${tAccessibility("selected")}`}
           </div>
         </button>
       );
     },
-    [
-      getCurrentCustomization,
-      handleChoiceSelection,
-      locale,
-      formatPriceModifier,
-      tAccessibility,
-    ]
+    [getCurrentCustomization, handleChoiceSelection, locale, formatPriceModifier, tAccessibility]
   );
 
   // Handle custom text validation
@@ -261,9 +235,7 @@ export function RibbonConfigurator({
           <textarea
             id={inputId}
             value={value}
-            onChange={(e) =>
-              handleCustomValueChangeWithValidation(option.id, e.target.value)
-            }
+            onChange={(e) => handleCustomValueChangeWithValidation(option.id, e.target.value)}
             placeholder={t("customTextPlaceholder")}
             className={cn(
               "w-full p-3 border rounded-lg focus:ring-2 resize-none transition-colors",
@@ -271,8 +243,8 @@ export function RibbonConfigurator({
               hasErrors
                 ? "border-red-300 focus:ring-red-200 focus:border-red-500"
                 : hasWarnings
-                ? "border-amber-300 focus:ring-amber-200 focus:border-amber-500"
-                : "border-stone-300 focus:ring-stone-200 focus:border-stone-500"
+                  ? "border-amber-300 focus:ring-amber-200 focus:border-amber-500"
+                  : "border-stone-300 focus:ring-stone-200 focus:border-stone-500"
             )}
             rows={2}
             maxLength={choice.maxLength || 50}
@@ -388,27 +360,17 @@ export function RibbonConfigurator({
 
             <div className="flex items-center justify-between">
               <div>
-                <h5
-                  id={`${colorOption.id}-title`}
-                  className="font-medium text-stone-800"
-                >
+                <h5 id={`${colorOption.id}-title`} className="font-medium text-stone-800">
                   {colorOption.name[locale as keyof typeof colorOption.name]}
                   {colorOption.required && (
-                    <span
-                      className="text-red-500 ml-1"
-                      aria-label={tAccessibility("required")}
-                    >
+                    <span className="text-red-500 ml-1" aria-label={tAccessibility("required")}>
                       *
                     </span>
                   )}
                 </h5>
                 {colorOption.description && (
                   <p className="text-sm text-stone-600 mt-1">
-                    {
-                      colorOption.description[
-                        locale as keyof typeof colorOption.description
-                      ]
-                    }
+                    {colorOption.description[locale as keyof typeof colorOption.description]}
                   </p>
                 )}
               </div>
@@ -429,14 +391,9 @@ export function RibbonConfigurator({
             {colorOption.required &&
               isRibbonSelected &&
               !getCurrentCustomization(colorOption.id)?.choiceIds.length && (
-                <div
-                  className="text-sm text-red-600"
-                  role="alert"
-                  aria-live="polite"
-                >
+                <div className="text-sm text-red-600" role="alert" aria-live="polite">
                   {t("validation.conditionalRequired", {
-                    option:
-                      colorOption.name[locale as keyof typeof colorOption.name],
+                    option: colorOption.name[locale as keyof typeof colorOption.name],
                   })}
                 </div>
               )}
@@ -453,27 +410,17 @@ export function RibbonConfigurator({
 
             <div className="flex items-center justify-between">
               <div>
-                <h5
-                  id={`${textOption.id}-title`}
-                  className="font-medium text-stone-800"
-                >
+                <h5 id={`${textOption.id}-title`} className="font-medium text-stone-800">
                   {textOption.name[locale as keyof typeof textOption.name]}
                   {textOption.required && (
-                    <span
-                      className="text-red-500 ml-1"
-                      aria-label={tAccessibility("required")}
-                    >
+                    <span className="text-red-500 ml-1" aria-label={tAccessibility("required")}>
                       *
                     </span>
                   )}
                 </h5>
                 {textOption.description && (
                   <p className="text-sm text-stone-600 mt-1">
-                    {
-                      textOption.description[
-                        locale as keyof typeof textOption.description
-                      ]
-                    }
+                    {textOption.description[locale as keyof typeof textOption.description]}
                   </p>
                 )}
               </div>
@@ -488,8 +435,7 @@ export function RibbonConfigurator({
               {(textOption.choices || []).map((choice, index) => (
                 <div key={choice.id}>
                   {renderChoice(textOption, choice, index)}
-                  {choice.allowCustomInput &&
-                    renderCustomTextInput(textOption, choice)}
+                  {choice.allowCustomInput && renderCustomTextInput(textOption, choice)}
                 </div>
               ))}
             </div>
@@ -498,14 +444,9 @@ export function RibbonConfigurator({
             {textOption.required &&
               isRibbonSelected &&
               !getCurrentCustomization(textOption.id)?.choiceIds.length && (
-                <div
-                  className="text-sm text-red-600"
-                  role="alert"
-                  aria-live="polite"
-                >
+                <div className="text-sm text-red-600" role="alert" aria-live="polite">
                   {t("validation.conditionalRequired", {
-                    option:
-                      textOption.name[locale as keyof typeof textOption.name],
+                    option: textOption.name[locale as keyof typeof textOption.name],
                   })}
                 </div>
               )}

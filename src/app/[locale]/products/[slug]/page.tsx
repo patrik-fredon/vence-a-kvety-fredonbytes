@@ -7,15 +7,9 @@ import {
   generateProductStructuredData,
   StructuredData,
 } from "@/components/seo/StructuredData";
-import {
-  cacheProductBySlug,
-  getCachedProductBySlug,
-} from "@/lib/cache/product-cache";
+import { cacheProductBySlug, getCachedProductBySlug } from "@/lib/cache/product-cache";
 import { createServerClient } from "@/lib/supabase/server";
-import {
-  transformCategoryRow,
-  transformProductRow,
-} from "@/lib/utils/product-transforms";
+import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
 
 interface ProductDetailPageProps {
   params: Promise<{
@@ -30,9 +24,7 @@ export const dynamic = "force-dynamic";
 // Disable static generation to avoid conflicts
 export const dynamicParams = true;
 
-export default async function ProductDetailPage({
-  params,
-}: ProductDetailPageProps) {
+export default async function ProductDetailPage({ params }: ProductDetailPageProps) {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale, namespace: "navigation" });
 
@@ -87,9 +79,7 @@ export default async function ProductDetailPage({
     });
 
     if (error || !data) {
-      console.log(
-        `❌ [ProductDetailPage] Product not found, calling notFound()`
-      );
+      console.log(`❌ [ProductDetailPage] Product not found, calling notFound()`);
       notFound();
     }
 
@@ -110,13 +100,11 @@ export default async function ProductDetailPage({
   }
 
   // Generate structured data
-  const baseUrl =
-    process.env[".NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env[".NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
   const productUrl = `${baseUrl}/${locale}/products/${slug}`;
 
   const productName = locale === "cs" ? product.name.cs : product.name.en;
-  const productDescription =
-    locale === "cs" ? product.description?.cs : product.description?.en;
+  const productDescription = locale === "cs" ? product.description?.cs : product.description?.en;
   const categoryName = product.category
     ? locale === "cs"
       ? product.category.name.cs
@@ -157,10 +145,7 @@ export default async function ProductDetailPage({
     url: `/products/${slug}`,
   });
 
-  const breadcrumbStructuredData = generateBreadcrumbStructuredData(
-    breadcrumbs,
-    locale
-  );
+  const breadcrumbStructuredData = generateBreadcrumbStructuredData(breadcrumbs, locale);
 
   return (
     <>
@@ -207,8 +192,7 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
   }
 
   const name = locale === "cs" ? data.name_cs : data.name_en;
-  const description =
-    locale === "cs" ? data.description_cs : data.description_en;
+  const description = locale === "cs" ? data.description_cs : data.description_en;
   const categoryName = data.categories
     ? locale === "cs"
       ? data.categories.name_cs
@@ -216,14 +200,9 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
     : "";
 
   // Type-safe handling of seo_metadata
-  const seoMetadata = data.seo_metadata as Record<
-    string,
-    Record<string, string>
-  > | null;
+  const seoMetadata = data.seo_metadata as Record<string, Record<string, string>> | null;
   const seoTitle = seoMetadata?.["title"]?.[locale] as string | undefined;
-  const seoDescription = seoMetadata?.["description"]?.[locale] as
-    | string
-    | undefined;
+  const seoDescription = seoMetadata?.["description"]?.[locale] as string | undefined;
 
   // Get first product image
   const productImages = Array.isArray(data.images) ? data.images : [];
@@ -240,17 +219,10 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
       images:
         productImages.length > 0
           ? productImages.map((img) => {
-              if (
-                img &&
-                typeof img === "object" &&
-                "url" in img &&
-                "alt" in img
-              ) {
+              if (img && typeof img === "object" && "url" in img && "alt" in img) {
                 return {
                   url: typeof img["url"] === "string" ? img["url"] : "",
-                  alt:
-                    (typeof img["alt"] === "string" ? img["alt"] : null) ||
-                    name,
+                  alt: (typeof img["alt"] === "string" ? img["alt"] : null) || name,
                 };
               }
               return { url: "", alt: name };

@@ -69,10 +69,7 @@ export function ResourceHints({
       />
 
       {/* Viewport meta for proper responsive behavior */}
-      <meta
-        name="viewport"
-        content="width=device-width, initial-scale=1, viewport-fit=cover"
-      />
+      <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
 
       {/* Performance hints */}
       <meta httpEquiv="x-dns-prefetch-control" content="on" />

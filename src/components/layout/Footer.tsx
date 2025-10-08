@@ -41,11 +41,7 @@ export function Footer({ locale }: FooterProps) {
                   className="hover:opacity-50 transition-opacity duration-200 "
                   aria-label={t("home")}
                 >
-                  <img
-                    src="/favicon.svg"
-                    alt="Logo"
-                    className="w-auto mx-auto max-w-60"
-                  />
+                  <img src="/favicon.svg" alt="Logo" className="w-auto mx-auto max-w-60" />
                 </Link>
               </div>
             </div>
@@ -130,10 +126,7 @@ export function Footer({ locale }: FooterProps) {
               <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4 text-teal-800 border-b-1 border-teal-800">
                 {t("quickLinks")}
               </h4>
-              <nav
-                className="space-y-1 sm:space-y-2"
-                aria-label={tAccessibility("quickLinks")}
-              >
+              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility("quickLinks")}>
                 <Link
                   href={`/${locale}/about`}
                   className="block text-amber-100 hover:text-amber-200 transition-colors duration-200 rounded px-1 py-0.5"
@@ -165,10 +158,7 @@ export function Footer({ locale }: FooterProps) {
               <h4 className="text-sm sm:text-base font-semibold mb-3 sm:mb-4  text-teal-800 border-b-1 border-teal-800">
                 {t("legal")}
               </h4>
-              <nav
-                className="space-y-1 sm:space-y-2"
-                aria-label={tAccessibility("legalInfo")}
-              >
+              <nav className="space-y-1 sm:space-y-2" aria-label={tAccessibility("legalInfo")}>
                 <Link
                   href={`/${locale}/privacy`}
                   className="block text-amber-100 hover:text-amber-200 transition-colors duration-200 rounded px-1 py-0.5"
@@ -215,10 +205,7 @@ export function Footer({ locale }: FooterProps) {
                         });
                         toolbarButton.focus();
                         // Trigger click to open toolbar if it's closed
-                        if (
-                          toolbarButton.getAttribute("aria-expanded") ===
-                          "false"
-                        ) {
+                        if (toolbarButton.getAttribute("aria-expanded") === "false") {
                           toolbarButton.click();
                         }
                       }
