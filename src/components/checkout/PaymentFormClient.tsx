@@ -44,7 +44,7 @@ export function PaymentFormClient({
 
     try {
       // Get CSRF token
-      const { clientCSRFUtils } = await import("@/lib/security/csrf");
+      const { clientCSRFUtils } = await import("@/lib/security/csrf-client");
       const csrfToken = await clientCSRFUtils.getToken();
 
       if (!csrfToken) {

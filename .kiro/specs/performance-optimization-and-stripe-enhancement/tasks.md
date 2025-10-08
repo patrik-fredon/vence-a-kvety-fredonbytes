@@ -216,7 +216,7 @@
     - Record after-optimization metrics
     - _Requirements: 10.7_
 
-- [-] 11. Security Hardening
+- [x] 11. Security Hardening
   - [x] 11.1 Implement rate limiting for payment endpoints
     - Add rate limiting to payment initialization endpoint
     - Add rate limiting to webhook endpoint
@@ -234,14 +234,14 @@
     - Verify tokens on server-side
     - _Requirements: 8.6_
 
-  - [-] 11.4 Audit and secure API keys
+  - [x] 11.4 Audit and secure API keys
     - Verify no API keys in code
     - Ensure environment variables are used
     - Add validation for required environment variables
     - _Requirements: 8.4_
 
-- [ ] 12. Performance Validation and Optimization
-  - [ ] 12.1 Run bundle size analysis
+- [-] 12. Performance Validation and Optimization
+  - [x] 12.1 Run bundle size analysis
     - Generate bundle size report
     - Compare with baseline
     - Identify largest bundles

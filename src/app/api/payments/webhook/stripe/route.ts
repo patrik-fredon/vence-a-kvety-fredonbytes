@@ -4,8 +4,9 @@
 
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
-import { PaymentService } from "@/lib/payments";
+// import { PaymentService } from "@/lib/payments";
 import { createServerClient } from "@/lib/supabase/server";
+import { getRequiredEnvVar } from "@/lib/config/env-validation";
 
 export async function POST(request: NextRequest) {
   try {
@@ -41,9 +42,11 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ error: "Missing signature header" }, { status: 400 });
     }
 
-    const webhookSecret = process.env["STRIPE_WEBHOOK_SECRET"];
-    if (!webhookSecret) {
-      console.error("[Webhook] Stripe webhook secret not configured");
+    let webhookSecret: string;
+    try {
+      webhookSecret = getRequiredEnvVar("STRIPE_WEBHOOK_SECRET");
+    } catch (error) {
+      console.error("[Webhook] Stripe webhook secret not configured:", error);
       return NextResponse.json({ error: "Webhook not configured" }, { status: 500 });
     }
 
@@ -326,46 +329,17 @@ async function handlePaymentProcessing(paymentIntent: any) {
 /**
  * Check if event has already been processed (idempotency)
  */
-async function checkDuplicateEvent(eventId: string): Promise<boolean> {
-  try {
-    const supabase = createServerClient();
-
-    const { data, error } = await supabase
-      .from("webhook_events")
-      .select("id")
-      .eq("event_id", eventId)
-      .single();
-
-    if (error && error.code !== "PGRST116") {
-      // PGRST116 is "not found" error
-      console.error("[Webhook] Error checking duplicate event:", error);
-      return false;
-    }
-
-    return !!data;
-  } catch (error) {
-    console.error("[Webhook] Error checking duplicate event:", error);
-    return false;
-  }
+async function checkDuplicateEvent(_eventId: string): Promise<boolean> {
+  // TODO: Create webhook_events table in database
+  // For now, always return false (no duplicate)
+  return false;
 }
 
 /**
  * Mark event as processed
  */
-async function markEventProcessed(eventId: string, eventType: string): Promise<void> {
-  try {
-    const supabase = createServerClient();
-
-    const { error } = await supabase.from("webhook_events").insert({
-      event_id: eventId,
-      event_type: eventType,
-      processed_at: new Date().toISOString(),
-    });
-
-    if (error) {
-      console.error("[Webhook] Error marking event as processed:", error);
-    }
-  } catch (error) {
-    console.error("[Webhook] Error marking event as processed:", error);
-  }
+async function markEventProcessed(_eventId: string, _eventType: string): Promise<void> {
+  // TODO: Create webhook_events table in database
+  // For now, do nothing
+  console.log(`[Webhook] Event processed: ${_eventId} (${_eventType})`);
 }

@@ -272,7 +272,7 @@ export async function getCacheStatistics(): Promise<{
   totalKeys: number;
 }> {
   try {
-    const client = getCacheClient();
+    // const client = getCacheClient();
 
     // Note: This is a simplified version
     // In production, you'd want to use Redis SCAN command

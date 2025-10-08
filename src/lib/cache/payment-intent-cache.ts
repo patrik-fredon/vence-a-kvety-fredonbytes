@@ -5,7 +5,7 @@
 
 import { cache } from "react";
 import type Stripe from "stripe";
-import { getCacheClient, generateCacheKey, CACHE_KEYS } from "./client";
+import { getCacheClient, generateCacheKey, CACHE_KEYS } from "./redis";
 
 // Cache TTL for payment intents (15 minutes)
 const PAYMENT_INTENT_TTL = 15 * 60; // 15 minutes in seconds

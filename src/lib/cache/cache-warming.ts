@@ -13,7 +13,7 @@ import {
   transformProductRow,
   transformCategoryRow,
 } from "@/lib/utils/product-transforms";
-import type { Product, ProductRow, CategoryRow, Category } from "@/types/product";
+import type { Product, /* ProductRow, */ CategoryRow, Category } from "@/types/product";
 
 /**
  * Warm up featured products cache
@@ -65,7 +65,7 @@ export async function warmFeaturedProducts(): Promise<void> {
     await cacheProductsList(
       { featured: true, active: true, limit: 10 },
       products,
-      { page: 1, limit: 10, total: products.length, totalPages: 1 }
+      { page: 1, limit: 10, total: products.length }
     );
 
     console.log(`✅ [CacheWarming] Warmed ${products.length} featured products`);

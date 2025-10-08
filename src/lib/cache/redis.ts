@@ -255,6 +255,9 @@ export const CACHE_KEYS = {
 
   // API responses
   API_RESPONSE: "api:response",
+
+  // Payment caching
+  PAYMENT: "payment",
 } as const;
 
 /**

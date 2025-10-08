@@ -185,13 +185,13 @@ function saveAnalysis(analysis: BundleAnalysis): void {
  * Send to monitoring endpoint (if in CI/CD)
  */
 async function sendToMonitoring(analysis: BundleAnalysis): Promise<void> {
-  if (process.env.CI !== "true") {
+  if (process.env["CI"] !== "true") {
     console.log("ℹ️  Skipping monitoring upload (not in CI environment)\n");
     return;
   }
 
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/monitoring/bundle-size`, {
+    const response = await fetch(`${process.env["NEXT_PUBLIC_SITE_URL"]}/api/monitoring/bundle-size`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -267,7 +267,7 @@ async function main() {
     await sendToMonitoring(analysis);
 
     // Exit with error if warnings exist and in CI
-    if (process.env.CI === "true" && warnings.length > 0) {
+    if (process.env["CI"] === "true" && warnings.length > 0) {
       console.error("❌ Bundle size check failed due to warnings");
       process.exit(1);
     }

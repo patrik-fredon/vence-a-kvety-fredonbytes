@@ -4,10 +4,13 @@
 
 import { loadStripe, type StripeElementsOptions } from "@stripe/stripe-js";
 import Stripe from "stripe";
+import { getRequiredEnvVar } from "@/lib/config/env-validation";
 
-// Server-side Stripe instance
-export const stripe = process.env["STRIPE_SECRET_KEY"]
-  ? new Stripe(process.env["STRIPE_SECRET_KEY"], {
+// Server-side Stripe instance with validation
+export const stripe = (() => {
+  try {
+    const secretKey = getRequiredEnvVar("STRIPE_SECRET_KEY");
+    return new Stripe(secretKey, {
       apiVersion: "2024-12-18.acacia" as any,
       typescript: true,
       maxNetworkRetries: 3,
@@ -17,15 +20,20 @@ export const stripe = process.env["STRIPE_SECRET_KEY"]
         version: "1.0.0",
         url: "https://vence-a-kvety.cz",
       },
-    })
-  : null;
+    });
+  } catch (error) {
+    console.error("Failed to initialize Stripe:", error);
+    return null;
+  }
+})();
 
 // Client-side Stripe promise
 let stripePromise: Promise<any> | null = null;
 
 export const getStripe = () => {
   if (!stripePromise) {
-    stripePromise = loadStripe(process.env["NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"]!);
+    const publishableKey = getRequiredEnvVar("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
+    stripePromise = loadStripe(publishableKey);
   }
   return stripePromise;
 };

@@ -11,17 +11,17 @@ import {
 } from "@/lib/utils/product-transforms";
 import {
   getProducts as getProductsOptimized,
-  invalidateProduct,
-  type ProductFilters,
+  // invalidateProduct,
+  // type ProductFilters,
 } from "@/lib/services/product-service";
 import { slugify as createSlug } from "@/lib/utils";
 import type { ApiResponse } from "@/types";
 import type {
-  CategoryRow,
+  // CategoryRow,
   CreateProductRequest,
   Product,
-  ProductRow,
-  ProductSearchParams,
+  // ProductRow,
+  // ProductSearchParams,
 } from "@/types/product";
 
 /**
@@ -38,7 +38,7 @@ async function getProducts(request: NextRequest) {
     const { searchParams } = new URL(request.url);
 
     // Parse query parameters
-    const filters: ProductFilters = {
+    const filters = {
       page: Number.parseInt(searchParams.get("page") || "1", 10),
       limit: Math.min(Number.parseInt(searchParams.get("limit") || "12", 10), 100),
       categoryId: searchParams.get("categoryId") || undefined,
@@ -54,7 +54,7 @@ async function getProducts(request: NextRequest) {
     };
 
     // Use optimized product service with caching
-    const result = await getProductsOptimized(filters);
+    const result = await getProductsOptimized(filters as any);
 
     const response: ApiResponse<Product[]> = {
       success: true,

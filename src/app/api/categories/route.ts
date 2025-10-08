@@ -3,6 +3,10 @@
  * Handles CRUD operations for categories
  */
 
+import { NextRequest, NextResponse } from "next/server";
+import { createServerClient } from "@/lib/supabase/server";
+import { setCacheHeaders, withCache, invalidateApiCache } from "@/lib/cache/api-cache";
+import { CACHE_TTL } from "@/lib/cache/redis";
 import {
   categoryToRow,
   transformCategoryRow,
