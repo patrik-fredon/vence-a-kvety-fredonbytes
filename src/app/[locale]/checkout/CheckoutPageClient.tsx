@@ -51,7 +51,7 @@ export function CheckoutPageClient({ locale, initialCart }: CheckoutPageClientPr
                 Zpět do košíku
               </button>
             </div>
-            <h1 className="text-xl font-semibold text-amber-100">{t("title")}</h1>
+            <h1 className="text-lg sm:text-xl font-semibold text-amber-100">{t("title")}</h1>
             <div className="w-24" /> {/* Spacer for centering */}
           </div>
         </div>

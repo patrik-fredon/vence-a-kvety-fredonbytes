@@ -247,7 +247,7 @@
     - Identify largest bundles
     - _Requirements: 1.5, 5.4_
 
-  - [ ] 12.2 Measure Core Web Vitals
+  - [x] 12.2 Measure Core Web Vitals
     - Run Lighthouse audits on key pages
     - Measure LCP, FID, CLS
     - Compare with target thresholds

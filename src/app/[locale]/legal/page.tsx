@@ -14,8 +14,8 @@ export default async function LegalPage() {
   const t = await getTranslations("legal");
   //TODO add missing keys to messages next-intl
   return (
-    <div className="container mx-auto px-4 py-16 max-w-4xl">
-      <h1 className="text-elegant text-4xl font-semibold text-amber-100 mb-8">{t("title")}</h1>
+    <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16 max-w-4xl">
+      <h1 className="text-elegant text-2xl sm:text-3xl md:text-4xl font-semibold text-amber-100 mb-6 md:mb-8">{t("title")}</h1>
 
       <div className="prose prose-lg max-w-none">
         <section className="mb-12">
