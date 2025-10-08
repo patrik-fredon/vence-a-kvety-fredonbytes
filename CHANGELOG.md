@@ -5,6 +5,37 @@ All notable changes to the funeral wreath e-commerce platform are documented in 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [Unreleased]
+
+### Documentation
+
+#### i18n Structure Documentation
+- **Comprehensive i18n Documentation**: Created detailed documentation of message structure
+  - `docs/i18n-structure.md`: Complete guide to translation organization
+  - Namespace usage map with component references
+  - Best practices for adding/removing translations
+  - Performance considerations and optimization tips
+- **Archive System**: Established archive structure for deprecated translations
+  - `docs/archive/messages/README.md`: Archive documentation
+  - `docs/archive/messages/duplicates.json`: Placeholder for duplicate keys
+  - `docs/archive/messages/unused.json`: Placeholder for unused keys
+- **Structure Analysis**: Verified message structure optimization
+  - 594 keys per locale (cs, en) with 100% consistency
+  - All 20+ namespaces actively used in codebase
+  - No duplicate or unused keys found
+  - Follows next-intl best practices for nested structure
+
+### Changed
+
+#### i18n Optimization
+- **Message Structure Validated**: Confirmed optimal organization
+  - Deeply nested JSON structure following next-intl recommendations
+  - Logical grouping by feature/component (layout, pages, components, utilities)
+  - Type-safe with auto-generated TypeScript types
+  - Perfect parity between Czech and English translations
+
+---
+
 ## [1.0.0] - 2025-10-03 - Production Ready Release
 
 ### 🎉 Major Milestone: Production Ready

@@ -141,7 +141,7 @@ export default async function ProductsPage({
       .order("created_at", { ascending: false })
       .limit(12);
 
-    // Transform the data
+// Transform the data
     products = (productsData || []).map((row) => {
       const category = row.categories
         ? transformCategoryRow(row.categories)
@@ -149,7 +149,7 @@ export default async function ProductsPage({
       return transformProductRow(row, category);
     });
 
-    // Cache products for future requests
+// Cache products for future requests
     await cacheProductsList(initialFilters, products);
   }
 

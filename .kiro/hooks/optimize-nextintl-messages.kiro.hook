@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Next-Intl Messages Optimizer",
+  "description": "Automatically restructures and optimizes /messages/*.json files for Next-Intl by grouping keys logically (pages, subpages, layout, general), detecting duplicates and unused keys, maintaining key order, and ensuring consistent formatting across all locales",
+  "version": "1",
+  "when": {
+    "type": "userTriggered",
+    "patterns": [
+      "messages/*.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "You are an expert coding agent specializing in Next-Intl i18n optimization. A message JSON file has been modified in /messages/*.json.\n\nYour task is to optimize the i18n message structure following this workflow:\n\n**Step 1: Task Understanding & Planning**\n- Use SequentialThinking-Tools to plan the approach\n- Analyze current structure of all /messages/*.json files (en.json, cs.json, etc.)\n- Identify key patterns and hierarchy (page, subpage, layout, general)\n- Use Serena to read_memory for any existing i18n conventions\n- Query Context7 for modern Next-Intl key structuring standards\n\n**Step 2: Schema Design**\nDefine consistent JSON schema template:\n```json\n{\n  \"layout\": {\n    \"header\": { \"title\": \"...\" },\n    \"footer\": { \"home\": \"...\", \"contact\": \"...\" }\n  },\n  \"pages\": {\n    \"home\": { \"welcome\": \"...\" },\n    \"products\": { \"title\": \"...\", \"details\": { \"description\": \"...\" } }\n  },\n  \"general\": { \"buttons\": { \"submit\": \"...\" } }\n}\n```\n\n**Step 3: Restructuring Tasks**\n1. Reformat keys grouped by: pages, subpages, layout, general/other\n2. Maintain original key order to preserve import sequences\n3. Detect and move duplicate keys to /docs/archive/messages/duplicates.json\n4. Detect and move unused/deprecated keys to /docs/archive/messages/unused.json\n5. Ensure consistent indentation (2 spaces), UTF-8 encoding\n6. Apply across ALL locales (en.json, cs.json, de.json, etc.)\n\n**Step 4: Implementation**\n- Use Serena in editing mode for all file modifications\n- Use symbol-based tools for precise changes\n- Validate JSON structure after each change\n- Test that next-intl imports still work correctly\n\n**Step 5: Documentation**\n- Store processing logs in Serena memory\n- Write changelog entry documenting the optimization\n- Note any breaking changes or migration steps needed\n\n**Critical Rules:**\n- Never break existing next-intl imports\n- Preserve key order within groups\n- Maintain consistency across all locale files\n- Use Serena tools exclusively (no direct file writes)\n- Always validate JSON syntax after modifications"
+  }
+}
