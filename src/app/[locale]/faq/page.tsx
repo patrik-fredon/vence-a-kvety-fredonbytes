@@ -63,7 +63,7 @@ export default async function FAQPage({ params }: FAQPageProps) {
 
       <div className="container mx-auto px-4 py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-elegant text-4xl md:text-5xl font-semibold text-primary-800 text-center mb-4">
+          <h1 className="text-elegant text-4xl md:text-5xl font-semibold text-teal-800 text-center mb-4">
             {t("title")}
           </h1>
 

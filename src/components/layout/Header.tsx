@@ -56,7 +56,7 @@ export function Header({ locale }: HeaderProps) {
   };
 
   return (
-    <header className="border-b border-stone-200 bg-funeral-gold sticky top-0 z-40 shadow-xl">
+    <header className="border-b-2 border-teal-800 bg-funeral-gold sticky top-0 z-40 shadow-xl">
       {/* Container with max-width and centered content */}
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         {/* Skip to main content link for screen readers */}
@@ -76,7 +76,7 @@ export function Header({ locale }: HeaderProps) {
         </a>
 
         {/* Single row navigation - Logo left, Navigation center, Actions right */}
-        <div className="flex items-center justify-between py-4">
+        <div className="flex items-center justify-between py-2">
           {/* Logo - Left side */}
           <div className="flex items-center">
             <Link
@@ -84,7 +84,7 @@ export function Header({ locale }: HeaderProps) {
               className="flex items-center hover:opacity-80 transition-opacity duration-200 rounded-lg px-2 py-1"
               aria-label={t("home")}
             >
-              <img src="/logo.svg" alt="Logo" className="h-10 w-auto sm:h-12 md:h-14" />
+              <img src="/logo.svg" alt="Logo" className="h-15 w-auto sm:h-16 md:h-18" />
             </Link>
           </div>
 
@@ -96,25 +96,25 @@ export function Header({ locale }: HeaderProps) {
           >
             <Link
               href={`/${locale}`}
-              className="text-sm font-medium text-teal-900 hover:text-teal-800 transition-colors duration-200 rounded-md px-3 py-2"
+              className="text-sm font-medium text-teal-900 hover:text-amber-300 transition-colors duration-200 rounded-md px-3 py-2"
             >
               {t("home")}
             </Link>
             <Link
               href={`/${locale}/products`}
-              className="text-sm font-medium text-teal-900 hover:text-teal-800 transition-colors duration-200 rounded-md px-3 py-2"
+              className="text-sm font-medium text-teal-900 hover:text-amber-300 transition-colors duration-200 rounded-md px-3 py-2"
             >
               {t("products")}
             </Link>
             <Link
               href={`/${locale}/about`}
-              className="text-sm font-medium text-teal-900 hover:text-teal-800 transition-colors duration-200 rounded-md px-3 py-2"
+              className="text-sm font-medium text-teal-900 hover:text-amber-300 transition-colors duration-200 rounded-md px-3 py-2"
             >
               {t("about")}
             </Link>
             <Link
               href={`/${locale}/contact`}
-              className="text-sm font-medium text-teal-900 hover:text-teal-800 transition-colors duration-200 rounded-md px-3 py-2"
+              className="text-sm font-medium text-teal-900 hover:text-amber-300 transition-colors duration-200 rounded-md px-3 py-2"
             >
               {t("contact")}
             </Link>

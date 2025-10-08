@@ -61,7 +61,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
                     <h3 className="font-medium text-amber-300 text-sm mb-1">{tContact("phone")}</h3>
                     <a
                       href={`tel:${contactInfo.phone}`}
-                      className="text-amber-100 hover:text-primary-700 transition-colors text-sm font-medium"
+                      className="text-amber-100 hover:text-teal-800 transition-colors text-sm font-medium"
                     >
                       {contactInfo.phone}
                     </a>
@@ -74,7 +74,7 @@ export default async function ContactPage({ params }: ContactPageProps) {
                     <h3 className="font-medium text-amber-300 text-sm mb-1">{tContact("email")}</h3>
                     <a
                       href={`mailto:${contactInfo.email}`}
-                      className="text-amber-100 hover:text-primary-700 transition-colors text-sm font-medium break-all"
+                      className="text-amber-100 hover:text-teal-800 transition-colors text-sm font-medium break-all"
                     >
                       {contactInfo.email}
                     </a>

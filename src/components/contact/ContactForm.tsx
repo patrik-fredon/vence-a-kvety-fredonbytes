@@ -217,7 +217,7 @@ export function ContactForm({ locale }: ContactFormProps) {
 
             {/* Subject Field */}
             <div className="space-y-1">
-              <label htmlFor="subject" className="block text-sm font-medium text-teal-700">
+              <label htmlFor="subject" className="block text-sm font-medium text-amber-300">
                 {locale === "cs" ? "Předmět" : "Subject"}
                 <span className="text-error-500 ml-1" aria-label="required">
                   *
@@ -228,8 +228,8 @@ export function ContactForm({ locale }: ContactFormProps) {
                 value={formData.subject}
                 onChange={(e) => handleInputChange("subject", e.target.value)}
                 className={cn(
-                  "block w-full rounded-md border border-teal-300 px-3 py-2",
-                  "text-teal-900 placeholder-teal-500 bg-white",
+                  "block w-full rounded-md border border-amber-300 px-3 py-2",
+                  "text-teal-900 placeholder-teal-900/40 bg-white",
                   "disabled:bg-gray-50 disabled:text-gray-500 disabled:cursor-not-allowed disabled:border-gray-200",
                   "transition-all duration-200 ease-in-out",
                   "shadow-sm focus:shadow-md",
@@ -257,7 +257,7 @@ export function ContactForm({ locale }: ContactFormProps) {
 
             {/* Message Field */}
             <div className="space-y-1">
-              <label htmlFor="message" className="block text-sm font-medium text-teal-700">
+              <label htmlFor="message" className="block text-sm font-medium text-amber-300">
                 {locale === "cs" ? "Zpráva" : "Message"}
                 <span className="text-error-500 ml-1" aria-label="required">
                   *
@@ -269,8 +269,8 @@ export function ContactForm({ locale }: ContactFormProps) {
                 value={formData.message}
                 onChange={(e) => handleInputChange("message", e.target.value)}
                 className={cn(
-                  "block w-full rounded-md border border-teal-300 px-3 py-2",
-                  "text-teal-900 placeholder-teal-500 bg-white",
+                  "block w-full rounded-md border border-amber-300 px-3 py-2",
+                  "text-teal-900 placeholder-teal-900/40 bg-white",
                   "disabled:bg-teal-50 disabled:text-gray-500 disabled:cursor-not-allowed disabled:border-gray-200",
                   "transition-all duration-200 ease-in-out",
                   "shadow-sm focus:shadow-md",
@@ -295,7 +295,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                     {errors.message}
                   </p>
                 ) : (
-                  <p id="message-help" className="text-sm text-teal-600">
+                  <p id="message-help" className="text-sm text-amber-300">
                     {locale === "cs"
                       ? "Minimálně 10 znaků, maximálně 2000 znaků"
                       : "Minimum 10 characters, maximum 2000 characters"}
@@ -320,7 +320,7 @@ export function ContactForm({ locale }: ContactFormProps) {
                 type="submit"
                 disabled={isSubmitting}
                 loading={isSubmitting}
-                className="w-full"
+                className="w-full bg-funeral-gold text-teal-800"
                 size="lg"
               >
                 {isSubmitting
@@ -334,7 +334,7 @@ export function ContactForm({ locale }: ContactFormProps) {
             </div>
 
             {/* Required Fields Note */}
-            <p className="text-sm text-teal-500 text-center">
+            <p className="text-sm text-amber-300 text-center">
               {locale === "cs" ? "* Povinná pole" : "* Required fields"}
             </p>
           </form>

@@ -108,12 +108,11 @@
   }
 
   body {
-    background: linear-gradient(
-      to right,
-      #d2ac47,
-      #f7ef8a,
-      #ae8625
-    ); /* Fallback */
+    background: var(
+      --gradient-funeral-gold,
+      radial-gradient(circle at center, #d2ac47,#f7ef8a, #ae8625),
+    );
+    /* Fallback */
     background: var(
       --gradient-funeral-gold,
       radial-gradient(circle at center, #d2ac47,#f7ef8a, #ae8625),
@@ -122,7 +121,7 @@
     );
     background-attachment: fixed;
     color: var(--foreground);
-    font-family: "Inter", system-ui, sans-serif;
+    font-family: "Palatino", serif;
     font-feature-settings: "cv11", "ss01";
     font-variation-settings: "opsz" 32;
     line-height: 1.6;

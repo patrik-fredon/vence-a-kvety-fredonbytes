@@ -46,22 +46,22 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
         return (
           <div
             key={index}
-            className="bg-funeral-gold rounded-lg shadow-soft border border-neutral-200 overflow-hidden"
+            className="bg-funeral-gold rounded-lg shadow-soft border border-amber-300 overflow-hidden"
           >
             <button
-              className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-stone-50 focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-inset transition-colors"
+              className="w-full px-6 py-4 text-left flex items-center justify-between hover:bg-amber-300   transition-colors"
               onClick={() => toggleItem(index)}
               onKeyDown={(e) => handleKeyDown(e, index)}
               aria-expanded={isOpen}
               aria-controls={`faq-answer-${index}`}
               id={`faq-question-${index}`}
             >
-              <h3 className="text-lg font-semibold text-stone-800 pr-4">{item.question}</h3>
+              <h3 className="text-lg font-semibold text-teal-800 pr-4">{item.question}</h3>
               <div className="flex-shrink-0">
                 {isOpen ? (
-                  <ChevronUpIcon className="w-5 h-5 text-stone-600" />
+                  <ChevronUpIcon className="w-5 h-5 text-teal-800" />
                 ) : (
-                  <ChevronDownIcon className="w-5 h-5 text-stone-600" />
+                  <ChevronDownIcon className="w-5 h-5 text-teal-800" />
                 )}
               </div>
             </button>
@@ -75,11 +75,11 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
               }`}
             >
               <div className="px-6 pb-4">
-                <p className="text-neutral-700 leading-relaxed mb-4">{item.answer}</p>
+                <p className="text-teal-800 leading-relaxed mb-4">{item.answer}</p>
 
                 {item.image && (
                   <div className="mt-6">
-                    <div className="relative w-full max-w-2xl mx-auto bg-funeral-gold rounded-lg shadow-sm border border-neutral-200 overflow-hidden">
+                    <div className="relative w-full max-w-2xl mx-auto bg-funeral-gold rounded-lg shadow-sm border border-teal-800 overflow-hidden">
                       <Image
                         src={item.image.src}
                         alt={item.image.alt}
@@ -90,7 +90,7 @@ export function FAQAccordion({ items }: FAQAccordionProps) {
                       />
                     </div>
                     {item.image.description && (
-                      <p className="text-sm text-neutral-600 text-center mt-3 italic">
+                      <p className="text-sm text-teal-800 text-center mt-3 italic">
                         {item.image.description}
                       </p>
                     )}

@@ -26,7 +26,7 @@ export function Input({
 
   const baseStyles = cn(
     "block w-full rounded-md border border-amber-300 px-3 py-2",
-    "text-amber-900 placeholder-teal-800 bg-white",
+    "text-amber-900 placeholder-teal-800/40 bg-white",
     "focus:border-amber-300 focus:ring-2 focus:ring-amber-300/20 focus:outline-none",
     "disabled:bg-amber-200 disabled:text-amber-300 disabled:cursor-not-allowed disabled:border-amber-200",
     "transition-all duration-200 ease-in-out",

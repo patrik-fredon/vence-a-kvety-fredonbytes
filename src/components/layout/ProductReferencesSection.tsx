@@ -213,7 +213,7 @@ const ProductReferenceCard = ({
   return (
     <article
       className={cn(
-        "group bg-teal-800 backdrop-blur-sm overflow-hidden shadow-xl relative clip-corners",
+        "group bg-funeral-gold border-2 border-amber-300 backdrop-blur-sm overflow-hidden shadow-xl relative corner-clip-container",
         // Enhanced hover effects with motion preference support
         "transition-all duration-300 ease-in-out",
         !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
@@ -277,7 +277,7 @@ const ProductReferenceCard = ({
           id={`product-name-${product.id}`}
           className={cn(
             // Mobile-first typography
-            "text-sm font-semibold text-amber-100", // 14px for mobile
+            "text-sm font-semibold text-teal-800", // 14px for mobile
             "xs:text-base", // 16px for 375px+
             "sm:text-lg", // 18px for 640px+
             "md:text-xl", // 20px for tablet
@@ -299,7 +299,7 @@ const ProductReferenceCard = ({
           id={`product-description-${product.id}`}
           className={cn(
             // Mobile-first typography
-            "text-xs text-amber-200", // 12px for mobile
+            "text-xs text-teal-800", // 12px for mobile
             "xs:text-sm", // 14px for 375px+
             "sm:text-base", // 16px for 640px+
             "md:text-lg", // 18px for tablet
@@ -325,7 +325,7 @@ const ProductReferenceCard = ({
               "inline-block px-2 py-1 rounded-full",
               "text-xs font-medium", // Mobile typography
               "xs:text-sm xs:px-3", // 375px+ sizing
-              "bg-amber-200/20 text-amber-100",
+              "bg-amber-200/20 text-teal-900",
               "transition-all duration-300 ease-in-out",
               "group-hover:bg-amber-100/30 group-hover:text-amber-50"
             )}
@@ -592,7 +592,6 @@ export const ProductReferencesSection = ({
                   disabled={isRetrying}
                   className={cn(
                     "text-teal-800 hover:text-stone-200 font-medium transition-colors",
-                    "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background",
                     "rounded-md px-4 py-2 border border-white/30 hover:border-white/50",
                     "min-h-[44px]", // WCAG touch targe
                     "disabled:opacity-50 disabled:cursor-not-allowed",
@@ -608,7 +607,6 @@ export const ProductReferencesSection = ({
                   onClick={() => (window.location.href = `/${locale}/products`)}
                   className={cn(
                     "text-teal-800 hover:text-stone-200 font-medium transition-colors",
-                    "focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-funeral-background",
                     "rounded-md px-4 py-2 bg-white/10 hover:bg-white/20",
                     "min-h-[44px]" // WCAG touch target
                   )}
