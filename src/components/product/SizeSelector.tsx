@@ -37,11 +37,11 @@ export function SizeSelector({
     return (
       <div className={cn("space-y-4", className)}>
         <div className="flex items-center gap-2">
-          <h3 className="text-lg font-semibold text-stone-900">
+          <h3 className="text-lg font-semibold text-amber-300">
             {sizeOption.name?.[locale as keyof typeof sizeOption.name] || "Size"}
           </h3>
         </div>
-        <div className="text-sm text-stone-500 p-4 bg-stone-50 rounded-lg">
+        <div className="text-sm text-amber-300 p-4 bg-amber-100 rounded-lg">
           {t("noSizesAvailable")}
         </div>
       </div>
@@ -72,12 +72,12 @@ export function SizeSelector({
     <div className={cn("space-y-4", className)}>
       {/* Header with required indicator */}
       <div className="flex items-center gap-2">
-        <h3 id={`${sectionId}-title`} className="text-lg font-semibold text-stone-900">
+        <h3 id={`${sectionId}-title`} className="text-lg font-semibold text-amber-300">
           {sizeOption.name?.[locale as keyof typeof sizeOption.name] || "Size"}
         </h3>
         {sizeOption.required && (
           <span
-            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800"
+            className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-red-500"
             aria-label={tAccessibility("required")}
           >
             {t("required")}
@@ -117,14 +117,13 @@ export function SizeSelector({
                 disabled={!choice.available}
                 className={cn(
                   // Base styles
-                  "relative p-4 rounded-lg border-2 text-left transition-all duration-200",
-                  "focus:outline-none focus:ring-2 focus:ring-stone-950 focus:ring-offset-2",
+                  "relative p-4 rounded-lg border-2 text-left transition-all duration-200 ",
                   "disabled:opacity-50 disabled:cursor-not-allowed",
 
                   // Selected state
                   isSelected
-                    ? "border-stone-900 bg-amber-100 shadow-md"
-                    : "border-stone-200 bg-funeral-gold hover:border-stone-300 hover:shadow-sm",
+                    ? "border-amber-200 bg-amber-300 shadow-md"
+                    : "border-amber-300 bg-amber-100 hover:border-stone-300 hover:shadow-sm",
 
                   // Interactive states
                   "active:scale-[0.98] transition-transform duration-75",
@@ -133,7 +132,6 @@ export function SizeSelector({
                   "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText",
 
                   // Focus improvements for accessibility
-                  "focus-visible:ring-2 focus-visible:ring-stone-950 focus-visible:ring-offset-2"
                 )}
                 role="radio"
                 aria-checked={isSelected}
@@ -149,13 +147,13 @@ export function SizeSelector({
                     className={cn(
                       "w-5 h-5 rounded-full border-2 transition-colors duration-200",
                       isSelected
-                        ? "border-stone-900 bg-stone-900"
-                        : "border-stone-300 bg-funeral-gold"
+                        ? "border-teal-900 bg-teal-900"
+                        : "border-teal-800 bg-amber-300"
                     )}
                   >
                     {isSelected && (
                       <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-funeral-gold rounded-full" />
+                        <div className="w-2 h-2 bg-amber-300 rounded-full" />
                       </div>
                     )}
                   </div>
@@ -163,15 +161,15 @@ export function SizeSelector({
 
                 {/* Size information */}
                 <div className="pr-8">
-                  <div id={`${choiceId}-label`} className="font-semibold text-stone-900">
+                  <div id={`${choiceId}-label`} className="font-semibold text-teal-800">
                     {choice.label?.[locale as keyof typeof choice.label] || choice.id}
                   </div>
 
                   <div className="mt-2 space-y-1">
-                    <div className="text-lg font-bold text-stone-900">
+                    <div className="text-lg font-bold text-teal-800">
                       {getDisplayPrice(choice)}
                     </div>
-                    {priceModifier && <div className="text-sm text-stone-600">{priceModifier}</div>}
+                    {priceModifier && <div className="text-sm text-teal-800">{priceModifier}</div>}
                   </div>
 
                   {!choice.available && (
