@@ -123,7 +123,7 @@ export function SizeSelector({
                   // Selected state
                   isSelected
                     ? "border-amber-200 bg-amber-300 shadow-md"
-                    : "border-amber-300 bg-amber-100 hover:border-stone-300 hover:shadow-sm",
+                    : "border-amber-300 bg-amber-100 ",
 
                   // Interactive states
                   "active:scale-[0.98] transition-transform duration-75",
@@ -147,13 +147,13 @@ export function SizeSelector({
                     className={cn(
                       "w-5 h-5 rounded-full border-2 transition-colors duration-200",
                       isSelected
-                        ? "border-teal-900 bg-teal-900"
-                        : "border-teal-800 bg-amber-300"
+                        ? "border-teal-900 bg-amber-300"
+                        : "border-teal-800 bg-amber-100"
                     )}
                   >
                     {isSelected && (
                       <div className="w-full h-full flex items-center justify-center">
-                        <div className="w-2 h-2 bg-amber-300 rounded-full" />
+                        <div className="w-2 h-2 bg-teal-800 rounded-full" />
                       </div>
                     )}
                   </div>

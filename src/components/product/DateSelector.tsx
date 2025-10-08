@@ -69,30 +69,30 @@ export function DateSelector({
         onClick={handleToggleCalendar}
         className={cn(
           "w-full flex items-center justify-between p-3 border rounded-lg transition-colors",
-          "border-amber-300 bg-funeral-gold hover:border-amber-400 hover:bg-amber-50",
+          "border-amber-300 bg-amber-100 hover:border-stone-300 hover:shadow-sm",
           "focus:ring-2 focus:ring-primary-200 focus:border-primary-500"
         )}
       >
         <div className="flex items-center space-x-3">
-          <CalendarIcon className="w-5 h-5 text-amber-500" />
+          <CalendarIcon className="w-5 h-5 text-teal-800" />
           <div className="text-left">
             {value ? (
-              <div className="font-medium text-amber-900">{formatDateForDisplay(value)}</div>
+              <div className="font-medium text-teal-800">{formatDateForDisplay(value)}</div>
             ) : (
-              <div className="text-teal-500">
+              <div className="text-teal-800">
                 {locale === "cs" ? "Vyberte datum" : "Select date"}
               </div>
             )}
           </div>
         </div>
-        <div className="text-teal-400">{isOpen ? "▲" : "▼"}</div>
+        <div className="text-teal-800">{isOpen ? "▲" : "▼"}</div>
       </button>
 
       {/* Calendar Input */}
       {isOpen && (
-        <div className="p-4 border border-amber-200 rounded-lg bg-funeral-gold shadow-lg">
+        <div className="p-4 border border-amber-200 rounded-lg bg-amber-100 shadow-lg">
           <div className="space-y-3">
-            <div className="text-sm font-medium text-teal-700">
+            <div className="text-sm font-medium text-teal-800">
               {locale === "cs" ? "Vyberte datum dodání:" : "Select delivery date:"}
             </div>
 
@@ -108,7 +108,7 @@ export function DateSelector({
               )}
             />
 
-            <div className="text-xs text-amber-500">
+            <div className="text-xs text-teal-800">
               {locale === "cs"
                 ? `Dostupné termíny: ${minDate.toLocaleDateString(
                     "cs-CZ"

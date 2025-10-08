@@ -325,7 +325,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("ribbon")}</span>
-                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -363,7 +362,6 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("customize")}</span>
-                  <span className="text-sm font-normal text-amber-100">({t("optional")})</span>
                 </CardTitle>
               </CardHeader>
               <CardContent>
@@ -445,7 +443,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                           variant="outline"
                           size="sm"
                           onClick={() => setValidationWarnings([])}
-                          className="text-xs bg-funeral-gold border-amber-300 text-amber-700 hover:bg-amber-50"
+                          className="text-xs bg-funeral-gold border-amber-300 text-red-700 hover:bg-amber-50"
                         >
                           Dismiss Warnings
                         </Button>

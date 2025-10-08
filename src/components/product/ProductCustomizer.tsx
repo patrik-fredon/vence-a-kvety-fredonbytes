@@ -114,20 +114,20 @@ export function ProductCustomizer({
           "flex items-center justify-between p-3 border rounded-lg transition-colors text-left",
           "focus:outline-none focus:ring-2 focus:ring-amber-150 focus:ring-offset-2",
           isSelected
-            ? "border-amber-100 bg-funeral-teal text-amber-100"
+            ? "border-amber-100 bg-amber-300 text-teal-800"
             : canSelect
-              ? "border-amber-100 bg-white hover:border-amber-100 hover:bg-funeral-teal"
-              : "border-amber-100 bg-funeral-teal text-amber-100 cursor-not-allowed"
+              ? "border-teal-800 bg-amber-100 text-teal-800"
+              : "border-amber-100 bg-amber-100 text-teal-800 cursor-not-allowed"
         )}
       >
         <div className="flex items-center space-x-3">
           <div
             className={cn(
               "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-              isSelected ? "border-amber-100" : "border-amber-100"
+              isSelected ? "border-teal-800" : "border-teal-800"
             )}
           >
-            {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-900" />}
+            {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-800" />}
           </div>
           <div className="text-left">
             <div className="font-medium">
@@ -263,24 +263,7 @@ export function ProductCustomizer({
           <div key={option.id} className="space-y-3">
             {/* Option Header */}
             <div className="flex items-center justify-between">
-              <div>
-                <h4 className="font-semibold text-teal-900">
-                  {typeof option.name === "object"
-                    ? option.name[locale as keyof typeof option.name] || option.name.cs
-                    : option.name}
-                  {option.required && <span className="text-red-500 ml-1">*</span>}
-                </h4>
-                {option.description && (
-                  <p className="text-sm text-teal-800 mt-1">
-                    {typeof option.description === "object"
-                      ? option.description[locale as keyof typeof option.description] ||
-                        option.description.cs
-                      : option.description}
-                  </p>
-                )}
-              </div>
-
-              {/* Selection Counter */}
+                   {/* Selection Counter */}
               {option.maxSelections && option.maxSelections > 1 && (
                 <div className="text-sm text-teal-800">
                   {selectionCount}/{option.maxSelections}
@@ -318,7 +301,7 @@ export function ProductCustomizer({
             )}
 
             {option.minSelections && selectionCount < option.minSelections && (
-              <div className="text-sm text-teal-800">
+              <div className="text-sm text-amber-100/40">
                 {t("validation.minSelections", {
                   option:
                     typeof option.name === "object"

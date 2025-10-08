@@ -26,7 +26,7 @@ export function LazyRibbonConfigurator(props: RibbonConfiguratorProps) {
       fallback={
         <div className="flex items-center justify-center p-4">
           <LoadingSpinner size="sm" />
-          <span className="ml-2 text-sm text-stone-600">Loading ribbon options...</span>
+          <span className="ml-2 text-sm text-amber-200">Loading ribbon options...</span>
         </div>
       }
     >

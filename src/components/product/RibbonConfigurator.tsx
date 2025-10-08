@@ -138,8 +138,8 @@ export function RibbonConfigurator({
           className={cn(
             "flex items-center justify-between p-3 border rounded-lg transition-colors text-left",
             isSelected
-              ? "border-teal-800 bg-amber-300 text-teal-800"
-              : "border-amber-300 bg-amber-100 ",
+            ? "border-teal-800 bg-amber-300 text-teal-800"
+            : "border-teal-800 bg-amber-100 text-teal-800",
             // High contrast support
             "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
           )}
@@ -157,18 +157,18 @@ export function RibbonConfigurator({
             <div
               className={cn(
                 "w-5 h-5 rounded-full border-2 flex items-center justify-center transition-colors",
-                isSelected ? "border-teal-800" : "border-amber-300"
+                isSelected ? "border-teal-900 bg-amber-300" : "border-teal-800 bg-amber-100"
               )}
               aria-hidden="true"
             >
-              {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-800" />}
+              {isSelected && <div className="w-2 h-2 rounded-full bg-teal-800" />}
             </div>
             <div className="text-left">
-              <div id={`${choiceId}-label`} className="font-medium">
+              <div id={`${choiceId}-label`} className="font-medium text-teal-800">
                 {choice.label[locale as keyof typeof choice.label]}
               </div>
               {choice.priceModifier !== 0 && (
-                <div className="text-sm text-amber-100">
+                <div className="text-sm text-teal-800">
                   {formatPriceModifier(choice.priceModifier)}
                 </div>
               )}
@@ -258,7 +258,7 @@ export function RibbonConfigurator({
 
           {/* Character count and validation messages */}
           <div className="space-y-1">
-            <div className="flex justify-between text-xs text-amber-200">
+            <div className="flex justify-between text-xs text-amber-100/40">
               <span id={`${inputId}-help`}>{t("customTextHelp")}</span>
               <span
                 className={cn(
@@ -332,17 +332,17 @@ export function RibbonConfigurator({
 
   return (
     <section
-      className={cn("space-y-6 p-4 bg-stone-50 rounded-lg border", className)}
+      className={cn("space-y-6 p-4 bg-amber-100 rounded-lg border border-teal-800", className)}
       aria-labelledby={`${sectionId}-title`}
     >
       <div className="space-y-4">
         <h4
           id={`${sectionId}-title`}
-          className="font-semibold text-amber-100 flex items-center gap-2"
+          className="font-semibold text-teal-800 flex items-center gap-2"
         >
           {t("ribbonConfiguration")}
           <span
-            className="text-sm font-normal text-amber-200"
+            className="text-sm font-normal text-teal-800"
             aria-label={tAccessibility("optional")}
           >
             ({t("optional")})
@@ -391,23 +391,6 @@ export function RibbonConfigurator({
               {textOption.required && ` (${tAccessibility("required")})`}
             </legend>
 
-            <div className="flex items-center justify-between">
-              <div>
-                <h5 id={`${textOption.id}-title`} className="font-medium text-amber-100">
-                  {textOption.name[locale as keyof typeof textOption.name]}
-                  {textOption.required && (
-                    <span className="text-red-500 ml-1" aria-label={tAccessibility("required")}>
-                      *
-                    </span>
-                  )}
-                </h5>
-                {textOption.description && (
-                  <p className="text-sm text-amber-100 mt-1">
-                    {textOption.description[locale as keyof typeof textOption.description]}
-                  </p>
-                )}
-              </div>
-            </div>
 
             <div
               className="space-y-2"
