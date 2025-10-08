@@ -57,6 +57,62 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
         }
       : undefined;
 
+  // Parse images - handle both array and JSON string formats
+  let images: any[] = [];
+  try {
+    if (Array.isArray(row.images)) {
+      images = row.images;
+    } else if (typeof row.images === 'string') {
+      const parsed = JSON.parse(row.images);
+      images = Array.isArray(parsed) ? parsed : [];
+    }
+  } catch (error) {
+    console.error('Failed to parse product images:', error);
+    images = [];
+  }
+
+  // Parse customization_options - handle both array and JSON string formats
+  let customizationOptions: any[] = [];
+  try {
+    if (Array.isArray(row.customization_options)) {
+      customizationOptions = row.customization_options;
+    } else if (typeof row.customization_options === 'string') {
+      const parsed = JSON.parse(row.customization_options);
+      customizationOptions = Array.isArray(parsed) ? parsed : [];
+    }
+  } catch (error) {
+    console.error('Failed to parse customization options:', error);
+    customizationOptions = [];
+  }
+
+  // Parse availability - handle both object and JSON string formats
+  let availability: any = { inStock: true };
+  try {
+    if (typeof row.availability === 'object' && row.availability !== null) {
+      availability = row.availability;
+    } else if (typeof row.availability === 'string') {
+      const parsed = JSON.parse(row.availability);
+      availability = typeof parsed === 'object' ? parsed : { inStock: true };
+    }
+  } catch (error) {
+    console.error('Failed to parse availability:', error);
+    availability = { inStock: true };
+  }
+
+  // Parse seo_metadata - handle both object and JSON string formats
+  let seoMetadata: any = { title: name, description: description || name };
+  try {
+    if (typeof row.seo_metadata === 'object' && row.seo_metadata !== null) {
+      seoMetadata = row.seo_metadata;
+    } else if (typeof row.seo_metadata === 'string') {
+      const parsed = JSON.parse(row.seo_metadata);
+      seoMetadata = typeof parsed === 'object' ? parsed : { title: name, description: description || name };
+    }
+  } catch (error) {
+    console.error('Failed to parse SEO metadata:', error);
+    seoMetadata = { title: name, description: description || name };
+  }
+
   return {
     id: row.id,
     nameCs: row.name_cs,
@@ -66,13 +122,10 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     ...(row.description_en && { descriptionEn: row.description_en }),
     basePrice: Number(row.base_price),
     ...(row.category_id && { categoryId: row.category_id }),
-    images: Array.isArray(row.images) ? row.images : [],
-    customizationOptions: Array.isArray(row.customization_options) ? row.customization_options : [],
-    availability: typeof row.availability === "object" ? row.availability : { inStock: true },
-    seoMetadata:
-      typeof row.seo_metadata === "object"
-        ? row.seo_metadata
-        : { title: name, description: description || name },
+    images,
+    customizationOptions,
+    availability,
+    seoMetadata,
     active: row.active,
     featured: row.featured,
     createdAt: new Date(row.created_at),

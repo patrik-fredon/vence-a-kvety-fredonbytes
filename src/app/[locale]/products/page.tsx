@@ -149,6 +149,16 @@ export default async function ProductsPage({
       return transformProductRow(row, category);
     });
 
+    // Debug: Check transformed products
+    if (products.length > 0) {
+      console.log('First transformed product:', {
+        id: products[0]?.id,
+        name: products[0]?.name,
+        images: products[0]?.images,
+        imagesLength: products[0]?.images?.length
+      });
+    }
+
     // Cache products for future requests
     await cacheProductsList(initialFilters, products);
   }
