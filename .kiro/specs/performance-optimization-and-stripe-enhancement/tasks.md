@@ -66,39 +66,39 @@
     - _Requirements: 5.3, 1.6_
 
 - [-] 5. Upgrade Stripe Integration
-  - [-] 5.1 Update Stripe SDK and API version
+  - [x] 5.1 Update Stripe SDK and API version
     - Update `stripe` package to latest version
     - Change API version to `2024-12-18.acacia`
     - Update TypeScript types
     - _Requirements: 2.1_
 
-  - [ ] 5.2 Create modern Stripe service with Server Actions
+  - [x] 5.2 Create modern Stripe service with Server Actions
     - Create `src/lib/payments/stripe-service.ts` with Server Actions
     - Implement `createPaymentIntentAction` Server Action
     - Add retry logic with exponential backoff
     - Implement proper error handling
     - _Requirements: 2.2, 2.3, 2.4_
 
-  - [ ] 5.3 Implement comprehensive error handling
+  - [x] 5.3 Implement comprehensive error handling
     - Create `src/lib/payments/error-handler.ts`
     - Implement `sanitizeStripeError` function
     - Add error categorization and user-friendly messages
     - _Requirements: 2.5, 8.5_
 
-  - [ ] 5.4 Create retry handler utility
+  - [x] 5.4 Create retry handler utility
     - Create `src/lib/payments/retry-handler.ts`
     - Implement `withRetry` function with configurable options
     - Add exponential backoff logic
     - _Requirements: 2.3_
 
-  - [ ] 5.5 Enhance webhook handling
+  - [x] 5.5 Enhance webhook handling
     - Update webhook route to handle all payment event types
     - Implement handlers for `payment_intent.succeeded`, `payment_intent.payment_failed`, `payment_intent.requires_action`
     - Add proper signature verification
     - Implement idempotency for webhook processing
     - _Requirements: 2.4, 8.3_
 
-  - [ ] 5.6 Update Stripe Elements configuration
+  - [-] 5.6 Update Stripe Elements configuration
     - Update appearance theme to match design system
     - Add proper locale support
     - Configure automatic payment methods
