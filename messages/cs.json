@@ -37,6 +37,7 @@
   "product": {
     "title": "Produkty",
     "pageDescription": "Přinesením květin k poslednímu rozloučení vyjadřujeme úctu k zesnulému a symbolicky se s ním loučíme. Věnec symbolizuje nekonečnost a koloběh života a barva květin může odrážet osobnost našeho blízkého.",
+    "freeDeliveryRibbon": "Doprava a stuha zdarma",
     "collectionTitle": "Pohřební věnce a květinové aranžmá",
     "addToCart": "Přidat do košíku",
     "addingToCart": "Přidávání do košíku...",
@@ -158,6 +159,7 @@
   },
   "cart": {
     "title": "Nákupní vozík",
+    "freeDeliveryRibbon": "Doprava a stuha zdarma",
     "empty": "Váš košík je prázdný",
     "emptyDescription": "Přidejte si produkty do košíku a pokračujte v nákupu.",
     "item": "položka",

@@ -37,6 +37,7 @@
   "product": {
     "title": "Products",
     "pageDescription": "Browse our collection of funeral wreaths and floral arrangements.",
+    "freeDeliveryRibbon": "Free Delivery & Ribbon Included",
     "collectionTitle": "Funeral Wreaths and Floral Arrangements",
     "addToCart": "Add to Cart",
     "addingToCart": "Adding to Cart...",
@@ -158,6 +159,7 @@
   },
   "cart": {
     "title": "Shopping Cart",
+    "freeDeliveryRibbon": "Free Delivery & Ribbon Included",
     "empty": "Your cart is empty",
     "emptyDescription": "Add products to your cart and continue shopping.",
     "item": "item",
