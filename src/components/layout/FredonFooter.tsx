@@ -25,13 +25,15 @@ const FredonFooter = () => {
       </div>
 
       {/* FredonBytes Footer Section */}
-      <div className="mt-6">
-        <div className="flex flex-col md:flex-row justify-between items-center gap-4">
-          <FredonQuote /> {/* Use the new component here */}
-          <div className="flex space-x-6">
+      <div className="mt-6 w-full max-w-7xl mx-auto px-4">
+        <div className="flex flex-col md:flex-row justify-between items-center gap-4 w-full">
+          <div className="w-full md:w-auto md:flex-1 md:max-w-md">
+            <FredonQuote />
+          </div>
+          <div className="flex flex-wrap justify-center md:justify-end gap-4 md:gap-6">
             <Link
               href="https://fredonbytes.com"
-              className="text-sm text-amber-100 hover:text-amber-300 transition-colors duration-300 ease-in-out underline decoration-amber-100 hover:decoration-amber-300 inline-flex items-center group"
+              className="text-sm text-amber-100 hover:text-amber-300 transition-colors duration-300 ease-in-out underline decoration-amber-100 hover:decoration-amber-300 inline-flex items-center group whitespace-nowrap"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -53,7 +55,7 @@ const FredonFooter = () => {
             </Link>
             <Link
               href="https://tech.fredonbytes.com"
-              className="text-sm text-amber-100 hover:text-amber-300 transition-colors duration-300 ease-in-out underline decoration-amber-100 hover:decoration-amber-300 inline-flex items-center group"
+              className="text-sm text-amber-100 hover:text-amber-300 transition-colors duration-300 ease-in-out underline decoration-amber-100 hover:decoration-amber-300 inline-flex items-center group whitespace-nowrap"
               target="_blank"
               rel="noopener noreferrer"
             >
@@ -76,6 +78,7 @@ const FredonFooter = () => {
           </div>
         </div>
       </div>
+
       {/* FredonBytes Quote Section */}
       <div className="my-2 text-center"></div>
     </>

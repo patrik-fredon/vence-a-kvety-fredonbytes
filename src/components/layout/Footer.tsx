@@ -43,11 +43,11 @@ export function Footer({ locale }: FooterProps) {
                   className="hover:opacity-50 transition-opacity duration-200 "
                   aria-label={t("home")}
                 >
-                  <Image 
-                    src="/favicon.svg" 
-                    alt="Logo" 
-                    width={240} 
-                    height={240} 
+                  <Image
+                    src="/favicon.svg"
+                    alt="Logo"
+                    width={240}
+                    height={240}
                     className="w-auto mx-auto max-w-60"
                     placeholder="blur"
                     blurDataURL={BLUR_PLACEHOLDERS.logo}
@@ -230,9 +230,9 @@ export function Footer({ locale }: FooterProps) {
           </div>
 
         </div>
-        <div className="mt-8 mx-auto w-7xl text-center justify-center">
+        <div className="mt-8 mx-auto max-w-7xl text-center justify-center">
           <FredonFooter />
-          </div>
+        </div>
       </footer>
     </ErrorBoundary>
   );
