@@ -213,7 +213,7 @@ const ProductReferenceCard = ({
   return (
     <article
       className={cn(
-        "group bg-funeral-gold border-2 border-amber-300 backdrop-blur-sm overflow-hidden shadow-xl relative corner-clip-container",
+        "group bg-funeral-gold border-b-2 border-teal-800 backdrop-blur-sm overflow-hidden relative corner-clip-container",
         // Enhanced hover effects with motion preference support
         "transition-all duration-300 ease-in-out",
         !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
@@ -227,7 +227,7 @@ const ProductReferenceCard = ({
       aria-labelledby={`product-name-${product.id}`}
       aria-describedby={`product-description-${product.id}`}
     >
-      <div className="aspect-square relative overflow-hidden">
+      <div className="aspect-square relative overflow-hidden shadow-2xl shadow-teal-800 ">
         <Image
           src={currentImageSrc}
           alt={`${product.image.alt} - ${safeT("productImageAlt")}`}
@@ -644,7 +644,6 @@ export const ProductReferencesSection = ({
         // Desktop layout with proper space utilization (1024px+)
         "lg:py-24 lg:px-12", // Ample desktop padding
         "xl:py-28 xl:px-16", // Maximum padding for large screens
-        "bg-funeral-gold", // Golden gradient background
         // Orientation handling
         "landscape:py-8", // Reduced padding in landscape
         "md:landscape:py-16", // Tablet landscape adjustment

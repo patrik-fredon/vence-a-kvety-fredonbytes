@@ -57,7 +57,6 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
   return (
     <div
       className={`min-h-screen ${className}`}
-      style={{ backgroundColor: funeralColors.background }}
       role="document"
       aria-label="Home page content"
     >
@@ -90,14 +89,14 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
       </section>
 
       {/* Product References Section */}
-      <section aria-labelledby="products-heading" className="relative">
+      <section aria-labelledby="products-heading" className="relative ">
         <ErrorBoundary
           level="component"
           context="LazyProductReferencesSection"
           onError={handleComponentError}
           fallback={
             <ComponentErrorFallback
-              className="min-h-[400px] flex items-center justify-center"
+              className="min-h-screen flex items-center justify-center"
               title={locale === "cs" ? "Produkty se nepodařily načíst" : "Products failed to load"}
               message={
                 locale === "cs"

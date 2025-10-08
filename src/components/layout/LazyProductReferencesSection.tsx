@@ -200,7 +200,7 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
   const ErrorFallback = () => (
     <section
       className={cn(
-        "py-12 px-3 ",
+        "py-12 px-3",
         "xs:py-14 xs:px-4",
         "sm:py-16 sm:px-6",
         "md:py-20 md:px-8",
