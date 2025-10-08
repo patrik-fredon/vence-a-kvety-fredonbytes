@@ -28,12 +28,12 @@ export default async function ContactPage({ params }: ContactPageProps) {
   };
 
   return (
-    <div className="container mx-auto px-4 py-8">
+
       <div className="max-w-6xl mx-auto">
-        <div className="rounded-lg p-8 mb-12">
+        <div className="m-8 mx-auto w-7xl text-center justify-center">
           <h1 className="text-center text-4xl font-semibold text-teal-800">{tContact("title")}</h1>
         </div>
-
+        <div className="container mx-auto px-4 py-8">
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Information - Compact Professional Card */}
           <div className="lg:col-span-1">

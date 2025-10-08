@@ -201,15 +201,17 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
       <StructuredData data={websiteStructuredData} />
       <StructuredData data={itemListStructuredData} />
       {collectionPageStructuredData && <StructuredData data={collectionPageStructuredData} />}
-      <div className="container mx-auto px-4 py-8">
-        {/* Page Header */}
-        <div className="m-8 text-center justify-center">
+
+      {/* Page Header */}
+        <div className="m-8 mx-auto w-7xl text-center justify-center">
           <div className=" rounded-lg p-8 mb-8">
-            // TODO - next-intl translation en/ missing
+          {/* TODO translation */}
             <h2 className="text-elegant text-4xl font-semibold mb-4 text-teal-900">{t("title")}</h2>
             <p className="text-lg text-teal-900">{t("pageDescription")}</p>
           </div>
         </div>
+      <div className="container mx-auto px-4 py-8">
+
 
         {/* Product Grid with Filters */}
         <ProductGridWithCart

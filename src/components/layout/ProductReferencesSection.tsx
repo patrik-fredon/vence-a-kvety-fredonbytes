@@ -211,14 +211,11 @@ const ProductReferenceCard = ({
   };
 
   return (
+    <div className="container backdrop-blur-sm">
     <article
       className={cn(
-        "group bg-funeral-gold border-b-2 border-teal-800 backdrop-blur-sm overflow-hidden relative corner-clip-container",
-        // Enhanced hover effects with motion preference support
-        "transition-all duration-300 ease-in-out",
-        !prefersReducedMotion && "hover:shadow-lg hover:-translate-y-1 hover:scale-[1.02]",
-        prefersReducedMotion && "hover:shadow-lg hover:bg-teal-700",
-        "cursor-pointer"
+        "group bg-funeral-gold  overflow-hidden corner-clip-container",
+
       )}
       aria-rowindex={Math.floor(index / 4) + 1}
       aria-colindex={(index % 4) + 1}
@@ -227,7 +224,7 @@ const ProductReferenceCard = ({
       aria-labelledby={`product-name-${product.id}`}
       aria-describedby={`product-description-${product.id}`}
     >
-      <div className="aspect-square relative overflow-hidden shadow-2xl shadow-teal-800 ">
+      <div className="aspect-square relative overflow-hidden">
         <Image
           src={currentImageSrc}
           alt={`${product.image.alt} - ${safeT("productImageAlt")}`}
@@ -235,7 +232,7 @@ const ProductReferenceCard = ({
           height={product.image.height || 400}
           onError={handleImageError}
           className={cn(
-            "w-full h-full object-cover",
+            "w-full h-full object-cover relative",
             // Gentle image hover effect
             "transition-transform duration-300 ease-in-out",
             !prefersReducedMotion && "group-hover:scale-110",
@@ -277,11 +274,11 @@ const ProductReferenceCard = ({
           id={`product-name-${product.id}`}
           className={cn(
             // Mobile-first typography
-            "text-sm font-semibold text-teal-800", // 14px for mobile
-            "xs:text-base", // 16px for 375px+
-            "sm:text-lg", // 18px for 640px+
-            "md:text-xl", // 20px for tablet
-            "lg:text-2xl", // 24px for desktop
+            "text-xs font-semibold text-teal-800", // 14px for mobile
+            "xs:text-sm", // 16px for 375px+
+            "sm:text-base", // 18px for 640px+
+            "md:text-lg", // 20px for tablet
+            "lg:text-xl", // 24px for desktop
             // Spacing
             "mb-2", // Compact on mobile
             "sm:mb-3", // Standard for 640px+
@@ -289,7 +286,7 @@ const ProductReferenceCard = ({
             // Text effects
             "line-clamp-2", // Limit to 2 lines
             "transition-colors duration-300 ease-in-out",
-            "group-hover:text-amber-50"
+            "group-hover:text-amber-100"
           )}
         >
           {product.name}
@@ -334,7 +331,8 @@ const ProductReferenceCard = ({
           </span>
         </div>
       </div>
-    </article>
+      </article>
+      </div>
   );
 };
 

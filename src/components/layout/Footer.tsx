@@ -218,8 +218,11 @@ export function Footer({ locale }: FooterProps) {
               </div>
             </div>
           </div>
-          <FredonFooter />
+
         </div>
+        <div className="mt-8 mx-auto w-7xl text-center justify-center">
+          <FredonFooter />
+          </div>
       </footer>
     </ErrorBoundary>
   );

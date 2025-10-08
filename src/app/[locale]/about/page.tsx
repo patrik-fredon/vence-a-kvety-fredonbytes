@@ -30,8 +30,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
       <StructuredData data={organizationStructuredData} />
       <StructuredData data={localBusinessStructuredData} />
 
-      <div className="py-16">
-        <div className="container mx-auto px-4">
+      <div className="py-8">
+
           {/* Hero Text */}
           <div className="max-w-4xl mx-auto text-center mb-16">
             <div className=" rounded-lg p-8 mb-8">
@@ -41,7 +41,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <p className="text-lg text-teal-800 leading-relaxed mb-8">{tAbout("mission")}</p>
             </div>
           </div>
-
+          <div className="container mx-auto px-4">
           {/* Main Image - Reduced height */}
           <div className="mb-16">
             <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96 bg-funeral-gold rounded-lg  shadow-xl overflow-hidden">

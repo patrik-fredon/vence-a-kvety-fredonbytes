@@ -424,9 +424,9 @@ const ProductGrid = React.memo(function ProductGrid({
         className
       )}
     >
-      <div className="container mx-auto px-4 max-w-7xl">
+      <div className="mx-auto px-4 max-w-7xl">
         {/* Filters */}
-        <div className="mb-8">
+        <div className="">
           <ProductFiltersComponent
             categories={categories}
             filters={filters}
@@ -434,7 +434,7 @@ const ProductGrid = React.memo(function ProductGrid({
             onFiltersChange={handleFiltersChange}
             onSortChange={handleSortChange}
             locale={locale}
-          />
+            />
         </div>
 
         {/* Results Summary and View Switcher */}
@@ -483,7 +483,7 @@ const ProductGrid = React.memo(function ProductGrid({
             </div>
           </div>
         </div>
-
+        <div className="container mx-auto px-4 max-w-7xl">
         {/* Error State */}
         {error && (
           <div className="bg-white border border-red-200 rounded-lg p-6 text-center mb-8 shadow-sm">
@@ -674,7 +674,8 @@ const ProductGrid = React.memo(function ProductGrid({
               </div>
             )}
           </div>
-        )}
+          )}
+          </div>
       </div>
     </section>
   );
