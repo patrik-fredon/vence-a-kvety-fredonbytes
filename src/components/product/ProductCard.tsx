@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
@@ -32,7 +32,7 @@ interface ActionConfig {
   size?: "sm" | "default" | "lg";
 }
 
-export function ProductCard({
+const ProductCardComponent = function ProductCard({
   product,
   locale,
   variant = "grid",
@@ -163,7 +163,10 @@ export function ProductCard({
         );
 
       case "list":
-        return cn(baseStyles, "rounded-lg flex flex-row items-center gap-4 p-4 hover:shadow-lg");
+        return cn(
+          baseStyles,
+          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-48 sm:h-56"
+        );
 
       default:
         return baseStyles;
@@ -177,7 +180,7 @@ export function ProductCard({
         return "relative aspect-square bg-amber-100 overflow-hidden";
 
       case "list":
-        return "relative overflow-hidden bg-amber-100 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md";
+        return "relative overflow-hidden bg-amber-100 w-32 sm:w-40 md:w-48 h-full flex-shrink-0 rounded-l-lg";
 
       default:
         return "relative aspect-square bg-amber-100 overflow-hidden";
@@ -193,7 +196,7 @@ export function ProductCard({
         return "p-6";
 
       case "list":
-        return "flex-1 min-w-0";
+        return "flex-1 min-w-0 p-4 flex flex-col justify-between";
 
       default:
         return "p-4";
@@ -203,7 +206,7 @@ export function ProductCard({
   // Render product image
   const renderImage = () => (
     <div className={getImageContainerStyles()}>
-      {primaryImage && primaryImage.url && (
+      {primaryImage?.url && (
         <>
           <Image
             src={primaryImage.url}
@@ -211,7 +214,7 @@ export function ProductCard({
             fill
             sizes={
               variant === "list"
-                ? "96px"
+                ? "(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
                 : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
             }
             className={cn(
@@ -221,6 +224,7 @@ export function ProductCard({
             )}
             onLoad={() => setImageLoading(false)}
             priority={featured}
+            loading={featured ? undefined : "lazy"}
           />
 
           {/* Secondary image on hover for grid/teaser variants */}
@@ -345,8 +349,8 @@ export function ProductCard({
         )}
       </div>
 
-      {/* Quick View Button for grid variant */}
-      {variant === "grid" && onQuickView && (
+      {/* Quick View Button for grid and list variants */}
+      {(variant === "grid" || variant === "list") && onQuickView && (
         <Button
           size="sm"
           variant="outline"
@@ -377,9 +381,7 @@ export function ProductCard({
           </svg>
         </Button>
       )}
-
     </div>
-
   );
 
   // Render availability status
@@ -486,11 +488,11 @@ export function ProductCard({
       >
         <Link
           href={`/${locale}/products/${product.slug}`}
-          className="flex-1 flex items-center gap-4"
+          className="relative overflow-hidden bg-amber-100 w-32 sm:w-40 md:w-48 h-full flex-shrink-0 rounded-l-lg"
         >
           {renderImage()}
-          {renderContent()}
         </Link>
+        {renderContent()}
       </article>
     );
   }
@@ -522,4 +524,8 @@ export function ProductCard({
       )}
     </article>
   );
-}
+};
+
+// Memoize component for performance optimization
+export const ProductCard = memo(ProductCardComponent);
+ProductCard.displayName = "ProductCard";
