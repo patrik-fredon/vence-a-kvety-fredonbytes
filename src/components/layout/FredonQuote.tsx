@@ -1,6 +1,6 @@
 // components/FredonQuote.tsx
 import { useTranslations } from "next-intl";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 
 const FredonQuote = () => {
   const t = useTranslations("footer");
@@ -14,6 +14,8 @@ const FredonQuote = () => {
     if (quotes.length === 0) return;
 
     const currentQuote = quotes[currentIndex % quotes.length];
+    if (!currentQuote) return;
+    
     const timeout = isDeleting ? 30 : 50;
 
     const timer = setTimeout(() => {
