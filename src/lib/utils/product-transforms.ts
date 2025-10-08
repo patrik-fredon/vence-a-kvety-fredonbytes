@@ -58,14 +58,29 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
       : undefined;
 
   // Parse images - handle both array and JSON string formats
+  // Map to ProductImage type with required fields (id, sortOrder)
   let images: any[] = [];
   try {
+    let rawImages: any[] = [];
     if (Array.isArray(row.images)) {
-      images = row.images;
+      rawImages = row.images;
     } else if (typeof row.images === 'string') {
       const parsed = JSON.parse(row.images);
-      images = Array.isArray(parsed) ? parsed : [];
+      rawImages = Array.isArray(parsed) ? parsed : [];
     }
+    
+    // Map raw images to ProductImage type with all required fields
+    images = rawImages.map((img, index) => ({
+      id: img.id || `${row.id}-img-${index}`, // Generate ID if missing
+      url: img.url || '',
+      alt: img.alt || '',
+      isPrimary: img.isPrimary === true, // Ensure boolean
+      sortOrder: typeof img.sortOrder === 'number' ? img.sortOrder : index, // Use index if missing
+      ...(img.width && { width: img.width }),
+      ...(img.height && { height: img.height }),
+      ...(img.blurDataUrl && { blurDataUrl: img.blurDataUrl }),
+      ...(img.customizationId && { customizationId: img.customizationId }),
+    })).filter(img => img.url); // Filter out images without URLs
   } catch (error) {
     console.error('Failed to parse product images:', error);
     images = [];

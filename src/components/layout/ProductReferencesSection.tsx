@@ -16,15 +16,16 @@ import type {
   ProductReference,
   ProductReferencesSectionProps,
 } from "@/types/components";
+import type { Product } from "@/types/product";
 
 // Utility function to transform Product to ProductReference
 const transformProductToReference = (
-  product: any,
+  product: Product,
   locale: string
 ): ProductReference => {
   // Get the primary image or first available image
   const primaryImage =
-    product.images?.find((img: any) => img.isPrimary) || product.images?.[0];
+    product.images?.find((img) => img.isPrimary) || product.images?.[0];
 
   // Fallback image for products without images
   const fallbackImage = {
@@ -57,7 +58,7 @@ const transformProductToReference = (
           product.descriptionEn ||
           "Beautiful funeral wreath crafted with love and care",
     category:
-      product.category?.name?.[locale] ||
+      product.category?.name?.[locale as "cs" | "en"] ||
       (locale === "cs" ? "Pohřební věnce" : "Funeral Wreaths"),
     slug: product.slug,
   };
