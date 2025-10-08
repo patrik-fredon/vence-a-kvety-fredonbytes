@@ -1,0 +1,16 @@
+{
+  "enabled": true,
+  "name": "Auto-Translate Localization Files",
+  "description": "Monitors changes to user-facing text content in localization files (JSON, YAML) and automatically generates translations for all configured target languages while maintaining context and locale-specific conventions",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "messages/*.json"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "Localization files have been modified. Please:\n\n1. Identify all new or modified text entries in the changed files\n2. Determine the primary/source language from the file structure\n3. Identify all target languages that need translations (based on existing locale files)\n4. For each new/modified entry:\n   - Analyze the context and meaning of the source text\n   - Generate accurate translations for each target language\n   - Ensure translations maintain proper context and tone\n   - Apply locale-specific conventions (date formats, currency, cultural nuances)\n   - Preserve any interpolation variables or formatting codes\n5. Update all corresponding locale files with the new translations\n6. Validate that all locale files maintain consistent key structures\n7. Report any translation keys that may need human review due to complexity or cultural sensitivity\n\nUse the Context7 tool to reference next-intl best practices for translation structure and formatting.\nUse Serena for memory list and read of implemented changes."
+  }
+}

@@ -17,7 +17,7 @@
 import type React from "react";
 import { ComponentErrorFallback, ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import type { Locale } from "@/i18n/config";
-import { funeralColors } from "@/lib/design-tokens";
+
 import { logErrorWithContext } from "@/lib/utils/fallback-utils";
 import { LazyProductReferencesSection } from "./LazyProductReferencesSection";
 import { RefactoredHeroSection } from "./RefactoredHeroSection";

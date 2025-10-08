@@ -506,17 +506,20 @@
     ]
   },
   "about": {
-    "title": "About Our Floral Workshop",
-    "mission": "We help families express love and respect for their loved ones through beautiful floral arrangements in life's most difficult moments.",
-    "story": "We are a small family floral workshop that approaches our work with sensitivity and attention to every detail. We have been dedicated to flowers for many years and believe that the sphere of funeral flowers deserves more attention and beauty. We put a piece of our heart into each of your orders, so that this sad event in your lives becomes at least a little more pleasant.",
-    "values": "We select each flower with care so that the result of our work meets all your expectations. We always buy flowers fresh, carefully clean and treat them so that they honor the memory of your loved one at the memorial site for as long as possible.",
-    "commitment": "Our commitment is to provide not only beautiful floral arrangements, but also understanding, empathy, and support in difficult times. We believe that quality handwork and personal approach can bring comfort and dignity to the farewell process.",
-    "storyTitle": "Our Story",
-    "valuesTitle": "Quality and Care",
-    "commitmentTitle": "Our Commitment",
-    "companyDescription": "Family floral workshop with tradition and emphasis on quality",
-    "viewWreaths": "View Our Wreaths",
-    "contactUs": "Contact Us"
+    "title": "About our flower workshop",
+    "mission": "I realize that life is as fragile as butterfly dust and that our world can change in an instant. Our physical form then transforms into another energy... Every day is full of these changes, both visible and invisible. One of these visible transformations is the butterfly, whose natural process is to transform from a caterpillar into a beautiful creature. I perceive passing away in the same way...",
+    "story": "We are a small family flower workshop and we do our work with sensitivity and attention to detail. We select each flower with care so that the result of our work meets all your expectations. The flowers are always bought fresh, carefully cleaned and treated so that they can honor the memory of your loved one in a place of reverence for as long as possible. I have been working with flowers for many years and I believe that funeral flowers deserve more attention and beauty. I put a piece of my heart into every order to make this sad event in your lives at least a little more bearable...",
+    "values": "We select each flower with professional care and quality so that the result of our work meets all your expectations. We always buy fresh flowers, carefully clean them, and treat them with professional care so that they honor the memory of your loved one at the memorial site for as long as possible.",
+    "commitment": "Our commitment is to provide not only beautiful floral arrangements, but also understanding, empathy, and support in difficult times. We believe that quality craftsmanship and a personal approach can bring comfort and dignity to the process of saying goodbye.",
+    "storyTitle": "Careful work",
+    "valuesTitle": "Delivery",
+    "commitmentTitle": "Freshness guarantee",
+    "valuesDescription": "We will deliver the products to your designated location at a time that suits you.",
+    "commitmentDescription": "We always order fresh flowers based on your order.",
+    "storyDescription": "We take care to arrange each and every flower so that the final product is perfect.",
+    "companyDescription": "A family-run flower shop with a tradition of quality,",
+    "viewWreaths": "View our wreaths,",
+    "contactUs": "Contact us"
   },
   "gdpr": {
     "consentTitle": "Data Processing Consent",
