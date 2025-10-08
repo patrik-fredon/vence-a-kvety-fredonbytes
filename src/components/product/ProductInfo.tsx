@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-import { StarIcon, StarIconSolid } from "@/lib/icons";
+
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
@@ -25,8 +25,8 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
   };
 
   // Mock rating data (implement in later tasks)
-  const rating = 4.8;
-  const reviewCount = 127;
+  // const rating = 4.8;
+  // const reviewCount = 127;
 
   return (
     <div className={cn("space-y-6", className)}>

@@ -7,11 +7,12 @@ inclusion: always
 ## Core Principles
 
 **Always use MCP tools through their designated interfaces:**
+
 - Use `serena` for all code operations (never `fsWrite`, `strReplace`)
 - Use `serena` `execute_shell_command` for terminal commands (never native exec)
 - Use `Context7` for library documentation and best practices
-- Use `chrome-devtools` for browser testing and debugging
 - Use `sequentialthinking_tools` to determine optimal tool selection
+- Use `chrome-devtools` for browser testing and debugging
 
 ## Initialization Sequence
 
@@ -58,6 +59,7 @@ Every task must begin with:
 ## Critical Rules
 
 ### Must Do
+
 - Always use `sequentialthinking_tools` to plan next steps
 - Always use serena symbol-based tools for code modifications
 - Always consult `Context7` for library-specific implementations
@@ -65,6 +67,7 @@ Every task must begin with:
 - Always validate with thinking tools before major operations
 
 ### Must Not Do
+
 - Never use direct file operations (`fsWrite`, `strReplace`) - use serena tools
 - Never use native terminal commands - use `execute_shell_command`
 - Never skip type definitions in TypeScript

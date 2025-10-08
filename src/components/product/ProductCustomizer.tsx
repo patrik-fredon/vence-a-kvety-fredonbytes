@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils/price-calculator";
+import { formatPrice } from "@/lib/utils";
 import type {
   Customization,
   CustomizationChoice,
@@ -30,7 +30,8 @@ export function ProductCustomizer({
   const t = useTranslations("product");
 
   const formatPriceModifier = (price: number) => {
-    return formatPrice(price, locale as "cs" | "en", true);
+    const sign = price >= 0 ? "+" : "";
+    return `${sign}${formatPrice(price, locale as "cs" | "en")}`;
   };
 
   // Get current customization for an option

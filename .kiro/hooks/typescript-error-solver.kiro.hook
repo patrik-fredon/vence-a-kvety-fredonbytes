@@ -4,7 +4,7 @@
   "description": "Automatically detects TypeScript errors in modified files and provides intelligent fixes based on the project's TypeScript configuration and codebase patterns",
   "version": "1",
   "when": {
-    "type": "userTriggered",
+    "type": "fileEdited",
     "patterns": [
       "src/**/*.ts",
       "src/**/*.tsx",

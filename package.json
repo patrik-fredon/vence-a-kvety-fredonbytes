@@ -31,6 +31,7 @@
     "measure:vitals": "npx tsx scripts/measure-core-web-vitals.ts",
     "measure:vitals:prod": "npx tsx scripts/measure-core-web-vitals.ts --url=https://your-production-url.com",
     "analyze:bundle": "npx tsx scripts/analyze-bundle-size.ts",
+    "analyze:bundle:ci": "npm run build && npm run analyze:bundle",
     "analyze:bundle:baseline": "npx tsx scripts/analyze-bundle-size.ts --save-baseline"
   },
   "dependencies": {
@@ -52,7 +53,7 @@
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "resend": "^6.1.0",
-    "stripe": "^18.5.0",
+    "stripe": "^19.1.0",
     "tailwind-merge": "^2.5.4",
     "web-vitals": "^5.1.0"
   },

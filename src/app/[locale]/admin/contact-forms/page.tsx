@@ -1,5 +1,5 @@
 import { redirect } from "next/navigation";
-import { ContactFormsTable } from "@/components/admin/ContactFormsTable";
+import { LazyContactFormsTable } from "@/lib/config/dynamic-imports";
 import { auth } from "@/lib/auth/config";
 import { createServerClient } from "@/lib/supabase/server";
 
@@ -193,7 +193,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
 
       {/* Contact Forms Table */}
       <div className="bg-funeral-gold rounded-lg shadow-soft">
-        <ContactFormsTable
+        <LazyContactFormsTable
           contactForms={contactForms || []}
           currentPage={Number.parseInt(page, 10)}
           totalPages={totalPages}

@@ -234,4 +234,5 @@ export class PaymentService {
 
 // Export types and utilities
 export * from "./stripe";
+export * from "./payment-monitor";
 export { PaymentService as default };

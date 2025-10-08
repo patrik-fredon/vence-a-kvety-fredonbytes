@@ -8,8 +8,15 @@ import Stripe from "stripe";
 // Server-side Stripe instance
 export const stripe = process.env["STRIPE_SECRET_KEY"]
   ? new Stripe(process.env["STRIPE_SECRET_KEY"], {
-      apiVersion: "2025-08-27.basil",
+      apiVersion: "2024-12-18.acacia",
       typescript: true,
+      maxNetworkRetries: 3,
+      timeout: 10000,
+      appInfo: {
+        name: "Funeral Wreaths E-commerce",
+        version: "1.0.0",
+        url: "https://vence-a-kvety.cz",
+      },
     })
   : null;
 
