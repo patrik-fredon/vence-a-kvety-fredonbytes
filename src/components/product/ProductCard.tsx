@@ -287,8 +287,8 @@ export function ProductCard({
         onClick={handleProductClick}
         aria-labelledby={`product-${product.id}-title`}
       >
-        {/* Image Layer (z-0) - Fills container with absolute positioning */}
-        <div className="absolute inset-0 z-0 w-full h-full">
+        {/* Image Layer (z-10) - Fills container with absolute positioning */}
+        <div className="absolute inset-0 z-9999 w-full h-full">
           <ProductImageHover
             primaryImage={displayPrimaryImage}
             secondaryImage={secondaryImage}
@@ -306,29 +306,10 @@ export function ProductCard({
           />
         </div>
 
-        {/* Overlay Layer (z-10) - Contains badges and status overlays */}
-        <div className="absolute inset-0 z-10 pointer-events-none">
-          {/* Featured Badge */}
-          {featured && (
-            <div className="absolute top-3 left-3 pointer-events-auto">
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-200 text-teal-900 border border-amber-300 shadow-sm">
-                {t("featured")}
-              </span>
-            </div>
-          )}
 
-          {/* Stock Status Overlay */}
-          {!product.availability.inStock && (
-            <div className="absolute inset-0 bg-teal-900/50 flex items-center justify-center pointer-events-auto">
-              <span className="text-white font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
-                {t("outOfStock")}
-              </span>
-            </div>
-          )}
-        </div>
 
-        {/* Info Overlay (z-20) - Bottom positioned with backdrop blur for readability */}
-        <div className="absolute bottom-0 left-0 right-0 p-4 z-20">
+        {/* Info Overlay (z-30) - Bottom positioned with backdrop blur for readability */}
+        <div className="absolute bottom-0 left-0 right-0 p-4 z-30">
           <div className="bg-amber-100/95 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-xl border border-amber-200/20">
             {/* Product Name - Increased line height for better readability in taller cards */}
             <h3
@@ -414,10 +395,6 @@ export function ProductCard({
           </div>
         </div>
 
-        {/* Hover Overlay for Additional Actions - Maintained for h-96 */}
-        {isHovered && (
-          <div className="absolute inset-0 bg-teal-900/10 transition-opacity duration-300 pointer-events-none z-10" />
-        )}
       </article>
 
       {/* Quick View Modal */}

@@ -257,7 +257,7 @@ export function ProductCardLayout({
             sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
             className={cn(
               "object-cover transition-all duration-500",
-              !isHovered && "opacity-0"
+              !isHovered && "opacity-100"
             )}
             priority={false} // Secondary images are never priority
             loading="lazy" // Always lazy load secondary images
