@@ -516,7 +516,7 @@ const ProductGrid = React.memo(function ProductGrid({
                   {...(onQuickView && { onQuickView })}
                   featured={product.featured || imageOptimization.shouldPrioritize(index)} // Prioritize first 8 products
                   variant={viewMode === "list" ? "list" : "grid"}
-                  className="transition-all duration-200 hover:scale-[1.02] bg-funeral-gold"
+                  className="transition-all duration-200 hover:scale-[1.02] bg-funeral-gold corner-clip-container border-2 border-amber-200"
                 />
               ))}
             </div>

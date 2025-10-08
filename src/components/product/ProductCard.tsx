@@ -151,21 +151,21 @@ const ProductCardComponent = function ProductCard({
       case "grid":
         return cn(
           baseStyles,
-          "overflow-hidden hover:shadow-xl hover:-translate-y-1 clip-corners",
-          "h-80" // Increased height as per requirements
+          "overflow-hidden shadow-xl hover:-translate-y-1 clip-corners",
+          "h-100 w-full" // Increased height as per requirements
         );
 
       case "teaser":
         return cn(
           baseStyles,
-          "rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-1",
-          "h-80" // Slightly smaller than grid
+          "rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-1 clip-corners",
+          "h-auto w-full" // Slightly smaller than grid
         );
 
       case "list":
         return cn(
           baseStyles,
-          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-64 sm:h-72 md:h-80 clip-corners"
+          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-64 sm:h-72 md:h-80 corner-clip-container"
         );
 
       default:
@@ -177,13 +177,13 @@ const ProductCardComponent = function ProductCard({
     switch (variant) {
       case "grid":
       case "teaser":
-        return "relative aspect-square bg-amber-100 overflow-hidden";
+        return "relative aspect-square  overflow-hidden corner-clip-container";
 
       case "list":
-        return "relative overflow-hidden bg-amber-100 w-1/2 h-full flex-shrink-0";
+        return "relative overflow-hidden  w-1/2 h-full flex-shrink-0 corner-clip-container";
 
       default:
-        return "relative aspect-square bg-amber-100 overflow-hidden";
+        return "relative aspect-square  overflow-hidden corner-clip-container";
     }
   };
 
@@ -246,7 +246,7 @@ const ProductCardComponent = function ProductCard({
 
       {/* No Image Placeholder */}
       {!primaryImage && (
-        <div className="absolute inset-0 bg-amber-100 flex items-center justify-center">
+        <div className="absolute inset-0  flex items-center justify-center">
           <svg
             className="w-16 h-16 text-amber-300"
             fill="none"
@@ -330,7 +330,7 @@ const ProductCardComponent = function ProductCard({
         <Button
           size="sm"
           variant="outline"
-          className="bg-teal-800 hover:bg-amber-200/80 text-amber-100 min-w-8 h-8 p-0"
+          className="bg-teal-800 hover:bg-amber-200/80 text-amber-300 min-w-8 h-8 p-0"
           onClick={handleQuickView}
           aria-label={t("quickView")}
         >

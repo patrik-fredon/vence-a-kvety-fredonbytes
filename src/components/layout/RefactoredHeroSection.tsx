@@ -240,13 +240,11 @@ export function RefactoredHeroSection({
             // Background and text colors - updated to use teal-900 for text
             "bg-funeral-gold text-teal-900",
             // Border radius
-            "rounded-lg",
-            // Hover state - updated to amber-300
-            "hover:bg-amber-300",
+            "rounded-xl",
+
             // Transition
             "transition-colors duration-200",
-            // Focus state for accessibility - updated ring offset to teal-800
-            "focus:outline-none focus:ring-2 focus:ring-amber-100 focus:ring-offset-2 focus:ring-offset-teal-800",
+
             // Orientation adjustments
             "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
             "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
