@@ -49,8 +49,8 @@ export function ProductCard({
   const [imageLoading, setImageLoading] = useState(true);
 
   const productName = product.name[locale as keyof typeof product.name];
-  const primaryImage = product.images.find((img) => img.isPrimary) || product.images[0];
-  const secondaryImage = product.images.find((img) => !img.isPrimary) || product.images[1];
+  const primaryImage = product.images?.find((img) => img.isPrimary) || product.images?.[0];
+  const secondaryImage = product.images?.find((img) => !img.isPrimary) || product.images?.[1];
 
   const formatPrice = useCallback(
     (price: number) => {
@@ -203,7 +203,7 @@ export function ProductCard({
   // Render product image
   const renderImage = () => (
     <div className={getImageContainerStyles()}>
-      {primaryImage && (
+      {primaryImage && primaryImage.url && (
         <>
           <Image
             src={primaryImage.url}
@@ -262,6 +262,27 @@ export function ProductCard({
           <span className="text-white font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
             {t("outOfStock")}
           </span>
+        </div>
+      )}
+
+      {/* No Image Placeholder */}
+      {!primaryImage && (
+        <div className="absolute inset-0 bg-amber-100 flex items-center justify-center">
+          <svg
+            className="w-16 h-16 text-amber-300"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            aria-hidden="true"
+          >
+            <title>No Image Available</title>
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+            />
+          </svg>
         </div>
       )}
     </div>
