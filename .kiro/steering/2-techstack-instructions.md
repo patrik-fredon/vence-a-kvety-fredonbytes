@@ -10,9 +10,8 @@
 ## Styling & Design
 
 - **TailwindCSS 4** with custom design system
-- **Stone/Amber color palette** for funeral-appropriate aesthetics
+- **Teal/Amber color palette** for funeral-appropriate aesthetics
 - **Atomic Design** component architecture
-- **Design tokens** system in `src/lib/design-tokens.ts`
 - **Responsive-first** mobile design approach
 
 ## Database & Backend
@@ -25,8 +24,7 @@
 ## Payment & External Services
 
 - **Stripe** for international payments
-- **GoPay** for Czech banking integration
-- **Resend** for transactional emails
+- **Supabase SMTP** for transactional emails
 - **Upstash Rate Limit** for API protection
 
 ## Internationalization
@@ -74,5 +72,5 @@ npm run db:seed:funeral  # Seed funeral-specific data
 - `NEXTAUTH_SECRET`
 - `UPSTASH_REDIS_REST_URL`
 - `UPSTASH_REDIS_REST_TOKEN`
-- Payment keys (Stripe, GoPay)
-- `RESEND_API_KEY`
+- Payment key (Stripe)
+- SUPABASE SMTP environment variables

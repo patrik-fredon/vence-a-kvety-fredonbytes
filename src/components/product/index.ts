@@ -1,6 +1,5 @@
 // Error testing utilities (development only)
 export { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
-export { OptimizedProductCustomizer } from "./OptimizedProductCustomizer";
 export { PriceBreakdown } from "./PriceBreakdown";
 export { ProductCard } from "./ProductCard";
 export { ProductCardLayout } from "./ProductCardLayout";
@@ -22,18 +21,10 @@ export { ProductDetail } from "./ProductDetail";
 export { ProductDetailImageGrid } from "./ProductDetailImageGrid";
 export { ProductFilters } from "./ProductFilters";
 export { ProductGrid } from "./ProductGrid";
-// Error boundary integrations
-export {
-  ProductFiltersWithErrorBoundary,
-  ProductGridWithErrorBoundary,
-  ResilientProductPage,
-} from "./ProductGridWithErrorBoundary";
 export { ProductImage } from "./ProductImage";
 export { ProductImageGallery } from "./ProductImageGallery";
 export { ProductImageHover } from "./ProductImageHover";
 export { ProductInfo } from "./ProductInfo";
-export { ProductTeaser } from "./ProductTeaser";
-export { RandomProductTeasers } from "./RandomProductTeasers";
 export { RibbonConfigurator } from "./RibbonConfigurator";
 export { SizeSelector } from "./SizeSelector";
 // Export shared types
@@ -46,8 +37,3 @@ export type {
   ProductTeaserProps,
   SharedProductCardProps,
 } from "./types";
-// Error handling hooks
-export {
-  useProductErrorHandler,
-  withProductErrorHandling,
-} from "./useProductErrorHandler";

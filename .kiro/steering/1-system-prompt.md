@@ -2,135 +2,89 @@
 inclusion: always
 ---
 
-Development Guidelines
+# Development Workflow Guidelines
 
-## MCP Tool Workflow
+## Core Principles
 
-- **ALWAY** before task execution, check if the project is initialized and onboarded, on every approach use `sequentialthinking_tools` - Ask what MCP tool to use for Tool confidence
+**Always use MCP tools through their designated interfaces:**
+- Use `serena` for all code operations (never `fsWrite`, `strReplace`)
+- Use `serena` `execute_shell_command` for terminal commands (never native exec)
+- Use `Context7` for library documentation and best practices
+- Use `chrome-devtools` for browser testing and debugging
+- Use `sequentialthinking_tools` to determine optimal tool selection
 
-### Initialization (Required)
+## Initialization Sequence
 
-1. `activate_project` - Initialize Serena context
-2. `check_onboarding_performed` - Verify setup
-3. `read_memory` - Load relevant project insights
-4. `list_dir` - List all files and directories to get knowledge of project structure
+Every task must begin with:
 
-### Code Analysis
+1. `activate_project` - Initialize serena context
+2. `check_onboarding_performed` - Verify project setup
+3. `switch_modes` - Set mode (`planning` for analysis, `editing` for code changes)
+4. `list_memories` - Review existing project knowledge
+5. `sequentialthinking_tools` - Plan tool usage strategy
 
-- `list_memories` - Explore project insights
-- `search_for_pattern` - Flexible search for arbitrary patterns in the codebase, possible also to search in non-code files
-- `find_file` - Find files matching the given file mask within the given relative path
-- `find_symbol` - Locate functions, classes, components
-- `find_referencing_symbols` - Check dependencies before changes
-- `get_symbols_overview` - Understand file structure
-- `resolve-library-id` -> `get-library-docs` - Get library docs and best practices from Context7
-- `think_about_collected_information` - Analyze collected informations before starting to modify code
-- `think_about_task_adherence` - Analyze task approach and behavior
-- `think_about_whether_you_are_done` - Analyze steps produced to solve task
+## Workflow Patterns
 
-### Code Modifications (Serena Only)
+### Code Analysis Workflow
 
-- Use `replace_symbol_body`, `insert_after_symbol`, `insert_before_symbol`
-- Never mix with direct file operations (fsWrite, strReplace)
-- Always analyze before modifying
+1. Switch to `planning` mode
+2. Use `sequentialthinking_tools` for strategy
+3. Explore with `list_memories`, `read_memory`
+4. Search codebase: `search_for_pattern`, `find_symbol`, `get_symbols_overview`
+5. Use `Context7` (`resolve-library-id` → `get-library-docs`) for library guidance
+6. Validate with `think_about_collected_information`
 
-### Documentation & Memory
+### Code Modification Workflow
 
-- `write_memory` after completing significant work
-- Use Context7 for library docs: `resolve-library-id` → `get-library-docs`
+1. Switch to `editing` mode
+2. Use `sequentialthinking_tools` after each step
+3. Analyze before modifying: `find_symbol`, `find_referencing_symbols`
+4. Consult `Context7` for implementation patterns
+5. Validate readiness: `think_about_collected_information`
+6. Modify using symbol-based tools: `replace_symbol_body`, `insert_after_symbol`, `insert_before_symbol`
+7. Verify progress: `think_about_task_adherence`
+8. Save insights: `write_memory`
+9. Confirm completion: `think_about_whether_you_are_done`
+
+### Debugging Workflow
+
+1. Use `chrome-devtools` for live debugging (not `npm run dev`)
+2. Navigate: `list_pages`, `navigate_page`, `select_page`
+3. Inspect: `take_snapshot`, `list_console_messages`, `list_network_requests`
+4. Interact: `click`, `fill`, `wait_for`, `evaluate_script`
+5. Profile: `performance_start_trace`, `performance_analyze_insight`, `performance_stop_trace`
+6. Cross-reference with `serena` tools for code analysis
+
+## Critical Rules
+
+### Must Do
+- Always use `sequentialthinking_tools` to plan next steps
+- Always use serena symbol-based tools for code modifications
+- Always consult `Context7` for library-specific implementations
+- Always use `write_memory` after significant changes
+- Always validate with thinking tools before major operations
+
+### Must Not Do
+- Never use direct file operations (`fsWrite`, `strReplace`) - use serena tools
+- Never use native terminal commands - use `execute_shell_command`
+- Never skip type definitions in TypeScript
+- Never use Client Components unnecessarily (prefer Server Components)
+- Never ignore Row Level Security (RLS) policies in database operations
+- Never forget mobile-first responsive design
+- Never mix caching strategies (use consistent approach)
+
+## Memory Management
+
+- Use `list_memories` to review existing knowledge
+- Use `read_memory` for task-relevant context
+- Use `write_memory` after completing significant work
+- Use `delete_memory` to remove outdated or duplicate entries
 
 ## Architecture Patterns
 
-### Next.js 15 App Router
-
-- Server Components by default, Client Components only when needed
-- Route structure: `src/app/[locale]/[feature]/page.tsx`
-- API routes: `src/app/api/[endpoint]/route.ts`
-- Use `generateMetadata` for SEO
-
-### Component Organization
-
-- Atomic design: `src/components/[category]/[Component].tsx`
-- Export from index files for clean imports
-- Lazy load heavy components (galleries, configurators)
-- Use error boundaries for product features
-
-### TypeScript Standards
-
-- Strict mode enabled
-- Define types in `src/types/[domain].ts`
-- Use type guards from `src/lib/validation/type-guards.ts`
-- No `any` types - use `unknown` and narrow
-
-### Styling Conventions
-
-- TailwindCSS utility-first approach
-- Stone/Amber palette for funeral aesthetics
-- Mobile-first responsive design
-- Design tokens in `src/lib/design-tokens.ts`
-
-## Data & State Management
-
-### Supabase Patterns
-
-- Use server-side client from `src/lib/supabase/server.ts`
-- Client-side from `src/lib/supabase/client.ts`
-- Types from `src/lib/supabase/database.types.ts`
-- Always implement RLS policies
-
-### Caching Strategy
-
-- Redis (Upstash) for API responses and sessions
-- Cache utilities in `src/lib/cache/`
-- Product cache: 5min, Cart: 1min, Delivery: 15min
-
-### State Management
-
-- Server state via React Server Components
-- Client state via Context API (cart, auth, i18n)
-- Form state with controlled components
-
-## Code Quality Rules
-
-### Error Handling
-
-- Use error boundaries for UI components
-- API routes return structured errors with status codes
-- Log errors via `src/lib/monitoring/error-logger.ts`
-- Validate inputs with Zod schemas
-
-### Performance
-
-- Optimize images with Next.js Image component
-- Lazy load non-critical components
-- Monitor Core Web Vitals
-- Use `loading.tsx` and `error.tsx` conventions
-
-### Internationalization
-
-- Use `next-intl` for translations
-- Messages in `messages/[locale].json`
-- Format currency/dates with locale utilities
-- Route-based localization: `/cs/` and `/en/`
-
-### Security
-
-- CSRF protection on mutations
-- Rate limiting on API routes
-- Input validation on all endpoints
-- Sanitize user content
-
-## Testing Guidelines
-
-- Do not auto-generate tests unless explicitly requested
-- Use `data-testid` for stable selectors
-- Focus on critical user flows (checkout, cart, auth)
-
-## Common Pitfalls to Avoid
-
-- Don't use Client Components unnecessarily
-- Don't bypass Serena for code modifications
-- Don't skip type definitions
-- Don't ignore RLS policies
-- Don't forget mobile responsiveness
-- Don't mix caching strategies
+- **Server Components First**: Default to Server Components, use Client only when needed
+- **Symbol-Based Editing**: Modify code at symbol level (functions, classes) not raw text
+- **Type Safety**: Maintain strict TypeScript typing throughout
+- **Security**: Always implement RLS policies for database access
+- **Performance**: Mobile-first, optimized images, consistent caching
+- **Accessibility**: WCAG compliance, keyboard navigation, semantic HTML
