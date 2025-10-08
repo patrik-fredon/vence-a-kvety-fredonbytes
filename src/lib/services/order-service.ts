@@ -5,7 +5,7 @@
 
 import { orderUtils } from "@/lib/supabase/utils";
 import { invalidateCacheByEvent } from "@/lib/cache/cache-invalidation";
-import type { Database } from "@/types/supabase";
+import type { Database } from "@/lib/supabase/database.types";
 
 type OrderStatus = Database["public"]["Enums"]["order_status"];
 
@@ -75,7 +75,7 @@ export async function getOrderById(orderId: string) {
  */
 export async function getOrdersByUserId(userId: string) {
   try {
-    return await orderUtils.getOrdersByUserId(userId);
+    return await orderUtils.getUserOrders(userId);
   } catch (error) {
     console.error("Error getting user orders:", error);
     throw error;

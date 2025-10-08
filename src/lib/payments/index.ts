@@ -377,9 +377,9 @@ export class PaymentService {
 }
 
 // Export types and utilities
-export * from "./stripe";
-export * from "./stripe-service";
-export * from "./error-handler";
-export * from "./retry-handler";
-export * from "./payment-monitor";
+export type { CreatePaymentIntentOptions } from "./stripe";
+export { createPaymentIntentAction } from "./stripe-service";
+export { sanitizeStripeError, logPaymentError } from "./error-handler";
+export { withRetry } from "./retry-handler";
+export { PaymentMonitor } from "./payment-monitor";
 export { PaymentService as default };

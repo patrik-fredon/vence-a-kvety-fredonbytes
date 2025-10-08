@@ -40,7 +40,7 @@ const NoLoading = () => null;
 // =============================================================================
 
 export const LazyAdminDashboard = dynamic(
-  () => import('@/components/admin/AdminDashboard').then(mod => ({ default: mod.AdminDashboard })),
+  () => import('@/components/admin/AdminDashboard'),
   {
     loading: LargeLoading,
     ssr: false, // Admin components are client-side only
@@ -48,7 +48,7 @@ export const LazyAdminDashboard = dynamic(
 );
 
 export const LazyProductManagement = dynamic(
-  () => import('@/components/admin/ProductManagement').then(mod => ({ default: mod.ProductManagement })),
+  () => import('@/components/admin/ProductManagement'),
   {
     loading: LargeLoading,
     ssr: false,
@@ -56,7 +56,7 @@ export const LazyProductManagement = dynamic(
 );
 
 export const LazyOrderManagement = dynamic(
-  () => import('@/components/admin/OrderManagement').then(mod => ({ default: mod.OrderManagement })),
+  () => import('@/components/admin/OrderManagement'),
   {
     loading: LargeLoading,
     ssr: false,

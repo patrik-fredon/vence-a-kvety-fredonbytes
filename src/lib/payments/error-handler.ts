@@ -56,7 +56,7 @@ export function sanitizeStripeError(
     return {
       message: error.message,
       category: PaymentErrorCategory.CARD_ERROR,
-      code: error.code,
+      ...(error.code ? { code: error.code } : {}),
       declineCode: error.decline_code,
       userMessage: getCardErrorMessage(error, locale),
     };
@@ -68,7 +68,7 @@ export function sanitizeStripeError(
     return {
       message: "Invalid payment configuration",
       category: PaymentErrorCategory.VALIDATION_ERROR,
-      code: error.code,
+      ...(error.code ? { code: error.code } : {}),
       userMessage: getErrorMessage("invalid_request", locale),
     };
   }
@@ -79,7 +79,7 @@ export function sanitizeStripeError(
     return {
       message: "Payment service error",
       category: PaymentErrorCategory.API_ERROR,
-      code: error.code,
+      ...(error.code ? { code: error.code } : {}),
       userMessage: getErrorMessage("api_error", locale),
     };
   }
@@ -215,7 +215,7 @@ function getErrorMessage(
     },
   };
 
-  return messages[errorType]?.[locale] || messages.unknown[locale];
+  return messages[errorType]?.[locale] || messages['unknown']?.[locale] || 'An unknown error occurred';
 }
 
 /**

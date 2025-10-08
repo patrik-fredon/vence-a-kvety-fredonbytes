@@ -65,7 +65,7 @@ export async function warmFeaturedProducts(): Promise<void> {
     await cacheProductsList(
       { featured: true, active: true, limit: 10 },
       products,
-      { page: 1, limit: 10, total: products.length }
+      { page: 1, limit: 10, total: products.length, totalPages: 1 }
     );
 
     console.log(`✅ [CacheWarming] Warmed ${products.length} featured products`);

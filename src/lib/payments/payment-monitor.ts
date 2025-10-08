@@ -90,20 +90,24 @@ export class PaymentMonitor {
     // Store in database for analysis
     try {
       const supabase = createClient();
-      const { error } = await supabase.from("payment_errors").insert({
-        order_id: data.orderId,
-        payment_intent_id: data.paymentIntentId,
+      const insertData: any = {
         error_type: data.errorType,
-        error_code: data.errorCode,
         error_message: data.errorMessage,
         sanitized_message: data.sanitizedMessage,
-        amount: data.amount,
-        currency: data.currency,
-        customer_email: data.customerEmail,
-        metadata: data.metadata || {},
-        stack_trace: data.stackTrace,
         created_at: new Date(data.timestamp).toISOString(),
-      });
+      };
+
+      // Add optional fields only if they exist
+      if (data.orderId) insertData.order_id = data.orderId;
+      if (data.paymentIntentId) insertData.payment_intent_id = data.paymentIntentId;
+      if (data.errorCode) insertData.error_code = data.errorCode;
+      if (data.amount !== undefined) insertData.amount = data.amount;
+      if (data.currency) insertData.currency = data.currency;
+      if (data.customerEmail) insertData.customer_email = data.customerEmail;
+      if (data.metadata) insertData.metadata = data.metadata;
+      if (data.stackTrace) insertData.stack_trace = data.stackTrace;
+
+      const { error } = await supabase.from("payment_errors").insert(insertData);
 
       if (error) {
         console.error("[Payment Monitor] Failed to store error in database:", error);
@@ -189,7 +193,7 @@ export class PaymentMonitor {
 
     await this.logPaymentError({
       errorType: `webhook_${data.eventType}`,
-      errorCode: errorDetails.code,
+      ...(errorDetails.code ? { errorCode: errorDetails.code } : {}),
       errorMessage: errorDetails.message,
       sanitizedMessage: errorDetails.sanitized,
       metadata: {
@@ -216,12 +220,12 @@ export class PaymentMonitor {
     await this.logPaymentError({
       orderId: data.orderId,
       errorType: "payment_intent_creation",
-      errorCode: errorDetails.code,
+      ...(errorDetails.code ? { errorCode: errorDetails.code } : {}),
       errorMessage: errorDetails.message,
       sanitizedMessage: errorDetails.sanitized,
       amount: data.amount,
       currency: data.currency,
-      customerEmail: data.customerEmail,
+      ...(data.customerEmail ? { customerEmail: data.customerEmail } : {}),
       timestamp: Date.now(),
     });
   }
@@ -240,7 +244,7 @@ export class PaymentMonitor {
       orderId: data.orderId,
       paymentIntentId: data.paymentIntentId,
       errorType: "payment_confirmation",
-      errorCode: errorDetails.code,
+      ...(errorDetails.code ? { errorCode: errorDetails.code } : {}),
       errorMessage: errorDetails.message,
       sanitizedMessage: errorDetails.sanitized,
       timestamp: Date.now(),

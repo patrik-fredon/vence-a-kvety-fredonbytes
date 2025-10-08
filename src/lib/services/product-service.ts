@@ -4,7 +4,7 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
-import type { Product, ProductRow, CategoryRow, Category } from "@/types/product";
+import type { Product, ProductRow, CategoryRow } from "@/types/product";
 import {
   cacheProduct,
   cacheProductBySlug,
@@ -211,7 +211,7 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
     if (cached) {
       return {
         products: cached.products,
-        pagination: cached.pagination || {
+        pagination: (cached.pagination && 'totalPages' in cached.pagination && typeof cached.pagination.totalPages === 'number') ? cached.pagination as { page: number; limit: number; total: number; totalPages: number } : {
           page,
           limit,
           total: cached.products.length,

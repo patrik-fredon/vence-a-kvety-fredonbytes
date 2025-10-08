@@ -112,12 +112,12 @@ export function validateEnvironmentVariables(): EnvValidationResult {
   // Additional security checks
   if (process.env.NODE_ENV === "production") {
     // Ensure production uses live keys
-    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    const stripeKey = process.env['STRIPE_SECRET_KEY'];
     if (stripeKey && stripeKey.startsWith("sk_test_")) {
       warnings.push("STRIPE_SECRET_KEY - Using test key in production environment");
     }
 
-    const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    const stripePublishableKey = process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'];
     if (stripePublishableKey && stripePublishableKey.startsWith("pk_test_")) {
       warnings.push(
         "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY - Using test key in production environment"
@@ -125,7 +125,7 @@ export function validateEnvironmentVariables(): EnvValidationResult {
     }
 
     // Ensure NEXTAUTH_SECRET is strong enough
-    const nextAuthSecret = process.env.NEXTAUTH_SECRET;
+    const nextAuthSecret = process.env['NEXTAUTH_SECRET'];
     if (nextAuthSecret && nextAuthSecret.length < 32) {
       invalid.push("NEXTAUTH_SECRET - Must be at least 32 characters long");
     }

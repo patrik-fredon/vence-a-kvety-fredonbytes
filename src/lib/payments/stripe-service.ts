@@ -83,6 +83,9 @@ export async function createPaymentIntentAction(
     // Create payment intent with retry logic
     const paymentIntent = await withRetry(
       async () => {
+        if (!stripe) {
+          throw new Error("Stripe is not initialized");
+        }
         return await stripe.paymentIntents.create({
           amount: Math.round(amount * 100), // Convert to cents
           currency: currency.toLowerCase(),
@@ -96,7 +99,7 @@ export async function createPaymentIntentAction(
             locale,
             ...metadata,
           },
-          receipt_email: customerEmail,
+          ...(customerEmail ? { receipt_email: customerEmail } : {}),
           description: `Objednávka pohřebních věnců #${orderId}`,
           statement_descriptor: "FUNERAL WREATHS",
         });
@@ -122,7 +125,7 @@ export async function createPaymentIntentAction(
 
     return {
       success: true,
-      clientSecret: paymentIntent.client_secret || undefined,
+      ...(paymentIntent.client_secret ? { clientSecret: paymentIntent.client_secret } : {}),
       paymentIntentId: paymentIntent.id,
     };
   } catch (error) {
@@ -162,6 +165,9 @@ export const getPaymentIntent = cache(
     try {
       return await withRetry(
         async () => {
+          if (!stripe) {
+            throw new Error("Stripe is not initialized");
+          }
           return await stripe.paymentIntents.retrieve(paymentIntentId);
         },
         {
