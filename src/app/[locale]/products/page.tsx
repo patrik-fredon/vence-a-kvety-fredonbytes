@@ -141,22 +141,7 @@ export default async function ProductsPage({
       .order("created_at", { ascending: false })
       .limit(12);
 
-    // Debug: Check raw data from Supabase
-    console.log('=== RAW SUPABASE DATA DEBUG ===');
-    console.log('Raw products count:', productsData?.length || 0);
-    if (productsData && productsData.length > 0) {
-      const firstRaw = productsData[0];
-      console.log('First raw product images column:', {
-        images: firstRaw.images,
-        imagesType: typeof firstRaw.images,
-        isArray: Array.isArray(firstRaw.images),
-        isNull: firstRaw.images === null,
-        isUndefined: firstRaw.images === undefined
-      });
-    }
-    console.log('=== RAW SUPABASE DATA DEBUG END ===');
-
-    // Transform the data
+// Transform the data
     products = (productsData || []).map((row) => {
       const category = row.categories
         ? transformCategoryRow(row.categories)
@@ -164,41 +149,7 @@ export default async function ProductsPage({
       return transformProductRow(row, category);
     });
 
-    // Debug: Check transformed products
-    console.log('=== PRODUCT IMAGE DEBUG START ===');
-    console.log('Total products fetched:', products.length);
-    
-    if (products.length > 0) {
-      const firstProduct = products[0];
-      console.log('First product details:', {
-        id: firstProduct?.id,
-        name: firstProduct?.name,
-        slug: firstProduct?.slug,
-        imagesArray: firstProduct?.images,
-        imagesLength: firstProduct?.images?.length,
-        imagesType: typeof firstProduct?.images,
-        isArray: Array.isArray(firstProduct?.images)
-      });
-      
-      // Log each image in the array
-      if (firstProduct?.images && Array.isArray(firstProduct.images)) {
-        console.log('Images in first product:');
-        firstProduct.images.forEach((img, idx) => {
-          console.log(`  Image ${idx}:`, {
-            url: img?.url,
-            isPrimary: img?.isPrimary,
-            alt: img?.alt,
-            urlValid: img?.url ? (img.url.startsWith('http') || img.url.startsWith('/')) : false
-          });
-        });
-      } else {
-        console.log('No images array found or images is not an array');
-      }
-    }
-    
-    console.log('=== PRODUCT IMAGE DEBUG END ===');
-
-    // Cache products for future requests
+// Cache products for future requests
     await cacheProductsList(initialFilters, products);
   }
 
