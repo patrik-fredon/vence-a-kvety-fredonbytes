@@ -418,7 +418,7 @@ const ProductGrid = React.memo(function ProductGrid({
   );
 
   return (
-    <section className={cn("bg-primary py-12 rounded-2xl shadow-xl", className)}>
+    <section className={cn("bg-funeral-teal py-12 rounded-2xl shadow-xl", className)}>
       <div className="container mx-auto px-4 max-w-7xl">
         {/* Filters */}
         <div className="mb-8">

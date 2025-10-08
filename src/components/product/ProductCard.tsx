@@ -165,7 +165,7 @@ const ProductCardComponent = function ProductCard({
       case "list":
         return cn(
           baseStyles,
-          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-56 sm:h-64 md:h-72"
+          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-64 sm:h-72 md:h-80 clip-corners"
         );
 
       default:
@@ -244,30 +244,8 @@ const ProductCardComponent = function ProductCard({
         </>
       )}
 
-      {/* Featured Badge */}
-      {featured && (
-        <div className="absolute top-3 left-3 z-10">
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200 shadow-sm">
-            {t("featured")}
-          </span>
-        </div>
-      )}
 
-      {/* Customization indicator for teaser variant */}
-      {variant === "teaser" && primaryAction.type === "customize" && (
-        <div className="absolute top-3 right-3 bg-amber-800 text-white px-2 py-1 rounded-full text-xs font-medium">
-          {locale === "cs" ? "Přizpůsobitelné" : "Customizable"}
-        </div>
-      )}
 
-      {/* Stock Status Overlay */}
-      {!product.availability.inStock && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-          <span className="text-white font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
-            {t("outOfStock")}
-          </span>
-        </div>
-      )}
 
       {/* No Image Placeholder */}
       {!primaryImage && (
@@ -297,8 +275,8 @@ const ProductCardComponent = function ProductCard({
     <h3
       id={`product-${product.id}-title`}
       className={cn(
-        "font-semibold text-teal-800 transition-colors",
-        variant === "grid" && "text-sm sm:text-base mb-2 line-clamp-2 leading-tight",
+        "font-bold text-teal-800 transition-colors",
+        variant === "grid" && "text-sm sm:text-xl mb-2 line-clamp-2 leading-tight",
         variant === "teaser" && "text-xl mb-2 line-clamp-2 min-h-[3.5rem]",
         variant === "list" && "text-base sm:text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-teal-800"
       )}
@@ -312,7 +290,7 @@ const ProductCardComponent = function ProductCard({
     if (variant !== "list" || !product.category) return null;
 
     return (
-      <p className="text-teal-800 mb-1 text-xs">
+      <p className="text-teal-800 mb-1 text-xl font-bold">
         {product.category.name[locale as keyof typeof product.category.name]}
       </p>
     );
@@ -332,7 +310,7 @@ const ProductCardComponent = function ProductCard({
         <span
           className={cn(
             "font-semibold text-teal-800",
-            variant === "grid" && "text-lg",
+            variant === "grid" && "text-xl",
             variant === "teaser" && "text-2xl",
             variant === "list" && "text-lg sm:text-xl"
           )}
@@ -354,7 +332,7 @@ const ProductCardComponent = function ProductCard({
         <Button
           size="sm"
           variant="outline"
-          className="bg-amber-100 hover:bg-amber-200/80 text-teal-800 min-w-8 h-8 p-0"
+          className="bg-teal-800 hover:bg-amber-200/80 text-amber-100 min-w-8 h-8 p-0"
           onClick={handleQuickView}
           aria-label={t("quickView")}
         >
@@ -384,37 +362,7 @@ const ProductCardComponent = function ProductCard({
     </div>
   );
 
-  // Render availability status
-  const renderAvailability = () => (
-    <div
-      className={cn(
-        "flex items-center gap-1.5",
-        variant === "grid" && "mt-2",
-        variant === "teaser" && "mb-4",
-        variant === "list" && "mb-2"
-      )}
-    >
-      <div
-        className={cn(
-          "w-2 h-2 rounded-full",
-          product.availability.inStock ? "bg-green-500" : "bg-red-500"
-        )}
-      />
-      <output
-        className={cn(
-          "text-xs font-medium",
-          product.availability.inStock ? "text-green-700" : "text-red-700"
-        )}
-        aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
-      >
-        {product.availability.inStock
-          ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
-            ? t("limitedStock")
-            : t("inStock")
-          : t("outOfStock")}
-      </output>
-    </div>
-  );
+
 
   // Get button props based on variant
   const getButtonProps = () => ({
@@ -457,7 +405,7 @@ const ProductCardComponent = function ProductCard({
           <Button
             size="sm"
             variant="outline"
-            className="bg-amber-100 hover:bg-amber-200 text-teal-800 flex-1"
+            className="bg-amber-100 hover:bg-amber-200 text-amber-100 flex-1"
             onClick={handleQuickView}
             aria-label={t("quickView")}
           >
@@ -493,7 +441,7 @@ const ProductCardComponent = function ProductCard({
   const renderContent = () => {
     const contentContainer =
       variant === "grid"
-        ? "bg-funeral-gold backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-amber-300"
+        ? "bg-amber-200/50 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-amber-300"
         : "";
 
     return (
@@ -502,7 +450,6 @@ const ProductCardComponent = function ProductCard({
           {renderProductName()}
           {renderCategory()}
           {renderPrice()}
-          {renderAvailability()}
           {renderActionButton()}
           {children}
         </div>
@@ -519,13 +466,151 @@ const ProductCardComponent = function ProductCard({
         onMouseLeave={() => setIsHovered(false)}
         aria-labelledby={`product-${product.id}-title`}
       >
-        {/* Image - Left Half */}
-        <div className={getImageContainerStyles()}>
-          {renderImage()}
+        {/* Image - Left Half - Full Height */}
+        <div className="relative w-1/2 h-full flex-shrink-0 overflow-hidden">
+          {primaryImage?.url && (
+            <Image
+              src={primaryImage.url}
+              alt={primaryImage.alt || productName}
+              fill
+              sizes="(max-width: 768px) 50vw, 384px"
+              className="object-cover"
+              onLoad={() => setImageLoading(false)}
+              priority={featured}
+              loading={featured ? undefined : "lazy"}
+            />
+          )}
+          {!primaryImage && (
+            <div className="absolute inset-0 bg-amber-100 flex items-center justify-center">
+              <svg
+                className="w-16 h-16 text-amber-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <title>No Image Available</title>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+          )}
         </div>
-        
-        {/* Content - Right Half */}
-        {renderContent()}
+
+        {/* Content - Right Half - Clean Modern Layout */}
+        <div className="w-1/2 p-4 sm:p-6 flex flex-col relative">
+          {/* Top Section: Name and Stock Badge */}
+          <div className="flex-1">
+            <div className="flex items-start justify-between gap-3 mb-3">
+              {/* Product Name - Large */}
+              <h3
+                id={`product-${product.id}-title`}
+                className="text-xl sm:text-2xl md:text-3xl font-bold text-teal-800 line-clamp-2 flex-1"
+              >
+                {productName}
+              </h3>
+
+              {/* Stock Badge - Top Right */}
+              <span
+                className={cn(
+                  "px-3 py-1 rounded-full text-xs font-semibold whitespace-nowrap flex-shrink-0",
+                  product.availability.inStock
+                    ? "bg-green-100 text-green-800"
+                    : "bg-red-100 text-red-800"
+                )}
+              >
+                {product.availability.inStock ? t("inStock") : t("outOfStock")}
+              </span>
+            </div>
+
+            {/* Category */}
+            {product.category && (
+              <p className="text-sm text-teal-700 mb-3">
+                {product.category.name[locale as keyof typeof product.category.name]}
+              </p>
+            )}
+
+            {/* Price - Right Aligned, Smaller */}
+            <div className="flex justify-end mb-4">
+              <div className="text-right">
+                <div className="flex items-center gap-2 justify-end">
+                  <span className="text-2xl sm:text-3xl font-bold text-teal-800">
+                    {formatPrice(product.finalPrice || product.basePrice)}
+                  </span>
+                </div>
+                {product.finalPrice && product.finalPrice < product.basePrice && (
+                  <span className="text-sm text-teal-600 line-through">
+                    {formatPrice(product.basePrice)}
+                  </span>
+                )}
+              </div>
+            </div>
+          </div>
+
+          {/* Bottom Section: Action Buttons - Same Height, Centered */}
+          <div className="flex gap-3 mt-auto">
+            {/* Customize/Add to Cart Button */}
+            {primaryAction.type === "customize" ? (
+              <Link href={`/${locale}/products/${product.slug}`} className="flex-1">
+                <Button
+                  disabled={!product.availability.inStock || loading}
+                  loading={loading}
+                  className="w-full h-12 text-base font-semibold"
+                  variant="default"
+                >
+                  {primaryAction.text}
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                disabled={!product.availability.inStock || loading}
+                loading={loading}
+                className="flex-1 h-12 text-base font-semibold"
+                variant="default"
+                onClick={() => handleAction(primaryAction.type)}
+              >
+                {product.availability.inStock ? primaryAction.text : t("outOfStock")}
+              </Button>
+            )}
+
+            {/* Quick View Button - Same Height */}
+            {onQuickView && (
+              <Button
+                variant="outline"
+                className="flex-1 h-12 text-base font-semibold bg-white hover:bg-amber-50 text-teal-800 border-teal-800"
+                onClick={handleQuickView}
+                aria-label={t("quickView")}
+              >
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <title>Quick View Icon</title>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+                {t("quickView")}
+              </Button>
+            )}
+          </div>
+        </div>
       </article>
     );
   }
@@ -544,7 +629,7 @@ const ProductCardComponent = function ProductCard({
           {renderContent()}
           {/* Hover Overlay */}
           {isHovered && (
-            <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 pointer-events-none z-10" />
+            <div className="absolute inset-0 transition-opacity duration-300 pointer-events-none z-10" />
           )}
         </Link>
       ) : (
