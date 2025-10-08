@@ -1,6 +1,6 @@
 /**
  * ImageZoom Component - Lightbox for product images
- * 
+ *
  * Features:
  * - Full-screen image viewing with smooth animations
  * - Keyboard navigation (arrow keys, ESC)
@@ -86,7 +86,7 @@ export function ImageZoom({
 
   const handlePrevious = useCallback(() => {
     if (isAnimating) return;
-    
+
     setIsAnimating(true);
     setCurrentIndex((prev) => {
       const newIndex = prev > 0 ? prev - 1 : images.length - 1;
@@ -97,13 +97,13 @@ export function ImageZoom({
       );
       return newIndex;
     });
-    
+
     setTimeout(() => setIsAnimating(false), 300);
   }, [images, productName, announce, isAnimating]);
 
   const handleNext = useCallback(() => {
     if (isAnimating) return;
-    
+
     setIsAnimating(true);
     setCurrentIndex((prev) => {
       const newIndex = prev < images.length - 1 ? prev + 1 : 0;
@@ -114,7 +114,7 @@ export function ImageZoom({
       );
       return newIndex;
     });
-    
+
     setTimeout(() => setIsAnimating(false), 300);
   }, [images, productName, announce, isAnimating]);
 
@@ -126,7 +126,7 @@ export function ImageZoom({
 
   if (!isOpen || !images[currentIndex]) return null;
 
-  const currentImage = images[currentIndex];
+  const currentImage = images[currentIndex]!;
   const showNavigation = images.length > 1;
 
   const modalContent = (
