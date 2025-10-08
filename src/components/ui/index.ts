@@ -14,9 +14,7 @@
 
 export { Badge } from "./Badge";
 export { Button } from "./Button";
-export { CTAButton } from "./CTAButton";
 export { ErrorBoundary } from "./ErrorBoundary";
-export { Heading } from "./Heading";
 export { Input } from "./Input";
 export { LazyWrapper } from "./LazyWrapper";
 export {

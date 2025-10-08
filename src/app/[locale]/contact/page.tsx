@@ -30,38 +30,38 @@ export default async function ContactPage({ params }: ContactPageProps) {
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="max-w-6xl mx-auto">
-        <div className="bg-funeral-teal rounded-lg p-8 mb-12">
-          <h1 className="text-center text-4xl font-semibold text-amber-100">{tContact("title")}</h1>
+        <div className="rounded-lg p-8 mb-12">
+          <h1 className="text-center text-4xl font-semibold text-teal-800">{tContact("title")}</h1>
         </div>
 
         <div className="grid lg:grid-cols-3 gap-8">
           {/* Contact Information - Compact Professional Card */}
           <div className="lg:col-span-1">
-            <div className="bg-funeral-gold rounded-lg shadow-soft p-6 h-fit">
-              <h2 className="text-elegant text-xl font-semibold text-teal-900 mb-4 border-b border-teal-100 pb-3">
+            <div className="bg-funeral-teal rounded-lg shadow-soft p-6 h-fit">
+              <h2 className="text-elegant text-xl font-semibold text-amber-300 mb-4 border-b border-teal-100 pb-3">
                 {tContact("contactInfo")}
               </h2>
 
               <div className="space-y-4">
                 <div className="flex items-start space-x-3">
-                  <MapPinIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <MapPinIcon className="w-5 h-5 text-amber-300 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-teal-900 text-sm mb-1">
+                    <h3 className="font-medium text-amber-300 text-sm mb-1">
                       {tContact("address")}
                     </h3>
-                    <p className="text-teal-800 text-sm leading-relaxed">
+                    <p className="text-amber-100 text-sm leading-relaxed">
                       {contactInfo.address[locale as "cs" | "en"]}
                     </p>
                   </div>
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <PhoneIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <PhoneIcon className="w-5 h-5 text-amber-300 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-teal-900 text-sm mb-1">{tContact("phone")}</h3>
+                    <h3 className="font-medium text-amber-300 text-sm mb-1">{tContact("phone")}</h3>
                     <a
                       href={`tel:${contactInfo.phone}`}
-                      className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium"
+                      className="text-amber-100 hover:text-primary-700 transition-colors text-sm font-medium"
                     >
                       {contactInfo.phone}
                     </a>
@@ -69,12 +69,12 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <EnvelopeIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <EnvelopeIcon className="w-5 h-5 text-amber-300 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-teal-900 text-sm mb-1">{tContact("email")}</h3>
+                    <h3 className="font-medium text-amber-300 text-sm mb-1">{tContact("email")}</h3>
                     <a
                       href={`mailto:${contactInfo.email}`}
-                      className="text-primary-600 hover:text-primary-700 transition-colors text-sm font-medium break-all"
+                      className="text-amber-100 hover:text-primary-700 transition-colors text-sm font-medium break-all"
                     >
                       {contactInfo.email}
                     </a>
@@ -82,10 +82,10 @@ export default async function ContactPage({ params }: ContactPageProps) {
                 </div>
 
                 <div className="flex items-start space-x-3">
-                  <ClockIcon className="w-5 h-5 text-primary-600 mt-0.5 flex-shrink-0" />
+                  <ClockIcon className="w-5 h-5 text-amber-300 mt-0.5 flex-shrink-0" />
                   <div className="min-w-0">
-                    <h3 className="font-medium text-teal-900 text-sm mb-1">{tContact("hours")}</h3>
-                    <p className="text-teal-800 text-sm leading-relaxed">
+                    <h3 className="font-medium text-amber-300 text-sm mb-1">{tContact("hours")}</h3>
+                    <p className="text-amber-100 text-sm leading-relaxed">
                       {contactInfo.hours[locale as "cs" | "en"]}
                     </p>
                   </div>
@@ -96,12 +96,12 @@ export default async function ContactPage({ params }: ContactPageProps) {
 
           {/* Contact Form - Takes remaining space */}
           <div className="lg:col-span-2">
-            <div className="bg-funeral-gold rounded-lg shadow-soft p-8">
-              <h2 className="text-elegant text-2xl font-semibold text-teal-900 mb-6">
+            <div className="bg-funeral-teal rounded-lg shadow-soft p-8">
+              <h2 className="text-elegant text-2xl font-semibold text-amber-300 mb-6">
                 {tContact("contactForm")}
               </h2>
 
-              <p className="text-teal-800 mb-6">{tContact("formDescription")}</p>
+              <p className="text-amber-100 mb-6">{tContact("formDescription")}</p>
 
               <ContactForm locale={locale} />
             </div>

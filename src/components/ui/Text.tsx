@@ -47,10 +47,10 @@ export function Text({
   };
 
   const colors = {
-    primary: "text-primary-700",
-    secondary: "text-secondary-700",
-    neutral: "text-neutral-900",
-    muted: "text-neutral-600",
+    primary: "text-teal-800",
+    secondary: "text-amber-200",
+    neutral: "text-amber-100",
+    muted: "text-teal-800",
     error: "text-error-600",
     success: "text-success-600",
     warning: "text-warning-600",

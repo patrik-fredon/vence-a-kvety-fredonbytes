@@ -57,9 +57,9 @@ export function FormField(props: FormFieldProps) {
 
   const baseStyles = cn(
     "block w-full rounded-md border px-3 py-2",
-    "text-stone-900 placeholder-stone-500 bg-white",
+    "text-teal-900 placeholder-teal-800 bg-white",
     "focus:outline-none focus:ring-2 focus:ring-offset-2",
-    "disabled:bg-stone-50 disabled:text-stone-500 disabled:cursor-not-allowed disabled:border-stone-200",
+    "disabled:bg-amber-50 disabled:text-amber-500 disabled:cursor-not-allowed disabled:border-amber-200",
     "transition-all duration-200 ease-in-out",
     "shadow-sm focus:shadow-md",
     "font-normal text-sm leading-normal",
@@ -68,7 +68,7 @@ export function FormField(props: FormFieldProps) {
     "high-contrast:focus:border-Highlight high-contrast:focus:ring-Highlight"
   );
 
-  const validStyles = cn("border-stone-300 focus:border-stone-500 focus:ring-stone-500/20");
+  const validStyles = cn("border-amber-300 focus:border-amber-200 focus:ring-amber-500/20");
 
   const errorStyles = cn(
     "border-red-500 focus:border-red-500 focus:ring-red-500/20 bg-red-50/30",
@@ -151,7 +151,7 @@ export function FormField(props: FormFieldProps) {
     <div className="space-y-1">
       {/* Label */}
       {label && (
-        <label htmlFor={fieldId} className="block text-sm font-medium text-stone-700">
+        <label htmlFor={fieldId} className="block text-sm font-medium text-amber-300">
           {label}
           {required && (
             <span
@@ -170,7 +170,7 @@ export function FormField(props: FormFieldProps) {
         {/* Left Icon */}
         {icon && iconPosition === "left" && (
           <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-            <span className="text-stone-400" aria-hidden="true">
+            <span className="text-amber-300" aria-hidden="true">
               {icon}
             </span>
           </div>
@@ -182,7 +182,7 @@ export function FormField(props: FormFieldProps) {
         {/* Right Icon */}
         {icon && iconPosition === "right" && (
           <div className="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-            <span className="text-stone-400" aria-hidden="true">
+            <span className="text-amber-300" aria-hidden="true">
               {icon}
             </span>
           </div>
@@ -191,7 +191,7 @@ export function FormField(props: FormFieldProps) {
 
       {/* Help Text */}
       {helpText && (
-        <p id={helpId} className="text-sm text-stone-600">
+        <p id={helpId} className="text-sm text-amber-300">
           {helpText}
         </p>
       )}
@@ -230,10 +230,10 @@ export function FormGroup({ children, legend, description, className }: FormGrou
 
   return (
     <fieldset className={cn("space-y-4", className)} aria-describedby={descriptionId}>
-      {legend && <legend className="text-base font-semibold text-stone-900 mb-2">{legend}</legend>}
+      {legend && <legend className="text-base font-semibold text-amber-300 mb-2">{legend}</legend>}
 
       {description && (
-        <p id={descriptionId} className="text-sm text-stone-600 mb-4">
+        <p id={descriptionId} className="text-sm text-amber-300 mb-4">
           {description}
         </p>
       )}
@@ -265,13 +265,13 @@ export function FormSection({ children, title, description, className }: FormSec
       aria-describedby={descriptionId}
     >
       {title && (
-        <h2 id={titleId} className="text-lg font-semibold text-stone-900">
+        <h2 id={titleId} className="text-lg font-semibold text-amber-300">
           {title}
         </h2>
       )}
 
       {description && (
-        <p id={descriptionId} className="text-sm text-stone-600">
+        <p id={descriptionId} className="text-sm text-amber-300">
           {description}
         </p>
       )}

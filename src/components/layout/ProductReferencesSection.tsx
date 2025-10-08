@@ -449,7 +449,6 @@ export const ProductReferencesSection = ({
           // Orientation handling
           "landscape:py-8", // Reduced padding in landscape
           "md:landscape:py-16", // Tablet landscape adjustment
-          "bg-funeral-gold", // Golden gradient background
           className
         )}
         aria-labelledby="products-heading"
@@ -529,7 +528,6 @@ export const ProductReferencesSection = ({
           // Orientation handling
           "landscape:py-8", // Reduced padding in landscape
           "md:landscape:py-16", // Tablet landscape adjustment
-          "bg-funeral-gold", // Golden gradient background
           className
         )}
         aria-labelledby="products-heading"

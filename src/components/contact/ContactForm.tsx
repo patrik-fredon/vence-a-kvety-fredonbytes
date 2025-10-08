@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Button } from "@/components/ui/Button";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
+import { Card, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { cn } from "@/lib/utils";
 import type { ContactFormData, ContactFormErrors, ContactFormResponse } from "@/types/contact";
@@ -171,16 +171,7 @@ export function ContactForm({ locale }: ContactFormProps) {
   return (
     <>
       <Card className="max-w-2xl mx-auto">
-        <CardHeader>
-          <CardTitle className="text-center text-teal-900">
-            {locale === "cs" ? "Kontaktní formulář" : "Contact Form"}
-          </CardTitle>
-          <p className="text-center text-teal-600 text-sm">
-            {locale === "cs"
-              ? "Napište nám a my se vám ozveme co nejdříve. Jsme tu pro vás v těžkých chvílích."
-              : "Write to us and we will get back to you as soon as possible. We are here for you in difficult times."}
-          </p>
-        </CardHeader>
+
 
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">

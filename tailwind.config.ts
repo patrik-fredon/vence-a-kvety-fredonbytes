@@ -33,7 +33,11 @@ const config: Config = {
         xs: "475px", // Extra small screens (larger phones)
         // Default breakpoints are still available: sm, md, lg, xl, 2xl
       },
-      fontFamily: designTokens.typography.fontFamily,
+      fontFamily: {
+         sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
+         serif: ["Georgia", "Cambria", "Times New Roman", "Times", "serif"],
+         mono: ["Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+      },
       fontSize: designTokens.typography.fontSize,
       fontWeight: designTokens.typography.fontWeight,
       lineHeight: designTokens.typography.lineHeight,
