@@ -164,7 +164,7 @@ export function ProductCard({
         >
           {/* Product Image */}
           <div
-            className="relative w-full h-32 overflow-hidden flex-shrink-0 rounded-md cursor-pointer"
+            className="relative overflow-hidden bg-teal-800 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md cursor-pointer"
             onClick={handleImageClick}
           >
             <ProductImageHover
@@ -280,7 +280,7 @@ export function ProductCard({
         className={cn(
           // Base card styles with teal-800 background and clip-corners
           "group relative overflow-hidden transition-all duration-300 shadow-lg cursor-pointer",
-          "bg-teal-800 clip-corners rounded-lg h-96 hover:-translate-y-1 hover:shadow-xl",
+          "clip-corners h-96 hover:-translate-y-1 hover:shadow-xl",
           className
         )}
         onMouseEnter={() => setIsHovered(true)}
@@ -288,15 +288,14 @@ export function ProductCard({
         onClick={handleProductClick}
         aria-labelledby={`product-${product.id}-title`}
       >
-        {/* Image Layer - Fixed height container for Next.js Image optimization */}
-        <div className="relative w-full h-64 overflow-hidden">
+        {/* Image Layer (z-0) - Fills container with absolute positioning */}
+        <div className="absolute inset-0 z-0 ">
           <ProductImageHover
             primaryImage={displayPrimaryImage}
             secondaryImage={secondaryImage}
             productName={product.name[locale as keyof typeof product.name]}
             locale={locale}
             fill
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             onClick={handleImageClick}
             priority={featured}
             isAboveFold={featured}
