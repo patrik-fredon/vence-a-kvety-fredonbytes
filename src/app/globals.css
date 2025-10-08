@@ -136,6 +136,22 @@
    With fallback values for browser compatibility
    ============================================ */
 @layer utilities {
+  /* Hide scrollbar for carousel */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  /* Touch-friendly carousel scrolling */
+  .touch-pan-x {
+    touch-action: pan-x;
+    -webkit-overflow-scrolling: touch;
+  }
+
   .bg-funeral-gold {
     background: linear-gradient(
       to right,

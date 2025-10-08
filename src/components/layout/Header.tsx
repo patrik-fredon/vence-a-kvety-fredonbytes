@@ -5,7 +5,6 @@ import Link from "next/link";
 import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
-import { AuthStatus } from "@/components/auth";
 import { AnimatedCartIcon } from "@/components/cart";
 import { LanguageSwitcher } from "@/components/i18n/LanguageSwitcher";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
@@ -86,12 +85,12 @@ export function Header({ locale }: HeaderProps) {
               className="flex items-center hover:opacity-80 transition-opacity duration-200 rounded-lg px-2 py-1"
               aria-label={t("home")}
             >
-              <Image 
-                src="/logo.svg" 
-                alt="Logo" 
-                width={180} 
-                height={72} 
-                className="h-15 w-auto sm:h-16 md:h-18" 
+              <Image
+                src="/logo.svg"
+                alt="Logo"
+                width={180}
+                height={72}
+                className="h-15 w-auto sm:h-16 md:h-18"
                 priority
                 placeholder="blur"
                 blurDataURL={BLUR_PLACEHOLDERS.logo}
@@ -218,10 +217,6 @@ export function Header({ locale }: HeaderProps) {
             <div className="flex items-center justify-between">
               <span className="text-sm font-medium text-teal-900">{tUI("language")}:</span>
               <LanguageSwitcher currentLocale={locale} />
-            </div>
-
-            <div className="pt-2 border-t border-stone-200">
-              <AuthStatus locale={locale} />
             </div>
           </div>
         </div>
