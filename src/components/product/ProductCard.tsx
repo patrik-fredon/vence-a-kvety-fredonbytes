@@ -164,7 +164,7 @@ export function ProductCard({
         >
           {/* Product Image */}
           <div
-            className="relative overflow-hidden bg-teal-800 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md cursor-pointer"
+            className="relative w-full h-32 overflow-hidden flex-shrink-0 rounded-md cursor-pointer"
             onClick={handleImageClick}
           >
             <ProductImageHover
@@ -288,14 +288,15 @@ export function ProductCard({
         onClick={handleProductClick}
         aria-labelledby={`product-${product.id}-title`}
       >
-        {/* Image Layer (z-0) - Fills container with absolute positioning */}
-        <div className="absolute inset-0 z-0 bg-teal-800">
+        {/* Image Layer - Fixed height container for Next.js Image optimization */}
+        <div className="relative w-full h-64 overflow-hidden">
           <ProductImageHover
             primaryImage={displayPrimaryImage}
             secondaryImage={secondaryImage}
             productName={product.name[locale as keyof typeof product.name]}
             locale={locale}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             onClick={handleImageClick}
             priority={featured}
             isAboveFold={featured}

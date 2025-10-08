@@ -19,29 +19,29 @@
     - Replace `apple-mobile-web-app-capable` with `mobile-web-app-capable` in src/lib/seo/utils.ts
     - _Requirements: 4.1, 4.2, 4.3, 4.4_
 
-- [-] 3. Remove unsupported bluetooth directive from Permissions-Policy
+- [x] 3. Remove unsupported bluetooth directive from Permissions-Policy
   - Remove `bluetooth=()` from Permissions-Policy header value in next.config.ts
   - Maintain all other security directives (camera, microphone, geolocation, payment, usb)
   - _Requirements: 5.1, 5.2, 5.3, 5.4, 5.5_
 
-- [ ] 4. Fix ProductCard image container height styling
-  - [ ] 4.1 Add explicit height to grid view image container
+- [x] 4. Fix ProductCard image container height styling
+  - [x] 4.1 Add explicit height to grid view image container
     - Wrap ProductImageHover in div with `relative w-full h-64 overflow-hidden` classes
     - Ensure proper aspect ratio maintenance across viewports
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-  - [ ] 4.2 Add explicit height to list view image container
+  - [x] 4.2 Add explicit height to list view image container
     - Wrap ProductImageHover in div with `relative w-full h-32 overflow-hidden` classes
     - Maintain compact display for list view
     - _Requirements: 2.1, 2.2, 2.3, 2.4_
 
-  - [ ] 4.3 Verify ProductImageHover component styling
+  - [x] 4.3 Verify ProductImageHover component styling
     - Ensure Image component uses `fill` prop correctly
     - Verify `object-cover` class for proper image scaling
     - Add responsive `sizes` attribute for optimal loading
     - _Requirements: 2.1, 2.2, 2.3, 2.4, 2.5_
 
-- [ ] 5. Debug and verify product image rendering
+- [-] 5. Debug and verify product image rendering
   - [ ] 5.1 Add debug logging to products page
     - Log transformed product data after transformProductRow execution
     - Log images array length and structure for first product

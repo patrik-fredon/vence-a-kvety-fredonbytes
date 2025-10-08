@@ -103,7 +103,7 @@ const nextConfig: NextConfig = {
           {
             key: "Permissions-Policy",
             value:
-              "camera=(), microphone=(), geolocation=(), payment=(self), usb=(), bluetooth=()",
+              "camera=(), microphone=(), geolocation=(), payment=(self), usb=()",
           },
           // Enable XSS protection
           {
