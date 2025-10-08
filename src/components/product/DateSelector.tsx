@@ -16,7 +16,7 @@ interface DateSelectorProps {
 export function DateSelector({
   value,
   onChange,
-  minDaysFromNow = 1,
+  minDaysFromNow = 2,
   maxDaysFromNow = 30,
   locale,
   className,
@@ -111,11 +111,11 @@ export function DateSelector({
             <div className="text-xs text-teal-800">
               {locale === "cs"
                 ? `Dostupné termíny: ${minDate.toLocaleDateString(
-                    "cs-CZ"
-                  )} - ${maxDate.toLocaleDateString("cs-CZ")}`
+                  "cs-CZ"
+                )} - ${maxDate.toLocaleDateString("cs-CZ")}`
                 : `Available dates: ${minDate.toLocaleDateString(
-                    "en-US"
-                  )} - ${maxDate.toLocaleDateString("en-US")}`}
+                  "en-US"
+                )} - ${maxDate.toLocaleDateString("en-US")}`}
             </div>
           </div>
         </div>

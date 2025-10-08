@@ -205,7 +205,7 @@ export function ProductCustomizer({
         <DateSelector
           value={value}
           onChange={(date) => handleCustomValueChange(option.id, date)}
-          minDaysFromNow={choice.minDaysFromNow || 1}
+          minDaysFromNow={choice.minDaysFromNow || 2}
           maxDaysFromNow={choice.maxDaysFromNow || 30}
           locale={locale}
         />
@@ -264,7 +264,7 @@ export function ProductCustomizer({
           <div key={option.id} className="space-y-3">
             {/* Option Header */}
             <div className="flex items-center justify-between">
-                   {/* Selection Counter */}
+              {/* Selection Counter */}
               {option.maxSelections && option.maxSelections > 1 && (
                 <div className="text-sm text-teal-800">
                   {selectionCount}/{option.maxSelections}
