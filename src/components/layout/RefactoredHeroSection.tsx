@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
@@ -128,6 +129,8 @@ export function RefactoredHeroSection({
             height={companyLogo.height}
             priority
             quality={90}
+            placeholder="blur"
+            blurDataURL={BLUR_PLACEHOLDERS.logo}
             onError={handleLogoError}
             onLoad={handleLogoLoad}
             className={cn(

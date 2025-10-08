@@ -4,7 +4,7 @@
   "description": "Monitors changes to user-facing text content in localization files (JSON, YAML) and automatically generates translations for all configured target languages while maintaining context and locale-specific conventions",
   "version": "1",
   "when": {
-    "type": "fileEdited",
+    "type": "userTriggered",
     "patterns": [
       "messages/*.json"
     ]

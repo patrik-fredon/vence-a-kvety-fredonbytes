@@ -1,6 +1,6 @@
 import { useTranslations } from "next-intl";
 import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils/price-calculator";
+import { formatPrice } from "@/lib/utils";
 import type { CustomizationChoice, CustomizationOption } from "@/types/product";
 
 interface SizeSelectorProps {
@@ -49,9 +49,10 @@ export function SizeSelector({
   }
 
   const formatPriceDisplay = (price: number, showSign = false) => {
-    const formattedPrice = formatPrice(price, locale as "cs" | "en", showSign);
+    const sign = showSign && price >= 0 ? "+" : "";
+    const formattedPrice = formatPrice(price, locale as "cs" | "en");
     return tCurrency("format", {
-      amount: formattedPrice,
+      amount: `${sign}${formattedPrice}`,
     });
   };
 

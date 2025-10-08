@@ -43,7 +43,7 @@ const nextConfig: NextConfig = {
     formats: ["image/avif", "image/webp"],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    qualities: [50, 70, 75, 80, 85, 90, 95], // Enhanced quality options for different use cases
+    qualities: [50, 70, 75, 85, 90], // Optimized quality levels: 50 (thumbnails), 70 (standard), 75 (default), 85 (high quality), 90 (hero images)
     minimumCacheTTL: 60 * 60 * 24 * 365, // 1 year for better caching
     dangerouslyAllowSVG: true,
     contentDispositionType: "attachment",
@@ -199,12 +199,24 @@ const nextConfig: NextConfig = {
       // Enhanced code splitting configuration using centralized config
       config.optimization.splitChunks = WEBPACK_OPTIMIZATION.splitChunks;
 
+      // Runtime chunk optimization for better caching
+      config.optimization.runtimeChunk = WEBPACK_OPTIMIZATION.runtimeChunk;
+
       // Tree-shaking optimizations
       config.optimization.usedExports = WEBPACK_OPTIMIZATION.usedExports;
       config.optimization.sideEffects = WEBPACK_OPTIMIZATION.sideEffects;
 
       // Module concatenation for better tree-shaking
       config.optimization.concatenateModules = WEBPACK_OPTIMIZATION.concatenateModules;
+
+      // Additional optimizations from centralized config
+      config.optimization.innerGraph = WEBPACK_OPTIMIZATION.innerGraph;
+      config.optimization.moduleIds = WEBPACK_OPTIMIZATION.moduleIds;
+      config.optimization.chunkIds = WEBPACK_OPTIMIZATION.chunkIds;
+      config.optimization.mergeDuplicateChunks = WEBPACK_OPTIMIZATION.mergeDuplicateChunks;
+      config.optimization.removeAvailableModules = WEBPACK_OPTIMIZATION.removeAvailableModules;
+      config.optimization.removeEmptyChunks = WEBPACK_OPTIMIZATION.removeEmptyChunks;
+      config.optimization.flagIncludedChunks = WEBPACK_OPTIMIZATION.flagIncludedChunks;
     }
 
     // Resolve alias for better tree-shaking

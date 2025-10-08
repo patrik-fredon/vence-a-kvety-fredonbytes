@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import AdminDashboard from "@/components/admin/AdminDashboard";
+import { LazyAdminDashboard } from "@/lib/config/dynamic-imports";
 import { auth } from "@/lib/auth/config";
 import { userUtils } from "@/lib/supabase/utils";
 
@@ -25,7 +25,7 @@ export default async function AdminPage() {
 
   return (
     <div className="min-h-screen bg-gray-50">
-      <AdminDashboard />
+      <LazyAdminDashboard />
     </div>
   );
 }

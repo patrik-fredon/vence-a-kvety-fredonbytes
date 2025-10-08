@@ -24,6 +24,12 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
   };
 
 
+
+  // Mock rating data (implement in later tasks)
+  // const rating = 4.8;
+  // const reviewCount = 127;
+
+
   return (
     <div className={cn("space-y-6", className)}>
       {/* Breadcrumb */}

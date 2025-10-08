@@ -82,7 +82,7 @@ export async function getCachedProductBySlug(slug: string): Promise<Product | nu
 export async function cacheProductsList(
   filters: Record<string, any>,
   products: Product[],
-  pagination?: { page: number; limit: number; total: number }
+  pagination?: { page: number; limit: number; total: number; totalPages?: number }
 ): Promise<void> {
   try {
     const client = getCacheClient();
@@ -107,7 +107,7 @@ export async function cacheProductsList(
  */
 export async function getCachedProductsList(filters: Record<string, any>): Promise<{
   products: Product[];
-  pagination?: { page: number; limit: number; total: number };
+  pagination?: { page: number; limit: number; total: number; totalPages?: number };
 } | null> {
   try {
     const client = getCacheClient();
@@ -123,7 +123,7 @@ export async function getCachedProductsList(filters: Record<string, any>): Promi
 
     return deserializeFromCache<{
       products: Product[];
-      pagination?: { page: number; limit: number; total: number };
+      pagination?: { page: number; limit: number; total: number; totalPages?: number };
     }>(cached);
   } catch (error) {
     console.error("Error getting cached products list:", error);

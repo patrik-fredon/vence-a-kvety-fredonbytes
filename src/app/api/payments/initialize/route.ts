@@ -5,9 +5,45 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { type PaymentRequest, PaymentService } from "@/lib/payments";
 import type { PaymentMethod } from "@/types/order";
+import { validateCSRFMiddleware } from "@/lib/security/csrf";
 
 export async function POST(request: NextRequest) {
   try {
+    // Validate CSRF token
+    const isValidCSRF = await validateCSRFMiddleware(request);
+    if (!isValidCSRF) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Invalid or missing CSRF token. Please refresh the page and try again.",
+        },
+        { status: 403 }
+      );
+    }
+
+    // Apply rate limiting for payment initialization
+    const { rateLimit } = await import("@/lib/utils/rate-limit");
+    const rateLimitResult = await rateLimit(request, "payment-initialization");
+
+    if (!rateLimitResult.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          error: "Too many payment initialization attempts. Please try again later.",
+          retryAfter: rateLimitResult.reset,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": Math.round((rateLimitResult.reset.getTime() - Date.now()) / 1000).toString(),
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.reset.toISOString(),
+          },
+        }
+      );
+    }
+
     const body = await request.json();
 
     const {

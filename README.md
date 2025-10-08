@@ -112,31 +112,28 @@ npm install
 cp .env.example .env.local
 ```
 
-Configure the following required variables in `.env.local`:
+Edit `.env.local` and configure your environment variables. See the **Environment Variables** section below for detailed information about each variable.
+
+**Minimum required variables for development:**
 
 ```env
-# Supabase Configuration
+# Database
 NEXT_PUBLIC_SUPABASE_URL=your_supabase_url
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
 SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
 
-# NextAuth Configuration
+# Authentication
 NEXTAUTH_SECRET=your_nextauth_secret
 NEXTAUTH_URL=http://localhost:3000
 
-# Redis Configuration (Upstash)
+# Caching
 UPSTASH_REDIS_REST_URL=your_redis_url
 UPSTASH_REDIS_REST_TOKEN=your_redis_token
 
-# Payment Configuration (Optional for development)
-STRIPE_SECRET_KEY=your_stripe_secret_key
-NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=your_stripe_publishable_key
-GOPAY_GOID=your_gopay_goid
-GOPAY_CLIENT_ID=your_gopay_client_id
-GOPAY_CLIENT_SECRET=your_gopay_client_secret
-
-# Email Configuration (Optional)
-RESEND_API_KEY=your_resend_api_key
+# Payments (optional for development)
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+STRIPE_WEBHOOK_SECRET=whsec_your_webhook_secret
 ```
 
 4. **Set up the database:**
@@ -366,6 +363,200 @@ WCAG 2.1 AA compliant accessibility features:
 - **Cache Hit Rate**: 85%+ for frequently accessed data
 - **API Response Time**: < 200ms average
 - **Image Load Time**: Optimized with preloading and lazy loading
+
+## 🔐 Environment Variables
+
+### Overview
+
+The application uses environment variables for configuration. A complete `.env.example` file is provided with all available variables and their descriptions.
+
+### Required Variables
+
+#### Database (Supabase)
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_supabase_anon_key
+SUPABASE_SERVICE_ROLE_KEY=your_service_role_key
+```
+
+Get these from your Supabase project settings: [https://app.supabase.com/project/_/settings/api](https://app.supabase.com/project/_/settings/api)
+
+#### Authentication (NextAuth.js)
+
+```env
+NEXTAUTH_SECRET=your_nextauth_secret
+NEXTAUTH_URL=http://localhost:3000
+```
+
+Generate `NEXTAUTH_SECRET` with: `openssl rand -base64 32`
+
+#### Caching (Redis/Upstash)
+
+```env
+UPSTASH_REDIS_REST_URL=https://your-redis-instance.upstash.io
+UPSTASH_REDIS_REST_TOKEN=your_upstash_redis_token
+```
+
+Get these from your Upstash Redis dashboard: [https://console.upstash.com/](https://console.upstash.com/)
+
+### Payment Integration
+
+#### Stripe (International Payments)
+
+```env
+# Server-side secret key (NEVER expose to client)
+STRIPE_SECRET_KEY=sk_test_your_stripe_secret_key
+
+# Client-side publishable key (safe to expose)
+NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY=pk_test_your_stripe_publishable_key
+
+# Webhook secret for signature verification
+STRIPE_WEBHOOK_SECRET=whsec_your_stripe_webhook_secret
+```
+
+**Setup Instructions:**
+
+1. **Get API Keys:**
+   - Go to [Stripe Dashboard](https://dashboard.stripe.com/apikeys)
+   - Use test keys (`sk_test_...` and `pk_test_...`) for development
+   - Use live keys (`sk_live_...` and `pk_live_...`) for production
+
+2. **Configure Webhook:**
+   - Go to [Stripe Webhooks](https://dashboard.stripe.com/webhooks)
+   - Click "Add endpoint"
+   - Set URL: `https://your-domain.com/api/payments/webhook/stripe`
+   - Select events to listen for:
+     - `payment_intent.succeeded`
+     - `payment_intent.payment_failed`
+     - `payment_intent.requires_action`
+     - `payment_intent.canceled`
+     - `payment_intent.processing`
+   - Copy the webhook signing secret to `STRIPE_WEBHOOK_SECRET`
+
+3. **Test Webhook Locally:**
+   ```bash
+   # Install Stripe CLI
+   brew install stripe/stripe-cli/stripe
+   
+   # Login to Stripe
+   stripe login
+   
+   # Forward webhooks to local server
+   stripe listen --forward-to localhost:3000/api/payments/webhook/stripe
+   ```
+
+**Stripe Configuration:**
+
+- **API Version:** `2024-12-18.acacia` (latest)
+- **Retry Logic:** 3 automatic retries with exponential backoff
+- **Timeout:** 10 seconds
+- **Supported Payment Methods:** Cards (with automatic payment methods enabled)
+- **3D Secure:** Automatically handled by Stripe Elements
+- **Error Handling:** Comprehensive error categorization and user-friendly messages
+
+**Optional Stripe Variables:**
+
+```env
+# Override default API version
+STRIPE_API_VERSION=2024-12-18.acacia
+
+# Override default retry count
+STRIPE_MAX_NETWORK_RETRIES=3
+
+# Override default timeout (milliseconds)
+STRIPE_TIMEOUT=10000
+```
+
+#### GoPay (Czech Market - Optional)
+
+```env
+GOPAY_GOID=your_gopay_goid
+GOPAY_CLIENT_ID=your_gopay_client_id
+GOPAY_CLIENT_SECRET=your_gopay_client_secret
+GOPAY_ENVIRONMENT=test
+```
+
+Only required if you want to support Czech payment methods (bank transfers, etc.)
+
+### Optional Variables
+
+#### Email Service (Resend)
+
+```env
+RESEND_API_KEY=re_your_resend_api_key
+RESEND_FROM_EMAIL=noreply@your-domain.com
+```
+
+Get your API key from: [https://resend.com/api-keys](https://resend.com/api-keys)
+
+#### Monitoring & Analytics
+
+```env
+NEXT_PUBLIC_ENABLE_MONITORING=true
+NEXT_PUBLIC_ENABLE_ERROR_TRACKING=true
+NEXT_PUBLIC_SENTRY_DSN=your_sentry_dsn
+```
+
+#### Security
+
+```env
+# Rate limiting (requests per 15 minutes)
+RATE_LIMIT_ANONYMOUS=100
+RATE_LIMIT_AUTHENTICATED=1000
+RATE_LIMIT_ADMIN=5000
+
+# CSRF protection
+CSRF_SECRET=your_csrf_secret
+```
+
+#### Feature Flags
+
+```env
+NEXT_PUBLIC_ENABLE_GOPAY=true
+NEXT_PUBLIC_ENABLE_STRIPE=true
+NEXT_PUBLIC_ENABLE_GDPR_FEATURES=true
+NEXT_PUBLIC_ENABLE_ACCESSIBILITY_TOOLBAR=true
+```
+
+### Environment Variable Naming Convention
+
+- **`NEXT_PUBLIC_*`** - Exposed to the browser (client-side)
+- **Other variables** - Server-side only (never exposed to client)
+
+### Security Best Practices
+
+1. **Never commit `.env.local`** to version control (already in `.gitignore`)
+2. **Use different keys** for development and production
+3. **Rotate secrets regularly** (at least every 90 days)
+4. **Use test keys** during development
+5. **Restrict API key permissions** to minimum required
+6. **Enable webhook signature verification** for all payment webhooks
+7. **Use HTTPS** in production (required for Stripe)
+8. **Implement rate limiting** on sensitive endpoints
+9. **Monitor for leaked secrets** using tools like GitGuardian
+10. **Use environment-specific configurations** in CI/CD
+
+### Troubleshooting
+
+**Stripe Connection Issues:**
+- Verify API keys are correct (test vs. live)
+- Check that `STRIPE_SECRET_KEY` starts with `sk_test_` or `sk_live_`
+- Ensure `NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY` starts with `pk_test_` or `pk_live_`
+- Confirm webhook secret matches the endpoint in Stripe dashboard
+
+**Webhook Not Receiving Events:**
+- Verify webhook URL is publicly accessible (use ngrok for local testing)
+- Check that webhook secret is correct
+- Ensure all required events are selected in Stripe dashboard
+- Review webhook logs in Stripe dashboard for errors
+
+**Database Connection Issues:**
+- Verify Supabase URL and keys are correct
+- Check that RLS policies are properly configured
+- Ensure service role key is used for server-side operations
+
+For more help, see the [Troubleshooting Guide](docs/TROUBLESHOOTING.md).
 
 ## 🎨 Design System
 

@@ -246,28 +246,7 @@ export function calculateTax(price: number, taxRate: number = 0.21): number {
   return Math.round(price * taxRate);
 }
 
-/**
- * Format price for display
- */
-export function formatPriceForDisplay(
-  price: number,
-  locale: "cs" | "en" = "cs",
-  includeTax: boolean = true
-): string {
-  const taxAmount = includeTax ? calculateTax(price) : 0;
-  const totalPrice = price + taxAmount;
 
-  if (locale === "cs") {
-    return `${totalPrice.toLocaleString("cs-CZ")} Kč${includeTax ? " (vč. DPH)" : ""}`;
-  } else {
-    return `CZK ${totalPrice.toLocaleString("en-US")}${includeTax ? " (incl. VAT)" : ""}`;
-  }
-}
-
-/**
- * Alias for formatPriceForDisplay for backward compatibility
- */
-export const formatPrice = formatPriceForDisplay;
 
 /**
  * Calculate final price with customizations and discounts

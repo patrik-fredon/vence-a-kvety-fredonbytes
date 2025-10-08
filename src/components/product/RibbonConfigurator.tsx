@@ -3,7 +3,7 @@
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
 import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils/price-calculator";
+import { formatPrice } from "@/lib/utils";
 import { validateCustomRibbonText } from "@/lib/validation/wreath";
 import type { Customization, CustomizationChoice, CustomizationOption } from "@/types/product";
 
@@ -44,7 +44,8 @@ export function RibbonConfigurator({
   }>({ errors: [], warnings: [] });
 
   const formatPriceModifier = (price: number) => {
-    return formatPrice(price, locale as "cs" | "en", true);
+    const sign = price >= 0 ? "+" : "";
+    return `${sign}${formatPrice(price, locale as "cs" | "en")}`;
   };
 
   // Get current customization for an option

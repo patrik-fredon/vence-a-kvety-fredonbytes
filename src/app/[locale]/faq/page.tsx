@@ -61,13 +61,13 @@ export default async function FAQPage({ params }: FAQPageProps) {
       <StructuredData data={faqStructuredData} />
       <StructuredData data={organizationStructuredData} />
 
-      <div className="container mx-auto px-4 py-16">
+      <div className="container mx-auto px-4 py-8 sm:py-12 md:py-16">
         <div className="max-w-4xl mx-auto">
-          <h1 className="text-elegant text-4xl md:text-5xl font-semibold text-teal-800 text-center mb-4">
+          <h1 className="text-elegant text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-semibold text-teal-800 text-center mb-3 md:mb-4 px-4">
             {t("title")}
           </h1>
 
-          <p className="text-lg text-teal-900 text-center mb-12 max-w-2xl mx-auto">
+          <p className="text-base sm:text-lg text-teal-900 text-center mb-8 sm:mb-10 md:mb-12 max-w-2xl mx-auto px-4">
             Odpovědi na nejčastější otázky o našich pohřebních věncích a službách.
           </p>
 

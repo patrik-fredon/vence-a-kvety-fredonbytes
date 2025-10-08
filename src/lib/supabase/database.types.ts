@@ -473,6 +473,61 @@ export interface Database {
           },
         ];
       };
+      payment_errors: {
+        Row: {
+          id: string;
+          order_id: string | null;
+          payment_intent_id: string | null;
+          error_type: string;
+          error_code: string | null;
+          error_message: string;
+          sanitized_message: string;
+          amount: number | null;
+          currency: string | null;
+          customer_email: string | null;
+          metadata: Json | null;
+          stack_trace: string | null;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          order_id?: string | null;
+          payment_intent_id?: string | null;
+          error_type: string;
+          error_code?: string | null;
+          error_message: string;
+          sanitized_message: string;
+          amount?: number | null;
+          currency?: string | null;
+          customer_email?: string | null;
+          metadata?: Json | null;
+          stack_trace?: string | null;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          order_id?: string | null;
+          payment_intent_id?: string | null;
+          error_type?: string;
+          error_code?: string | null;
+          error_message?: string;
+          sanitized_message?: string;
+          amount?: number | null;
+          currency?: string | null;
+          customer_email?: string | null;
+          metadata?: Json | null;
+          stack_trace?: string | null;
+          created_at?: string;
+        };
+        Relationships: [
+          {
+            foreignKeyName: "payment_errors_order_id_fkey";
+            columns: ["order_id"];
+            referencedRelation: "orders";
+            referencedColumns: ["id"];
+          },
+        ];
+      };
     };
     Views: {
       [_ in never]: never;
