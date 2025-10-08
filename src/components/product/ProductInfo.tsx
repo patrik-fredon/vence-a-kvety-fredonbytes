@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/Card";
-
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
 
