@@ -1,6 +1,8 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { AuthStatus } from "@/components/auth";
@@ -84,7 +86,16 @@ export function Header({ locale }: HeaderProps) {
               className="flex items-center hover:opacity-80 transition-opacity duration-200 rounded-lg px-2 py-1"
               aria-label={t("home")}
             >
-              <img src="/logo.svg" alt="Logo" className="h-15 w-auto sm:h-16 md:h-18" />
+              <Image 
+                src="/logo.svg" 
+                alt="Logo" 
+                width={180} 
+                height={72} 
+                className="h-15 w-auto sm:h-16 md:h-18" 
+                priority
+                placeholder="blur"
+                blurDataURL={BLUR_PLACEHOLDERS.logo}
+              />
             </Link>
           </div>
 

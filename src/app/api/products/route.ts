@@ -9,6 +9,11 @@ import {
   transformProductRow,
   validateProductData,
 } from "@/lib/utils/product-transforms";
+import {
+  getProducts as getProductsOptimized,
+  invalidateProduct,
+  type ProductFilters,
+} from "@/lib/services/product-service";
 import { slugify as createSlug } from "@/lib/utils";
 import type { ApiResponse } from "@/types";
 import type {
@@ -23,184 +28,38 @@ import type {
  * GET /api/products
  * Retrieve products with optional filtering, searching, and pagination
  */
+import { type NextRequest, NextResponse } from "next/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { withCache, invalidateApiCache, setCacheHeaders } from "@/lib/cache/api-cache";
+import { CACHE_TTL } from "@/lib/cache/redis";
+
 async function getProducts(request: NextRequest) {
   try {
-    const supabase = createServerClient();
     const { searchParams } = new URL(request.url);
 
     // Parse query parameters
-    const params: ProductSearchParams = {
+    const filters: ProductFilters = {
       page: Number.parseInt(searchParams.get("page") || "1", 10),
-      limit: Math.min(Number.parseInt(searchParams.get("limit") || "12", 10), 100), // Max 100 items per page
-      categoryId: searchParams.get("categoryId") || "",
-      categorySlug: searchParams.get("categorySlug") || "",
-      minPrice: searchParams.get("minPrice") ? Number.parseFloat(searchParams.get("minPrice")!) : 0,
-      maxPrice: searchParams.get("maxPrice")
-        ? Number.parseFloat(searchParams.get("maxPrice")!)
-        : 999999,
-      inStock: searchParams.get("inStock") === "true",
-      featured: searchParams.get("featured") === "true",
-      search: searchParams.get("search") || "",
+      limit: Math.min(Number.parseInt(searchParams.get("limit") || "12", 10), 100),
+      categoryId: searchParams.get("categoryId") || undefined,
+      categorySlug: searchParams.get("categorySlug") || undefined,
+      minPrice: searchParams.get("minPrice") ? Number.parseFloat(searchParams.get("minPrice")!) : undefined,
+      maxPrice: searchParams.get("maxPrice") ? Number.parseFloat(searchParams.get("maxPrice")!) : undefined,
+      inStock: searchParams.get("inStock") === "true" ? true : undefined,
+      featured: searchParams.get("featured") === "true" ? true : undefined,
+      search: searchParams.get("search") || undefined,
       locale: searchParams.get("locale") || "cs",
-      sort: {
-        field: (searchParams.get("sortField") as any) || "created_at",
-        direction: (searchParams.get("sortDirection") as "asc" | "desc") || "desc",
-      },
+      sortField: (searchParams.get("sortField") as any) || "created_at",
+      sortDirection: (searchParams.get("sortDirection") as "asc" | "desc") || "desc",
     };
 
-    // Build the query
-    let query = supabase
-      .from("products")
-      .select(`
-        *,
-        categories (
-          id,
-          name_cs,
-          name_en,
-          slug,
-          description_cs,
-          description_en,
-          image_url,
-          parent_id,
-          sort_order,
-          active,
-          created_at,
-          updated_at
-        )
-      `)
-      .eq("active", true);
-
-    // Apply filters
-    if (params.categoryId) {
-      query = query.eq("category_id", params.categoryId);
-    }
-
-    if (params.categorySlug) {
-      query = query.eq("categories.slug", params.categorySlug);
-    }
-
-    if (params.minPrice !== undefined) {
-      query = query.gte("base_price", params.minPrice);
-    }
-
-    if (params.maxPrice !== undefined) {
-      query = query.lte("base_price", params.maxPrice);
-    }
-
-    if (params.featured) {
-      query = query.eq("featured", true);
-    }
-
-    if (params.inStock) {
-      query = query.contains("availability", { inStock: true });
-    }
-
-    // Apply search
-    if (params.search) {
-      const searchTerm = params.search.trim();
-      if (searchTerm) {
-        // Use proper Supabase search syntax
-        query = query.or(
-          `name_cs.ilike.*${searchTerm}*,name_en.ilike.*${searchTerm}*,description_cs.ilike.*${searchTerm}*,description_en.ilike.*${searchTerm}*`
-        );
-      }
-    }
-
-    // Apply sorting
-    const sortField =
-      params.sort?.field === "name"
-        ? params.locale === "en"
-          ? "name_en"
-          : "name_cs"
-        : params.sort?.field === "price"
-          ? "base_price"
-          : params.sort?.field || "created_at";
-
-    query = query.order(sortField, { ascending: params.sort?.direction === "asc" });
-
-    // Apply pagination
-    const offset = ((params.page || 1) - 1) * (params.limit || 12);
-    query = query.range(offset, offset + (params.limit || 12) - 1);
-
-    const { data: productsData, error } = await query;
-
-    if (error) {
-      console.error("Error fetching products:", error);
-      return NextResponse.json(
-        {
-          success: false,
-          error: {
-            code: "FETCH_ERROR",
-            message: "Failed to fetch products",
-            details: error.message,
-          },
-        } as ApiResponse,
-        { status: 500 }
-      );
-    }
-
-    // Transform the data
-    const products: Product[] = (productsData || []).map(
-      (row: ProductRow & { categories?: CategoryRow | null }) => {
-        const category = row.categories ? transformCategoryRow(row.categories) : undefined;
-        return transformProductRow(row, category);
-      }
-    );
-
-    // Get total count for pagination with same filters applied
-    let countQuery = supabase
-      .from("products")
-      .select("*", { count: "exact", head: true })
-      .eq("active", true);
-
-    // Apply the same filters to count query
-    if (params.categoryId) {
-      countQuery = countQuery.eq("category_id", params.categoryId);
-    }
-
-    if (params.categorySlug) {
-      countQuery = countQuery.eq("categories.slug", params.categorySlug);
-    }
-
-    if (params.minPrice !== undefined) {
-      countQuery = countQuery.gte("base_price", params.minPrice);
-    }
-
-    if (params.maxPrice !== undefined) {
-      countQuery = countQuery.lte("base_price", params.maxPrice);
-    }
-
-    if (params.featured) {
-      countQuery = countQuery.eq("featured", true);
-    }
-
-    if (params.inStock) {
-      countQuery = countQuery.contains("availability", { inStock: true });
-    }
-
-    // Apply search to count query
-    if (params.search) {
-      const searchTerm = params.search.trim();
-      if (searchTerm) {
-        countQuery = countQuery.or(
-          `name_cs.ilike.*${searchTerm}*,name_en.ilike.*${searchTerm}*,description_cs.ilike.*${searchTerm}*,description_en.ilike.*${searchTerm}*`
-        );
-      }
-    }
-
-    const { count: totalCount } = await countQuery;
-    const total = totalCount || 0;
-    const totalPages = Math.ceil(total / (params.limit || 12));
+    // Use optimized product service with caching
+    const result = await getProductsOptimized(filters);
 
     const response: ApiResponse<Product[]> = {
       success: true,
-      data: products,
-      pagination: {
-        page: params.page || 1,
-        limit: params.limit || 12,
-        total,
-        totalPages,
-      },
+      data: result.products,
+      pagination: result.pagination,
     };
 
     const jsonResponse = NextResponse.json(response);

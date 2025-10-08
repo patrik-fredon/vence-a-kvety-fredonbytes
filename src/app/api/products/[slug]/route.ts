@@ -3,11 +3,17 @@
  * Handles GET, PUT, DELETE for specific products by slug
  */
 
+import { type NextRequest, NextResponse } from "next/server";
+import { createClient as createServerClient } from "@/lib/supabase/server";
 import {
   transformCategoryRow,
   transformProductRow,
   validateProductData,
 } from "@/lib/utils/product-transforms";
+import {
+  getProductBySlug,
+  invalidateProduct,
+} from "@/lib/services/product-service";
 import { slugify as createSlug } from "@/lib/utils";
 import type { ApiResponse } from "@/types";
 import type { Product, ProductRow, UpdateProductRequest } from "@/types/product";
@@ -24,63 +30,23 @@ interface RouteContext {
  */
 export async function GET(_: NextRequest, { params }: RouteContext) {
   try {
-    const supabase = createServerClient();
     const { slug } = await params;
 
-    const { data, error } = await supabase
-      .from("products")
-      .select(`
-        *,
-        categories (
-          id,
-          name_cs,
-          name_en,
-          slug,
-          description_cs,
-          description_en,
-          image_url,
-          parent_id,
-          sort_order,
-          active,
-          created_at,
-          updated_at
-        )
-      `)
-      .eq("slug", slug)
-      .eq("active", true)
-      .single();
+    // Use optimized product service with caching
+    const product = await getProductBySlug(slug);
 
-    if (error) {
-      if (error.code === "PGRST116") {
-        return NextResponse.json(
-          {
-            success: false,
-            error: {
-              code: "PRODUCT_NOT_FOUND",
-              message: "Product not found",
-            },
-          } as ApiResponse,
-          { status: 404 }
-        );
-      }
-
-      console.error("Error fetching product:", error);
+    if (!product) {
       return NextResponse.json(
         {
           success: false,
           error: {
-            code: "FETCH_ERROR",
-            message: "Failed to fetch product",
-            details: error.message,
+            code: "PRODUCT_NOT_FOUND",
+            message: "Product not found",
           },
         } as ApiResponse,
-        { status: 500 }
+        { status: 404 }
       );
     }
-
-    // Transform the data
-    const category = data.categories ? transformCategoryRow(data.categories) : undefined;
-    const product = transformProductRow(data, category);
 
     const response: ApiResponse<Product> = {
       success: true,
@@ -243,6 +209,9 @@ export async function PUT(request: NextRequest, { params }: RouteContext) {
     const category = data.categories ? transformCategoryRow(data.categories) : undefined;
     const product = transformProductRow(data, category);
 
+    // Invalidate product cache after update
+    await invalidateProduct(existingProduct.id);
+
     const response: ApiResponse<Product> = {
       success: true,
       data: product,
@@ -313,6 +282,9 @@ export async function DELETE(_: NextRequest, { params }: RouteContext) {
         { status: 500 }
       );
     }
+
+    // Invalidate product cache after deletion
+    await invalidateProduct(existingProduct.id);
 
     const response: ApiResponse = {
       success: true,

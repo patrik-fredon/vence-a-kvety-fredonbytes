@@ -1,5 +1,6 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { generateAboutPageMetadata } from "@/components/seo/PageMetadata";
 import {
   generateLocalBusinessStructuredData,
@@ -52,6 +53,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 className="object-cover"
                 sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 1200px"
                 priority
+                placeholder="blur"
+                blurDataURL={BLUR_PLACEHOLDERS.gold}
               />
             </div>
           </div>
@@ -65,6 +68,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
               height={100}
               className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
               priority
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDERS.logo}
             />
           </div>
 
@@ -89,6 +94,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  placeholder="blur"
+                  blurDataURL={BLUR_PLACEHOLDERS.gold}
                 />
               </div>
             </div>
@@ -98,13 +105,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4   flex items-center justify-center">
                     <Image
-                      src="/logo.svg"
-                      alt="Vence a kvety logo"
-                      width={256}
-                      height={100}
-                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
-                      priority
-                    />
+              src="/logo.svg"
+              alt="Vence a kvety logo"
+              width={256}
+              height={100}
+              className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+              priority
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDERS.logo}
+            />
                   </div>
                   <h2 className="text-lg font-medium mb-2 text-amber-300">
                     {tAbout("valuesTitle")}
@@ -122,6 +131,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   fill
                   className="object-cover "
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  placeholder="blur"
+                  blurDataURL={BLUR_PLACEHOLDERS.gold}
                 />
               </div>
             </div>
@@ -131,13 +142,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4  flex items-center justify-center">
                     <Image
-                      src="/logo.svg"
-                      alt="Vence a kvety logo"
-                      width={256}
-                      height={100}
-                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
-                      priority
-                    />
+              src="/logo.svg"
+              alt="Vence a kvety logo"
+              width={256}
+              height={100}
+              className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+              priority
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDERS.logo}
+            />
                   </div>
                   <h2 className="text-lg font-medium mb-2 text-amber-200">
                     {tAbout("storyTitle")}
@@ -155,6 +168,8 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   fill
                   className="object-cover"
                   sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 33vw"
+                  placeholder="blur"
+                  blurDataURL={BLUR_PLACEHOLDERS.gold}
                 />
               </div>
             </div>
@@ -164,13 +179,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4  flex items-center justify-center">
                     <Image
-                      src="/logo.svg"
-                      alt="Vence a kvety logo"
-                      width={256}
-                      height={100}
-                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
-                      priority
-                    />
+              src="/logo.svg"
+              alt="Vence a kvety logo"
+              width={256}
+              height={100}
+              className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+              priority
+              placeholder="blur"
+              blurDataURL={BLUR_PLACEHOLDERS.logo}
+            />
                   </div>
                   <h2 className="text-lg font-medium mb-2  text-amber-200">
                     {tAbout("commitmentTitle")}

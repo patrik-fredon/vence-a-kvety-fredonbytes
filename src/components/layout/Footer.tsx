@@ -1,7 +1,9 @@
 // components/Footer.tsx
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useTranslations } from "next-intl";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
@@ -41,7 +43,15 @@ export function Footer({ locale }: FooterProps) {
                   className="hover:opacity-50 transition-opacity duration-200 "
                   aria-label={t("home")}
                 >
-                  <img src="/favicon.svg" alt="Logo" className="w-auto mx-auto max-w-60" />
+                  <Image 
+                    src="/favicon.svg" 
+                    alt="Logo" 
+                    width={240} 
+                    height={240} 
+                    className="w-auto mx-auto max-w-60"
+                    placeholder="blur"
+                    blurDataURL={BLUR_PLACEHOLDERS.logo}
+                  />
                 </Link>
               </div>
             </div>

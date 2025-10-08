@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useCallback, useEffect, useState } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
@@ -241,6 +242,8 @@ const ProductReferenceCard = ({
             imageError && "opacity-80 grayscale-[0.2]"
           )}
           loading="lazy"
+          placeholder="blur"
+          blurDataURL={BLUR_PLACEHOLDERS.gold}
           sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
         />
 
