@@ -278,18 +278,14 @@ export const RESPONSIVE_TESTS: ComponentResponsiveTest[] = [
 /**
  * Get tests for a specific component
  */
-export function getTestsForComponent(
-  componentName: string
-): ComponentResponsiveTest[] {
+export function getTestsForComponent(componentName: string): ComponentResponsiveTest[] {
   return RESPONSIVE_TESTS.filter((test) => test.component === componentName);
 }
 
 /**
  * Get tests for a specific breakpoint
  */
-export function getTestsForBreakpoint(
-  breakpointName: string
-): ComponentResponsiveTest[] {
+export function getTestsForBreakpoint(breakpointName: string): ComponentResponsiveTest[] {
   return RESPONSIVE_TESTS.filter((test) => test.breakpoint === breakpointName);
 }
 
@@ -313,12 +309,8 @@ export function generateTestReport(
   const totalCount = results.length;
   const passRate = (passedCount / totalCount) * 100;
 
-  let report = `\n## ${component} - ${
-    BREAKPOINTS[breakpoint]?.name || breakpoint
-  }\n\n`;
-  report += `**Pass Rate:** ${passedCount}/${totalCount} (${passRate.toFixed(
-    1
-  )}%)\n\n`;
+  let report = `\n## ${component} - ${BREAKPOINTS[breakpoint]?.name || breakpoint}\n\n`;
+  report += `**Pass Rate:** ${passedCount}/${totalCount} (${passRate.toFixed(1)}%)\n\n`;
   report += `### Expected Behavior\n`;
   test.expectedBehavior.forEach((behavior) => {
     report += `- ${behavior}\n`;

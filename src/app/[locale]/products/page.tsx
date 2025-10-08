@@ -15,10 +15,7 @@ import {
   getCachedProductsList,
 } from "@/lib/cache/product-cache";
 import { createServerClient } from "@/lib/supabase/server";
-import {
-  transformCategoryRow,
-  transformProductRow,
-} from "@/lib/utils/product-transforms";
+import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
 import type { Product } from "@/types/product";
 
 interface ProductsPageProps {
@@ -30,10 +27,7 @@ interface ProductsPageProps {
 export const revalidate = 1800;
 
 // Generate metadata for products page using i18n content
-export async function generateMetadata({
-  params,
-  searchParams,
-}: ProductsPageProps) {
+export async function generateMetadata({ params, searchParams }: ProductsPageProps) {
   const { locale } = await params;
   const { category } = await searchParams;
 
@@ -56,12 +50,9 @@ export async function generateMetadata({
       .single();
 
     if (categoryData) {
-      const categoryName =
-        locale === "cs" ? categoryData.name_cs : categoryData.name_en;
+      const categoryName = locale === "cs" ? categoryData.name_cs : categoryData.name_en;
       const categoryDesc =
-        locale === "cs"
-          ? categoryData.description_cs
-          : categoryData.description_en;
+        locale === "cs" ? categoryData.description_cs : categoryData.description_en;
 
       title = `${categoryName} | ${seoData.title}`;
       description = categoryDesc || description;
@@ -79,10 +70,7 @@ export async function generateMetadata({
   });
 }
 
-export default async function ProductsPage({
-  params,
-  searchParams,
-}: ProductsPageProps) {
+export default async function ProductsPage({ params, searchParams }: ProductsPageProps) {
   const { locale } = await params;
   const { category } = await searchParams;
   const t = await getTranslations("product");
@@ -141,15 +129,13 @@ export default async function ProductsPage({
       .order("created_at", { ascending: false })
       .limit(12);
 
-// Transform the data
+    // Transform the data
     products = (productsData || []).map((row) => {
-      const category = row.categories
-        ? transformCategoryRow(row.categories)
-        : undefined;
+      const category = row.categories ? transformCategoryRow(row.categories) : undefined;
       return transformProductRow(row, category);
     });
 
-// Cache products for future requests
+    // Cache products for future requests
     await cacheProductsList(initialFilters, products);
   }
 
@@ -163,8 +149,7 @@ export default async function ProductsPage({
   if (category && typeof category === "string") {
     const categoryData = categories.find((cat) => cat.slug === category);
     if (categoryData) {
-      const categoryName =
-        locale === "cs" ? categoryData.name.cs : categoryData.name.en;
+      const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
       breadcrumbs.push({
         name: categoryName,
         url: `/products?category=${category}`,
@@ -172,16 +157,12 @@ export default async function ProductsPage({
     }
   }
 
-  const breadcrumbStructuredData = generateBreadcrumbStructuredData(
-    breadcrumbs,
-    locale
-  );
+  const breadcrumbStructuredData = generateBreadcrumbStructuredData(breadcrumbs, locale);
   const websiteStructuredData = generateWebsiteStructuredData(locale);
 
   // Generate ItemList structured data for products
   const productItems = products.map((product) => {
-    const description =
-      locale === "cs" ? product.description?.cs : product.description?.en;
+    const description = locale === "cs" ? product.description?.cs : product.description?.en;
     return {
       name: locale === "cs" ? product.name.cs : product.name.en,
       url: `/${locale}/products/${product.slug}`,
@@ -191,22 +172,16 @@ export default async function ProductsPage({
     };
   });
 
-  const itemListStructuredData = generateItemListStructuredData(
-    productItems,
-    t("collectionTitle")
-  );
+  const itemListStructuredData = generateItemListStructuredData(productItems, t("collectionTitle"));
 
   // Generate CollectionPage structured data if filtering by category
   let collectionPageStructuredData = null;
   if (category && typeof category === "string") {
     const categoryData = categories.find((cat) => cat.slug === category);
     if (categoryData) {
-      const categoryName =
-        locale === "cs" ? categoryData.name.cs : categoryData.name.en;
+      const categoryName = locale === "cs" ? categoryData.name.cs : categoryData.name.en;
       const categoryDescription =
-        locale === "cs"
-          ? categoryData.description?.cs
-          : categoryData.description?.en;
+        locale === "cs" ? categoryData.description?.cs : categoryData.description?.en;
 
       collectionPageStructuredData = generateCollectionPageStructuredData(
         {
@@ -225,16 +200,12 @@ export default async function ProductsPage({
       <StructuredData data={breadcrumbStructuredData} />
       <StructuredData data={websiteStructuredData} />
       <StructuredData data={itemListStructuredData} />
-      {collectionPageStructuredData && (
-        <StructuredData data={collectionPageStructuredData} />
-      )}
+      {collectionPageStructuredData && <StructuredData data={collectionPageStructuredData} />}
       <div className="container mx-auto px-4 py-8">
         {/* Page Header */}
         <div className="m-8 text-center justify-center">
           <div className=" rounded-lg p-8 mb-8">
-            <h2 className="text-elegant text-4xl font-semibold mb-4 text-teal-900">
-              {t("title")}
-            </h2>
+            <h2 className="text-elegant text-4xl font-semibold mb-4 text-teal-900">{t("title")}</h2>
             <p className="text-lg text-teal-900">{t("pageDescription")}</p>
           </div>
         </div>

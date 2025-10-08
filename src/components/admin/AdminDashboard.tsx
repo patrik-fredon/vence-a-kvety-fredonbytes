@@ -1,10 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useState } from "react";
-import {
-  LazyInventoryManagement,
-  LazyMonitoringDashboard,
-} from "@/components/dynamic";
+import { LazyInventoryManagement, LazyMonitoringDashboard } from "@/components/dynamic";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import AdminActivityLog from "./AdminActivityLog";
 import AdminHeader from "./AdminHeader";
@@ -13,13 +10,7 @@ import DashboardOverview from "./DashboardOverview";
 import OrderManagement from "./OrderManagement";
 import ProductManagement from "./ProductManagement";
 
-type AdminView =
-  | "overview"
-  | "products"
-  | "orders"
-  | "inventory"
-  | "activity"
-  | "monitoring";
+type AdminView = "overview" | "products" | "orders" | "inventory" | "activity" | "monitoring";
 
 interface DashboardStats {
   orders: {
@@ -88,9 +79,7 @@ export default function AdminDashboard() {
   const renderCurrentView = () => {
     switch (currentView) {
       case "overview":
-        return (
-          <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />
-        );
+        return <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />;
       case "products":
         return <ProductManagement />;
       case "orders":
@@ -102,9 +91,7 @@ export default function AdminDashboard() {
       case "monitoring":
         return <LazyMonitoringDashboard />;
       default:
-        return (
-          <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />
-        );
+        return <DashboardOverview stats={stats} onRefresh={fetchDashboardStats} />;
     }
   };
 
@@ -129,10 +116,7 @@ export default function AdminDashboard() {
 
       {/* Main content */}
       <div className="flex-1 flex flex-col overflow-hidden">
-        <AdminHeader
-          currentView={currentView}
-          onMenuToggle={() => setSidebarOpen(!sidebarOpen)}
-        />
+        <AdminHeader currentView={currentView} onMenuToggle={() => setSidebarOpen(!sidebarOpen)} />
 
         <main className="flex-1 overflow-x-hidden overflow-y-auto bg-stone-50 p-6">
           {renderCurrentView()}

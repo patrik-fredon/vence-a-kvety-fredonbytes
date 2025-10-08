@@ -3,11 +3,7 @@
  */
 
 import type { LocalizedContent } from "@/types";
-import type {
-  CheckoutValidationErrors,
-  CustomerInfo,
-  DeliveryInfo,
-} from "@/types/order";
+import type { CheckoutValidationErrors, CustomerInfo, DeliveryInfo } from "@/types/order";
 
 // Email validation regex
 import type { Customization, CustomizationOption } from "@/types/product";
@@ -87,8 +83,7 @@ export function validateDeliveryInfo(
     if (!address.postalCode?.trim()) {
       errors.address = "PSČ je povinné";
     } else if (!POSTAL_CODE_REGEX.test(address.postalCode)) {
-      errors.address =
-        "Neplatný formát PSČ (použijte formát 12345 nebo 123 45)";
+      errors.address = "Neplatný formát PSČ (použijte formát 12345 nebo 123 45)";
     }
 
     if (!address.country?.trim()) {
@@ -121,12 +116,8 @@ export function validateDeliveryInfo(
   }
 
   // Validate special instructions length
-  if (
-    deliveryInfo.specialInstructions &&
-    deliveryInfo.specialInstructions.length > 500
-  ) {
-    errors.specialInstructions =
-      "Speciální pokyny jsou příliš dlouhé (max. 500 znaků)";
+  if (deliveryInfo.specialInstructions && deliveryInfo.specialInstructions.length > 500) {
+    errors.specialInstructions = "Speciální pokyny jsou příliš dlouhé (max. 500 znaků)";
   }
 
   // Validate recipient name if provided
@@ -191,27 +182,20 @@ export function validateWreathCustomizations(
     const validSizeIds = sizeOption.choices?.map((choice) => choice.id) || [];
     if (!validSizeIds.includes(selectedSize)) {
       errors.push(
-        locale === "cs"
-          ? "Vybraná velikost není dostupná"
-          : "Selected size is not available"
+        locale === "cs" ? "Vybraná velikost není dostupná" : "Selected size is not available"
       );
     }
   }
 
   // 2. Check if ribbon is selected
-  const ribbonCustomization = customizations.find(
-    (c) => c.optionId === ribbonOption?.id
-  );
-  const isRibbonSelected =
-    ribbonCustomization?.choiceIds.includes("ribbon_yes");
+  const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption?.id);
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   // 3. Validate ribbon dependency requirements
   if (isRibbonSelected) {
     // Validate ribbon color is selected when ribbon is chosen
     if (ribbonColorOption) {
-      const colorCustomization = customizations.find(
-        (c) => c.optionId === ribbonColorOption.id
-      );
+      const colorCustomization = customizations.find((c) => c.optionId === ribbonColorOption.id);
       if (!colorCustomization || colorCustomization.choiceIds.length === 0) {
         errors.push(
           locale === "cs"
@@ -223,13 +207,10 @@ export function validateWreathCustomizations(
 
     // Validate ribbon text is selected when ribbon is chosen
     if (ribbonTextOption) {
-      const textCustomization = customizations.find(
-        (c) => c.optionId === ribbonTextOption.id
-      );
+      const textCustomization = customizations.find((c) => c.optionId === ribbonTextOption.id);
       if (
         !textCustomization ||
-        (textCustomization.choiceIds.length === 0 &&
-          !textCustomization.customValue)
+        (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)
       ) {
         errors.push(
           locale === "cs"
@@ -268,24 +249,16 @@ export function validateWreathCustomizations(
 
     const customization = customizations.find((c) => c.optionId === option.id);
 
-    if (
-      option.required &&
-      (!customization || customization.choiceIds.length === 0)
-    ) {
+    if (option.required && (!customization || customization.choiceIds.length === 0)) {
       const optionName = getLocalizedName(option.name);
       errors.push(
-        locale === "cs"
-          ? `Pole "${optionName}" je povinné`
-          : `Field "${optionName}" is required`
+        locale === "cs" ? `Pole "${optionName}" je povinné` : `Field "${optionName}" is required`
       );
     }
 
     if (customization) {
       // Validate min/max selections
-      if (
-        option.minSelections &&
-        customization.choiceIds.length < option.minSelections
-      ) {
+      if (option.minSelections && customization.choiceIds.length < option.minSelections) {
         const optionName = getLocalizedName(option.name);
         errors.push(
           locale === "cs"
@@ -294,10 +267,7 @@ export function validateWreathCustomizations(
         );
       }
 
-      if (
-        option.maxSelections &&
-        customization.choiceIds.length > option.maxSelections
-      ) {
+      if (option.maxSelections && customization.choiceIds.length > option.maxSelections) {
         const optionName = getLocalizedName(option.name);
         errors.push(
           locale === "cs"
@@ -326,9 +296,7 @@ export function validateCustomRibbonText(
   // Check if text is provided
   if (!customText || customText.trim().length === 0) {
     errors.push(
-      locale === "cs"
-        ? "Vlastní text nemůže být prázdný"
-        : "Custom text cannot be empty"
+      locale === "cs" ? "Vlastní text nemůže být prázdný" : "Custom text cannot be empty"
     );
     return { errors, warnings };
   }
@@ -374,9 +342,7 @@ export function validateCustomRibbonText(
   // Warning for very long text (approaching limit)
   if (sanitizedText.length > 40) {
     warnings.push(
-      locale === "cs"
-        ? "Text se blíží maximální délce"
-        : "Text is approaching maximum length"
+      locale === "cs" ? "Text se blíží maximální délce" : "Text is approaching maximum length"
     );
   }
 
@@ -406,10 +372,7 @@ export function validateWreathSizeSelection(
   if (sizeOption.required && !selectedSize) {
     return {
       isValid: false,
-      error:
-        locale === "cs"
-          ? "Velikost věnce je povinná"
-          : "Wreath size is required",
+      error: locale === "cs" ? "Velikost věnce je povinná" : "Wreath size is required",
     };
   }
 
@@ -419,9 +382,7 @@ export function validateWreathSizeSelection(
       return {
         isValid: false,
         error:
-          locale === "cs"
-            ? "Vybraná velikost není dostupná"
-            : "Selected size is not available",
+          locale === "cs" ? "Vybraná velikost není dostupná" : "Selected size is not available",
       };
     }
   }
@@ -442,18 +403,13 @@ export function validateRibbonDependencies(
     return { isValid: true, errors };
   }
 
-  const ribbonCustomization = customizations.find(
-    (c) => c.optionId === ribbonOption.id
-  );
-  const isRibbonSelected =
-    ribbonCustomization?.choiceIds.includes("ribbon_yes");
+  const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption.id);
+  const isRibbonSelected = ribbonCustomization?.choiceIds.includes("ribbon_yes");
 
   if (isRibbonSelected) {
     // Check ribbon color
     if (ribbonColorOption) {
-      const colorCustomization = customizations.find(
-        (c) => c.optionId === ribbonColorOption.id
-      );
+      const colorCustomization = customizations.find((c) => c.optionId === ribbonColorOption.id);
       if (!colorCustomization || colorCustomization.choiceIds.length === 0) {
         errors.push(
           locale === "cs"
@@ -465,13 +421,10 @@ export function validateRibbonDependencies(
 
     // Check ribbon text
     if (ribbonTextOption) {
-      const textCustomization = customizations.find(
-        (c) => c.optionId === ribbonTextOption.id
-      );
+      const textCustomization = customizations.find((c) => c.optionId === ribbonTextOption.id);
       if (
         !textCustomization ||
-        (textCustomization.choiceIds.length === 0 &&
-          !textCustomization.customValue)
+        (textCustomization.choiceIds.length === 0 && !textCustomization.customValue)
       ) {
         errors.push(
           locale === "cs"
@@ -572,9 +525,7 @@ export function hasValidationErrors(errors: CheckoutValidationErrors): boolean {
 /**
  * Format validation error messages for display
  */
-export function formatValidationErrors(
-  errors: CheckoutValidationErrors
-): string[] {
+export function formatValidationErrors(errors: CheckoutValidationErrors): string[] {
   const messages: string[] = [];
 
   if (errors.customerInfo) {
@@ -599,27 +550,20 @@ export function formatValidationErrors(
 /**
  * Sanitize and normalize form data
  */
-export function sanitizeCustomerInfo(
-  customerInfo: Partial<CustomerInfo>
-): Partial<CustomerInfo> {
+export function sanitizeCustomerInfo(customerInfo: Partial<CustomerInfo>): Partial<CustomerInfo> {
   const sanitized: Partial<CustomerInfo> = {};
 
-  if (customerInfo.firstName)
-    sanitized.firstName = customerInfo.firstName.trim();
+  if (customerInfo.firstName) sanitized.firstName = customerInfo.firstName.trim();
   if (customerInfo.lastName) sanitized.lastName = customerInfo.lastName.trim();
-  if (customerInfo.email)
-    sanitized.email = customerInfo.email.trim().toLowerCase();
-  if (customerInfo.phone)
-    sanitized.phone = customerInfo.phone.replace(/\s/g, "");
+  if (customerInfo.email) sanitized.email = customerInfo.email.trim().toLowerCase();
+  if (customerInfo.phone) sanitized.phone = customerInfo.phone.replace(/\s/g, "");
   if (customerInfo.company) sanitized.company = customerInfo.company.trim();
   if (customerInfo.note) sanitized.note = customerInfo.note.trim();
 
   return sanitized;
 }
 
-export function sanitizeDeliveryInfo(
-  deliveryInfo: Partial<DeliveryInfo>
-): Partial<DeliveryInfo> {
+export function sanitizeDeliveryInfo(deliveryInfo: Partial<DeliveryInfo>): Partial<DeliveryInfo> {
   const sanitized = { ...deliveryInfo };
 
   if (sanitized.address) {

@@ -9,8 +9,7 @@ const FredonQuote = () => {
   const rawQuotes = [t("quote1"), t("quote2"), t("quote3")];
 
   // Ensure rawQuotes always has at least one item to prevent fullText being undefined
-  const safeQuotes =
-    rawQuotes.length > 0 ? rawQuotes : [t("fallbackQuote") || ""]; // Fallback if all quotes are missing
+  const safeQuotes = rawQuotes.length > 0 ? rawQuotes : [t("fallbackQuote") || ""]; // Fallback if all quotes are missing
 
   // Refs to hold the latest state values
   const displayedTextRef = useRef("");
@@ -62,17 +61,11 @@ const FredonQuote = () => {
 
     if (isDeletingRef.current) {
       // Deleting phase
-      const newText = fullText.substring(
-        0,
-        displayedTextRef.current.length - 1
-      );
+      const newText = fullText.substring(0, displayedTextRef.current.length - 1);
       updateState(newText, isDeletingRef.current, loopNumRef.current, 30); // Faster delete speed
     } else {
       // Typing phase
-      const newText = fullText.substring(
-        0,
-        displayedTextRef.current.length + 1
-      );
+      const newText = fullText.substring(0, displayedTextRef.current.length + 1);
       updateState(newText, isDeletingRef.current, loopNumRef.current, 50); // Faster type speed
     }
 
@@ -107,10 +100,7 @@ const FredonQuote = () => {
       !(isDeletingRef.current && displayedTextRef.current === "")
     ) {
       if (typingTimeoutRef.current) clearTimeout(typingTimeoutRef.current);
-      typingTimeoutRef.current = setTimeout(
-        handleTyping,
-        typingSpeedRef.current
-      );
+      typingTimeoutRef.current = setTimeout(handleTyping, typingSpeedRef.current);
     }
     // Otherwise, the timeout for pause or the direct call after deleting handles the next step.
   };
@@ -130,8 +120,7 @@ const FredonQuote = () => {
   return (
     <p className="text-amber-300/40 italic text-sm">
       &quot;{displayedTextRef.current}&quot;
-      <span className="ml-1 animate-pulse">|</span>{" "}
-      {/* Blinking cursor effect */}
+      <span className="ml-1 animate-pulse">|</span> {/* Blinking cursor effect */}
     </p>
   );
 };

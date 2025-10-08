@@ -48,9 +48,7 @@ export class PaymentService {
   /**
    * Initialize Stripe payment
    */
-  static async initializePayment(
-    request: PaymentRequest
-  ): Promise<PaymentResponse> {
+  static async initializePayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
       if (request.paymentMethod !== "stripe") {
         throw new Error(`Unsupported payment method: ${request.paymentMethod}`);
@@ -61,10 +59,7 @@ export class PaymentService {
       console.error("Error initializing payment:", error);
       return {
         success: false,
-        error:
-          error instanceof Error
-            ? error.message
-            : "Payment initialization failed",
+        error: error instanceof Error ? error.message : "Payment initialization failed",
       };
     }
   }
@@ -72,9 +67,7 @@ export class PaymentService {
   /**
    * Initialize Stripe payment
    */
-  private static async initializeStripePayment(
-    request: PaymentRequest
-  ): Promise<PaymentResponse> {
+  private static async initializeStripePayment(request: PaymentRequest): Promise<PaymentResponse> {
     try {
       const paymentIntent = await createPaymentIntent({
         amount: request.amount,
@@ -121,9 +114,7 @@ export class PaymentService {
   /**
    * Get Stripe payment status
    */
-  private static async getStripePaymentStatus(
-    paymentIntentId: string
-  ): Promise<PaymentResult> {
+  private static async getStripePaymentStatus(paymentIntentId: string): Promise<PaymentResult> {
     const paymentIntent = await retrievePaymentIntent(paymentIntentId);
 
     let status: PaymentStatus;
@@ -186,11 +177,7 @@ export class PaymentService {
   ): Promise<PaymentResult | null> {
     const { verifyWebhookSignature } = await import("./stripe");
 
-    const event = verifyWebhookSignature(
-      payload,
-      signature,
-      process.env["STRIPE_WEBHOOK_SECRET"]!
-    );
+    const event = verifyWebhookSignature(payload, signature, process.env["STRIPE_WEBHOOK_SECRET"]!);
 
     if (event.type === "payment_intent.succeeded") {
       const paymentIntent = event.data.object;

@@ -69,8 +69,7 @@ export function testKeyboardNavigation(
     const issues: string[] = [];
 
     // Validate keyboard accessibility
-    const keyboardErrors =
-      KeyboardValidator.validateKeyboardAccess(htmlElement);
+    const keyboardErrors = KeyboardValidator.validateKeyboardAccess(htmlElement);
     if (keyboardErrors.length > 0) {
       issues.push(...keyboardErrors);
       inaccessibleCount++;
@@ -249,9 +248,7 @@ export function testTabOrder(container: HTMLElement = document.body): {
 /**
  * Comprehensive keyboard navigation audit
  */
-export function auditKeyboardNavigation(
-  container: HTMLElement = document.body
-): {
+export function auditKeyboardNavigation(container: HTMLElement = document.body): {
   overallPassed: boolean;
   navigationTest: KeyboardNavigationTestResult;
   focusIndicatorTest: FocusIndicatorTestResult;
@@ -272,12 +269,10 @@ export function auditKeyboardNavigation(
     tabOrderTest.issues.length;
 
   const criticalIssues = navigationTest.inaccessibleElements;
-  const warnings =
-    focusIndicatorTest.elementsWithoutIndicators + tabOrderTest.issues.length;
+  const warnings = focusIndicatorTest.elementsWithoutIndicators + tabOrderTest.issues.length;
 
   return {
-    overallPassed:
-      navigationTest.passed && focusIndicatorTest.passed && tabOrderTest.passed,
+    overallPassed: navigationTest.passed && focusIndicatorTest.passed && tabOrderTest.passed,
     navigationTest,
     focusIndicatorTest,
     tabOrderTest,
@@ -327,14 +322,7 @@ function canElementReceiveFocus(element: HTMLElement): boolean {
 
 function isInteractiveElement(element: HTMLElement): boolean {
   const interactiveTags = ["button", "a", "input", "select", "textarea"];
-  const interactiveRoles = [
-    "button",
-    "link",
-    "checkbox",
-    "radio",
-    "tab",
-    "menuitem",
-  ];
+  const interactiveRoles = ["button", "link", "checkbox", "radio", "tab", "menuitem"];
 
   const tagName = element.tagName.toLowerCase();
   const role = element.getAttribute("role");
@@ -369,12 +357,8 @@ function checkVisibleFocusIndicator(style: CSSStyleDeclaration): boolean {
 function getElementDescription(element: HTMLElement): string {
   const tag = element.tagName.toLowerCase();
   const id = element.id ? `#${element.id}` : "";
-  const classes = element.className
-    ? `.${element.className.split(" ").join(".")}`
-    : "";
-  const role = element.getAttribute("role")
-    ? `[role="${element.getAttribute("role")}"]`
-    : "";
+  const classes = element.className ? `.${element.className.split(" ").join(".")}` : "";
+  const role = element.getAttribute("role") ? `[role="${element.getAttribute("role")}"]` : "";
   const text = element.textContent?.trim().substring(0, 30) || "";
 
   return `<${tag}${id}${classes}${role}>${text ? ` "${text}..."` : ""}`;
@@ -404,9 +388,7 @@ function getFocusableElements(container: HTMLElement): HTMLElement[] {
     '[tabindex]:not([tabindex="-1"])',
   ];
 
-  return Array.from(
-    container.querySelectorAll(focusableSelectors.join(", "))
-  ) as HTMLElement[];
+  return Array.from(container.querySelectorAll(focusableSelectors.join(", "))) as HTMLElement[];
 }
 
 /**
@@ -423,9 +405,7 @@ export function generateKeyboardNavigationReport(
   lines.push("");
 
   // Overall status
-  lines.push(
-    `Overall Status: ${results.overallPassed ? "✓ PASSED" : "✗ FAILED"}`
-  );
+  lines.push(`Overall Status: ${results.overallPassed ? "✓ PASSED" : "✗ FAILED"}`);
   lines.push("");
 
   // Summary
@@ -439,12 +419,8 @@ export function generateKeyboardNavigationReport(
   lines.push("-".repeat(80));
   lines.push("KEYBOARD ACCESSIBILITY TEST");
   lines.push("-".repeat(80));
-  lines.push(
-    `Status: ${results.navigationTest.passed ? "✓ PASSED" : "✗ FAILED"}`
-  );
-  lines.push(
-    `Total Interactive Elements: ${results.navigationTest.totalElements}`
-  );
+  lines.push(`Status: ${results.navigationTest.passed ? "✓ PASSED" : "✗ FAILED"}`);
+  lines.push(`Total Interactive Elements: ${results.navigationTest.totalElements}`);
   lines.push(`Accessible: ${results.navigationTest.accessibleElements}`);
   lines.push(`Inaccessible: ${results.navigationTest.inaccessibleElements}`);
   lines.push(`Tab Order Issues: ${results.navigationTest.tabOrderIssues}`);
@@ -466,18 +442,10 @@ export function generateKeyboardNavigationReport(
   lines.push("-".repeat(80));
   lines.push("FOCUS INDICATOR TEST");
   lines.push("-".repeat(80));
-  lines.push(
-    `Status: ${results.focusIndicatorTest.passed ? "✓ PASSED" : "✗ FAILED"}`
-  );
-  lines.push(
-    `Total Focusable Elements: ${results.focusIndicatorTest.totalFocusableElements}`
-  );
-  lines.push(
-    `With Visible Focus: ${results.focusIndicatorTest.elementsWithIndicators}`
-  );
-  lines.push(
-    `Without Visible Focus: ${results.focusIndicatorTest.elementsWithoutIndicators}`
-  );
+  lines.push(`Status: ${results.focusIndicatorTest.passed ? "✓ PASSED" : "✗ FAILED"}`);
+  lines.push(`Total Focusable Elements: ${results.focusIndicatorTest.totalFocusableElements}`);
+  lines.push(`With Visible Focus: ${results.focusIndicatorTest.elementsWithIndicators}`);
+  lines.push(`Without Visible Focus: ${results.focusIndicatorTest.elementsWithoutIndicators}`);
 
   if (results.focusIndicatorTest.elementsWithoutIndicators > 0) {
     lines.push("");
@@ -496,9 +464,7 @@ export function generateKeyboardNavigationReport(
   lines.push("-".repeat(80));
   lines.push("TAB ORDER TEST");
   lines.push("-".repeat(80));
-  lines.push(
-    `Status: ${results.tabOrderTest.passed ? "✓ PASSED" : "✗ FAILED"}`
-  );
+  lines.push(`Status: ${results.tabOrderTest.passed ? "✓ PASSED" : "✗ FAILED"}`);
 
   if (results.tabOrderTest.issues.length > 0) {
     lines.push("");

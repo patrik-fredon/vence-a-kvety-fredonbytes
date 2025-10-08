@@ -66,8 +66,10 @@
      GRADIENT DEFINITIONS
      Brand gradients for backgrounds and accents
      ============================================ */
-  --gradient-funeral-gold: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47);
+  --gradient-funeral-gold: radial-gradient(circle at center, #d2ac47,#FCD45B,#ae8625);
+
   --gradient-funeral-teal: linear-gradient(to right, #0f766e, #14b8a6, #0d9488);
+
 }
 
 :root {
@@ -114,7 +116,9 @@
     ); /* Fallback */
     background: var(
       --gradient-funeral-gold,
-      linear-gradient(to right, #745713, #d7ca66, #b08b24)
+      radial-gradient(circle at center, #d2ac47,#f7ef8a, #ae8625),
+
+
     );
     background-attachment: fixed;
     color: var(--foreground);
@@ -166,7 +170,7 @@
 
 h1,
 h2 {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Palatino", serif;
   font-weight: 700;
   line-height: 1.4;
 }
@@ -175,7 +179,7 @@ h3,
 h4,
 h5,
 h6 {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Palatino", serif;
   font-weight: 700;
   line-height: 1.2;
 }
@@ -332,7 +336,7 @@ p {
 
 /* Utility classes for the funeral wreaths theme */
 .text-elegant {
-  font-family: "Playfair Display", Georgia, serif;
+  font-family: "Palatino", serif;
 }
 
 .shadow-soft {

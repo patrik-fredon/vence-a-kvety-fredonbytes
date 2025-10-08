@@ -35,10 +35,7 @@ interface DashboardOverviewProps {
   onRefresh: () => void;
 }
 
-export default function DashboardOverview({
-  stats,
-  onRefresh,
-}: DashboardOverviewProps) {
+export default function DashboardOverview({ stats, onRefresh }: DashboardOverviewProps) {
   const t = useTranslations("admin");
   const [recentOrders, setRecentOrders] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -92,9 +89,7 @@ export default function DashboardOverview({
     {
       title: t("totalRevenue"),
       value: formatCurrency(stats?.revenue.total || 0),
-      subtitle: `${formatCurrency(stats?.revenue.this_month || 0)} ${t(
-        "thisMonth"
-      )}`,
+      subtitle: `${formatCurrency(stats?.revenue.this_month || 0)} ${t("thisMonth")}`,
       icon: CurrencyDollarIcon,
       color: "purple",
       trend: null,
@@ -138,18 +133,11 @@ export default function DashboardOverview({
       {/* Stats cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         {statCards.map((card, index) => (
-          <div
-            key={index}
-            className="bg-white rounded-lg shadow-sm border border-gray-200 p-6"
-          >
+          <div key={index} className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
             <div className="flex items-center justify-between">
               <div className="flex-1">
-                <p className="text-sm font-medium text-gray-600">
-                  {card.title}
-                </p>
-                <p className="text-2xl font-bold text-gray-900 mt-2">
-                  {card.value}
-                </p>
+                <p className="text-sm font-medium text-gray-600">{card.title}</p>
+                <p className="text-2xl font-bold text-gray-900 mt-2">{card.value}</p>
                 <p className="text-sm text-gray-500 mt-1">{card.subtitle}</p>
 
                 {card.trend !== null && (
@@ -173,9 +161,7 @@ export default function DashboardOverview({
       {/* Recent orders */}
       <div className="bg-white rounded-lg shadow-sm border border-gray-200">
         <div className="px-6 py-4 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900">
-            {t("recentOrders")}
-          </h3>
+          <h3 className="text-lg font-semibold text-gray-900">{t("recentOrders")}</h3>
         </div>
 
         <div className="overflow-x-auto">
@@ -219,23 +205,23 @@ export default function DashboardOverview({
                           order.status === "pending"
                             ? "bg-yellow-100 text-yellow-800"
                             : order.status === "confirmed"
-                            ? "bg-blue-100 text-blue-800"
-                            : order.status === "shipped"
-                            ? "bg-purple-100 text-purple-800"
-                            : order.status === "delivered"
-                            ? "bg-green-100 text-green-800"
-                            : "bg-red-100 text-red-800"
+                              ? "bg-blue-100 text-blue-800"
+                              : order.status === "shipped"
+                                ? "bg-purple-100 text-purple-800"
+                                : order.status === "delivered"
+                                  ? "bg-green-100 text-green-800"
+                                  : "bg-red-100 text-red-800"
                         }`}
                       >
                         {order.status === "pending"
                           ? t("pending")
                           : order.status === "confirmed"
-                          ? t("confirmed")
-                          : order.status === "shipped"
-                          ? t("shipped")
-                          : order.status === "delivered"
-                          ? t("delivered")
-                          : t("cancelled")}
+                            ? t("confirmed")
+                            : order.status === "shipped"
+                              ? t("shipped")
+                              : order.status === "delivered"
+                                ? t("delivered")
+                                : t("cancelled")}
                       </span>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -249,9 +235,7 @@ export default function DashboardOverview({
               </tbody>
             </table>
           ) : (
-            <div className="p-6 text-center text-gray-500">
-              {t("noOrdersToDisplay")}
-            </div>
+            <div className="p-6 text-center text-gray-500">{t("noOrdersToDisplay")}</div>
           )}
         </div>
       </div>
@@ -259,9 +243,7 @@ export default function DashboardOverview({
       {/* Quick actions */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">
-            {t("quickActions")}
-          </h4>
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">{t("quickActions")}</h4>
           <div className="space-y-3">
             <button className="w-full text-left px-4 py-2 text-sm text-blue-600 hover:bg-blue-50 rounded-lg transition-colors">
               {t("addNewProduct")}
@@ -276,25 +258,20 @@ export default function DashboardOverview({
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">
-            {t("systemInfo")}
-          </h4>
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">{t("systemInfo")}</h4>
           <div className="space-y-2 text-sm text-gray-600">
             <p>{t("version")}: 1.0.0</p>
             <p>
               {t("lastUpdate")}: {new Date().toLocaleDateString("cs-CZ")}
             </p>
             <p>
-              {t("systemStatus")}:{" "}
-              <span className="text-green-600 font-medium">{t("online")}</span>
+              {t("systemStatus")}: <span className="text-green-600 font-medium">{t("online")}</span>
             </p>
           </div>
         </div>
 
         <div className="bg-white rounded-lg shadow-sm border border-gray-200 p-6">
-          <h4 className="text-lg font-semibold text-gray-900 mb-4">
-            {t("support")}
-          </h4>
+          <h4 className="text-lg font-semibold text-gray-900 mb-4">{t("support")}</h4>
           <div className="space-y-3">
             <a
               href="mailto:support@pohrebni-vence.cz"
@@ -302,10 +279,7 @@ export default function DashboardOverview({
             >
               {t("technicalSupport")}
             </a>
-            <a
-              href="/admin/help"
-              className="block text-sm text-blue-600 hover:text-blue-800"
-            >
+            <a href="/admin/help" className="block text-sm text-blue-600 hover:text-blue-800">
               {t("documentation")}
             </a>
           </div>

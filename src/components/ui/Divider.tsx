@@ -25,14 +25,7 @@ const Divider: React.FC<DividerProps> = ({ className = "" }) => {
         />
 
         {/* Left Line */}
-        <line
-          x1="50"
-          y1="50"
-          x2="300"
-          y2="50"
-          strokeWidth="4"
-          stroke="currentColor"
-        />
+        <line x1="50" y1="50" x2="300" y2="50" strokeWidth="4" stroke="currentColor" />
 
         {/* Central Ornament */}
         <path
@@ -63,14 +56,7 @@ const Divider: React.FC<DividerProps> = ({ className = "" }) => {
         />
 
         {/* Right Line */}
-        <line
-          x1="700"
-          y1="50"
-          x2="950"
-          y2="50"
-          strokeWidth="4"
-          stroke="currentColor"
-        />
+        <line x1="700" y1="50" x2="950" y2="50" strokeWidth="4" stroke="currentColor" />
 
         {/* Right Arrow */}
         <path

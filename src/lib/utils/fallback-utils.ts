@@ -57,42 +57,33 @@ export const FALLBACK_IMAGES = {
 export const FALLBACK_TRANSLATIONS = {
   en: {
     "home.refactoredHero.heading": "Funeral wreaths with love and respect",
-    "home.refactoredHero.subheading":
-      "Beautiful floral arrangements for dignified farewell",
-    "home.refactoredHero.description":
-      "Beautiful floral arrangements for dignified farewell",
+    "home.refactoredHero.subheading": "Beautiful floral arrangements for dignified farewell",
+    "home.refactoredHero.description": "Beautiful floral arrangements for dignified farewell",
     "home.refactoredHero.cta": "Browse Wreaths",
     "home.refactoredHero.ctaAriaLabel": "Navigate to funeral wreaths page",
     "home.refactoredHero.ctaButton": "Browse Wreaths",
-    "home.refactoredHero.logoAlt":
-      "Company logo specializing in funeral wreaths",
+    "home.refactoredHero.logoAlt": "Company logo specializing in funeral wreaths",
     "accessibility.accessibility": "Accessibility",
     "home.productReferences.heading": "Our Products",
-    "home.productReferences.description":
-      "Discover our carefully curated collection",
+    "home.productReferences.description": "Discover our carefully curated collection",
     "home.productReferences.loading": "Loading products...",
     "home.productReferences.loadingError": "Failed to load products",
     "home.productReferences.tryAgain": "Try again",
-    "home.productReferences.productImageAlt":
-      "Funeral wreath from our collection",
+    "home.productReferences.productImageAlt": "Funeral wreath from our collection",
     "common.loading": "Loading...",
     "common.error": "Error",
   },
   cs: {
     "home.refactoredHero.heading": "Pohřební věnce s láskou a úctou",
-    "home.refactoredHero.subheading":
-      "Krásné květinové aranžmá pro důstojné rozloučení",
-    "home.refactoredHero.description":
-      "Krásné květinové aranžmá pro důstojné rozloučení",
+    "home.refactoredHero.subheading": "Krásné květinové aranžmá pro důstojné rozloučení",
+    "home.refactoredHero.description": "Krásné květinové aranžmá pro důstojné rozloučení",
     "home.refactoredHero.cta": "Prohlédnout věnce",
     "home.refactoredHero.ctaAriaLabel": "Přejít na stránku s pohřebními věnci",
     "home.refactoredHero.ctaButton": "Prohlédnout věnce",
-    "home.refactoredHero.logoAlt":
-      "Logo společnosti specializující se na pohřební věnce",
+    "home.refactoredHero.logoAlt": "Logo společnosti specializující se na pohřební věnce",
     "accessibility.accessibility": "Přístupnost",
     "home.productReferences.heading": "Naše produkty",
-    "home.productReferences.description":
-      "Objevte naši pečlivě vybranou kolekci",
+    "home.productReferences.description": "Objevte naši pečlivě vybranou kolekci",
     "home.productReferences.loading": "Načítání produktů...",
     "home.productReferences.loadingError": "Nepodařilo se načíst produkty",
     "home.productReferences.tryAgain": "Zkusit znovu",
@@ -105,13 +96,9 @@ export const FALLBACK_TRANSLATIONS = {
 /**
  * Get fallback translation for a given key and locale
  */
-export function getFallbackTranslation(
-  key: string,
-  locale: string = "en"
-): string {
+export function getFallbackTranslation(key: string, locale: string = "en"): string {
   const translations =
-    FALLBACK_TRANSLATIONS[locale as keyof typeof FALLBACK_TRANSLATIONS] ||
-    FALLBACK_TRANSLATIONS.en;
+    FALLBACK_TRANSLATIONS[locale as keyof typeof FALLBACK_TRANSLATIONS] || FALLBACK_TRANSLATIONS.en;
   return translations[key as keyof typeof translations] || key;
 }
 
@@ -279,13 +266,7 @@ export function createDebouncedRetry(fn: () => void, delay: number = 1000) {
  * Check if an error is recoverable
  */
 export function isRecoverableError(error: Error): boolean {
-  const recoverablePatterns = [
-    /network/i,
-    /fetch/i,
-    /timeout/i,
-    /connection/i,
-    /load/i,
-  ];
+  const recoverablePatterns = [/network/i, /fetch/i, /timeout/i, /connection/i, /load/i];
 
   return recoverablePatterns.some(
     (pattern) => pattern.test(error.message) || pattern.test(error.name)
@@ -312,8 +293,7 @@ export function logErrorWithContext(
     context: {
       ...context,
       timestamp: context.timestamp || new Date().toISOString(),
-      userAgent:
-        typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
+      userAgent: typeof window !== "undefined" ? window.navigator.userAgent : "unknown",
       url: typeof window !== "undefined" ? window.location.href : "unknown",
     },
   };

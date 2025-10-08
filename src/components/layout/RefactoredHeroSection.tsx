@@ -6,11 +6,7 @@ import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
-import {
-  getFallbackImage,
-  logErrorWithContext,
-  safeTranslate,
-} from "@/lib/utils/fallback-utils";
+import { getFallbackImage, logErrorWithContext, safeTranslate } from "@/lib/utils/fallback-utils";
 
 interface RefactoredHeroSectionProps {
   locale: string;
@@ -178,9 +174,7 @@ export function RefactoredHeroSection({
             // Text color
             "text-amber-300",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-1"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-1" : "opacity-100"
           )}
         >
           {safeT("heading")}
@@ -215,9 +209,7 @@ export function RefactoredHeroSection({
             // Text color - updated to amber-200 for hierarchy
             "text-amber-200/50",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-2"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-2" : "opacity-100"
           )}
         >
           {safeT("subheading")}
@@ -248,22 +240,18 @@ export function RefactoredHeroSection({
             // Background and text colors - updated to use teal-900 for text
             "bg-funeral-gold text-teal-900",
             // Border radius
-            "rounded-lg",
-            // Hover state - updated to amber-300
-            "hover:bg-amber-300",
+            "rounded-xl",
+
             // Transition
             "transition-colors duration-200",
-            // Focus state for accessibility - updated ring offset to teal-800
-            "focus:outline-none focus:ring-2 focus:ring-amber-100 focus:ring-offset-2 focus:ring-offset-teal-800",
+
             // Orientation adjustments
             "landscape:text-sm landscape:px-6 landscape:py-3", // Smaller in landscape
             "md:landscape:text-xl md:landscape:px-8 md:landscape:py-4", // Tablet landscape
             // Hover animation enhancement
             "hover:scale-105 transition-transform duration-200",
             // Staggered fade-in animation (respecting reduced motion)
-            !prefersReducedMotion && animationStarted
-              ? "animate-fade-in-up-delay-3"
-              : "opacity-100"
+            !prefersReducedMotion && animationStarted ? "animate-fade-in-up-delay-3" : "opacity-100"
           )}
           aria-label={safeT("ctaAriaLabel")}
         >

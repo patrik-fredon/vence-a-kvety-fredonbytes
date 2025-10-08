@@ -50,9 +50,7 @@ const generateBlurDataURL = (width: number = 8, height: number = 8): string => {
 };
 
 // Optimized sizes configuration for different variants
-const getSizesForVariant = (
-  variant: OptimizedImageProps["variant"]
-): string => {
+const getSizesForVariant = (variant: OptimizedImageProps["variant"]): string => {
   switch (variant) {
     case "product":
       return "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw";
@@ -68,9 +66,7 @@ const getSizesForVariant = (
 };
 
 // Quality settings based on variant for optimal file size vs quality balance
-const getQualityForVariant = (
-  variant: OptimizedImageProps["variant"]
-): number => {
+const getQualityForVariant = (variant: OptimizedImageProps["variant"]): number => {
   switch (variant) {
     case "product":
       return 85; // High quality for product images
@@ -161,14 +157,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
     }
 
     onLoad?.();
-  }, [
-    onLoad,
-    loadStartTime,
-    enableCoreWebVitals,
-    coreWebVitals,
-    src,
-    isLCPCandidate,
-  ]);
+  }, [onLoad, loadStartTime, enableCoreWebVitals, coreWebVitals, src, isLCPCandidate]);
 
   // Optimized error handler
   const handleError = useCallback(() => {
@@ -206,10 +195,7 @@ export const OptimizedImage: React.FC<OptimizedImageProps> = ({
   }
 
   return (
-    <div
-      className={cn("relative", !fill && "w-full h-full")}
-      style={clsPreventionStyles}
-    >
+    <div className={cn("relative", !fill && "w-full h-full")} style={clsPreventionStyles}>
       <Image
         src={src}
         alt={alt}

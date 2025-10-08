@@ -24,8 +24,7 @@ const ProductReferencesSkeleton = ({ locale }: { locale: string }) => (
       "md:py-20 md:px-8", // More generous tablet padding
       // Desktop layout with proper space utilization (1024px+)
       "lg:py-24 lg:px-12", // Ample desktop padding
-      "xl:py-28 xl:px-16", // Maximum padding for large screens
-      "bg-funeral-gold", // funeral background color from design tokens
+      "xl:py-28 xl:px-16", // Maximum padding for large screens // funeral background color from design tokens
       // Orientation handling
       "landscape:py-8", // Reduced padding in landscape
       "md:landscape:py-16" // Tablet landscape adjustment
@@ -201,7 +200,7 @@ export function LazyProductReferencesSection(props: ProductReferencesSectionProp
   const ErrorFallback = () => (
     <section
       className={cn(
-        "py-12 px-3 bg-funeral-gold",
+        "py-12 px-3 ",
         "xs:py-14 xs:px-4",
         "sm:py-16 sm:px-6",
         "md:py-20 md:px-8",

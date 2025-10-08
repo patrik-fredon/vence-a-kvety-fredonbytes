@@ -26,9 +26,7 @@ export async function POST(request: NextRequest) {
       .lt("created_at", twoHoursAgo.toISOString());
 
     if (fetchError) {
-      throw new Error(
-        `Failed to fetch abandoned orders: ${fetchError.message}`
-      );
+      throw new Error(`Failed to fetch abandoned orders: ${fetchError.message}`);
     }
 
     let cleanedCount = 0;
@@ -72,10 +70,7 @@ export async function POST(request: NextRequest) {
     // Clean up abandoned cart items with customizations (older than 7 days)
     const { cleanupAbandonedCustomizations } = await import("@/lib/cart/utils");
 
-    const customizationCleanup = await cleanupAbandonedCustomizations(
-      supabase,
-      7
-    );
+    const customizationCleanup = await cleanupAbandonedCustomizations(supabase, 7);
 
     // Also run database-level cleanup for any remaining issues
     // Note: cleanup_invalid_customizations function needs to be created in database
@@ -83,10 +78,7 @@ export async function POST(request: NextRequest) {
     const dbCleanupError = null;
 
     if (dbCleanupError) {
-      console.error(
-        "Failed to run database customization cleanup:",
-        dbCleanupError
-      );
+      console.error("Failed to run database customization cleanup:", dbCleanupError);
     }
 
     // Clean up remaining abandoned cart items (fallback)

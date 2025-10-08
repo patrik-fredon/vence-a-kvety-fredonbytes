@@ -64,25 +64,27 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     let rawImages: any[] = [];
     if (Array.isArray(row.images)) {
       rawImages = row.images;
-    } else if (typeof row.images === 'string') {
+    } else if (typeof row.images === "string") {
       const parsed = JSON.parse(row.images);
       rawImages = Array.isArray(parsed) ? parsed : [];
     }
-    
+
     // Map raw images to ProductImage type with all required fields
-    images = rawImages.map((img, index) => ({
-      id: img.id || `${row.id}-img-${index}`, // Generate ID if missing
-      url: img.url || '',
-      alt: img.alt || '',
-      isPrimary: img.isPrimary === true, // Ensure boolean
-      sortOrder: typeof img.sortOrder === 'number' ? img.sortOrder : index, // Use index if missing
-      ...(img.width && { width: img.width }),
-      ...(img.height && { height: img.height }),
-      ...(img.blurDataUrl && { blurDataUrl: img.blurDataUrl }),
-      ...(img.customizationId && { customizationId: img.customizationId }),
-    })).filter(img => img.url); // Filter out images without URLs
+    images = rawImages
+      .map((img, index) => ({
+        id: img.id || `${row.id}-img-${index}`, // Generate ID if missing
+        url: img.url || "",
+        alt: img.alt || "",
+        isPrimary: img.isPrimary === true, // Ensure boolean
+        sortOrder: typeof img.sortOrder === "number" ? img.sortOrder : index, // Use index if missing
+        ...(img.width && { width: img.width }),
+        ...(img.height && { height: img.height }),
+        ...(img.blurDataUrl && { blurDataUrl: img.blurDataUrl }),
+        ...(img.customizationId && { customizationId: img.customizationId }),
+      }))
+      .filter((img) => img.url); // Filter out images without URLs
   } catch (error) {
-    console.error('Failed to parse product images:', error);
+    console.error("Failed to parse product images:", error);
     images = [];
   }
 
@@ -91,40 +93,41 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
   try {
     if (Array.isArray(row.customization_options)) {
       customizationOptions = row.customization_options;
-    } else if (typeof row.customization_options === 'string') {
+    } else if (typeof row.customization_options === "string") {
       const parsed = JSON.parse(row.customization_options);
       customizationOptions = Array.isArray(parsed) ? parsed : [];
     }
   } catch (error) {
-    console.error('Failed to parse customization options:', error);
+    console.error("Failed to parse customization options:", error);
     customizationOptions = [];
   }
 
   // Parse availability - handle both object and JSON string formats
   let availability: any = { inStock: true };
   try {
-    if (typeof row.availability === 'object' && row.availability !== null) {
+    if (typeof row.availability === "object" && row.availability !== null) {
       availability = row.availability;
-    } else if (typeof row.availability === 'string') {
+    } else if (typeof row.availability === "string") {
       const parsed = JSON.parse(row.availability);
-      availability = typeof parsed === 'object' ? parsed : { inStock: true };
+      availability = typeof parsed === "object" ? parsed : { inStock: true };
     }
   } catch (error) {
-    console.error('Failed to parse availability:', error);
+    console.error("Failed to parse availability:", error);
     availability = { inStock: true };
   }
 
   // Parse seo_metadata - handle both object and JSON string formats
   let seoMetadata: any = { title: name, description: description || name };
   try {
-    if (typeof row.seo_metadata === 'object' && row.seo_metadata !== null) {
+    if (typeof row.seo_metadata === "object" && row.seo_metadata !== null) {
       seoMetadata = row.seo_metadata;
-    } else if (typeof row.seo_metadata === 'string') {
+    } else if (typeof row.seo_metadata === "string") {
       const parsed = JSON.parse(row.seo_metadata);
-      seoMetadata = typeof parsed === 'object' ? parsed : { title: name, description: description || name };
+      seoMetadata =
+        typeof parsed === "object" ? parsed : { title: name, description: description || name };
     }
   } catch (error) {
-    console.error('Failed to parse SEO metadata:', error);
+    console.error("Failed to parse SEO metadata:", error);
     seoMetadata = { title: name, description: description || name };
   }
 

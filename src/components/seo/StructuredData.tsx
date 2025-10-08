@@ -36,8 +36,7 @@ export function generateProductStructuredData(
   },
   _locale: string
 ) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -83,8 +82,7 @@ export function generateBreadcrumbStructuredData(
   breadcrumbs: Array<{ name: string; url: string }>,
   locale: string
 ) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -93,9 +91,7 @@ export function generateBreadcrumbStructuredData(
       "@type": "ListItem",
       position: index + 1,
       name: crumb.name,
-      item: crumb.url.startsWith("http")
-        ? crumb.url
-        : `${baseUrl}/${locale}${crumb.url}`,
+      item: crumb.url.startsWith("http") ? crumb.url : `${baseUrl}/${locale}${crumb.url}`,
     })),
   };
 }
@@ -104,8 +100,7 @@ export function generateBreadcrumbStructuredData(
  * Generate organization structured data
  */
 export function generateOrganizationStructuredData(locale: string) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -138,16 +133,13 @@ export function generateOrganizationStructuredData(locale: string) {
  * Generate website structured data
  */
 export function generateWebsiteStructuredData(locale: string) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
     "@type": "WebSite",
     name:
-      locale === "cs"
-        ? "Pohřební věnce | Ketingmar s.r.o."
-        : "Funeral Wreaths | Ketingmar s.r.o.",
+      locale === "cs" ? "Pohřební věnce | Ketingmar s.r.o." : "Funeral Wreaths | Ketingmar s.r.o.",
     url: baseUrl,
     description:
       locale === "cs"
@@ -169,8 +161,7 @@ export function generateWebsiteStructuredData(locale: string) {
  * Generate LocalBusiness structured data
  */
 export function generateLocalBusinessStructuredData(locale: string) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -271,9 +262,7 @@ export function generateLocalBusinessStructuredData(locale: string) {
 /**
  * Generate FAQ structured data
  */
-export function generateFAQStructuredData(
-  faqs: Array<{ question: string; answer: string }>
-) {
+export function generateFAQStructuredData(faqs: Array<{ question: string; answer: string }>) {
   return {
     "@context": "https://schema.org",
     "@type": "FAQPage",
@@ -301,8 +290,7 @@ export function generateItemListStructuredData(
   }>,
   listName: string
 ) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -347,17 +335,14 @@ export function generateCollectionPageStructuredData(
   },
   locale: string
 ) {
-  const baseUrl =
-    process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
     "@type": "CollectionPage",
     name: category.name,
     description: category.description,
-    url: category.url.startsWith("http")
-      ? category.url
-      : `${baseUrl}${category.url}`,
+    url: category.url.startsWith("http") ? category.url : `${baseUrl}${category.url}`,
     mainEntity: {
       "@type": "ItemList",
       name: category.name,
@@ -382,9 +367,7 @@ export function generateCollectionPageStructuredData(
           "@type": "ListItem",
           position: 3,
           name: category.name,
-          item: category.url.startsWith("http")
-            ? category.url
-            : `${baseUrl}${category.url}`,
+          item: category.url.startsWith("http") ? category.url : `${baseUrl}${category.url}`,
         },
       ],
     },

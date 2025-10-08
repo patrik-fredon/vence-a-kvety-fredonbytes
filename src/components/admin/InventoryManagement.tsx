@@ -44,9 +44,7 @@ export default function InventoryManagement() {
 
   const fetchAlerts = useCallback(async () => {
     try {
-      const response = await fetch(
-        `/api/admin/inventory/alerts?acknowledged=${showAcknowledged}`
-      );
+      const response = await fetch(`/api/admin/inventory/alerts?acknowledged=${showAcknowledged}`);
       if (response.ok) {
         const data = await response.json();
         setAlerts(data.alerts || []);
@@ -59,9 +57,7 @@ export default function InventoryManagement() {
   const fetchInventoryProducts = useCallback(async () => {
     try {
       setLoading(true);
-      const response = await fetch(
-        "/api/admin/products?trackInventory=true&limit=100"
-      );
+      const response = await fetch("/api/admin/products?trackInventory=true&limit=100");
       if (response.ok) {
         const data = await response.json();
         setProducts(data.products || []);
@@ -80,12 +76,9 @@ export default function InventoryManagement() {
 
   const handleAcknowledgeAlert = async (alertId: string) => {
     try {
-      const response = await fetch(
-        `/api/admin/inventory/alerts/${alertId}/acknowledge`,
-        {
-          method: "POST",
-        }
-      );
+      const response = await fetch(`/api/admin/inventory/alerts/${alertId}/acknowledge`, {
+        method: "POST",
+      });
 
       if (response.ok) {
         fetchAlerts();
@@ -97,16 +90,13 @@ export default function InventoryManagement() {
 
   const handleUpdateStock = async (productId: string, newStock: number) => {
     try {
-      const response = await fetch(
-        `/api/admin/products/${productId}/inventory`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({ stock_quantity: newStock }),
-        }
-      );
+      const response = await fetch(`/api/admin/products/${productId}/inventory`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ stock_quantity: newStock }),
+      });
 
       if (response.ok) {
         fetchInventoryProducts();
@@ -134,10 +124,8 @@ export default function InventoryManagement() {
   };
 
   const getStockStatus = (product: Product) => {
-    if (!product.track_inventory)
-      return { label: "Nesledováno", color: "text-gray-500" };
-    if (product.stock_quantity === 0)
-      return { label: "Vyprodáno", color: "text-red-600" };
+    if (!product.track_inventory) return { label: "Nesledováno", color: "text-gray-500" };
+    if (product.stock_quantity === 0) return { label: "Vyprodáno", color: "text-red-600" };
     if (product.stock_quantity <= product.low_stock_threshold)
       return { label: "Nízké zásoby", color: "text-yellow-600" };
     return { label: "Dostupné", color: "text-green-600" };
@@ -183,9 +171,7 @@ export default function InventoryManagement() {
                 onChange={(e) => setShowAcknowledged(e.target.checked)}
                 className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
               />
-              <span className="ml-2 text-sm text-gray-700">
-                Zobrazit potvrzená upozornění
-              </span>
+              <span className="ml-2 text-sm text-gray-700">Zobrazit potvrzená upozornění</span>
             </label>
           </div>
 
@@ -193,25 +179,16 @@ export default function InventoryManagement() {
           <div className="bg-white rounded-lg shadow-sm border border-gray-200">
             {alerts.length === 0 ? (
               <div className="p-6 text-center text-gray-500">
-                {showAcknowledged
-                  ? "Žádná potvrzená upozornění"
-                  : "Žádná aktivní upozornění"}
+                {showAcknowledged ? "Žádná potvrzená upozornění" : "Žádná aktivní upozornění"}
               </div>
             ) : (
               <div className="divide-y divide-gray-200">
                 {alerts.map((alert) => {
                   const AlertIcon = getAlertIcon(alert.alert_type);
                   return (
-                    <div
-                      key={alert.id}
-                      className="p-6 flex items-center justify-between"
-                    >
+                    <div key={alert.id} className="p-6 flex items-center justify-between">
                       <div className="flex items-center space-x-4">
-                        <div
-                          className={`p-2 rounded-full ${getAlertColor(
-                            alert.alert_type
-                          )}`}
-                        >
+                        <div className={`p-2 rounded-full ${getAlertColor(alert.alert_type)}`}>
                           <AlertIcon className="h-5 w-5" />
                         </div>
                         <div>
@@ -314,9 +291,7 @@ export default function InventoryManagement() {
                               <div className="text-sm font-medium text-gray-900">
                                 {product.name_cs}
                               </div>
-                              <div className="text-sm text-gray-500">
-                                {product.slug}
-                              </div>
+                              <div className="text-sm text-gray-500">{product.slug}</div>
                             </div>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
@@ -328,25 +303,20 @@ export default function InventoryManagement() {
                               min="0"
                               value={product.stock_quantity}
                               onChange={(e) => {
-                                const newValue =
-                                  Number.parseInt(e.target.value, 10) || 0;
+                                const newValue = Number.parseInt(e.target.value, 10) || 0;
                                 if (newValue !== product.stock_quantity) {
                                   handleUpdateStock(product.id, newValue);
                                 }
                               }}
                               className="w-20 px-2 py-1 text-sm border border-gray-300 rounded focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                             />
-                            <span className="ml-1 text-sm text-gray-500">
-                              ks
-                            </span>
+                            <span className="ml-1 text-sm text-gray-500">ks</span>
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
                             {product.low_stock_threshold} ks
                           </td>
                           <td className="px-6 py-4 whitespace-nowrap">
-                            <span
-                              className={`text-sm font-medium ${status.color}`}
-                            >
+                            <span className={`text-sm font-medium ${status.color}`}>
                               {status.label}
                             </span>
                           </td>

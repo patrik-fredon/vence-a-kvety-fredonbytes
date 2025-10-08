@@ -5,15 +5,8 @@
 
 import { type NextRequest, NextResponse } from "next/server";
 import { auth } from "@/lib/auth/config";
-import {
-  checkUserConsent,
-  logUserActivity,
-  updateUserConsent,
-} from "@/lib/security/gdpr";
-import {
-  validateCSRFToken,
-  validateRequestBody,
-} from "@/lib/security/validation";
+import { checkUserConsent, logUserActivity, updateUserConsent } from "@/lib/security/gdpr";
+import { validateCSRFToken, validateRequestBody } from "@/lib/security/validation";
 
 // Removed unused ConsentUpdateBody interface
 
@@ -150,9 +143,7 @@ export async function POST(request: NextRequest) {
 
     const userId = session.user.id;
     const clientIP =
-      request.headers.get("x-forwarded-for") ??
-      request.headers.get("x-real-ip") ??
-      "unknown";
+      request.headers.get("x-forwarded-for") ?? request.headers.get("x-real-ip") ?? "unknown";
     const consentData = bodyValidation.data;
 
     if (!consentData) {
@@ -185,12 +176,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log the consent update
-    await logUserActivity(
-      userId,
-      "consent_preferences_updated",
-      consentData,
-      clientIP
-    );
+    await logUserActivity(userId, "consent_preferences_updated", consentData, clientIP);
 
     return NextResponse.json({
       success: true,

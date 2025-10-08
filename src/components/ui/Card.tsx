@@ -20,9 +20,9 @@ export function Card({
   ...props
 }: CardProps) {
   const variants = {
-    default: cn("bg-teal-900 border border-amber-200", "shadow-2xl"),
+    default: cn("bg-teal-900 border border-amber-200", "shadow-4xl"),
     outlined: cn("bg-teal-900 border border-amber-200", "shadow-2xl"),
-    elevated: cn("bg-teal-900 border border-amber-200", "shadow-md"),
+    elevated: cn("bg-teal-900 border border-amber-200", "shadow-xl"),
   };
 
   const paddings = {
@@ -73,17 +73,11 @@ export function Card({
   );
 }
 
-export function AboutCard({
-  className,
-  ...props
-}: React.ComponentProps<"div">) {
+export function AboutCard({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="card"
-      className={cn(
-        "bg-card text-card-foreground flex flex-col gap-2",
-        className
-      )}
+      className={cn("bg-card text-card-foreground flex flex-col gap-2", className)}
       {...props}
     />
   );

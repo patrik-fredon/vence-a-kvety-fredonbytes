@@ -1,10 +1,6 @@
 import type { User } from "@supabase/supabase-js";
 import { supabase } from "@/lib/supabase/client";
-import {
-  type Address,
-  defaultUserPreferences,
-  type UserPreferences,
-} from "@/types/user";
+import { type Address, defaultUserPreferences, type UserPreferences } from "@/types/user";
 
 export interface AuthUser {
   id: string;
@@ -44,16 +40,17 @@ export interface UpdateProfileData {
 }
 
 export class AuthError extends Error {
-  constructor(message: string, public code?: string) {
+  constructor(
+    message: string,
+    public code?: string
+  ) {
     super(message);
     this.name = "AuthError";
   }
 }
 
 export const authUtils = {
-  async signUp(
-    data: SignUpData
-  ): Promise<{ user: User | null; error: string | null }> {
+  async signUp(data: SignUpData): Promise<{ user: User | null; error: string | null }> {
     try {
       const { data: authData, error } = await supabase.auth.signUp({
         email: data.email,
@@ -72,16 +69,14 @@ export const authUtils = {
 
       // Create user profile
       if (authData.user) {
-        const { error: profileError } = await supabase
-          .from("user_profiles")
-          .insert({
-            id: authData.user.id,
-            email: authData.user.email!,
-            name: data.name || null,
-            phone: data.phone || null,
-            addresses: [],
-            preferences: {},
-          });
+        const { error: profileError } = await supabase.from("user_profiles").insert({
+          id: authData.user.id,
+          email: authData.user.email!,
+          name: data.name || null,
+          phone: data.phone || null,
+          addresses: [],
+          preferences: {},
+        });
 
         if (profileError) {
           console.error("Profile creation error:", profileError);
@@ -94,9 +89,7 @@ export const authUtils = {
     }
   },
 
-  async signIn(
-    data: SignInData
-  ): Promise<{ user: User | null; error: string | null }> {
+  async signIn(data: SignInData): Promise<{ user: User | null; error: string | null }> {
     try {
       const { data: authData, error } = await supabase.auth.signInWithPassword({
         email: data.email,
@@ -125,9 +118,7 @@ export const authUtils = {
     }
   },
 
-  async resetPassword(
-    data: ResetPasswordData
-  ): Promise<{ error: string | null }> {
+  async resetPassword(data: ResetPasswordData): Promise<{ error: string | null }> {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(data.email, {
         redirectTo: `${window.location.origin}/auth/reset-password`,
@@ -143,9 +134,7 @@ export const authUtils = {
     }
   },
 
-  async updatePassword(
-    data: UpdatePasswordData
-  ): Promise<{ error: string | null }> {
+  async updatePassword(data: UpdatePasswordData): Promise<{ error: string | null }> {
     try {
       if (data.password !== data.confirmPassword) {
         return { error: "Passwords do not match" };
@@ -165,9 +154,7 @@ export const authUtils = {
     }
   },
 
-  async updateProfile(
-    data: UpdateProfileData
-  ): Promise<{ error: string | null }> {
+  async updateProfile(data: UpdateProfileData): Promise<{ error: string | null }> {
     try {
       const {
         data: { user },
@@ -246,9 +233,7 @@ export const authUtils = {
         name: profile?.name || user.user_metadata["name"] || null,
         phone: profile?.phone || user.user_metadata["phone"] || null,
         addresses: (profile?.addresses as unknown as Address[]) || [],
-        preferences:
-          (profile?.preferences as unknown as UserPreferences) ||
-          defaultUserPreferences,
+        preferences: (profile?.preferences as unknown as UserPreferences) || defaultUserPreferences,
       };
 
       return { user: authUser, error: null };

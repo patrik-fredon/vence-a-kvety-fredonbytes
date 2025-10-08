@@ -80,24 +80,15 @@ export function useWreathValidation({
 
   // Validate all wreath customizations
   const validateAll = useCallback((): WreathValidationResult => {
-    return validateWreathConfiguration(
-      customizations,
-      customizationOptions,
-      selectedSize,
-      {
-        locale,
-        ...options,
-      }
-    );
+    return validateWreathConfiguration(customizations, customizationOptions, selectedSize, {
+      locale,
+      ...options,
+    });
   }, [customizations, customizationOptions, selectedSize, locale, options]);
 
   // Validate size selection only
   const validateSize = useCallback(() => {
-    return validateWreathSizeSelection(
-      selectedSize,
-      wreathOptions.sizeOption,
-      locale
-    );
+    return validateWreathSizeSelection(selectedSize, wreathOptions.sizeOption, locale);
   }, [selectedSize, wreathOptions.sizeOption, locale]);
 
   // Validate ribbon dependencies only
@@ -159,10 +150,7 @@ export function useRealtimeWreathValidation({
 
     return {
       ...validation,
-      validateWithDelay: (
-        callback: (result: WreathValidationResult) => void,
-        delay = 300
-      ) => {
+      validateWithDelay: (callback: (result: WreathValidationResult) => void, delay = 300) => {
         clearTimeout(timeoutId);
         timeoutId = setTimeout(() => {
           callback(validation.validateAll());
@@ -342,10 +330,7 @@ export function useEnhancedWreathValidation({
   const applyFallback = useCallback(() => {
     if (enhancedResult.fallbackConfiguration) {
       // This would typically trigger a callback to update customizations
-      console.log(
-        "Applying fallback configuration:",
-        enhancedResult.fallbackConfiguration
-      );
+      console.log("Applying fallback configuration:", enhancedResult.fallbackConfiguration);
       setRecoveryAttempts(0);
     }
   }, [enhancedResult.fallbackConfiguration]);
@@ -367,15 +352,10 @@ export function useEnhancedWreathValidation({
 
   // Basic validation functions from original hook
   const validateAll = useCallback((): WreathValidationResult => {
-    return validateWreathConfiguration(
-      customizations,
-      customizationOptions,
-      selectedSize,
-      {
-        locale,
-        ...options,
-      }
-    );
+    return validateWreathConfiguration(customizations, customizationOptions, selectedSize, {
+      locale,
+      ...options,
+    });
   }, [customizations, customizationOptions, selectedSize, locale, options]);
 
   const validateSize = useCallback(() => {
@@ -416,9 +396,7 @@ export function useEnhancedWreathValidation({
     const ribbonOption = customizationOptions.find(
       (option) => option.type === "ribbon" || option.id === "ribbon"
     );
-    const ribbonCustomization = customizations.find(
-      (c) => c.optionId === ribbonOption?.id
-    );
+    const ribbonCustomization = customizations.find((c) => c.optionId === ribbonOption?.id);
     return ribbonCustomization?.choiceIds.includes("ribbon_yes");
   }, [customizations, customizationOptions]);
 
@@ -444,20 +422,14 @@ export function useEnhancedWreathValidation({
  */
 export function useValidationErrorHandler(locale: string = "cs") {
   const t = useTranslations("product.validation");
-  const [errorHistory, setErrorHistory] = useState<EnhancedValidationError[]>(
-    []
-  );
-  const [recoveryInProgress, setRecoveryInProgress] = useState<string | null>(
-    null
-  );
+  const [errorHistory, setErrorHistory] = useState<EnhancedValidationError[]>([]);
+  const [recoveryInProgress, setRecoveryInProgress] = useState<string | null>(null);
 
   // Format enhanced validation error with recovery options
   const formatEnhancedError = useCallback(
     (error: EnhancedValidationError) => {
       const messages =
-        WREATH_VALIDATION_MESSAGES[
-          locale as keyof typeof WREATH_VALIDATION_MESSAGES
-        ];
+        WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
 
       return {
         ...error,
@@ -466,12 +438,10 @@ export function useValidationErrorHandler(locale: string = "cs") {
           error.severity === ValidationErrorSeverity.ERROR
             ? messages.validationFailed
             : error.severity === ValidationErrorSeverity.WARNING
-            ? messages.customTextWarning
-            : messages.fallbackMessage,
+              ? messages.customTextWarning
+              : messages.fallbackMessage,
         canRetry: error.retryable && error.recoverable,
-        recoveryLabel: error.retryable
-          ? messages.tryAgain
-          : messages.contactSupport,
+        recoveryLabel: error.retryable ? messages.tryAgain : messages.contactSupport,
       };
     },
     [locale]
@@ -479,10 +449,7 @@ export function useValidationErrorHandler(locale: string = "cs") {
 
   // Handle error recovery with progress tracking
   const handleErrorRecovery = useCallback(
-    async (
-      error: EnhancedValidationError,
-      recoveryAction: () => Promise<void> | void
-    ) => {
+    async (error: EnhancedValidationError, recoveryAction: () => Promise<void> | void) => {
       setRecoveryInProgress(error.code);
       setErrorHistory((prev) => [...prev, error]);
 
@@ -495,9 +462,7 @@ export function useValidationErrorHandler(locale: string = "cs") {
         // Keep error in history but mark as failed recovery
         setErrorHistory((prev) =>
           prev.map((e) =>
-            e.code === error.code
-              ? { ...e, context: { ...e.context, recoveryFailed: true } }
-              : e
+            e.code === error.code ? { ...e, context: { ...e.context, recoveryFailed: true } } : e
           )
         );
       } finally {
@@ -511,9 +476,7 @@ export function useValidationErrorHandler(locale: string = "cs") {
   const getErrorMessage = useCallback(
     (error: string | EnhancedValidationError) => {
       const messages =
-        WREATH_VALIDATION_MESSAGES[
-          locale as keyof typeof WREATH_VALIDATION_MESSAGES
-        ];
+        WREATH_VALIDATION_MESSAGES[locale as keyof typeof WREATH_VALIDATION_MESSAGES];
 
       if (typeof error === "string") {
         return error;
@@ -533,9 +496,7 @@ export function useValidationErrorHandler(locale: string = "cs") {
   const isErrorRecoverable = useCallback(
     (error: EnhancedValidationError) => {
       return (
-        error.recoverable &&
-        !error.context?.["recoveryFailed"] &&
-        recoveryInProgress !== error.code
+        error.recoverable && !error.context?.["recoveryFailed"] && recoveryInProgress !== error.code
       );
     },
     [recoveryInProgress]

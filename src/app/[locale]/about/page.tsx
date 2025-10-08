@@ -23,8 +23,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
 
   // Generate structured data
   const organizationStructuredData = generateOrganizationStructuredData(locale);
-  const localBusinessStructuredData =
-    generateLocalBusinessStructuredData(locale);
+  const localBusinessStructuredData = generateLocalBusinessStructuredData(locale);
 
   return (
     <>
@@ -39,9 +38,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
               <h1 className="text-4xl md:text-5xl font-light mb-8 text-teal-800 leading-tight text-balance">
                 {tAbout("title")}
               </h1>
-              <p className="text-lg text-teal-800 leading-relaxed mb-8">
-                {tAbout("mission")}
-              </p>
+              <p className="text-lg text-teal-800 leading-relaxed mb-8">{tAbout("mission")}</p>
             </div>
           </div>
 
@@ -74,17 +71,11 @@ export default async function AboutPage({ params }: AboutPageProps) {
           {/* Story Content */}
           <div className="max-w-3xl mx-auto mb-16">
             <div className="prose prose-lg prose-stone mx-auto">
-              <p className="text-teal-800 leading-relaxed mb-6">
-                {tAbout("story")}
-              </p>
+              <p className="text-teal-800 leading-relaxed mb-6">{tAbout("story")}</p>
 
-              <p className="text-teal-800 leading-relaxed mb-6">
-                {tAbout("values")}
-              </p>
+              <p className="text-teal-800 leading-relaxed mb-6">{tAbout("values")}</p>
 
-              <p className="text-teal-800 leading-relaxed">
-                {tAbout("commitment")}
-              </p>
+              <p className="text-teal-800 leading-relaxed">{tAbout("commitment")}</p>
             </div>
           </div>
 
@@ -118,9 +109,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   <h2 className="text-lg font-medium mb-2 text-amber-300">
                     {tAbout("valuesTitle")}
                   </h2>
-                  <p className="text-sm text-amber-200">
-                    {tAbout("valuesDescription")}
-                  </p>
+                  <p className="text-sm text-amber-200">{tAbout("valuesDescription")}</p>
                 </div>
               </div>
             </div>
@@ -153,9 +142,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   <h2 className="text-lg font-medium mb-2 text-amber-200">
                     {tAbout("storyTitle")}
                   </h2>
-                  <p className="text-sm text-amber-100">
-                    {tAbout("storyDescription")}
-                  </p>
+                  <p className="text-sm text-amber-100">{tAbout("storyDescription")}</p>
                 </div>
               </div>
             </div>
@@ -188,9 +175,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
                   <h2 className="text-lg font-medium mb-2  text-amber-200">
                     {tAbout("commitmentTitle")}
                   </h2>
-                  <p className="text-sm text-amber-100">
-                    {tAbout("commitmentDescription")}
-                  </p>
+                  <p className="text-sm text-amber-100">{tAbout("commitmentDescription")}</p>
                 </div>
               </div>
             </div>

@@ -10,11 +10,7 @@ export async function GET() {
   try {
     // Check database connectivity
     const supabase = createClient();
-    const { error: dbError } = await supabase
-      .from("categories")
-      .select("count")
-      .limit(1)
-      .single();
+    const { error: dbError } = await supabase.from("categories").select("count").limit(1).single();
 
     if (dbError) {
       throw new Error(`Database check failed: ${dbError.message}`);
@@ -43,9 +39,7 @@ export async function GET() {
       "NEXTAUTH_URL",
     ];
 
-    const missingEnvVars = requiredEnvVars.filter(
-      (varName) => !process.env[varName]
-    );
+    const missingEnvVars = requiredEnvVars.filter((varName) => !process.env[varName]);
 
     const responseTime = Date.now() - startTime;
 

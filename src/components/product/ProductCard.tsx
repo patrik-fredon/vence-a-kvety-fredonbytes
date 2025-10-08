@@ -3,7 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
-import { useCallback, useState } from "react";
+import { memo, useCallback, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { cn } from "@/lib/utils";
 import type { Product } from "@/types/product";
@@ -32,7 +32,7 @@ interface ActionConfig {
   size?: "sm" | "default" | "lg";
 }
 
-export function ProductCard({
+const ProductCardComponent = function ProductCard({
   product,
   locale,
   variant = "grid",
@@ -151,19 +151,22 @@ export function ProductCard({
       case "grid":
         return cn(
           baseStyles,
-          "overflow-hidden hover:shadow-xl hover:-translate-y-1 clip-corners",
-          "h-80" // Increased height as per requirements
+          "overflow-hidden shadow-xl hover:-translate-y-1 clip-corners",
+          "h-100 w-full" // Increased height as per requirements
         );
 
       case "teaser":
         return cn(
           baseStyles,
-          "rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-1",
-          "h-80" // Slightly smaller than grid
+          "rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-1 clip-corners",
+          "h-auto w-full" // Slightly smaller than grid
         );
 
       case "list":
-        return cn(baseStyles, "rounded-lg flex flex-row items-center gap-4 p-4 hover:shadow-lg");
+        return cn(
+          baseStyles,
+          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-64 sm:h-72 md:h-80 corner-clip-container"
+        );
 
       default:
         return baseStyles;
@@ -174,13 +177,13 @@ export function ProductCard({
     switch (variant) {
       case "grid":
       case "teaser":
-        return "relative aspect-square bg-amber-100 overflow-hidden";
+        return "relative aspect-square  overflow-hidden corner-clip-container";
 
       case "list":
-        return "relative overflow-hidden bg-amber-100 w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md";
+        return "relative overflow-hidden  w-1/2 h-full flex-shrink-0 corner-clip-container";
 
       default:
-        return "relative aspect-square bg-amber-100 overflow-hidden";
+        return "relative aspect-square  overflow-hidden corner-clip-container";
     }
   };
 
@@ -193,7 +196,7 @@ export function ProductCard({
         return "p-6";
 
       case "list":
-        return "flex-1 min-w-0";
+        return "w-1/2 p-4 sm:p-6 flex flex-col justify-between";
 
       default:
         return "p-4";
@@ -203,7 +206,7 @@ export function ProductCard({
   // Render product image
   const renderImage = () => (
     <div className={getImageContainerStyles()}>
-      {primaryImage && primaryImage.url && (
+      {primaryImage?.url && (
         <>
           <Image
             src={primaryImage.url}
@@ -211,7 +214,7 @@ export function ProductCard({
             fill
             sizes={
               variant === "list"
-                ? "96px"
+                ? "(max-width: 640px) 128px, (max-width: 768px) 160px, 192px"
                 : "(max-width: 640px) 100vw, (max-width: 1024px) 50vw, (max-width: 1280px) 33vw, (max-width: 1536px) 25vw, 20vw"
             }
             className={cn(
@@ -221,6 +224,7 @@ export function ProductCard({
             )}
             onLoad={() => setImageLoading(false)}
             priority={featured}
+            loading={featured ? undefined : "lazy"}
           />
 
           {/* Secondary image on hover for grid/teaser variants */}
@@ -240,34 +244,9 @@ export function ProductCard({
         </>
       )}
 
-      {/* Featured Badge */}
-      {featured && (
-        <div className="absolute top-3 left-3 z-10">
-          <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-200 shadow-sm">
-            {t("featured")}
-          </span>
-        </div>
-      )}
-
-      {/* Customization indicator for teaser variant */}
-      {variant === "teaser" && primaryAction.type === "customize" && (
-        <div className="absolute top-3 right-3 bg-amber-800 text-white px-2 py-1 rounded-full text-xs font-medium">
-          {locale === "cs" ? "Přizpůsobitelné" : "Customizable"}
-        </div>
-      )}
-
-      {/* Stock Status Overlay */}
-      {!product.availability.inStock && (
-        <div className="absolute inset-0 bg-black/50 flex items-center justify-center z-10">
-          <span className="text-white font-medium px-3 py-2 bg-red-600 rounded-full text-sm shadow-lg">
-            {t("outOfStock")}
-          </span>
-        </div>
-      )}
-
       {/* No Image Placeholder */}
       {!primaryImage && (
-        <div className="absolute inset-0 bg-amber-100 flex items-center justify-center">
+        <div className="absolute inset-0  flex items-center justify-center">
           <svg
             className="w-16 h-16 text-amber-300"
             fill="none"
@@ -293,10 +272,11 @@ export function ProductCard({
     <h3
       id={`product-${product.id}-title`}
       className={cn(
-        "font-semibold text-teal-800 transition-colors",
-        variant === "grid" && "text-sm sm:text-base mb-2 line-clamp-2 leading-tight",
+        "font-bold text-teal-800 transition-colors",
+        variant === "grid" && "text-sm sm:text-xl mb-2 line-clamp-2 leading-tight",
         variant === "teaser" && "text-xl mb-2 line-clamp-2 min-h-[3.5rem]",
-        variant === "list" && "text-sm sm:text-base mb-1 truncate group-hover:text-teal-800"
+        variant === "list" &&
+          "text-base sm:text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-teal-800"
       )}
     >
       {productName}
@@ -308,7 +288,7 @@ export function ProductCard({
     if (variant !== "list" || !product.category) return null;
 
     return (
-      <p className="text-teal-800 mb-1 text-xs">
+      <p className="text-teal-800 mb-1 text-xl font-bold">
         {product.category.name[locale as keyof typeof product.category.name]}
       </p>
     );
@@ -321,16 +301,16 @@ export function ProductCard({
         "flex items-center gap-2",
         variant === "grid" && "justify-between",
         variant === "teaser" && "mb-4",
-        variant === "list" && "mb-2"
+        variant === "list" && "mb-3"
       )}
     >
       <div className="flex items-center gap-2">
         <span
           className={cn(
             "font-semibold text-teal-800",
-            variant === "grid" && "text-lg",
+            variant === "grid" && "text-xl",
             variant === "teaser" && "text-2xl",
-            variant === "list" && "text-sm sm:text-base"
+            variant === "list" && "text-lg sm:text-xl"
           )}
         >
           {formatPrice(product.basePrice)}
@@ -345,12 +325,12 @@ export function ProductCard({
         )}
       </div>
 
-      {/* Quick View Button for grid variant */}
+      {/* Quick View Button for grid variant only */}
       {variant === "grid" && onQuickView && (
         <Button
           size="sm"
           variant="outline"
-          className="bg-amber-100/80 hover:bg-amber-200/80 text-teal-800 min-w-8 h-8 p-0"
+          className="bg-teal-800 hover:bg-amber-200/80 text-amber-300 min-w-8 h-8 p-0"
           onClick={handleQuickView}
           aria-label={t("quickView")}
         >
@@ -377,40 +357,6 @@ export function ProductCard({
           </svg>
         </Button>
       )}
-
-    </div>
-
-  );
-
-  // Render availability status
-  const renderAvailability = () => (
-    <div
-      className={cn(
-        "flex items-center gap-1.5",
-        variant === "grid" && "mt-2",
-        variant === "teaser" && "mb-4",
-        variant === "list" && "mb-2"
-      )}
-    >
-      <div
-        className={cn(
-          "w-2 h-2 rounded-full",
-          product.availability.inStock ? "bg-green-500" : "bg-red-500"
-        )}
-      />
-      <output
-        className={cn(
-          "text-xs font-medium",
-          product.availability.inStock ? "text-green-700" : "text-red-700"
-        )}
-        aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")}`}
-      >
-        {product.availability.inStock
-          ? product.availability.stockQuantity && product.availability.stockQuantity <= 5
-            ? t("limitedStock")
-            : t("inStock")
-          : t("outOfStock")}
-      </output>
     </div>
   );
 
@@ -419,8 +365,8 @@ export function ProductCard({
     disabled: !product.availability.inStock || loading,
     loading,
     className: variant === "teaser" ? "w-full" : "",
-    variant: primaryAction.variant,
-    size: variant === "list" ? "sm" : "default",
+    variant: primaryAction.variant || "default",
+    size: variant === "list" ? ("sm" as const) : ("default" as const),
     icon: primaryAction.icon,
     iconPosition: "left" as const,
   });
@@ -448,8 +394,41 @@ export function ProductCard({
     if (variant !== "teaser" && variant !== "list") return null;
 
     return (
-      <div className={variant === "list" ? "flex-shrink-0" : ""}>
+      <div className={variant === "list" ? "flex gap-2" : ""}>
         {primaryAction.type === "customize" ? renderCustomizeButton() : renderAddToCartButton()}
+        {/* Quick View Button for list variant */}
+        {variant === "list" && onQuickView && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="bg-teal-800 hover:bg-amber-100 text-amber-100 flex-1"
+            onClick={handleQuickView}
+            aria-label={t("quickView")}
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Quick View Icon</title>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+            {t("quickView")}
+          </Button>
+        )}
       </div>
     );
   };
@@ -458,7 +437,7 @@ export function ProductCard({
   const renderContent = () => {
     const contentContainer =
       variant === "grid"
-        ? "bg-funeral-gold backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-amber-300"
+        ? "bg-amber-200/50 backdrop-blur-sm rounded-xl p-4 mx-2 shadow-lg border border-amber-300"
         : "";
 
     return (
@@ -467,7 +446,6 @@ export function ProductCard({
           {renderProductName()}
           {renderCategory()}
           {renderPrice()}
-          {renderAvailability()}
           {renderActionButton()}
           {children}
         </div>
@@ -484,13 +462,137 @@ export function ProductCard({
         onMouseLeave={() => setIsHovered(false)}
         aria-labelledby={`product-${product.id}-title`}
       >
-        <Link
-          href={`/${locale}/products/${product.slug}`}
-          className="flex-1 flex items-center gap-4"
-        >
-          {renderImage()}
-          {renderContent()}
-        </Link>
+        {/* Image - Left Half - Full Height */}
+        <div className="relative w-1/2 h-full flex-shrink-0 overflow-hidden">
+          {primaryImage?.url && (
+            <Image
+              src={primaryImage.url}
+              alt={primaryImage.alt || productName}
+              fill
+              sizes="(max-width: 768px) 50vw, 384px"
+              className="object-cover"
+              onLoad={() => setImageLoading(false)}
+              priority={featured}
+              loading={featured ? undefined : "lazy"}
+            />
+          )}
+          {!primaryImage && (
+            <div className="absolute inset-0 bg-amber-100 flex items-center justify-center">
+              <svg
+                className="w-16 h-16 text-amber-300"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <title>No Image Available</title>
+                <path
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                  strokeWidth={2}
+                  d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
+                />
+              </svg>
+            </div>
+          )}
+        </div>
+
+        {/* Content - Right Half - Clean Modern Layout */}
+        <div className="w-1/2 p-4 sm:p-6 flex flex-col relative">
+          {/* Top Section: Name and Stock Badge */}
+          <div className="flex-1 ">
+            <div className="flex  mb-3">
+              {/* Product Name - Large */}
+              <h3
+                id={`product-${product.id}-title`}
+                className="text-xl sm:text-2xl md:text-3xl font-bold text-teal-800 line-clamp-2 flex-1"
+              >
+                {productName}
+              </h3>
+            </div>
+
+            {/* Category */}
+            {product.category && (
+              <p className="text-sm text-teal-700 mb-3 ">
+                {product.category.name[locale as keyof typeof product.category.name]}
+              </p>
+            )}
+          </div>
+          {/* Price - Right Aligned, Smaller */}
+          <div className="flex justify-end mb-4">
+            <div className="text-right">
+              <div className="flex items-center gap-2 justify-end">
+                <span className="text-2xl sm:text-3xl font-bold text-teal-800">
+                  {formatPrice(product.finalPrice || product.basePrice)}
+                </span>
+              </div>
+              {product.finalPrice && product.finalPrice < product.basePrice && (
+                <span className="text-sm text-teal-600 line-through">
+                  {formatPrice(product.basePrice)}
+                </span>
+              )}
+            </div>
+          </div>
+
+          {/* Bottom Section: Action Buttons - Same Height, Centered */}
+          <div className="flex gap-3 mt-auto">
+            {/* Customize/Add to Cart Button */}
+            {primaryAction.type === "customize" ? (
+              <Link href={`/${locale}/products/${product.slug}`} className="flex-1">
+                <Button
+                  disabled={!product.availability.inStock || loading}
+                  loading={loading}
+                  className="w-full h-12 text-base font-semibold"
+                  variant="default"
+                >
+                  {primaryAction.text}
+                </Button>
+              </Link>
+            ) : (
+              <Button
+                disabled={!product.availability.inStock || loading}
+                loading={loading}
+                className="flex-1 h-12 text-base font-semibold"
+                variant="default"
+                onClick={() => handleAction(primaryAction.type)}
+              >
+                {product.availability.inStock ? primaryAction.text : t("outOfStock")}
+              </Button>
+            )}
+
+            {/* Quick View Button - Same Height */}
+            {onQuickView && (
+              <Button
+                variant="outline"
+                className="flex h-auto text-xl font-semibold bg-teal-800 hover:bg-teal-800/60 text-amber-200 border-amber-300"
+                onClick={handleQuickView}
+                aria-label={t("quickView")}
+              >
+                <svg
+                  className="w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                  aria-hidden="true"
+                >
+                  <title>Quick View Icon</title>
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+                  />
+                </svg>
+              </Button>
+            )}
+          </div>
+        </div>
       </article>
     );
   }
@@ -509,7 +611,7 @@ export function ProductCard({
           {renderContent()}
           {/* Hover Overlay */}
           {isHovered && (
-            <div className="absolute inset-0 bg-black/10 transition-opacity duration-300 pointer-events-none z-10" />
+            <div className="absolute inset-0 transition-opacity duration-300 pointer-events-none z-10" />
           )}
         </Link>
       ) : (
@@ -522,4 +624,8 @@ export function ProductCard({
       )}
     </article>
   );
-}
+};
+
+// Memoize component for performance optimization
+export const ProductCard = memo(ProductCardComponent);
+ProductCard.displayName = "ProductCard";

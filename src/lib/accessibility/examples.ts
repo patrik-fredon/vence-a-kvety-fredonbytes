@@ -74,9 +74,7 @@ export function example7_TestSpecificContainer(containerId: string) {
  * Example 8: Continuous monitoring
  */
 export function example8_ContinuousMonitoring(intervalMs: number = 30000) {
-  console.log(
-    `Example 8: Starting continuous monitoring (every ${intervalMs}ms)...\n`
-  );
+  console.log(`Example 8: Starting continuous monitoring (every ${intervalMs}ms)...\n`);
   console.warn("Accessibility test runner not yet implemented");
 
   // Return cleanup function
@@ -122,9 +120,7 @@ export function example10_CustomValidation() {
     const tabIndex = htmlButton.getAttribute("tabindex");
 
     if (!isDisabled && tabIndex === "-1") {
-      issues.push(
-        `Button ${buttonIndex + 1} is not keyboard accessible (tabindex="-1")`
-      );
+      issues.push(`Button ${buttonIndex + 1} is not keyboard accessible (tabindex="-1")`);
     }
   });
 

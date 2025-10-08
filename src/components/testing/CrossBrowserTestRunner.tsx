@@ -76,9 +76,7 @@ export function CrossBrowserTestRunner() {
     <div className="max-w-4xl mx-auto p-6 space-y-6">
       {/* Browser Information */}
       <div className="bg-white rounded-lg shadow-md p-6 border-2 border-teal-800">
-        <h2 className="text-2xl font-bold text-teal-800 mb-4">
-          Browser Information
-        </h2>
+        <h2 className="text-2xl font-bold text-teal-800 mb-4">Browser Information</h2>
         <div className="grid grid-cols-2 gap-4 text-sm">
           <div>
             <span className="font-semibold text-stone-700">Browser:</span>
@@ -94,41 +92,29 @@ export function CrossBrowserTestRunner() {
           </div>
           <div>
             <span className="font-semibold text-stone-700">Mobile:</span>
-            <span className="ml-2 text-stone-900">
-              {browserInfo.isMobile ? "Yes" : "No"}
-            </span>
+            <span className="ml-2 text-stone-900">{browserInfo.isMobile ? "Yes" : "No"}</span>
           </div>
           <div>
             <span className="font-semibold text-stone-700">WebP Support:</span>
-            <span className="ml-2 text-stone-900">
-              {browserInfo.supportsWebP ? "✅" : "❌"}
-            </span>
+            <span className="ml-2 text-stone-900">{browserInfo.supportsWebP ? "✅" : "❌"}</span>
           </div>
           <div>
             <span className="font-semibold text-stone-700">AVIF Support:</span>
-            <span className="ml-2 text-stone-900">
-              {browserInfo.supportsAVIF ? "✅" : "❌"}
-            </span>
+            <span className="ml-2 text-stone-900">{browserInfo.supportsAVIF ? "✅" : "❌"}</span>
           </div>
           <div>
             <span className="font-semibold text-stone-700">CSS Grid:</span>
-            <span className="ml-2 text-stone-900">
-              {browserInfo.supportsGrid ? "✅" : "❌"}
-            </span>
+            <span className="ml-2 text-stone-900">{browserInfo.supportsGrid ? "✅" : "❌"}</span>
           </div>
           <div>
             <span className="font-semibold text-stone-700">Flexbox:</span>
-            <span className="ml-2 text-stone-900">
-              {browserInfo.supportsFlexbox ? "✅" : "❌"}
-            </span>
+            <span className="ml-2 text-stone-900">{browserInfo.supportsFlexbox ? "✅" : "❌"}</span>
           </div>
         </div>
 
         {recommendations.length > 0 && (
           <div className="mt-4 p-4 bg-amber-50 rounded-md border border-amber-200">
-            <h3 className="font-semibold text-amber-900 mb-2">
-              Recommendations
-            </h3>
+            <h3 className="font-semibold text-amber-900 mb-2">Recommendations</h3>
             <ul className="text-sm text-amber-800 space-y-1">
               {recommendations.map((rec, idx) => (
                 <li key={idx}>{rec}</li>
@@ -142,8 +128,8 @@ export function CrossBrowserTestRunner() {
       <div className="bg-white rounded-lg shadow-md p-6 border-2 border-teal-800">
         <h2 className="text-2xl font-bold text-teal-800 mb-4">Run Tests</h2>
         <p className="text-stone-600 mb-4">
-          Click the button below to run cross-browser compatibility tests. This
-          will check functionality, visual consistency, and responsive behavior.
+          Click the button below to run cross-browser compatibility tests. This will check
+          functionality, visual consistency, and responsive behavior.
         </p>
         <button
           onClick={runTests}
@@ -177,15 +163,11 @@ export function CrossBrowserTestRunner() {
                 <div className="text-sm text-stone-600">Pass Rate</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-green-600">
-                  {testSuite.passedTests}
-                </div>
+                <div className="text-3xl font-bold text-green-600">{testSuite.passedTests}</div>
                 <div className="text-sm text-stone-600">Passed</div>
               </div>
               <div>
-                <div className="text-3xl font-bold text-red-600">
-                  {testSuite.failedTests}
-                </div>
+                <div className="text-3xl font-bold text-red-600">{testSuite.failedTests}</div>
                 <div className="text-sm text-stone-600">Failed</div>
               </div>
             </div>
@@ -193,9 +175,7 @@ export function CrossBrowserTestRunner() {
 
           {/* Test Categories */}
           {["functionality", "visual", "responsive"].map((category) => {
-            const categoryTests = testSuite.tests.filter(
-              (t) => t.category === category
-            );
+            const categoryTests = testSuite.tests.filter((t) => t.category === category);
             const passed = categoryTests.filter((t) => t.passed).length;
             const total = categoryTests.length;
             const rate = total > 0 ? (passed / total) * 100 : 0;
@@ -213,23 +193,15 @@ export function CrossBrowserTestRunner() {
                     <div
                       key={idx}
                       className={`p-3 rounded-lg border ${
-                        test.passed
-                          ? "bg-green-50 border-green-200"
-                          : "bg-red-50 border-red-200"
+                        test.passed ? "bg-green-50 border-green-200" : "bg-red-50 border-red-200"
                       }`}
                     >
                       <div className="flex items-start">
-                        <span className="text-xl mr-2">
-                          {test.passed ? "✅" : "❌"}
-                        </span>
+                        <span className="text-xl mr-2">{test.passed ? "✅" : "❌"}</span>
                         <div className="flex-1">
-                          <div className="font-medium text-stone-900">
-                            {test.testName}
-                          </div>
+                          <div className="font-medium text-stone-900">{test.testName}</div>
                           {!test.passed && (
-                            <div className="text-sm text-red-700 mt-1">
-                              {test.details}
-                            </div>
+                            <div className="text-sm text-red-700 mt-1">{test.details}</div>
                           )}
                         </div>
                       </div>

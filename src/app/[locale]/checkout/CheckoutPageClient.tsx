@@ -58,7 +58,7 @@ export function CheckoutPageClient({ locale }: CheckoutPageClientProps) {
   const handleBackToCart = () => {
     router.push(`/${locale}/cart`);
   };
-// TODO translation next-intl
+  // TODO translation next-intl
   if (isLoading) {
     return (
       <div className="min-h-screen bg-funeral-gold flex items-center justify-center">
