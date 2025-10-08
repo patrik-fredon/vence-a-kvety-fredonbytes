@@ -349,7 +349,7 @@ export function generateEnhancedMetaTags(params: {
     // Additional meta tags
     "theme-color": "#1f2937",
     "msapplication-TileColor": "#1f2937",
-    "apple-mobile-web-app-capable": "yes",
+    "mobile-web-app-capable": "yes",
     "apple-mobile-web-app-status-bar-style": "default",
     "format-detection": "telephone=no",
   };
