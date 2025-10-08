@@ -43,10 +43,19 @@ export function PaymentFormClient({
     setInitializationError(null);
 
     try {
+      // Get CSRF token
+      const { clientCSRFUtils } = await import("@/lib/security/csrf");
+      const csrfToken = await clientCSRFUtils.getToken();
+
+      if (!csrfToken) {
+        throw new Error("Failed to get CSRF token");
+      }
+
       const response = await fetch("/api/payments/initialize", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          "X-CSRF-Token": csrfToken,
         },
         body: JSON.stringify({
           orderId,

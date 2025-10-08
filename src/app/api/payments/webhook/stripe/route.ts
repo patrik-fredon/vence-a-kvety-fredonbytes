@@ -9,6 +9,29 @@ import { createServerClient } from "@/lib/supabase/server";
 
 export async function POST(request: NextRequest) {
   try {
+    // Apply rate limiting for webhook endpoint
+    const { rateLimit } = await import("@/lib/utils/rate-limit");
+    const rateLimitResult = await rateLimit(request, "payment-webhook");
+
+    if (!rateLimitResult.success) {
+      console.warn("[Webhook] Rate limit exceeded");
+      return NextResponse.json(
+        {
+          error: "Too many webhook requests. Please try again later.",
+          retryAfter: rateLimitResult.reset,
+        },
+        {
+          status: 429,
+          headers: {
+            "Retry-After": Math.round((rateLimitResult.reset.getTime() - Date.now()) / 1000).toString(),
+            "X-RateLimit-Limit": rateLimitResult.limit.toString(),
+            "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
+            "X-RateLimit-Reset": rateLimitResult.reset.toISOString(),
+          },
+        }
+      );
+    }
+
     const body = await request.text();
     const headersList = await headers();
     const signature = headersList.get("stripe-signature");
