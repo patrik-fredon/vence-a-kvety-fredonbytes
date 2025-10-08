@@ -288,13 +288,14 @@ export function ProductCard({
         aria-labelledby={`product-${product.id}-title`}
       >
         {/* Image Layer (z-0) - Fills container with absolute positioning */}
-        <div className="absolute inset-0 z-0 ">
+        <div className="absolute inset-0 z-0 w-full h-full">
           <ProductImageHover
             primaryImage={displayPrimaryImage}
             secondaryImage={secondaryImage}
             productName={product.name[locale as keyof typeof product.name]}
             locale={locale}
             fill
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             onClick={handleImageClick}
             priority={featured}
             isAboveFold={featured}
