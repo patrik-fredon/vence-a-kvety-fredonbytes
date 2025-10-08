@@ -1,7 +1,9 @@
 "use client";
 
+import { useState } from "react";
 import { useCart } from "@/lib/cart/context";
 import type { Category, Product } from "@/types/product";
+import { LazyProductQuickView } from "./LazyProductQuickView";
 import { ProductComponentErrorBoundary } from "./ProductComponentErrorBoundary";
 import { ProductGrid } from "./ProductGrid";
 
@@ -19,6 +21,7 @@ export function ProductGridWithCart({
   className,
 }: ProductGridWithCartProps) {
   const { addToCart } = useCart();
+  const [quickViewProduct, setQuickViewProduct] = useState<Product | null>(null);
 
   const handleAddToCart = (product: Product) => {
     console.log("🛒 [ProductGridWithCart] Adding product to cart:", product.id);
@@ -51,6 +54,16 @@ export function ProductGridWithCart({
       });
   };
 
+  const handleQuickView = (product: Product) => {
+    console.log("👁️ [ProductGridWithCart] Opening quick view for product:", product.id);
+    setQuickViewProduct(product);
+  };
+
+  const handleCloseQuickView = () => {
+    console.log("❌ [ProductGridWithCart] Closing quick view");
+    setQuickViewProduct(null);
+  };
+
   return (
     <ProductComponentErrorBoundary
       componentName="ProductGridWithCart"
@@ -72,7 +85,19 @@ export function ProductGridWithCart({
         locale={locale}
         {...(className && { className })}
         onAddToCart={handleAddToCart}
+        onQuickView={handleQuickView}
       />
+
+      {/* Quick View Modal */}
+      {quickViewProduct && (
+        <LazyProductQuickView
+          product={quickViewProduct}
+          locale={locale}
+          isOpen={!!quickViewProduct}
+          onClose={handleCloseQuickView}
+          onAddToCart={handleAddToCart}
+        />
+      )}
     </ProductComponentErrorBoundary>
   );
 }

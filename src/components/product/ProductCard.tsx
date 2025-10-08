@@ -165,7 +165,7 @@ const ProductCardComponent = function ProductCard({
       case "list":
         return cn(
           baseStyles,
-          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-48 sm:h-56"
+          "rounded-lg flex flex-row items-stretch overflow-hidden hover:shadow-lg h-56 sm:h-64 md:h-72"
         );
 
       default:
@@ -180,7 +180,7 @@ const ProductCardComponent = function ProductCard({
         return "relative aspect-square bg-amber-100 overflow-hidden";
 
       case "list":
-        return "relative overflow-hidden bg-amber-100 w-32 sm:w-40 md:w-48 h-full flex-shrink-0 rounded-l-lg";
+        return "relative overflow-hidden bg-amber-100 w-1/2 h-full flex-shrink-0";
 
       default:
         return "relative aspect-square bg-amber-100 overflow-hidden";
@@ -196,7 +196,7 @@ const ProductCardComponent = function ProductCard({
         return "p-6";
 
       case "list":
-        return "flex-1 min-w-0 p-4 flex flex-col justify-between";
+        return "w-1/2 p-4 sm:p-6 flex flex-col justify-between";
 
       default:
         return "p-4";
@@ -300,7 +300,7 @@ const ProductCardComponent = function ProductCard({
         "font-semibold text-teal-800 transition-colors",
         variant === "grid" && "text-sm sm:text-base mb-2 line-clamp-2 leading-tight",
         variant === "teaser" && "text-xl mb-2 line-clamp-2 min-h-[3.5rem]",
-        variant === "list" && "text-sm sm:text-base mb-1 truncate group-hover:text-teal-800"
+        variant === "list" && "text-base sm:text-lg md:text-xl mb-2 line-clamp-2 group-hover:text-teal-800"
       )}
     >
       {productName}
@@ -325,7 +325,7 @@ const ProductCardComponent = function ProductCard({
         "flex items-center gap-2",
         variant === "grid" && "justify-between",
         variant === "teaser" && "mb-4",
-        variant === "list" && "mb-2"
+        variant === "list" && "mb-3"
       )}
     >
       <div className="flex items-center gap-2">
@@ -334,7 +334,7 @@ const ProductCardComponent = function ProductCard({
             "font-semibold text-teal-800",
             variant === "grid" && "text-lg",
             variant === "teaser" && "text-2xl",
-            variant === "list" && "text-sm sm:text-base"
+            variant === "list" && "text-lg sm:text-xl"
           )}
         >
           {formatPrice(product.basePrice)}
@@ -349,12 +349,12 @@ const ProductCardComponent = function ProductCard({
         )}
       </div>
 
-      {/* Quick View Button for grid and list variants */}
-      {(variant === "grid" || variant === "list") && onQuickView && (
+      {/* Quick View Button for grid variant only */}
+      {variant === "grid" && onQuickView && (
         <Button
           size="sm"
           variant="outline"
-          className="bg-amber-100/80 hover:bg-amber-200/80 text-teal-800 min-w-8 h-8 p-0"
+          className="bg-amber-100 hover:bg-amber-200/80 text-teal-800 min-w-8 h-8 p-0"
           onClick={handleQuickView}
           aria-label={t("quickView")}
         >
@@ -421,8 +421,8 @@ const ProductCardComponent = function ProductCard({
     disabled: !product.availability.inStock || loading,
     loading,
     className: variant === "teaser" ? "w-full" : "",
-    variant: primaryAction.variant,
-    size: variant === "list" ? "sm" : "default",
+    variant: primaryAction.variant || "default",
+    size: variant === "list" ? ("sm" as const) : ("default" as const),
     icon: primaryAction.icon,
     iconPosition: "left" as const,
   });
@@ -450,8 +450,41 @@ const ProductCardComponent = function ProductCard({
     if (variant !== "teaser" && variant !== "list") return null;
 
     return (
-      <div className={variant === "list" ? "flex-shrink-0" : ""}>
+      <div className={variant === "list" ? "flex gap-2" : ""}>
         {primaryAction.type === "customize" ? renderCustomizeButton() : renderAddToCartButton()}
+        {/* Quick View Button for list variant */}
+        {variant === "list" && onQuickView && (
+          <Button
+            size="sm"
+            variant="outline"
+            className="bg-amber-100 hover:bg-amber-200 text-teal-800 flex-1"
+            onClick={handleQuickView}
+            aria-label={t("quickView")}
+          >
+            <svg
+              className="w-4 h-4 mr-2"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+              aria-hidden="true"
+            >
+              <title>Quick View Icon</title>
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"
+              />
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z"
+              />
+            </svg>
+            {t("quickView")}
+          </Button>
+        )}
       </div>
     );
   };
@@ -486,12 +519,12 @@ const ProductCardComponent = function ProductCard({
         onMouseLeave={() => setIsHovered(false)}
         aria-labelledby={`product-${product.id}-title`}
       >
-        <Link
-          href={`/${locale}/products/${product.slug}`}
-          className="relative overflow-hidden bg-amber-100 w-32 sm:w-40 md:w-48 h-full flex-shrink-0 rounded-l-lg"
-        >
+        {/* Image - Left Half */}
+        <div className={getImageContainerStyles()}>
           {renderImage()}
-        </Link>
+        </div>
+        
+        {/* Content - Right Half */}
         {renderContent()}
       </article>
     );

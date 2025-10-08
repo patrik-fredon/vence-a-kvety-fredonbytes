@@ -52,44 +52,44 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
 
   const variants = {
     default: cn(
-      "bg-amber-900 text-white hover:bg-amber-800 active:bg-amber-700",
+      "bg-amber-300 text-teal-900 hover:bg-teal-800 active:bg-teal-800",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-amber-950/20",
+      "focus-visible:ring-amber-300",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     destructive: cn(
       "bg-error-600 text-white hover:bg-error-700 active:bg-error-800",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-error-500/20",
+      "focus-visible:ring-amber-300",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     outline: cn(
-      "border border-amber-300 text-amber-700 bg-funeral-gold",
+      "border border-amber-300 text-amber-300 bg-funeral-gold",
       "hover:bg-amber-50 active:bg-amber-100",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-amber-950/20",
+      "focus-visible:ring-amber-300",
       "high-contrast:border-ButtonText high-contrast:text-ButtonText",
       "high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     secondary: cn(
-      "bg-amber-100 text-amber-900 hover:bg-amber-200 active:bg-amber-300",
+      "bg-amber-100 text-amber-300 hover:bg-amber-200 active:bg-amber-300",
       "shadow-sm hover:shadow-md transition-all duration-200",
-      "focus-visible:ring-amber-950/20",
+      "focus-visible:ring-amber-300",
       "high-contrast:bg-ButtonText high-contrast:text-ButtonFace",
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     ghost: cn(
-      "text-amber-700 bg-transparent hover:bg-amber-100 active:bg-amber-200",
+      "text-amber-100 bg-amber-100 hover:bg-amber-100 active:bg-amber-300",
       "transition-all duration-200",
-      "focus-visible:ring-amber-950/20",
+      "focus-visiblering-amber-300",
       "high-contrast:text-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     link: cn(
-      "text-amber-900 bg-transparent hover:text-amber-600 active:text-amber-700",
+      "text-amber-100 bg-transparent hover:text-amber-300 active:text-amber-300",
       "underline-offset-4 hover:underline transition-all duration-200",
-      "focus-visible:ring-amber-950/20",
+      "focus-visible:ring-amber-300",
       "high-contrast:text-ButtonText high-contrast:hover:text-Highlight"
     ),
   };
