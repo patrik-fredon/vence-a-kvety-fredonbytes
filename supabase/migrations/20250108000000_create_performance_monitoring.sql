@@ -1,5 +1,6 @@
 -- Create performance monitoring tables
 -- Requirements: 7.1, 7.2
+-- Note: payment_errors table moved to separate migration (20250108000003)
 
 -- Core Web Vitals metrics table
 CREATE TABLE IF NOT EXISTS web_vitals_metrics (
@@ -20,31 +21,6 @@ CREATE INDEX IF NOT EXISTS idx_web_vitals_created_at ON web_vitals_metrics(creat
 CREATE INDEX IF NOT EXISTS idx_web_vitals_metric_name ON web_vitals_metrics(metric_name);
 CREATE INDEX IF NOT EXISTS idx_web_vitals_rating ON web_vitals_metrics(rating);
 CREATE INDEX IF NOT EXISTS idx_web_vitals_url ON web_vitals_metrics(url);
-
--- Payment error monitoring table
-CREATE TABLE IF NOT EXISTS payment_errors (
-  id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-  order_id TEXT,
-  payment_intent_id TEXT,
-  error_type TEXT NOT NULL,
-  error_code TEXT,
-  error_message TEXT NOT NULL,
-  sanitized_message TEXT,
-  amount DECIMAL(10,2),
-  currency TEXT,
-  customer_email TEXT,
-  metadata JSONB DEFAULT '{}',
-  stack_trace TEXT,
-  user_agent TEXT,
-  ip_address TEXT,
-  created_at TIMESTAMP WITH TIME ZONE DEFAULT NOW()
-);
-
--- Create indexes for payment errors
-CREATE INDEX IF NOT EXISTS idx_payment_errors_created_at ON payment_errors(created_at DESC);
-CREATE INDEX IF NOT EXISTS idx_payment_errors_order_id ON payment_errors(order_id);
-CREATE INDEX IF NOT EXISTS idx_payment_errors_type ON payment_errors(error_type);
-CREATE INDEX IF NOT EXISTS idx_payment_errors_payment_intent ON payment_errors(payment_intent_id);
 
 -- Bundle size tracking table
 CREATE TABLE IF NOT EXISTS bundle_sizes (
@@ -86,9 +62,16 @@ CREATE INDEX IF NOT EXISTS idx_performance_metrics_timestamp ON performance_metr
 
 -- Add RLS policies for security
 ALTER TABLE web_vitals_metrics ENABLE ROW LEVEL SECURITY;
-ALTER TABLE payment_errors ENABLE ROW LEVEL SECURITY;
 ALTER TABLE bundle_sizes ENABLE ROW LEVEL SECURITY;
 ALTER TABLE performance_metrics ENABLE ROW LEVEL SECURITY;
+
+-- Drop existing policies if they exist (to make migration idempotent)
+DROP POLICY IF EXISTS "Allow anonymous web vitals inserts" ON web_vitals_metrics;
+DROP POLICY IF EXISTS "Allow admin reads on web vitals" ON web_vitals_metrics;
+DROP POLICY IF EXISTS "Allow admin reads on bundle sizes" ON bundle_sizes;
+DROP POLICY IF EXISTS "Allow service role inserts on bundle sizes" ON bundle_sizes;
+DROP POLICY IF EXISTS "Allow anonymous performance metrics inserts" ON performance_metrics;
+DROP POLICY IF EXISTS "Allow admin reads on performance metrics" ON performance_metrics;
 
 -- Allow anonymous inserts for web vitals (from client)
 CREATE POLICY "Allow anonymous web vitals inserts" ON web_vitals_metrics
@@ -107,23 +90,6 @@ CREATE POLICY "Allow admin reads on web vitals" ON web_vitals_metrics
       AND user_profiles.role IN ('admin', 'super_admin')
     )
   );
-
--- Payment errors - admin only
-CREATE POLICY "Allow admin reads on payment errors" ON payment_errors
-  FOR SELECT
-  TO authenticated
-  USING (
-    EXISTS (
-      SELECT 1 FROM user_profiles
-      WHERE user_profiles.id = auth.uid()
-      AND user_profiles.role IN ('admin', 'super_admin')
-    )
-  );
-
-CREATE POLICY "Allow service role inserts on payment errors" ON payment_errors
-  FOR INSERT
-  TO service_role
-  WITH CHECK (true);
 
 -- Bundle sizes - admin only
 CREATE POLICY "Allow admin reads on bundle sizes" ON bundle_sizes
@@ -161,6 +127,5 @@ CREATE POLICY "Allow admin reads on performance metrics" ON performance_metrics
 
 -- Add comments for documentation
 COMMENT ON TABLE web_vitals_metrics IS 'Stores Core Web Vitals metrics (CLS, INP, LCP, FCP, TTFB) from client browsers';
-COMMENT ON TABLE payment_errors IS 'Tracks payment processing errors for monitoring and debugging';
 COMMENT ON TABLE bundle_sizes IS 'Tracks JavaScript bundle sizes across builds for performance monitoring';
 COMMENT ON TABLE performance_metrics IS 'General purpose performance metrics storage';

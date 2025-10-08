@@ -10,7 +10,7 @@ This directory contains SQL migration files for the Supabase database.
 - `20241230000000_add_cart_items_price_fields.sql` - Cart items price tracking
 
 ### Performance & Monitoring
-- `20250108000000_create_performance_monitoring.sql` - Performance metrics tracking
+- `20250108000000_create_performance_monitoring.sql` - Performance metrics tracking (web vitals, bundle sizes, general metrics)
 - `20250108000001_create_webhook_events.sql` - Webhook event logging
 - `20250108000002_add_product_query_indexes.sql` - Product query optimization indexes
 - `20250108000003_create_payment_errors.sql` - Payment error tracking and monitoring
