@@ -28,5 +28,15 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     notFound();
   }
 
-  return <CheckoutPageClient locale={locale} />;
+  // Fetch cart items server-side
+  const { getServerCart } = await import("@/lib/services/cart-server-service");
+  const cart = await getServerCart();
+
+  // Redirect to cart if empty
+  if (cart.items.length === 0) {
+    const { redirect } = await import("next/navigation");
+    redirect(`/${locale}/cart`);
+  }
+
+  return <CheckoutPageClient locale={locale} initialCart={cart} />;
 }

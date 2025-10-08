@@ -65,7 +65,7 @@
     - Lazy load product quick view
     - _Requirements: 5.3, 1.6_
 
-- [-] 5. Upgrade Stripe Integration
+- [x] 5. Upgrade Stripe Integration
   - [x] 5.1 Update Stripe SDK and API version
     - Update `stripe` package to latest version
     - Change API version to `2024-12-18.acacia`
@@ -98,32 +98,32 @@
     - Implement idempotency for webhook processing
     - _Requirements: 2.4, 8.3_
 
-  - [-] 5.6 Update Stripe Elements configuration
+  - [x] 5.6 Update Stripe Elements configuration
     - Update appearance theme to match design system
     - Add proper locale support
     - Configure automatic payment methods
     - _Requirements: 2.7_
 
-- [ ] 6. Optimize Checkout Flow
-  - [ ] 6.1 Refactor checkout page to Server Component
+- [x] 6. Optimize Checkout Flow
+  - [x] 6.1 Refactor checkout page to Server Component
     - Convert checkout page to Server Component
     - Implement server-side cart fetching
     - Add proper redirects for empty cart
     - _Requirements: 1.3, 6.1_
 
-  - [ ] 6.2 Implement progressive enhancement for payment step
+  - [x] 6.2 Implement progressive enhancement for payment step
     - Create separate Client Component for payment form only
     - Use Suspense boundaries for loading states
     - Implement proper error boundaries
     - _Requirements: 2.7, 2.8_
 
-  - [ ] 6.3 Add payment intent caching
+  - [x] 6.3 Add payment intent caching
     - Implement React cache for payment intent retrieval
     - Add Redis caching for payment intents
     - Implement cache invalidation on status changes
     - _Requirements: 6.2, 6.5, 6.6_
 
-- [ ] 7. Database and Caching Optimization
+- [-] 7. Database and Caching Optimization
   - [ ] 7.1 Optimize product queries
     - Review and optimize product fetching queries
     - Add proper database indexes
