@@ -140,8 +140,8 @@ export function RibbonConfigurator({
           className={cn(
             "flex items-center justify-between p-3 border rounded-lg transition-colors text-left",
             isSelected
-            ? "border-teal-800 bg-amber-300 text-teal-800"
-            : "border-teal-800 bg-amber-100 text-teal-800",
+              ? "border-teal-800 bg-amber-300 text-teal-800"
+              : "border-teal-800 bg-amber-100 text-teal-800",
             // High contrast support
             "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
           )}
@@ -347,7 +347,7 @@ export function RibbonConfigurator({
         >
           {t("ribbonConfiguration")}
           <span
-            className="text-sm font-normal text-teal-800"
+            className="text-sm font-normal text-amber-100"
             aria-label={tAccessibility("optional")}
           >
             ({t("optional")})

@@ -609,10 +609,6 @@ const ProductCardComponent = function ProductCard({
         <Link href={`/${locale}/products/${product.slug}`} className="block w-full h-full relative">
           {renderImage()}
           {renderContent()}
-          {/* Hover Overlay */}
-          {isHovered && (
-            <div className="absolute inset-0 transition-opacity duration-300 pointer-events-none z-10" />
-          )}
         </Link>
       ) : (
         <>

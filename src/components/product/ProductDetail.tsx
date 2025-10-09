@@ -216,7 +216,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           choiceIds: [selectedSize],
         });
       }
-      
+
       // Add delivery method to customizations
       allCustomizations.push({
         optionId: 'delivery_method',
@@ -528,7 +528,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           </Card>
 
           {/* Configuration Summary and Proceed Button */}
-          <Card>
+          <Card className="bg-teal-800">
             <CardContent className="py-6 space-y-4">
               <div className="text-center">
                 <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
@@ -541,7 +541,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                 ref={addToCartButtonRef}
                 onClick={handleAddToCart}
                 disabled={isAddingToCart || !selectedSize || !deliveryMethod}
-                className="w-full"
+                className="w-full bg-funeral-gold text-teal-800"
                 size="lg"
               >
                 {isAddingToCart ? (

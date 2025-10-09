@@ -157,7 +157,7 @@
     - _Requirements: 2.8, 9.6, 9.8_
 
 - [ ] 9. API Endpoint for Checkout Session Creation
-  - [ ] 9.1 Create checkout session API endpoint
+  - [x] 9.1 Create checkout session API endpoint
     - Create `src/app/api/checkout/create-session/route.ts`
     - Validate cart and delivery method
     - Call createEmbeddedCheckoutSession service
@@ -165,7 +165,7 @@
     - Implement rate limiting
     - _Requirements: 3.1, 3.2, 5.7, 6.5_
 
-  - [ ] 9.2 Add CSRF protection to checkout endpoint
+  - [x] 9.2 Add CSRF protection to checkout endpoint
     - Implement CSRF token validation
     - Verify session ownership
     - Validate metadata

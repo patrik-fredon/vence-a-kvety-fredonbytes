@@ -183,35 +183,7 @@ export function ProductCustomizer({
     );
   };
 
-  // Render custom text input for choices that allow custom input
-  const renderCustomTextInput = (option: CustomizationOption, choice: CustomizationChoice) => {
-    const currentCustomization = getCurrentCustomization(option.id);
-    const isSelected = currentCustomization?.choiceIds.includes(choice.id);
-    const value = currentCustomization?.customValue || "";
 
-    if (!(isSelected && choice.allowCustomInput)) {
-      return null;
-    }
-
-    return (
-      <div className="mt-3 space-y-2">
-        <textarea
-          value={value}
-          onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
-          placeholder={t("customTextPlaceholder")}
-          className="w-full p-3 border border-amber-100 rounded-lg"
-          rows={2}
-          maxLength={choice.maxLength || 50}
-        />
-        <div className="flex justify-between text-xs text-amber-100">
-          <span>{t("customTextHelp")}</span>
-          <span>
-            {value.length}/{choice.maxLength || 50}
-          </span>
-        </div>
-      </div>
-    );
-  };
 
   // Render date selector for choices that require calendar
   const renderDateSelector = (option: CustomizationOption, choice: CustomizationChoice) => {
@@ -231,7 +203,7 @@ export function ProductCustomizer({
           minDaysFromNow={choice.minDaysFromNow || 3}
           maxDaysFromNow={choice.maxDaysFromNow || 30}
           locale={locale}
-          header={t("orderDate")}
+
         />
       </div>
     );
@@ -265,7 +237,7 @@ export function ProductCustomizer({
           <div key={option.id} className="space-y-3">
             {/* Option Header */}
             <div className="flex items-center justify-between">
-              <h3 className="text-lg font-medium text-teal-800">{getOptionHeader(option)}</h3>
+
               {/* Selection Counter */}
               {option.maxSelections && option.maxSelections > 1 && (
                 <div className="text-sm text-teal-800">
@@ -279,7 +251,6 @@ export function ProductCustomizer({
                 {(option.choices || []).map((choice) => (
                   <div key={choice.id}>
                     {renderChoice(option, choice)}
-                    {choice.allowCustomInput && renderCustomTextInput(option, choice)}
                     {choice.requiresCalendar && renderDateSelector(option, choice)}
                   </div>
                 ))}

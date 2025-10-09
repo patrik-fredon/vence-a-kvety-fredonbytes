@@ -46,6 +46,7 @@
     "@upstash/redis": "^1.35.3",
     "@vercel/analytics": "^1.5.0",
     "clsx": "^2.1.1",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.2",
     "ioredis": "^5.7.0",
     "next": "^15.5.2",

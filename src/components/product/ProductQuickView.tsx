@@ -87,23 +87,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
     return product.category?.name[locale as keyof typeof product.category.name];
   }, [product.category, locale]);
 
-  // Memoize availability status text
-  const availabilityText = useMemo(() => {
-    if (!product.availability.inStock) return t("outOfStock");
-    if (product.availability.stockQuantity && product.availability.stockQuantity <= 5) {
-      return t("limitedStock");
-    }
-    return t("inStock");
-  }, [product.availability.inStock, product.availability.stockQuantity, t]);
 
-  // Memoize availability styles
-  const availabilityStyles = useMemo(
-    () => ({
-      dotColor: product.availability.inStock ? "bg-green-500" : "bg-red-500",
-      textColor: product.availability.inStock ? "text-green-700" : "text-red-700",
-    }),
-    [product.availability.inStock]
-  );
 
   return (
     <Modal
@@ -111,9 +95,9 @@ export const ProductQuickView = React.memo(function ProductQuickView({
       onClose={onClose}
       title={productName}
       size="xl"
-      className="max-w-4xl bg-funeral-teal text-amber-300"
+      className=" max-w-4xl  text-teal-800 border-2 border-teal-800"
     >
-      <div className="flex flex-col lg:flex-row gap-6 p-6">
+      <div className="flex flex-col lg:flex-row gap-6 p-6 ">
         {/* Image Gallery */}
         <div className="flex-1">
           <div
@@ -149,8 +133,8 @@ export const ProductQuickView = React.memo(function ProductQuickView({
                   className={cn(
                     "flex-shrink-0 w-16 h-16 rounded-md overflow-hidden border-2 transition-colors",
                     selectedImageIndex === index
-                      ? "border-amber-100"
-                      : "border-amber-100 hover:border-amber-100"
+                      ? "border-teal-800"
+                      : "border-teal-800 hover:border-teal-800"
                   )}
                 >
                   <OptimizedImage
@@ -173,18 +157,18 @@ export const ProductQuickView = React.memo(function ProductQuickView({
         {/* Product Details */}
         <div className="flex-1 space-y-4">
           {/* Category */}
-          {categoryName && <p className="text-sm text-amber-100">{categoryName}</p>}
+          {categoryName && <p className="text-sm text-teal-800">{categoryName}</p>}
 
           {/* Price */}
           <div className="space-y-1">
             <div className="flex items-center gap-3">
-              <span className="text-2xl font-semibold text-amber-300">{formattedFinalPrice}</span>
+              <span className="text-2xl font-semibold text-teal-800">{formattedFinalPrice}</span>
               {formattedBasePrice && (
-                <span className="text-lg text-amber-100 line-through">{formattedBasePrice}</span>
+                <span className="text-lg text-teal-800 line-through">{formattedBasePrice}</span>
               )}
             </div>
             {product.featured && (
-              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-funeral-gold text-amber-800 border border-amber-200">
+              <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-funeral-gold text-teal-800 border border-teal-900">
                 {t("featured")}
               </span>
             )}
@@ -193,18 +177,12 @@ export const ProductQuickView = React.memo(function ProductQuickView({
           {/* Description */}
           {productDescription && (
             <div className="space-y-2">
-              <h3 className="font-medium text-amber-300">{t("description")}</h3>
-              <p className="text-sm text-amber-100 leading-relaxed">{productDescription}</p>
+              <h3 className="font-medium text-teal-800">{t("description")}</h3>
+              <p className="text-sm text-teal-800 leading-relaxed">{productDescription}</p>
             </div>
           )}
 
-          {/* Availability */}
-          <div className="flex items-center gap-2">
-            <div className={cn("w-2 h-2 rounded-full", availabilityStyles.dotColor)} />
-            <span className={cn("text-sm font-medium", availabilityStyles.textColor)}>
-              {availabilityText}
-            </span>
-          </div>
+
 
           {/* Error Display */}
           {_error && (
@@ -214,7 +192,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
           )}
 
           {/* Actions */}
-          <div className="flex flex-col sm:flex-row gap-3 pt-4">
+          <div className="container flex flex-col sm:flex-row gap-3 pt-4">
             <Link
               href={`/${locale}/products/${product.slug}`}
               className={cn(

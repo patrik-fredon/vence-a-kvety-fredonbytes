@@ -116,9 +116,8 @@ export function DeliveryMethodSelector({
               className={cn(
                 "w-full p-4 rounded-lg border-2 transition-all duration-200",
                 "flex items-start gap-4 text-left",
-                "hover:border-teal-500 hover:shadow-md",
-                "focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2",
-                isSelected ? "border-teal-600 bg-teal-50 shadow-md" : "border-stone-300 bg-white"
+                "hover:border-teal-800 hover:shadow-md",
+                isSelected ? "border-teal-900 bg-amber-300 shadow-md" : "border-teal-800 bg-amber-100"
               )}
             >
               {/* Radio Circle */}
@@ -126,18 +125,18 @@ export function DeliveryMethodSelector({
                 className={cn(
                   "flex-shrink-0 w-5 h-5 rounded-full border-2 mt-0.5",
                   "flex items-center justify-center transition-colors",
-                  isSelected ? "border-teal-600 bg-teal-600" : "border-stone-400 bg-white"
+                  isSelected ? "border-teal-800 bg-amber-300" : "border-teal-900 bg-amber-100"
                 )}
                 aria-hidden="true"
               >
-                {isSelected && <div className="w-2 h-2 rounded-full bg-white" />}
+                {isSelected && <div className="w-2.5 h-2.5 rounded-full bg-teal-800" />}
               </div>
 
               {/* Icon */}
               <Icon
                 className={cn(
                   "flex-shrink-0 w-6 h-6 mt-0.5",
-                  isSelected ? "text-teal-700" : "text-stone-600"
+                  isSelected ? "text-teal-800" : "text-teal-800"
                 )}
                 aria-hidden="true"
               />
@@ -148,14 +147,14 @@ export function DeliveryMethodSelector({
                   <span
                     className={cn(
                       "font-semibold text-base",
-                      isSelected ? "text-teal-900" : "text-stone-900"
+                      isSelected ? "text-teal-800" : "text-teal-800"
                     )}
                   >
                     {t(method.labelKey)}
                   </span>
                   {/* Free Delivery Badge */}
                   {method.badgeKey && (
-                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-amber-800 border border-amber-300">
+                    <span className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-amber-100 text-teal-800 border border-teal-800">
                       {t(method.badgeKey)}
                     </span>
                   )}
@@ -163,18 +162,18 @@ export function DeliveryMethodSelector({
 
                 <p
                   id={`${method.id}-description`}
-                  className={cn("text-sm", isSelected ? "text-teal-700" : "text-stone-600")}
+                  className={cn("text-sm", isSelected ? "text-teal-800" : "text-teal-800")}
                 >
                   {t(method.descriptionKey)}
                 </p>
 
                 {/* Additional Info for Pickup */}
                 {method.additionalInfo && isSelected && (
-                  <div className="mt-3 pt-3 border-t border-teal-200 space-y-1">
+                  <div className="mt-3 pt-3 border-t border-teal-800 space-y-1">
                     <p className="text-sm font-medium text-teal-800">
                       {t(method.additionalInfo.addressKey)}
                     </p>
-                    <p className="text-sm text-teal-700">{t(method.additionalInfo.hoursKey)}</p>
+                    <p className="text-sm text-teal-800">{t(method.additionalInfo.hoursKey)}</p>
                   </div>
                 )}
               </div>

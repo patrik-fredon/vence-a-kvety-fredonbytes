@@ -131,12 +131,7 @@ export function DateSelector({
 
   return (
     <div className={cn("space-y-2", className)}>
-      {/* Optional Header */}
-      {header && (
-        <h3 className="text-lg font-semibold text-teal-800 mb-2">
-          {header}
-        </h3>
-      )}
+
 
       {/* Date Picker Button */}
       <button
@@ -177,9 +172,6 @@ export function DateSelector({
               <span className="text-teal-800">‹</span>
             </button>
 
-            <h3 className="text-lg font-semibold text-teal-800">
-              {monthNames[selectedMonth]} {selectedYear}
-            </h3>
 
             <button
               type="button"
