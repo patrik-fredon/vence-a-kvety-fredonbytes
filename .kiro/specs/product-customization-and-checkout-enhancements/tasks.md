@@ -171,26 +171,26 @@
     - Validate metadata
     - _Requirements: 5.8_
 
-- [-] 10. Order Management Updates
+- [x] 10. Order Management Updates
   - [x] 10.1 Update order creation to include delivery method
     - Store delivery method in order record
     - Store pickup location if applicable
     - Include delivery method in order metadata
     - _Requirements: 9.1, 9.2, 9.5_
 
-  - [-] 10.2 Update order retrieval to include delivery method
+  - [x] 10.2 Update order retrieval to include delivery method
     - Include delivery method in order queries
     - Display delivery method in order history
     - Show pickup location for pickup orders
     - _Requirements: 9.6_
 
-  - [ ] 10.3 Update admin order view
+  - [x] 10.3 Update admin order view
     - Display delivery method in admin dashboard
     - Filter orders by delivery method
     - Show pickup location for pickup orders
     - _Requirements: 9.7_
 
-  - [ ] 10.4 Update order confirmation emails
+  - [x] 10.4 Update order confirmation emails
     - Include delivery method in confirmation email
     - Show delivery address or pickup location
     - Include pickup hours for pickup orders

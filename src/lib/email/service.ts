@@ -209,9 +209,26 @@ export class EmailService {
 
       <div class="order-details">
         <h3>${isCs ? "Doručení" : "Delivery"}</h3>
-        <p><strong>${isCs ? "Adresa" : "Address"}:</strong><br>
-        ${order.deliveryInfo.address.street}<br>
-        ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}</p>
+        
+        ${order.deliveryMethod === "pickup" ? `
+          <p><strong>${isCs ? "Způsob doručení" : "Delivery Method"}:</strong><br>
+          ${isCs ? "Osobní odběr" : "Personal Pickup"}</p>
+          
+          ${order.pickupLocation ? `
+            <p><strong>${isCs ? "Místo odběru" : "Pickup Location"}:</strong><br>
+            ${order.pickupLocation}</p>
+            
+            <p><strong>${isCs ? "Otevírací doba" : "Opening Hours"}:</strong><br>
+            ${isCs ? "Po-Pá: 9:00-17:00" : "Mon-Fri: 9:00-17:00"}</p>
+          ` : ""}
+        ` : `
+          <p><strong>${isCs ? "Způsob doručení" : "Delivery Method"}:</strong><br>
+          ${isCs ? "Doručení na adresu" : "Delivery to Address"}</p>
+          
+          <p><strong>${isCs ? "Adresa" : "Address"}:</strong><br>
+          ${order.deliveryInfo.address.street}<br>
+          ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}</p>
+        `}
 
         ${
           order.deliveryInfo.preferredDate
@@ -279,9 +296,23 @@ ${order.items
 ${isCs ? "CELKOVÁ ČÁSTKA" : "TOTAL AMOUNT"}: ${order.totalAmount.toLocaleString("cs-CZ")} Kč
 
 ${isCs ? "DORUČENÍ:" : "DELIVERY:"}
+${isCs ? "Způsob doručení" : "Delivery Method"}: ${
+  order.deliveryMethod === "pickup"
+    ? isCs ? "Osobní odběr" : "Personal Pickup"
+    : isCs ? "Doručení na adresu" : "Delivery to Address"
+}
+
+${order.deliveryMethod === "pickup" && order.pickupLocation ? `
+${isCs ? "Místo odběru" : "Pickup Location"}: ${order.pickupLocation}
+${isCs ? "Otevírací doba" : "Opening Hours"}: ${isCs ? "Po-Pá: 9:00-17:00" : "Mon-Fri: 9:00-17:00"}
+` : ""}
+
+${order.deliveryMethod !== "pickup" ? `
 ${isCs ? "Adresa" : "Address"}: ${order.deliveryInfo.address.street}, ${
       order.deliveryInfo.address.city
     }, ${order.deliveryInfo.address.postalCode}
+` : ""}
+
 ${
   order.deliveryInfo.preferredDate
     ? `${isCs ? "Preferovaný termín" : "Preferred Date"}: ${new Date(
