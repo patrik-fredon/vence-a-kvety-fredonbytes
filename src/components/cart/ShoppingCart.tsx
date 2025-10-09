@@ -120,8 +120,8 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
           const choice = option.choices?.find((c: any) => c.id === choiceId);
           return choice
             ? choice.label?.[locale as keyof typeof choice.label] ||
-                choice.label?.en ||
-                choice.label?.cs
+            choice.label?.en ||
+            choice.label?.cs
             : null;
         })
         .filter(Boolean);
@@ -340,7 +340,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
                       size="sm"
                       onClick={() => handleQuantityChange(item.id, item.quantity - 1)}
                       disabled={state.isLoading}
-                      className="w-8 h-8 p-0"
+                      className="w-8 h-8 p-0 text-teal-800"
                     >
                       -
                     </Button>
@@ -352,7 +352,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
                       size="sm"
                       onClick={() => handleQuantityChange(item.id, item.quantity + 1)}
                       disabled={state.isLoading}
-                      className="w-8 h-8 p-0"
+                      className="w-8 h-8 p-0 text-teal-800"
                     >
                       +
                     </Button>
@@ -396,7 +396,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
         {/* Validation Error Message */}
         {validationError && (
           <div className="mt-6 p-4 bg-amber-50 border border-amber-400 rounded-lg">
-            <p className="text-amber-900 text-sm font-medium">{validationError}</p>
+            <p className="text-amber-300 text-sm font-medium">{validationError}</p>
           </div>
         )}
       </CardContent>

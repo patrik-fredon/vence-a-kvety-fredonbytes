@@ -1,26 +1,15 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent } from "@/components/ui/Card";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import { CheckIcon, ChevronLeftIcon, ChevronRightIcon, ExclamationTriangleIcon } from "@/lib/icons";
-import {
-  formatValidationErrors,
-  sanitizeCustomerInfo,
-  sanitizeDeliveryInfo,
-} from "@/lib/validation/checkout";
+import { formatValidationErrors } from "@/lib/validation/checkout";
 import { hasStepValidationErrors, stepValidationSchema } from "@/lib/validation/checkout-steps";
 import type { CartItem } from "@/types/cart";
 
-import type {
-  CheckoutFormData,
-  CheckoutState,
-  CheckoutStep,
-  CustomerInfo,
-  DeliveryInfo,
-} from "@/types/order";
+import type { CheckoutFormData, CheckoutState, CheckoutStep } from "@/types/order";
 import { CustomerInfoStep } from "./steps/CustomerInfoStep";
 import { DeliveryInfoStep } from "./steps/DeliveryInfoStep";
 import { PaymentStep } from "./steps/PaymentStep";
@@ -29,25 +18,19 @@ import { ReviewStep } from "./steps/ReviewStep";
 interface CheckoutFormProps {
   items: CartItem[];
   locale: string;
-  onOrderComplete: (orderId: string) => void;
   className?: string;
 }
 
-const STEPS: CheckoutStep[] = ["customer", "delivery", "payment", "review"];
+const STEPS: CheckoutStep[] = ["customer", "delivery", "review", "payment"];
 
 const STEP_TITLES = {
   customer: "customerInfo",
   delivery: "deliveryInfo",
-  payment: "paymentInfo",
   review: "orderSummary",
+  payment: "paymentInfo",
 } as const;
 
-export function CheckoutForm({
-  items,
-  locale,
-  onOrderComplete,
-  className = "",
-}: CheckoutFormProps) {
+export function CheckoutForm({ items, locale, className = "" }: CheckoutFormProps) {
   const t = useTranslations("checkout");
   const tCommon = useTranslations("common");
 
@@ -66,40 +49,7 @@ export function CheckoutForm({
     deliveryCost: 0,
   });
 
-  // Calculate delivery cost when delivery info changes
-  useEffect(() => {
-    const calculateDeliveryCost = async () => {
-      if (state.formData.deliveryInfo.address && state.formData.deliveryInfo.urgency) {
-        try {
-          const response = await fetch("/api/delivery/estimate", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              address: state.formData.deliveryInfo.address,
-              urgency: state.formData.deliveryInfo.urgency,
-              items: items.map((item) => ({
-                productId: item.productId,
-                quantity: item.quantity,
-              })),
-            }),
-          });
 
-          const data = await response.json();
-          if (data.success && data.estimate) {
-            setState((prev) => ({
-              ...prev,
-              deliveryCost: data.estimate.totalCost,
-              estimatedDeliveryDate: new Date(data.estimate.estimatedDeliveryDate),
-            }));
-          }
-        } catch (error) {
-          console.error("Error calculating delivery cost:", error);
-        }
-      }
-    };
-
-    calculateDeliveryCost();
-  }, [state.formData.deliveryInfo.address, state.formData.deliveryInfo.urgency, items]);
 
   // Handle step navigation
   const goToStep = (step: CheckoutStep) => {
@@ -173,55 +123,6 @@ export function CheckoutForm({
     }));
   };
 
-  // Handle form submission
-  const handleSubmit = async () => {
-    if (!validateCurrentStep()) {
-      return;
-    }
-
-    setState((prev) => ({ ...prev, isSubmitting: true }));
-
-    try {
-      const sanitizedCustomerInfo = sanitizeCustomerInfo(state.formData.customerInfo);
-      const sanitizedDeliveryInfo = sanitizeDeliveryInfo(state.formData.deliveryInfo);
-
-      const orderData = {
-        items,
-        customerInfo: sanitizedCustomerInfo as CustomerInfo,
-        deliveryInfo: sanitizedDeliveryInfo as DeliveryInfo,
-        paymentMethod: state.formData.paymentMethod!,
-        agreeToTerms: state.formData.agreeToTerms,
-      };
-
-      const response = await fetch("/api/orders", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(orderData),
-      });
-
-      const data = await response.json();
-
-      if (data.success) {
-        // Clear cart and redirect to success page
-        await fetch("/api/cart", { method: "DELETE" });
-        onOrderComplete(data.order.id);
-      } else {
-        setState((prev) => ({
-          ...prev,
-          errors: { general: [data.error || "Chyba při vytváření objednávky"] },
-        }));
-      }
-    } catch (error) {
-      console.error("Error submitting order:", error);
-      setState((prev) => ({
-        ...prev,
-        errors: { general: ["Chyba při odesílání objednávky. Zkuste to znovu."] },
-      }));
-    } finally {
-      setState((prev) => ({ ...prev, isSubmitting: false }));
-    }
-  };
-
   // Calculate totals
   const subtotal = items.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
   const totalAmount = subtotal + state.deliveryCost;
@@ -247,15 +148,14 @@ export function CheckoutForm({
                     disabled={!isClickable}
                     className={`
                       flex items-center justify-center w-10 h-10 rounded-full border-2 transition-all duration-200
-                      ${
-                        isActive
-                          ? "border-amber-600 bg-teal-600 text-white shadow-md"
-                          : isCompleted
-                            ? "border-green-500 bg-green-500 text-white shadow-sm"
-                            : "border-stone-300 bg-white text-stone-400"
+                      ${isActive
+                        ? "border-amber-300 bg-teal-800 text-amber-300 shadow-md"
+                        : isCompleted
+                          ? "border-green-500 bg-green-500 text-amber-200 shadow-sm"
+                          : "border-amber-100 bg-teal-800 text-amber-100"
                       }
-                      ${isClickable ? "cursor-pointer hover:border-amber-500 hover:shadow-md" : "cursor-not-allowed"}
-                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20
+                      ${isClickable ? "cursor-pointer hover:border-amber-300 hover:shadow-md" : "cursor-not-allowed"}
+                      focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-amber-100/20
                     `}
                   >
                     {isCompleted ? (
@@ -269,7 +169,7 @@ export function CheckoutForm({
                     <div
                       className={`
                       flex-1 h-0.5 mx-4 transition-colors duration-200
-                      ${isCompleted ? "bg-green-500" : "bg-stone-200"}
+                      ${isCompleted ? "bg-green-500" : "bg-amber-100"}
                     `}
                     />
                   )}
@@ -281,7 +181,7 @@ export function CheckoutForm({
           <div className="flex justify-between mt-4">
             {STEPS.map((step) => (
               <div key={step} className="text-center">
-                <p className="text-sm font-medium text-stone-700">{t(STEP_TITLES[step])}</p>
+                <p className="text-sm font-medium text-amber-100">{t(STEP_TITLES[step])}</p>
               </div>
             ))}
           </div>
@@ -327,14 +227,7 @@ export function CheckoutForm({
               errors={state.errors.deliveryInfo || {}}
               onChange={(deliveryInfo) => updateFormData({ deliveryInfo })}
               locale={locale}
-            />
-          )}
-
-          {state.currentStep === "payment" && (
-            <PaymentStep
-              {...(state.formData.paymentMethod && { paymentMethod: state.formData.paymentMethod })}
-              onChange={(paymentMethod) => updateFormData({ paymentMethod })}
-              locale={locale}
+              cartItems={items}
             />
           )}
 
@@ -343,65 +236,82 @@ export function CheckoutForm({
               formData={state.formData}
               items={items}
               subtotal={subtotal}
-              deliveryCost={state.deliveryCost}
               totalAmount={totalAmount}
-              {...(state.estimatedDeliveryDate && {
-                estimatedDeliveryDate: state.estimatedDeliveryDate,
-              })}
               agreeToTerms={state.formData.agreeToTerms}
               subscribeNewsletter={state.formData.subscribeNewsletter}
               onAgreeToTermsChange={(agreeToTerms) => updateFormData({ agreeToTerms })}
-              onSubscribeNewsletterChange={(subscribeNewsletter) =>
-                updateFormData({ subscribeNewsletter })
-              }
+              onSubscribeNewsletterChange={(subscribeNewsletter) => updateFormData({ subscribeNewsletter })}
               locale={locale}
+              deliveryCost={0} />
+          )}
+
+          {state.currentStep === "payment" && (
+            <PaymentStep
+              {...(state.formData.paymentMethod && { paymentMethod: state.formData.paymentMethod })}
+              onChange={(paymentMethod) => updateFormData({ paymentMethod })}
+              locale={locale}
+              onPaymentSuccess={(result) => {
+                // Payment successful, redirect to success page
+                if (result.sessionId) {
+                  window.location.href = `/${locale}/checkout/success?session_id=${result.sessionId}`;
+                }
+              }}
+              onPaymentError={(error) => {
+                // Show error message
+                setState((prev) => ({
+                  ...prev,
+                  errors: { general: [error] },
+                }));
+              }}
             />
           )}
         </CardContent>
       </Card>
 
-      {/* Navigation Buttons */}
-      <Card variant="default">
-        <CardContent className="py-4">
-          <div className="flex items-center justify-between">
+      {/* Navigation Buttons - Hidden on payment step as Stripe handles submission */}
+      {state.currentStep !== "payment" && (
+        <Card variant="default">
+          <CardContent className="py-4">
+            <div className="flex items-center justify-between">
+              <Button
+                variant="outline"
+                onClick={goToPreviousStep}
+                disabled={state.currentStep === "customer" || state.isSubmitting}
+                className="flex items-center"
+              >
+                <ChevronLeftIcon className="w-4 h-4 mr-2" />
+                {tCommon("previous")}
+              </Button>
+
+              <Button
+                onClick={goToNextStep}
+                disabled={state.isSubmitting}
+                className="flex items-center bg-funeral-gold hover:bg-amber-300 text-teal-800"
+              >
+                {tCommon("next")}
+                <ChevronRightIcon className="w-4 h-4 ml-2" />
+              </Button>
+            </div>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Back button for payment step */}
+      {state.currentStep === "payment" && (
+        <Card variant="default">
+          <CardContent className="py-4">
             <Button
               variant="outline"
               onClick={goToPreviousStep}
-              disabled={state.currentStep === "customer" || state.isSubmitting}
+              disabled={state.isSubmitting}
               className="flex items-center"
             >
               <ChevronLeftIcon className="w-4 h-4 mr-2" />
               {tCommon("previous")}
             </Button>
-
-            {state.currentStep === "review" ? (
-              <Button
-                onClick={handleSubmit}
-                disabled={state.isSubmitting}
-                className="flex items-center min-w-[140px] bg-teal-600 hover:bg-teal-700 text-white"
-              >
-                {state.isSubmitting ? (
-                  <>
-                    <LoadingSpinner size="sm" className="mr-2" />
-                    Odesílání...
-                  </>
-                ) : (
-                  t("placeOrder")
-                )}
-              </Button>
-            ) : (
-              <Button
-                onClick={goToNextStep}
-                disabled={state.isSubmitting}
-                className="flex items-center bg-teal-600 hover:bg-amber-700 text-white"
-              >
-                {tCommon("next")}
-                <ChevronRightIcon className="w-4 h-4 ml-2" />
-              </Button>
-            )}
-          </div>
-        </CardContent>
-      </Card>
+          </CardContent>
+        </Card>
+      )}
     </div>
   );
 }

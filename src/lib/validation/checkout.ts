@@ -91,10 +91,8 @@ export function validateDeliveryInfo(
     }
   }
 
-  // Validate urgency
-  if (!deliveryInfo.urgency) {
-    errors.urgency = "Způsob doručení je povinný";
-  }
+  // Note: Delivery method (urgency) is validated at cart level, not here
+  // The delivery method is selected during product configuration in the cart
 
   // Validate preferred date (if provided)
   if (deliveryInfo.preferredDate) {

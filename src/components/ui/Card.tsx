@@ -35,11 +35,11 @@ export function Card({
 
   const interactiveStyles = interactive
     ? cn(
-        "cursor-pointer transition-all duration-200",
-        "hover:shadow-lg hover:-translate-y-0.5",
-        "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
-        "active:translate-y-0"
-      )
+      "cursor-pointer transition-all duration-200",
+      "hover:shadow-lg hover:-translate-y-0.5",
+      "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-stone-950/20",
+      "active:translate-y-0"
+    )
     : "";
 
   return (
@@ -59,11 +59,11 @@ export function Card({
       onKeyDown={
         interactive
           ? (e) => {
-              if (e.key === "Enter" || e.key === " ") {
-                e.preventDefault();
-                onClick?.(e as any);
-              }
+            if (e.key === "Enter" || e.key === " ") {
+              e.preventDefault();
+              onClick?.(e as any);
             }
+          }
           : undefined
       }
       {...props}

@@ -78,12 +78,12 @@ export function ColorSelection({
                 onClick={() => onColorChange(color.id)}
                 className={cn(
                   // Base styles
-                  "relative flex flex-col items-center gap-2 p-3 rounded-lg border-2 transition-all duration-200",
+                  "relative flex flex-col items-center gap-2 p-2 rounded-lg  transition-all duration-200",
 
                   // Selected state
                   isSelected
-                    ? "border-amber-200 bg-amber-300 shadow-md"
-                    : "border-amber-300 bg-amber-100 hover:border-amber-200",
+                    ? "border-amber-200 bg-amber-200  shadow-md"
+                    : "border-amber-300 bg-teal-900 text-amber-100 hover:border-amber-200",
 
                   // Interactive states
                   "active:scale-[0.98] transition-transform duration-75",
@@ -101,8 +101,8 @@ export function ColorSelection({
                 {/* Color swatch */}
                 <div
                   className={cn(
-                    "w-12 h-12 rounded-full border-2 transition-all duration-200",
-                    isSelected ? "border-teal-900 scale-110" : "border-teal-800",
+                    "w-12 h-12 rounded-full  transition-all duration-200",
+                    isSelected ? " scale-105" : "",
                     color.id === "white" && "border-gray-300"
                   )}
                   style={{ backgroundColor: color.hex }}
@@ -111,7 +111,7 @@ export function ColorSelection({
                   {/* Selection indicator */}
                   {isSelected && (
                     <div className="w-full h-full flex items-center justify-center">
-                      <div className="w-4 h-4 bg-teal-800 rounded-full border-2 border-white" />
+                      <div className="w-4 h-4" />
                     </div>
                   )}
                 </div>
@@ -121,7 +121,7 @@ export function ColorSelection({
                   id={`${colorId}-label`}
                   className={cn(
                     "text-xs font-medium text-center",
-                    isSelected ? "text-teal-800 font-semibold" : "text-teal-800"
+                    isSelected ? "text-teal-800 font-semibold" : "text-amber-100"
                   )}
                 >
                   {colorName}
