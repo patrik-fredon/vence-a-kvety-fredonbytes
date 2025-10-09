@@ -12,7 +12,7 @@ import { cn } from "@/lib/utils";
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import { validateWreathConfiguration, WREATH_VALIDATION_MESSAGES } from "@/lib/validation/wreath";
 import type { Customization, Product } from "@/types/product";
-import { DeliveryMethodSelector } from "./DeliveryMethodSelector";
+import { LazyDeliveryMethodSelector } from "./LazyDeliveryMethodSelector";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 import { PriceBreakdown } from "./PriceBreakdown";
 import { ProductDetailImageGrid } from "./ProductDetailImageGrid";
@@ -403,7 +403,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           {/* Delivery Method Selection */}
           <Card>
             <CardContent className="py-6">
-              <DeliveryMethodSelector
+              <LazyDeliveryMethodSelector
                 value={deliveryMethod || undefined}
                 onChange={handleDeliveryMethodChange}
                 locale={locale}

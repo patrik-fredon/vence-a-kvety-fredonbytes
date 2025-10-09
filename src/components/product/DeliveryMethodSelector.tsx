@@ -1,5 +1,24 @@
 "use client";
 
+/**
+ * Delivery Method Selector Component
+ * 
+ * Provides a radio button interface for customers to choose between
+ * home delivery (free) and personal pickup at company office.
+ * 
+ * Features:
+ * - Accessible radio group with ARIA labels
+ * - Keyboard navigation support
+ * - Visual feedback for selected option
+ * - "Free delivery" badge for delivery option
+ * - Company address and hours for pickup option
+ * - Responsive design for mobile and desktop
+ * 
+ * Requirements: 2.1, 2.2, 2.5, 2.6, 2.10, 8.3, 8.4, 8.5
+ * 
+ * @module components/product/DeliveryMethodSelector
+ */
+
 import { useId, useState } from "react";
 import { HomeIcon, TruckIcon } from "@/lib/icons";
 import { cn } from "@/lib/utils";
@@ -43,6 +62,29 @@ const deliveryMethods: DeliveryMethodOption[] = [
   },
 ];
 
+/**
+ * DeliveryMethodSelector Component
+ * 
+ * Renders a radio button group for selecting delivery method.
+ * Integrates with the product customization flow and cart system.
+ * 
+ * @param props - Component props
+ * @param props.value - Currently selected delivery method ('delivery' | 'pickup')
+ * @param props.onChange - Callback when delivery method changes
+ * @param props.locale - Current locale for translations
+ * @param props.className - Optional CSS classes
+ * 
+ * @returns React component
+ * 
+ * @example
+ * ```tsx
+ * <DeliveryMethodSelector
+ *   value={deliveryMethod}
+ *   onChange={setDeliveryMethod}
+ *   locale="cs"
+ * />
+ * ```
+ */
 export function DeliveryMethodSelector({
   value,
   onChange,

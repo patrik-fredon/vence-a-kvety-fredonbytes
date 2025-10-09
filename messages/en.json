@@ -218,7 +218,11 @@
     "clearCartConfirm": "Yes, Clear Cart",
     "clearCartCancel": "Cancel",
     "clearCartSuccess": "Cart cleared successfully",
-    "clearCartError": "Failed to clear cart. Please try again."
+    "clearCartError": "Failed to clear cart. Please try again.",
+    "deliveryMethodRequired": "Please select a delivery method for each item in your cart before proceeding to checkout.",
+    "deliveryMethodMissing": "Delivery method missing",
+    "personalPickup": "Personal Pickup",
+    "changeDeliveryMethod": "Change Delivery Method"
   },
   "checkout": {
     "title": "Checkout",

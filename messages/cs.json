@@ -218,7 +218,11 @@
     "clearCartConfirm": "Ano, vyprázdnit košík",
     "clearCartCancel": "Zrušit",
     "clearCartSuccess": "Košík byl úspěšně vyprázdněn",
-    "clearCartError": "Nepodařilo se vyprázdnit košík. Zkuste to prosím znovu."
+    "clearCartError": "Nepodařilo se vyprázdnit košík. Zkuste to prosím znovu.",
+    "deliveryMethodRequired": "Před pokračováním k objednávce prosím vyberte způsob doručení u každé položky v košíku.",
+    "deliveryMethodMissing": "Chybí způsob doručení",
+    "personalPickup": "Osobní odběr",
+    "changeDeliveryMethod": "Změnit způsob doručení"
   },
   "checkout": {
     "title": "Objednávka",

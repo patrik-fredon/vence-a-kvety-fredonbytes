@@ -196,14 +196,14 @@
     - Include pickup hours for pickup orders
     - _Requirements: 9.8_
 
-- [ ] 11. Cart Updates for Delivery Method
-  - [ ] 11.1 Update cart validation
+- [x] 11. Cart Updates for Delivery Method
+  - [x] 11.1 Update cart validation
     - Add validation for delivery method selection
     - Display error if delivery method missing
     - Prevent checkout without delivery method
     - _Requirements: 2.7, 7.4_
 
-  - [ ] 11.2 Update cart summary display
+  - [x] 11.2 Update cart summary display
     - Show selected delivery method in cart
     - Display "Free delivery" badge when applicable
     - Allow changing delivery method from cart
@@ -265,38 +265,38 @@
     - Test focus indicators
     - _Requirements: 10.8_
 
-- [ ] 13. Performance Optimization
-  - [ ] 13.1 Implement lazy loading for checkout components
+- [x] 13. Performance Optimization
+  - [x] 13.1 Implement lazy loading for checkout components
     - Lazy load StripeEmbeddedCheckout component
     - Lazy load DeliveryMethodSelector component
     - Add loading states
     - _Requirements: 6.8_
 
-  - [ ] 13.2 Optimize bundle size
+  - [x] 13.2 Optimize bundle size
     - Code-split Stripe SDK
     - Minimize checkout component bundle
     - Verify bundle size impact
     - _Requirements: 6.6, 6.8_
 
-  - [ ] 13.3 Implement cache warming
+  - [x] 13.3 Implement cache warming
     - Pre-cache popular products' Stripe IDs
     - Implement background cache refresh
     - _Requirements: 6.1, 6.2_
 
-- [ ] 14. Documentation and Deployment
-  - [ ] 14.1 Update environment variables documentation
+- [-] 14. Documentation and Deployment
+  - [x] 14.1 Update environment variables documentation
     - Document Stripe Embedded Checkout variables
     - Update `.env.example`
     - Add setup instructions
     - _Requirements: 5.7_
 
-  - [ ] 14.2 Create deployment checklist
+  - [x] 14.2 Create deployment checklist
     - List all environment variables needed
     - Document database migration steps
     - Create rollback plan
     - _Requirements: 5.5_
 
-  - [ ] 14.3 Add inline code documentation
+  - [-] 14.3 Add inline code documentation
     - Document all new functions and components
     - Add JSDoc comments
     - Document error handling patterns

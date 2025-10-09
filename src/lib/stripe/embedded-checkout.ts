@@ -91,6 +91,47 @@ async function getStripeIds(
   productId: string,
   customizations: any[]
 ): Promise<StripeIds> {
+  // Try to get from cache first
+  try {
+    const cacheClient = getCacheClient();
+    const cacheKey = generateCacheKey("stripe:ids", productId);
+    const cachedData = await cacheClient.get(cacheKey);
+
+    if (cachedData) {
+      const cached = deserializeFromCache<{
+        productId: string;
+        priceId: string;
+        cachedAt: number;
+      }>(cachedData);
+
+      if (cached) {
+        console.log("✅ [Stripe] Cache hit for Stripe IDs", { productId });
+        
+        // Convert to Product type for price selector
+        const product: Product = {
+          id: productId,
+          stripeProductId: cached.productId,
+          stripePriceId: cached.priceId,
+        } as Product;
+
+        // Get the appropriate price ID based on customizations
+        const priceId = getStripePriceId(product, customizations);
+        const stripeProductId = getStripeProductId(product);
+
+        return {
+          productId: stripeProductId,
+          priceId,
+        };
+      }
+    }
+  } catch (error) {
+    console.warn("⚠️ [Stripe] Cache lookup failed, fetching from database", {
+      productId,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
+  // Cache miss - fetch from database
   const supabase = createClient();
 
   // Fetch product from database
@@ -129,6 +170,25 @@ async function getStripeIds(
     );
   }
 
+  // Cache the Stripe IDs for future use
+  try {
+    const cacheClient = getCacheClient();
+    const cacheKey = generateCacheKey("stripe:ids", productId);
+    const cacheData = serializeForCache({
+      productId: productRow.stripe_product_id,
+      priceId: productRow.stripe_price_id,
+      cachedAt: Date.now(),
+    });
+
+    await cacheClient.set(cacheKey, cacheData, CACHE_TTL.LONG);
+    console.log("✅ [Stripe] Cached Stripe IDs", { productId });
+  } catch (error) {
+    console.warn("⚠️ [Stripe] Failed to cache Stripe IDs", {
+      productId,
+      error: error instanceof Error ? error.message : String(error),
+    });
+  }
+
   // Convert to Product type for price selector
   const product: Product = {
     id: productRow.id,
@@ -163,6 +223,41 @@ async function getStripeIds(
  *   metadata: { cartId: cart.id }
  * });
  * ```
+ */
+/**
+ * Creates or retrieves a cached Stripe Embedded Checkout session
+ * 
+ * This function handles the complete lifecycle of creating a Stripe checkout session:
+ * 1. Validates cart items and generates a cache key
+ * 2. Checks Redis cache for existing valid session
+ * 3. If cache miss, creates new Stripe session with retry logic
+ * 4. Caches the new session with 30-minute TTL
+ * 5. Returns client secret for embedding checkout
+ * 
+ * @param params - Checkout session parameters
+ * @param params.cartItems - Array of cart items to checkout
+ * @param params.locale - User locale ('cs' or 'en') for Stripe UI
+ * @param params.customerId - Optional Stripe customer ID
+ * @param params.metadata - Optional metadata to attach to session
+ * 
+ * @returns Promise resolving to client secret and session ID
+ * 
+ * @throws {Error} If Stripe is not configured
+ * @throws {Error} If cart is empty
+ * @throws {CheckoutError} If session creation fails after retries
+ * 
+ * @example
+ * ```typescript
+ * const session = await createEmbeddedCheckoutSession({
+ *   cartItems: cart.items,
+ *   locale: 'cs',
+ *   metadata: { cartId: cart.id }
+ * });
+ * ```
+ * 
+ * @see {@link https://stripe.com/docs/payments/checkout/embedded|Stripe Embedded Checkout Docs}
+ * 
+ * Requirements: 3.1, 3.2, 3.8, 3.9, 3.10, 3.12, 6.1, 6.2, 6.3
  */
 export async function createEmbeddedCheckoutSession(
   params: CreateEmbeddedCheckoutSessionParams
@@ -357,6 +452,27 @@ export async function createEmbeddedCheckoutSession(
  * await invalidateCheckoutSession(session.id);
  * ```
  */
+/**
+ * Invalidates a cached checkout session
+ * 
+ * Should be called after successful payment completion or cancellation
+ * to ensure the session cannot be reused.
+ * 
+ * Note: Current implementation logs the invalidation but doesn't perform
+ * actual cache deletion due to lack of reverse lookup (session ID -> cache key).
+ * Consider maintaining a session ID mapping in production for full invalidation.
+ * 
+ * @param sessionId - Stripe session ID to invalidate
+ * 
+ * @returns Promise that resolves when invalidation completes
+ * 
+ * @example
+ * ```typescript
+ * await invalidateCheckoutSession(session.sessionId);
+ * ```
+ * 
+ * Requirements: 3.12, 9.4
+ */
 export async function invalidateCheckoutSession(
   sessionId: string
 ): Promise<void> {
@@ -377,4 +493,140 @@ export async function invalidateCheckoutSession(
     });
     // Don't throw - cache invalidation failure shouldn't break the flow
   }
+}
+
+/**
+ * Warm up cache for popular products' Stripe IDs
+ * Pre-caches Stripe product and price IDs for frequently accessed products
+ * 
+ * @param productIds - Array of product IDs to warm up
+ * @returns Promise that resolves when cache warming is complete
+ */
+export async function warmStripeIdsCache(productIds: string[]): Promise<void> {
+  console.log(`🔥 [Stripe] Warming Stripe IDs cache for ${productIds.length} products...`);
+  
+  const startTime = Date.now();
+  let successCount = 0;
+  let errorCount = 0;
+
+  try {
+    const supabase = await createClient();
+    
+    // Fetch products with their Stripe IDs
+    const { data: products, error } = await supabase
+      .from("products")
+      .select("id, stripe_product_id, stripe_price_id, name_cs, name_en")
+      .in("id", productIds)
+      .eq("active", true);
+
+    if (error) {
+      console.error("❌ [Stripe] Error fetching products for cache warming:", error);
+      return;
+    }
+
+    if (!products || products.length === 0) {
+      console.log("⚠️ [Stripe] No products found for cache warming");
+      return;
+    }
+
+    // Cache Stripe IDs for each product
+    const cacheClient = getCacheClient();
+    
+    for (const product of products) {
+      try {
+        if (!product.stripe_product_id || !product.stripe_price_id) {
+          console.warn(`⚠️ [Stripe] Product ${product.id} missing Stripe IDs`);
+          errorCount++;
+          continue;
+        }
+
+        // Cache the Stripe IDs
+        const cacheKey = generateCacheKey("stripe:ids", product.id);
+        const cacheData = serializeForCache({
+          productId: product.stripe_product_id,
+          priceId: product.stripe_price_id,
+          cachedAt: Date.now(),
+        });
+
+        await cacheClient.set(cacheKey, cacheData, CACHE_TTL.LONG);
+        successCount++;
+      } catch (error) {
+        console.error(`❌ [Stripe] Error caching Stripe IDs for product ${product.id}:`, error);
+        errorCount++;
+      }
+    }
+
+    const duration = Date.now() - startTime;
+    console.log(`✅ [Stripe] Cache warming completed in ${duration}ms`, {
+      total: products.length,
+      success: successCount,
+      errors: errorCount,
+    });
+  } catch (error) {
+    console.error("❌ [Stripe] Error during cache warming:", error);
+  }
+}
+
+/**
+ * Warm up cache for popular products based on analytics
+ * Fetches most viewed/purchased products and pre-caches their Stripe IDs
+ * 
+ * @param limit - Number of popular products to cache (default: 20)
+ * @returns Promise that resolves when cache warming is complete
+ */
+export async function warmPopularProductsStripeIds(limit = 20): Promise<void> {
+  console.log(`🔥 [Stripe] Warming Stripe IDs cache for ${limit} popular products...`);
+
+  try {
+    const supabase = await createClient();
+    
+    // Fetch popular products (featured or recently created as a proxy for popular)
+    const { data: products, error } = await supabase
+      .from("products")
+      .select("id")
+      .eq("active", true)
+      .or("featured.eq.true,created_at.gte.2024-01-01")
+      .order("created_at", { ascending: false })
+      .limit(limit);
+
+    if (error) {
+      console.error("❌ [Stripe] Error fetching popular products:", error);
+      return;
+    }
+
+    if (!products || products.length === 0) {
+      console.log("⚠️ [Stripe] No popular products found");
+      return;
+    }
+
+    const productIds = products.map(p => p.id);
+    await warmStripeIdsCache(productIds);
+  } catch (error) {
+    console.error("❌ [Stripe] Error warming popular products cache:", error);
+  }
+}
+
+/**
+ * Background cache refresh for Stripe IDs
+ * Periodically refreshes cached Stripe IDs to ensure they stay fresh
+ * 
+ * @param intervalMs - Refresh interval in milliseconds (default: 1 hour)
+ */
+export function scheduleStripeIdsCacheRefresh(intervalMs = 3600000): void {
+  console.log(`🔥 [Stripe] Scheduling Stripe IDs cache refresh every ${intervalMs}ms`);
+
+  // Initial warming
+  warmPopularProductsStripeIds().catch(error => {
+    console.error("❌ [Stripe] Initial cache warming failed:", error);
+  });
+
+  // Schedule periodic refresh
+  setInterval(async () => {
+    console.log("🔄 [Stripe] Running scheduled Stripe IDs cache refresh...");
+    try {
+      await warmPopularProductsStripeIds();
+    } catch (error) {
+      console.error("❌ [Stripe] Scheduled cache refresh failed:", error);
+    }
+  }, intervalMs);
 }

@@ -1,6 +1,27 @@
 /**
- * Stripe Error Handler
- * Provides error handling and retry logic for Stripe operations
+ * Stripe Error Handler Module
+ * 
+ * Provides comprehensive error handling and retry logic for Stripe operations.
+ * Converts Stripe API errors into user-friendly, localized error messages.
+ * 
+ * Features:
+ * - Categorizes Stripe errors by type
+ * - Provides localized error messages (Czech/English)
+ * - Determines if errors are retryable
+ * - Implements exponential backoff retry logic
+ * - Logs errors with context for debugging
+ * 
+ * Error Categories:
+ * - CARD_ERROR: Card declined, insufficient funds, etc. (retryable)
+ * - INVALID_REQUEST: Invalid parameters (not retryable)
+ * - NETWORK_ERROR: Connection issues (retryable)
+ * - AUTHENTICATION_ERROR: Invalid API keys (not retryable)
+ * - RATE_LIMIT_ERROR: Too many requests (retryable)
+ * - UNKNOWN_ERROR: Unexpected errors (not retryable)
+ * 
+ * Requirements: 3.11, 7.1, 7.2, 7.5, 7.6, 7.8
+ * 
+ * @module lib/stripe/error-handler
  */
 
 import Stripe from "stripe";

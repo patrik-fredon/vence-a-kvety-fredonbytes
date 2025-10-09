@@ -1,13 +1,44 @@
 'use client';
 
+/**
+ * Stripe Embedded Checkout Component
+ * 
+ * Provides a modern, embedded payment experience using Stripe's Embedded Checkout.
+ * This component handles:
+ * - Lazy loading of Stripe SDK for optimal performance
+ * - Loading states and timeout handling
+ * - Error handling with user-friendly messages
+ * - Payment completion callbacks
+ * - Localized UI based on user locale
+ * 
+ * Features:
+ * - No redirect to external Stripe pages
+ * - Consistent branding and UX
+ * - Built-in 3D Secure support
+ * - Automatic retry for recoverable errors
+ * - Timeout handling for slow connections
+ * 
+ * Requirements: 3.5, 3.6, 3.13, 3.14, 3.15, 6.6, 6.7, 6.8, 7.1, 7.2, 7.3, 7.7, 8.7
+ * 
+ * @module components/payments/StripeEmbeddedCheckout
+ */
+
 import { useState, useCallback, useEffect } from 'react';
-import { loadStripe } from '@stripe/stripe-js';
-import { EmbeddedCheckoutProvider, EmbeddedCheckout } from '@stripe/react-stripe-js';
 import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useTranslations } from 'next-intl';
+import type { Stripe } from '@stripe/stripe-js';
 
-// Initialize Stripe outside component to avoid recreating on each render
-const stripePromise = loadStripe(process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY']!);
+// Lazy load Stripe SDK only when component is rendered
+let stripePromise: Promise<Stripe | null> | null = null;
+
+const getStripe = () => {
+  if (!stripePromise) {
+    stripePromise = import('@stripe/stripe-js').then((mod) =>
+      mod.loadStripe(process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY']!)
+    );
+  }
+  return stripePromise;
+};
 
 interface StripeEmbeddedCheckoutProps {
   clientSecret: string;
@@ -208,6 +239,34 @@ export function StripeEmbeddedCheckout({
     );
   }
 
+  // Lazy load Stripe components
+  const [StripeComponents, setStripeComponents] = useState<{
+    EmbeddedCheckoutProvider: any;
+    EmbeddedCheckout: any;
+  } | null>(null);
+
+  useEffect(() => {
+    import('@stripe/react-stripe-js').then((mod) => {
+      setStripeComponents({
+        EmbeddedCheckoutProvider: mod.EmbeddedCheckoutProvider,
+        EmbeddedCheckout: mod.EmbeddedCheckout,
+      });
+    }).catch((_error) => {
+      handleGeneralError(new Error('Failed to load Stripe SDK'), true);
+    });
+  }, [handleGeneralError]);
+
+  if (!StripeComponents) {
+    return (
+      <div className="stripe-embedded-checkout-container relative min-h-[600px] flex items-center justify-center">
+        <LoadingSpinner size="lg" locale={locale} />
+        <p className="ml-4 text-stone-600">{t('loading')}</p>
+      </div>
+    );
+  }
+
+  const { EmbeddedCheckoutProvider, EmbeddedCheckout } = StripeComponents;
+
   return (
     <div className="stripe-embedded-checkout-container relative min-h-[600px]">
       {isLoading && (
@@ -224,7 +283,7 @@ export function StripeEmbeddedCheckout({
         </div>
       )}
       <EmbeddedCheckoutProvider
-        stripe={stripePromise}
+        stripe={getStripe()}
         options={{
           fetchClientSecret,
           onComplete: handleComplete,
