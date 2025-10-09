@@ -339,7 +339,7 @@ export function generateEnhancedMetaTags(params: {
 
   // Add keywords if provided
   if (params.keywords && params.keywords.length > 0) {
-    metaTags.keywords = params.keywords.join(", ");
+    metaTags['keywords'] = params.keywords.join(", ");
   }
 
   // Add image if provided

@@ -4,7 +4,7 @@
   "description": "Automatically detects and fixes Biome linting errors in TypeScript/JavaScript files while ensuring code functionality, browser compatibility, responsive design, and visual consistency are maintained",
   "version": "1",
   "when": {
-    "type": "fileEdited",
+    "type": "userTriggered",
     "patterns": [
       "src/**/*.{ts",
       "tsx",

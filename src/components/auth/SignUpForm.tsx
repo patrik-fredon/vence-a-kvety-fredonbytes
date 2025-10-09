@@ -2,13 +2,21 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useId, useState } from "react";
 import { Button } from "@/components/ui/Button";
 import { Input } from "@/components/ui/Input";
 import { useSignUp } from "@/lib/auth/hooks";
 
+interface ValidationErrors {
+  email?: string;
+  password?: string;
+  confirmPassword?: string;
+  name?: string;
+}
+
 export function SignUpForm() {
   const router = useRouter();
+  const formId = useId();
 
   const [formData, setFormData] = useState({
     email: "",
@@ -18,29 +26,29 @@ export function SignUpForm() {
     phone: "",
   });
 
-  const [validationErrors, setValidationErrors] = useState<Record<string, string>>({});
+  const [validationErrors, setValidationErrors] = useState<ValidationErrors>({});
   const { signUp, loading, error } = useSignUp();
 
   const validateForm = () => {
-    const errors: Record<string, string> = {};
+    const errors: ValidationErrors = {};
 
-    if (!(formData as any).email) {
+    if (!formData.email) {
       errors.email = "E-mail je povinný";
-    } else if (!/\S+@\S+\.\S+/.test((formData as any).email)) {
+    } else if (!/\S+@\S+\.\S+/.test(formData.email)) {
       errors.email = "E-mail není ve správném formátu";
     }
 
-    if (!(formData as any).password) {
+    if (!formData.password) {
       errors.password = "Heslo je povinné";
-    } else if ((formData as any).password.length < 6) {
+    } else if (formData.password.length < 6) {
       errors.password = "Heslo musí mít alespoň 6 znaků";
     }
 
-    if ((formData as any).password !== (formData as any).confirmPassword) {
+    if (formData.password !== formData.confirmPassword) {
       errors.confirmPassword = "Hesla se neshodují";
     }
 
-    if (!(formData as any).name) {
+    if (!formData.name) {
       errors.name = "Jméno je povinné";
     }
 
@@ -56,10 +64,10 @@ export function SignUpForm() {
     }
 
     const result = await signUp({
-      email: (formData as any).email,
-      password: (formData as any).password,
-      name: (formData as any).name,
-      phone: (formData as any).phone || "",
+      email: formData.email,
+      password: formData.password,
+      name: formData.name,
+      phone: formData.phone || "",
     });
 
     if (result.success) {
@@ -74,10 +82,11 @@ export function SignUpForm() {
     }));
 
     // Clear validation error when user starts typing
-    if (validationErrors[e.target.name]) {
+    const fieldName = e.target.name as keyof ValidationErrors;
+    if (validationErrors[fieldName]) {
       setValidationErrors((prev) => ({
         ...prev,
-        [e.target.name]: "",
+        [fieldName]: undefined,
       }));
     }
   };
@@ -95,11 +104,11 @@ export function SignUpForm() {
           {/* Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
             <Input
-              id="name"
+              id={`${formId}-name`}
               name="name"
               type="text"
               label="Jméno a příjmení"
-              value={(formData as any).name}
+              value={formData.name}
               onChange={handleChange}
               error={validationErrors.name || ""}
               required
@@ -109,11 +118,11 @@ export function SignUpForm() {
             />
 
             <Input
-              id="email"
+              id={`${formId}-email`}
               name="email"
               type="email"
               label="E-mailová adresa"
-              value={(formData as any).email}
+              value={formData.email}
               onChange={handleChange}
               error={validationErrors.email || ""}
               required
@@ -123,11 +132,11 @@ export function SignUpForm() {
             />
 
             <Input
-              id="phone"
+              id={`${formId}-phone`}
               name="phone"
               type="tel"
               label="Telefon (volitelné)"
-              value={(formData as any).phone}
+              value={formData.phone}
               onChange={handleChange}
               autoComplete="tel"
               disabled={loading}
@@ -136,11 +145,11 @@ export function SignUpForm() {
             />
 
             <Input
-              id="password"
+              id={`${formId}-password`}
               name="password"
               type="password"
               label="Heslo"
-              value={(formData as any).password}
+              value={formData.password}
               onChange={handleChange}
               error={validationErrors.password || ""}
               required
@@ -151,11 +160,11 @@ export function SignUpForm() {
             />
 
             <Input
-              id="confirmPassword"
+              id={`${formId}-confirmPassword`}
               name="confirmPassword"
               type="password"
               label="Potvrzení hesla"
-              value={(formData as any).confirmPassword}
+              value={formData.confirmPassword}
               onChange={handleChange}
               error={validationErrors.confirmPassword || ""}
               required
@@ -168,7 +177,14 @@ export function SignUpForm() {
               <div className="bg-red-50 border border-red-200 rounded-md p-4">
                 <div className="flex">
                   <div className="flex-shrink-0">
-                    <svg className="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                    <svg
+                      className="h-5 w-5 text-red-400"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                      role="img"
+                      aria-label="Error icon"
+                    >
+                      <title>Error</title>
                       <path
                         fillRule="evenodd"
                         d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z"
