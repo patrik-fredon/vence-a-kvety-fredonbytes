@@ -237,8 +237,8 @@ export async function POST(request: NextRequest) {
         unitPrice: result.unit_price,
         totalPrice: result.total_price,
         customizations: result.customizations,
-        createdAt: new Date(result.created_at),
-        updatedAt: new Date(result.updated_at),
+        createdAt: new Date(result.created_at || new Date().toISOString()),
+        updatedAt: new Date(result.updated_at || new Date().toISOString()),
       },
       priceCalculation: {
         basePrice: priceCalculation.basePrice,

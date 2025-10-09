@@ -64,7 +64,8 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
     .then(({ data }) => {
       const statusCounts = data?.reduce(
         (acc, form) => {
-          acc[form.status] = (acc[form.status] || 0) + 1;
+          const status = form.status || "new";
+          acc[status] = (acc[status] || 0) + 1;
           return acc;
         },
         { new: 0, read: 0, replied: 0, archived: 0 } as Record<string, number>

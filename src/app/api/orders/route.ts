@@ -123,6 +123,7 @@ export async function POST(request: NextRequest) {
 
     // Create order data matching the database schema
     const orderData = {
+      order_number: orderNumber,
       user_id: user?.id || null,
       customer_info: {
         ...body.customerInfo,
@@ -134,6 +135,7 @@ export async function POST(request: NextRequest) {
         deliveryCost,
         estimatedDeliveryDate: body.deliveryInfo.preferredDate,
       } as any,
+      delivery_cost: deliveryCost,
       payment_info: {
         method: body.paymentMethod,
         amount: totalAmount,
@@ -146,6 +148,7 @@ export async function POST(request: NextRequest) {
         subtotal,
         totalAmount,
       } as any,
+      subtotal,
       status: "pending",
       total_amount: totalAmount,
       notes: body.customerInfo.note || null,
@@ -223,8 +226,8 @@ export async function POST(request: NextRequest) {
       },
       status: order.status as OrderStatus,
       notes: order.notes || "",
-      createdAt: new Date(order.created_at),
-      updatedAt: new Date(order.updated_at),
+      createdAt: new Date(order.created_at || new Date().toISOString()),
+        updatedAt: new Date(order.updated_at || new Date().toISOString()),
     };
 
     // Post-order cleanup: Remove cart items, customization cache, and clear Redis cache

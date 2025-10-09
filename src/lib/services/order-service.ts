@@ -5,9 +5,8 @@
 
 import { orderUtils } from "@/lib/supabase/utils";
 import { invalidateCacheByEvent } from "@/lib/cache/cache-invalidation";
-import type { Database } from "@/lib/supabase/database.types";
 
-type OrderStatus = Database["public"]["Enums"]["order_status"];
+type OrderStatus = "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
 
 /**
  * Update order status with cache invalidation

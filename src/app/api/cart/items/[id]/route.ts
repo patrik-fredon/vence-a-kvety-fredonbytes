@@ -185,8 +185,8 @@ export async function PUT(request: NextRequest, { params }: RouteParams) {
         unitPrice: data.unit_price,
         totalPrice: data.total_price,
         customizations: data.customizations,
-        createdAt: new Date(data.created_at),
-        updatedAt: new Date(data.updated_at),
+        createdAt: new Date(data.created_at || new Date().toISOString()),
+        updatedAt: new Date(data.updated_at || new Date().toISOString()),
       },
     });
   } catch (error) {

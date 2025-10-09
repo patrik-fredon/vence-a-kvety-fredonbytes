@@ -56,8 +56,8 @@ export const PUT = withAdminAuth(
         "UPDATE",
         "orders",
         orderId,
-        { status: currentOrder?.status, internal_notes: currentOrder?.internal_notes },
-        { status, internal_notes: internalNotes },
+        { status: currentOrder?.status, notes: currentOrder?.notes },
+        { status, notes: internalNotes },
         request
       );
 

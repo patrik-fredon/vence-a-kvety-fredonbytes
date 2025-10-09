@@ -89,7 +89,11 @@ export function DateSelector({
   // Handle date selection
   const handleDateSelect = (date: Date) => {
     if (!isDateSelectable(date)) return;
-    const dateString: string = date.toISOString().split("T")[0] as string;
+    // Format date as YYYY-MM-DD without timezone conversion
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
     onChange(dateString);
     setIsOpen(false);
   };
@@ -207,13 +211,13 @@ export function DateSelector({
                     "p-2 text-sm rounded-lg transition-colors relative",
                     {
                       // Selected date
-                      "bg-teal-600 text-white font-semibold hover:bg-teal-700": selected && selectable,
+                      "bg-teal-800 text-white font-semibold hover:bg-teal-700": selected && selectable,
 
                       // Selectable dates
-                      "bg-white text-teal-800 hover:bg-teal-50 border border-amber-200": !selected && selectable,
+                      "bg-amber-200 text-teal-800 hover:bg-teal-50 border border-amber-300": !selected && selectable,
 
                       // Disabled dates
-                      "bg-gray-100 text-gray-400 cursor-not-allowed": !selectable,
+                      "bg-amber-100/40 text-gray-400 cursor-not-allowed": !selectable,
                     }
                   )}
                   title={

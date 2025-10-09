@@ -1,4 +1,5 @@
-import { type NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 import { logAdminAction, withAdminAuth } from "@/lib/auth/admin-middleware";
 import { adminUtils } from "@/lib/supabase/utils";
 
@@ -9,28 +10,23 @@ export const PUT = withAdminAuth(
   async (request: NextRequest, admin, { params }: { params: Promise<{ id: string }> }) => {
     try {
       const { id: productId } = await params;
-      const { stock_quantity, track_inventory } = await request.json();
-
-      // Validate stock quantity
-      if (stock_quantity < 0) {
-        return NextResponse.json(
-          {
-            success: false,
-            error: "Počet kusů nemůže být záporný",
-          },
-          { status: 400 }
-        );
-      }
+      const body = await request.json();
+      const { stock_quantity, track_inventory } = body;
 
       // Get current product for logging
       const { data: currentProducts } = await adminUtils.getAllProducts({ limit: 1000 });
       const currentProduct = currentProducts?.find((p) => p.id === productId);
 
-      const { error } = await adminUtils.updateProductInventory(
-        productId,
-        stock_quantity,
-        track_inventory ?? true
-      );
+      // Update product availability using JSONB field
+      const currentAvailability = (currentProduct?.availability as any) || {};
+      const newAvailability = {
+        ...currentAvailability,
+        inStock: stock_quantity > 0,
+        stockQuantity: stock_quantity,
+        trackInventory: track_inventory ?? true,
+      };
+
+      const { error } = await adminUtils.updateProductAvailability(productId, newAvailability);
 
       if (error) {
         console.error("Error updating product inventory:", error);
@@ -50,23 +46,22 @@ export const PUT = withAdminAuth(
         "products",
         productId,
         {
-          stock_quantity: currentProduct?.stock_quantity,
-          track_inventory: currentProduct?.track_inventory,
+          availability: currentProduct?.availability,
         },
-        { stock_quantity, track_inventory },
+        { availability: newAvailability },
         request
       );
 
       return NextResponse.json({
         success: true,
-        message: "Zásoby byly aktualizovány",
+        message: "Zásoby byly úspěšně aktualizovány",
       });
     } catch (error) {
       console.error("Error in PUT /api/admin/products/[id]/inventory:", error);
       return NextResponse.json(
         {
           success: false,
-          error: "Interní chyba serveru",
+          error: "Chyba při zpracování požadavku",
         },
         { status: 500 }
       );

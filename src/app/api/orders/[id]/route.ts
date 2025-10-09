@@ -80,12 +80,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
       status: order.status as OrderStatus,
       notes: order.notes || "",
       internalNotes: order.notes || "",
-      createdAt: new Date(order.created_at),
-      updatedAt: new Date(order.updated_at),
-      confirmedAt: order.confirmed_at ? new Date(order.confirmed_at) : new Date(),
-      shippedAt: order.shipped_at ? new Date(order.shipped_at) : new Date(),
-      deliveredAt: order.delivered_at ? new Date(order.delivered_at) : new Date(),
-      cancelledAt: order.cancelled_at ? new Date(order.cancelled_at) : new Date(),
+      createdAt: new Date(order.created_at || new Date().toISOString()),
+      updatedAt: new Date(order.updated_at || new Date().toISOString()),
     };
 
     return NextResponse.json({
@@ -244,12 +240,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
           status: updatedOrder.status as OrderStatus,
           notes: updatedOrder.notes || "",
           internalNotes: updatedOrder.notes || "",
-          createdAt: new Date(updatedOrder.created_at),
-          updatedAt: new Date(updatedOrder.updated_at),
-          ...(updatedOrder.confirmed_at && { confirmedAt: new Date(updatedOrder.confirmed_at) }),
-          ...(updatedOrder.shipped_at && { shippedAt: new Date(updatedOrder.shipped_at) }),
-          ...(updatedOrder.delivered_at && { deliveredAt: new Date(updatedOrder.delivered_at) }),
-          ...(updatedOrder.cancelled_at && { cancelledAt: new Date(updatedOrder.cancelled_at) }),
+          createdAt: new Date(updatedOrder.created_at || new Date().toISOString()),
+          updatedAt: new Date(updatedOrder.updated_at || new Date().toISOString()),
         };
 
         // Send status update email
