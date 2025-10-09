@@ -64,6 +64,11 @@
     "flowers": "Květiny",
     "ribbon": "Stuha",
     "message": "Vzkaz",
+    "color": {
+      "title": "Barva věnce",
+      "description": "Vyberte hlavní barvu květin na věnci",
+      "required": "Prosím vyberte barvu věnce"
+    },
     "customization": "Přizpůsobení",
     "category": "Kategorie",
     "uncategorized": "Bez kategorie",

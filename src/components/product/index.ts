@@ -30,6 +30,7 @@ export { ProductImageHover } from "./ProductImageHover";
 export { ProductInfo } from "./ProductInfo";
 export { RibbonConfigurator } from "./RibbonConfigurator";
 export { SizeSelector } from "./SizeSelector";
+export { ColorSelection } from "./ColorSelection";
 // Export shared types
 export type {
   ProductCardActionConfig,
