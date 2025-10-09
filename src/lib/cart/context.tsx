@@ -232,38 +232,6 @@ export function CartProvider({ children }: CartProviderProps) {
   const [cartVersion, setCartVersion] = useState(Date.now());
   const syncManagerRef = useRef<CartSyncManager | null>(null);
 
-  // Online/offline detection
-  useEffect(() => {
-    const handleOnline = () => {
-      setIsOnline(true);
-      // Sync when coming back online
-      syncWithServer();
-      // Reconnect real-time sync if enabled
-      if (isRealTimeEnabled && syncManagerRef.current) {
-        syncManagerRef.current.connect();
-      }
-    };
-    const handleOffline = () => {
-      setIsOnline(false);
-      // Disconnect real-time sync
-      if (syncManagerRef.current) {
-        syncManagerRef.current.disconnect();
-      }
-    };
-
-    window.addEventListener("online", handleOnline);
-    window.addEventListener("offline", handleOffline);
-    setIsOnline(navigator.onLine);
-
-    return () => {
-      window.removeEventListener("online", handleOnline);
-      window.removeEventListener("offline", handleOffline);
-    };
-  }, [
-    isRealTimeEnabled, // Sync when coming back online
-    syncWithServer,
-  ]); // syncWithServer is stable via useCallback
-
   // Enhanced fetch cart with retry logic
   const fetchCart = useCallback(
     async (retryCount = 0): Promise<boolean> => {
@@ -704,6 +672,35 @@ export function CartProvider({ children }: CartProviderProps) {
       dispatch({ type: "SET_SYNCING", payload: false });
     }
   }, [isOnline, state.items, cartVersion]);
+
+  // Online/offline detection
+  useEffect(() => {
+    const handleOnline = () => {
+      setIsOnline(true);
+      // Sync when coming back online
+      syncWithServer();
+      // Reconnect real-time sync if enabled
+      if (isRealTimeEnabled && syncManagerRef.current) {
+        syncManagerRef.current.connect();
+      }
+    };
+    const handleOffline = () => {
+      setIsOnline(false);
+      // Disconnect real-time sync
+      if (syncManagerRef.current) {
+        syncManagerRef.current.disconnect();
+      }
+    };
+
+    window.addEventListener("online", handleOnline);
+    window.addEventListener("offline", handleOffline);
+    setIsOnline(navigator.onLine);
+
+    return () => {
+      window.removeEventListener("online", handleOnline);
+      window.removeEventListener("offline", handleOffline);
+    };
+  }, [isRealTimeEnabled, syncWithServer]);
 
   // Periodic sync to detect server-side changes
   useEffect(() => {

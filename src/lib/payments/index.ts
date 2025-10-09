@@ -229,7 +229,7 @@ export class PaymentService {
     }
 
     return {
-      orderId: paymentIntent.metadata.orderId || "",
+      orderId: paymentIntent.metadata['orderId'] || "",
       transactionId: paymentIntent.id,
       amount: paymentIntent.amount / 100,
       currency: paymentIntent.currency,

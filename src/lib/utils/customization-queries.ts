@@ -53,8 +53,8 @@ export async function getProductCustomizationOptions(
       } else {
         // If it's an object, try to extract array from it using bracket notation
         const optionsData = data.customization_options as Record<string, any>;
-        if (optionsData && Array.isArray(optionsData.options)) {
-          options = optionsData.options as unknown as CustomizationOption[];
+        if (optionsData && Array.isArray(optionsData['options'])) {
+          options = optionsData['options'] as unknown as CustomizationOption[];
         }
       }
     }
@@ -133,8 +133,8 @@ export async function getBatchProductCustomizationOptions(
           } else {
             // If it's an object, try to extract array from it using bracket notation
             const optionsData = product.customization_options as Record<string, any>;
-            if (optionsData && Array.isArray(optionsData.options)) {
-              options = optionsData.options as unknown as CustomizationOption[];
+            if (optionsData && Array.isArray(optionsData['options'])) {
+              options = optionsData['options'] as unknown as CustomizationOption[];
             }
           }
         }
@@ -204,8 +204,8 @@ export async function getFrequentCustomizationOptions(): Promise<void> {
         } else {
           // If it's an object, try to extract array from it using bracket notation
           const optionsData = product.customization_options as Record<string, any>;
-          if (optionsData && Array.isArray(optionsData.options)) {
-            options = optionsData.options as unknown as CustomizationOption[];
+          if (optionsData && Array.isArray(optionsData['options'])) {
+            options = optionsData['options'] as unknown as CustomizationOption[];
           }
         }
       }
@@ -290,8 +290,8 @@ export async function getOrderCustomizationData(orderId: string) {
     } else if (typeof order.items === "object" && order.items !== null) {
       // Handle case where items might be wrapped in an object using bracket notation
       const itemsData = order.items as Record<string, any>;
-      if (Array.isArray(itemsData.items)) {
-        orderItems = itemsData.items;
+      if (Array.isArray(itemsData['items'])) {
+        orderItems = itemsData['items'];
       }
     }
 

@@ -1,0 +1,23 @@
+{
+  "enabled": true,
+  "name": "Biome Lint Error Solver",
+  "description": "Automatically detects and fixes Biome linting errors in TypeScript/JavaScript files while ensuring code functionality, browser compatibility, responsive design, and visual consistency are maintained",
+  "version": "1",
+  "when": {
+    "type": "fileEdited",
+    "patterns": [
+      "src/**/*.{ts",
+      "tsx",
+      "js",
+      "jsx}",
+      "*.{ts",
+      "tsx",
+      "js",
+      "jsx}"
+    ]
+  },
+  "then": {
+    "type": "askAgent",
+    "prompt": "A file has been modified. Analyze it for Biome linting errors and fix them following these strict guidelines:\n\n1. **Run Biome Check**: Execute `npm run lint` to identify all linting errors in the modified file\n2. **Analyze Errors**: Review each error carefully to understand the root cause\n3. **Fix Strategy**:\n   - Use modern ES6+ syntax compatible with all browsers (via Next.js transpilation)\n   - Maintain responsive design patterns (mobile-first, all screen sizes)\n   - Preserve existing visual styling and CSS classes\n   - Keep functionality identical - no breaking changes\n   - Follow TypeScript strict mode requirements\n   - Maintain accessibility standards (WCAG compliance)\n   - Use Server Components by default, Client Components only when needed\n\n4. **Common Fixes**:\n   - Remove unused variables/imports\n   - Fix type errors with proper TypeScript types\n   - Correct async/await patterns\n   - Fix React hooks dependencies\n   - Resolve naming convention issues\n   - Fix formatting issues (Biome style)\n\n5. **Validation**:\n   - Run `npm run lint` again to confirm fixes\n   - Run `npm run type-check` to ensure TypeScript validity\n   - Verify no functionality was broken\n   - Confirm responsive design is intact\n   - Check that visual appearance is unchanged\n\n6. **Documentation**: Write a memory documenting what was fixed and why\n\nNever compromise on: browser compatibility, responsive design, visual consistency, or code functionality. Always use modern, optimized solutions."
+  }
+}

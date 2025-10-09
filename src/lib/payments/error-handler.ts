@@ -207,7 +207,7 @@ function getErrorMessage(errorType: string, locale: "cs" | "en"): string {
     },
   };
 
-  return messages[errorType]?.[locale] || messages.unknown?.[locale] || "An unknown error occurred";
+  return messages[errorType]?.[locale] || messages['unknown']?.[locale] || "An unknown error occurred";
 }
 
 /**

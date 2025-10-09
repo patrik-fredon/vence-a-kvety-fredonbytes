@@ -659,7 +659,7 @@ function generateFallbackConfiguration(
 
   // Apply fallback strategies based on errors
   errors.forEach((error) => {
-    if (error.fallbackAction && error.context?.fallbackValue !== undefined) {
+    if (error.fallbackAction && error.context?.['fallbackValue'] !== undefined) {
       switch (error.fallbackAction) {
         case "select_default_size": {
           // Add default size if missing

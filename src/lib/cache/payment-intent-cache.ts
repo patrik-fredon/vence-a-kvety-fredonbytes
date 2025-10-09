@@ -39,8 +39,8 @@ export async function cachePaymentIntent(paymentIntent: Stripe.PaymentIntent): P
       amount: paymentIntent.amount,
       currency: paymentIntent.currency,
       status: paymentIntent.status,
-      orderId: paymentIntent.metadata.orderId || "",
-      customerEmail: paymentIntent.metadata.customerEmail || "",
+      orderId: paymentIntent.metadata['orderId'] || "",
+      customerEmail: paymentIntent.metadata['customerEmail'] || "",
       createdAt: new Date(paymentIntent.created * 1000).toISOString(),
       expiresAt: new Date(Date.now() + PAYMENT_INTENT_TTL * 1000).toISOString(),
     };
@@ -48,11 +48,11 @@ export async function cachePaymentIntent(paymentIntent: Stripe.PaymentIntent): P
     await client.set(key, JSON.stringify(cachedData), PAYMENT_INTENT_TTL);
 
     // Also cache by order ID for quick lookup
-    if (paymentIntent.metadata.orderId) {
+    if (paymentIntent.metadata['orderId']) {
       const orderKey = generateCacheKey(
         CACHE_KEYS.PAYMENT,
         "order-intent",
-        paymentIntent.metadata.orderId
+        paymentIntent.metadata['orderId']
       );
       await client.set(orderKey, paymentIntent.id, PAYMENT_INTENT_TTL);
     }
