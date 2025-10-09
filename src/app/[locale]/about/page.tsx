@@ -90,7 +90,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <div className="overflow-hidden rounded-lg">
               <div className="aspect-square bg-funeral-gold relative">
                 <Image
-                  src="https://cdn.fredonbytes.com/purple-pink-rose-wreath-with-ranunculus-and-delphiniums.webp"
+                  src="https://cdn.fredonbytes.com/purple-pink-rose-wreath-with-ranunculus-and-delphiniums.webp.webp"
                   alt={tAbout("companyDescription")}
                   fill
                   className="object-cover"
