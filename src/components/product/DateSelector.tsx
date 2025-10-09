@@ -92,8 +92,8 @@ export function DateSelector({
     if (!isDateSelectable(date)) return;
     // Format date as YYYY-MM-DD without timezone conversion
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     const dateString = `${year}-${month}-${day}`;
     onChange(dateString);
     setIsOpen(false);
@@ -118,18 +118,15 @@ export function DateSelector({
     }
   };
 
-
-
-  const weekdayNames = locale === "cs"
-    ? ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
-    : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekdayNames =
+    locale === "cs"
+      ? ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
+      : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const calendarDays = generateCalendarDays();
 
   return (
     <div className={cn("space-y-2", className)}>
-
-
       {/* Date Picker Button */}
       <button
         type="button"
@@ -144,7 +141,9 @@ export function DateSelector({
           <CalendarIcon className="w-5 h-5 text-teal-800" />
           <div className="text-left">
             {value ? (
-              <div className="font-medium text-teal-800">{formatDateForDisplay(value as string)}</div>
+              <div className="font-medium text-teal-800">
+                {formatDateForDisplay(value as string)}
+              </div>
             ) : (
               <div className="text-teal-800">
                 {locale === "cs" ? "Vyberte datum" : "Select date"}
@@ -168,7 +167,6 @@ export function DateSelector({
             >
               <span className="text-teal-800">‹</span>
             </button>
-
 
             <button
               type="button"
@@ -205,19 +203,18 @@ export function DateSelector({
                   type="button"
                   onClick={() => handleDateSelect(date)}
                   disabled={!selectable}
-                  className={cn(
-                    "p-2 text-sm rounded-lg transition-colors relative",
-                    {
-                      // Selected date
-                      "bg-teal-800 text-white font-semibold hover:bg-teal-700": selected && selectable,
+                  className={cn("p-2 text-sm rounded-lg transition-colors relative", {
+                    // Selected date
+                    "bg-teal-800 text-white font-semibold hover:bg-teal-700":
+                      selected && selectable,
 
-                      // Selectable dates
-                      "bg-amber-200 text-teal-800 hover:bg-teal-50 border border-amber-300": !selected && selectable,
+                    // Selectable dates
+                    "bg-amber-200 text-teal-800 hover:bg-teal-50 border border-amber-300":
+                      !selected && selectable,
 
-                      // Disabled dates
-                      "bg-amber-100/40 text-gray-400 cursor-not-allowed": !selectable,
-                    }
-                  )}
+                    // Disabled dates
+                    "bg-amber-100/40 text-gray-400 cursor-not-allowed": !selectable,
+                  })}
                   title={
                     !selectable
                       ? locale === "cs"
@@ -240,7 +237,6 @@ export function DateSelector({
           </div>
         </div>
       )}
-
     </div>
   );
 }

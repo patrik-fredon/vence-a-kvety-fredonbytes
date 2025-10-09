@@ -4,6 +4,7 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
+
 interface PaymentAttemptLog {
   orderId: string;
   amount: number;
@@ -169,14 +170,14 @@ export class PaymentMonitor {
         type: stripeError.type || "UnknownError",
         code: stripeError.code,
         message: stripeError.message || error.message,
-        sanitized: this.sanitizeStripeError(error),
+        sanitized: PaymentMonitor.sanitizeStripeError(error),
       };
     }
 
     return {
       type: "UnknownError",
       message: String(error),
-      sanitized: this.sanitizeStripeError(error),
+      sanitized: PaymentMonitor.sanitizeStripeError(error),
     };
   }
 
@@ -189,9 +190,9 @@ export class PaymentMonitor {
     error: unknown;
     payload?: any;
   }): Promise<void> {
-    const errorDetails = this.extractErrorDetails(data.error);
+    const errorDetails = PaymentMonitor.extractErrorDetails(data.error);
 
-    await this.logPaymentError({
+    await PaymentMonitor.logPaymentError({
       errorType: `webhook_${data.eventType}`,
       ...(errorDetails.code ? { errorCode: errorDetails.code } : {}),
       errorMessage: errorDetails.message,
@@ -215,9 +216,9 @@ export class PaymentMonitor {
     customerEmail?: string;
     error: unknown;
   }): Promise<void> {
-    const errorDetails = this.extractErrorDetails(data.error);
+    const errorDetails = PaymentMonitor.extractErrorDetails(data.error);
 
-    await this.logPaymentError({
+    await PaymentMonitor.logPaymentError({
       orderId: data.orderId,
       errorType: "payment_intent_creation",
       ...(errorDetails.code ? { errorCode: errorDetails.code } : {}),
@@ -238,9 +239,9 @@ export class PaymentMonitor {
     paymentIntentId: string;
     error: unknown;
   }): Promise<void> {
-    const errorDetails = this.extractErrorDetails(data.error);
+    const errorDetails = PaymentMonitor.extractErrorDetails(data.error);
 
-    await this.logPaymentError({
+    await PaymentMonitor.logPaymentError({
       orderId: data.orderId,
       paymentIntentId: data.paymentIntentId,
       errorType: "payment_confirmation",
@@ -305,5 +306,4 @@ export const logWebhookError = PaymentMonitor.logWebhookError.bind(PaymentMonito
 export const logPaymentIntentError = PaymentMonitor.logPaymentIntentError.bind(PaymentMonitor);
 export const logPaymentConfirmationError =
   PaymentMonitor.logPaymentConfirmationError.bind(PaymentMonitor);
-export const getPaymentErrorStatistics =
-  PaymentMonitor.getErrorStatistics.bind(PaymentMonitor);
+export const getPaymentErrorStatistics = PaymentMonitor.getErrorStatistics.bind(PaymentMonitor);

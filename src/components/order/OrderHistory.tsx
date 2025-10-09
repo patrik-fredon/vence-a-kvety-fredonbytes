@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { OrderStatus } from "@/types/order";
 

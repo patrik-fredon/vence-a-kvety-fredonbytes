@@ -1,6 +1,5 @@
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import type { CustomizationChoice, CustomizationOption } from "@/types/product";
 
 interface SizeSelectorProps {
@@ -130,7 +129,7 @@ export function SizeSelector({
                   "active:scale-[0.98] transition-transform duration-75",
 
                   // High contrast support
-                  "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText",
+                  "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
 
                   // Focus improvements for accessibility
                 )}
@@ -147,9 +146,7 @@ export function SizeSelector({
                   <div
                     className={cn(
                       "w-5 h-5 rounded-full border-2 transition-colors duration-200",
-                      isSelected
-                        ? "border-teal-900 bg-amber-300"
-                        : "border-teal-800 bg-amber-100"
+                      isSelected ? "border-teal-900 bg-amber-300" : "border-teal-800 bg-amber-100"
                     )}
                   >
                     {isSelected && (
@@ -167,9 +164,7 @@ export function SizeSelector({
                   </div>
 
                   <div className="mt-2 space-y-1">
-                    <div className="text-lg font-bold text-teal-800">
-                      {getDisplayPrice(choice)}
-                    </div>
+                    <div className="text-lg font-bold text-teal-800">{getDisplayPrice(choice)}</div>
                     {priceModifier && <div className="text-sm text-teal-800">{priceModifier}</div>}
                   </div>
 

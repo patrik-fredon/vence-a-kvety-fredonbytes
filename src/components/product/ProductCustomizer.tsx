@@ -82,8 +82,6 @@ export function ProductCustomizer({
     );
   };
 
-
-
   // Render a choice button for selection options
   const renderChoice = (option: CustomizationOption, choice: CustomizationChoice) => {
     const currentCustomization = getCurrentCustomization(option.id);
@@ -161,8 +159,6 @@ export function ProductCustomizer({
     );
   };
 
-
-
   // Render date selector for choices that require calendar
   const renderDateSelector = (option: CustomizationOption, choice: CustomizationChoice) => {
     const currentCustomization = getCurrentCustomization(option.id);
@@ -181,7 +177,6 @@ export function ProductCustomizer({
           minDaysFromNow={choice.minDaysFromNow || 3}
           maxDaysFromNow={choice.maxDaysFromNow || 30}
           locale={locale}
-
         />
       </div>
     );
@@ -215,7 +210,6 @@ export function ProductCustomizer({
           <div key={option.id} className="space-y-3">
             {/* Option Header */}
             <div className="flex items-center justify-between">
-
               {/* Selection Counter */}
               {option.maxSelections && option.maxSelections > 1 && (
                 <div className="text-sm text-teal-800">

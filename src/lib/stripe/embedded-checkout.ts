@@ -4,20 +4,20 @@
  */
 
 import { createHash } from "crypto";
+import {
+  CACHE_TTL,
+  deserializeFromCache,
+  generateCacheKey,
+  getCacheClient,
+  serializeForCache,
+} from "@/lib/cache/redis";
+import { stripe } from "@/lib/payments/stripe";
+import { createClient } from "@/lib/supabase/server";
+import { getDeliveryMethodFromCart } from "@/lib/utils/delivery-method-utils";
 import type { CartItem } from "@/types/cart";
 import type { Product } from "@/types/product";
-import { getDeliveryMethodFromCart } from "@/lib/utils/delivery-method-utils";
-import { stripe } from "@/lib/payments/stripe";
-import { getStripePriceId, getStripeProductId } from "./price-selector";
-import { createClient } from "@/lib/supabase/server";
-import {
-  getCacheClient,
-  generateCacheKey,
-  serializeForCache,
-  deserializeFromCache,
-  CACHE_TTL,
-} from "@/lib/cache/redis";
 import { handleStripeError, withRetry } from "./error-handler";
+import { getStripePriceId, getStripeProductId } from "./price-selector";
 
 /**
  * Parameters for creating an embedded checkout session
@@ -58,7 +58,7 @@ interface CachedCheckoutSession {
 
 /**
  * Generates a hash for cart items to use as cache key
- * 
+ *
  * @param items - Cart items to hash
  * @returns Hash string for cache key
  */
@@ -67,30 +67,22 @@ function generateCartHash(items: CartItem[]): string {
     .map((item) => ({
       productId: item.productId,
       quantity: item.quantity,
-      customizations: item.customizations?.sort((a, b) =>
-        a.optionId.localeCompare(b.optionId)
-      ),
+      customizations: item.customizations?.sort((a, b) => a.optionId.localeCompare(b.optionId)),
     }))
     .sort((a, b) => a.productId.localeCompare(b.productId));
 
-  return createHash("sha256")
-    .update(JSON.stringify(sortedItems))
-    .digest("hex")
-    .substring(0, 16);
+  return createHash("sha256").update(JSON.stringify(sortedItems)).digest("hex").substring(0, 16);
 }
 
 /**
  * Retrieves Stripe product and price IDs from Supabase for a cart item
- * 
+ *
  * @param productId - The product ID
  * @param customizations - Product customizations
  * @returns Stripe product and price IDs
  * @throws Error if product not found or missing Stripe IDs
  */
-async function getStripeIds(
-  productId: string,
-  customizations: any[]
-): Promise<StripeIds> {
+async function getStripeIds(productId: string, customizations: any[]): Promise<StripeIds> {
   // Try to get from cache first
   try {
     const cacheClient = getCacheClient();
@@ -106,7 +98,7 @@ async function getStripeIds(
 
       if (cached) {
         console.log("✅ [Stripe] Cache hit for Stripe IDs", { productId });
-        
+
         // Convert to Product type for price selector
         const product: Product = {
           id: productId,
@@ -155,9 +147,7 @@ async function getStripeIds(
       productId,
       productName: productRow.name_cs,
     });
-    throw new Error(
-      `Product ${productRow.name_cs} (${productId}) is missing Stripe product ID`
-    );
+    throw new Error(`Product ${productRow.name_cs} (${productId}) is missing Stripe product ID`);
   }
 
   if (!productRow.stripe_price_id) {
@@ -165,9 +155,7 @@ async function getStripeIds(
       productId,
       productName: productRow.name_cs,
     });
-    throw new Error(
-      `Product ${productRow.name_cs} (${productId}) is missing Stripe price ID`
-    );
+    throw new Error(`Product ${productRow.name_cs} (${productId}) is missing Stripe price ID`);
   }
 
   // Cache the Stripe IDs for future use
@@ -210,11 +198,11 @@ async function getStripeIds(
 
 /**
  * Creates a Stripe Embedded Checkout session
- * 
+ *
  * @param params - Checkout session parameters
  * @returns Client secret and session ID for the embedded checkout
  * @throws Error if session creation fails
- * 
+ *
  * @example
  * ```typescript
  * const session = await createEmbeddedCheckoutSession({
@@ -226,26 +214,26 @@ async function getStripeIds(
  */
 /**
  * Creates or retrieves a cached Stripe Embedded Checkout session
- * 
+ *
  * This function handles the complete lifecycle of creating a Stripe checkout session:
  * 1. Validates cart items and generates a cache key
  * 2. Checks Redis cache for existing valid session
  * 3. If cache miss, creates new Stripe session with retry logic
  * 4. Caches the new session with 30-minute TTL
  * 5. Returns client secret for embedding checkout
- * 
+ *
  * @param params - Checkout session parameters
  * @param params.cartItems - Array of cart items to checkout
  * @param params.locale - User locale ('cs' or 'en') for Stripe UI
  * @param params.customerId - Optional Stripe customer ID
  * @param params.metadata - Optional metadata to attach to session
- * 
+ *
  * @returns Promise resolving to client secret and session ID
- * 
+ *
  * @throws {Error} If Stripe is not configured
  * @throws {Error} If cart is empty
  * @throws {CheckoutError} If session creation fails after retries
- * 
+ *
  * @example
  * ```typescript
  * const session = await createEmbeddedCheckoutSession({
@@ -254,9 +242,9 @@ async function getStripeIds(
  *   metadata: { cartId: cart.id }
  * });
  * ```
- * 
+ *
  * @see {@link https://stripe.com/docs/payments/checkout/embedded|Stripe Embedded Checkout Docs}
- * 
+ *
  * Requirements: 3.1, 3.2, 3.8, 3.9, 3.10, 3.12, 6.1, 6.2, 6.3
  */
 export async function createEmbeddedCheckoutSession(
@@ -265,9 +253,7 @@ export async function createEmbeddedCheckoutSession(
   const startTime = Date.now();
 
   if (!stripe) {
-    throw new Error(
-      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
-    );
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
   const { cartItems, locale, customerId, metadata = {} } = params;
@@ -328,20 +314,14 @@ export async function createEmbeddedCheckoutSession(
   const lineItems = await Promise.all(
     cartItems.map(async (item) => {
       try {
-        const { priceId } = await getStripeIds(
-          item.productId,
-          item.customizations || []
-        );
+        const { priceId } = await getStripeIds(item.productId, item.customizations || []);
 
         return {
           price: priceId,
           quantity: item.quantity,
         };
       } catch (error) {
-        console.error(
-          `Failed to get Stripe IDs for product ${item.productId}:`,
-          error
-        );
+        console.error(`Failed to get Stripe IDs for product ${item.productId}:`, error);
         throw error;
       }
     })
@@ -369,7 +349,7 @@ export async function createEmbeddedCheckoutSession(
             deliveryMethod: deliveryMethod || "delivery",
             ...metadata,
           },
-          return_url: `${process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000"}/${locale}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
+          return_url: `${process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000"}/${locale}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
         });
       },
       {
@@ -434,7 +414,7 @@ export async function createEmbeddedCheckoutSession(
       locale,
       duration,
     });
-    
+
     // Convert to CheckoutError with localized message
     const checkoutError = handleStripeError(error, locale);
     throw checkoutError;
@@ -444,9 +424,9 @@ export async function createEmbeddedCheckoutSession(
 /**
  * Invalidates a cached checkout session
  * Should be called when checkout is completed or cancelled
- * 
+ *
  * @param sessionId - Stripe session ID to invalidate
- * 
+ *
  * @example
  * ```typescript
  * await invalidateCheckoutSession(session.id);
@@ -454,28 +434,26 @@ export async function createEmbeddedCheckoutSession(
  */
 /**
  * Invalidates a cached checkout session
- * 
+ *
  * Should be called after successful payment completion or cancellation
  * to ensure the session cannot be reused.
- * 
+ *
  * Note: Current implementation logs the invalidation but doesn't perform
  * actual cache deletion due to lack of reverse lookup (session ID -> cache key).
  * Consider maintaining a session ID mapping in production for full invalidation.
- * 
+ *
  * @param sessionId - Stripe session ID to invalidate
- * 
+ *
  * @returns Promise that resolves when invalidation completes
- * 
+ *
  * @example
  * ```typescript
  * await invalidateCheckoutSession(session.sessionId);
  * ```
- * 
+ *
  * Requirements: 3.12, 9.4
  */
-export async function invalidateCheckoutSession(
-  sessionId: string
-): Promise<void> {
+export async function invalidateCheckoutSession(sessionId: string): Promise<void> {
   try {
     // We need to find the cache key by session ID
     // Since we don't have a reverse lookup, we'll use a pattern-based approach
@@ -498,20 +476,20 @@ export async function invalidateCheckoutSession(
 /**
  * Warm up cache for popular products' Stripe IDs
  * Pre-caches Stripe product and price IDs for frequently accessed products
- * 
+ *
  * @param productIds - Array of product IDs to warm up
  * @returns Promise that resolves when cache warming is complete
  */
 export async function warmStripeIdsCache(productIds: string[]): Promise<void> {
   console.log(`🔥 [Stripe] Warming Stripe IDs cache for ${productIds.length} products...`);
-  
+
   const startTime = Date.now();
   let successCount = 0;
   let errorCount = 0;
 
   try {
     const supabase = await createClient();
-    
+
     // Fetch products with their Stripe IDs
     const { data: products, error } = await supabase
       .from("products")
@@ -531,10 +509,10 @@ export async function warmStripeIdsCache(productIds: string[]): Promise<void> {
 
     // Cache Stripe IDs for each product
     const cacheClient = getCacheClient();
-    
+
     for (const product of products) {
       try {
-        if (!product.stripe_product_id || !product.stripe_price_id) {
+        if (!(product.stripe_product_id && product.stripe_price_id)) {
           console.warn(`⚠️ [Stripe] Product ${product.id} missing Stripe IDs`);
           errorCount++;
           continue;
@@ -570,7 +548,7 @@ export async function warmStripeIdsCache(productIds: string[]): Promise<void> {
 /**
  * Warm up cache for popular products based on analytics
  * Fetches most viewed/purchased products and pre-caches their Stripe IDs
- * 
+ *
  * @param limit - Number of popular products to cache (default: 20)
  * @returns Promise that resolves when cache warming is complete
  */
@@ -579,7 +557,7 @@ export async function warmPopularProductsStripeIds(limit = 20): Promise<void> {
 
   try {
     const supabase = await createClient();
-    
+
     // Fetch popular products (featured or recently created as a proxy for popular)
     const { data: products, error } = await supabase
       .from("products")
@@ -599,7 +577,7 @@ export async function warmPopularProductsStripeIds(limit = 20): Promise<void> {
       return;
     }
 
-    const productIds = products.map(p => p.id);
+    const productIds = products.map((p) => p.id);
     await warmStripeIdsCache(productIds);
   } catch (error) {
     console.error("❌ [Stripe] Error warming popular products cache:", error);
@@ -609,14 +587,14 @@ export async function warmPopularProductsStripeIds(limit = 20): Promise<void> {
 /**
  * Background cache refresh for Stripe IDs
  * Periodically refreshes cached Stripe IDs to ensure they stay fresh
- * 
+ *
  * @param intervalMs - Refresh interval in milliseconds (default: 1 hour)
  */
 export function scheduleStripeIdsCacheRefresh(intervalMs = 3600000): void {
   console.log(`🔥 [Stripe] Scheduling Stripe IDs cache refresh every ${intervalMs}ms`);
 
   // Initial warming
-  warmPopularProductsStripeIds().catch(error => {
+  warmPopularProductsStripeIds().catch((error) => {
     console.error("❌ [Stripe] Initial cache warming failed:", error);
   });
 

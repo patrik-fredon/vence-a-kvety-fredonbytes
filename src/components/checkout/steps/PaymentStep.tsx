@@ -1,9 +1,6 @@
 "use client";
 
-import {
-  CreditCardIcon,
-  ShieldCheckIcon,
-} from "@heroicons/react/24/outline";
+import { CreditCardIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
 import { useEffect } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
@@ -126,9 +123,10 @@ export function PaymentStep({
             key={option.id}
             className={`
               relative border-2 rounded-lg p-6 cursor-pointer transition-all
-              ${paymentMethod === option.id
-                ? "border-primary-500 bg-primary-50"
-                : "border-neutral-200 bg-white hover:border-neutral-300"
+              ${
+                paymentMethod === option.id
+                  ? "border-primary-500 bg-primary-50"
+                  : "border-neutral-200 bg-white hover:border-neutral-300"
               }
             `}
             onClick={() => onChange(option.id)}
@@ -148,10 +146,11 @@ export function PaymentStep({
                 <div
                   className={`
                   w-5 h-5 rounded-full border-2 flex items-center justify-center
-                  ${paymentMethod === option.id
+                  ${
+                    paymentMethod === option.id
                       ? "border-primary-500 bg-primary-500"
                       : "border-neutral-300 bg-white"
-                    }
+                  }
                 `}
                 >
                   {paymentMethod === option.id && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -162,10 +161,11 @@ export function PaymentStep({
               <div
                 className={`
                 flex-shrink-0 p-3 rounded-lg
-                ${paymentMethod === option.id
+                ${
+                  paymentMethod === option.id
                     ? "bg-primary-100 text-primary-600"
                     : "bg-neutral-100 text-neutral-600"
-                  }
+                }
               `}
               >
                 {option.icon}
@@ -186,9 +186,10 @@ export function PaymentStep({
                       key={index}
                       className={`
                         inline-flex items-center px-2 py-1 rounded text-xs font-medium
-                        ${paymentMethod === option.id
-                          ? "bg-primary-100 text-primary-800"
-                          : "bg-neutral-100 text-neutral-700"
+                        ${
+                          paymentMethod === option.id
+                            ? "bg-primary-100 text-primary-800"
+                            : "bg-neutral-100 text-neutral-700"
                         }
                       `}
                     >

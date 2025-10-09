@@ -87,8 +87,6 @@ export const ProductQuickView = React.memo(function ProductQuickView({
     return product.category?.name[locale as keyof typeof product.category.name];
   }, [product.category, locale]);
 
-
-
   return (
     <Modal
       isOpen={isOpen}
@@ -181,8 +179,6 @@ export const ProductQuickView = React.memo(function ProductQuickView({
               <p className="text-sm text-teal-800 leading-relaxed">{productDescription}</p>
             </div>
           )}
-
-
 
           {/* Error Display */}
           {_error && (

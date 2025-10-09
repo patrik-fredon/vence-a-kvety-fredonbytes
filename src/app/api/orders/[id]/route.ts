@@ -205,7 +205,10 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         const itemsData = updatedOrder.items as any;
 
         // Build order for email with delivery method
-        const emailDeliveryMethod = (updatedOrder as any).delivery_method as "delivery" | "pickup" | null;
+        const emailDeliveryMethod = (updatedOrder as any).delivery_method as
+          | "delivery"
+          | "pickup"
+          | null;
         const emailPickupLocation = (updatedOrder as any).pickup_location as string | null;
 
         const orderForEmail: Order = {

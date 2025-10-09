@@ -32,7 +32,7 @@ export async function POST(request: NextRequest) {
 
     // Warm all caches or specific categories
     const warmingTasks = [];
-    
+
     if (categoryIds && Array.isArray(categoryIds) && categoryIds.length > 0) {
       warmingTasks.push(warmPopularCategories(categoryIds));
     } else {

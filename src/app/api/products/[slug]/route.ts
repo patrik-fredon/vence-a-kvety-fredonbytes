@@ -4,17 +4,14 @@
  */
 
 import { type NextRequest, NextResponse } from "next/server";
+import { getProductBySlug, invalidateProduct } from "@/lib/services/product-service";
 import { createClient as createServerClient } from "@/lib/supabase/server";
+import { slugify as createSlug } from "@/lib/utils";
 import {
   transformCategoryRow,
   transformProductRow,
   validateProductData,
 } from "@/lib/utils/product-transforms";
-import {
-  getProductBySlug,
-  invalidateProduct,
-} from "@/lib/services/product-service";
-import { slugify as createSlug } from "@/lib/utils";
 import type { ApiResponse } from "@/types";
 import type { Product, ProductRow, UpdateProductRequest } from "@/types/product";
 

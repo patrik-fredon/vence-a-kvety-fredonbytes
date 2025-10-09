@@ -3,11 +3,11 @@
  * Creates a Stripe embedded checkout session for the cart
  */
 
-import { NextRequest, NextResponse } from "next/server";
-import { createEmbeddedCheckoutSession } from "@/lib/stripe/embedded-checkout";
-import { getServerCart } from "@/lib/services/cart-server-service";
-import { rateLimit } from "@/lib/utils/rate-limit";
+import { type NextRequest, NextResponse } from "next/server";
 import { validateCSRFMiddleware } from "@/lib/security/csrf";
+import { getServerCart } from "@/lib/services/cart-server-service";
+import { createEmbeddedCheckoutSession } from "@/lib/stripe/embedded-checkout";
+import { rateLimit } from "@/lib/utils/rate-limit";
 
 export const runtime = "nodejs";
 
@@ -35,7 +35,9 @@ export async function POST(request: NextRequest) {
         {
           status: 429,
           headers: {
-            "Retry-After": Math.ceil((rateLimitResult.reset.getTime() - Date.now()) / 1000).toString(),
+            "Retry-After": Math.ceil(
+              (rateLimitResult.reset.getTime() - Date.now()) / 1000
+            ).toString(),
           },
         }
       );
@@ -59,7 +61,7 @@ export async function POST(request: NextRequest) {
     const { locale, metadata } = body;
 
     // Validate locale
-    if (!locale || !["cs", "en"].includes(locale)) {
+    if (!(locale && ["cs", "en"].includes(locale))) {
       return NextResponse.json(
         {
           success: false,
@@ -118,7 +120,8 @@ export async function POST(request: NextRequest) {
     console.error("❌ Error creating checkout session:", error);
 
     // Return user-friendly error message
-    const errorMessage = error instanceof Error ? error.message : "Failed to create checkout session";
+    const errorMessage =
+      error instanceof Error ? error.message : "Failed to create checkout session";
 
     return NextResponse.json(
       {

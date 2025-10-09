@@ -3,7 +3,7 @@
  * Validates environment and configuration at application startup
  */
 
-import { validateEnvironmentOrThrow, logEnvironmentConfig } from "./env-validation";
+import { logEnvironmentConfig, validateEnvironmentOrThrow } from "./env-validation";
 
 /**
  * Run all startup validations

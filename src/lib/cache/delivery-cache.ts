@@ -258,7 +258,6 @@ export async function warmUpDeliveryCache(): Promise<void> {
     // This would typically pre-load frequently accessed data
     // For example, current month's calendar, popular postal codes, etc.
     console.log("Warming up delivery cache...");
-
   } catch (error) {
     console.error("Error warming up delivery cache:", error);
   }

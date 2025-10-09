@@ -132,8 +132,8 @@ export default function OrderManagement() {
   const filteredOrders = orders.filter(
     (order) =>
       (order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())) &&
+        order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())) &&
       // Filter by delivery method (Requirement 9.7)
       (deliveryMethodFilter === "" || order.deliveryMethod === deliveryMethodFilter)
   );
@@ -237,14 +237,13 @@ export default function OrderManagement() {
             placeholder={t("searchOrders")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-
-// Note: The delivery method filter dropdown should be added after the status filter
-// in the filters section. The code has been updated to include:
-// 1. deliveryMethodFilter state
-// 2. deliveryMethodOptions array
-// 3. Filter logic in filteredOrders
-// 4. Delivery method display in the table
-// The UI dropdown needs to be manually inserted between status filter and date filters
+            // Note: The delivery method filter dropdown should be added after the status filter
+            // in the filters section. The code has been updated to include:
+            // 1. deliveryMethodFilter state
+            // 2. deliveryMethodOptions array
+            // 3. Filter logic in filteredOrders
+            // 4. Delivery method display in the table
+            // The UI dropdown needs to be manually inserted between status filter and date filters
             icon={<MagnifyingGlassIcon className="h-5 w-5" />}
             iconPosition="left"
           />
@@ -391,9 +390,7 @@ export default function OrderManagement() {
                         </div>
                       ) : (
                         <div>
-                          <div className="text-sm font-medium text-stone-900">
-                            {t("delivery")}
-                          </div>
+                          <div className="text-sm font-medium text-stone-900">{t("delivery")}</div>
                           <div className="text-sm text-stone-500">{order.deliveryAddress}</div>
                         </div>
                       )}

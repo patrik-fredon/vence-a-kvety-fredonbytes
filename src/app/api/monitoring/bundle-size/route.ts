@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+
 // import { createClient } from "@/lib/supabase/server";
 
 interface BundleData {
@@ -26,7 +27,7 @@ export async function POST(request: NextRequest) {
   try {
     // Verify this is coming from CI/CD (check for auth token or IP)
     const authHeader = request.headers.get("authorization");
-    const expectedToken = process.env["MONITORING_API_TOKEN"];
+    const expectedToken = process.env.MONITORING_API_TOKEN;
 
     if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
     const { buildId, bundles, totalSize } = body;
 
     // Validate required fields
-    if (!buildId || !bundles || !Array.isArray(bundles)) {
+    if (!(buildId && bundles && Array.isArray(bundles))) {
       return NextResponse.json({ error: "Invalid bundle data" }, { status: 400 });
     }
 
@@ -88,7 +89,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/monitoring/bundle-size
  * Retrieve historical bundle size data
- * 
+ *
  * Query params:
  * - builds: number of builds to retrieve (default: 10)
  * - branch: filter by branch (optional)

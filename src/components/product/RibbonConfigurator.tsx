@@ -2,8 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { validateCustomRibbonText } from "@/lib/validation/wreath";
 import type { Customization, CustomizationChoice, CustomizationOption } from "@/types/product";
 
@@ -76,7 +75,7 @@ export function RibbonConfigurator({
           // Clear custom value when selecting predefined option (not custom)
           const selectedChoice = option.choices?.find((c) => c.id === choiceId);
           if (!selectedChoice?.allowCustomInput && existing.customValue) {
-            delete existing.customValue;
+            existing.customValue = undefined;
           }
         } else {
           // Multiple selection - toggle
@@ -270,9 +269,7 @@ export function RibbonConfigurator({
                   value.length > 40 ? "text-amber-300" : "",
                   value.length >= 50 ? "text-red-600 font-medium" : ""
                 )}
-                aria-label={`${value.length} ${tAccessibility(
-                  "charactersOf"
-                )} ${maxLength}`}
+                aria-label={`${value.length} ${tAccessibility("charactersOf")} ${maxLength}`}
               >
                 {value.length}/{maxLength}
               </span>
@@ -362,8 +359,6 @@ export function RibbonConfigurator({
               {colorOption.required && ` (${tAccessibility("required")})`}
             </legend>
 
-
-
             <div
               className="grid grid-cols-2 gap-3"
               role={colorOption.maxSelections === 1 ? "radiogroup" : "group"}
@@ -428,7 +423,8 @@ export function RibbonConfigurator({
                 {(textOption.choices || []).map((choice) => (
                   <option key={choice.id} value={choice.id}>
                     {choice.label[locale as keyof typeof choice.label]}
-                    {choice.priceModifier !== 0 && ` (${formatPriceModifier(choice.priceModifier)})`}
+                    {choice.priceModifier !== 0 &&
+                      ` (${formatPriceModifier(choice.priceModifier)})`}
                   </option>
                 ))}
               </select>

@@ -3,10 +3,10 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useTranslations } from "next-intl";
 import { ErrorBoundary } from "@/components/ui/ErrorBoundary";
 import { ClockIcon, EnvelopeIcon, MapPinIcon, PhoneIcon } from "@/lib/icons";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import FredonFooter from "./FredonFooter";
 
 interface FooterProps {
@@ -228,7 +228,6 @@ export function Footer({ locale }: FooterProps) {
               </div>
             </div>
           </div>
-
         </div>
         <div className="mt-8 mx-auto max-w-7xl text-center justify-center">
           <FredonFooter />

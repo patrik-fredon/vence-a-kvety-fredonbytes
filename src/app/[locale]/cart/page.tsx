@@ -10,7 +10,6 @@ export default async function CartPage({ params }: CartPageProps) {
   const t = await getTranslations("cart");
 
   return (
-
     <div className="max-w-4xl mx-auto">
       <div className="container mx-auto px-4 py-8">
         <div className="text-center mb-8">
@@ -38,7 +37,7 @@ export default async function CartPage({ params }: CartPageProps) {
           </div>
         </div>
       </div>
-        <div className="container mx-auto px-4 py-12 min-h-screen">
+      <div className="container mx-auto px-4 py-12 min-h-screen">
         <ShoppingCart locale={locale} showHeader={false} />
       </div>
     </div>

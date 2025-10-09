@@ -3,18 +3,26 @@
  * Handles CRUD operations for products with search and filtering
  */
 
+/**
+ * GET /api/products
+ * Retrieve products with optional filtering, searching, and pagination
+ */
+import { type NextRequest, NextResponse } from "next/server";
+import { invalidateApiCache, setCacheHeaders, withCache } from "@/lib/cache/api-cache";
+import { CACHE_TTL } from "@/lib/cache/redis";
+import {
+  getProducts as getProductsOptimized,
+  // invalidateProduct,
+  // type ProductFilters,
+} from "@/lib/services/product-service";
+import { createClient as createServerClient } from "@/lib/supabase/server";
+import { slugify as createSlug } from "@/lib/utils";
 import {
   productToRow,
   transformCategoryRow,
   transformProductRow,
   validateProductData,
 } from "@/lib/utils/product-transforms";
-import {
-  getProducts as getProductsOptimized,
-  // invalidateProduct,
-  // type ProductFilters,
-} from "@/lib/services/product-service";
-import { slugify as createSlug } from "@/lib/utils";
 import type { ApiResponse } from "@/types";
 import type {
   // CategoryRow,
@@ -23,15 +31,6 @@ import type {
   // ProductRow,
   // ProductSearchParams,
 } from "@/types/product";
-
-/**
- * GET /api/products
- * Retrieve products with optional filtering, searching, and pagination
- */
-import { type NextRequest, NextResponse } from "next/server";
-import { createClient as createServerClient } from "@/lib/supabase/server";
-import { withCache, invalidateApiCache, setCacheHeaders } from "@/lib/cache/api-cache";
-import { CACHE_TTL } from "@/lib/cache/redis";
 
 async function getProducts(request: NextRequest) {
   try {
@@ -43,8 +42,12 @@ async function getProducts(request: NextRequest) {
       limit: Math.min(Number.parseInt(searchParams.get("limit") || "12", 10), 100),
       categoryId: searchParams.get("categoryId") || undefined,
       categorySlug: searchParams.get("categorySlug") || undefined,
-      minPrice: searchParams.get("minPrice") ? Number.parseFloat(searchParams.get("minPrice")!) : undefined,
-      maxPrice: searchParams.get("maxPrice") ? Number.parseFloat(searchParams.get("maxPrice")!) : undefined,
+      minPrice: searchParams.get("minPrice")
+        ? Number.parseFloat(searchParams.get("minPrice")!)
+        : undefined,
+      maxPrice: searchParams.get("maxPrice")
+        ? Number.parseFloat(searchParams.get("maxPrice")!)
+        : undefined,
       inStock: searchParams.get("inStock") === "true" ? true : undefined,
       featured: searchParams.get("featured") === "true" ? true : undefined,
       search: searchParams.get("search") || undefined,

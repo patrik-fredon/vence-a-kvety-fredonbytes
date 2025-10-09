@@ -4,10 +4,10 @@
 
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
-// import { PaymentService } from "@/lib/payments";
-import { createServerClient } from "@/lib/supabase/server";
 import { getRequiredEnvVar } from "@/lib/config/env-validation";
 import { createOrder } from "@/lib/services/order-service";
+// import { PaymentService } from "@/lib/payments";
+import { createServerClient } from "@/lib/supabase/server";
 import { getPickupLocation } from "@/lib/utils/delivery-method-utils";
 
 export async function POST(request: NextRequest) {
@@ -26,7 +26,9 @@ export async function POST(request: NextRequest) {
         {
           status: 429,
           headers: {
-            "Retry-After": Math.round((rateLimitResult.reset.getTime() - Date.now()) / 1000).toString(),
+            "Retry-After": Math.round(
+              (rateLimitResult.reset.getTime() - Date.now()) / 1000
+            ).toString(),
             "X-RateLimit-Limit": rateLimitResult.limit.toString(),
             "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
             "X-RateLimit-Reset": rateLimitResult.reset.toISOString(),
@@ -214,14 +216,13 @@ async function handleCheckoutSessionCompleted(session: any) {
     // Build order items from line items
     // Note: We're using Stripe line items directly for order creation
     const orderItems = [];
-    
+
     for (const item of lineItems.data) {
       if (item.price && typeof item.price === "object") {
         const product = item.price.product;
-        const productMetadata = product && typeof product === "object" && !("deleted" in product) 
-          ? product.metadata 
-          : {};
-        const productId = productMetadata?.["productId"];
+        const productMetadata =
+          product && typeof product === "object" && !("deleted" in product) ? product.metadata : {};
+        const productId = productMetadata?.productId;
 
         if (productId) {
           orderItems.push({
@@ -246,12 +247,15 @@ async function handleCheckoutSessionCompleted(session: any) {
 
     // Get address from session
     const address = customerDetails.address || {};
-    const deliveryAddress = deliveryMethod === "delivery" ? {
-      street: address.line1 || "",
-      city: address.city || "",
-      postalCode: address.postal_code || "",
-      country: address.country || "CZ",
-    } : undefined;
+    const deliveryAddress =
+      deliveryMethod === "delivery"
+        ? {
+            street: address.line1 || "",
+            city: address.city || "",
+            postalCode: address.postal_code || "",
+            country: address.country || "CZ",
+          }
+        : undefined;
 
     // Calculate totals
     const subtotal = session.amount_subtotal ? session.amount_subtotal / 100 : 0;
@@ -263,14 +267,14 @@ async function handleCheckoutSessionCompleted(session: any) {
       order_number: `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
       user_id: session.customer || null,
       session_id: session.id,
-      
+
       // Order details
       items: orderItems,
       item_count: orderItems.reduce((sum, item) => sum + item.quantity, 0),
       subtotal,
       delivery_cost: deliveryCost,
       total_amount: totalAmount,
-      
+
       // Customer and delivery info
       customer_info: {
         email: customerEmail,
@@ -286,11 +290,11 @@ async function handleCheckoutSessionCompleted(session: any) {
         currency: session.currency || "czk",
         processedAt: new Date().toISOString(),
       },
-      
+
       // Delivery method (Requirement 9.1, 9.2)
       delivery_method: deliveryMethod || "delivery",
       pickup_location: pickupLocation,
-      
+
       // Status
       status: "confirmed",
       confirmed_at: new Date().toISOString(),

@@ -246,8 +246,6 @@ export function calculateTax(price: number, taxRate: number = 0.21): number {
   return Math.round(price * taxRate);
 }
 
-
-
 /**
  * Calculate final price with customizations and discounts
  */

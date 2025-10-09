@@ -2,6 +2,6 @@
  * Payment components exports
  */
 
-export { StripePaymentForm } from "./StripePaymentForm";
-export { StripeEmbeddedCheckout } from "./StripeEmbeddedCheckout";
 export { LazyStripeEmbeddedCheckout } from "./LazyPaymentComponents";
+export { StripeEmbeddedCheckout } from "./StripeEmbeddedCheckout";
+export { StripePaymentForm } from "./StripePaymentForm";

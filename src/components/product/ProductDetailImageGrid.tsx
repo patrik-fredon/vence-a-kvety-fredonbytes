@@ -92,7 +92,7 @@ export function ProductDetailImageGrid({
           scrollbarWidth: "none",
           msOverflowStyle: "none",
           WebkitOverflowScrolling: "touch",
-          scrollBehavior: "smooth"
+          scrollBehavior: "smooth",
         }}
         onScroll={handleScroll}
       >
@@ -100,10 +100,7 @@ export function ProductDetailImageGrid({
           {images.map((image, index) => {
             if (!image) return null;
             return (
-              <div
-                key={image.id || index}
-                className="flex-shrink-0 w-full snap-center snap-always"
-              >
+              <div key={image.id || index} className="flex-shrink-0 w-full snap-center snap-always">
                 <div
                   className="relative aspect-square bg-teal-900 rounded-lg overflow-hidden cursor-zoom-in group"
                   onClick={() => handleImageClick(index)}
@@ -144,9 +141,7 @@ export function ProductDetailImageGrid({
               onClick={() => goToSlide(index)}
               className={cn(
                 "w-2 h-2 rounded-full transition-all duration-300 cursor-pointer",
-                currentSlide === index
-                  ? "bg-teal-900 w-3"
-                  : "bg-teal-900/30 hover:bg-teal-900/50"
+                currentSlide === index ? "bg-teal-900 w-3" : "bg-teal-900/30 hover:bg-teal-900/50"
               )}
               aria-label={`Go to image ${index + 1}`}
               aria-current={currentSlide === index ? "true" : "false"}

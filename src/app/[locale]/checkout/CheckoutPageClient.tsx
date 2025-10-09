@@ -2,7 +2,7 @@
 
 /**
  * Checkout Page Client Component
- * 
+ *
  * Implements Stripe Embedded Checkout integration (Task 8.1)
  * - Validates delivery method before checkout
  * - Integrates with createEmbeddedCheckoutSession service
@@ -10,13 +10,13 @@
  * - Handles checkout completion and error states
  */
 
-import { useRouter } from "next/navigation";
 import dynamic from "next/dynamic";
-import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
+import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
 import { CartItemImage } from "@/components/cart/CartItemImage";
 import { CompactOrderSummary } from "@/components/checkout/OrderSummary";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Lazy load StripeEmbeddedCheckout for better performance
 const StripeEmbeddedCheckout = dynamic(
@@ -33,6 +33,7 @@ const StripeEmbeddedCheckout = dynamic(
     ssr: false,
   }
 );
+
 import { ArrowLeftIcon } from "@/lib/icons";
 import type { CartItem } from "@/types/cart";
 
@@ -134,9 +135,7 @@ export function CheckoutPageClient({
             <div className="bg-funeral-gold rounded-lg shadow-soft p-6 lg:p-8">
               {sessionError ? (
                 <div className="bg-red-50 border border-red-200 rounded-lg p-6">
-                  <h3 className="text-lg font-semibold text-red-800 mb-2">
-                    {t("error.generic")}
-                  </h3>
+                  <h3 className="text-lg font-semibold text-red-800 mb-2">{t("error.generic")}</h3>
                   <p className="text-red-700 mb-4">{sessionError}</p>
                   <button
                     type="button"
@@ -148,9 +147,7 @@ export function CheckoutPageClient({
                 </div>
               ) : checkoutSession ? (
                 <>
-                  <h2 className="text-xl font-semibold text-teal-800 mb-6">
-                    {t("paymentInfo")}
-                  </h2>
+                  <h2 className="text-xl font-semibold text-teal-800 mb-6">{t("paymentInfo")}</h2>
                   <StripeEmbeddedCheckout
                     clientSecret={checkoutSession.clientSecret}
                     onComplete={() => handleCheckoutComplete(checkoutSession.sessionId)}
@@ -185,9 +182,7 @@ export function CheckoutPageClient({
               {/* Desktop: Full Summary */}
               <div className="hidden lg:block">
                 <div className="bg-funeral-gold rounded-lg shadow-soft p-6">
-                  <h2 className="text-lg font-semibold text-teal-800 mb-4">
-                    {t("orderSummary")}
-                  </h2>
+                  <h2 className="text-lg font-semibold text-teal-800 mb-4">{t("orderSummary")}</h2>
 
                   <div className="space-y-4">
                     {items.map((item) => {

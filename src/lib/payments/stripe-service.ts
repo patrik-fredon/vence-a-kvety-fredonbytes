@@ -6,9 +6,9 @@
 "use server";
 
 import { cache } from "react";
-import Stripe from "stripe";
-import { sanitizeStripeError, logPaymentError } from "./error-handler";
-import { withRetry, isRetryableStripeError } from "./retry-handler";
+import type Stripe from "stripe";
+import { logPaymentError, sanitizeStripeError } from "./error-handler";
+import { isRetryableStripeError, withRetry } from "./retry-handler";
 import { stripe } from "./stripe";
 
 /**
@@ -177,10 +177,7 @@ export const getPaymentIntent = cache(
         }
       );
     } catch (error) {
-      console.error(
-        `[Payment] Failed to retrieve payment intent ${paymentIntentId}:`,
-        error
-      );
+      console.error(`[Payment] Failed to retrieve payment intent ${paymentIntentId}:`, error);
       return null;
     }
   }
@@ -192,9 +189,7 @@ export const getPaymentIntent = cache(
  * @param paymentIntentId - The payment intent ID
  * @returns Payment intent status information
  */
-export async function getPaymentIntentStatusAction(
-  paymentIntentId: string
-): Promise<{
+export async function getPaymentIntentStatusAction(paymentIntentId: string): Promise<{
   status: string;
   amount?: number;
   currency?: string;
@@ -216,10 +211,7 @@ export async function getPaymentIntentStatusAction(
       currency: paymentIntent.currency,
     };
   } catch (error) {
-    console.error(
-      `[Payment] Error getting payment intent status ${paymentIntentId}:`,
-      error
-    );
+    console.error(`[Payment] Error getting payment intent status ${paymentIntentId}:`, error);
     return {
       status: "error",
       error: "Failed to retrieve payment status",
@@ -250,10 +242,7 @@ export async function cancelPaymentIntentAction(
 
     return { success: true };
   } catch (error) {
-    console.error(
-      `[Payment] Failed to cancel payment intent ${paymentIntentId}:`,
-      error
-    );
+    console.error(`[Payment] Failed to cancel payment intent ${paymentIntentId}:`, error);
 
     const sanitized = sanitizeStripeError(error);
 
@@ -287,16 +276,11 @@ export async function updatePaymentIntentMetadataAction(
       metadata,
     });
 
-    console.log(
-      `[Payment] Payment intent metadata updated: ${paymentIntentId}`
-    );
+    console.log(`[Payment] Payment intent metadata updated: ${paymentIntentId}`);
 
     return { success: true };
   } catch (error) {
-    console.error(
-      `[Payment] Failed to update payment intent metadata ${paymentIntentId}:`,
-      error
-    );
+    console.error(`[Payment] Failed to update payment intent metadata ${paymentIntentId}:`, error);
 
     const sanitized = sanitizeStripeError(error);
 

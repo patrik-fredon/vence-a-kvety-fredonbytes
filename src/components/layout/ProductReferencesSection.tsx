@@ -2,10 +2,10 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useCallback, useEffect, useState } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import {
   createDebouncedRetry,
   getFallbackImage,
@@ -213,129 +213,126 @@ const ProductReferenceCard = ({
 
   return (
     <div className="container backdrop-blur-sm">
-    <article
-      className={cn(
-        "group bg-funeral-gold  overflow-hidden corner-clip-container",
-
-      )}
-      aria-rowindex={Math.floor(index / 4) + 1}
-      aria-colindex={(index % 4) + 1}
-      onKeyDown={handleKeyDown}
-      onClick={handleClick}
-      aria-labelledby={`product-name-${product.id}`}
-      aria-describedby={`product-description-${product.id}`}
-    >
-      <div className="aspect-square relative overflow-hidden">
-        <Image
-          src={currentImageSrc}
-          alt={`${product.image.alt} - ${safeT("productImageAlt")}`}
-          width={product.image.width || 400}
-          height={product.image.height || 400}
-          onError={handleImageError}
-          className={cn(
-            "w-full h-full object-cover relative",
-            // Gentle image hover effect
-            "transition-transform duration-300 ease-in-out",
-            !prefersReducedMotion && "group-hover:scale-110",
-            prefersReducedMotion && "group-hover:brightness-110", // Alternative effect for motion-sensitive users
-            // Error state styling
-            imageError && "opacity-80 grayscale-[0.2]"
-          )}
-          loading="lazy"
-          placeholder="blur"
-          blurDataURL={BLUR_PLACEHOLDERS.gold}
-          sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
-        />
-
-        {/* Error indicator for images (subtle, for accessibility) */}
-        {imageError && (
-          <div className="sr-only" role="alert">
-            Product image failed to load, showing fallback image
-          </div>
-        )}
-        {/* Subtle overlay for better text readability */}
-        <div
-          className={cn(
-            "absolute inset-0 ",
-            "transition-opacity duration-300 ease-in-out",
-            "group-hover:from-black/30"
-          )}
-        />
-      </div>
-
-      <div
-        className={cn(
-          // Mobile-first responsive padding
-          "p-3", // Compact padding on mobile
-          "xs:p-4", // Slightly more for 375px+
-          "sm:p-5", // Standard padding for 640px+
-          "md:p-6", // Tablet padding
-          "lg:p-7" // Desktop padding
-        )}
+      <article
+        className={cn("group bg-funeral-gold  overflow-hidden corner-clip-container")}
+        aria-rowindex={Math.floor(index / 4) + 1}
+        aria-colindex={(index % 4) + 1}
+        onKeyDown={handleKeyDown}
+        onClick={handleClick}
+        aria-labelledby={`product-name-${product.id}`}
+        aria-describedby={`product-description-${product.id}`}
       >
-        <h3
-          id={`product-name-${product.id}`}
-          className={cn(
-            // Mobile-first typography
-            "text-xs font-semibold text-teal-800", // 14px for mobile
-            "xs:text-sm", // 16px for 375px+
-            "sm:text-base", // 18px for 640px+
-            "md:text-lg", // 20px for tablet
-            "lg:text-xl", // 24px for desktop
-            // Spacing
-            "mb-2", // Compact on mobile
-            "sm:mb-3", // Standard for 640px+
-            "md:mb-4", // Tablet spacing
-            // Text effects
-            "line-clamp-2", // Limit to 2 lines
-            "transition-colors duration-300 ease-in-out",
-            "group-hover:text-amber-100"
-          )}
-        >
-          {product.name}
-        </h3>
+        <div className="aspect-square relative overflow-hidden">
+          <Image
+            src={currentImageSrc}
+            alt={`${product.image.alt} - ${safeT("productImageAlt")}`}
+            width={product.image.width || 400}
+            height={product.image.height || 400}
+            onError={handleImageError}
+            className={cn(
+              "w-full h-full object-cover relative",
+              // Gentle image hover effect
+              "transition-transform duration-300 ease-in-out",
+              !prefersReducedMotion && "group-hover:scale-110",
+              prefersReducedMotion && "group-hover:brightness-110", // Alternative effect for motion-sensitive users
+              // Error state styling
+              imageError && "opacity-80 grayscale-[0.2]"
+            )}
+            loading="lazy"
+            placeholder="blur"
+            blurDataURL={BLUR_PLACEHOLDERS.gold}
+            sizes="(max-width: 640px) 100vw, (max-width: 768px) 50vw, (max-width: 1024px) 33vw, 25vw"
+          />
 
-        <p
-          id={`product-description-${product.id}`}
-          className={cn(
-            // Mobile-first typography
-            "text-xs text-teal-800", // 12px for mobile
-            "xs:text-sm", // 14px for 375px+
-            "sm:text-base", // 16px for 640px+
-            "md:text-lg", // 18px for tablet
-            // Text effects
-            "line-clamp-3", // Limit to 3 lines
-            "transition-colors duration-300 ease-in-out",
-            "group-hover:text-amber-100"
+          {/* Error indicator for images (subtle, for accessibility) */}
+          {imageError && (
+            <div className="sr-only" role="alert">
+              Product image failed to load, showing fallback image
+            </div>
           )}
-        >
-          {product.description}
-        </p>
+          {/* Subtle overlay for better text readability */}
+          <div
+            className={cn(
+              "absolute inset-0 ",
+              "transition-opacity duration-300 ease-in-out",
+              "group-hover:from-black/30"
+            )}
+          />
+        </div>
 
-        {/* Category badge */}
         <div
           className={cn(
-            "mt-3", // Mobile spacing
-            "sm:mt-4", // Standard spacing for 640px+
-            "md:mt-5" // Tablet spacing
+            // Mobile-first responsive padding
+            "p-3", // Compact padding on mobile
+            "xs:p-4", // Slightly more for 375px+
+            "sm:p-5", // Standard padding for 640px+
+            "md:p-6", // Tablet padding
+            "lg:p-7" // Desktop padding
           )}
         >
-          <span
+          <h3
+            id={`product-name-${product.id}`}
             className={cn(
-              "inline-block px-2 py-1 rounded-full",
-              "text-xs font-medium", // Mobile typography
-              "xs:text-sm xs:px-3", // 375px+ sizing
-              "bg-amber-200/20 text-teal-900",
-              "transition-all duration-300 ease-in-out",
-              "group-hover:bg-amber-100/30 group-hover:text-amber-50"
+              // Mobile-first typography
+              "text-xs font-semibold text-teal-800", // 14px for mobile
+              "xs:text-sm", // 16px for 375px+
+              "sm:text-base", // 18px for 640px+
+              "md:text-lg", // 20px for tablet
+              "lg:text-xl", // 24px for desktop
+              // Spacing
+              "mb-2", // Compact on mobile
+              "sm:mb-3", // Standard for 640px+
+              "md:mb-4", // Tablet spacing
+              // Text effects
+              "line-clamp-2", // Limit to 2 lines
+              "transition-colors duration-300 ease-in-out",
+              "group-hover:text-amber-100"
             )}
           >
-            {product.category}
-          </span>
+            {product.name}
+          </h3>
+
+          <p
+            id={`product-description-${product.id}`}
+            className={cn(
+              // Mobile-first typography
+              "text-xs text-teal-800", // 12px for mobile
+              "xs:text-sm", // 14px for 375px+
+              "sm:text-base", // 16px for 640px+
+              "md:text-lg", // 18px for tablet
+              // Text effects
+              "line-clamp-3", // Limit to 3 lines
+              "transition-colors duration-300 ease-in-out",
+              "group-hover:text-amber-100"
+            )}
+          >
+            {product.description}
+          </p>
+
+          {/* Category badge */}
+          <div
+            className={cn(
+              "mt-3", // Mobile spacing
+              "sm:mt-4", // Standard spacing for 640px+
+              "md:mt-5" // Tablet spacing
+            )}
+          >
+            <span
+              className={cn(
+                "inline-block px-2 py-1 rounded-full",
+                "text-xs font-medium", // Mobile typography
+                "xs:text-sm xs:px-3", // 375px+ sizing
+                "bg-amber-200/20 text-teal-900",
+                "transition-all duration-300 ease-in-out",
+                "group-hover:bg-amber-100/30 group-hover:text-amber-50"
+              )}
+            >
+              {product.category}
+            </span>
+          </div>
         </div>
-      </div>
       </article>
-      </div>
+    </div>
   );
 };
 

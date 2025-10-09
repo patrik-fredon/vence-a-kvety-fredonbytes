@@ -1,12 +1,12 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { generateAboutPageMetadata } from "@/components/seo/PageMetadata";
 import {
   generateLocalBusinessStructuredData,
   generateOrganizationStructuredData,
   StructuredData,
 } from "@/components/seo/StructuredData";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>;
@@ -32,14 +32,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
       <StructuredData data={localBusinessStructuredData} />
 
       <div className="py-8">
-
         {/* Hero Text */}
         <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16 px-4">
           <div className="rounded-lg p-4 sm:p-6 md:p-8 mb-6 md:mb-8">
             <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-6 md:mb-8 text-teal-800 leading-tight text-balance">
               {tAbout("title")}
             </h1>
-            <p className="text-base sm:text-lg text-teal-800 leading-relaxed mb-6 md:mb-8">{tAbout("mission")}</p>
+            <p className="text-base sm:text-lg text-teal-800 leading-relaxed mb-6 md:mb-8">
+              {tAbout("mission")}
+            </p>
           </div>
         </div>
         <div className="container mx-auto px-4">

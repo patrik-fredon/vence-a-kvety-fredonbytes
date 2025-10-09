@@ -246,7 +246,7 @@ export const WEBPACK_OPTIMIZATION = {
   removeEmptyChunks: true,
   // Flag used modules
   flagIncludedChunks: true,
-} as const;;
+} as const;
 
 // Bundle analyzer configuration
 export const BUNDLE_ANALYZER_CONFIG = {

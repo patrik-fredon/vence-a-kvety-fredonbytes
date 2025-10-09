@@ -80,7 +80,7 @@ export function testKeyboardNavigation(
     // Check tab order
     const tabIndex = htmlElement.getAttribute("tabindex");
     if (tabIndex) {
-      const tabIndexValue = parseInt(tabIndex, 10);
+      const tabIndexValue = Number.parseInt(tabIndex, 10);
       if (tabIndexValue > 0) {
         issues.push(
           `Positive tabindex (${tabIndexValue}) detected - may disrupt natural tab order`
@@ -201,10 +201,10 @@ export function testTabOrder(container: HTMLElement = document.body): {
 
   focusableElements.forEach((element) => {
     const tabIndex = element.getAttribute("tabindex");
-    if (tabIndex && parseInt(tabIndex, 10) > 0) {
+    if (tabIndex && Number.parseInt(tabIndex, 10) > 0) {
       elementsWithTabIndex.push({
         element,
-        tabIndex: parseInt(tabIndex, 10),
+        tabIndex: Number.parseInt(tabIndex, 10),
       });
     } else {
       elementsWithoutTabIndex.push(element);
@@ -226,7 +226,7 @@ export function testTabOrder(container: HTMLElement = document.body): {
     // Check for tabindex issues
     const tabIndex = element.getAttribute("tabindex");
     if (tabIndex) {
-      const value = parseInt(tabIndex, 10);
+      const value = Number.parseInt(tabIndex, 10);
       if (value > 0) {
         issues.push(
           `Element ${index + 1} (${getElementDescription(
@@ -291,7 +291,7 @@ function isElementVisible(element: HTMLElement): boolean {
   return (
     style.display !== "none" &&
     style.visibility !== "hidden" &&
-    parseFloat(style.opacity) > 0 &&
+    Number.parseFloat(style.opacity) > 0 &&
     element.offsetWidth > 0 &&
     element.offsetHeight > 0
   );
@@ -301,7 +301,7 @@ function canElementReceiveFocus(element: HTMLElement): boolean {
   const tabIndex = element.getAttribute("tabindex");
 
   // Elements with tabindex >= 0 can receive focus
-  if (tabIndex && parseInt(tabIndex, 10) >= 0) return true;
+  if (tabIndex && Number.parseInt(tabIndex, 10) >= 0) return true;
 
   // Naturally focusable elements
   const focusableTags = ["button", "input", "select", "textarea", "a"];

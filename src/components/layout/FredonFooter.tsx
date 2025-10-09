@@ -1,7 +1,7 @@
 "use client";
+import Link from "next/link";
 // components/FredonFooter.tsx
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import FredonQuote from "./FredonQuote"; // Import the new component
 
 const FredonFooter = () => {
@@ -13,7 +13,7 @@ const FredonFooter = () => {
       {/* FredonBytes Divider */}
       <div className="relative my-6">
         <div className="absolute inset-0 flex items-center">
-          <div className="w-full border-t border-amber-500 border-opacity-30"></div>
+          <div className="w-full border-t border-amber-500 border-opacity-30" />
         </div>
         <div className="relative flex justify-center">
           <span className="bg-stone-900 px-4 text-amber-100 text-sm">
@@ -80,7 +80,7 @@ const FredonFooter = () => {
       </div>
 
       {/* FredonBytes Quote Section */}
-      <div className="my-2 text-center"></div>
+      <div className="my-2 text-center" />
     </>
   );
 };

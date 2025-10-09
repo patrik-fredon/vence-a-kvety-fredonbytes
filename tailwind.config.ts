@@ -34,9 +34,17 @@ const config: Config = {
         // Default breakpoints are still available: sm, md, lg, xl, 2xl
       },
       fontFamily: {
-         sans: ["Inter", "system-ui", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "Roboto", "sans-serif"],
-         serif: ["Georgia", "Cambria", "Times New Roman", "Times", "serif"],
-         mono: ["Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
+        sans: [
+          "Inter",
+          "system-ui",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "Roboto",
+          "sans-serif",
+        ],
+        serif: ["Georgia", "Cambria", "Times New Roman", "Times", "serif"],
+        mono: ["Menlo", "Monaco", "Consolas", "Liberation Mono", "Courier New", "monospace"],
       },
       fontSize: designTokens.typography.fontSize,
       fontWeight: designTokens.typography.fontWeight,

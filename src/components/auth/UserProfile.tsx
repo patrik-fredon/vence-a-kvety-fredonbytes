@@ -15,7 +15,7 @@ export function UserProfile() {
   const { updateProfile, loading: updateLoading, error: updateError } = useUpdateProfile();
   const { signOut, loading: signOutLoading } = useSignOut();
   const params = useParams();
-  const locale = (params?.["locale"] as string) || "cs";
+  const locale = (params?.locale as string) || "cs";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -43,7 +43,7 @@ export function UserProfile() {
     } catch (error) {
       console.error("Error loading user profile:", error);
     }
-  }, [preferences, setAddresses, setPreferences]);
+  }, [preferences]);
 
   useEffect(() => {
     if (user) {
@@ -53,7 +53,7 @@ export function UserProfile() {
       });
       loadUserProfile();
     }
-  }, [user, loadUserProfile, setFormData]);
+  }, [user, loadUserProfile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

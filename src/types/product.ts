@@ -58,7 +58,7 @@ export interface DeliveryMethodOption extends CustomizationOption {
       id: "personal_pickup";
       label: LocalizedContent;
       priceModifier: 0;
-    }
+    },
   ];
 }
 

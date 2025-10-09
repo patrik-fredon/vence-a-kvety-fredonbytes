@@ -5,11 +5,8 @@
 
 import { type NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@/lib/supabase/server";
-import {
-  transformCategoryRow,
-  validateCategoryData,
-} from "@/lib/utils/product-transforms";
 import { slugify as createSlug } from "@/lib/utils";
+import { transformCategoryRow, validateCategoryData } from "@/lib/utils/product-transforms";
 import type { ApiResponse } from "@/types";
 import type { Category, CategoryRow, UpdateCategoryRequest } from "@/types/product";
 

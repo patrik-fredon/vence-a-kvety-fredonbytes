@@ -4,16 +4,9 @@
  */
 
 import { createClient } from "@/lib/supabase/server";
-import {
-  cacheProduct,
-  cacheProductsList,
-  cacheCategories,
-} from "./product-cache";
-import {
-  transformProductRow,
-  transformCategoryRow,
-} from "@/lib/utils/product-transforms";
-import type { Product, /* ProductRow, */ CategoryRow, Category } from "@/types/product";
+import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
+import type { Category, CategoryRow, Product /* ProductRow, */ } from "@/types/product";
+import { cacheCategories, cacheProduct, cacheProductsList } from "./product-cache";
 
 /**
  * Warm up featured products cache
@@ -62,11 +55,12 @@ export async function warmFeaturedProducts(): Promise<void> {
     }
 
     // Cache the list
-    await cacheProductsList(
-      { featured: true, active: true, limit: 10 },
-      products,
-      { page: 1, limit: 10, total: products.length, totalPages: 1 }
-    );
+    await cacheProductsList({ featured: true, active: true, limit: 10 }, products, {
+      page: 1,
+      limit: 10,
+      total: products.length,
+      totalPages: 1,
+    });
 
     console.log(`✅ [CacheWarming] Warmed ${products.length} featured products`);
   } catch (error) {
@@ -121,11 +115,12 @@ export async function warmPopularProducts(): Promise<void> {
     }
 
     // Cache the list
-    await cacheProductsList(
-      { active: true, limit: 20 },
-      products,
-      { page: 1, limit: 20, total: products.length, totalPages: 1 }
-    );
+    await cacheProductsList({ active: true, limit: 20 }, products, {
+      page: 1,
+      limit: 20,
+      total: products.length,
+      totalPages: 1,
+    });
 
     console.log(`✅ [CacheWarming] Warmed ${products.length} popular products`);
   } catch (error) {
@@ -209,11 +204,12 @@ export async function warmProductsByCategory(categoryId: string, limit = 12): Pr
     }
 
     // Cache the list
-    await cacheProductsList(
-      { categoryId, active: true, limit },
-      products,
-      { page: 1, limit, total: products.length, totalPages: 1 }
-    );
+    await cacheProductsList({ categoryId, active: true, limit }, products, {
+      page: 1,
+      limit,
+      total: products.length,
+      totalPages: 1,
+    });
 
     console.log(`✅ [CacheWarming] Warmed ${products.length} products for category ${categoryId}`);
   } catch (error) {
@@ -232,11 +228,7 @@ export async function warmAllCaches(): Promise<void> {
 
   try {
     // Warm caches in parallel for better performance
-    await Promise.all([
-      warmCategories(),
-      warmFeaturedProducts(),
-      warmPopularProducts(),
-    ]);
+    await Promise.all([warmCategories(), warmFeaturedProducts(), warmPopularProducts()]);
 
     const duration = Date.now() - startTime;
     console.log(`✅ [CacheWarming] Cache warming completed in ${duration}ms`);
@@ -254,9 +246,7 @@ export async function warmPopularCategories(categoryIds: string[]): Promise<void
 
   try {
     // Warm each category in parallel
-    await Promise.all(
-      categoryIds.map(categoryId => warmProductsByCategory(categoryId, 12))
-    );
+    await Promise.all(categoryIds.map((categoryId) => warmProductsByCategory(categoryId, 12)));
 
     console.log(`✅ [CacheWarming] Warmed ${categoryIds.length} popular categories`);
   } catch (error) {

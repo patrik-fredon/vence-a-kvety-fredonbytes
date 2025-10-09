@@ -4,14 +4,11 @@
  */
 
 import {
-  invalidateProductCache,
-  invalidateCategoryCache,
-} from "./product-cache";
-import {
   invalidatePaymentIntentCache,
   invalidatePaymentIntentCacheByOrderId,
 } from "./payment-intent-cache";
-import { getCacheClient, generateCacheKey, CACHE_KEYS } from "./redis";
+import { invalidateCategoryCache, invalidateProductCache } from "./product-cache";
+import { CACHE_KEYS, generateCacheKey, getCacheClient } from "./redis";
 
 /**
  * Invalidate all product-related caches
@@ -200,9 +197,15 @@ export async function invalidateAllCaches(): Promise<void> {
  * Selective cache invalidation based on event type
  */
 export async function invalidateCacheByEvent(
-  event: "product.updated" | "product.created" | "product.deleted" |
-         "category.updated" | "order.completed" | "payment.succeeded" |
-         "payment.failed" | "cart.cleared",
+  event:
+    | "product.updated"
+    | "product.created"
+    | "product.deleted"
+    | "category.updated"
+    | "order.completed"
+    | "payment.succeeded"
+    | "payment.failed"
+    | "cart.cleared",
   data: {
     productId?: string;
     categorySlug?: string;

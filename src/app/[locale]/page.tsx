@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { RefactoredPageLayout } from "@/components/layout/RefactoredPageLayout";
 import { generateHomepageMetadata } from "@/components/seo/PageMetadata";
 import {
@@ -7,7 +8,6 @@ import {
   generateWebsiteStructuredData,
   StructuredData,
 } from "@/components/seo/StructuredData";
-import { Analytics } from "@vercel/analytics/next"
 
 interface HomeProps {
   params: Promise<{ locale: string }>;

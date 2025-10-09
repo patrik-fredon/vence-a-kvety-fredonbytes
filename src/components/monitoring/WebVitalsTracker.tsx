@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
 
 // Performance configuration - inline to avoid build issues
@@ -125,7 +125,7 @@ export function WebVitalsTracker({
         console.warn("Failed to send Web Vitals metrics:", error);
       }
     },
-    [endpoint]
+    [endpoint, getSessionId]
   );
 
   useEffect(() => {

@@ -16,11 +16,11 @@
  */
 function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
   const result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
-  return result && result[1] && result[2] && result[3]
+  return result?.[1] && result[2] && result[3]
     ? {
-        r: parseInt(result[1], 16),
-        g: parseInt(result[2], 16),
-        b: parseInt(result[3], 16),
+        r: Number.parseInt(result[1], 16),
+        g: Number.parseInt(result[2], 16),
+        b: Number.parseInt(result[3], 16),
       }
     : null;
 }
@@ -32,7 +32,7 @@ function hexToRgb(hex: string): { r: number; g: number; b: number } | null {
 function getLuminance(r: number, g: number, b: number): number {
   const [rs = 0, gs = 0, bs = 0] = [r, g, b].map((c) => {
     const sRGB = c / 255;
-    return sRGB <= 0.03928 ? sRGB / 12.92 : Math.pow((sRGB + 0.055) / 1.055, 2.4);
+    return sRGB <= 0.03928 ? sRGB / 12.92 : ((sRGB + 0.055) / 1.055) ** 2.4;
   });
   return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
 }
@@ -45,7 +45,7 @@ export function getContrastRatio(color1: string, color2: string): number {
   const rgb1 = hexToRgb(color1);
   const rgb2 = hexToRgb(color2);
 
-  if (!rgb1 || !rgb2) {
+  if (!(rgb1 && rgb2)) {
     throw new Error("Invalid hex color format");
   }
 

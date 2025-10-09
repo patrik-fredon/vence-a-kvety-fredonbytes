@@ -27,10 +27,10 @@ export class EmailService {
 
   constructor() {
     this.config = {
-      apiKey: process.env["RESEND_API_KEY"],
-      fromEmail: process.env["FROM_EMAIL"] || "objednavky@pohrebni-vence.cz",
-      fromName: process.env["FROM_NAME"] || "Pohřební věnce",
-      baseUrl: process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000",
+      apiKey: process.env.RESEND_API_KEY,
+      fromEmail: process.env.FROM_EMAIL || "objednavky@pohrebni-vence.cz",
+      fromName: process.env.FROM_NAME || "Pohřební věnce",
+      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
     };
   }
 
@@ -210,25 +210,33 @@ export class EmailService {
       <div class="order-details">
         <h3>${isCs ? "Doručení" : "Delivery"}</h3>
         
-        ${order.deliveryMethod === "pickup" ? `
+        ${
+          order.deliveryMethod === "pickup"
+            ? `
           <p><strong>${isCs ? "Způsob doručení" : "Delivery Method"}:</strong><br>
           ${isCs ? "Osobní odběr" : "Personal Pickup"}</p>
           
-          ${order.pickupLocation ? `
+          ${
+            order.pickupLocation
+              ? `
             <p><strong>${isCs ? "Místo odběru" : "Pickup Location"}:</strong><br>
             ${order.pickupLocation}</p>
             
             <p><strong>${isCs ? "Otevírací doba" : "Opening Hours"}:</strong><br>
             ${isCs ? "Po-Pá: 9:00-17:00" : "Mon-Fri: 9:00-17:00"}</p>
-          ` : ""}
-        ` : `
+          `
+              : ""
+          }
+        `
+            : `
           <p><strong>${isCs ? "Způsob doručení" : "Delivery Method"}:</strong><br>
           ${isCs ? "Doručení na adresu" : "Delivery to Address"}</p>
           
           <p><strong>${isCs ? "Adresa" : "Address"}:</strong><br>
           ${order.deliveryInfo.address.street}<br>
           ${order.deliveryInfo.address.city}, ${order.deliveryInfo.address.postalCode}</p>
-        `}
+        `
+        }
 
         ${
           order.deliveryInfo.preferredDate
@@ -297,21 +305,33 @@ ${isCs ? "CELKOVÁ ČÁSTKA" : "TOTAL AMOUNT"}: ${order.totalAmount.toLocaleStri
 
 ${isCs ? "DORUČENÍ:" : "DELIVERY:"}
 ${isCs ? "Způsob doručení" : "Delivery Method"}: ${
-  order.deliveryMethod === "pickup"
-    ? isCs ? "Osobní odběr" : "Personal Pickup"
-    : isCs ? "Doručení na adresu" : "Delivery to Address"
-}
+      order.deliveryMethod === "pickup"
+        ? isCs
+          ? "Osobní odběr"
+          : "Personal Pickup"
+        : isCs
+          ? "Doručení na adresu"
+          : "Delivery to Address"
+    }
 
-${order.deliveryMethod === "pickup" && order.pickupLocation ? `
+${
+  order.deliveryMethod === "pickup" && order.pickupLocation
+    ? `
 ${isCs ? "Místo odběru" : "Pickup Location"}: ${order.pickupLocation}
 ${isCs ? "Otevírací doba" : "Opening Hours"}: ${isCs ? "Po-Pá: 9:00-17:00" : "Mon-Fri: 9:00-17:00"}
-` : ""}
+`
+    : ""
+}
 
-${order.deliveryMethod !== "pickup" ? `
+${
+  order.deliveryMethod !== "pickup"
+    ? `
 ${isCs ? "Adresa" : "Address"}: ${order.deliveryInfo.address.street}, ${
-      order.deliveryInfo.address.city
-    }, ${order.deliveryInfo.address.postalCode}
-` : ""}
+        order.deliveryInfo.address.city
+      }, ${order.deliveryInfo.address.postalCode}
+`
+    : ""
+}
 
 ${
   order.deliveryInfo.preferredDate

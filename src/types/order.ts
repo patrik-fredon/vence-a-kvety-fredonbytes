@@ -85,7 +85,7 @@ export interface Order extends BaseEntity {
   customerInfo: CustomerInfo;
   deliveryInfo: DeliveryInfo;
   paymentInfo: PaymentInfo;
-  deliveryMethod?: 'delivery' | 'pickup';
+  deliveryMethod?: "delivery" | "pickup";
   pickupLocation?: string;
 
   // Status and tracking
@@ -172,7 +172,7 @@ export interface OrderRow {
   status: OrderStatus;
   notes: string | null;
   internal_notes: string | null;
-  delivery_method: 'delivery' | 'pickup' | null;
+  delivery_method: "delivery" | "pickup" | null;
   pickup_location: string | null;
   confirmed_at: string | null;
   shipped_at: string | null;

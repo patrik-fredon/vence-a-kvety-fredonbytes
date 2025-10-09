@@ -114,7 +114,7 @@ function checkWebPSupport(): boolean {
   if (typeof document === "undefined") return false;
 
   const canvas = document.createElement("canvas");
-  if (canvas.getContext && canvas.getContext("2d")) {
+  if (canvas.getContext?.("2d")) {
     return canvas.toDataURL("image/webp").indexOf("data:image/webp") === 0;
   }
   return false;
@@ -127,7 +127,7 @@ function checkAVIFSupport(): boolean {
   if (typeof document === "undefined") return false;
 
   const canvas = document.createElement("canvas");
-  if (canvas.getContext && canvas.getContext("2d")) {
+  if (canvas.getContext?.("2d")) {
     return canvas.toDataURL("image/avif").indexOf("data:image/avif") === 0;
   }
   return false;
@@ -199,7 +199,7 @@ export const crossBrowserTests = {
       test: () => {
         const h1 = document.querySelector("h1");
         const h3 = document.querySelector("h3");
-        if (!h1 || !h3) return false;
+        if (!(h1 && h3)) return false;
 
         const h1Color = window.getComputedStyle(h1).color;
         const h3Color = window.getComputedStyle(h3).color;
@@ -225,7 +225,7 @@ export const crossBrowserTests = {
         if (!hero) return false;
 
         const styles = window.getComputedStyle(hero);
-        const minHeight = parseInt(styles.minHeight);
+        const minHeight = Number.parseInt(styles.minHeight, 10);
         return minHeight >= 600; // Should be at least 600px on mobile
       },
     },
@@ -462,8 +462,8 @@ export function checkBrowserVersion(browserInfo: BrowserInfo): boolean {
   const compat = browserCompatibility[browserInfo.name as keyof typeof browserCompatibility];
   if (!compat) return false;
 
-  const currentVersion = parseFloat(browserInfo.version);
-  const minVersion = parseFloat(compat.minVersion);
+  const currentVersion = Number.parseFloat(browserInfo.version);
+  const minVersion = Number.parseFloat(compat.minVersion);
 
   return currentVersion >= minVersion;
 }

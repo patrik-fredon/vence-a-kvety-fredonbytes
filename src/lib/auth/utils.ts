@@ -230,8 +230,8 @@ export const authUtils = {
       const authUser: AuthUser = {
         id: user.id,
         email: user.email!,
-        name: profile?.name || user.user_metadata["name"] || null,
-        phone: profile?.phone || user.user_metadata["phone"] || null,
+        name: profile?.name || user.user_metadata.name || null,
+        phone: profile?.phone || user.user_metadata.phone || null,
         addresses: (profile?.addresses as unknown as Address[]) || [],
         preferences: (profile?.preferences as unknown as UserPreferences) || defaultUserPreferences,
       };

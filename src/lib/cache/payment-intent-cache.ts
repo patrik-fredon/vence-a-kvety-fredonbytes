@@ -5,7 +5,7 @@
 
 import { cache } from "react";
 import type Stripe from "stripe";
-import { getCacheClient, generateCacheKey, CACHE_KEYS } from "./redis";
+import { CACHE_KEYS, generateCacheKey, getCacheClient } from "./redis";
 
 // Cache TTL for payment intents (15 minutes)
 const PAYMENT_INTENT_TTL = 15 * 60; // 15 minutes in seconds
@@ -28,9 +28,7 @@ export interface CachedPaymentIntent {
 /**
  * Cache payment intent in Redis
  */
-export async function cachePaymentIntent(
-  paymentIntent: Stripe.PaymentIntent
-): Promise<void> {
+export async function cachePaymentIntent(paymentIntent: Stripe.PaymentIntent): Promise<void> {
   try {
     const client = getCacheClient();
     const key = generateCacheKey(CACHE_KEYS.PAYMENT, "intent", paymentIntent.id);
@@ -41,8 +39,8 @@ export async function cachePaymentIntent(
       amount: paymentIntent.amount,
       currency: paymentIntent.currency,
       status: paymentIntent.status,
-      orderId: paymentIntent.metadata['orderId'] || "",
-      customerEmail: paymentIntent.metadata['customerEmail'] || "",
+      orderId: paymentIntent.metadata.orderId || "",
+      customerEmail: paymentIntent.metadata.customerEmail || "",
       createdAt: new Date(paymentIntent.created * 1000).toISOString(),
       expiresAt: new Date(Date.now() + PAYMENT_INTENT_TTL * 1000).toISOString(),
     };
@@ -50,11 +48,11 @@ export async function cachePaymentIntent(
     await client.set(key, JSON.stringify(cachedData), PAYMENT_INTENT_TTL);
 
     // Also cache by order ID for quick lookup
-    if (paymentIntent.metadata['orderId']) {
+    if (paymentIntent.metadata.orderId) {
       const orderKey = generateCacheKey(
         CACHE_KEYS.PAYMENT,
         "order-intent",
-        paymentIntent.metadata['orderId']
+        paymentIntent.metadata.orderId
       );
       await client.set(orderKey, paymentIntent.id, PAYMENT_INTENT_TTL);
     }
@@ -123,9 +121,7 @@ export async function getCachedPaymentIntentByOrderId(
 /**
  * Invalidate payment intent cache
  */
-export async function invalidatePaymentIntentCache(
-  paymentIntentId: string
-): Promise<void> {
+export async function invalidatePaymentIntentCache(paymentIntentId: string): Promise<void> {
   try {
     const client = getCacheClient();
     const key = generateCacheKey(CACHE_KEYS.PAYMENT, "intent", paymentIntentId);
@@ -152,9 +148,7 @@ export async function invalidatePaymentIntentCache(
 /**
  * Invalidate payment intent cache by order ID
  */
-export async function invalidatePaymentIntentCacheByOrderId(
-  orderId: string
-): Promise<void> {
+export async function invalidatePaymentIntentCacheByOrderId(orderId: string): Promise<void> {
   try {
     const client = getCacheClient();
     const orderKey = generateCacheKey(CACHE_KEYS.PAYMENT, "order-intent", orderId);

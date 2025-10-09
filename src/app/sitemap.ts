@@ -2,7 +2,7 @@ import type { MetadataRoute } from "next";
 import { createServerClient } from "@/lib/supabase/server";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
-  const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "https://pohrebni-vence.cz";
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
   const supabase = createServerClient();
 
   // Get current date for lastModified
@@ -174,7 +174,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
       products?.map((product) => {
         // Higher priority for featured products and newer products
         const daysSinceCreated = Math.floor(
-          (now.getTime() - new Date(product.created_at || new Date().toISOString()).getTime()) / (1000 * 60 * 60 * 24)
+          (now.getTime() - new Date(product.created_at || new Date().toISOString()).getTime()) /
+            (1000 * 60 * 60 * 24)
         );
         const recencyBonus = Math.max(0, 0.1 - daysSinceCreated * 0.001); // Bonus for newer products
         const featuredBonus = product.featured ? 0.1 : 0;
@@ -200,7 +201,8 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const productPagesEn: MetadataRoute.Sitemap =
       products?.map((product) => {
         const daysSinceCreated = Math.floor(
-          (now.getTime() - new Date(product.created_at || new Date().toISOString()).getTime()) / (1000 * 60 * 60 * 24)
+          (now.getTime() - new Date(product.created_at || new Date().toISOString()).getTime()) /
+            (1000 * 60 * 60 * 24)
         );
         const recencyBonus = Math.max(0, 0.1 - daysSinceCreated * 0.001);
         const featuredBonus = product.featured ? 0.1 : 0;

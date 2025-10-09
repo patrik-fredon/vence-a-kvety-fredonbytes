@@ -50,9 +50,7 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
   }
 
   // Create embedded checkout session
-  const { createEmbeddedCheckoutSession } = await import(
-    "@/lib/stripe/embedded-checkout"
-  );
+  const { createEmbeddedCheckoutSession } = await import("@/lib/stripe/embedded-checkout");
 
   let checkoutSession: { clientSecret: string; sessionId: string } | null = null;
   let sessionError: string | null = null;

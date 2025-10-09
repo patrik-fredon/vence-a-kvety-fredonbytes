@@ -98,7 +98,7 @@ export function validateEnvironmentVariables(): EnvValidationResult {
     }
 
     // Check if optional variable is missing (warning only)
-    if (!config.required && !value) {
+    if (!(config.required || value)) {
       warnings.push(`${key} - ${config.description} (optional but recommended)`);
       continue;
     }
@@ -112,20 +112,20 @@ export function validateEnvironmentVariables(): EnvValidationResult {
   // Additional security checks
   if (process.env.NODE_ENV === "production") {
     // Ensure production uses live keys
-    const stripeKey = process.env['STRIPE_SECRET_KEY'];
-    if (stripeKey && stripeKey.startsWith("sk_test_")) {
+    const stripeKey = process.env.STRIPE_SECRET_KEY;
+    if (stripeKey?.startsWith("sk_test_")) {
       warnings.push("STRIPE_SECRET_KEY - Using test key in production environment");
     }
 
-    const stripePublishableKey = process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'];
-    if (stripePublishableKey && stripePublishableKey.startsWith("pk_test_")) {
+    const stripePublishableKey = process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY;
+    if (stripePublishableKey?.startsWith("pk_test_")) {
       warnings.push(
         "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY - Using test key in production environment"
       );
     }
 
     // Ensure NEXTAUTH_SECRET is strong enough
-    const nextAuthSecret = process.env['NEXTAUTH_SECRET'];
+    const nextAuthSecret = process.env.NEXTAUTH_SECRET;
     if (nextAuthSecret && nextAuthSecret.length < 32) {
       invalid.push("NEXTAUTH_SECRET - Must be at least 32 characters long");
     }
@@ -218,14 +218,7 @@ export function isTest(): boolean {
  */
 export function sanitizeEnvVarForLogging(key: string, value: string): string {
   // Don't log sensitive keys at all
-  const sensitiveKeys = [
-    "SECRET",
-    "KEY",
-    "TOKEN",
-    "PASSWORD",
-    "WEBHOOK",
-    "SERVICE_ROLE",
-  ];
+  const sensitiveKeys = ["SECRET", "KEY", "TOKEN", "PASSWORD", "WEBHOOK", "SERVICE_ROLE"];
 
   if (sensitiveKeys.some((sensitive) => key.includes(sensitive))) {
     if (value.length <= 8) {

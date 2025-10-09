@@ -1,5 +1,5 @@
 // components/Divider.tsx
-import React from "react";
+import type React from "react";
 
 interface DividerProps {
   className?: string;

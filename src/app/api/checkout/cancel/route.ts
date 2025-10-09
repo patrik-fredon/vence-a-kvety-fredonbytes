@@ -3,7 +3,7 @@
  * Handles payment cancellation logic
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { handleCheckoutCancel } from "@/lib/services/checkout-completion-service";
 
 export const runtime = "edge";

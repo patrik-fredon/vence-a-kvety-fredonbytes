@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
 /**
  * Stripe Embedded Checkout Component
- * 
+ *
  * Provides a modern, embedded payment experience using Stripe's Embedded Checkout.
  * This component handles:
  * - Lazy loading of Stripe SDK for optimal performance
@@ -10,31 +10,31 @@
  * - Error handling with user-friendly messages
  * - Payment completion callbacks
  * - Localized UI based on user locale
- * 
+ *
  * Features:
  * - No redirect to external Stripe pages
  * - Consistent branding and UX
  * - Built-in 3D Secure support
  * - Automatic retry for recoverable errors
  * - Timeout handling for slow connections
- * 
+ *
  * Requirements: 3.5, 3.6, 3.13, 3.14, 3.15, 6.6, 6.7, 6.8, 7.1, 7.2, 7.3, 7.7, 8.7
- * 
+ *
  * @module components/payments/StripeEmbeddedCheckout
  */
 
-import { useState, useCallback, useEffect } from 'react';
-import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
-import { useTranslations } from 'next-intl';
-import type { Stripe } from '@stripe/stripe-js';
+import type { Stripe } from "@stripe/stripe-js";
+import { useTranslations } from "next-intl";
+import { useCallback, useEffect, useState } from "react";
+import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 
 // Lazy load Stripe SDK only when component is rendered
 let stripePromise: Promise<Stripe | null> | null = null;
 
 const getStripe = () => {
   if (!stripePromise) {
-    stripePromise = import('@stripe/stripe-js').then((mod) =>
-      mod.loadStripe(process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY']!)
+    stripePromise = import("@stripe/stripe-js").then((mod) =>
+      mod.loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!)
     );
   }
   return stripePromise;
@@ -44,16 +44,16 @@ interface StripeEmbeddedCheckoutProps {
   clientSecret: string;
   onComplete?: () => void;
   onError?: (error: Error) => void;
-  locale: 'cs' | 'en';
+  locale: "cs" | "en";
 }
 
 /**
  * StripeEmbeddedCheckout Component
- * 
+ *
  * Renders Stripe's Embedded Checkout interface for seamless payment processing.
  * Integrates with Stripe's EmbeddedCheckoutProvider and handles loading states,
  * completion callbacks, and error handling.
- * 
+ *
  * @param clientSecret - The client secret from Stripe checkout session
  * @param onComplete - Callback fired when checkout is completed successfully
  * @param onError - Callback fired when an error occurs during checkout
@@ -65,7 +65,7 @@ export function StripeEmbeddedCheckout({
   onError,
   locale,
 }: StripeEmbeddedCheckoutProps) {
-  const t = useTranslations('checkout');
+  const t = useTranslations("checkout");
   const [isLoading, setIsLoading] = useState(true);
   const [loadTimeout, setLoadTimeout] = useState(false);
   const [checkoutError, setCheckoutError] = useState<{
@@ -91,22 +91,22 @@ export function StripeEmbeddedCheckout({
   // Errors are handled through the EmbeddedCheckoutProvider and completion callbacks
   // const handleEmbeddedCheckoutError = useCallback((error: { error?: { message?: string } }) => {
   //   setIsLoading(false);
-  //   
+  //
   //   const errorMessage = error?.error?.message || 'Unknown error occurred';
-  //   const isRetryable = 
+  //   const isRetryable =
   //     errorMessage.includes('network') ||
   //     errorMessage.includes('connection') ||
   //     errorMessage.includes('timeout') ||
   //     errorMessage.includes('rate limit');
-  //   
+  //
   //   const checkoutErr = {
   //     message: errorMessage,
   //     retryable: isRetryable,
   //     code: 'STRIPE_EMBEDDED_ERROR',
   //   };
-  //   
+  //
   //   setCheckoutError(checkoutErr);
-  //   
+  //
   //   if (onError) {
   //     const error = new Error(errorMessage);
   //     onError(error);
@@ -114,22 +114,25 @@ export function StripeEmbeddedCheckout({
   // }, [onError]);
 
   // Handle general errors (timeout, SDK loading failures)
-  const handleGeneralError = useCallback((error: Error, retryable: boolean = true) => {
-    setIsLoading(false);
-    setCheckoutError({
-      message: error.message,
-      retryable,
-      code: 'GENERAL_ERROR',
-    });
-    onError?.(error);
-  }, [onError]);
+  const handleGeneralError = useCallback(
+    (error: Error, retryable: boolean = true) => {
+      setIsLoading(false);
+      setCheckoutError({
+        message: error.message,
+        retryable,
+        code: "GENERAL_ERROR",
+      });
+      onError?.(error);
+    },
+    [onError]
+  );
 
   // Set up timeout for Stripe SDK loading (30 seconds)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
       if (isLoading && !checkoutError) {
         setLoadTimeout(true);
-        const timeoutError = new Error('Stripe SDK loading timeout');
+        const timeoutError = new Error("Stripe SDK loading timeout");
         handleGeneralError(timeoutError, true);
       }
     }, 30000); // 30 second timeout
@@ -148,23 +151,23 @@ export function StripeEmbeddedCheckout({
 
   // Get user-friendly error message based on error type
   const getUserErrorMessage = useCallback(() => {
-    if (!checkoutError) return '';
-    
+    if (!checkoutError) return "";
+
     const errorMsg = checkoutError.message.toLowerCase();
-    
+
     // Map error messages to translation keys
-    if (errorMsg.includes('card') || errorMsg.includes('declined')) {
-      return t('error.card');
+    if (errorMsg.includes("card") || errorMsg.includes("declined")) {
+      return t("error.card");
     }
-    if (errorMsg.includes('network') || errorMsg.includes('connection')) {
-      return t('error.network');
+    if (errorMsg.includes("network") || errorMsg.includes("connection")) {
+      return t("error.network");
     }
-    if (errorMsg.includes('expired') || errorMsg.includes('timeout')) {
-      return t('error.sessionExpired');
+    if (errorMsg.includes("expired") || errorMsg.includes("timeout")) {
+      return t("error.sessionExpired");
     }
-    
+
     // Default to generic error message
-    return t('error.generic');
+    return t("error.generic");
   }, [checkoutError, t]);
 
   // Show error state
@@ -189,42 +192,40 @@ export function StripeEmbeddedCheckout({
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-stone-900 mb-2">
-            {locale === 'cs' ? 'Chyba při platbě' : 'Payment Error'}
+            {locale === "cs" ? "Chyba při platbě" : "Payment Error"}
           </h3>
-          <p className="text-stone-600 mb-6">
-            {getUserErrorMessage()}
-          </p>
-          
+          <p className="text-stone-600 mb-6">{getUserErrorMessage()}</p>
+
           {/* Show retry button only for retryable errors */}
           {(checkoutError?.retryable || loadTimeout) && (
             <button
               onClick={handleRetry}
               className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
-              aria-label={locale === 'cs' ? 'Zkusit znovu' : 'Try again'}
+              aria-label={locale === "cs" ? "Zkusit znovu" : "Try again"}
             >
-              {locale === 'cs' ? 'Zkusit znovu' : 'Try Again'}
+              {locale === "cs" ? "Zkusit znovu" : "Try Again"}
             </button>
           )}
-          
+
           {/* Show contact support message for non-retryable errors */}
           {checkoutError && !checkoutError.retryable && (
             <div className="mt-4">
               <p className="text-sm text-stone-500">
-                {locale === 'cs' 
-                  ? 'Pokud problém přetrvává, kontaktujte prosím naši podporu.' 
-                  : 'If the problem persists, please contact our support.'}
+                {locale === "cs"
+                  ? "Pokud problém přetrvává, kontaktujte prosím naši podporu."
+                  : "If the problem persists, please contact our support."}
               </p>
               <button
-                onClick={() => window.location.href = `/${locale}/contact`}
+                onClick={() => (window.location.href = `/${locale}/contact`)}
                 className="mt-3 px-6 py-3 bg-stone-600 text-white rounded-lg hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2"
               >
-                {locale === 'cs' ? 'Kontaktovat podporu' : 'Contact Support'}
+                {locale === "cs" ? "Kontaktovat podporu" : "Contact Support"}
               </button>
             </div>
           )}
-          
+
           {/* Show technical error details in development */}
-          {process.env.NODE_ENV === 'development' && checkoutError && (
+          {process.env.NODE_ENV === "development" && checkoutError && (
             <details className="mt-6 text-left">
               <summary className="text-xs text-stone-500 cursor-pointer hover:text-stone-700">
                 Technical Details
@@ -246,21 +247,23 @@ export function StripeEmbeddedCheckout({
   } | null>(null);
 
   useEffect(() => {
-    import('@stripe/react-stripe-js').then((mod) => {
-      setStripeComponents({
-        EmbeddedCheckoutProvider: mod.EmbeddedCheckoutProvider,
-        EmbeddedCheckout: mod.EmbeddedCheckout,
+    import("@stripe/react-stripe-js")
+      .then((mod) => {
+        setStripeComponents({
+          EmbeddedCheckoutProvider: mod.EmbeddedCheckoutProvider,
+          EmbeddedCheckout: mod.EmbeddedCheckout,
+        });
+      })
+      .catch((_error) => {
+        handleGeneralError(new Error("Failed to load Stripe SDK"), true);
       });
-    }).catch((_error) => {
-      handleGeneralError(new Error('Failed to load Stripe SDK'), true);
-    });
   }, [handleGeneralError]);
 
   if (!StripeComponents) {
     return (
       <div className="stripe-embedded-checkout-container relative min-h-[600px] flex items-center justify-center">
         <LoadingSpinner size="lg" locale={locale} />
-        <p className="ml-4 text-stone-600">{t('loading')}</p>
+        <p className="ml-4 text-stone-600">{t("loading")}</p>
       </div>
     );
   }
@@ -272,13 +275,11 @@ export function StripeEmbeddedCheckout({
       {isLoading && (
         <div className="absolute inset-0 flex flex-col items-center justify-center bg-stone-50 z-10 rounded-lg">
           <LoadingSpinner size="lg" locale={locale} />
-          <p className="mt-4 text-stone-600 text-sm">
-            {t('loading')}
-          </p>
+          <p className="mt-4 text-stone-600 text-sm">{t("loading")}</p>
           <p className="mt-2 text-stone-500 text-xs">
-            {locale === 'cs' 
-              ? 'Připojování k platební bráně...' 
-              : 'Connecting to payment gateway...'}
+            {locale === "cs"
+              ? "Připojování k platební bráně..."
+              : "Connecting to payment gateway..."}
           </p>
         </div>
       )}

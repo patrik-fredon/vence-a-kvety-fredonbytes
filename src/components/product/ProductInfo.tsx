@@ -22,17 +22,12 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
     });
   };
 
-
-
   // Mock rating data (implement in later tasks)
   // const rating = 4.8;
   // const reviewCount = 127;
 
-
   return (
     <div className={cn("space-y-6", className)}>
-
-
       {/* Product Title and Badge */}
       <div className="space-y-3">
         <div className="flex items-start justify-between gap-4">
@@ -40,10 +35,7 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
             {product.name[locale as keyof typeof product.name]}
           </h1>
         </div>
-
       </div>
-
-
 
       {/* Price Display */}
       <Card>
@@ -80,9 +72,6 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
           </CardContent>
         </Card>
       )}
-
-
-
     </div>
   );
 }

@@ -48,7 +48,7 @@ export async function GET() {
       profile.preferences &&
       typeof profile.preferences === "object" &&
       "isAdmin" in profile.preferences &&
-      profile.preferences["isAdmin"] === true;
+      profile.preferences.isAdmin === true;
     if (!isAdmin) {
       return NextResponse.json(
         {
@@ -134,7 +134,7 @@ export async function POST(request: NextRequest) {
       profile.preferences &&
       typeof profile.preferences === "object" &&
       "isAdmin" in profile.preferences &&
-      (profile.preferences as Record<string, unknown>)["isAdmin"] === true;
+      (profile.preferences as Record<string, unknown>).isAdmin === true;
     if (!isAdmin) {
       return NextResponse.json(
         {

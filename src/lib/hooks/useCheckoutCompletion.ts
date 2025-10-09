@@ -55,7 +55,7 @@ export function useCheckoutCompletion({
 
         const data = await response.json();
 
-        if (!response.ok || !data.success) {
+        if (!(response.ok && data.success)) {
           throw new Error(data.error || "Failed to complete checkout");
         }
 

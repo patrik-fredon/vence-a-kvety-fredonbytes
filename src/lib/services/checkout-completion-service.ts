@@ -3,13 +3,13 @@
  * Handles post-payment completion logic including cache invalidation and order updates
  */
 
-import { getCacheClient, generateCacheKey, CACHE_KEYS } from "@/lib/cache/redis";
+import { CACHE_KEYS, generateCacheKey, getCacheClient } from "@/lib/cache/redis";
 import { updateOrderStatus } from "./order-service";
 
 /**
  * Handle checkout completion
  * Called after successful payment to clean up and finalize the order
- * 
+ *
  * @param sessionId - Stripe checkout session ID
  * @param orderId - Order ID from database
  * @returns Success status and any error messages
@@ -45,16 +45,16 @@ export async function handleCheckoutComplete(
 /**
  * Invalidate a cached checkout session
  * Removes the session from Redis cache
- * 
+ *
  * @param sessionId - Stripe session ID to invalidate
  */
 export async function invalidateCheckoutSession(sessionId: string): Promise<void> {
   try {
     const cache = getCacheClient();
     const cacheKey = generateCacheKey(CACHE_KEYS.PAYMENT, "checkout", sessionId);
-    
+
     await cache.del(cacheKey);
-    
+
     console.info("Invalidated checkout session cache", { sessionId });
   } catch (error) {
     console.error("Error invalidating checkout session:", error);
@@ -65,7 +65,7 @@ export async function invalidateCheckoutSession(sessionId: string): Promise<void
 /**
  * Handle checkout cancellation
  * Called when user cancels the payment
- * 
+ *
  * @param sessionId - Stripe checkout session ID
  * @param orderId - Order ID from database (if created)
  * @returns Success status and any error messages
@@ -103,7 +103,7 @@ export async function handleCheckoutCancel(
 /**
  * Get checkout session from cache
  * Used to retrieve cached session data
- * 
+ *
  * @param sessionId - Stripe session ID
  * @returns Cached session data or null if not found
  */
@@ -113,7 +113,7 @@ export async function getCachedCheckoutSession(
   try {
     const cache = getCacheClient();
     const cacheKey = generateCacheKey(CACHE_KEYS.PAYMENT, "checkout", sessionId);
-    
+
     const cachedData = await cache.get(cacheKey);
     if (!cachedData) {
       return null;

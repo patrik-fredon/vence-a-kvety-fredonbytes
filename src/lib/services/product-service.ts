@@ -3,8 +3,6 @@
  * Implements efficient database queries with proper indexing and Redis caching
  */
 
-import { createClient } from "@/lib/supabase/server";
-import type { Product, ProductRow, CategoryRow } from "@/types/product";
 import {
   cacheProduct,
   cacheProductBySlug,
@@ -14,10 +12,9 @@ import {
   getCachedProductsList,
   invalidateProductCache,
 } from "@/lib/cache/product-cache";
-import {
-  transformProductRow,
-  transformCategoryRow,
-} from "@/lib/utils/product-transforms";
+import { createClient } from "@/lib/supabase/server";
+import { transformCategoryRow, transformProductRow } from "@/lib/utils/product-transforms";
+import type { CategoryRow, Product, ProductRow } from "@/types/product";
 
 /**
  * Product query filters
@@ -211,21 +208,30 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
     if (cached) {
       return {
         products: cached.products,
-        pagination: (cached.pagination && 'totalPages' in cached.pagination && typeof cached.pagination.totalPages === 'number') ? cached.pagination as { page: number; limit: number; total: number; totalPages: number } : {
-          page,
-          limit,
-          total: cached.products.length,
-          totalPages: 1,
-        },
+        pagination:
+          cached.pagination &&
+          "totalPages" in cached.pagination &&
+          typeof cached.pagination.totalPages === "number"
+            ? (cached.pagination as {
+                page: number;
+                limit: number;
+                total: number;
+                totalPages: number;
+              })
+            : {
+                page,
+                limit,
+                total: cached.products.length,
+                totalPages: 1,
+              },
       };
     }
 
     const supabase = createClient();
 
     // Build optimized query using indexed columns
-    let query = supabase
-      .from("products")
-      .select(`
+    let query = supabase.from("products").select(
+      `
         *,
         categories (
           id,
@@ -241,7 +247,9 @@ export async function getProducts(filters: ProductFilters = {}): Promise<Product
           created_at,
           updated_at
         )
-      `, { count: "exact" });
+      `,
+      { count: "exact" }
+    );
 
     // Apply filters using indexed columns
     if (active !== undefined) {
@@ -487,9 +495,7 @@ export async function invalidateProduct(productId?: string): Promise<void> {
 export async function getProductCount(filters: Partial<ProductFilters> = {}): Promise<number> {
   try {
     const supabase = createClient();
-    let query = supabase
-      .from("products")
-      .select("*", { count: "exact", head: true });
+    let query = supabase.from("products").select("*", { count: "exact", head: true });
 
     if (filters.active !== undefined) {
       query = query.eq("active", filters.active);

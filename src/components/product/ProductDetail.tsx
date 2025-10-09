@@ -37,7 +37,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
-  const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup' | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup" | null>(null);
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
@@ -134,7 +134,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   }, []);
 
   // Handle delivery method changes
-  const handleDeliveryMethodChange = useCallback((method: 'delivery' | 'pickup') => {
+  const handleDeliveryMethodChange = useCallback((method: "delivery" | "pickup") => {
     setDeliveryMethod(method);
     // Clear validation errors when delivery method changes
     setValidationErrors([]);
@@ -219,8 +219,8 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
       // Add delivery method to customizations
       allCustomizations.push({
-        optionId: 'delivery_method',
-        choiceIds: [deliveryMethod === 'delivery' ? 'delivery_address' : 'personal_pickup'],
+        optionId: "delivery_method",
+        choiceIds: [deliveryMethod === "delivery" ? "delivery_address" : "personal_pickup"],
       });
 
       const success = await addToCart({
@@ -448,28 +448,28 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                       {validationErrors.some(
                         (error) => error.includes("velikost") || error.includes("size")
                       ) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleErrorRecovery("size")}
-                            className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
-                          >
-                            Auto-select Size
-                          </Button>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleErrorRecovery("size")}
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                          Auto-select Size
+                        </Button>
+                      )}
 
                       {validationErrors.some(
                         (error) => error.includes("stuhy") || error.includes("ribbon")
                       ) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleErrorRecovery("ribbon")}
-                            className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
-                          >
-                            Remove Ribbon
-                          </Button>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleErrorRecovery("ribbon")}
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                          Remove Ribbon
+                        </Button>
+                      )}
 
                       {validationWarnings.length > 0 && (
                         <Button

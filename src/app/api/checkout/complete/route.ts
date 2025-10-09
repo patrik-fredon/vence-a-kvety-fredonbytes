@@ -3,7 +3,7 @@
  * Handles post-payment completion logic
  */
 
-import { NextRequest, NextResponse } from "next/server";
+import { type NextRequest, NextResponse } from "next/server";
 import { handleCheckoutComplete } from "@/lib/services/checkout-completion-service";
 
 export const runtime = "edge";
@@ -23,7 +23,7 @@ export async function POST(request: NextRequest) {
     const { sessionId, orderId } = body;
 
     // Validate required fields
-    if (!sessionId || !orderId) {
+    if (!(sessionId && orderId)) {
       return NextResponse.json(
         {
           success: false,

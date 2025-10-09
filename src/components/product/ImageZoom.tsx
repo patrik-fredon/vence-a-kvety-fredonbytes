@@ -28,13 +28,7 @@ interface ImageZoomProps {
   productName: string;
 }
 
-export function ImageZoom({
-  images,
-  initialIndex,
-  isOpen,
-  onClose,
-  productName,
-}: ImageZoomProps) {
+export function ImageZoom({ images, initialIndex, isOpen, onClose, productName }: ImageZoomProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isAnimating, setIsAnimating] = useState(false);
   const announce = useAnnouncer();
@@ -69,7 +63,7 @@ export function ImageZoom({
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, currentIndex, images.length]);
+  }, [isOpen, handleNext, handlePrevious, onClose]);
 
   // Prevent body scroll when open
   useEffect(() => {
@@ -124,7 +118,7 @@ export function ImageZoom({
     }
   };
 
-  if (!isOpen || !images[currentIndex]) return null;
+  if (!(isOpen && images[currentIndex])) return null;
 
   const currentImage = images[currentIndex]!;
   const showNavigation = images.length > 1;

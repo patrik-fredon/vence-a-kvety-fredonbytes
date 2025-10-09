@@ -230,7 +230,6 @@ export default async function ProductsPage({ params, searchParams }: ProductsPag
           </div>
         </div>
 
-
         {/* Product Grid with Filters */}
         <ProductGridWithCart
           initialProducts={products}

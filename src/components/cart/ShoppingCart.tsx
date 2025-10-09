@@ -2,7 +2,7 @@
 
 import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { CartItemImage } from "@/components/cart/CartItemImage";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -210,7 +210,7 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
                 {(() => {
                   const deliveryMethod = getDeliveryMethod(item.customizations);
                   const productSlug = item.product?.slug;
-                  
+
                   if (deliveryMethod === "delivery_address") {
                     return (
                       <div className="flex items-center gap-2 mb-2">

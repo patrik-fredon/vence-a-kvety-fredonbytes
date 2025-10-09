@@ -1,16 +1,16 @@
 /**
  * Stripe Error Handler Module
- * 
+ *
  * Provides comprehensive error handling and retry logic for Stripe operations.
  * Converts Stripe API errors into user-friendly, localized error messages.
- * 
+ *
  * Features:
  * - Categorizes Stripe errors by type
  * - Provides localized error messages (Czech/English)
  * - Determines if errors are retryable
  * - Implements exponential backoff retry logic
  * - Logs errors with context for debugging
- * 
+ *
  * Error Categories:
  * - CARD_ERROR: Card declined, insufficient funds, etc. (retryable)
  * - INVALID_REQUEST: Invalid parameters (not retryable)
@@ -18,9 +18,9 @@
  * - AUTHENTICATION_ERROR: Invalid API keys (not retryable)
  * - RATE_LIMIT_ERROR: Too many requests (retryable)
  * - UNKNOWN_ERROR: Unexpected errors (not retryable)
- * 
+ *
  * Requirements: 3.11, 7.1, 7.2, 7.5, 7.6, 7.8
- * 
+ *
  * @module lib/stripe/error-handler
  */
 
@@ -51,11 +51,11 @@ export class CheckoutError extends Error {
 
 /**
  * Handles Stripe errors and converts them to CheckoutError
- * 
+ *
  * @param error - The error to handle
  * @param locale - The locale for error messages
  * @returns CheckoutError with localized message
- * 
+ *
  * @example
  * ```typescript
  * try {
@@ -66,10 +66,7 @@ export class CheckoutError extends Error {
  * }
  * ```
  */
-export function handleStripeError(
-  error: unknown,
-  _locale: "cs" | "en" = "cs"
-): CheckoutError {
+export function handleStripeError(error: unknown, _locale: "cs" | "en" = "cs"): CheckoutError {
   if (error instanceof Stripe.errors.StripeError) {
     switch (error.type) {
       case "StripeCardError":
@@ -199,12 +196,12 @@ const DEFAULT_RETRY_OPTIONS: Required<RetryOptions> = {
 
 /**
  * Executes a function with retry logic and exponential backoff
- * 
+ *
  * @param fn - The function to execute
  * @param options - Retry configuration options
  * @returns The result of the function
  * @throws The last error if all retries fail
- * 
+ *
  * @example
  * ```typescript
  * const session = await withRetry(
@@ -219,10 +216,7 @@ const DEFAULT_RETRY_OPTIONS: Required<RetryOptions> = {
  * );
  * ```
  */
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = {}
-): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, options: RetryOptions = {}): Promise<T> {
   const config = { ...DEFAULT_RETRY_OPTIONS, ...options };
   let lastError: unknown;
 
@@ -243,8 +237,7 @@ export async function withRetry<T>(
       }
 
       // Calculate delay with exponential backoff
-      const delay =
-        config.delayMs * Math.pow(config.backoffMultiplier, attempt - 1);
+      const delay = config.delayMs * config.backoffMultiplier ** (attempt - 1);
 
       console.log(
         `⚠️ [Stripe] Retry attempt ${attempt}/${config.maxRetries} after ${delay}ms`,

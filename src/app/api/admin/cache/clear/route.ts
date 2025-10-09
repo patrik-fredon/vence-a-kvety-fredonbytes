@@ -5,10 +5,10 @@
 
 import { type NextRequest, NextResponse } from "next/server";
 import {
+  getCacheStatistics,
   invalidateAllCaches,
   invalidateAllProductCaches,
   invalidateCacheByEvent,
-  getCacheStatistics,
 } from "@/lib/cache/cache-invalidation";
 import type { ApiResponse } from "@/types";
 
@@ -77,8 +77,6 @@ export async function POST(request: NextRequest) {
           );
         }
         break;
-
-      case "all":
       default:
         await invalidateAllCaches();
         break;

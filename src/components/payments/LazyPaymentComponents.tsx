@@ -19,7 +19,7 @@ export const LazyStripePaymentForm = dynamic(
     ssr: false, // Payment forms are interactive and don't need SSR
   }
 );
-// TODO next-intl translations
+
 // Dynamic import for Stripe Elements provider
 export const LazyStripeElementsProvider = dynamic(
   () =>

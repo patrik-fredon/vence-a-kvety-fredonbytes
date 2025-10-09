@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
       status: order.status as OrderStatus,
       notes: order.notes || "",
       createdAt: new Date(order.created_at || new Date().toISOString()),
-        updatedAt: new Date(order.updated_at || new Date().toISOString()),
+      updatedAt: new Date(order.updated_at || new Date().toISOString()),
     };
 
     // Post-order cleanup: Remove cart items, customization cache, and clear Redis cache
@@ -427,7 +427,7 @@ async function createStripePaymentSession(
 ): Promise<string> {
   try {
     // Initialize payment through our payment API
-    const baseUrl = process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000";
+    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/payments/initialize`, {
       method: "POST",
       headers: {
