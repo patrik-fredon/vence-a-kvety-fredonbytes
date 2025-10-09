@@ -43,7 +43,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     // Always add created status
     statusHistory.push({
       status: "pending",
-      timestamp: order.created_at,
+      timestamp: order.created_at || new Date().toISOString(),
       description: "Objednávka byla vytvořena a čeká na zpracování",
     });
 
@@ -51,25 +51,25 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     if (order.status !== "pending") {
       statusHistory.push({
         status: "confirmed",
-        timestamp: order.updated_at,
+        timestamp: order.updated_at || order.created_at || new Date().toISOString(),
         description: "Objednávka byla potvrzena a přijata ke zpracování",
       });
     }
 
     // Add processing status if current status is processing or later
-    if (["processing", "ready", "shipped", "delivered"].includes(order.status)) {
+    if (order.status && ["processing", "ready", "shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
         status: "processing",
-        timestamp: order.updated_at,
+        timestamp: order.updated_at || order.created_at || new Date().toISOString(),
         description: "Objednávka se zpracovává a připravuje k odeslání",
       });
     }
 
     // Add shipped status if current status is shipped or delivered
-    if (["shipped", "delivered"].includes(order.status)) {
+    if (order.status && ["shipped", "delivered"].includes(order.status)) {
       statusHistory.push({
         status: "shipped",
-        timestamp: order.updated_at,
+        timestamp: order.updated_at || order.created_at || new Date().toISOString(),
         description: "Objednávka byla odeslána a je na cestě",
       });
     }
@@ -78,7 +78,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     if (order.status === "delivered") {
       statusHistory.push({
         status: "delivered",
-        timestamp: order.updated_at,
+        timestamp: order.updated_at || order.created_at || new Date().toISOString(),
         description: "Objednávka byla úspěšně doručena",
       });
     }
@@ -87,7 +87,7 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     if (order.status === "cancelled") {
       statusHistory.push({
         status: "cancelled",
-        timestamp: order.updated_at,
+        timestamp: order.updated_at || order.created_at || new Date().toISOString(),
         description: "Objednávka byla zrušena",
       });
     }

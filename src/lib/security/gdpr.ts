@@ -114,18 +114,18 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
         email: userProfile.email,
         name: userProfile.name || undefined,
         phone: userProfile.phone || undefined,
-        createdAt: userProfile.created_at,
-        updatedAt: userProfile.updated_at,
+        createdAt: userProfile.created_at || new Date().toISOString(),
+        updatedAt: userProfile.updated_at || new Date().toISOString(),
       },
       orders:
         orders?.map((order) => ({
           id: order.id,
-          status: order.status,
+          status: order.status || "pending",
           totalAmount: order.total_amount,
           customerInfo: order.customer_info,
           deliveryInfo: order.delivery_info,
           items: Array.isArray(order.items) ? order.items : [],
-          createdAt: order.created_at,
+          createdAt: order.created_at || new Date().toISOString(),
         })) || [],
       cartItems:
         cartItems?.map((item) => ({
@@ -133,7 +133,7 @@ export async function exportUserData(userId: string): Promise<GDPRDataExport | n
           productId: item.product_id || "",
           quantity: item.quantity,
           customizations: Array.isArray(item.customizations) ? item.customizations : [],
-          createdAt: item.created_at,
+          createdAt: item.created_at || new Date().toISOString(),
         })) || [],
       addresses: Array.isArray(userProfile.addresses) ? (userProfile.addresses as any[]) : [],
       preferences:

@@ -96,6 +96,8 @@ export interface Product extends BaseEntity {
   seoMetadata: SEOMetadata;
   active: boolean;
   featured: boolean;
+  stripeProductId?: string;
+  stripePriceId?: string;
 
   // Computed fields
   name: LocalizedContent;
@@ -194,10 +196,12 @@ export interface ProductRow {
   customization_options: any; // JSONB
   availability: any; // JSONB
   seo_metadata: any; // JSONB
-  active: boolean;
-  featured: boolean;
-  created_at: string;
-  updated_at: string;
+  active: boolean | null;
+  featured: boolean | null;
+  stripe_product_id: string | null;
+  stripe_price_id: string | null;
+  created_at: string | null;
+  updated_at: string | null;
 }
 
 export interface CategoryRow {
@@ -209,8 +213,8 @@ export interface CategoryRow {
   slug: string;
   image_url: string | null;
   parent_id: string | null;
-  sort_order: number;
-  active: boolean;
-  created_at: string;
-  updated_at: string;
+  sort_order: number | null;
+  active: boolean | null;
+  created_at: string | null;
+  updated_at: string | null;
 }

@@ -41,6 +41,8 @@ const mockProductRow: ProductRow = {
   seo_metadata: {},
   active: true,
   featured: false,
+  stripe_product_id: null,
+  stripe_price_id: null,
   created_at: new Date().toISOString(),
   updated_at: new Date().toISOString(),
 };

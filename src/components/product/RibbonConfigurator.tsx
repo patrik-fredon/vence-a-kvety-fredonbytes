@@ -73,8 +73,9 @@ export function RibbonConfigurator({
         ) {
           // Single selection - replace
           existing.choiceIds = [choiceId];
-          // Clear custom value when selecting predefined option
-          if (existing.customValue) {
+          // Clear custom value when selecting predefined option (not custom)
+          const selectedChoice = option.choices?.find((c) => c.id === choiceId);
+          if (!selectedChoice?.allowCustomInput && existing.customValue) {
             delete existing.customValue;
           }
         } else {
@@ -211,14 +212,16 @@ export function RibbonConfigurator({
     [handleCustomValueChange, handleCustomTextValidation]
   );
 
-  // Render custom text input for choices that allow custom input
+  // Render custom text input for text option when custom choice is selected
   const renderCustomTextInput = useCallback(
-    (option: CustomizationOption, choice: CustomizationChoice) => {
+    (option: CustomizationOption) => {
       const currentCustomization = getCurrentCustomization(option.id);
-      const isSelected = currentCustomization?.choiceIds.includes(choice.id);
+      const selectedChoiceId = currentCustomization?.choiceIds[0];
+      const selectedChoice = option.choices?.find((c) => c.id === selectedChoiceId);
       const value = currentCustomization?.customValue || "";
 
-      if (!isSelected) {
+      // Only show if a choice with allowCustomInput is selected
+      if (!selectedChoice?.allowCustomInput) {
         return null;
       }
 
@@ -226,6 +229,7 @@ export function RibbonConfigurator({
       const hasWarnings = customTextValidation.warnings.length > 0;
       const inputId = `${option.id}-custom-text`;
       const validationId = `${option.id}-validation`;
+      const maxLength = selectedChoice?.maxLength || 50;
 
       return (
         <div className="mt-3 space-y-2">
@@ -247,7 +251,7 @@ export function RibbonConfigurator({
                   : "border-amber-300 "
             )}
             rows={2}
-            maxLength={choice.maxLength || 50}
+            maxLength={maxLength}
             aria-label={t("customTextAriaLabel")}
             aria-invalid={hasErrors}
             aria-describedby={cn(
@@ -268,9 +272,9 @@ export function RibbonConfigurator({
                 )}
                 aria-label={`${value.length} ${tAccessibility(
                   "charactersOf"
-                )} ${choice.maxLength || 50}`}
+                )} ${maxLength}`}
               >
-                {value.length}/{choice.maxLength || 50}
+                {value.length}/{maxLength}
               </span>
             </div>
 
@@ -384,7 +388,7 @@ export function RibbonConfigurator({
           </fieldset>
         )}
 
-        {/* Ribbon Text Selection */}
+        {/* Ribbon Text Selection - Dropdown */}
         {textOption && (
           <fieldset className="space-y-3 border-0 p-0 m-0">
             <legend className="sr-only">
@@ -392,26 +396,57 @@ export function RibbonConfigurator({
               {textOption.required && ` (${tAccessibility("required")})`}
             </legend>
 
+            <div className="space-y-3">
+              <label
+                htmlFor={`${textOption.id}-select`}
+                className="block text-sm font-medium text-teal-800"
+              >
+                {textOption.name[locale as keyof typeof textOption.name]}
+              </label>
 
-            <div
-              className="space-y-2"
-              role="radiogroup"
-              aria-labelledby={`${textOption.id}-title`}
-              aria-required={textOption.required && isRibbonSelected}
-            >
-              {(textOption.choices || []).map((choice, index) => (
-                <div key={choice.id}>
-                  {renderChoice(textOption, choice, index)}
-                  {choice.allowCustomInput && renderCustomTextInput(textOption, choice)}
-                </div>
-              ))}
+              <select
+                id={`${textOption.id}-select`}
+                value={getCurrentCustomization(textOption.id)?.choiceIds[0] || ""}
+                onChange={(e) => handleChoiceSelection(textOption.id, e.target.value, textOption)}
+                className={cn(
+                  "w-full p-3 border rounded-lg transition-colors",
+                  "border-amber-300 bg-amber-100 text-teal-800",
+                  "hover:border-teal-800 hover:shadow-sm",
+                  "focus:ring-2 focus:ring-teal-800 focus:border-teal-800 focus:outline-none",
+                  "disabled:opacity-50 disabled:cursor-not-allowed"
+                )}
+                aria-required={textOption.required && isRibbonSelected}
+                aria-describedby={
+                  textOption.required && isRibbonSelected
+                    ? `${textOption.id}-validation`
+                    : undefined
+                }
+              >
+                <option value="" disabled>
+                  {locale === "cs" ? "Vyberte text stuhy..." : "Select ribbon text..."}
+                </option>
+                {(textOption.choices || []).map((choice) => (
+                  <option key={choice.id} value={choice.id}>
+                    {choice.label[locale as keyof typeof choice.label]}
+                    {choice.priceModifier !== 0 && ` (${formatPriceModifier(choice.priceModifier)})`}
+                  </option>
+                ))}
+              </select>
+
+              {/* Custom text input - shown when custom option is selected */}
+              {renderCustomTextInput(textOption)}
             </div>
 
             {/* Validation for text - only show if ribbon is selected */}
             {textOption.required &&
               isRibbonSelected &&
               !getCurrentCustomization(textOption.id)?.choiceIds.length && (
-                <div className="text-sm text-red-600" role="alert" aria-live="polite">
+                <div
+                  id={`${textOption.id}-validation`}
+                  className="text-sm text-red-600"
+                  role="alert"
+                  aria-live="polite"
+                >
                   {t("validation.conditionalRequired", {
                     option: textOption.name[locale as keyof typeof textOption.name],
                   })}

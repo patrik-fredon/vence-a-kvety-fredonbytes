@@ -17,9 +17,9 @@ export function transformCategoryRow(row: CategoryRow): Category {
   const description: LocalizedContent | undefined =
     row.description_cs || row.description_en
       ? {
-          cs: row.description_cs || "",
-          en: row.description_en || "",
-        }
+        cs: row.description_cs || "",
+        en: row.description_en || "",
+      }
       : undefined;
 
   return {
@@ -31,10 +31,10 @@ export function transformCategoryRow(row: CategoryRow): Category {
     ...(row.description_en && { descriptionEn: row.description_en }),
     ...(row.image_url && { imageUrl: row.image_url }),
     ...(row.parent_id && { parentId: row.parent_id }),
-    sortOrder: row.sort_order,
-    active: row.active,
-    createdAt: new Date(row.created_at),
-    updatedAt: new Date(row.updated_at),
+    sortOrder: row.sort_order ?? 0,
+    active: row.active ?? true,
+    createdAt: new Date(row.created_at ?? new Date().toISOString()),
+    updatedAt: new Date(row.updated_at ?? new Date().toISOString()),
     name,
     ...(description && { description }),
   };
@@ -52,9 +52,9 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
   const description: LocalizedContent | undefined =
     row.description_cs || row.description_en
       ? {
-          cs: row.description_cs || "",
-          en: row.description_en || "",
-        }
+        cs: row.description_cs || "",
+        en: row.description_en || "",
+      }
       : undefined;
 
   // Parse images - handle both array and JSON string formats
@@ -144,10 +144,12 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
     customizationOptions,
     availability,
     seoMetadata,
-    active: row.active,
-    featured: row.featured,
-    createdAt: new Date(row.created_at),
-    updatedAt: new Date(row.updated_at),
+    active: row.active ?? true,
+    featured: row.featured ?? false,
+    createdAt: new Date(row.created_at ?? new Date().toISOString()),
+    updatedAt: new Date(row.updated_at ?? new Date().toISOString()),
+    ...(row.stripe_product_id && { stripeProductId: row.stripe_product_id }),
+    ...(row.stripe_price_id && { stripePriceId: row.stripe_price_id }),
     name,
     ...(description && { description }),
     ...(category && { category }),
@@ -193,6 +195,8 @@ export function productToRow(
     seo_metadata: product.seoMetadata,
     active: product.active,
     featured: product.featured,
+    stripe_price_id: product.stripePriceId || null,
+    stripe_product_id: product.stripeProductId || null,
   };
 }
 

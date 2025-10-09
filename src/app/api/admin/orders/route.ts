@@ -102,7 +102,7 @@ export async function GET(request: NextRequest) {
         deliveredAt: undefined,
         cancelledAt: undefined,
         notes: order.notes,
-        internalNotes: order.internal_notes,
+        internalNotes: order.notes,
       };
     });
 

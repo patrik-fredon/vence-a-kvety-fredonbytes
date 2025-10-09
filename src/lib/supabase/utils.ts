@@ -163,10 +163,21 @@ export const cartUtils = {
         })
         .eq("id", existing.id);
     } else {
-      // Insert new item
+      // Insert new item - need to fetch product price first
+      const { data: product } = await supabase
+        .from("products")
+        .select("base_price")
+        .eq("id", productId)
+        .single();
+
+      const unitPrice = product?.base_price || 0;
+      const totalPrice = unitPrice * quantity;
+
       return supabase.from("cart_items").insert({
         product_id: productId,
         quantity,
+        unit_price: unitPrice,
+        total_price: totalPrice,
         customizations,
         user_id: userId || null,
         session_id: sessionId || null,
@@ -230,7 +241,7 @@ export const orderUtils = {
 
   async updateOrderStatus(
     orderId: string,
-    status: Database["public"]["Enums"]["order_status"],
+    status: string,
     internalNotes?: string
   ) {
     const updateData: any = {
@@ -238,31 +249,19 @@ export const orderUtils = {
       updated_at: new Date().toISOString(),
     };
 
-    // Add timestamp fields based on status
-    switch (status) {
-      case "confirmed":
-        updateData.confirmed_at = new Date().toISOString();
-        break;
-      case "shipped":
-        updateData.shipped_at = new Date().toISOString();
-        break;
-      case "delivered":
-        updateData.delivered_at = new Date().toISOString();
-        break;
-      case "cancelled":
-        updateData.cancelled_at = new Date().toISOString();
-        break;
-    }
+    // Note: The database doesn't have separate timestamp fields for status changes
+    // (confirmed_at, shipped_at, delivered_at, cancelled_at)
+    // Status changes are tracked via the updated_at field and status value
 
     if (internalNotes) {
-      updateData.notes = internalNotes; // Use notes field instead of internal_notes
+      updateData.notes = internalNotes;
     }
 
     return supabaseAdmin.from("orders").update(updateData).eq("id", orderId).select().single();
   },
 
   async getOrderHistory(orderId: string) {
-    // Get order with all status change timestamps
+    // Get order
     const { data: order, error } = await supabase
       .from("orders")
       .select("*")
@@ -273,7 +272,8 @@ export const orderUtils = {
       return { data: null, error };
     }
 
-    // Build status history from timestamps
+    // Build status history from available data
+    // Note: Database doesn't have separate timestamp fields for each status change
     const statusHistory = [];
 
     if (order.created_at) {
@@ -285,43 +285,12 @@ export const orderUtils = {
     }
 
     // Generate status history based on current status
-    if (order.status !== "pending") {
+    // All status changes use updated_at since we don't have individual timestamp fields
+    if (order.status && order.status !== "pending") {
       statusHistory.push({
-        status: "confirmed",
-        timestamp: order.confirmed_at || order.updated_at,
-        description: "Objednávka byla potvrzena",
-      });
-    }
-
-    if (["processing", "ready", "shipped", "delivered"].includes(order.status)) {
-      statusHistory.push({
-        status: "processing",
-        timestamp: order.updated_at,
-        description: "Objednávka se zpracovává",
-      });
-    }
-
-    if (["shipped", "delivered"].includes(order.status)) {
-      statusHistory.push({
-        status: "shipped",
-        timestamp: order.shipped_at || order.updated_at,
-        description: "Objednávka byla odeslána",
-      });
-    }
-
-    if (order.status === "delivered") {
-      statusHistory.push({
-        status: "delivered",
-        timestamp: order.delivered_at || order.updated_at,
-        description: "Objednávka byla doručena",
-      });
-    }
-
-    if (order.status === "cancelled") {
-      statusHistory.push({
-        status: "cancelled",
-        timestamp: order.cancelled_at || order.updated_at,
-        description: "Objednávka byla zrušena",
+        status: order.status,
+        timestamp: order.updated_at || order.created_at || new Date().toISOString(),
+        description: `Status změněn na: ${order.status}`,
       });
     }
 
@@ -329,7 +298,7 @@ export const orderUtils = {
   },
 
   async getAllOrders(filters?: {
-    status?: Database["public"]["Enums"]["order_status"];
+    status?: string;
     dateFrom?: string;
     dateTo?: string;
     limit?: number;
@@ -375,7 +344,7 @@ export const orderUtils = {
       delivered: orders.filter((o) => o.status === "delivered").length,
       cancelled: orders.filter((o) => o.status === "cancelled").length,
       totalRevenue: orders
-        .filter((o) => ["delivered", "shipped"].includes(o.status))
+        .filter((o) => o.status && ["delivered", "shipped"].includes(o.status))
         .reduce((sum, o) => sum + Number(o.total_amount), 0),
       todayOrders: orders.filter((o) => {
         const today = new Date().toISOString().split("T")[0]!;
@@ -406,7 +375,11 @@ export const userUtils = {
   async getUserRole(userId: string): Promise<"customer" | "admin" | "super_admin" | null> {
     const { data } = await supabase.from("user_profiles").select("role").eq("id", userId).single();
 
-    return data?.role || null;
+    const role = data?.role;
+    if (role === "customer" || role === "admin" || role === "super_admin") {
+      return role;
+    }
+    return null;
   },
 
   async setUserRole(userId: string, role: "customer" | "admin" | "super_admin") {
@@ -471,34 +444,34 @@ export const adminUtils = {
       .range(offset, offset + limit - 1);
   },
 
-  async getInventoryAlerts(acknowledged = false) {
+  async getInventoryAlerts(isActive = true) {
     return supabaseAdmin
       .from("inventory_alerts")
       .select(`
         *,
         product:products(name_cs, name_en, slug)
       `)
-      .eq("acknowledged", acknowledged)
+      .eq("is_active", isActive)
       .order("created_at", { ascending: false });
   },
 
-  async acknowledgeAlert(alertId: string, adminId: string) {
+  async acknowledgeAlert(alertId: string, _adminId: string) {
+    // Mark alert as inactive instead of acknowledged
     return supabaseAdmin
       .from("inventory_alerts")
       .update({
-        acknowledged: true,
-        acknowledged_by: adminId,
-        acknowledged_at: new Date().toISOString(),
+        is_active: false,
       })
       .eq("id", alertId);
   },
 
-  async updateProductInventory(productId: string, stockQuantity: number, trackInventory = true) {
+  // Note: Inventory tracking fields (stock_quantity, track_inventory, low_stock_threshold)
+  // are not in the current database schema. Inventory is managed through the availability JSONB field.
+  async updateProductAvailability(productId: string, availability: any) {
     return supabaseAdmin
       .from("products")
       .update({
-        stock_quantity: stockQuantity,
-        track_inventory: trackInventory,
+        availability,
         updated_at: new Date().toISOString(),
       })
       .eq("id", productId);
@@ -554,9 +527,10 @@ export const adminUtils = {
       query = query.eq("featured", filters.featured);
     }
 
-    if (filters?.lowStock) {
-      query = query.eq("track_inventory", true).lte("stock_quantity", "low_stock_threshold");
-    }
+    // Note: Low stock filtering not available - inventory fields don't exist in schema
+    // if (filters?.lowStock) {
+    //   query = query.eq("track_inventory", true).lte("stock_quantity", "low_stock_threshold");
+    // }
 
     if (filters?.limit) {
       const offset = filters.offset || 0;
