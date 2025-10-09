@@ -180,7 +180,6 @@ export function ProductCardLayout({
       case "grid":
       case "teaser":
         return "relative aspect-square bg-funeral-gold overflow-hidden";
-      // TODO possible issue why not rendering image
       case "list":
         return "relative overflow-hidden bg-funeral-gold w-20 h-20 sm:w-24 sm:h-24 flex-shrink-0 rounded-md";
 
@@ -397,9 +396,8 @@ export function ProductCardLayout({
           "text-xs font-medium",
           product.availability.inStock ? "text-green-700" : "text-red-700"
         )}
-        aria-label={`${t("availability")}: ${
-          product.availability.inStock ? t("inStock") : t("outOfStock")
-        }`}
+        aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")
+          }`}
       >
         {product.availability.inStock
           ? product.availability.stockQuantity && product.availability.stockQuantity <= 5

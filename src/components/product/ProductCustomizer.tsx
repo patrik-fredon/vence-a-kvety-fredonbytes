@@ -205,7 +205,7 @@ export function ProductCustomizer({
         <DateSelector
           value={value}
           onChange={(date) => handleCustomValueChange(option.id, date)}
-          minDaysFromNow={choice.minDaysFromNow || 2}
+          minDaysFromNow={choice.minDaysFromNow || 3}
           maxDaysFromNow={choice.maxDaysFromNow || 30}
           locale={locale}
         />
@@ -213,28 +213,7 @@ export function ProductCustomizer({
     );
   };
 
-  // Render text input for message options
-  const renderTextInput = (option: CustomizationOption) => {
-    const currentCustomization = getCurrentCustomization(option.id);
-    const value = currentCustomization?.customValue || "";
 
-    return (
-      <div className="space-y-2">
-        <textarea
-          value={value}
-          onChange={(e) => handleCustomValueChange(option.id, e.target.value)}
-          placeholder={t("messagePlaceholder")}
-          className="w-full p-3 border border-amber-100 rounded-lg "
-          rows={3}
-          maxLength={200}
-        />
-        <div className="flex justify-between text-xs text-amber-100">
-          <span>{t("messageHelp")}</span>
-          <span>{value.length}/200</span>
-        </div>
-      </div>
-    );
-  };
 
   // Filter visible options based on conditions
   const visibleOptions = (product.customizationOptions || []).filter(isOptionVisible);
@@ -272,22 +251,19 @@ export function ProductCustomizer({
               )}
             </div>
 
-            {/* Option Choices */}
-            {option.type === "message" ? (
-              renderTextInput(option)
-            ) : (
-              <div className="space-y-2">
-                <div className="grid grid-cols-1 gap-2">
-                  {(option.choices || []).map((choice) => (
-                    <div key={choice.id}>
-                      {renderChoice(option, choice)}
-                      {choice.allowCustomInput && renderCustomTextInput(option, choice)}
-                      {choice.requiresCalendar && renderDateSelector(option, choice)}
-                    </div>
-                  ))}
-                </div>
+
+            <div className="space-y-2">
+              <div className="grid grid-cols-1 gap-2">
+                {(option.choices || []).map((choice) => (
+                  <div key={choice.id}>
+                    {renderChoice(option, choice)}
+                    {choice.allowCustomInput && renderCustomTextInput(option, choice)}
+                    {choice.requiresCalendar && renderDateSelector(option, choice)}
+                  </div>
+                ))}
               </div>
-            )}
+            </div>
+
 
             {/* Validation Messages */}
             {option.required && selectionCount === 0 && (

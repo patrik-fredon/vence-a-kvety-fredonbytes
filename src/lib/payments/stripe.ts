@@ -18,7 +18,7 @@ export const stripe = (() => {
       appInfo: {
         name: "Funeral Wreaths E-commerce",
         version: "1.0.0",
-        url: "https://vence-a-kvety.cz",
+        url: "https://pohrebni-vence.cz",
       },
     });
   } catch (error) {

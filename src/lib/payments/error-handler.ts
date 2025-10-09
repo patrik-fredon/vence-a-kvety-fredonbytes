@@ -171,8 +171,9 @@ function getCardErrorMessage(
     },
   };
 
-  if (code && messages[code]) {
-    return messages[code][locale];
+  if (code) {
+    const message = messages[code]?.[locale];
+    if (message) return message;
   }
 
   // Fallback to generic card error message

@@ -57,7 +57,7 @@ export function Footer({ locale }: FooterProps) {
             </div>
             {/* Company Info Section */}
             <div className="sm:col-span-1 lg:col-span-1">
-              <h3 className="text-lg sm:text-xl font-semibold mb-3 sm:mb-4 text-teal-800 border-b-1 border-teal-800">
+              <h3 className="text-lg sm:text-2xl font-semibold mb-3 sm:mb-4 text-teal-800 border-b-1 border-teal-800">
                 {t("company")}
               </h3>
               <p className="text-sm sm:text-base text-amber-100 mb-4 sm:mb-6 leading-relaxed max-w-md">

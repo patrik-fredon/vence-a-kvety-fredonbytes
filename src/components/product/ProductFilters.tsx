@@ -162,7 +162,7 @@ export function ProductFilters({
       {isSearchAndFiltersVisible && (
         <div
           id="filters-panel"
-          className="space-y-6 p-4 m-4 bg-teal-800 rounded-lg border border-amber-200 shadow-sm"
+          className="space-y-6 p-4 mx-0 md:m-4 bg-teal-800 rounded-lg border border-amber-200 shadow-lg md:shadow-sm"
           role="region"
           aria-labelledby="filters-heading"
         >

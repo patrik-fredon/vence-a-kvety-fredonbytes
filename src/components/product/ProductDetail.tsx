@@ -415,28 +415,28 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                       {validationErrors.some(
                         (error) => error.includes("velikost") || error.includes("size")
                       ) && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleErrorRecovery("size")}
-                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
-                        >
-                          Auto-select Size
-                        </Button>
-                      )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleErrorRecovery("size")}
+                            className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
+                          >
+                            Auto-select Size
+                          </Button>
+                        )}
 
                       {validationErrors.some(
                         (error) => error.includes("stuhy") || error.includes("ribbon")
                       ) && (
-                        <Button
-                          variant="outline"
-                          size="sm"
-                          onClick={() => handleErrorRecovery("ribbon")}
-                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
-                        >
-                          Remove Ribbon
-                        </Button>
-                      )}
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleErrorRecovery("ribbon")}
+                            className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
+                          >
+                            Remove Ribbon
+                          </Button>
+                        )}
 
                       {validationWarnings.length > 0 && (
                         <Button
@@ -499,7 +499,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             <CardContent className="py-6 space-y-4">
               <div className="text-center">
                 <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
-                <div className="text-3xl font-bold text-teal-900">
+                <div className="text-3xl font-bold text-amber-300">
                   {formatPrice(priceCalculation.totalPrice)}
                 </div>
               </div>
@@ -517,7 +517,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                     {t("addingToCart")}
                   </>
                 ) : (
-                  "Proceed to Configuration"
+                  "Confirm"
                 )}
               </Button>
 

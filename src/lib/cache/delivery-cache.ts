@@ -259,7 +259,6 @@ export async function warmUpDeliveryCache(): Promise<void> {
     // For example, current month's calendar, popular postal codes, etc.
     console.log("Warming up delivery cache...");
 
-    // TODO: Implement cache warming logic
   } catch (error) {
     console.error("Error warming up delivery cache:", error);
   }

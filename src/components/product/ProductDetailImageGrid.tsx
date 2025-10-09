@@ -87,11 +87,12 @@ export function ProductDetailImageGrid({
       {/* Carousel Container */}
       <div
         ref={carouselRef}
-        className="relative overflow-x-scroll snap-x snap-mandatory scrollbar-hide touch-pan-x"
-        style={{ 
-          scrollbarWidth: "none", 
+        className="relative overflow-x-auto snap-x snap-mandatory scrollbar-hide"
+        style={{
+          scrollbarWidth: "none",
           msOverflowStyle: "none",
-          WebkitOverflowScrolling: "touch"
+          WebkitOverflowScrolling: "touch",
+          scrollBehavior: "smooth"
         }}
         onScroll={handleScroll}
       >
@@ -103,7 +104,7 @@ export function ProductDetailImageGrid({
                 key={image.id || index}
                 className="flex-shrink-0 w-full snap-center snap-always"
               >
-                <div 
+                <div
                   className="relative aspect-square bg-teal-900 rounded-lg overflow-hidden cursor-zoom-in group"
                   onClick={() => handleImageClick(index)}
                   role="button"
@@ -142,12 +143,13 @@ export function ProductDetailImageGrid({
               key={index}
               onClick={() => goToSlide(index)}
               className={cn(
-                "w-2 h-2 rounded-full transition-all duration-300",
+                "w-2 h-2 rounded-full transition-all duration-300 cursor-pointer",
                 currentSlide === index
-                  ? "bg-teal-900 w-6"
+                  ? "bg-teal-900 w-3"
                   : "bg-teal-900/30 hover:bg-teal-900/50"
               )}
               aria-label={`Go to image ${index + 1}`}
+              aria-current={currentSlide === index ? "true" : "false"}
             />
           ))}
         </div>

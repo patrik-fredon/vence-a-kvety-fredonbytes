@@ -32,33 +32,7 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
 
   return (
     <div className={cn("space-y-6", className)}>
-      {/* Breadcrumb */}
-      <nav className="text-sm text-teal-800" aria-label="Breadcrumb">
-        <ol className="flex items-center space-x-2">
-          <li>
-            <Link href={`/${locale}/products`} className="hover:text-amber-600 transition-colors">
-              {t("allProducts")}
-            </Link>
-          </li>
-          {product.category && (
-            <>
-              <li className="text-teal-800">/</li>
-              <li>
-                <Link
-                  href={`/${locale}/products?category=${product.category.slug}`}
-                  className="hover:text-amber-600 transition-colors"
-                >
-                  {product.category.name[locale as keyof typeof product.category.name]}
-                </Link>
-              </li>
-            </>
-          )}
-          <li className="text-teal-800">/</li>
-          <li className="text-teal-800 font-medium">
-            {product.name[locale as keyof typeof product.name]}
-          </li>
-        </ol>
-      </nav>
+
 
       {/* Product Title and Badge */}
       <div className="space-y-3">
@@ -108,43 +82,6 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
         </Card>
       )}
 
-      {/* Product Details */}
-      <Card>
-        <CardHeader>
-          <CardTitle>{t("productDetails")}</CardTitle>
-        </CardHeader>
-        <CardContent>
-          <dl className="grid grid-cols-1 gap-3 text-sm">
-            <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
-              <dt className="text-amber-300 font-medium">{t("category")}:</dt>
-              <dd className="text-amber-300">
-                {product.category?.name[locale as keyof typeof product.category.name] ||
-                  t("uncategorized")}
-              </dd>
-            </div>
-            <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
-              <dt className="text-amber-300 font-medium">{t("sku")}:</dt>
-              <dd className="text-amber-300 font-mono text-xs">
-                {product.id.slice(-8).toUpperCase()}
-              </dd>
-            </div>
-            {product.availability.leadTimeHours && (
-              <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
-                <dt className="text-amber-300 font-medium">{t("leadTime")}:</dt>
-                <dd className="text-amber-300">
-                  {product.availability.leadTimeHours} {t("hours")}
-                </dd>
-              </div>
-            )}
-            {product.availability.maxOrderQuantity && (
-              <div className="flex justify-between py-2 border-b border-amber-300 last:border-b-0">
-                <dt className="text-amber-300 font-medium">{t("maxQuantity")}:</dt>
-                <dd className="text-amber-300">{product.availability.maxOrderQuantity}</dd>
-              </div>
-            )}
-          </dl>
-        </CardContent>
-      </Card>
 
 
     </div>
