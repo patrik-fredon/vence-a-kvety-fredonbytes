@@ -38,6 +38,10 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
     const paymentInfo = order.payment_info as any;
     const itemsData = order.items as any;
 
+    // Build order response with delivery method (Requirement 9.6)
+    const deliveryMethod = (order as any).delivery_method as "delivery" | "pickup" | null;
+    const pickupLocation = (order as any).pickup_location as string | null;
+
     const orderResponse: Order = {
       id: order.id,
       orderNumber: customerInfo.orderNumber || order.id.slice(-8).toUpperCase(),
@@ -77,6 +81,8 @@ export async function GET(_: NextRequest, { params }: { params: Promise<{ id: st
         processedAt: paymentInfo.processedAt ? new Date(paymentInfo.processedAt) : undefined,
         failureReason: paymentInfo.failureReason,
       },
+      ...(deliveryMethod && { deliveryMethod }),
+      ...(pickupLocation && { pickupLocation }),
       status: order.status as OrderStatus,
       notes: order.notes || "",
       internalNotes: order.notes || "",
@@ -198,6 +204,13 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
         const paymentInfo = updatedOrder.payment_info as any;
         const itemsData = updatedOrder.items as any;
 
+        // Build order for email with delivery method
+        const emailDeliveryMethod = (updatedOrder as any).delivery_method as
+          | "delivery"
+          | "pickup"
+          | null;
+        const emailPickupLocation = (updatedOrder as any).pickup_location as string | null;
+
         const orderForEmail: Order = {
           id: updatedOrder.id,
           orderNumber: customerInfo.orderNumber || updatedOrder.id.slice(-8).toUpperCase(),
@@ -237,6 +250,8 @@ export async function PATCH(request: NextRequest, { params }: { params: Promise<
             processedAt: paymentInfo.processedAt ? new Date(paymentInfo.processedAt) : undefined,
             failureReason: paymentInfo.failureReason,
           },
+          ...(emailDeliveryMethod && { deliveryMethod: emailDeliveryMethod }),
+          ...(emailPickupLocation && { pickupLocation: emailPickupLocation }),
           status: updatedOrder.status as OrderStatus,
           notes: updatedOrder.notes || "",
           internalNotes: updatedOrder.notes || "",

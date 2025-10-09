@@ -5,6 +5,7 @@
 
 import { type NextRequest, NextResponse } from "next/server";
 import { warmAllCaches, warmPopularCategories } from "@/lib/cache/cache-warming";
+import { warmPopularProductsStripeIds } from "@/lib/stripe/embedded-checkout";
 import type { ApiResponse } from "@/types";
 
 /**
@@ -23,18 +24,27 @@ export async function POST(request: NextRequest) {
     // }
 
     const body = await request.json().catch(() => ({}));
-    const { categoryIds } = body;
+    const { categoryIds, includeStripeIds = true } = body;
 
     console.log("🔥 [API] Cache warming requested");
 
     const startTime = Date.now();
 
     // Warm all caches or specific categories
+    const warmingTasks = [];
+
     if (categoryIds && Array.isArray(categoryIds) && categoryIds.length > 0) {
-      await warmPopularCategories(categoryIds);
+      warmingTasks.push(warmPopularCategories(categoryIds));
     } else {
-      await warmAllCaches();
+      warmingTasks.push(warmAllCaches());
     }
+
+    // Optionally warm Stripe IDs cache
+    if (includeStripeIds) {
+      warmingTasks.push(warmPopularProductsStripeIds());
+    }
+
+    await Promise.all(warmingTasks);
 
     const duration = Date.now() - startTime;
 
@@ -44,6 +54,7 @@ export async function POST(request: NextRequest) {
         message: "Cache warming completed successfully",
         duration: `${duration}ms`,
         warmedCategories: categoryIds?.length || "all",
+        stripeIdsWarmed: includeStripeIds,
       },
     };
 

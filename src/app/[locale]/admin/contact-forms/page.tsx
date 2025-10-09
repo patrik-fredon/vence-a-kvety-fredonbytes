@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { LazyContactFormsTable } from "@/lib/config/dynamic-imports";
 import { auth } from "@/lib/auth/config";
+import { LazyContactFormsTable } from "@/lib/config/dynamic-imports";
 import { createServerClient } from "@/lib/supabase/server";
 
 interface ContactFormsPageProps {
@@ -21,7 +21,7 @@ export default async function ContactFormsPage({ params, searchParams }: Contact
     redirect(`/${locale}/auth/signin`);
   }
 
-  const supabase = await createServerClient();
+  const supabase = createServerClient();
 
   // Build query
   let query = supabase.from("contact_forms").select("*", { count: "exact" });

@@ -6,7 +6,7 @@ const supabaseAnonKey = process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"] || "placeho
 
 // Only warn in development, not during build
 if (
-  process.env.NODE_ENV === "development" &&
+  process.env["NODE_ENV"] === "development" &&
   !(process.env["NEXT_PUBLIC_SUPABASE_URL"] && process.env["NEXT_PUBLIC_SUPABASE_ANON_KEY"])
 ) {
   console.warn("Missing Supabase environment variables");

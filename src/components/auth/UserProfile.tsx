@@ -43,7 +43,7 @@ export function UserProfile() {
     } catch (error) {
       console.error("Error loading user profile:", error);
     }
-  }, [preferences, setAddresses, setPreferences]);
+  }, [preferences]);
 
   useEffect(() => {
     if (user) {
@@ -53,7 +53,7 @@ export function UserProfile() {
       });
       loadUserProfile();
     }
-  }, [user, loadUserProfile, setFormData]);
+  }, [user, loadUserProfile]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

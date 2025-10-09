@@ -1,11 +1,11 @@
 /**
  * @fileoverview Unified payment service for Stripe integration
- * 
+ *
  * This module provides a high-level payment service that abstracts Stripe payment operations.
  * It includes payment initialization, status checking, webhook processing, and error handling.
- * 
+ *
  * @module lib/payments
- * 
+ *
  * @example
  * ```typescript
  * // Initialize a payment
@@ -21,7 +21,7 @@
  *   webhookUrl: 'https://example.com/webhook',
  *   description: 'Order #123'
  * });
- * 
+ *
  * if (response.success) {
  *   // Use response.clientSecret with Stripe Elements
  * }
@@ -38,7 +38,7 @@ import {
 
 /**
  * Payment request parameters for initializing a payment
- * 
+ *
  * @interface PaymentRequest
  */
 export interface PaymentRequest {
@@ -57,7 +57,7 @@ export interface PaymentRequest {
 
 /**
  * Response from payment initialization
- * 
+ *
  * @interface PaymentResponse
  */
 export interface PaymentResponse {
@@ -69,7 +69,7 @@ export interface PaymentResponse {
 
 /**
  * Result of a payment operation (success or failure)
- * 
+ *
  * @interface PaymentResult
  */
 export interface PaymentResult {
@@ -88,13 +88,13 @@ export interface PaymentResult {
 export class PaymentService {
   /**
    * Initialize a payment with the specified payment method
-   * 
+   *
    * Currently supports Stripe payments. This method handles payment intent creation
    * and returns a client secret for use with Stripe Elements.
-   * 
+   *
    * @param request - Payment request parameters
    * @returns Promise resolving to payment response with client secret or error
-   * 
+   *
    * @example
    * ```typescript
    * const response = await PaymentService.initializePayment({
@@ -129,7 +129,7 @@ export class PaymentService {
 
   /**
    * Initialize a Stripe payment intent
-   * 
+   *
    * @private
    * @param request - Payment request parameters
    * @returns Promise resolving to payment response
@@ -162,21 +162,21 @@ export class PaymentService {
 
   /**
    * Get the current status of a payment
-   * 
+   *
    * Retrieves the payment status from the payment provider and returns
    * standardized payment result information.
-   * 
+   *
    * @param paymentId - The payment intent ID
    * @param paymentMethod - The payment method used ('stripe')
    * @returns Promise resolving to payment result or null if not found
-   * 
+   *
    * @example
    * ```typescript
    * const result = await PaymentService.getPaymentStatus(
    *   'pi_1234567890',
    *   'stripe'
    * );
-   * 
+   *
    * if (result) {
    *   console.log('Payment status:', result.status);
    * }
@@ -200,7 +200,7 @@ export class PaymentService {
 
   /**
    * Get Stripe payment intent status
-   * 
+   *
    * @private
    * @param paymentIntentId - The Stripe payment intent ID
    * @returns Promise resolving to payment result
@@ -241,15 +241,15 @@ export class PaymentService {
 
   /**
    * Process a payment webhook notification
-   * 
+   *
    * Verifies the webhook signature and processes the payment event.
    * Handles payment success and failure events.
-   * 
+   *
    * @param payload - The raw webhook payload (string or Buffer)
    * @param signature - The webhook signature header
    * @param paymentMethod - The payment method ('stripe')
    * @returns Promise resolving to payment result or null if event not handled
-   * 
+   *
    * @example
    * ```typescript
    * // In your webhook route handler
@@ -258,7 +258,7 @@ export class PaymentService {
    *   request.headers.get('stripe-signature')!,
    *   'stripe'
    * );
-   * 
+   *
    * if (result) {
    *   // Update order status based on result
    * }
@@ -283,7 +283,7 @@ export class PaymentService {
 
   /**
    * Process a Stripe webhook event
-   * 
+   *
    * @private
    * @param payload - The raw webhook payload
    * @param signature - The Stripe signature header
@@ -330,17 +330,17 @@ export class PaymentService {
 
   /**
    * Create a payment info object for database storage
-   * 
+   *
    * Generates a standardized payment info object that can be stored
    * in the database orders table.
-   * 
+   *
    * @param paymentMethod - The payment method used
    * @param amount - The payment amount
    * @param currency - The payment currency
    * @param status - The payment status (default: 'pending')
    * @param transactionId - The transaction ID from the payment provider
    * @returns Payment info object ready for database storage
-   * 
+   *
    * @example
    * ```typescript
    * const paymentInfo = PaymentService.createPaymentInfo(
@@ -350,7 +350,7 @@ export class PaymentService {
    *   'completed',
    *   'pi_1234567890'
    * );
-   * 
+   *
    * await supabase
    *   .from('orders')
    *   .update({ payment_info: paymentInfo })
@@ -376,10 +376,10 @@ export class PaymentService {
   }
 }
 
+export { logPaymentError, sanitizeStripeError } from "./error-handler";
+export { PaymentMonitor } from "./payment-monitor";
+export { withRetry } from "./retry-handler";
 // Export types and utilities
 export type { CreatePaymentIntentOptions } from "./stripe";
 export { createPaymentIntentAction } from "./stripe-service";
-export { sanitizeStripeError, logPaymentError } from "./error-handler";
-export { withRetry } from "./retry-handler";
-export { PaymentMonitor } from "./payment-monitor";
 export { PaymentService as default };

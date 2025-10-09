@@ -1,4 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
+
 // import { createClient } from "@/lib/supabase/server";
 
 interface BundleData {
@@ -36,7 +37,7 @@ export async function POST(request: NextRequest) {
     const { buildId, bundles, totalSize } = body;
 
     // Validate required fields
-    if (!buildId || !bundles || !Array.isArray(bundles)) {
+    if (!(buildId && bundles && Array.isArray(bundles))) {
       return NextResponse.json({ error: "Invalid bundle data" }, { status: 400 });
     }
 
@@ -50,7 +51,7 @@ export async function POST(request: NextRequest) {
     //   gzip_size_bytes: bundle.gzipSize,
     //   commit_hash: commitHash,
     //   branch: branch || "main",
-    //   environment: process.env.NODE_ENV || "production",
+    //   environment: process.env['NODE_ENV'] || "production",
     //   metadata: {
     //     totalSize,
     //     totalGzipSize,
@@ -88,7 +89,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/monitoring/bundle-size
  * Retrieve historical bundle size data
- * 
+ *
  * Query params:
  * - builds: number of builds to retrieve (default: 10)
  * - branch: filter by branch (optional)

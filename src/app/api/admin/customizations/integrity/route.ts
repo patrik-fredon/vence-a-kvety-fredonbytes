@@ -63,9 +63,9 @@ export async function GET() {
     const integrityResult = await performCustomizationIntegrityCheck(supabase);
 
     // Also run database-level integrity check
-    const { data: dbIntegrityResult, error: dbError } = await (supabase.rpc as any)(
-      "check_customization_integrity"
-    );
+    const { data: dbIntegrityResult, error: dbError } = await (
+      supabase.rpc as unknown as (name: string) => Promise<{ data: unknown; error: unknown }>
+    )("check_customization_integrity");
 
     if (dbError) {
       console.error("Database integrity check failed:", dbError);
@@ -76,7 +76,10 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       applicationLevel: integrityResult,
       databaseLevel: dbIntegrityResult || null,
-      dbError: dbError?.message || null,
+      dbError:
+        dbError && typeof dbError === "object" && "message" in dbError
+          ? (dbError as { message: string }).message
+          : null,
     });
   } catch (error) {
     console.error("Customization integrity check failed:", error);
@@ -147,9 +150,9 @@ export async function POST(request: NextRequest) {
 
     const results: {
       timestamp: string;
-      operations: Array<{ type: string; result: any; error?: string | null }>;
+      operations: Array<{ type: string; result: unknown; error?: string | null }>;
       errors?: string[];
-      postCheck?: any;
+      postCheck?: unknown;
     } = {
       timestamp: new Date().toISOString(),
       operations: [],
@@ -167,14 +170,17 @@ export async function POST(request: NextRequest) {
 
     // Fix integrity issues if requested
     if (body.fixIntegrityIssues === true) {
-      const { data: dbFixResult, error: dbFixError } = await (supabase.rpc as any)(
-        "cleanup_invalid_customizations"
-      );
+      const { data: dbFixResult, error: dbFixError } = await (
+        supabase.rpc as unknown as (name: string) => Promise<{ data: unknown; error: unknown }>
+      )("cleanup_invalid_customizations");
 
       results.operations.push({
         type: "fix_integrity_issues",
         result: dbFixResult || null,
-        error: dbFixError?.message || null,
+        error:
+          dbFixError && typeof dbFixError === "object" && "message" in dbFixError
+            ? (dbFixError as { message: string }).message
+            : null,
       });
     }
 

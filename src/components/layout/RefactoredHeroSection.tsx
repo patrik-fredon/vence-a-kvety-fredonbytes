@@ -2,11 +2,11 @@
 
 import Image from "next/image";
 import Link from "next/link";
-import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { useTranslations } from "next-intl";
 import { useEffect, useState } from "react";
 import { useReducedMotion } from "@/lib/accessibility/hooks";
 import { cn } from "@/lib/utils";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { getFallbackImage, logErrorWithContext, safeTranslate } from "@/lib/utils/fallback-utils";
 
 interface RefactoredHeroSectionProps {

@@ -66,10 +66,9 @@
      GRADIENT DEFINITIONS
      Brand gradients for backgrounds and accents
      ============================================ */
-  --gradient-funeral-gold: radial-gradient(circle at center, #d2ac47,#FCD45B,#ae8625);
+  --gradient-funeral-gold: radial-gradient(circle at center, #d2ac47, #fcd45b, #ae8625);
 
   --gradient-funeral-teal: linear-gradient(to right, #0f766e, #14b8a6, #0d9488);
-
 }
 
 :root {
@@ -141,7 +140,7 @@
     -ms-overflow-style: none;
     scrollbar-width: none;
   }
-  
+
   .scrollbar-hide::-webkit-scrollbar {
     display: none;
   }
@@ -153,16 +152,8 @@
   }
 
   .bg-funeral-gold {
-    background: linear-gradient(
-      to right,
-      #ae8625,
-      #f7ef8a,
-      #d2ac47
-    ); /* Fallback */
-    background: var(
-      --gradient-funeral-gold,
-      linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47)
-    );
+    background: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47); /* Fallback */
+    background: var(--gradient-funeral-gold, linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47));
   }
 
   .bg-funeral-teal {
@@ -208,9 +199,8 @@ p {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
-.container{
-  filter: drop-shadow(0px 10px 5px rgba(0,0,0,0.5));
-
+.container {
+  filter: drop-shadow(0px 10px 5px rgba(0, 0, 0, 0.5));
 }
 .clip-corners {
   clip-path: polygon(
@@ -224,7 +214,6 @@ p {
     0% 15px
   );
   filter: drop-shadow(0 0 5px #555);
-
 }
 
 /* Corner clipping container for product cards */
@@ -240,7 +229,6 @@ p {
     0 calc(100% - 20px)
   );
   filter: drop-shadow(0 0 5px #555);
-
 }
 /* High contrast mode styles */
 @media (prefers-contrast: high), (forced-colors: active) {
@@ -369,19 +357,11 @@ p {
 }
 
 .gradient-memorial {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-50) 0%,
-    var(--color-neutral-100) 100%
-  );
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
 }
 
 .bg-gradient-memorial {
-  background: linear-gradient(
-    135deg,
-    var(--color-primary-50) 0%,
-    var(--color-neutral-100) 100%
-  );
+  background: linear-gradient(135deg, var(--color-primary-50) 0%, var(--color-neutral-100) 100%);
 }
 
 /* Line clamp utilities */

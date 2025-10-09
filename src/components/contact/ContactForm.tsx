@@ -171,8 +171,6 @@ export function ContactForm({ locale }: ContactFormProps) {
   return (
     <>
       <Card className="max-w-2xl mx-auto">
-
-
         <CardContent>
           <form onSubmit={handleSubmit} className="space-y-6">
             {/* Name Field */}

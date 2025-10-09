@@ -15,7 +15,7 @@ const FredonQuote = () => {
 
     const currentQuote = quotes[currentIndex % quotes.length];
     if (!currentQuote) return;
-    
+
     const timeout = isDeleting ? 30 : 50;
 
     const timer = setTimeout(() => {
@@ -44,7 +44,6 @@ const FredonQuote = () => {
       <span className="ml-1 animate-pulse">|</span>
     </p>
   );
-}
-
+};
 
 export default FredonQuote;

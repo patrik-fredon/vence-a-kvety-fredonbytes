@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
     const { metric, url, timestamp } = body;
 
     // Validate required fields
-    if (!metric || !metric.name || typeof metric.value !== "number") {
+    if (!metric?.name || typeof metric.value !== "number") {
       return NextResponse.json({ error: "Invalid metric data" }, { status: 400 });
     }
 
@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log metric for monitoring (in production, this would go to a logging service)
-    if (process.env.NODE_ENV === "production") {
+    if (process.env["NODE_ENV"] === "production") {
       console.log("[Web Vitals]", {
         metric: metric.name,
         value: metric.value,
@@ -93,7 +93,7 @@ export async function POST(request: NextRequest) {
 /**
  * GET /api/monitoring/vitals
  * Retrieve historical Web Vitals data
- * 
+ *
  * Query params:
  * - hours: number of hours to look back (default: 24)
  * - metric: specific metric to filter (optional)

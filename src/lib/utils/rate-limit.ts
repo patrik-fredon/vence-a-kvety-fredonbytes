@@ -27,12 +27,17 @@ const rateLimiters = {
     limiter: Ratelimit.slidingWindow(100, "1 m"), // 100 webhook events per minute (Stripe may send bursts)
     analytics: true,
   }),
+  "checkout-session": new Ratelimit({
+    redis,
+    limiter: Ratelimit.slidingWindow(10, "5 m"), // 10 checkout session creations per 5 minutes
+    analytics: true,
+  }),
   general: new Ratelimit({
     redis,
     limiter: Ratelimit.slidingWindow(60, "1 m"), // 60 requests per minute
     analytics: true,
   }),
-};;
+};
 
 export async function rateLimit(
   request: NextRequest,

@@ -4,9 +4,12 @@
 
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
+import { getRequiredEnvVar } from "@/lib/config/env-validation";
+import { createOrder } from "@/lib/services/order-service";
 // import { PaymentService } from "@/lib/payments";
 import { createServerClient } from "@/lib/supabase/server";
-import { getRequiredEnvVar } from "@/lib/config/env-validation";
+import { getPickupLocation } from "@/lib/utils/delivery-method-utils";
 
 export async function POST(request: NextRequest) {
   try {
@@ -24,7 +27,9 @@ export async function POST(request: NextRequest) {
         {
           status: 429,
           headers: {
-            "Retry-After": Math.round((rateLimitResult.reset.getTime() - Date.now()) / 1000).toString(),
+            "Retry-After": Math.round(
+              (rateLimitResult.reset.getTime() - Date.now()) / 1000
+            ).toString(),
             "X-RateLimit-Limit": rateLimitResult.limit.toString(),
             "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
             "X-RateLimit-Reset": rateLimitResult.reset.toISOString(),
@@ -51,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify webhook signature
-    let event: any;
+    let event: Stripe.Event;
     try {
       const stripe = (await import("@/lib/payments/stripe")).stripe;
       if (!stripe) {
@@ -74,9 +79,13 @@ export async function POST(request: NextRequest) {
     console.log(`[Webhook] Processing event ${event.type}:`, event.id);
 
     // Handle different event types
-    let result: any = null;
+    let result: { orderId?: string; status?: string; sessionId?: string } | null = null;
 
     switch (event.type) {
+      case "checkout.session.completed":
+        result = await handleCheckoutSessionCompleted(event.data.object);
+        break;
+
       case "payment_intent.succeeded":
         result = await handlePaymentSuccess(event.data.object);
         break;
@@ -119,7 +128,17 @@ export async function POST(request: NextRequest) {
 /**
  * Update order payment status in database
  */
-async function updateOrderPaymentStatus(orderId: string, paymentResult: any) {
+async function updateOrderPaymentStatus(
+  orderId: string,
+  paymentResult: {
+    status: string;
+    paymentMethod: string;
+    amount: number;
+    currency: string;
+    transactionId: string;
+    error?: string;
+  }
+) {
   try {
     const supabase = createServerClient();
 
@@ -184,8 +203,152 @@ async function sendOrderConfirmationEmail(orderId: string) {
 /**
  * Handle successful payment
  */
-async function handlePaymentSuccess(paymentIntent: any) {
-  const orderId = paymentIntent.metadata?.orderId;
+/**
+ * Handle checkout session completed
+ * Creates an order when Stripe checkout session is completed
+ */
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
+  console.log(`[Webhook] Checkout session completed: ${session.id}`);
+
+  try {
+    // Extract metadata from session
+    const metadata = session.metadata || {};
+
+    // Retrieve line items from the session
+    const stripe = (await import("@/lib/payments/stripe")).stripe;
+    if (!stripe) {
+      throw new Error("Stripe not configured");
+    }
+
+    const lineItems = await stripe.checkout.sessions.listLineItems(session.id, {
+      expand: ["data.price.product"],
+    });
+
+    // Build order items from line items
+    // Note: We're using Stripe line items directly for order creation
+    const orderItems = [];
+
+    for (const item of lineItems.data) {
+      if (item.price && typeof item.price === "object") {
+        const product = item.price.product;
+        const productMetadata =
+          product && typeof product === "object" && !("deleted" in product) ? product.metadata : {};
+        const productId = productMetadata?.["productId"];
+
+        if (productId) {
+          orderItems.push({
+            productId,
+            quantity: item.quantity || 1,
+            price: (item.amount_total || 0) / 100,
+            customizations: [], // Stored in metadata if needed
+          });
+        }
+      }
+    }
+
+    // Extract delivery method from metadata (Requirement 9.1, 9.2)
+    const deliveryMethod = metadata["deliveryMethod"] as "delivery" | "pickup" | undefined;
+    const pickupLocation = deliveryMethod === "pickup" ? getPickupLocation() : undefined;
+
+    // Get customer info from session
+    const customerDetails = session.customer_details || {};
+    const customerEmail = (customerDetails as { email?: string | null }).email || "";
+    const customerName = (customerDetails as { name?: string | null }).name || "";
+    const customerPhone = (customerDetails as { phone?: string | null }).phone || "";
+
+    // Get address from session
+    const address =
+      (
+        customerDetails as {
+          address?: {
+            line1?: string | null;
+            city?: string | null;
+            postal_code?: string | null;
+            country?: string | null;
+          } | null;
+        }
+      ).address || {};
+    const deliveryAddress =
+      deliveryMethod === "delivery"
+        ? {
+            street: address.line1 || "",
+            city: address.city || "",
+            postalCode: address.postal_code || "",
+            country: address.country || "CZ",
+          }
+        : undefined;
+
+    // Calculate totals
+    const subtotal = session.amount_subtotal ? session.amount_subtotal / 100 : 0;
+    const totalAmount = session.amount_total ? session.amount_total / 100 : 0;
+    const deliveryCost = deliveryMethod === "delivery" ? 0 : 0; // Free delivery
+
+    // Create order data
+    const orderData = {
+      order_number: `ORD-${Date.now()}-${Math.random().toString(36).substring(2, 9).toUpperCase()}`,
+      user_id: session.customer || null,
+      session_id: session.id,
+
+      // Order details
+      items: orderItems,
+      item_count: orderItems.reduce((sum, item) => sum + item.quantity, 0),
+      subtotal,
+      delivery_cost: deliveryCost,
+      total_amount: totalAmount,
+
+      // Customer and delivery info
+      customer_info: {
+        email: customerEmail,
+        name: customerName,
+        phone: customerPhone,
+      },
+      delivery_info: deliveryAddress || {},
+      payment_info: {
+        method: "stripe",
+        status: "completed",
+        transactionId: session.payment_intent,
+        amount: totalAmount,
+        currency: session.currency || "czk",
+        processedAt: new Date().toISOString(),
+      },
+
+      // Delivery method (Requirement 9.1, 9.2)
+      delivery_method: deliveryMethod || "delivery",
+      pickup_location: pickupLocation,
+
+      // Status
+      status: "confirmed",
+      confirmed_at: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString(),
+    };
+
+    // Create order in database (Requirement 9.1, 9.5)
+    const result = await createOrder(orderData);
+
+    if (result.error) {
+      console.error("[Webhook] Error creating order:", result.error);
+      throw new Error(`Failed to create order: ${result.error.message}`);
+    }
+
+    console.log(`[Webhook] Order created successfully: ${result.data?.id}`);
+
+    // Send confirmation email
+    await sendOrderConfirmationEmail(result.data?.id || "");
+
+    return {
+      orderId: result.data?.id,
+      status: "completed",
+      sessionId: session.id,
+    };
+  } catch (error) {
+    console.error("[Webhook] Error handling checkout session completed:", error);
+    throw error;
+  }
+}
+
+async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -215,8 +378,8 @@ async function handlePaymentSuccess(paymentIntent: any) {
 /**
  * Handle failed payment
  */
-async function handlePaymentFailure(paymentIntent: any) {
-  const orderId = paymentIntent.metadata?.orderId;
+async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -245,8 +408,8 @@ async function handlePaymentFailure(paymentIntent: any) {
 /**
  * Handle payment requiring action (e.g., 3D Secure)
  */
-async function handleRequiresAction(paymentIntent: any) {
-  const orderId = paymentIntent.metadata?.orderId;
+async function handleRequiresAction(paymentIntent: Stripe.PaymentIntent) {
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -273,8 +436,8 @@ async function handleRequiresAction(paymentIntent: any) {
 /**
  * Handle canceled payment
  */
-async function handlePaymentCanceled(paymentIntent: any) {
-  const orderId = paymentIntent.metadata?.orderId;
+async function handlePaymentCanceled(paymentIntent: Stripe.PaymentIntent) {
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -301,8 +464,8 @@ async function handlePaymentCanceled(paymentIntent: any) {
 /**
  * Handle payment processing
  */
-async function handlePaymentProcessing(paymentIntent: any) {
-  const orderId = paymentIntent.metadata?.orderId;
+async function handlePaymentProcessing(paymentIntent: Stripe.PaymentIntent) {
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");

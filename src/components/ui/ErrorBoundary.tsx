@@ -152,7 +152,7 @@ export function ErrorFallback({
           </p>
         )}
 
-        {process.env.NODE_ENV === "development" && error && (
+        {process.env["NODE_ENV"] === "development" && error && (
           <details className="mb-6 text-left">
             <summary className="cursor-pointer text-sm text-neutral-500 hover:text-neutral-700">
               Zobrazit technické detaily

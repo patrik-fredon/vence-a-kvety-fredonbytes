@@ -4,7 +4,7 @@ import type { AppConfig } from "@/types";
  * Application configuration
  */
 export const config: AppConfig = {
-  env: (process.env.NODE_ENV as AppConfig["env"]) || "development",
+  env: (process.env["NODE_ENV"] as AppConfig["env"]) || "development",
   baseUrl: process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000",
   apiUrl: process.env["NEXT_PUBLIC_API_URL"] || "/api",
   defaultLocale: "cs",

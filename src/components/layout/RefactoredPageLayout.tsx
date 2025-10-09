@@ -55,11 +55,7 @@ export const RefactoredPageLayout: React.FC<RefactoredPageLayoutProps> = ({
   };
 
   return (
-    <div
-      className={`min-h-screen ${className}`}
-      role="document"
-      aria-label="Home page content"
-    >
+    <div className={`min-h-screen ${className}`} role="document" aria-label="Home page content">
       {/* Hero Section with centered logo and messaging */}
       <section aria-labelledby="hero-heading" role="banner" className="relative">
         <ErrorBoundary

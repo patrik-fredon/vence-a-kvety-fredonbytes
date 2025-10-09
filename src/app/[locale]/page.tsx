@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/next";
 import { RefactoredPageLayout } from "@/components/layout/RefactoredPageLayout";
 import { generateHomepageMetadata } from "@/components/seo/PageMetadata";
 import {
@@ -78,6 +79,7 @@ export default async function Home({ params }: HomeProps) {
       <StructuredData data={websiteStructuredData} />
       <StructuredData data={localBusinessStructuredData} />
       <StructuredData data={faqStructuredData} />
+      <Analytics />
 
       {/* New RefactoredPageLayout with integrated hero and product sections */}
       <RefactoredPageLayout locale={locale} companyLogo={companyLogo} />

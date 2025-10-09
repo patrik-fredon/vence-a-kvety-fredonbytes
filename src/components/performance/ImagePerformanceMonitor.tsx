@@ -31,7 +31,7 @@ interface PerformanceStats {
 }
 
 export const ImagePerformanceMonitor: React.FC<ImagePerformanceMonitorProps> = ({
-  enabled = process.env.NODE_ENV === "development",
+  enabled = process.env["NODE_ENV"] === "development",
   logToConsole = true,
   onMetrics,
   maxMetrics = 100,

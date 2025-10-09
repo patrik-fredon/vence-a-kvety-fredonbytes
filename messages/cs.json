@@ -129,6 +129,22 @@
     "noSizesAvailable": "Žádné velikosti nejsou k dispozici",
     "freeShippingOver": "Doprava zdarma nad {amount}",
     "pricing": "Ceník",
+    "orderDate": "Datum objednávky",
+    "deliveryMethod": {
+      "title": "Způsob doručení",
+      "delivery": {
+        "label": "Doručení na adresu",
+        "description": "Doručíme na vámi uvedenou adresu",
+        "badge": "Doprava zdarma"
+      },
+      "pickup": {
+        "label": "Osobní odběr",
+        "description": "Vyzvedněte si v naší provozovně",
+        "address": "Adresa provozovny, Praha",
+        "hours": "Po-Pá: 9:00-17:00"
+      },
+      "required": "Vyberte prosím způsob doručení"
+    },
     "validation": {
       "title": "Prosím dokončete následující:",
       "warnings": "Upozornění:",
@@ -155,7 +171,22 @@
     "ribbonConfiguration": "Konfigurace stuhy",
     "required": "Povinné",
     "sizeOption": "Velikost: {size}, Cena: {price} {modifier}",
-    "selectSizeFirst": "Nejprve vyberte velikost"
+    "selectSizeFirst": "Nejprve vyberte velikost",
+    "deliveryMethod": {
+      "title": "Způsob doručení",
+      "delivery": {
+        "label": "Doručení na adresu",
+        "description": "Doručíme na vámi uvedenou adresu",
+        "badge": "Doprava zdarma"
+      },
+      "pickup": {
+        "label": "Osobní odběr",
+        "description": "Vyzvedněte si v naší provozovně",
+        "address": "Adresa provozovny, Praha",
+        "hours": "Po-Pá: 9:00-17:00"
+      },
+      "required": "Vyberte prosím způsob doručení"
+    }
   },
   "cart": {
     "title": "Nákupní vozík",
@@ -187,7 +218,11 @@
     "clearCartConfirm": "Ano, vyprázdnit košík",
     "clearCartCancel": "Zrušit",
     "clearCartSuccess": "Košík byl úspěšně vyprázdněn",
-    "clearCartError": "Nepodařilo se vyprázdnit košík. Zkuste to prosím znovu."
+    "clearCartError": "Nepodařilo se vyprázdnit košík. Zkuste to prosím znovu.",
+    "deliveryMethodRequired": "Před pokračováním k objednávce prosím vyberte způsob doručení u každé položky v košíku.",
+    "deliveryMethodMissing": "Chybí způsob doručení",
+    "personalPickup": "Osobní odběr",
+    "changeDeliveryMethod": "Změnit způsob doručení"
   },
   "checkout": {
     "title": "Objednávka",
@@ -217,6 +252,17 @@
     "estimatedDelivery": "Odhadované doručení",
     "required": "Povinné pole",
     "optional": "Volitelné",
+    "loading": "Načítání platební brány...",
+    "processingPayment": "Zpracování platby...",
+    "paymentSuccess": "Platba byla úspěšná",
+    "retry": "Zkusit znovu",
+    "error": {
+      "generic": "Nastala chyba při zpracování platby",
+      "network": "Problém s připojením. Zkuste to prosím znovu.",
+      "card": "Platba byla zamítnuta. Zkontrolujte údaje karty.",
+      "sessionExpired": "Platební relace vypršela. Vytvářím novou...",
+      "deliveryMethodRequired": "Prosím vyberte způsob doručení před pokračováním k platbě"
+    },
     "validation": {
       "required": "Toto pole je povinné",
       "email": "Neplatný formát e-mailu",

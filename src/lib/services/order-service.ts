@@ -3,8 +3,8 @@
  * Handles order operations with proper cache management
  */
 
-import { orderUtils } from "@/lib/supabase/utils";
 import { invalidateCacheByEvent } from "@/lib/cache/cache-invalidation";
+import { orderUtils } from "@/lib/supabase/utils";
 
 type OrderStatus = "pending" | "confirmed" | "processing" | "shipped" | "delivered" | "cancelled";
 

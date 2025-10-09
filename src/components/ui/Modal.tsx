@@ -121,7 +121,7 @@ export function Modal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4"
       onClick={handleOverlayClick}
     >
-      <div className="absolute inset-0 bg-stone-900/50 backdrop-blur-sm" aria-hidden="true" />
+      <div className="absolute inset-0 bg-teal-900/50 backdrop-blur-sm" aria-hidden="true" />
       <div
         ref={modalRef as React.RefObject<HTMLDivElement>}
         className={cn(
@@ -136,18 +136,18 @@ export function Modal({
         aria-labelledby="modal-title"
         aria-describedby={description ? "modal-description" : undefined}
       >
-        <div className="flex items-center justify-between p-6 border-b border-stone-200">
+        <div className="flex items-center justify-between p-6 border-b border-teal-900">
           <div className="flex-1 min-w-0">
             <h2
               id="modal-title"
               ref={titleRef}
-              className="text-lg font-semibold text-stone-900 truncate"
+              className="text-lg font-semibold text-teal-900 truncate"
               tabIndex={-1}
             >
               {title}
             </h2>
             {description && (
-              <p id="modal-description" className="mt-1 text-sm text-stone-600">
+              <p id="modal-description" className="mt-1 text-sm text-teal-800">
                 {description}
               </p>
             )}
@@ -181,7 +181,7 @@ export function ModalFooter({ children, className }: ModalFooterProps) {
   return (
     <div
       className={cn(
-        "flex items-center justify-end gap-3 px-6 py-4 border-t border-stone-200 bg-stone-50",
+        "flex items-center justify-end gap-3 px-6 py-4 border-t border-teal-200 bg-teal-50",
         className
       )}
     >
@@ -232,9 +232,9 @@ export function ConfirmModal({
       initialFocus={confirmButtonRef}
     >
       <div className="space-y-4">
-        <p className="text-stone-700">{message}</p>
+        <p className="text-teal-800">{message}</p>
         <ModalFooter>
-          <Button variant="outline" onClick={onClose} disabled={loading}>
+          <Button variant="default" onClick={onClose} disabled={loading}>
             {defaultCancelText}
           </Button>
           <Button

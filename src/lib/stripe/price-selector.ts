@@ -3,7 +3,7 @@
  * Handles dynamic price selection based on product customizations
  */
 
-import type { Product, Customization } from "@/types/product";
+import type { Customization, Product } from "@/types/product";
 
 /**
  * Size-specific Stripe price mappings for products with multiple sizes
@@ -35,19 +35,14 @@ const SIZE_PRICE_MAPPINGS: Record<string, Record<string, string>> = {
  * ]);
  * ```
  */
-export function getStripePriceId(
-  product: Product,
-  customizations: Customization[] = []
-): string {
+export function getStripePriceId(product: Product, customizations: Customization[] = []): string {
   // Check if product has size-specific pricing
   const productName = product.nameCs;
   const sizePrices = SIZE_PRICE_MAPPINGS[productName];
 
   if (sizePrices) {
     // Find size customization
-    const sizeCustomization = customizations.find(
-      (c) => c.optionId === "size" || c.customValue
-    );
+    const sizeCustomization = customizations.find((c) => c.optionId === "size" || c.customValue);
 
     if (sizeCustomization?.customValue) {
       const size = sizeCustomization.customValue;
@@ -61,18 +56,14 @@ export function getStripePriceId(
     // Default to base size (120) if no size specified
     const defaultPriceId = sizePrices["120"];
     if (!defaultPriceId) {
-      throw new Error(
-        `Product ${product.nameCs} is missing default size (120) price ID`
-      );
+      throw new Error(`Product ${product.nameCs} is missing default size (120) price ID`);
     }
     return defaultPriceId;
   }
 
   // For products without size variations, return the default price_id
   if (!product.stripePriceId) {
-    throw new Error(
-      `Product ${product.nameCs} (${product.id}) is missing Stripe price ID`
-    );
+    throw new Error(`Product ${product.nameCs} (${product.id}) is missing Stripe price ID`);
   }
 
   return product.stripePriceId;
@@ -87,9 +78,7 @@ export function getStripePriceId(
  */
 export function getStripeProductId(product: Product): string {
   if (!product.stripeProductId) {
-    throw new Error(
-      `Product ${product.nameCs} (${product.id}) is missing Stripe product ID`
-    );
+    throw new Error(`Product ${product.nameCs} (${product.id}) is missing Stripe product ID`);
   }
 
   return product.stripeProductId;

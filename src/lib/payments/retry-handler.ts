@@ -55,10 +55,7 @@ export interface RetryOptions {
  * );
  * ```
  */
-export async function withRetry<T>(
-  fn: () => Promise<T>,
-  options: RetryOptions = {}
-): Promise<T> {
+export async function withRetry<T>(fn: () => Promise<T>, options: RetryOptions = {}): Promise<T> {
   const {
     maxRetries = 3,
     delayMs = 1000,
@@ -81,7 +78,7 @@ export async function withRetry<T>(
       }
 
       // Calculate delay with exponential backoff
-      const delay = delayMs * Math.pow(backoff, attempt);
+      const delay = delayMs * backoff ** attempt;
 
       // Call onRetry callback if provided
       if (onRetry) {

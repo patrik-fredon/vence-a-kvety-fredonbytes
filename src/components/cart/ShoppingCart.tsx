@@ -1,8 +1,8 @@
 "use client";
 
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useTranslations } from "next-intl";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { CartItemImage } from "@/components/cart/CartItemImage";
 import { Button } from "@/components/ui/Button";
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from "@/components/ui/Card";
@@ -23,9 +23,22 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
   const t = useTranslations("cart");
   const { state, updateQuantity, removeItem, clearAllItems } = useCart();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [showClearConfirm, setShowClearConfirm] = useState(false);
   const [clearError, setClearError] = useState<string | null>(null);
   const [clearSuccess, setClearSuccess] = useState(false);
+  const [validationError, setValidationError] = useState<string | null>(null);
+
+  // Check for delivery method validation error from URL params
+  useEffect(() => {
+    const error = searchParams.get("error");
+    if (error === "delivery_method_required") {
+      setValidationError(t("deliveryMethodRequired"));
+      // Clear the error from URL
+      const newUrl = `/${locale}/cart`;
+      window.history.replaceState({}, "", newUrl);
+    }
+  }, [searchParams, locale, t]);
 
   const handleQuantityChange = async (itemId: string, newQuantity: number) => {
     if (newQuantity <= 0) {
@@ -40,6 +53,17 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
   };
 
   const handleProceedToCheckout = () => {
+    // Check if delivery method is selected (Requirement 2.7, 7.4)
+    const hasDeliveryMethod = state.items.some((item) =>
+      item.customizations?.some((c) => c.optionId === "delivery_method")
+    );
+
+    if (!hasDeliveryMethod) {
+      // Set error message if delivery method is missing
+      router.push(`/${locale}/cart?error=delivery_method_required`);
+      return;
+    }
+
     router.push(`/${locale}/checkout`);
   };
 
@@ -59,6 +83,14 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
     } else {
       setClearError(state.error || t("clearCartError"));
     }
+  };
+
+  // Helper function to get delivery method from customizations
+  const getDeliveryMethod = (customizations?: Customization[]) => {
+    if (!customizations) return null;
+    const deliveryCustomization = customizations.find((c) => c.optionId === "delivery_method");
+    if (!deliveryCustomization?.choiceIds?.[0]) return null;
+    return deliveryCustomization.choiceIds[0];
   };
 
   // Helper function to format customization display
@@ -139,6 +171,11 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
   const subtotal = state.items.reduce((sum, item) => sum + (item.totalPrice || 0), 0);
   const itemCount = state.items.reduce((sum, item) => sum + item.quantity, 0);
 
+  // Check if all items have delivery method selected
+  const hasDeliveryMethod = state.items.every((item) =>
+    item.customizations?.some((c) => c.optionId === "delivery_method")
+  );
+
   return (
     <Card className={className} variant="default">
       {showHeader && (
@@ -169,17 +206,129 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
                     "Product"}
                 </h3>
 
+                {/* Delivery Method Badge */}
+                {(() => {
+                  const deliveryMethod = getDeliveryMethod(item.customizations);
+                  const productSlug = item.product?.slug;
+
+                  if (deliveryMethod === "delivery_address") {
+                    return (
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-900/30 border border-amber-400 rounded-full">
+                          <svg
+                            className="w-4 h-4 text-amber-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium text-amber-400">
+                            {t("freeDeliveryRibbon")}
+                          </span>
+                        </div>
+                        {productSlug && (
+                          <button
+                            onClick={() => router.push(`/${locale}/products/${productSlug}`)}
+                            className="text-xs text-amber-200 hover:text-amber-400 underline"
+                            title={t("changeDeliveryMethod")}
+                          >
+                            {t("changeDeliveryMethod")}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  } else if (deliveryMethod === "personal_pickup") {
+                    return (
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-900/30 border border-amber-200 rounded-full">
+                          <svg
+                            className="w-4 h-4 text-amber-200"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                            />
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium text-amber-200">
+                            {t("personalPickup")}
+                          </span>
+                        </div>
+                        {productSlug && (
+                          <button
+                            onClick={() => router.push(`/${locale}/products/${productSlug}`)}
+                            className="text-xs text-amber-200 hover:text-amber-400 underline"
+                            title={t("changeDeliveryMethod")}
+                          >
+                            {t("changeDeliveryMethod")}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  } else {
+                    // No delivery method selected - show warning
+                    return (
+                      <div className="flex items-center gap-2 mb-2">
+                        <div className="inline-flex items-center gap-2 px-3 py-1 bg-red-900/30 border border-red-400 rounded-full">
+                          <svg
+                            className="w-4 h-4 text-red-400"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                          >
+                            <path
+                              strokeLinecap="round"
+                              strokeLinejoin="round"
+                              strokeWidth={2}
+                              d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"
+                            />
+                          </svg>
+                          <span className="text-sm font-medium text-red-400">
+                            {t("deliveryMethodMissing")}
+                          </span>
+                        </div>
+                        {productSlug && (
+                          <button
+                            onClick={() => router.push(`/${locale}/products/${productSlug}`)}
+                            className="text-xs text-amber-200 hover:text-amber-400 underline"
+                          >
+                            {t("changeDeliveryMethod")}
+                          </button>
+                        )}
+                      </div>
+                    );
+                  }
+                })()}
+
                 {/* Customizations */}
                 {item.customizations && item.customizations.length > 0 && (
                   <div className="space-y-1 mb-2">
-                    {item.customizations.map((customization, index) => {
-                      const display = formatCustomizationDisplay(customization, item.product);
-                      return display ? (
-                        <p key={index} className="text-sm text-amber-100">
-                          {display}
-                        </p>
-                      ) : null;
-                    })}
+                    {item.customizations
+                      .filter((c) => c.optionId !== "delivery_method") // Don't show delivery method in customizations list
+                      .map((customization, index) => {
+                        const display = formatCustomizationDisplay(customization, item.product);
+                        return display ? (
+                          <p key={index} className="text-sm text-amber-100">
+                            {display}
+                          </p>
+                        ) : null;
+                      })}
                   </div>
                 )}
 
@@ -243,6 +392,13 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
             <p className="text-red-800 text-sm">{state.error}</p>
           </div>
         )}
+
+        {/* Validation Error Message */}
+        {validationError && (
+          <div className="mt-6 p-4 bg-amber-50 border border-amber-400 rounded-lg">
+            <p className="text-amber-900 text-sm font-medium">{validationError}</p>
+          </div>
+        )}
       </CardContent>
 
       {/* Cart Summary */}
@@ -275,9 +431,10 @@ export function ShoppingCart({ locale, showHeader = true, className = "" }: Shop
           <Button
             variant="default"
             size="lg"
-            disabled={state.isLoading}
-            className="flex-1 bg-funeral-gold hover:bg-funeral-gold text-teal-800"
+            disabled={state.isLoading || !hasDeliveryMethod}
+            className="flex-1 bg-funeral-gold hover:bg-funeral-gold text-teal-800 disabled:opacity-50 disabled:cursor-not-allowed"
             onClick={handleProceedToCheckout}
+            title={!hasDeliveryMethod ? t("deliveryMethodRequired") : undefined}
           >
             {t("proceedToCheckout")}
           </Button>

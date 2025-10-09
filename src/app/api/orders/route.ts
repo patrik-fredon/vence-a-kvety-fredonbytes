@@ -227,7 +227,7 @@ export async function POST(request: NextRequest) {
       status: order.status as OrderStatus,
       notes: order.notes || "",
       createdAt: new Date(order.created_at || new Date().toISOString()),
-        updatedAt: new Date(order.updated_at || new Date().toISOString()),
+      updatedAt: new Date(order.updated_at || new Date().toISOString()),
     };
 
     // Post-order cleanup: Remove cart items, customization cache, and clear Redis cache

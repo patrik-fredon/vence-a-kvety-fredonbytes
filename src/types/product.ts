@@ -12,7 +12,8 @@ export type CustomizationType =
   | "ribbon_color"
   | "ribbon_text"
   | "message"
-  | "delivery";
+  | "delivery"
+  | "delivery_method";
 
 export interface CustomizationChoice {
   id: string;
@@ -42,6 +43,23 @@ export interface CustomizationOption {
     optionId: string;
     requiredChoiceIds: string[];
   };
+}
+
+// Delivery method option interface
+export interface DeliveryMethodOption extends CustomizationOption {
+  type: "delivery_method";
+  choices: [
+    {
+      id: "delivery_address";
+      label: LocalizedContent;
+      priceModifier: 0; // Free delivery
+    },
+    {
+      id: "personal_pickup";
+      label: LocalizedContent;
+      priceModifier: 0;
+    },
+  ];
 }
 
 // Product availability

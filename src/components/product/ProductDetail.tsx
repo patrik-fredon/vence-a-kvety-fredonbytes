@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import { validateWreathConfiguration, WREATH_VALIDATION_MESSAGES } from "@/lib/validation/wreath";
 import type { Customization, Product } from "@/types/product";
+import { LazyDeliveryMethodSelector } from "./LazyDeliveryMethodSelector";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 import { PriceBreakdown } from "./PriceBreakdown";
 import { ProductDetailImageGrid } from "./ProductDetailImageGrid";
@@ -36,6 +37,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup" | null>(null);
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
@@ -131,6 +133,14 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setValidationWarnings([]);
   }, []);
 
+  // Handle delivery method changes
+  const handleDeliveryMethodChange = useCallback((method: "delivery" | "pickup") => {
+    setDeliveryMethod(method);
+    // Clear validation errors when delivery method changes
+    setValidationErrors([]);
+    setValidationWarnings([]);
+  }, []);
+
   // Enhanced validation using wreath-specific validation system
   const validateCustomizations = useCallback(() => {
     const validationResult = validateWreathConfiguration(
@@ -182,6 +192,12 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
   // Handle add to cart
   const handleAddToCart = async () => {
+    // Validate delivery method selection
+    if (!deliveryMethod) {
+      setValidationErrors([t("deliveryMethod.required")]);
+      return;
+    }
+
     const validationResult = validateCustomizations();
 
     if (!validationResult.isValid) {
@@ -192,7 +208,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setIsAddingToCart(true);
 
     try {
-      // Combine size and other customizations
+      // Combine size, delivery method, and other customizations
       const allCustomizations = [...customizations];
       if (selectedSize && sizeOption) {
         allCustomizations.push({
@@ -200,6 +216,12 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           choiceIds: [selectedSize],
         });
       }
+
+      // Add delivery method to customizations
+      allCustomizations.push({
+        optionId: "delivery_method",
+        choiceIds: [deliveryMethod === "delivery" ? "delivery_address" : "personal_pickup"],
+      });
 
       const success = await addToCart({
         productId: product.id,
@@ -378,6 +400,17 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
+          {/* Delivery Method Selection */}
+          <Card>
+            <CardContent className="py-6">
+              <LazyDeliveryMethodSelector
+                value={deliveryMethod || undefined}
+                onChange={handleDeliveryMethodChange}
+                locale={locale}
+              />
+            </CardContent>
+          </Card>
+
           {/* Enhanced Validation Error Display */}
           {validationErrors.length > 0 && (
             <Card className="bg-red-50 border-red-200">
@@ -415,28 +448,28 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
                       {validationErrors.some(
                         (error) => error.includes("velikost") || error.includes("size")
                       ) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleErrorRecovery("size")}
-                            className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
-                          >
-                            Auto-select Size
-                          </Button>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleErrorRecovery("size")}
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                          Auto-select Size
+                        </Button>
+                      )}
 
                       {validationErrors.some(
                         (error) => error.includes("stuhy") || error.includes("ribbon")
                       ) && (
-                          <Button
-                            variant="outline"
-                            size="sm"
-                            onClick={() => handleErrorRecovery("ribbon")}
-                            className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
-                          >
-                            Remove Ribbon
-                          </Button>
-                        )}
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleErrorRecovery("ribbon")}
+                          className="text-xs bg-funeral-gold border-red-300 text-red-700 hover:bg-red-50"
+                        >
+                          Remove Ribbon
+                        </Button>
+                      )}
 
                       {validationWarnings.length > 0 && (
                         <Button
@@ -495,7 +528,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           </Card>
 
           {/* Configuration Summary and Proceed Button */}
-          <Card>
+          <Card className="bg-teal-800">
             <CardContent className="py-6 space-y-4">
               <div className="text-center">
                 <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
@@ -507,8 +540,8 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <Button
                 ref={addToCartButtonRef}
                 onClick={handleAddToCart}
-                disabled={isAddingToCart || !selectedSize}
-                className="w-full"
+                disabled={isAddingToCart || !selectedSize || !deliveryMethod}
+                className="w-full bg-funeral-gold text-teal-800"
                 size="lg"
               >
                 {isAddingToCart ? (
@@ -523,6 +556,9 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
               {!selectedSize && (
                 <p className="text-sm text-red-600 text-center">{t("selectSizeFirst")}</p>
+              )}
+              {!deliveryMethod && selectedSize && (
+                <p className="text-sm text-red-600 text-center">{t("deliveryMethod.required")}</p>
               )}
             </CardContent>
           </Card>

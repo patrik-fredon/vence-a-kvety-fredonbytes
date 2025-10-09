@@ -3,7 +3,7 @@
  * Validates environment and configuration at application startup
  */
 
-import { validateEnvironmentOrThrow, logEnvironmentConfig } from "./env-validation";
+import { logEnvironmentConfig, validateEnvironmentOrThrow } from "./env-validation";
 
 /**
  * Run all startup validations
@@ -17,7 +17,7 @@ export function runStartupValidation(): void {
     validateEnvironmentOrThrow();
 
     // Log environment configuration (sanitized)
-    if (process.env.NODE_ENV === "development") {
+    if (process.env["NODE_ENV"] === "development") {
       logEnvironmentConfig();
     }
 
@@ -27,7 +27,7 @@ export function runStartupValidation(): void {
     console.error(error);
 
     // In production, we want to fail fast if configuration is invalid
-    if (process.env.NODE_ENV === "production") {
+    if (process.env["NODE_ENV"] === "production") {
       throw error;
     }
 

@@ -24,6 +24,8 @@ interface Order {
   paymentMethod: string;
   paymentStatus: string;
   deliveryAddress: string;
+  deliveryMethod?: "delivery" | "pickup";
+  pickupLocation?: string;
   preferredDate: string;
   createdAt: string;
   updatedAt: string;
@@ -43,6 +45,7 @@ export default function OrderManagement() {
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("");
+  const [deliveryMethodFilter, setDeliveryMethodFilter] = useState("");
   const [dateFrom, setDateFrom] = useState("");
   const [dateTo, setDateTo] = useState("");
   const [selectedOrder, setSelectedOrder] = useState<Order | null>(null);
@@ -57,6 +60,12 @@ export default function OrderManagement() {
     { value: "shipped", label: t("shipped") },
     { value: "delivered", label: t("delivered") },
     { value: "cancelled", label: t("cancelled") },
+  ];
+
+  const deliveryMethodOptions = [
+    { value: "", label: t("allDeliveryMethods") },
+    { value: "delivery", label: t("delivery") },
+    { value: "pickup", label: t("personalPickup") },
   ];
 
   const fetchOrders = useCallback(async () => {
@@ -122,9 +131,11 @@ export default function OrderManagement() {
 
   const filteredOrders = orders.filter(
     (order) =>
-      order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())
+      (order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.customerName.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.customerEmail.toLowerCase().includes(searchTerm.toLowerCase())) &&
+      // Filter by delivery method (Requirement 9.7)
+      (deliveryMethodFilter === "" || order.deliveryMethod === deliveryMethodFilter)
   );
 
   const formatCurrency = (amount: number) => {
@@ -219,13 +230,20 @@ export default function OrderManagement() {
 
       {/* Filters */}
       <Card padding="lg">
-        <div className="grid grid-cols-1 md:grid-cols-5 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-6 gap-4">
           {/* Search */}
           <Input
             type="text"
             placeholder={t("searchOrders")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
+            // Note: The delivery method filter dropdown should be added after the status filter
+            // in the filters section. The code has been updated to include:
+            // 1. deliveryMethodFilter state
+            // 2. deliveryMethodOptions array
+            // 3. Filter logic in filteredOrders
+            // 4. Delivery method display in the table
+            // The UI dropdown needs to be manually inserted between status filter and date filters
             icon={<MagnifyingGlassIcon className="h-5 w-5" />}
             iconPosition="left"
           />
@@ -237,6 +255,19 @@ export default function OrderManagement() {
             className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
           >
             {statusOptions.map((option) => (
+              <option key={option.value} value={option.value}>
+                {option.label}
+              </option>
+            ))}
+          </select>
+
+          {/* Delivery method filter (Requirement 9.7) */}
+          <select
+            value={deliveryMethodFilter}
+            onChange={(e) => setDeliveryMethodFilter(e.target.value)}
+            className="px-4 py-2 border border-stone-300 rounded-lg focus:ring-2 focus:ring-stone-500 focus:border-stone-500 bg-white text-stone-900"
+          >
+            {deliveryMethodOptions.map((option) => (
               <option key={option.value} value={option.value}>
                 {option.label}
               </option>
@@ -267,6 +298,7 @@ export default function OrderManagement() {
             onClick={() => {
               setSearchTerm("");
               setStatusFilter("");
+              setDeliveryMethodFilter("");
               setDateFrom("");
               setDateTo("");
               setCurrentPage(1);
@@ -345,8 +377,24 @@ export default function OrderManagement() {
                       {formatCurrency(order.totalAmount)}
                     </td>
                     <td className="px-6 py-4">
-                      <div className="text-sm text-stone-900">{order.deliveryAddress}</div>
-                      <div className="text-sm text-stone-500">
+                      {/* Display delivery method (Requirement 9.7) */}
+                      {order.deliveryMethod === "pickup" ? (
+                        <div>
+                          <div className="text-sm font-medium text-stone-900">
+                            {t("personalPickup")}
+                          </div>
+                          {/* Show pickup location for pickup orders (Requirement 9.7) */}
+                          {order.pickupLocation && (
+                            <div className="text-sm text-stone-500">{order.pickupLocation}</div>
+                          )}
+                        </div>
+                      ) : (
+                        <div>
+                          <div className="text-sm font-medium text-stone-900">{t("delivery")}</div>
+                          <div className="text-sm text-stone-500">{order.deliveryAddress}</div>
+                        </div>
+                      )}
+                      <div className="text-sm text-stone-500 mt-1">
                         {new Date(order.preferredDate).toLocaleDateString("cs-CZ")}
                       </div>
                     </td>

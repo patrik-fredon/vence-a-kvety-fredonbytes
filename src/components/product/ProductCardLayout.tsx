@@ -396,8 +396,9 @@ export function ProductCardLayout({
           "text-xs font-medium",
           product.availability.inStock ? "text-green-700" : "text-red-700"
         )}
-        aria-label={`${t("availability")}: ${product.availability.inStock ? t("inStock") : t("outOfStock")
-          }`}
+        aria-label={`${t("availability")}: ${
+          product.availability.inStock ? t("inStock") : t("outOfStock")
+        }`}
       >
         {product.availability.inStock
           ? product.availability.stockQuantity && product.availability.stockQuantity <= 5

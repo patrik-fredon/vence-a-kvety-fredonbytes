@@ -28,13 +28,7 @@ interface ImageZoomProps {
   productName: string;
 }
 
-export function ImageZoom({
-  images,
-  initialIndex,
-  isOpen,
-  onClose,
-  productName,
-}: ImageZoomProps) {
+export function ImageZoom({ images, initialIndex, isOpen, onClose, productName }: ImageZoomProps) {
   const [currentIndex, setCurrentIndex] = useState(initialIndex);
   const [isAnimating, setIsAnimating] = useState(false);
   const announce = useAnnouncer();
@@ -45,44 +39,6 @@ export function ImageZoom({
       setCurrentIndex(initialIndex);
     }
   }, [initialIndex, isOpen]);
-
-  // Keyboard navigation
-  useEffect(() => {
-    if (!isOpen) return;
-
-    const handleKeyDown = (event: KeyboardEvent) => {
-      switch (event.key) {
-        case "Escape":
-          event.preventDefault();
-          onClose();
-          break;
-        case "ArrowLeft":
-          event.preventDefault();
-          handlePrevious();
-          break;
-        case "ArrowRight":
-          event.preventDefault();
-          handleNext();
-          break;
-      }
-    };
-
-    document.addEventListener("keydown", handleKeyDown);
-    return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [isOpen, currentIndex, images.length]);
-
-  // Prevent body scroll when open
-  useEffect(() => {
-    if (isOpen) {
-      const originalStyle = window.getComputedStyle(document.body).overflow;
-      document.body.style.overflow = "hidden";
-
-      return () => {
-        document.body.style.overflow = originalStyle;
-      };
-    }
-    return undefined;
-  }, [isOpen]);
 
   const handlePrevious = useCallback(() => {
     if (isAnimating) return;
@@ -118,13 +74,51 @@ export function ImageZoom({
     setTimeout(() => setIsAnimating(false), 300);
   }, [images, productName, announce, isAnimating]);
 
+  // Keyboard navigation
+  useEffect(() => {
+    if (!isOpen) return;
+
+    const handleKeyDown = (event: KeyboardEvent) => {
+      switch (event.key) {
+        case "Escape":
+          event.preventDefault();
+          onClose();
+          break;
+        case "ArrowLeft":
+          event.preventDefault();
+          handlePrevious();
+          break;
+        case "ArrowRight":
+          event.preventDefault();
+          handleNext();
+          break;
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [isOpen, handleNext, handlePrevious, onClose]);
+
+  // Prevent body scroll when open
+  useEffect(() => {
+    if (isOpen) {
+      const originalStyle = window.getComputedStyle(document.body).overflow;
+      document.body.style.overflow = "hidden";
+
+      return () => {
+        document.body.style.overflow = originalStyle;
+      };
+    }
+    return undefined;
+  }, [isOpen]);
+
   const handleBackdropClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {
       onClose();
     }
   };
 
-  if (!isOpen || !images[currentIndex]) return null;
+  if (!(isOpen && images[currentIndex])) return null;
 
   const currentImage = images[currentIndex]!;
   const showNavigation = images.length > 1;

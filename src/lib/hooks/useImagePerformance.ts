@@ -43,7 +43,7 @@ export const useImagePerformance = (
 ): ImagePerformanceResult => {
   const {
     enabled = true,
-    logMetrics = process.env.NODE_ENV === "development",
+    logMetrics = process.env["NODE_ENV"] === "development",
     onMetrics,
   } = options;
 

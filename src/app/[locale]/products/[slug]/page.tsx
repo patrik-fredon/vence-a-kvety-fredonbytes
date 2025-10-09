@@ -221,8 +221,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
           ? productImages.map((img) => {
               if (img && typeof img === "object" && "url" in img && "alt" in img) {
                 return {
-                  url: typeof img["url"] === "string" ? img["url"] : "",
-                  alt: (typeof img["alt"] === "string" ? img["alt"] : null) || name,
+                  url: typeof img[`url`] === "string" ? img[`url`] : "",
+                  alt: (typeof img[`alt`] === "string" ? img[`alt`] : null) || name,
                 };
               }
               return { url: "", alt: name };

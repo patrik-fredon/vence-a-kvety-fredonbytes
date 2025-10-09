@@ -32,9 +32,7 @@ let stripePromise: Promise<any> | null = null;
 
 export const getStripe = () => {
   if (!stripePromise) {
-    const publishableKey = getRequiredEnvVar(
-      "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"
-    );
+    const publishableKey = getRequiredEnvVar("NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY");
     stripePromise = loadStripe(publishableKey);
   }
   return stripePromise;
@@ -128,9 +126,7 @@ export const stripeElementsOptions: StripeElementsOptions = {
  * </Elements>
  * ```
  */
-export function getStripeElementsOptions(
-  locale: "cs" | "en" = "cs"
-): StripeElementsOptions {
+export function getStripeElementsOptions(locale: "cs" | "en" = "cs"): StripeElementsOptions {
   return {
     ...stripeElementsOptions,
     locale,
@@ -172,35 +168,18 @@ export async function createPaymentIntent(
   options: CreatePaymentIntentOptions
 ): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error(
-      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
-    );
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
-  const {
-    amount,
-    currency = "czk",
-    orderId,
-    customerEmail,
-    customerName,
-    metadata = {},
-  } = options;
+  const { amount, currency = "czk", orderId, customerEmail, customerName, metadata = {} } = options;
 
   try {
     // Check if payment intent already exists for this order
-    const { getCachedPaymentIntentByOrderId } = await import(
-      "@/lib/cache/payment-intent-cache"
-    );
+    const { getCachedPaymentIntentByOrderId } = await import("@/lib/cache/payment-intent-cache");
     const cachedIntent = await getCachedPaymentIntentByOrderId(orderId);
 
-    if (
-      cachedIntent &&
-      cachedIntent.status !== "succeeded" &&
-      cachedIntent.status !== "canceled"
-    ) {
-      console.log(
-        `✅ [Stripe] Using cached payment intent for order: ${orderId}`
-      );
+    if (cachedIntent && cachedIntent.status !== "succeeded" && cachedIntent.status !== "canceled") {
+      console.log(`✅ [Stripe] Using cached payment intent for order: ${orderId}`);
       // Return the cached payment intent by retrieving it from Stripe
       return await stripe.paymentIntents.retrieve(cachedIntent.id);
     }
@@ -223,14 +202,10 @@ export async function createPaymentIntent(
     });
 
     // Cache the payment intent
-    const { cachePaymentIntent } = await import(
-      "@/lib/cache/payment-intent-cache"
-    );
+    const { cachePaymentIntent } = await import("@/lib/cache/payment-intent-cache");
     await cachePaymentIntent(paymentIntent);
 
-    console.log(
-      `✅ [Stripe] Created and cached payment intent: ${paymentIntent.id}`
-    );
+    console.log(`✅ [Stripe] Created and cached payment intent: ${paymentIntent.id}`);
 
     return paymentIntent;
   } catch (error) {
@@ -246,31 +221,21 @@ export async function retrievePaymentIntent(
   paymentIntentId: string
 ): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error(
-      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
-    );
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
   try {
     // Try to get from cache first
-    const { getCachedPaymentIntent } = await import(
-      "@/lib/cache/payment-intent-cache"
-    );
+    const { getCachedPaymentIntent } = await import("@/lib/cache/payment-intent-cache");
     const cachedIntent = await getCachedPaymentIntent(paymentIntentId);
 
     if (cachedIntent) {
-      console.log(
-        `✅ [Stripe] Using cached payment intent: ${paymentIntentId}`
-      );
+      console.log(`✅ [Stripe] Using cached payment intent: ${paymentIntentId}`);
       // Return the cached data by retrieving from Stripe to ensure freshness
-      const paymentIntent = await stripe.paymentIntents.retrieve(
-        paymentIntentId
-      );
+      const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
       // Update cache with fresh data
-      const { cachePaymentIntent } = await import(
-        "@/lib/cache/payment-intent-cache"
-      );
+      const { cachePaymentIntent } = await import("@/lib/cache/payment-intent-cache");
       await cachePaymentIntent(paymentIntent);
 
       return paymentIntent;
@@ -279,14 +244,10 @@ export async function retrievePaymentIntent(
     // Fetch from Stripe and cache
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentIntentId);
 
-    const { cachePaymentIntent } = await import(
-      "@/lib/cache/payment-intent-cache"
-    );
+    const { cachePaymentIntent } = await import("@/lib/cache/payment-intent-cache");
     await cachePaymentIntent(paymentIntent);
 
-    console.log(
-      `✅ [Stripe] Retrieved and cached payment intent: ${paymentIntentId}`
-    );
+    console.log(`✅ [Stripe] Retrieved and cached payment intent: ${paymentIntentId}`);
 
     return paymentIntent;
   } catch (error) {
@@ -303,9 +264,7 @@ export async function confirmPaymentIntent(
   paymentMethodId: string
 ): Promise<Stripe.PaymentIntent> {
   if (!stripe) {
-    throw new Error(
-      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
-    );
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
   try {
@@ -327,9 +286,7 @@ export function verifyWebhookSignature(
   secret: string
 ): Stripe.Event {
   if (!stripe) {
-    throw new Error(
-      "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
-    );
+    throw new Error("Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable.");
   }
 
   try {
@@ -343,9 +300,7 @@ export function verifyWebhookSignature(
 /**
  * Handle successful payment
  */
-export async function handleSuccessfulPayment(
-  paymentIntent: Stripe.PaymentIntent
-) {
+export async function handleSuccessfulPayment(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata["orderId"];
 
   if (!orderId) {
@@ -353,9 +308,7 @@ export async function handleSuccessfulPayment(
   }
 
   // Invalidate payment intent cache on status change
-  const { invalidatePaymentIntentCache } = await import(
-    "@/lib/cache/payment-intent-cache"
-  );
+  const { invalidatePaymentIntentCache } = await import("@/lib/cache/payment-intent-cache");
   await invalidatePaymentIntentCache(paymentIntent.id);
 
   // Update order status in database
@@ -381,15 +334,10 @@ export async function handleFailedPayment(paymentIntent: Stripe.PaymentIntent) {
   }
 
   // Invalidate payment intent cache on status change
-  const { invalidatePaymentIntentCache } = await import(
-    "@/lib/cache/payment-intent-cache"
-  );
+  const { invalidatePaymentIntentCache } = await import("@/lib/cache/payment-intent-cache");
   await invalidatePaymentIntentCache(paymentIntent.id);
 
-  console.log(
-    `Payment failed for order ${orderId}:`,
-    paymentIntent.last_payment_error?.message
-  );
+  console.log(`Payment failed for order ${orderId}:`, paymentIntent.last_payment_error?.message);
 
   return {
     orderId,

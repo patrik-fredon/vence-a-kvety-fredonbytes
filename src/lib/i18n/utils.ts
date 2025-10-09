@@ -234,7 +234,7 @@ function logMissingKey(key: string, locale: Locale, context?: string): void {
     console.warn(`Missing translation key: "${key}" for locale: "${locale}"${contextInfo}`);
 
     // In development, also log to help with debugging
-    if (process.env.NODE_ENV === "development") {
+    if (process.env["NODE_ENV"] === "development") {
       console.trace(`Translation key trace for: ${key}`);
     }
   }

@@ -32,7 +32,17 @@
     "measure:vitals:prod": "npx tsx scripts/measure-core-web-vitals.ts --url=https://your-production-url.com",
     "analyze:bundle": "npx tsx scripts/analyze-bundle-size.ts",
     "analyze:bundle:ci": "npm run build && npm run analyze:bundle",
-    "analyze:bundle:baseline": "npx tsx scripts/analyze-bundle-size.ts --save-baseline"
+    "analyze:bundle:baseline": "npx tsx scripts/analyze-bundle-size.ts --save-baseline",
+    "verify:stripe": "npx tsx scripts/verify-stripe-integration.ts",
+    "test:load": "npx tsx scripts/load-test-checkout.ts",
+    "test:cache": "npx tsx scripts/test-cache-performance.ts",
+    "test:checkout": "npm run verify:stripe && npm run test:cache && npm run test:load",
+    "test:checkout:flow": "npx tsx scripts/test-checkout-flow.ts",
+    "test:checkout:cart": "npx tsx scripts/test-checkout-flow.ts --test=cart",
+    "test:checkout:stripe": "npx tsx scripts/test-checkout-flow.ts --test=stripe",
+    "test:checkout:order": "npx tsx scripts/test-checkout-flow.ts --test=order",
+    "test:checkout:integration": "npx tsx scripts/test-checkout-flow.ts --test=integration",
+    "validate:final": "npm run type-check && npm run lint && npm run build && npm run verify:stripe"
   },
   "dependencies": {
     "@auth/supabase-adapter": "^1.10.0",
@@ -44,7 +54,9 @@
     "@types/ioredis": "^4.28.10",
     "@upstash/ratelimit": "^2.0.6",
     "@upstash/redis": "^1.35.3",
+    "@vercel/analytics": "^1.5.0",
     "clsx": "^2.1.1",
+    "crypto": "^1.0.1",
     "dotenv": "^17.2.2",
     "ioredis": "^5.7.0",
     "next": "^15.5.2",

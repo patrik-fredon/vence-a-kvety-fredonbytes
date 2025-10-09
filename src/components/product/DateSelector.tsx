@@ -10,6 +10,7 @@ interface DateSelectorProps {
   minDaysFromNow?: number;
   maxDaysFromNow?: number;
   locale: string;
+  header?: string;
   className?: string;
 }
 
@@ -91,8 +92,8 @@ export function DateSelector({
     if (!isDateSelectable(date)) return;
     // Format date as YYYY-MM-DD without timezone conversion
     const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, "0");
+    const day = String(date.getDate()).padStart(2, "0");
     const dateString = `${year}-${month}-${day}`;
     onChange(dateString);
     setIsOpen(false);
@@ -117,13 +118,10 @@ export function DateSelector({
     }
   };
 
-  const monthNames = locale === "cs"
-    ? ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"]
-    : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-  const weekdayNames = locale === "cs"
-    ? ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
-    : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
+  const weekdayNames =
+    locale === "cs"
+      ? ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]
+      : ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   const calendarDays = generateCalendarDays();
 
@@ -143,7 +141,9 @@ export function DateSelector({
           <CalendarIcon className="w-5 h-5 text-teal-800" />
           <div className="text-left">
             {value ? (
-              <div className="font-medium text-teal-800">{formatDateForDisplay(value as string)}</div>
+              <div className="font-medium text-teal-800">
+                {formatDateForDisplay(value as string)}
+              </div>
             ) : (
               <div className="text-teal-800">
                 {locale === "cs" ? "Vyberte datum" : "Select date"}
@@ -167,10 +167,6 @@ export function DateSelector({
             >
               <span className="text-teal-800">‹</span>
             </button>
-
-            <h3 className="text-lg font-semibold text-teal-800">
-              {monthNames[selectedMonth]} {selectedYear}
-            </h3>
 
             <button
               type="button"
@@ -207,19 +203,18 @@ export function DateSelector({
                   type="button"
                   onClick={() => handleDateSelect(date)}
                   disabled={!selectable}
-                  className={cn(
-                    "p-2 text-sm rounded-lg transition-colors relative",
-                    {
-                      // Selected date
-                      "bg-teal-800 text-white font-semibold hover:bg-teal-700": selected && selectable,
+                  className={cn("p-2 text-sm rounded-lg transition-colors relative", {
+                    // Selected date
+                    "bg-teal-800 text-white font-semibold hover:bg-teal-700":
+                      selected && selectable,
 
-                      // Selectable dates
-                      "bg-amber-200 text-teal-800 hover:bg-teal-50 border border-amber-300": !selected && selectable,
+                    // Selectable dates
+                    "bg-amber-200 text-teal-800 hover:bg-teal-50 border border-amber-300":
+                      !selected && selectable,
 
-                      // Disabled dates
-                      "bg-amber-100/40 text-gray-400 cursor-not-allowed": !selectable,
-                    }
-                  )}
+                    // Disabled dates
+                    "bg-amber-100/40 text-gray-400 cursor-not-allowed": !selectable,
+                  })}
                   title={
                     !selectable
                       ? locale === "cs"
@@ -240,18 +235,6 @@ export function DateSelector({
               ? `Dostupné termíny: ${minDate.toLocaleDateString("cs-CZ")} - ${maxDate.toLocaleDateString("cs-CZ")}`
               : `Available dates: ${minDate.toLocaleDateString("en-US")} - ${maxDate.toLocaleDateString("en-US")}`}
           </div>
-        </div>
-      )}
-
-      {/* Validation Message */}
-      {value && (
-        <div className="text-sm text-green-600 flex items-center space-x-1">
-          <CalendarIcon className="w-4 h-4" />
-          <span>
-            {locale === "cs"
-              ? `Dodání naplánováno na ${formatDateForDisplay(value as string)}`
-              : `Delivery scheduled for ${formatDateForDisplay(value as string)}`}
-          </span>
         </div>
       )}
     </div>

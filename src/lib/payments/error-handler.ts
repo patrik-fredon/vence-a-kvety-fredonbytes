@@ -47,10 +47,7 @@ export interface SanitizedError {
  * }
  * ```
  */
-export function sanitizeStripeError(
-  error: unknown,
-  locale: "cs" | "en" = "cs"
-): SanitizedError {
+export function sanitizeStripeError(error: unknown, locale: "cs" | "en" = "cs"): SanitizedError {
   // Handle Stripe card errors - safe to show to user
   if (error instanceof Stripe.errors.StripeCardError) {
     return {
@@ -126,10 +123,7 @@ export function sanitizeStripeError(
 /**
  * Gets user-friendly error message for card errors
  */
-function getCardErrorMessage(
-  error: Stripe.errors.StripeCardError,
-  locale: "cs" | "en"
-): string {
+function getCardErrorMessage(error: Stripe.errors.StripeCardError, locale: "cs" | "en"): string {
   const code = error.code || error.decline_code;
 
   const messages: Record<string, Record<"cs" | "en", string>> = {
@@ -185,10 +179,7 @@ function getCardErrorMessage(
 /**
  * Gets user-friendly error message for general errors
  */
-function getErrorMessage(
-  errorType: string,
-  locale: "cs" | "en"
-): string {
+function getErrorMessage(errorType: string, locale: "cs" | "en"): string {
   const messages: Record<string, Record<"cs" | "en", string>> = {
     invalid_request: {
       cs: "Chyba konfigurace platby. Kontaktujte prosím podporu.",
@@ -216,7 +207,9 @@ function getErrorMessage(
     },
   };
 
-  return messages[errorType]?.[locale] || messages['unknown']?.[locale] || 'An unknown error occurred';
+  return (
+    messages[errorType]?.[locale] || messages["unknown"]?.[locale] || "An unknown error occurred"
+  );
 }
 
 /**

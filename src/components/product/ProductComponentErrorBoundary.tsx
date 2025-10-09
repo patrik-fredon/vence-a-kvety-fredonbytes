@@ -123,7 +123,7 @@ export function ProductErrorFallback({
         </button>
       )}
 
-      {process.env.NODE_ENV === "development" && error && (
+      {process.env["NODE_ENV"] === "development" && error && (
         <details className="mt-4 text-left">
           <summary className="cursor-pointer text-sm text-stone-500 hover:text-stone-700">
             Zobrazit technické detaily
@@ -351,7 +351,7 @@ export function ProductGridErrorFallback({
         </button>
       </div>
 
-      {process.env.NODE_ENV === "development" && error && (
+      {process.env["NODE_ENV"] === "development" && error && (
         <details className="mt-6 text-left w-full max-w-2xl">
           <summary className="cursor-pointer text-sm text-stone-500 hover:text-stone-700">
             Zobrazit technické detaily
@@ -485,7 +485,7 @@ export function NavigationErrorFallback({
         </button>
       </div>
 
-      {process.env.NODE_ENV === "development" && error && (
+      {process.env["NODE_ENV"] === "development" && error && (
         <details className="mt-4 text-left">
           <summary className="cursor-pointer text-sm text-amber-600 hover:text-amber-800">
             Zobrazit technické detaily

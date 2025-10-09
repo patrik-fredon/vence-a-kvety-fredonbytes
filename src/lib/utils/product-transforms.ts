@@ -17,9 +17,9 @@ export function transformCategoryRow(row: CategoryRow): Category {
   const description: LocalizedContent | undefined =
     row.description_cs || row.description_en
       ? {
-        cs: row.description_cs || "",
-        en: row.description_en || "",
-      }
+          cs: row.description_cs || "",
+          en: row.description_en || "",
+        }
       : undefined;
 
   return {
@@ -52,9 +52,9 @@ export function transformProductRow(row: ProductRow, category?: Category): Produ
   const description: LocalizedContent | undefined =
     row.description_cs || row.description_en
       ? {
-        cs: row.description_cs || "",
-        en: row.description_en || "",
-      }
+          cs: row.description_cs || "",
+          en: row.description_en || "",
+        }
       : undefined;
 
   // Parse images - handle both array and JSON string formats
@@ -206,8 +206,6 @@ export function productToRow(
 export function getLocalizedContent<T>(content: LocalizedContent<T>, locale: Locale): T {
   return content[locale] || content.cs || content.en;
 }
-
-
 
 /**
  * Validate product data

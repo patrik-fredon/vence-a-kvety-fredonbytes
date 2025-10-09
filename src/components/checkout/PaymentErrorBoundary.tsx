@@ -1,7 +1,7 @@
 "use client";
 
-import { Component, type ReactNode } from "react";
 import { ExclamationTriangleIcon } from "@heroicons/react/24/outline";
+import { Component, type ReactNode } from "react";
 
 interface PaymentErrorBoundaryProps {
   children: ReactNode;

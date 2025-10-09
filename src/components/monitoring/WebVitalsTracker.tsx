@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useRef, useState, useCallback } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { performanceMonitor } from "@/lib/monitoring/performance-monitor";
 
 // Performance configuration - inline to avoid build issues
@@ -14,7 +14,7 @@ const performanceConfig = {
   },
   development: {
     debug: {
-      showWebVitalsOverlay: process.env.NODE_ENV === "development",
+      showWebVitalsOverlay: process.env["NODE_ENV"] === "development",
     },
   },
   monitoring: {
@@ -59,7 +59,7 @@ interface WebVitalsTrackerProps {
 export function WebVitalsTracker({
   debug = performanceConfig.development?.debug?.showWebVitalsOverlay ?? false,
   endpoint = performanceConfig.monitoring?.webVitalsTracking?.endpoint ??
-    "/api/monitoring/web-vitals",
+  "/api/monitoring/web-vitals",
   sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ?? 0.1,
   autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ?? true,
   onMetric,
@@ -80,6 +80,23 @@ export function WebVitalsTracker({
       reportedMetrics.current.add(metricKey);
     }
   }, []);
+
+  /**
+   * Get or create session ID
+   */
+  const getSessionId = () => {
+    // Check if we're in the browser environment
+    if (typeof window === "undefined" || typeof sessionStorage === "undefined") {
+      return null; // Return null for server-side rendering
+    }
+
+    let sessionId = sessionStorage.getItem("webvitals_session_id");
+    if (!sessionId) {
+      sessionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      sessionStorage.setItem("webvitals_session_id", sessionId);
+    }
+    return sessionId;
+  };
 
   /**
    * Send metrics to server
@@ -125,7 +142,7 @@ export function WebVitalsTracker({
         console.warn("Failed to send Web Vitals metrics:", error);
       }
     },
-    [endpoint]
+    [endpoint, getSessionId]
   );
 
   useEffect(() => {
@@ -168,11 +185,14 @@ export function WebVitalsTracker({
             queueMetricForReporting(webVitalsMetric);
           }
 
-          console.log(`📊 Web Vitals - ${metric.name}:`, {
-            value: metric.value,
-            rating: metric.rating,
-            delta: metric.delta,
-          });
+          // Only log in development and limit frequency
+          if (process.env['NODE_ENV'] === "development" && debug) {
+            console.log(`📊 Web Vitals - ${metric.name}:`, {
+              value: metric.value,
+              rating: metric.rating,
+              delta: metric.delta,
+            });
+          }
         };
 
         // Initialize all Web Vitals metrics
@@ -212,36 +232,19 @@ export function WebVitalsTracker({
 
     window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // Periodic reporting
+    // Periodic reporting - increased to 5 minutes to reduce frequency
     const reportingInterval = setInterval(() => {
       if (metricsQueue.current.length > 0) {
         sendMetricsToServer([...metricsQueue.current]);
         metricsQueue.current = [];
       }
-    }, 30000); // Report every 30 seconds
+    }, 300000); // Report every 5 minutes (300000ms)
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
       clearInterval(reportingInterval);
     };
   }, [sampleRate, autoReport, onMetric, queueMetricForReporting, sendMetricsToServer]);
-
-  /**
-   * Get or create session ID
-   */
-  const getSessionId = () => {
-    // Check if we're in the browser environment
-    if (typeof window === "undefined" || typeof sessionStorage === "undefined") {
-      return null; // Return null for server-side rendering
-    }
-
-    let sessionId = sessionStorage.getItem("webvitals_session_id");
-    if (!sessionId) {
-      sessionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      sessionStorage.setItem("webvitals_session_id", sessionId);
-    }
-    return sessionId;
-  };
 
   /**
    * Get rating color

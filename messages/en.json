@@ -129,6 +129,22 @@
     "noSizesAvailable": "No sizes available",
     "freeShippingOver": "Free shipping over {amount}",
     "pricing": "Pricing",
+    "orderDate": "Order date",
+    "deliveryMethod": {
+      "title": "Delivery method",
+      "delivery": {
+        "label": "Delivery to address",
+        "description": "We will deliver to your specified address",
+        "badge": "Free delivery"
+      },
+      "pickup": {
+        "label": "Personal pickup",
+        "description": "Pick up at our office",
+        "address": "Company Address, Prague",
+        "hours": "Mon-Fri: 9:00-17:00"
+      },
+      "required": "Please select a delivery method"
+    },
     "validation": {
       "title": "Please complete the following:",
       "warnings": "Warnings:",
@@ -155,7 +171,22 @@
     "ribbonConfiguration": "Ribbon Configuration",
     "required": "Required",
     "sizeOption": "Size: {size}, Price: {price} {modifier}",
-    "selectSizeFirst": "Please select a size first"
+    "selectSizeFirst": "Please select a size first",
+    "deliveryMethod": {
+      "title": "Delivery method",
+      "delivery": {
+        "label": "Delivery to address",
+        "description": "We will deliver to your specified address",
+        "badge": "Free delivery"
+      },
+      "pickup": {
+        "label": "Personal pickup",
+        "description": "Pick up at our office",
+        "address": "Company Address, Prague",
+        "hours": "Mon-Fri: 9:00-17:00"
+      },
+      "required": "Please select a delivery method"
+    }
   },
   "cart": {
     "title": "Shopping Cart",
@@ -187,7 +218,11 @@
     "clearCartConfirm": "Yes, Clear Cart",
     "clearCartCancel": "Cancel",
     "clearCartSuccess": "Cart cleared successfully",
-    "clearCartError": "Failed to clear cart. Please try again."
+    "clearCartError": "Failed to clear cart. Please try again.",
+    "deliveryMethodRequired": "Please select a delivery method for each item in your cart before proceeding to checkout.",
+    "deliveryMethodMissing": "Delivery method missing",
+    "personalPickup": "Personal Pickup",
+    "changeDeliveryMethod": "Change Delivery Method"
   },
   "checkout": {
     "title": "Checkout",
@@ -223,6 +258,17 @@
       "phone": "Invalid phone format",
       "postalCode": "Invalid postal code format",
       "agreeToTerms": "You must agree to the terms and conditions"
+    },
+    "loading": "Loading payment gateway...",
+    "processingPayment": "Processing payment...",
+    "paymentSuccess": "Payment successful",
+    "retry": "Try Again",
+    "error": {
+      "generic": "An error occurred while processing payment",
+      "network": "Connection problem. Please try again.",
+      "card": "Payment was declined. Please check your card details.",
+      "sessionExpired": "Payment session expired. Creating new one...",
+      "deliveryMethodRequired": "Please select a delivery method before proceeding to checkout"
     }
   },
   "auth": {

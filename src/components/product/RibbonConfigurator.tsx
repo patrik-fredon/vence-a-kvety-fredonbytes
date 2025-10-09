@@ -2,8 +2,7 @@
 
 import { useTranslations } from "next-intl";
 import { useCallback, useState } from "react";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import { validateCustomRibbonText } from "@/lib/validation/wreath";
 import type { Customization, CustomizationChoice, CustomizationOption } from "@/types/product";
 
@@ -75,7 +74,7 @@ export function RibbonConfigurator({
           existing.choiceIds = [choiceId];
           // Clear custom value when selecting predefined option (not custom)
           const selectedChoice = option.choices?.find((c) => c.id === choiceId);
-          if (!selectedChoice?.allowCustomInput && existing.customValue) {
+          if (!selectedChoice?.allowCustomInput && existing.customValue !== undefined) {
             delete existing.customValue;
           }
         } else {
@@ -140,8 +139,8 @@ export function RibbonConfigurator({
           className={cn(
             "flex items-center justify-between p-3 border rounded-lg transition-colors text-left",
             isSelected
-            ? "border-teal-800 bg-amber-300 text-teal-800"
-            : "border-teal-800 bg-amber-100 text-teal-800",
+              ? "border-teal-800 bg-amber-300 text-teal-800"
+              : "border-teal-800 bg-amber-100 text-teal-800",
             // High contrast support
             "high-contrast:border-current high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
           )}
@@ -270,9 +269,7 @@ export function RibbonConfigurator({
                   value.length > 40 ? "text-amber-300" : "",
                   value.length >= 50 ? "text-red-600 font-medium" : ""
                 )}
-                aria-label={`${value.length} ${tAccessibility(
-                  "charactersOf"
-                )} ${maxLength}`}
+                aria-label={`${value.length} ${tAccessibility("charactersOf")} ${maxLength}`}
               >
                 {value.length}/{maxLength}
               </span>
@@ -347,7 +344,7 @@ export function RibbonConfigurator({
         >
           {t("ribbonConfiguration")}
           <span
-            className="text-sm font-normal text-teal-800"
+            className="text-sm font-normal text-amber-100"
             aria-label={tAccessibility("optional")}
           >
             ({t("optional")})
@@ -361,8 +358,6 @@ export function RibbonConfigurator({
               {colorOption.name[locale as keyof typeof colorOption.name]}
               {colorOption.required && ` (${tAccessibility("required")})`}
             </legend>
-
-
 
             <div
               className="grid grid-cols-2 gap-3"
@@ -428,7 +423,8 @@ export function RibbonConfigurator({
                 {(textOption.choices || []).map((choice) => (
                   <option key={choice.id} value={choice.id}>
                     {choice.label[locale as keyof typeof choice.label]}
-                    {choice.priceModifier !== 0 && ` (${formatPriceModifier(choice.priceModifier)})`}
+                    {choice.priceModifier !== 0 &&
+                      ` (${formatPriceModifier(choice.priceModifier)})`}
                   </option>
                 ))}
               </select>

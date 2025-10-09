@@ -26,7 +26,7 @@ export function ResetPasswordForm() {
       errors["password"] = "Heslo musí mít alespoň 6 znaků";
     }
 
-    if ((formData as any)["password"] !== (formData as any).confirmPassword) {
+    if ((formData as any).password !== (formData as any).confirmPassword) {
       errors["confirmPassword"] = "Hesla se neshodují";
     }
 

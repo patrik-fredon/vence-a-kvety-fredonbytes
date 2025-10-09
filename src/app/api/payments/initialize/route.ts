@@ -4,8 +4,8 @@
 
 import { type NextRequest, NextResponse } from "next/server";
 import { type PaymentRequest, PaymentService } from "@/lib/payments";
-import type { PaymentMethod } from "@/types/order";
 import { validateCSRFMiddleware } from "@/lib/security/csrf";
+import type { PaymentMethod } from "@/types/order";
 
 export async function POST(request: NextRequest) {
   try {
@@ -35,7 +35,9 @@ export async function POST(request: NextRequest) {
         {
           status: 429,
           headers: {
-            "Retry-After": Math.round((rateLimitResult.reset.getTime() - Date.now()) / 1000).toString(),
+            "Retry-After": Math.round(
+              (rateLimitResult.reset.getTime() - Date.now()) / 1000
+            ).toString(),
             "X-RateLimit-Limit": rateLimitResult.limit.toString(),
             "X-RateLimit-Remaining": rateLimitResult.remaining.toString(),
             "X-RateLimit-Reset": rateLimitResult.reset.toISOString(),

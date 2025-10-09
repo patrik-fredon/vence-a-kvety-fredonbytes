@@ -1,12 +1,12 @@
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
-import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 import { generateAboutPageMetadata } from "@/components/seo/PageMetadata";
 import {
   generateLocalBusinessStructuredData,
   generateOrganizationStructuredData,
   StructuredData,
 } from "@/components/seo/StructuredData";
+import { BLUR_PLACEHOLDERS } from "@/lib/utils/blur-placeholder";
 
 interface AboutPageProps {
   params: Promise<{ locale: string }>;
@@ -32,17 +32,18 @@ export default async function AboutPage({ params }: AboutPageProps) {
       <StructuredData data={localBusinessStructuredData} />
 
       <div className="py-8">
-
-          {/* Hero Text */}
-          <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16 px-4">
-            <div className="rounded-lg p-4 sm:p-6 md:p-8 mb-6 md:mb-8">
-              <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-6 md:mb-8 text-teal-800 leading-tight text-balance">
-                {tAbout("title")}
-              </h1>
-              <p className="text-base sm:text-lg text-teal-800 leading-relaxed mb-6 md:mb-8">{tAbout("mission")}</p>
-            </div>
+        {/* Hero Text */}
+        <div className="max-w-4xl mx-auto text-center mb-12 md:mb-16 px-4">
+          <div className="rounded-lg p-4 sm:p-6 md:p-8 mb-6 md:mb-8">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mb-6 md:mb-8 text-teal-800 leading-tight text-balance">
+              {tAbout("title")}
+            </h1>
+            <p className="text-base sm:text-lg text-teal-800 leading-relaxed mb-6 md:mb-8">
+              {tAbout("mission")}
+            </p>
           </div>
-          <div className="container mx-auto px-4">
+        </div>
+        <div className="container mx-auto px-4">
           {/* Main Image - Reduced height */}
           <div className="mb-16">
             <div className="relative w-full h-64 sm:h-72 md:h-80 lg:h-96 bg-funeral-gold rounded-lg  shadow-xl overflow-hidden">
@@ -89,7 +90,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <div className="overflow-hidden rounded-lg">
               <div className="aspect-square bg-funeral-gold relative">
                 <Image
-                  src="https://cdn.fredonbytes.com/dewy-white-lilies-floral-design.webp"
+                  src="https://cdn.fredonbytes.com/purple-pink-rose-wreath-with-ranunculus-and-delphiniums.webp"
                   alt={tAbout("companyDescription")}
                   fill
                   className="object-cover"
@@ -105,15 +106,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4   flex items-center justify-center">
                     <Image
-              src="/logo.svg"
-              alt="Vence a kvety logo"
-              width={256}
-              height={100}
-              className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
-              priority
-              placeholder="blur"
-              blurDataURL={BLUR_PLACEHOLDERS.logo}
-            />
+                      src="/logo.svg"
+                      alt="Vence a kvety logo"
+                      width={256}
+                      height={100}
+                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+                      priority
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDERS.logo}
+                    />
                   </div>
                   <h2 className="text-lg font-medium mb-2 text-amber-300">
                     {tAbout("valuesTitle")}
@@ -126,7 +127,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <div className="overflow-hidden rounded-lg">
               <div className="aspect-square bg-funeral-gold relative">
                 <Image
-                  src="https://cdn.fredonbytes.com/handmade-lily-wreath-with-twine-rustic.webp"
+                  src="https://cdn.fredonbytes.com/white-and-lavender-heart-floral-arrangement.webp"
                   alt={tAbout("companyDescription")}
                   fill
                   className="object-cover "
@@ -142,15 +143,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4  flex items-center justify-center">
                     <Image
-              src="/logo.svg"
-              alt="Vence a kvety logo"
-              width={256}
-              height={100}
-              className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
-              priority
-              placeholder="blur"
-              blurDataURL={BLUR_PLACEHOLDERS.logo}
-            />
+                      src="/logo.svg"
+                      alt="Vence a kvety logo"
+                      width={256}
+                      height={100}
+                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+                      priority
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDERS.logo}
+                    />
                   </div>
                   <h2 className="text-lg font-medium mb-2 text-amber-200">
                     {tAbout("storyTitle")}
@@ -163,7 +164,7 @@ export default async function AboutPage({ params }: AboutPageProps) {
             <div className="overflow-hidden rounded-lg">
               <div className="aspect-square bg-funeral-teal relative">
                 <Image
-                  src="https://cdn.fredonbytes.com/lily-funeral-wreath-making-process.webp"
+                  src="https://cdn.fredonbytes.com/luxurious-red-anthurium-and-rose-wreath-with-berry-accent.webp"
                   alt={tAbout("companyDescription")}
                   fill
                   className="object-cover"
@@ -179,15 +180,15 @@ export default async function AboutPage({ params }: AboutPageProps) {
                 <div className="text-center">
                   <div className="w-24 h-24 mx-auto mb-4  flex items-center justify-center">
                     <Image
-              src="/logo.svg"
-              alt="Vence a kvety logo"
-              width={256}
-              height={100}
-              className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
-              priority
-              placeholder="blur"
-              blurDataURL={BLUR_PLACEHOLDERS.logo}
-            />
+                      src="/logo.svg"
+                      alt="Vence a kvety logo"
+                      width={256}
+                      height={100}
+                      className="w-48 h-auto sm:w-56 md:w-64 lg:w-72"
+                      priority
+                      placeholder="blur"
+                      blurDataURL={BLUR_PLACEHOLDERS.logo}
+                    />
                   </div>
                   <h2 className="text-lg font-medium mb-2  text-amber-200">
                     {tAbout("commitmentTitle")}

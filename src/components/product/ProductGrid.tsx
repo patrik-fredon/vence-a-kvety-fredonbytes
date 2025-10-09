@@ -434,7 +434,7 @@ const ProductGrid = React.memo(function ProductGrid({
             onFiltersChange={handleFiltersChange}
             onSortChange={handleSortChange}
             locale={locale}
-            />
+          />
         </div>
 
         {/* Results Summary and View Switcher */}
@@ -484,198 +484,198 @@ const ProductGrid = React.memo(function ProductGrid({
           </div>
         </div>
         <div className="container mx-auto px-4 max-w-7xl">
-        {/* Error State */}
-        {error && (
-          <div className="bg-white border border-red-200 rounded-lg p-6 text-center mb-8 shadow-sm">
-            <p className="text-red-600 mb-2 font-medium">{tCommon("error")}</p>
-            <p className="text-sm text-red-500 mb-4">{error}</p>
-            <Button variant="outline" onClick={() => fetchProducts(1, true)} size="sm">
-              {t("tryAgain")}
-            </Button>
-          </div>
-        )}
-
-        {/* Products Grid */}
-        {!error &&
-          (displayedProducts.length > 0 ? (
-            <div
-              className={cn(
-                viewMode === "grid"
-                  ? // Optimized 4-column responsive grid layout
-                    "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4"
-                  : // List view: 2 products per row, responsive
-                    "grid mb-12 grid-cols-1 gap-6 md:grid-cols-2"
-              )}
-            >
-              {displayedProducts.map((product, index) => (
-                <ProductCard
-                  key={product.id}
-                  product={product}
-                  locale={locale}
-                  onAddToCart={handleAddToCart}
-                  {...(onQuickView && { onQuickView })}
-                  featured={product.featured || imageOptimization.shouldPrioritize(index)} // Prioritize first 8 products
-                  variant={viewMode === "list" ? "list" : "grid"}
-                  className="transition-all duration-200 hover:scale-[1.02] bg-funeral-gold corner-clip-container border-2 border-amber-200"
-                />
-              ))}
-            </div>
-          ) : !loading ? (
-            // No Results State
-            <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-amber-100">
-              <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
-                <svg
-                  className="w-8 h-8 text-amber-300"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={1.5}
-                    d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
-                  />
-                </svg>
-              </div>
-              <h3 className="text-xl font-semibold text-amber-100 mb-3">{t("noResults")}</h3>
-              <p className="text-amber-100 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
-              <Button
-                variant="outline"
-                size="lg"
-                onClick={() => {
-                  setFilters({});
-                  setSortOptions({ field: "created_at", direction: "desc" });
-                }}
-                className="px-6"
-              >
-                {t("clearFilters")}
+          {/* Error State */}
+          {error && (
+            <div className="bg-white border border-red-200 rounded-lg p-6 text-center mb-8 shadow-sm">
+              <p className="text-red-600 mb-2 font-medium">{tCommon("error")}</p>
+              <p className="text-sm text-red-500 mb-4">{error}</p>
+              <Button variant="outline" onClick={() => fetchProducts(1, true)} size="sm">
+                {t("tryAgain")}
               </Button>
             </div>
-          ) : null)}
-        {/* Loading State */}
-        {loading && (
-          <div className="space-y-6">
-            {displayedProducts.length === 0 ? (
+          )}
+
+          {/* Products Grid */}
+          {!error &&
+            (displayedProducts.length > 0 ? (
               <div
                 className={cn(
-                  "grid",
-                  // Use same 4-column responsive grid for loading skeleton
-                  "grid-cols-1 gap-4",
-                  "sm:grid-cols-2 sm:gap-6",
-                  "lg:grid-cols-4 lg:gap-8",
-                  "xl:grid-cols-4"
+                  viewMode === "grid"
+                    ? // Optimized 4-column responsive grid layout
+                      "grid mb-12 grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4 xl:grid-cols-4"
+                    : // List view: 2 products per row, responsive
+                      "grid mb-12 grid-cols-1 gap-6 md:grid-cols-2"
                 )}
               >
-                <ProductGridSkeleton count={INITIAL_PRODUCTS_COUNT} />
-              </div>
-            ) : (
-              <div className="flex justify-center py-8">
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  <span className="text-sm text-amber-100">{tCommon("loading")}</span>
-                </div>
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Load More Button */}
-        {(canLoadMore || hasMore) && displayedProducts.length > 0 && (
-          <div className="flex flex-col items-center pt-12 pb-4 space-y-4">
-            {/* Progress indicator */}
-            {totalProducts > 0 && (
-              <div className="text-center mb-4">
-                <p className="text-sm text-amber-100 mb-2">
-                  {t("showingOf", {
-                    showing: displayedProducts.length,
-                    total: totalProducts,
-                  })}
-                </p>
-                <div className="w-64 bg-amber-100 rounded-full h-2 mx-auto">
-                  <div
-                    className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
-                    style={{
-                      width: `${Math.min((displayedProducts.length / totalProducts) * 100, 100)}%`,
-                    }}
-                    role="progressbar"
-                    aria-valuenow={displayedProducts.length}
-                    aria-valuemin={0}
-                    aria-valuemax={totalProducts}
-                    aria-label={t("loadingProgress")}
+                {displayedProducts.map((product, index) => (
+                  <ProductCard
+                    key={product.id}
+                    product={product}
+                    locale={locale}
+                    onAddToCart={handleAddToCart}
+                    {...(onQuickView && { onQuickView })}
+                    featured={product.featured || imageOptimization.shouldPrioritize(index)} // Prioritize first 8 products
+                    variant={viewMode === "list" ? "list" : "grid"}
+                    className="transition-all duration-200 hover:scale-[1.02] bg-funeral-gold corner-clip-container border-2 border-amber-200"
                   />
-                </div>
+                ))}
               </div>
-            )}
-
-            <Button
-              variant="outline"
-              onClick={(event) => {
-                event.preventDefault();
-                loadMore();
-              }}
-              size="lg"
-              disabled={loading}
-              loading={loading}
-              loadingText={t("loadingMore")}
-              className={cn(
-                "px-8 py-3 min-w-[200px] font-medium",
-                "bg-white border-2 border-primary text-primary",
-                "hover:bg-amber-100-light hover:border-primary hover:text-primary",
-                "focus:ring-2 focus:ring-primary-light focus:ring-offset-2",
-                "disabled:opacity-50 disabled:cursor-not-allowed",
-                "transition-all duration-200 ease-in-out",
-                "shadow-sm hover:shadow-md"
-              )}
-              aria-describedby={loadMoreDescriptionId}
-            >
-              {loading ? (
-                <div className="flex items-center space-x-2">
-                  <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
-                  <span>{t("loadingMore")}</span>
-                </div>
-              ) : (
-                <div className="flex items-center space-x-2">
-                  <span>{t("loadMore")}</span>
+            ) : !loading ? (
+              // No Results State
+              <div className="text-center py-20 bg-white rounded-xl shadow-sm border border-amber-100">
+                <div className="w-20 h-20 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-6">
                   <svg
-                    className="w-4 h-4 transition-transform group-hover:translate-y-0.5"
+                    className="w-8 h-8 text-amber-300"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
-                    aria-hidden="true"
                   >
                     <path
                       strokeLinecap="round"
                       strokeLinejoin="round"
-                      strokeWidth={2}
-                      d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                      strokeWidth={1.5}
+                      d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
                     />
                   </svg>
                 </div>
-              )}
-            </Button>
-
-            {/* Accessible description */}
-            <p
-              id={loadMoreDescriptionId}
-              className="text-xs text-amber-100 text-center max-w-md sr-only"
-            >
-              {canLoadMore
-                ? t("loadMoreFromCurrent", {
-                    remaining: products.length - displayedCount,
-                  })
-                : t("loadMoreFromServer")}
-            </p>
-
-            {/* Show when no more products available */}
-            {!(hasMore || canLoadMore) && (
-              <div className="text-center py-4">
-                <p className="text-sm text-amber-100 font-medium">{t("allProductsLoaded")}</p>
+                <h3 className="text-xl font-semibold text-amber-100 mb-3">{t("noResults")}</h3>
+                <p className="text-amber-100 mb-8 max-w-md mx-auto">{t("noResultsDescription")}</p>
+                <Button
+                  variant="outline"
+                  size="lg"
+                  onClick={() => {
+                    setFilters({});
+                    setSortOptions({ field: "created_at", direction: "desc" });
+                  }}
+                  className="px-6"
+                >
+                  {t("clearFilters")}
+                </Button>
               </div>
-            )}
-          </div>
+            ) : null)}
+          {/* Loading State */}
+          {loading && (
+            <div className="space-y-6">
+              {displayedProducts.length === 0 ? (
+                <div
+                  className={cn(
+                    "grid",
+                    // Use same 4-column responsive grid for loading skeleton
+                    "grid-cols-1 gap-4",
+                    "sm:grid-cols-2 sm:gap-6",
+                    "lg:grid-cols-4 lg:gap-8",
+                    "xl:grid-cols-4"
+                  )}
+                >
+                  <ProductGridSkeleton count={INITIAL_PRODUCTS_COUNT} />
+                </div>
+              ) : (
+                <div className="flex justify-center py-8">
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <span className="text-sm text-amber-100">{tCommon("loading")}</span>
+                  </div>
+                </div>
+              )}
+            </div>
           )}
-          </div>
+
+          {/* Load More Button */}
+          {(canLoadMore || hasMore) && displayedProducts.length > 0 && (
+            <div className="flex flex-col items-center pt-12 pb-4 space-y-4">
+              {/* Progress indicator */}
+              {totalProducts > 0 && (
+                <div className="text-center mb-4">
+                  <p className="text-sm text-amber-100 mb-2">
+                    {t("showingOf", {
+                      showing: displayedProducts.length,
+                      total: totalProducts,
+                    })}
+                  </p>
+                  <div className="w-64 bg-amber-100 rounded-full h-2 mx-auto">
+                    <div
+                      className="bg-primary h-2 rounded-full transition-all duration-300 ease-out"
+                      style={{
+                        width: `${Math.min((displayedProducts.length / totalProducts) * 100, 100)}%`,
+                      }}
+                      role="progressbar"
+                      aria-valuenow={displayedProducts.length}
+                      aria-valuemin={0}
+                      aria-valuemax={totalProducts}
+                      aria-label={t("loadingProgress")}
+                    />
+                  </div>
+                </div>
+              )}
+
+              <Button
+                variant="outline"
+                onClick={(event) => {
+                  event.preventDefault();
+                  loadMore();
+                }}
+                size="lg"
+                disabled={loading}
+                loading={loading}
+                loadingText={t("loadingMore")}
+                className={cn(
+                  "px-8 py-3 min-w-[200px] font-medium",
+                  "bg-white border-2 border-primary text-primary",
+                  "hover:bg-amber-100-light hover:border-primary hover:text-primary",
+                  "focus:ring-2 focus:ring-primary-light focus:ring-offset-2",
+                  "disabled:opacity-50 disabled:cursor-not-allowed",
+                  "transition-all duration-200 ease-in-out",
+                  "shadow-sm hover:shadow-md"
+                )}
+                aria-describedby={loadMoreDescriptionId}
+              >
+                {loading ? (
+                  <div className="flex items-center space-x-2">
+                    <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin" />
+                    <span>{t("loadingMore")}</span>
+                  </div>
+                ) : (
+                  <div className="flex items-center space-x-2">
+                    <span>{t("loadMore")}</span>
+                    <svg
+                      className="w-4 h-4 transition-transform group-hover:translate-y-0.5"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                      aria-hidden="true"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={2}
+                        d="M19 14l-7 7m0 0l-7-7m7 7V3"
+                      />
+                    </svg>
+                  </div>
+                )}
+              </Button>
+
+              {/* Accessible description */}
+              <p
+                id={loadMoreDescriptionId}
+                className="text-xs text-amber-100 text-center max-w-md sr-only"
+              >
+                {canLoadMore
+                  ? t("loadMoreFromCurrent", {
+                      remaining: products.length - displayedCount,
+                    })
+                  : t("loadMoreFromServer")}
+              </p>
+
+              {/* Show when no more products available */}
+              {!(hasMore || canLoadMore) && (
+                <div className="text-center py-4">
+                  <p className="text-sm text-amber-100 font-medium">{t("allProductsLoaded")}</p>
+                </div>
+              )}
+            </div>
+          )}
+        </div>
       </div>
     </section>
   );

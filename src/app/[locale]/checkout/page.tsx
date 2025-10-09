@@ -38,5 +38,42 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     redirect(`/${locale}/cart`);
   }
 
-  return <CheckoutPageClient locale={locale} initialCart={cart} />;
+  // Check if delivery method is selected (Requirement 2.7)
+  const hasDeliveryMethod = cart.items.some((item) =>
+    item.customizations?.some((c) => c.optionId === "delivery_method")
+  );
+
+  if (!hasDeliveryMethod) {
+    // Redirect back to cart with error message
+    const { redirect } = await import("next/navigation");
+    redirect(`/${locale}/cart?error=delivery_method_required`);
+  }
+
+  // Create embedded checkout session
+  const { createEmbeddedCheckoutSession } = await import("@/lib/stripe/embedded-checkout");
+
+  let checkoutSession: { clientSecret: string; sessionId: string } | null = null;
+  let sessionError: string | null = null;
+
+  try {
+    checkoutSession = await createEmbeddedCheckoutSession({
+      cartItems: cart.items,
+      locale: locale as "cs" | "en",
+      metadata: {
+        itemCount: cart.items.length.toString(),
+      },
+    });
+  } catch (error) {
+    console.error("Failed to create checkout session:", error);
+    sessionError = error instanceof Error ? error.message : "Failed to create checkout session";
+  }
+
+  return (
+    <CheckoutPageClient
+      locale={locale}
+      initialCart={cart}
+      checkoutSession={checkoutSession}
+      sessionError={sessionError}
+    />
+  );
 }

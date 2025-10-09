@@ -11,13 +11,13 @@
 
 import { useEffect, useState } from "react";
 import {
+  type BrowserInfo,
+  type BrowserTestSuite,
   detectBrowser,
-  runAllTests,
   generateTestReport,
   getBrowserRecommendations,
   logBrowserInfo,
-  type BrowserInfo,
-  type BrowserTestSuite,
+  runAllTests,
 } from "@/lib/utils/cross-browser-testing";
 
 export function CrossBrowserTestRunner() {

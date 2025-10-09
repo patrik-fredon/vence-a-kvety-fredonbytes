@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 
-import { useEffect, useState, useCallback } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { OrderStatus } from "@/types/order";
 
@@ -21,6 +21,8 @@ interface OrderSummary {
   customerName: string;
   deliveryDate?: string;
   paymentMethod?: string;
+  deliveryMethod?: "delivery" | "pickup";
+  pickupLocation?: string;
   items: Array<{
     productName: string;
     quantity: number;
@@ -55,7 +57,7 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
       const data: OrderHistoryResponse = await response.json();
 
       if (data.success && data.orders) {
-        // Transform orders for display
+        // Transform orders for display (Requirement 9.6)
         const transformedOrders: OrderSummary[] = data.orders.map((order: any) => ({
           id: order.id,
           orderNumber: order.customer_info?.orderNumber || order.id.slice(-8).toUpperCase(),
@@ -69,6 +71,8 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
           customerName: `${order.customer_info?.firstName || ""} ${
             order.customer_info?.lastName || ""
           }`.trim(),
+          deliveryMethod: order.delivery_method,
+          pickupLocation: order.pickup_location,
           items: order.items?.items || [],
         }));
         setAllOrders(transformedOrders);
@@ -467,7 +471,30 @@ export function OrderHistory({ locale }: OrderHistoryProps) {
                                 ? "položek"
                                 : "items"}
                           </p>
-                          {order.deliveryAddress && (
+                          {/* Display delivery method (Requirement 9.6) */}
+                          {order.deliveryMethod && (
+                            <>
+                              <span className="mx-2">•</span>
+                              <p>
+                                {order.deliveryMethod === "delivery"
+                                  ? locale === "cs"
+                                    ? "Doručení"
+                                    : "Delivery"
+                                  : locale === "cs"
+                                    ? "Osobní odběr"
+                                    : "Pickup"}
+                              </p>
+                            </>
+                          )}
+                          {/* Show pickup location for pickup orders (Requirement 9.6) */}
+                          {order.deliveryMethod === "pickup" && order.pickupLocation && (
+                            <>
+                              <span className="mx-2">•</span>
+                              <p>{order.pickupLocation}</p>
+                            </>
+                          )}
+                          {/* Show delivery address for delivery orders */}
+                          {order.deliveryMethod === "delivery" && order.deliveryAddress && (
                             <>
                               <span className="mx-2">•</span>
                               <p>{order.deliveryAddress}</p>

@@ -711,7 +711,9 @@ function generateFallbackConfiguration(
               );
               if (textIndex >= 0 && fallbackCustomizations[textIndex]) {
                 fallbackCustomizations[textIndex].choiceIds = [predefinedChoice.id];
-                delete fallbackCustomizations[textIndex].customValue;
+                if (fallbackCustomizations[textIndex].customValue !== undefined) {
+                  delete fallbackCustomizations[textIndex].customValue;
+                }
                 hasChanges = true;
               }
             }

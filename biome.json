@@ -97,7 +97,7 @@
         "noBannedTypes": "error",
         "noUselessTypeConstraint": "error",
         "useArrowFunction": "error",
-        "useLiteralKeys": "error",
+        "useLiteralKeys": "off",
         "useOptionalChain": "error",
         "useSimplifiedLogicExpression": "error"
       },

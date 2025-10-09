@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
-import { LazyAdminDashboard } from "@/lib/config/dynamic-imports";
 import { auth } from "@/lib/auth/config";
+import { LazyAdminDashboard } from "@/lib/config/dynamic-imports";
 import { userUtils } from "@/lib/supabase/utils";
 
 export const metadata: Metadata = {

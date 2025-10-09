@@ -1,16 +1,16 @@
 /**
  * Blur Placeholder Utility
- * 
+ *
  * Generates optimized blur placeholders for images to prevent layout shift
  * and improve perceived performance.
- * 
+ *
  * @module blur-placeholder
  */
 
 /**
  * Generate a blur data URL for image placeholders
  * Uses a gradient with funeral-appropriate colors from the design system
- * 
+ *
  * @param width - Width of the placeholder (default: 8)
  * @param height - Height of the placeholder (default: 8)
  * @param colors - Optional custom colors for the gradient
@@ -46,15 +46,12 @@ export function generateBlurDataURL(
 
 /**
  * Generate a blur data URL with funeral-appropriate teal/amber colors
- * 
+ *
  * @param width - Width of the placeholder (default: 8)
  * @param height - Height of the placeholder (default: 8)
  * @returns Base64-encoded SVG data URL
  */
-export function generateFuneralBlurDataURL(
-  width: number = 8,
-  height: number = 8
-): string {
+export function generateFuneralBlurDataURL(width: number = 8, height: number = 8): string {
   return generateBlurDataURL(width, height, {
     start: "#134e4a", // teal-900
     end: "#0f766e", // teal-700
@@ -63,15 +60,12 @@ export function generateFuneralBlurDataURL(
 
 /**
  * Generate a blur data URL with gold/amber colors for hero images
- * 
+ *
  * @param width - Width of the placeholder (default: 8)
  * @param height - Height of the placeholder (default: 8)
  * @returns Base64-encoded SVG data URL
  */
-export function generateGoldBlurDataURL(
-  width: number = 8,
-  height: number = 8
-): string {
+export function generateGoldBlurDataURL(width: number = 8, height: number = 8): string {
   return generateBlurDataURL(width, height, {
     start: "#fef3c7", // amber-100
     end: "#fde68a", // amber-200

@@ -239,11 +239,7 @@ export const orderUtils = {
       .range(offset, offset + limit - 1);
   },
 
-  async updateOrderStatus(
-    orderId: string,
-    status: string,
-    internalNotes?: string
-  ) {
+  async updateOrderStatus(orderId: string, status: string, internalNotes?: string) {
     const updateData: any = {
       status,
       updated_at: new Date().toISOString(),
