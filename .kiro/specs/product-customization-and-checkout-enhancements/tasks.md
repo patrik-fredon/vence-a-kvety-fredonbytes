@@ -171,8 +171,8 @@
     - Validate metadata
     - _Requirements: 5.8_
 
-- [ ] 10. Order Management Updates
-  - [ ] 10.1 Update order creation to include delivery method
+- [-] 10. Order Management Updates
+  - [-] 10.1 Update order creation to include delivery method
     - Store delivery method in order record
     - Store pickup location if applicable
     - Include delivery method in order metadata

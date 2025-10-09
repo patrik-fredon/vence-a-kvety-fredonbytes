@@ -9,7 +9,7 @@ import { getServerCart } from "@/lib/services/cart-server-service";
 import { rateLimit } from "@/lib/utils/rate-limit";
 import { validateCSRFMiddleware } from "@/lib/security/csrf";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 
 interface CreateSessionRequest {
   locale: "cs" | "en";

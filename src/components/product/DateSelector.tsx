@@ -20,7 +20,6 @@ export function DateSelector({
   minDaysFromNow = 3,
   maxDaysFromNow = 30,
   locale,
-  header,
   className,
 }: DateSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -119,9 +118,7 @@ export function DateSelector({
     }
   };
 
-  const monthNames = locale === "cs"
-    ? ["Leden", "Únor", "Březen", "Duben", "Květen", "Červen", "Červenec", "Srpen", "Září", "Říjen", "Listopad", "Prosinec"]
-    : ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
 
   const weekdayNames = locale === "cs"
     ? ["Po", "Út", "St", "Čt", "Pá", "So", "Ne"]

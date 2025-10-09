@@ -82,29 +82,7 @@ export function ProductCustomizer({
     );
   };
 
-  // Get appropriate header for an option based on its type
-  const getOptionHeader = (option: CustomizationOption): string => {
-    // Check if any choice requires calendar (date selection)
-    const hasCalendar = option.choices.some((choice) => choice.requiresCalendar);
-    if (hasCalendar) {
-      return t("orderDate");
-    }
 
-    // Map option types to translation keys
-    switch (option.type) {
-      case "ribbon":
-      case "ribbon_color":
-      case "ribbon_text":
-        return t("ribbon");
-      case "size":
-        return t("size");
-      default:
-        // Fall back to option name
-        return typeof option.name === "object"
-          ? option.name[locale as keyof typeof option.name] || option.name.cs
-          : option.name;
-    }
-  };
 
   // Render a choice button for selection options
   const renderChoice = (option: CustomizationOption, choice: CustomizationChoice) => {

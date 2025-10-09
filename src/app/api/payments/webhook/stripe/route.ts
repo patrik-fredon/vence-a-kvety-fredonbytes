@@ -7,6 +7,9 @@ import { type NextRequest, NextResponse } from "next/server";
 // import { PaymentService } from "@/lib/payments";
 import { createServerClient } from "@/lib/supabase/server";
 import { getRequiredEnvVar } from "@/lib/config/env-validation";
+import { createOrder } from "@/lib/services/order-service";
+import { getDeliveryMethodFromCart, getPickupLocation } from "@/lib/utils/delivery-method-utils";
+import type { CartItem } from "@/types/cart";
 
 export async function POST(request: NextRequest) {
   try {
@@ -77,6 +80,10 @@ export async function POST(request: NextRequest) {
     let result: any = null;
 
     switch (event.type) {
+      case "checkout.session.completed":
+        result = await handleCheckoutSessionCompleted(event.data.object);
+        break;
+
       case "payment_intent.succeeded":
         result = await handlePaymentSuccess(event.data.object);
         break;
