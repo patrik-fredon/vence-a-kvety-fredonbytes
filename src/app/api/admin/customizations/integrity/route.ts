@@ -76,7 +76,10 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       applicationLevel: integrityResult,
       databaseLevel: dbIntegrityResult || null,
-      dbError: dbError && typeof dbError === "object" && "message" in dbError ? (dbError as { message: string }).message : null,
+      dbError:
+        dbError && typeof dbError === "object" && "message" in dbError
+          ? (dbError as { message: string }).message
+          : null,
     });
   } catch (error) {
     console.error("Customization integrity check failed:", error);
@@ -174,7 +177,10 @@ export async function POST(request: NextRequest) {
       results.operations.push({
         type: "fix_integrity_issues",
         result: dbFixResult || null,
-        error: dbFixError && typeof dbFixError === "object" && "message" in dbFixError ? (dbFixError as { message: string }).message : null,
+        error:
+          dbFixError && typeof dbFixError === "object" && "message" in dbFixError
+            ? (dbFixError as { message: string }).message
+            : null,
       });
     }
 

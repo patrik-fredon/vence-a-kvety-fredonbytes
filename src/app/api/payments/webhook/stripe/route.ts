@@ -247,17 +247,27 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
     }
 
     // Extract delivery method from metadata (Requirement 9.1, 9.2)
-    const deliveryMethod = metadata.deliveryMethod as "delivery" | "pickup" | undefined;
+    const deliveryMethod = metadata["deliveryMethod"] as "delivery" | "pickup" | undefined;
     const pickupLocation = deliveryMethod === "pickup" ? getPickupLocation() : undefined;
 
     // Get customer info from session
     const customerDetails = session.customer_details || {};
-    const customerEmail = customerDetails.email || "";
-    const customerName = customerDetails.name || "";
-    const customerPhone = customerDetails.phone || "";
+    const customerEmail = (customerDetails as { email?: string | null }).email || "";
+    const customerName = (customerDetails as { name?: string | null }).name || "";
+    const customerPhone = (customerDetails as { phone?: string | null }).phone || "";
 
     // Get address from session
-    const address = customerDetails.address || {};
+    const address =
+      (
+        customerDetails as {
+          address?: {
+            line1?: string | null;
+            city?: string | null;
+            postal_code?: string | null;
+            country?: string | null;
+          } | null;
+        }
+      ).address || {};
     const deliveryAddress =
       deliveryMethod === "delivery"
         ? {
@@ -338,7 +348,7 @@ async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) 
 }
 
 async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata?.orderId;
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -369,7 +379,7 @@ async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
  * Handle failed payment
  */
 async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata?.orderId;
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -399,7 +409,7 @@ async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
  * Handle payment requiring action (e.g., 3D Secure)
  */
 async function handleRequiresAction(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata?.orderId;
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -427,7 +437,7 @@ async function handleRequiresAction(paymentIntent: Stripe.PaymentIntent) {
  * Handle canceled payment
  */
 async function handlePaymentCanceled(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata?.orderId;
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");
@@ -455,7 +465,7 @@ async function handlePaymentCanceled(paymentIntent: Stripe.PaymentIntent) {
  * Handle payment processing
  */
 async function handlePaymentProcessing(paymentIntent: Stripe.PaymentIntent) {
-  const orderId = paymentIntent.metadata?.orderId;
+  const orderId = paymentIntent.metadata?.["orderId"];
 
   if (!orderId) {
     console.error("[Webhook] Order ID not found in payment intent metadata");

@@ -59,7 +59,7 @@ interface WebVitalsTrackerProps {
 export function WebVitalsTracker({
   debug = performanceConfig.development?.debug?.showWebVitalsOverlay ?? false,
   endpoint = performanceConfig.monitoring?.webVitalsTracking?.endpoint ??
-    "/api/monitoring/web-vitals",
+  "/api/monitoring/web-vitals",
   sampleRate = performanceConfig.monitoring?.webVitalsTracking?.sampleRate ?? 0.1,
   autoReport = performanceConfig.monitoring?.webVitalsTracking?.autoReport ?? true,
   onMetric,
@@ -185,11 +185,14 @@ export function WebVitalsTracker({
             queueMetricForReporting(webVitalsMetric);
           }
 
-          console.log(`📊 Web Vitals - ${metric.name}:`, {
-            value: metric.value,
-            rating: metric.rating,
-            delta: metric.delta,
-          });
+          // Only log in development and limit frequency
+          if (process.env['NODE_ENV'] === "development" && debug) {
+            console.log(`📊 Web Vitals - ${metric.name}:`, {
+              value: metric.value,
+              rating: metric.rating,
+              delta: metric.delta,
+            });
+          }
         };
 
         // Initialize all Web Vitals metrics
@@ -229,13 +232,13 @@ export function WebVitalsTracker({
 
     window.addEventListener("beforeunload", handleBeforeUnload);
 
-    // Periodic reporting
+    // Periodic reporting - increased to 5 minutes to reduce frequency
     const reportingInterval = setInterval(() => {
       if (metricsQueue.current.length > 0) {
         sendMetricsToServer([...metricsQueue.current]);
         metricsQueue.current = [];
       }
-    }, 30000); // Report every 30 seconds
+    }, 300000); // Report every 5 minutes (300000ms)
 
     return () => {
       window.removeEventListener("beforeunload", handleBeforeUnload);
