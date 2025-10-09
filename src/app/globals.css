@@ -124,8 +124,19 @@
     font-feature-settings: "cv11", "ss01";
     font-variation-settings: "opsz" 32;
     line-height: 1.6;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  }
+
+  /* Font smoothing - separated to avoid Firefox warnings */
+  @supports (-webkit-font-smoothing: antialiased) {
+    body {
+      -webkit-font-smoothing: antialiased;
+    }
+  }
+
+  @supports (-moz-osx-font-smoothing: grayscale) {
+    body {
+      -moz-osx-font-smoothing: grayscale;
+    }
   }
 }
 
@@ -135,6 +146,19 @@
    With fallback values for browser compatibility
    ============================================ */
 @layer utilities {
+  /* Font smoothing utilities with browser-specific support */
+  @supports (-webkit-font-smoothing: antialiased) {
+    .antialiased {
+      -webkit-font-smoothing: antialiased;
+    }
+  }
+
+  @supports (-moz-osx-font-smoothing: grayscale) {
+    .antialiased {
+      -moz-osx-font-smoothing: grayscale;
+    }
+  }
+
   /* Hide scrollbar for carousel */
   .scrollbar-hide {
     -ms-overflow-style: none;
@@ -200,7 +224,7 @@ p {
   outline-offset: 2px;
 }
 .container {
-  filter: drop-shadow(0px 10px 5px rgba(0, 0, 0, 0.5));
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
 }
 .clip-corners {
   clip-path: polygon(
@@ -213,7 +237,8 @@ p {
     0% calc(100% - 15px),
     0% 15px
   );
-  filter: drop-shadow(0 0 5px #555);
+  /* Using box-shadow instead of drop-shadow for better Firefox performance */
+  box-shadow: 0 0 8px rgba(85, 85, 85, 0.6);
 }
 
 /* Corner clipping container for product cards */
@@ -228,7 +253,8 @@ p {
     20px 100%,
     0 calc(100% - 20px)
   );
-  filter: drop-shadow(0 0 5px #555);
+  /* Using box-shadow instead of drop-shadow for better Firefox performance */
+  box-shadow: 0 0 8px rgba(85, 85, 85, 0.6);
 }
 /* High contrast mode styles */
 @media (prefers-contrast: high), (forced-colors: active) {

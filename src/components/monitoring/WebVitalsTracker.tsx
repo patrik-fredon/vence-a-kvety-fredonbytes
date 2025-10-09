@@ -153,6 +153,12 @@ export function WebVitalsTracker({
         // Dynamic import to avoid SSR issues
         webVitalsModule = await import("web-vitals");
 
+        // Check if PerformanceObserver is supported (Firefox compatibility)
+        if (typeof PerformanceObserver === 'undefined') {
+          console.warn('PerformanceObserver not supported in this browser');
+          return;
+        }
+
         // Handle each Web Vitals metric
         const handleMetric = (metric: any) => {
           const webVitalsMetric: WebVitalsMetric = {
@@ -195,26 +201,38 @@ export function WebVitalsTracker({
           }
         };
 
-        // Initialize all Web Vitals metrics
+        // Initialize all Web Vitals metrics with error handling for unsupported entry types
+        // Wrap each metric initialization to catch Firefox-specific errors
+        const safeInitMetric = (metricFn: any, metricName: string) => {
+          try {
+            metricFn(handleMetric);
+          } catch (error) {
+            // Silently handle unsupported entry types (e.g., 'longtask' in Firefox)
+            if (process.env['NODE_ENV'] === 'development') {
+              console.debug(`${metricName} metric not supported:`, error);
+            }
+          }
+        };
+
         if (webVitalsModule.onCLS) {
-          webVitalsModule.onCLS(handleMetric);
+          safeInitMetric(webVitalsModule.onCLS, 'CLS');
         }
         if (webVitalsModule.onINP) {
-          webVitalsModule.onINP(handleMetric);
+          safeInitMetric(webVitalsModule.onINP, 'INP');
         }
         if (webVitalsModule.onFCP) {
-          webVitalsModule.onFCP(handleMetric);
+          safeInitMetric(webVitalsModule.onFCP, 'FCP');
         }
         if (webVitalsModule.onLCP) {
-          webVitalsModule.onLCP(handleMetric);
+          safeInitMetric(webVitalsModule.onLCP, 'LCP');
         }
         if (webVitalsModule.onTTFB) {
-          webVitalsModule.onTTFB(handleMetric);
+          safeInitMetric(webVitalsModule.onTTFB, 'TTFB');
         }
 
         // Also handle FID for backwards compatibility
         if (webVitalsModule.onFID) {
-          webVitalsModule.onFID(handleMetric);
+          safeInitMetric(webVitalsModule.onFID, 'FID');
         }
       } catch (error) {
         console.warn("Web Vitals library not available:", error);

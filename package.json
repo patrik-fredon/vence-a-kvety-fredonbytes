@@ -69,6 +69,13 @@
     "tailwind-merge": "^2.5.4",
     "web-vitals": "^5.1.0"
   },
+  "browserslist": [
+    "> 0.5%",
+    "last 2 versions",
+    "Firefox ESR",
+    "not dead",
+    "not IE 11"
+  ],
   "devDependencies": {
     "@biomejs/biome": "2.2.0",
     "@svgr/webpack": "^8.1.0",

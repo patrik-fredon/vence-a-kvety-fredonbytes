@@ -60,14 +60,15 @@ class ErrorLogger {
     // Add to local storage
     this.addToLocalStorage(errorLog);
 
-    // Send to server if not in development
-    if (process.env["NODE_ENV"] !== "development") {
-      try {
-        await this.sendToServer(errorLog);
-      } catch (serverError) {
-        console.error("Failed to send error to server:", serverError);
-      }
-    }
+    // TODO: Server-side error logging disabled until database schema is implemented
+    // Uncomment when monitoring tables are created in the database
+    // if (process.env["NODE_ENV"] !== "development") {
+    //   try {
+    //     await this.sendToServer(errorLog);
+    //   } catch (serverError) {
+    //     console.error("Failed to send error to server:", serverError);
+    //   }
+    // }
 
     // Log to console in development with safe stack trace handling
     if (process.env["NODE_ENV"] === "development") {
@@ -265,7 +266,10 @@ class ErrorLogger {
 
   /**
    * Send error to server for centralized logging
+   * @deprecated Temporarily disabled until database schema is implemented
+   * TODO: Re-enable when monitoring tables are created
    */
+  // @ts-expect-error - Method preserved for future implementation
   private async sendToServer(errorLog: ErrorLog) {
     try {
       const response = await fetch(this.apiEndpoint, {

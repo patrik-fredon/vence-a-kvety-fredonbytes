@@ -3,34 +3,28 @@ import { NextResponse } from "next/server";
 // Removed unused ErrorLogRequest interface
 
 export async function POST() {
-  try {
-    // TODO: Monitoring tables not yet implemented in database schema
-    // This endpoint is disabled until the required tables are created
-    return NextResponse.json({
-      success: true,
-      message: "Error logging is not yet implemented - database schema incomplete",
-      status: "disabled",
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error("Error in error logging endpoint:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
+  // Fast return - endpoint not implemented
+  // TODO: Implement when monitoring database tables are created
+  return NextResponse.json(
+    {
+      success: false,
+      error: "Not implemented",
+      message: "Error logging endpoint is disabled - database schema not yet implemented",
+    },
+    { status: 501 }
+  );
 }
 
 export async function GET() {
-  try {
-    // TODO: Monitoring tables not yet implemented in database schema
-    // This endpoint is disabled until the required tables are created
-    return NextResponse.json({
-      success: true,
-      message: "Error retrieval is not yet implemented - database schema incomplete",
-      status: "disabled",
+  // Fast return - endpoint not implemented
+  // TODO: Implement when monitoring database tables are created
+  return NextResponse.json(
+    {
+      success: false,
+      error: "Not implemented",
+      message: "Error retrieval endpoint is disabled - database schema not yet implemented",
       data: [],
-      timestamp: new Date().toISOString(),
-    });
-  } catch (error) {
-    console.error("Error in error logs fetch:", error);
-    return NextResponse.json({ error: "Internal server error" }, { status: 500 });
-  }
+    },
+    { status: 501 }
+  );
 }
