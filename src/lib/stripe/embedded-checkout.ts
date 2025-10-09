@@ -6,6 +6,7 @@
 import { createHash } from "crypto";
 import type { CartItem } from "@/types/cart";
 import type { Product } from "@/types/product";
+import { getDeliveryMethodFromCart } from "@/lib/utils/delivery-method-utils";
 import { stripe } from "@/lib/payments/stripe";
 import { getStripePriceId, getStripeProductId } from "./price-selector";
 import { createClient } from "@/lib/supabase/server";
@@ -251,6 +252,9 @@ export async function createEmbeddedCheckoutSession(
     })
   );
 
+  // Extract delivery method from cart items (Requirement 9.1, 9.2)
+  const deliveryMethod = getDeliveryMethodFromCart(cartItems);
+
   // Create checkout session with retry logic
   try {
     const session = await withRetry(
@@ -267,6 +271,7 @@ export async function createEmbeddedCheckoutSession(
           ...(customerId && { customer: customerId }),
           metadata: {
             locale,
+            deliveryMethod: deliveryMethod || "delivery",
             ...metadata,
           },
           return_url: `${process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000"}/${locale}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
