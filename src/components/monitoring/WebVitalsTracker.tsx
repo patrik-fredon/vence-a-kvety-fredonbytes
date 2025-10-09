@@ -14,7 +14,7 @@ const performanceConfig = {
   },
   development: {
     debug: {
-      showWebVitalsOverlay: process.env.NODE_ENV === "development",
+      showWebVitalsOverlay: process.env['NODE_ENV'] === "development",
     },
   },
   monitoring: {
@@ -80,6 +80,23 @@ export function WebVitalsTracker({
       reportedMetrics.current.add(metricKey);
     }
   }, []);
+
+  /**
+   * Get or create session ID
+   */
+  const getSessionId = () => {
+    // Check if we're in the browser environment
+    if (typeof window === "undefined" || typeof sessionStorage === "undefined") {
+      return null; // Return null for server-side rendering
+    }
+
+    let sessionId = sessionStorage.getItem("webvitals_session_id");
+    if (!sessionId) {
+      sessionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+      sessionStorage.setItem("webvitals_session_id", sessionId);
+    }
+    return sessionId;
+  };
 
   /**
    * Send metrics to server
@@ -225,23 +242,6 @@ export function WebVitalsTracker({
       clearInterval(reportingInterval);
     };
   }, [sampleRate, autoReport, onMetric, queueMetricForReporting, sendMetricsToServer]);
-
-  /**
-   * Get or create session ID
-   */
-  const getSessionId = () => {
-    // Check if we're in the browser environment
-    if (typeof window === "undefined" || typeof sessionStorage === "undefined") {
-      return null; // Return null for server-side rendering
-    }
-
-    let sessionId = sessionStorage.getItem("webvitals_session_id");
-    if (!sessionId) {
-      sessionId = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
-      sessionStorage.setItem("webvitals_session_id", sessionId);
-    }
-    return sessionId;
-  };
 
   /**
    * Get rating color

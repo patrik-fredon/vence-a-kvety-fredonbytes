@@ -427,7 +427,7 @@ async function createStripePaymentSession(
 ): Promise<string> {
   try {
     // Initialize payment through our payment API
-    const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000";
+    const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000";
     const response = await fetch(`${baseUrl}/api/payments/initialize`, {
       method: "POST",
       headers: {

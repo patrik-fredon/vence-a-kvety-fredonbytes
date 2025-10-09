@@ -74,8 +74,8 @@ export function RibbonConfigurator({
           existing.choiceIds = [choiceId];
           // Clear custom value when selecting predefined option (not custom)
           const selectedChoice = option.choices?.find((c) => c.id === choiceId);
-          if (!selectedChoice?.allowCustomInput && existing.customValue) {
-            existing.customValue = undefined;
+          if (!selectedChoice?.allowCustomInput && existing.customValue !== undefined) {
+            delete existing.customValue;
           }
         } else {
           // Multiple selection - toggle

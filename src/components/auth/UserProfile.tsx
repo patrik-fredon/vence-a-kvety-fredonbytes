@@ -15,7 +15,7 @@ export function UserProfile() {
   const { updateProfile, loading: updateLoading, error: updateError } = useUpdateProfile();
   const { signOut, loading: signOutLoading } = useSignOut();
   const params = useParams();
-  const locale = (params?.locale as string) || "cs";
+  const locale = (params?.['locale'] as string) || "cs";
 
   const [formData, setFormData] = useState({
     name: "",
@@ -152,11 +152,10 @@ export function UserProfile() {
                 <button
                   key={tab}
                   onClick={() => setActiveTab(tab)}
-                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${
-                    activeTab === tab
-                      ? "border-amber-600 text-amber-600"
-                      : "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
-                  }`}
+                  className={`py-4 px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors duration-200 ${activeTab === tab
+                    ? "border-amber-600 text-amber-600"
+                    : "border-transparent text-stone-500 hover:text-stone-700 hover:border-stone-300"
+                    }`}
                 >
                   {getTabLabel(tab)}
                 </button>

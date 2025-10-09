@@ -27,10 +27,10 @@ export class EmailService {
 
   constructor() {
     this.config = {
-      apiKey: process.env.RESEND_API_KEY,
-      fromEmail: process.env.FROM_EMAIL || "objednavky@pohrebni-vence.cz",
-      fromName: process.env.FROM_NAME || "Pohřební věnce",
-      baseUrl: process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000",
+      apiKey: process.env['RESEND_API_KEY'],
+      fromEmail: process.env['FROM_EMAIL'] || "objednavky@pohrebni-vence.cz",
+      fromName: process.env['FROM_NAME'] || "Pohřební věnce",
+      baseUrl: process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000",
     };
   }
 
@@ -50,7 +50,7 @@ export class EmailService {
       const textContent = this.generateOrderConfirmationText(data);
 
       // If Resend is configured, use it; otherwise log for development
-      if (this.config.apiKey && process.env.NODE_ENV === "production") {
+      if (this.config.apiKey && process.env['NODE_ENV'] === "production") {
         return await this.sendWithResend({
           to: customerEmail,
           subject,
@@ -88,7 +88,7 @@ export class EmailService {
       const htmlContent = this.generateStatusUpdateHTML({ ...data, newStatus });
       const textContent = this.generateStatusUpdateText({ ...data, newStatus });
 
-      if (this.config.apiKey && process.env.NODE_ENV === "production") {
+      if (this.config.apiKey && process.env['NODE_ENV'] === "production") {
         return await this.sendWithResend({
           to: customerEmail,
           subject,

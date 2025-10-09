@@ -172,7 +172,7 @@ export async function warmApiCache(
 
   for (const endpoint of endpoints) {
     try {
-      const url = new URL(endpoint.path, process.env.NEXTAUTH_URL || "http://localhost:3000");
+      const url = new URL(endpoint.path, process.env['NEXTAUTH_URL'] || "http://localhost:3000");
 
       if (endpoint.params) {
         Object.entries(endpoint.params).forEach(([key, value]) => {

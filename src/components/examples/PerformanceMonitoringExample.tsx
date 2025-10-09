@@ -196,7 +196,7 @@ export const PerformanceMonitoringExample: React.FC = () => {
       </div>
 
       {/* Development Tools */}
-      {process.env.NODE_ENV === "development" && (
+      {process.env['NODE_ENV'] === "development" && (
         <div className="mt-8 p-4 bg-yellow-50 border border-yellow-200 rounded-lg">
           <h3 className="text-lg font-semibold mb-2">Development Tools</h3>
           <p className="text-sm text-gray-600 mb-4">

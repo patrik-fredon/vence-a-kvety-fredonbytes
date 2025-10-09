@@ -37,6 +37,11 @@
     "test:load": "npx tsx scripts/load-test-checkout.ts",
     "test:cache": "npx tsx scripts/test-cache-performance.ts",
     "test:checkout": "npm run verify:stripe && npm run test:cache && npm run test:load",
+    "test:checkout:flow": "npx tsx scripts/test-checkout-flow.ts",
+    "test:checkout:cart": "npx tsx scripts/test-checkout-flow.ts --test=cart",
+    "test:checkout:stripe": "npx tsx scripts/test-checkout-flow.ts --test=stripe",
+    "test:checkout:order": "npx tsx scripts/test-checkout-flow.ts --test=order",
+    "test:checkout:integration": "npx tsx scripts/test-checkout-flow.ts --test=integration",
     "validate:final": "npm run type-check && npm run lint && npm run build && npm run verify:stripe"
   },
   "dependencies": {

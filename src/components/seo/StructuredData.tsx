@@ -36,7 +36,7 @@ export function generateProductStructuredData(
   },
   _locale: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -82,7 +82,7 @@ export function generateBreadcrumbStructuredData(
   breadcrumbs: Array<{ name: string; url: string }>,
   locale: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -100,7 +100,7 @@ export function generateBreadcrumbStructuredData(
  * Generate organization structured data
  */
 export function generateOrganizationStructuredData(locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -133,7 +133,7 @@ export function generateOrganizationStructuredData(locale: string) {
  * Generate website structured data
  */
 export function generateWebsiteStructuredData(locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -161,7 +161,7 @@ export function generateWebsiteStructuredData(locale: string) {
  * Generate LocalBusiness structured data
  */
 export function generateLocalBusinessStructuredData(locale: string) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -290,7 +290,7 @@ export function generateItemListStructuredData(
   }>,
   listName: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",
@@ -335,7 +335,7 @@ export function generateCollectionPageStructuredData(
   },
   locale: string
 ) {
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || "https://pohrebni-vence.cz";
+  const baseUrl = process.env['NEXT_PUBLIC_BASE_URL'] || "https://pohrebni-vence.cz";
 
   return {
     "@context": "https://schema.org",

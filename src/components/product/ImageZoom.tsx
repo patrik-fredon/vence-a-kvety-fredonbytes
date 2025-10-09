@@ -40,6 +40,40 @@ export function ImageZoom({ images, initialIndex, isOpen, onClose, productName }
     }
   }, [initialIndex, isOpen]);
 
+  const handlePrevious = useCallback(() => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+    setCurrentIndex((prev) => {
+      const newIndex = prev > 0 ? prev - 1 : images.length - 1;
+      const currentImage = images[newIndex];
+      announce(
+        `Image ${newIndex + 1} of ${images.length}: ${currentImage?.alt || productName}`,
+        "polite"
+      );
+      return newIndex;
+    });
+
+    setTimeout(() => setIsAnimating(false), 300);
+  }, [images, productName, announce, isAnimating]);
+
+  const handleNext = useCallback(() => {
+    if (isAnimating) return;
+
+    setIsAnimating(true);
+    setCurrentIndex((prev) => {
+      const newIndex = prev < images.length - 1 ? prev + 1 : 0;
+      const currentImage = images[newIndex];
+      announce(
+        `Image ${newIndex + 1} of ${images.length}: ${currentImage?.alt || productName}`,
+        "polite"
+      );
+      return newIndex;
+    });
+
+    setTimeout(() => setIsAnimating(false), 300);
+  }, [images, productName, announce, isAnimating]);
+
   // Keyboard navigation
   useEffect(() => {
     if (!isOpen) return;
@@ -77,40 +111,6 @@ export function ImageZoom({ images, initialIndex, isOpen, onClose, productName }
     }
     return undefined;
   }, [isOpen]);
-
-  const handlePrevious = useCallback(() => {
-    if (isAnimating) return;
-
-    setIsAnimating(true);
-    setCurrentIndex((prev) => {
-      const newIndex = prev > 0 ? prev - 1 : images.length - 1;
-      const currentImage = images[newIndex];
-      announce(
-        `Image ${newIndex + 1} of ${images.length}: ${currentImage?.alt || productName}`,
-        "polite"
-      );
-      return newIndex;
-    });
-
-    setTimeout(() => setIsAnimating(false), 300);
-  }, [images, productName, announce, isAnimating]);
-
-  const handleNext = useCallback(() => {
-    if (isAnimating) return;
-
-    setIsAnimating(true);
-    setCurrentIndex((prev) => {
-      const newIndex = prev < images.length - 1 ? prev + 1 : 0;
-      const currentImage = images[newIndex];
-      announce(
-        `Image ${newIndex + 1} of ${images.length}: ${currentImage?.alt || productName}`,
-        "polite"
-      );
-      return newIndex;
-    });
-
-    setTimeout(() => setIsAnimating(false), 300);
-  }, [images, productName, announce, isAnimating]);
 
   const handleBackdropClick = (event: React.MouseEvent) => {
     if (event.target === event.currentTarget) {

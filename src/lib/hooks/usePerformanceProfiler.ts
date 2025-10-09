@@ -80,7 +80,7 @@ export const usePerformanceProfiler = (
 ): UsePerformanceProfilerResult => {
   const {
     componentName,
-    enabled = process.env.NODE_ENV === "development",
+    enabled = process.env['NODE_ENV'] === "development",
     trackMemory = true,
     trackNetwork = true,
     sampleRate = 1.0,
@@ -143,7 +143,7 @@ export const usePerformanceProfiler = (
     performanceMonitor.startTracking();
     lighthouseOptimization.startOptimizationTracking();
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.log(`🔬 [PerformanceProfiler] Started profiling: ${componentName}`);
     }
   }, [enabled, sampleRate, componentName, performanceMonitor, lighthouseOptimization]);
@@ -223,7 +223,7 @@ export const usePerformanceProfiler = (
     setProfile(newProfile);
 
     // Log profile summary
-    if (process.env.NODE_ENV === "development") {
+    if (process.env['NODE_ENV'] === "development") {
       console.log(`📊 [PerformanceProfiler] Profile complete for ${componentName}:`, {
         profilingDuration: `${profilingDuration.toFixed(2)}ms`,
         averageRenderTime: `${renderMetrics.averageRenderTime.toFixed(2)}ms`,

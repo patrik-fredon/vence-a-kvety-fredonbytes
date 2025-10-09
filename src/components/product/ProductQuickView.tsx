@@ -40,7 +40,7 @@ export const ProductQuickView = React.memo(function ProductQuickView({
 
   const imagePerformance = useImagePerformance(currentImage?.url || "", {
     enabled: true,
-    logMetrics: process.env.NODE_ENV === "development",
+    logMetrics: process.env['NODE_ENV'] === "development",
   });
 
   // Refs for animation
