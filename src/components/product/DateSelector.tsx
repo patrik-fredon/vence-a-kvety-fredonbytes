@@ -16,7 +16,7 @@ interface DateSelectorProps {
 export function DateSelector({
   value,
   onChange,
-  minDaysFromNow = 2,
+  minDaysFromNow = 3,
   maxDaysFromNow = 30,
   locale,
   className,
@@ -72,7 +72,7 @@ export function DateSelector({
     const minDateOnly = new Date(minDate.getFullYear(), minDate.getMonth(), minDate.getDate());
     const maxDateOnly = new Date(maxDate.getFullYear(), maxDate.getMonth(), maxDate.getDate());
 
-    return dateOnly >= minDateOnly && dateOnly <= maxDateOnly;
+    return dateOnly > minDateOnly && dateOnly < maxDateOnly;
   };
 
   // Check if date is selected
