@@ -1,12 +1,12 @@
 # Implementation Plan
 
-- [ ] 1. Database Setup and Migrations
+- [x] 1. Database Setup and Migrations
   - Create `webhook_events` table for event deduplication and tracking
   - Add indexes for efficient querying by event_id and created_at
   - Test migration in development environment
   - _Requirements: 1.2, 1.6_
 
-- [ ] 2. Email Infrastructure Setup
+- [-] 2. Email Infrastructure Setup
   - [ ] 2.1 Create SMTP client configuration
     - Implement `src/lib/email/smtp-client.ts` with nodemailer
     - Configure Supabase SMTP connection with TLS
