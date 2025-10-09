@@ -66,7 +66,7 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(function Button
       "high-contrast:border-ButtonText high-contrast:hover:bg-Highlight high-contrast:hover:text-HighlightText"
     ),
     outline: cn(
-      "border border-amber-300 text-amber-300 bg-funeral-gold",
+      "border border-amber-300 text-teal-800 bg-funeral-gold",
       "hover:bg-amber-50 active:bg-amber-100",
       "shadow-sm hover:shadow-md transition-all duration-200",
       "focus-visible:ring-amber-300",

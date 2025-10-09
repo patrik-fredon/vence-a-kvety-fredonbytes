@@ -1,62 +1,43 @@
 "use client";
 
-import { CalendarIcon, ClockIcon, MapPinIcon, UserIcon } from "@heroicons/react/24/outline";
+import { MapPinIcon, TruckIcon, UserIcon } from "@heroicons/react/24/outline";
 import { useTranslations } from "next-intl";
-import { useEffect, useState } from "react";
-import { DeliveryCalendar } from "@/components/delivery/DeliveryCalendar";
-import { DeliveryOptionsSelector } from "@/components/delivery/DeliveryOptionsSelector";
+import { useMemo } from "react";
 import { Input } from "@/components/ui/Input";
-import type { DeliveryTimeSlot, DeliveryUrgency } from "@/types/delivery";
+import type { CartItem } from "@/types/cart";
 import type { DeliveryInfo } from "@/types/order";
 
 interface DeliveryInfoStepProps {
   deliveryInfo: Partial<DeliveryInfo>;
   errors?: Partial<Record<keyof DeliveryInfo, string>>;
   onChange: (deliveryInfo: Partial<DeliveryInfo>) => void;
-  locale: string;
+  locale?: string;
+  cartItems?: CartItem[];
 }
 
 export function DeliveryInfoStep({
   deliveryInfo,
   errors = {},
   onChange,
-  locale,
+  cartItems = [],
 }: DeliveryInfoStepProps) {
   const t = useTranslations("checkout");
-  const tDelivery = useTranslations("delivery");
+  const tProduct = useTranslations("product");
 
-  const [showCalendar, setShowCalendar] = useState(false);
-  const [availableDates, setAvailableDates] = useState<Date[]>([]);
-
-  // Load available delivery dates when address or urgency changes
-  useEffect(() => {
-    const loadAvailableDates = async () => {
-      if (deliveryInfo.address?.postalCode && deliveryInfo.urgency) {
-        try {
-          const response = await fetch("/api/delivery/calendar", {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify({
-              postalCode: deliveryInfo.address.postalCode,
-              urgency: deliveryInfo.urgency,
-            }),
-          });
-
-          const data = await response.json();
-          if (data.success && data.calendar) {
-            const dates = data.calendar.availableDates
-              .filter((avail: any) => avail.available)
-              .map((avail: any) => new Date(avail.date));
-            setAvailableDates(dates);
-          }
-        } catch (error) {
-          console.error("Error loading available dates:", error);
-        }
+  // Extract delivery method from cart items
+  const deliveryMethod = useMemo(() => {
+    for (const item of cartItems) {
+      const deliveryCustomization = item.customizations?.find(
+        (c) => c.optionId === "delivery_method"
+      );
+      if (deliveryCustomization && deliveryCustomization.choiceIds.length > 0) {
+        const choiceId = deliveryCustomization.choiceIds[0];
+        if (choiceId === "delivery_address") return "delivery";
+        if (choiceId === "personal_pickup") return "pickup";
       }
-    };
-
-    loadAvailableDates();
-  }, [deliveryInfo.address?.postalCode, deliveryInfo.urgency]);
+    }
+    return null;
+  }, [cartItems]);
 
   const handleAddressChange = (field: string, value: string) => {
     const currentAddress = deliveryInfo.address || {
@@ -77,40 +58,18 @@ export function DeliveryInfoStep({
     });
   };
 
-  const handleUrgencyChange = (urgency: DeliveryUrgency) => {
-    onChange({
-      ...deliveryInfo,
-      urgency,
-    });
-  };
-
-  const handleDateSelect = (date: Date) => {
-    onChange({
-      ...deliveryInfo,
-      preferredDate: date,
-    });
-    setShowCalendar(false);
-  };
-
-  const handleTimeSlotChange = (timeSlot: DeliveryTimeSlot) => {
-    onChange({
-      ...deliveryInfo,
-      preferredTimeSlot: timeSlot,
-    });
-  };
-
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-2">
+        <h2 className="text-elegant text-2xl font-semibold text-amber-300 mb-2">
           {t("deliveryInfo")}
         </h2>
-        <p className="text-neutral-600">Zadejte adresu doručení a vyberte způsob dodání.</p>
+        <p className="text-amber-100">Zadejte adresu doručení a kontaktní údaje.</p>
       </div>
 
       {/* Delivery Address */}
       <div className="space-y-6">
-        <h3 className="text-lg font-semibold text-neutral-800 flex items-center">
+        <h3 className="text-lg font-semibold text-amber-100 flex items-center">
           <MapPinIcon className="w-5 h-5 mr-2" />
           Adresa doručení
         </h3>
@@ -118,7 +77,7 @@ export function DeliveryInfoStep({
         <div className="grid grid-cols-1 gap-4">
           {/* Street Address */}
           <div>
-            <label htmlFor="street" className="block text-sm font-medium text-neutral-700 mb-2">
+            <label htmlFor="street" className="block text-sm font-medium text-amber-100 mb-2">
               Ulice a číslo popisné *
             </label>
             <Input
@@ -135,7 +94,7 @@ export function DeliveryInfoStep({
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             {/* City */}
             <div>
-              <label htmlFor="city" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label htmlFor="city" className="block text-sm font-medium text-amber-100 mb-2">
                 Město *
               </label>
               <Input
@@ -153,7 +112,7 @@ export function DeliveryInfoStep({
             <div>
               <label
                 htmlFor="postalCode"
-                className="block text-sm font-medium text-neutral-700 mb-2"
+                className="block text-sm font-medium text-amber-100 mb-2"
               >
                 PSČ *
               </label>
@@ -170,14 +129,14 @@ export function DeliveryInfoStep({
 
             {/* Country */}
             <div>
-              <label htmlFor="country" className="block text-sm font-medium text-neutral-700 mb-2">
+              <label htmlFor="country" className="block text-sm font-medium text-amber-100 mb-2">
                 Země *
               </label>
               <select
                 id="country"
                 value={deliveryInfo.address?.country || "CZ"}
                 onChange={(e) => handleAddressChange("country", e.target.value)}
-                className="w-full px-4 py-3 border border-neutral-300 rounded-lg focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
+                className="w-full px-4 py-3 border border-amber-100 rounded-lg bg-amber-100 text-teal-800 "
                 required
               >
                 <option value="CZ">Česká republika</option>
@@ -188,106 +147,14 @@ export function DeliveryInfoStep({
         </div>
       </div>
 
-      {/* Delivery Options */}
-      {deliveryInfo.address?.postalCode && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-neutral-800 flex items-center">
-            <ClockIcon className="w-5 h-5 mr-2" />
-            Způsob doručení
-          </h3>
-
-          <DeliveryOptionsSelector
-            address={deliveryInfo.address}
-            selectedUrgency={deliveryInfo.urgency || "standard"}
-            onUrgencyChange={handleUrgencyChange}
-          />
-        </div>
-      )}
-
-      {/* Delivery Date Selection */}
-      {deliveryInfo.urgency && availableDates.length > 0 && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-neutral-800 flex items-center">
-            <CalendarIcon className="w-5 h-5 mr-2" />
-            Datum doručení
-          </h3>
-
-          <div>
-            <button
-              type="button"
-              onClick={() => setShowCalendar(!showCalendar)}
-              className="w-full md:w-auto px-4 py-3 border border-neutral-300 rounded-lg text-left hover:border-primary-500 focus:ring-2 focus:ring-primary-500 focus:border-primary-500"
-            >
-              {deliveryInfo.preferredDate ? (
-                <span className="flex items-center">
-                  <CalendarIcon className="w-5 h-5 mr-2 text-primary-600" />
-                  {deliveryInfo.preferredDate.toLocaleDateString(
-                    locale === "cs" ? "cs-CZ" : "en-US",
-                    {
-                      weekday: "long",
-                      year: "numeric",
-                      month: "long",
-                      day: "numeric",
-                    }
-                  )}
-                </span>
-              ) : (
-                <span className="flex items-center text-neutral-500">
-                  <CalendarIcon className="w-5 h-5 mr-2" />
-                  Vyberte datum doručení
-                </span>
-              )}
-            </button>
-
-            {showCalendar && (
-              <div className="mt-4 p-4 border border-neutral-200 rounded-lg bg-white">
-                <DeliveryCalendar
-                  selectedDate={deliveryInfo.preferredDate}
-                  onDateSelect={handleDateSelect}
-                  urgency={deliveryInfo.urgency}
-                  postalCode={deliveryInfo.address?.postalCode}
-                />
-              </div>
-            )}
-          </div>
-        </div>
-      )}
-
-      {/* Time Slot Selection */}
-      {deliveryInfo.preferredDate && (
-        <div className="space-y-4">
-          <h3 className="text-lg font-semibold text-neutral-800">Čas doručení</h3>
-
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {(["morning", "afternoon", "evening", "anytime"] as DeliveryTimeSlot[]).map((slot) => (
-              <button
-                key={slot}
-                type="button"
-                onClick={() => handleTimeSlotChange(slot)}
-                className={`
-                  p-4 border-2 rounded-lg text-left transition-colors
-                  ${
-                    deliveryInfo.preferredTimeSlot === slot
-                      ? "border-primary-500 bg-primary-50 text-primary-900"
-                      : "border-neutral-200 bg-white text-neutral-900 hover:border-neutral-300"
-                  }
-                `}
-              >
-                <div className="font-medium">{tDelivery(`calendar.${slot}`)}</div>
-              </button>
-            ))}
-          </div>
-        </div>
-      )}
-
       {/* Recipient Information (Optional) */}
       <div className="space-y-4">
-        <h3 className="text-lg font-semibold text-neutral-800 flex items-center">
+        <h3 className="text-lg font-semibold text-amber-100 flex items-center">
           <UserIcon className="w-5 h-5 mr-2" />
           Informace o příjemci (volitelné)
         </h3>
 
-        <p className="text-sm text-neutral-600">
+        <p className="text-sm text-amber-100">
           Pokud se liší od objednavatele, zadejte kontakt na příjemce.
         </p>
 
@@ -295,7 +162,7 @@ export function DeliveryInfoStep({
           <div>
             <label
               htmlFor="recipientName"
-              className="block text-sm font-medium text-neutral-700 mb-2"
+              className="block text-sm font-medium text-amber-100 mb-2"
             >
               Jméno příjemce
             </label>
@@ -312,7 +179,7 @@ export function DeliveryInfoStep({
           <div>
             <label
               htmlFor="recipientPhone"
-              className="block text-sm font-medium text-neutral-700 mb-2"
+              className="block text-sm font-medium text-amber-100 mb-2"
             >
               Telefon příjemce
             </label>
@@ -332,7 +199,7 @@ export function DeliveryInfoStep({
       <div>
         <label
           htmlFor="specialInstructions"
-          className="block text-sm font-medium text-neutral-700 mb-2"
+          className="block text-sm font-medium text-amber-100 mb-2"
         >
           Speciální pokyny pro doručení (volitelné)
         </label>
@@ -344,19 +211,95 @@ export function DeliveryInfoStep({
           rows={3}
           className={`
             w-full px-4 py-3 border rounded-lg resize-none
-            focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            ${
-              errors.specialInstructions
-                ? "border-red-300 bg-red-50"
-                : "border-neutral-300 bg-white"
+
+            ${errors.specialInstructions
+              ? "border-red-300 bg-red-50"
+              : "border-amber-100 bg-amber-100 text-teal-800"
             }
           `}
         />
         {errors.specialInstructions && (
           <p className="mt-1 text-sm text-red-600">{errors.specialInstructions}</p>
         )}
-        <p className="mt-1 text-xs text-neutral-500">Maximálně 500 znaků</p>
+        <p className="mt-1 text-xs text-amber-100">Maximálně 500 znaků</p>
       </div>
+
+      {/* Delivery Method Info Box */}
+      {deliveryMethod && (
+        <div className="bg-teal-800 border border-amber-200 rounded-lg p-4">
+          <div className="flex items-start gap-3">
+            <div className="flex-shrink-0">
+              <TruckIcon className="w-6 h-6 text-amber-300" />
+            </div>
+            <div className="flex-1">
+              <h3 className="text-sm font-medium text-amber-300 mb-2">
+                Vybraný způsob doručení
+              </h3>
+
+              {deliveryMethod === "delivery" ? (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-semibold text-amber-100">
+                      {tProduct("deliveryMethod.delivery.label")}
+                    </span>
+                    <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                      {tProduct("deliveryMethod.delivery.badge")}
+                    </span>
+                  </div>
+                  <p className="text-sm text-amber-100">
+                    {tProduct("deliveryMethod.delivery.description")}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-2">
+                  <div className="flex items-center gap-2">
+                    <span className="text-base font-semibold text-amber-100">
+                      {tProduct("deliveryMethod.pickup.label")}
+                    </span>
+                  </div>
+                  <p className="text-sm text-amber-100 mb-2">
+                    {tProduct("deliveryMethod.pickup.description")}
+                  </p>
+                  <div className="text-sm text-amber-100 space-y-1 bg-teal-900 rounded p-3 border border-amber-300">
+                    <p className="font-medium text-amber-300">
+                      {tProduct("deliveryMethod.pickup.address")}
+                    </p>
+                    <p>{tProduct("deliveryMethod.pickup.hours")}</p>
+                  </div>
+                </div>
+              )}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Info Box - No delivery method selected */}
+      {!deliveryMethod && (
+        <div className="bg-amber-100 border border-amber-300 rounded-lg p-4">
+          <div className="flex items-start">
+            <div className="flex-shrink-0">
+              <svg
+                className="w-5 h-5 text-amber-600 mt-0.5"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fillRule="evenodd"
+                  d="M8.257 3.099c.765-1.36 2.722-1.36 3.486 0l5.58 9.92c.75 1.334-.213 2.98-1.742 2.98H4.42c-1.53 0-2.493-1.646-1.743-2.98l5.58-9.92zM11 13a1 1 0 11-2 0 1 1 0 012 0zm-1-8a1 1 0 00-1 1v3a1 1 0 002 0V6a1 1 0 00-1-1z"
+                  clipRule="evenodd"
+                />
+              </svg>
+            </div>
+            <div className="ml-3">
+              <h3 className="text-sm font-medium text-amber-800">Upozornění</h3>
+              <p className="mt-1 text-sm text-amber-700">
+                Způsob doručení nebyl vybrán. Vraťte se prosím do košíku a vyberte způsob doručení
+                při konfiguraci produktu.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -83,8 +83,10 @@
   --border: var(--color-stone-200, #e7e5e4);
   --input: var(--color-stone-100, #f5f5f4);
   --ring: var(--color-stone-500, #78716c);
-  --fb-blue: #2563eb; /* Example color, adjust as needed */
-  --fb-yellow: #fbbf24; /* Example color, adjust as needed */
+  --fb-blue: #2563eb;
+  /* Example color, adjust as needed */
+  --fb-yellow: #fbbf24;
+  /* Example color, adjust as needed */
 
   /* Card colors with fallbacks */
   --card: #ffffff;
@@ -107,17 +109,15 @@
   }
 
   body {
-    background: var(
-      --gradient-funeral-gold,
-      radial-gradient(circle at center, #d2ac47,#f7ef8a, #ae8625),
-    );
+    background: var(--gradient-funeral-gold,
+        radial-gradient(circle at center, #d2ac47, #f7ef8a, #ae8625),
+      );
     /* Fallback */
-    background: var(
-      --gradient-funeral-gold,
-      radial-gradient(circle at center, #d2ac47,#f7ef8a, #ae8625),
+    background: var(--gradient-funeral-gold,
+        radial-gradient(circle at center, #d2ac47, #f7ef8a, #ae8625),
 
 
-    );
+      );
     background-attachment: fixed;
     color: var(--foreground);
     font-family: "Palatino", serif;
@@ -146,6 +146,7 @@
    With fallback values for browser compatibility
    ============================================ */
 @layer utilities {
+
   /* Font smoothing utilities with browser-specific support */
   @supports (-webkit-font-smoothing: antialiased) {
     .antialiased {
@@ -176,13 +177,15 @@
   }
 
   .bg-funeral-gold {
-    background: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47); /* Fallback */
+    background: linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47);
+    /* Fallback */
     background: var(--gradient-funeral-gold, linear-gradient(to right, #ae8625, #f7ef8a, #d2ac47));
   }
 
   .bg-funeral-teal {
     background: var(--color-teal-800);
   }
+
   .text-fb-blue {
     color: var(--fb-blue);
   }
@@ -223,41 +226,45 @@ p {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
 }
+
 .container {
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.5), 0 4px 6px -2px rgba(0, 0, 0, 0.3);
+
+  -moz-filter: drop-shadow(0px 10px 5px rgba(0, 0, 0, 0.8));
+  -webkit-filter: drop-shadow(0px 10px 5px rgba(0, 0, 0, 0.8));
+  filter: drop-shadow(0px 10px 5px rgba(0, 0, 0, 0.8));
+
 }
+
 .clip-corners {
-  clip-path: polygon(
-    15px 0%,
-    calc(100% - 15px) 0%,
-    100% 15px,
-    100% calc(100% - 15px),
-    calc(100% - 15px) 100%,
-    15px 100%,
-    0% calc(100% - 15px),
-    0% 15px
-  );
+  clip-path: polygon(15px 0%,
+      calc(100% - 15px) 0%,
+      100% 15px,
+      100% calc(100% - 15px),
+      calc(100% - 15px) 100%,
+      15px 100%,
+      0% calc(100% - 15px),
+      0% 15px);
   /* Using box-shadow instead of drop-shadow for better Firefox performance */
   box-shadow: 0 0 8px rgba(85, 85, 85, 0.6);
 }
 
 /* Corner clipping container for product cards */
 .corner-clip-container {
-  clip-path: polygon(
-    0 20px,
-    20px 0,
-    calc(100% - 20px) 0,
-    100% 20px,
-    100% calc(100% - 20px),
-    calc(100% - 20px) 100%,
-    20px 100%,
-    0 calc(100% - 20px)
-  );
+  clip-path: polygon(0 20px,
+      20px 0,
+      calc(100% - 20px) 0,
+      100% 20px,
+      100% calc(100% - 20px),
+      calc(100% - 20px) 100%,
+      20px 100%,
+      0 calc(100% - 20px));
   /* Using box-shadow instead of drop-shadow for better Firefox performance */
   box-shadow: 0 0 8px rgba(85, 85, 85, 0.6);
 }
+
 /* High contrast mode styles */
-@media (prefers-contrast: high), (forced-colors: active) {
+@media (prefers-contrast: high),
+(forced-colors: active) {
   :root {
     --color-stone-600: ButtonText;
     --color-stone-700: ButtonText;
@@ -396,6 +403,7 @@ p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 1;
+  line-clamp: 1;
 }
 
 .line-clamp-2 {
@@ -403,6 +411,7 @@ p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 2;
+  line-clamp: 2;
 }
 
 .line-clamp-3 {
@@ -410,6 +419,7 @@ p {
   display: -webkit-box;
   -webkit-box-orient: vertical;
   -webkit-line-clamp: 3;
+  line-clamp: 3;
 }
 
 /* Animation utilities */
@@ -421,6 +431,7 @@ p {
   from {
     opacity: 0;
   }
+
   to {
     opacity: 1;
   }
@@ -435,6 +446,7 @@ p {
     transform: translateY(10px);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -451,10 +463,12 @@ p {
     opacity: 0;
     transform: translateY(20px) scale(0.95);
   }
+
   50% {
     opacity: 0.7;
     transform: translateY(10px) scale(0.98);
   }
+
   100% {
     opacity: 1;
     transform: translateY(0) scale(1);
@@ -486,6 +500,7 @@ p {
     opacity: 0;
     transform: translateY(30px);
   }
+
   to {
     opacity: 1;
     transform: translateY(0);
@@ -494,6 +509,7 @@ p {
 
 /* Respect reduced motion preferences */
 @media (prefers-reduced-motion: reduce) {
+
   .animate-gentle-fade,
   .animate-fade-in-up,
   .animate-fade-in-up-delay-1,

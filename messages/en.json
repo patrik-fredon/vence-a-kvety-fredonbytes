@@ -64,6 +64,11 @@
     "flowers": "Flowers",
     "ribbon": "Ribbon",
     "message": "Message",
+    "color": {
+      "title": "Wreath Color",
+      "description": "Select the primary flower color for the wreath",
+      "required": "Please select a wreath color"
+    },
     "customization": "Customization",
     "category": "Category",
     "uncategorized": "Uncategorized",

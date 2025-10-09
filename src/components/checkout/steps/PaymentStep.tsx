@@ -1,93 +1,50 @@
 "use client";
 
 import { CreditCardIcon, ShieldCheckIcon } from "@heroicons/react/24/outline";
+import dynamic from "next/dynamic";
 import { useTranslations } from "next-intl";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { LoadingSpinner } from "@/components/ui/LoadingSpinner";
 import type { PaymentMethod } from "@/types/order";
+
+// Lazy load StripeEmbeddedCheckout for better performance
+const StripeEmbeddedCheckout = dynamic(
+  () =>
+    import("@/components/payments/StripeEmbeddedCheckout").then(
+      (mod) => mod.StripeEmbeddedCheckout
+    ),
+  {
+    loading: () => (
+      <div className="flex items-center justify-center py-8">
+        <LoadingSpinner size="md" />
+      </div>
+    ),
+    ssr: false,
+  }
+);
 
 interface PaymentStepProps {
   paymentMethod?: PaymentMethod;
   onChange: (paymentMethod: PaymentMethod) => void;
   locale: string;
-  orderId?: string;
-  amount?: number;
-  currency?: string;
-  customerEmail?: string;
   onPaymentSuccess?: (result: any) => void;
   onPaymentError?: (error: string) => void;
-}
-
-/**
- * Wrapper component for payment form with Suspense and Error Boundary
- * Implements progressive enhancement for better performance
- */
-function PaymentFormWrapper({
-  paymentMethod,
-  orderId,
-  amount,
-  currency,
-  customerEmail,
-  locale,
-  onPaymentSuccess,
-  onPaymentError,
-}: {
-  paymentMethod: PaymentMethod;
-  orderId: string;
-  amount: number;
-  currency: string;
-  customerEmail: string;
-  locale: string;
-  onPaymentSuccess?: (result: any) => void;
-  onPaymentError?: (error: string) => void;
-}) {
-  const { Suspense, lazy } = require("react");
-  const { PaymentErrorBoundary } = require("@/components/checkout/PaymentErrorBoundary");
-
-  // Lazy load the payment form client component
-  const PaymentFormClient = lazy(() =>
-    import("@/components/checkout/PaymentFormClient").then((mod) => ({
-      default: mod.PaymentFormClient,
-    }))
-  );
-
-  return (
-    <PaymentErrorBoundary>
-      <Suspense
-        fallback={
-          <div className="flex items-center justify-center py-8">
-            <LoadingSpinner size="md" className="mr-3" />
-            <span className="text-neutral-600">Načítání platebního formuláře...</span>
-          </div>
-        }
-      >
-        <PaymentFormClient
-          paymentMethod={paymentMethod}
-          orderId={orderId}
-          amount={amount}
-          currency={currency}
-          customerEmail={customerEmail}
-          locale={locale}
-          onPaymentSuccess={onPaymentSuccess}
-          onPaymentError={onPaymentError}
-        />
-      </Suspense>
-    </PaymentErrorBoundary>
-  );
 }
 
 export function PaymentStep({
   paymentMethod,
   onChange,
   locale,
-  orderId,
-  amount,
-  currency = "czk",
-  customerEmail,
   onPaymentSuccess,
   onPaymentError,
 }: PaymentStepProps) {
   const t = useTranslations("checkout");
+  const [checkoutSession, setCheckoutSession] = useState<{
+    clientSecret: string;
+    sessionId: string;
+  } | null>(null);
+  const [sessionError, setSessionError] = useState<string | null>(null);
+  const [isLoadingSession, setIsLoadingSession] = useState(false);
 
   // Auto-select Stripe as the only payment method
   useEffect(() => {
@@ -95,6 +52,81 @@ export function PaymentStep({
       onChange("stripe");
     }
   }, [paymentMethod, onChange]);
+
+  // Create Stripe Embedded Checkout session when payment method is selected
+  useEffect(() => {
+    const createCheckoutSession = async () => {
+      if (paymentMethod === "stripe" && !checkoutSession && !isLoadingSession) {
+        setIsLoadingSession(true);
+        setSessionError(null);
+
+        try {
+          // Import the checkout session creator
+          const { createEmbeddedCheckoutSession } = await import(
+            "@/lib/stripe/embedded-checkout"
+          );
+
+          // Get cart items from the API
+          const cartResponse = await fetch("/api/cart");
+          const cartData = await cartResponse.json();
+
+          if (!cartData.success || !cartData.items || cartData.items.length === 0) {
+            throw new Error("Cart is empty or could not be loaded");
+          }
+
+          // Create the checkout session
+          const session = await createEmbeddedCheckoutSession({
+            cartItems: cartData.items,
+            locale: locale as "cs" | "en",
+            metadata: {
+              itemCount: cartData.items.length.toString(),
+            },
+          });
+
+          setCheckoutSession(session);
+        } catch (error) {
+          console.error("Failed to create checkout session:", error);
+          setSessionError(
+            error instanceof Error ? error.message : "Failed to create checkout session"
+          );
+        } finally {
+          setIsLoadingSession(false);
+        }
+      }
+    };
+
+    createCheckoutSession();
+  }, [paymentMethod, checkoutSession, isLoadingSession, locale]);
+
+  // Handle checkout completion
+  const handleCheckoutComplete = async (sessionId: string) => {
+    try {
+      // Invalidate the cached session
+      const { invalidateCheckoutSession } = await import("@/lib/stripe/embedded-checkout");
+      await invalidateCheckoutSession(sessionId);
+
+      // Clear the cart
+      await fetch("/api/cart", { method: "DELETE" });
+
+      // Call the success callback if provided
+      if (onPaymentSuccess) {
+        onPaymentSuccess({ sessionId });
+      }
+    } catch (error) {
+      console.error("Error handling checkout completion:", error);
+      if (onPaymentError) {
+        onPaymentError("Failed to complete checkout");
+      }
+    }
+  };
+
+  // Handle checkout error
+  const handleCheckoutError = (error: Error) => {
+    console.error("Checkout error:", error);
+    if (onPaymentError) {
+      onPaymentError(error.message);
+    }
+  };
 
   const paymentOptions = [
     {
@@ -123,10 +155,9 @@ export function PaymentStep({
             key={option.id}
             className={`
               relative border-2 rounded-lg p-6 cursor-pointer transition-all
-              ${
-                paymentMethod === option.id
-                  ? "border-primary-500 bg-primary-50"
-                  : "border-neutral-200 bg-white hover:border-neutral-300"
+              ${paymentMethod === option.id
+                ? "border-primary-500 bg-primary-50"
+                : "border-neutral-200 bg-white hover:border-neutral-300"
               }
             `}
             onClick={() => onChange(option.id)}
@@ -146,11 +177,10 @@ export function PaymentStep({
                 <div
                   className={`
                   w-5 h-5 rounded-full border-2 flex items-center justify-center
-                  ${
-                    paymentMethod === option.id
+                  ${paymentMethod === option.id
                       ? "border-primary-500 bg-primary-500"
                       : "border-neutral-300 bg-white"
-                  }
+                    }
                 `}
                 >
                   {paymentMethod === option.id && <div className="w-2 h-2 rounded-full bg-white" />}
@@ -161,11 +191,10 @@ export function PaymentStep({
               <div
                 className={`
                 flex-shrink-0 p-3 rounded-lg
-                ${
-                  paymentMethod === option.id
+                ${paymentMethod === option.id
                     ? "bg-primary-100 text-primary-600"
                     : "bg-neutral-100 text-neutral-600"
-                }
+                  }
               `}
               >
                 {option.icon}
@@ -186,10 +215,9 @@ export function PaymentStep({
                       key={index}
                       className={`
                         inline-flex items-center px-2 py-1 rounded text-xs font-medium
-                        ${
-                          paymentMethod === option.id
-                            ? "bg-primary-100 text-primary-800"
-                            : "bg-neutral-100 text-neutral-700"
+                        ${paymentMethod === option.id
+                          ? "bg-primary-100 text-primary-800"
+                          : "bg-neutral-100 text-neutral-700"
                         }
                       `}
                     >
@@ -219,29 +247,51 @@ export function PaymentStep({
         </div>
       </div>
 
-      {/* Payment Method Details */}
+      {/* Stripe Embedded Checkout - Only shown when Stripe is selected */}
       {paymentMethod === "stripe" && (
-        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
-          <h4 className="font-semibold text-blue-800 mb-2">Platba kartou přes Stripe</h4>
-          <p className="text-sm text-blue-700">
-            Po dokončení objednávky budete přesměrováni na bezpečnou platební bránu Stripe, kde
-            zadáte údaje své platební karty. Platba bude zpracována okamžitě.
-          </p>
-        </div>
-      )}
+        <div className="bg-white border border-neutral-200 rounded-lg p-6">
+          <h4 className="font-semibold text-neutral-800 mb-4">Platba kartou</h4>
 
-      {/* Payment Forms with Progressive Enhancement */}
-      {paymentMethod && orderId && amount && customerEmail && (
-        <PaymentFormWrapper
-          paymentMethod={paymentMethod}
-          orderId={orderId}
-          amount={amount}
-          currency={currency}
-          customerEmail={customerEmail}
-          locale={locale}
-          {...(onPaymentSuccess && { onPaymentSuccess })}
-          {...(onPaymentError && { onPaymentError })}
-        />
+          {isLoadingSession && (
+            <div className="flex items-center justify-center py-12">
+              <LoadingSpinner size="lg" />
+              <span className="ml-3 text-neutral-600">Načítání platebního formuláře...</span>
+            </div>
+          )}
+
+          {sessionError && (
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6">
+              <h3 className="text-lg font-semibold text-red-800 mb-2">Chyba při načítání platby</h3>
+              <p className="text-red-700 mb-4">{sessionError}</p>
+              <button
+                type="button"
+                onClick={() => {
+                  setCheckoutSession(null);
+                  setSessionError(null);
+                  setIsLoadingSession(false);
+                }}
+                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              >
+                Zkusit znovu
+              </button>
+            </div>
+          )}
+
+          {checkoutSession && !isLoadingSession && !sessionError && (
+            <>
+              <p className="text-sm text-neutral-600 mb-4">
+                Zadejte údaje své platební karty. Platba bude zpracována okamžitě a bezpečně přes
+                Stripe.
+              </p>
+              <StripeEmbeddedCheckout
+                clientSecret={checkoutSession.clientSecret}
+                onComplete={() => handleCheckoutComplete(checkoutSession.sessionId)}
+                onError={handleCheckoutError}
+                locale={locale as "cs" | "en"}
+              />
+            </>
+          )}
+        </div>
       )}
 
       {/* Terms Notice */}

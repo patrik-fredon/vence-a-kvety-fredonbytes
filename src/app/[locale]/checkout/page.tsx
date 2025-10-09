@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { getTranslations } from "next-intl/server";
-import { CheckoutPageClient } from "./CheckoutPageClient";
 
 interface CheckoutPageProps {
   params: Promise<{
@@ -38,8 +37,8 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     redirect(`/${locale}/cart`);
   }
 
-  // Check if delivery method is selected (Requirement 2.7)
-  const hasDeliveryMethod = cart.items.some((item) =>
+  // Check if delivery method is selected for all items
+  const hasDeliveryMethod = cart.items.every((item) =>
     item.customizations?.some((c) => c.optionId === "delivery_method")
   );
 
@@ -49,31 +48,23 @@ export default async function CheckoutPage({ params }: CheckoutPageProps) {
     redirect(`/${locale}/cart?error=delivery_method_required`);
   }
 
-  // Create embedded checkout session
-  const { createEmbeddedCheckoutSession } = await import("@/lib/stripe/embedded-checkout");
-
-  let checkoutSession: { clientSecret: string; sessionId: string } | null = null;
-  let sessionError: string | null = null;
-
-  try {
-    checkoutSession = await createEmbeddedCheckoutSession({
-      cartItems: cart.items,
-      locale: locale as "cs" | "en",
-      metadata: {
-        itemCount: cart.items.length.toString(),
-      },
-    });
-  } catch (error) {
-    console.error("Failed to create checkout session:", error);
-    sessionError = error instanceof Error ? error.message : "Failed to create checkout session";
-  }
+  // Import CheckoutForm
+  const { CheckoutForm } = await import("@/components/checkout/CheckoutForm");
 
   return (
-    <CheckoutPageClient
-      locale={locale}
-      initialCart={cart}
-      checkoutSession={checkoutSession}
-      sessionError={sessionError}
-    />
+    <div className="min-h-screen bg-funeral-gold">
+
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-center h-16 ">
+
+        </div>
+      </div>
+
+
+      {/* Main Content */}
+      <div className="container max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <CheckoutForm items={cart.items} locale={locale} />
+      </div>
+    </div>
   );
 }

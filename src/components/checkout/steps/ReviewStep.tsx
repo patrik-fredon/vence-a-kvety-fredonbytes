@@ -41,67 +41,67 @@ export function ReviewStep({
   return (
     <div className="space-y-8">
       <div>
-        <h2 className="text-elegant text-2xl font-semibold text-stone-800 mb-2">
+        <h2 className="text-elegant text-2xl font-bold text-amber-300 mb-2">
           Kontrola objednávky
         </h2>
-        <p className="text-neutral-600">Zkontrolujte všechny údaje před dokončením objednávky.</p>
+        <p className="text-amber-300">Zkontrolujte všechny údaje před dokončením objednávky.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
         {/* Left Column - Order Details */}
         <div className="space-y-6">
           {/* Customer Information */}
-          <div className="bg-teal border border-neutral-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-neutral-800 mb-4 flex items-center">
+          <div className="bg-funeral-gold border border-amber-100 rounded-lg p-6">
+            <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center">
               <UserIcon className="w-5 h-5 mr-2" />
               Kontaktní údaje
             </h3>
 
             <div className="space-y-3 text-sm">
               <div>
-                <span className="font-medium text-neutral-700">Jméno:</span>
-                <span className="ml-2 text-neutral-900">
+                <span className="font-medium text-teal-800">Jméno:</span>
+                <span className="ml-2 text-teal-800">
                   {customerInfo.firstName} {customerInfo.lastName}
                 </span>
               </div>
 
               <div>
-                <span className="font-medium text-neutral-700">E-mail:</span>
-                <span className="ml-2 text-neutral-900">{customerInfo.email}</span>
+                <span className="font-medium text-teal-800">E-mail:</span>
+                <span className="ml-2 text-teal-800">{customerInfo.email}</span>
               </div>
 
               <div>
-                <span className="font-medium text-neutral-700">Telefon:</span>
-                <span className="ml-2 text-neutral-900">{customerInfo.phone}</span>
+                <span className="font-medium text-teal-800">Telefon:</span>
+                <span className="ml-2 text-teal-800">{customerInfo.phone}</span>
               </div>
 
               {customerInfo.company && (
                 <div>
-                  <span className="font-medium text-neutral-700">Společnost:</span>
-                  <span className="ml-2 text-neutral-900">{customerInfo.company}</span>
+                  <span className="font-medium text-teal-800">Společnost:</span>
+                  <span className="ml-2 text-teal-800">{customerInfo.company}</span>
                 </div>
               )}
 
               {customerInfo.note && (
                 <div>
-                  <span className="font-medium text-neutral-700">Poznámka:</span>
-                  <span className="ml-2 text-neutral-900">{customerInfo.note}</span>
+                  <span className="font-medium text-teal-800">Poznámka:</span>
+                  <span className="ml-2 text-teal-800">{customerInfo.note}</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Delivery Information */}
-          <div className="bg-white border border-neutral-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-neutral-800 mb-4 flex items-center">
+          <div className="bg-funeral-gold border border-amber-100 rounded-lg p-6">
+            <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center">
               <MapPinIcon className="w-5 h-5 mr-2" />
               Doručení
             </h3>
 
             <div className="space-y-3 text-sm">
               <div>
-                <span className="font-medium text-neutral-700">Adresa:</span>
-                <div className="ml-2 text-neutral-900">
+                <span className="font-medium text-teal-800">Adresa:</span>
+                <div className="ml-2 text-teal-800">
                   {deliveryInfo.address?.street}
                   <br />
                   {deliveryInfo.address?.postalCode} {deliveryInfo.address?.city}
@@ -111,8 +111,8 @@ export function ReviewStep({
               </div>
 
               <div>
-                <span className="font-medium text-neutral-700">Způsob doručení:</span>
-                <span className="ml-2 text-neutral-900">
+                <span className="font-medium text-teal-800">Způsob doručení:</span>
+                <span className="ml-2 text-teal-800">
                   {deliveryInfo.urgency === "standard" && "Standardní doručení"}
                   {deliveryInfo.urgency === "express" && "Expresní doručení"}
                   {deliveryInfo.urgency === "same-day" && "Doručení tentýž den"}
@@ -121,8 +121,8 @@ export function ReviewStep({
 
               {deliveryInfo.preferredDate && (
                 <div>
-                  <span className="font-medium text-neutral-700">Datum doručení:</span>
-                  <span className="ml-2 text-neutral-900">
+                  <span className="font-medium text-teal-800">Datum doručení:</span>
+                  <span className="ml-2 text-teal-800">
                     {deliveryInfo.preferredDate.toLocaleDateString(
                       locale === "cs" ? "cs-CZ" : "en-US",
                       {
@@ -138,8 +138,8 @@ export function ReviewStep({
 
               {deliveryInfo.preferredTimeSlot && (
                 <div>
-                  <span className="font-medium text-neutral-700">Čas doručení:</span>
-                  <span className="ml-2 text-neutral-900">
+                  <span className="font-medium text-teal-800">Čas doručení:</span>
+                  <span className="ml-2 text-teal-800">
                     {tDelivery(`calendar.${deliveryInfo.preferredTimeSlot}`)}
                   </span>
                 </div>
@@ -147,37 +147,37 @@ export function ReviewStep({
 
               {deliveryInfo.recipientName && (
                 <div>
-                  <span className="font-medium text-neutral-700">Příjemce:</span>
-                  <span className="ml-2 text-neutral-900">{deliveryInfo.recipientName}</span>
+                  <span className="font-medium text-teal-800">Příjemce:</span>
+                  <span className="ml-2 text-teal-800">{deliveryInfo.recipientName}</span>
                 </div>
               )}
 
               {deliveryInfo.recipientPhone && (
                 <div>
-                  <span className="font-medium text-neutral-700">Telefon příjemce:</span>
-                  <span className="ml-2 text-neutral-900">{deliveryInfo.recipientPhone}</span>
+                  <span className="font-medium text-teal-800">Telefon příjemce:</span>
+                  <span className="ml-2 text-teal-800">{deliveryInfo.recipientPhone}</span>
                 </div>
               )}
 
               {deliveryInfo.specialInstructions && (
                 <div>
-                  <span className="font-medium text-neutral-700">Speciální pokyny:</span>
-                  <span className="ml-2 text-neutral-900">{deliveryInfo.specialInstructions}</span>
+                  <span className="font-medium text-teal-800">Speciální pokyny:</span>
+                  <span className="ml-2 text-teal-800">{deliveryInfo.specialInstructions}</span>
                 </div>
               )}
             </div>
           </div>
 
           {/* Payment Information */}
-          <div className="bg-white border border-neutral-200 rounded-lg p-6">
-            <h3 className="text-lg font-semibold text-neutral-800 mb-4 flex items-center">
+          <div className="bg-funeral-gold border border-amber-100 rounded-lg p-6">
+            <h3 className="text-xl font-bold text-teal-800 mb-4 flex items-center">
               <CreditCardIcon className="w-5 h-5 mr-2" />
               Platba
             </h3>
 
             <div className="text-sm">
-              <span className="font-medium text-neutral-700">Způsob platby:</span>
-              <span className="ml-2 text-neutral-900">
+              <span className="font-medium text-teal-800">Způsob platby:</span>
+              <span className="ml-2 text-teal-800">
                 {paymentMethod === "stripe" && "Platební karta (Stripe)"}
               </span>
             </div>
@@ -205,15 +205,15 @@ export function ReviewStep({
             id="agreeToTerms"
             checked={agreeToTerms}
             onChange={(e) => onAgreeToTermsChange(e.target.checked)}
-            className="mt-1 w-4 h-4 text-amber-600 border-stone-300 rounded focus:ring-amber-500"
+            className="mt-1 w-4 h-4 text-amber-200 border-amber-300 rounded "
             required
           />
-          <label htmlFor="agreeToTerms" className="text-sm text-neutral-700">
+          <label htmlFor="agreeToTerms" className="text-sm text-amber-100">
             Souhlasím s{" "}
             <a
               href="/terms"
               target="_blank"
-              className="text-primary-600 hover:text-primary-700 underline"
+              className="text-amber-200 hover:text-teal-800 underline"
               rel="noopener"
             >
               obchodními podmínkami
@@ -222,7 +222,7 @@ export function ReviewStep({
             <a
               href="/privacy"
               target="_blank"
-              className="text-primary-600 hover:text-primary-700 underline"
+              className="text-amber-200 hover:text-funeral-gold/50 underline"
               rel="noopener"
             >
               zásadami ochrany osobních údajů
@@ -237,9 +237,9 @@ export function ReviewStep({
             id="subscribeNewsletter"
             checked={subscribeNewsletter}
             onChange={(e) => onSubscribeNewsletterChange(e.target.checked)}
-            className="mt-1 w-4 h-4 text-amber-600 border-stone-300 rounded focus:ring-amber-500"
+            className="mt-1 w-4 h-4 text-amber-100 border-amber-300 rounded "
           />
-          <label htmlFor="subscribeNewsletter" className="text-sm text-neutral-700">
+          <label htmlFor="subscribeNewsletter" className="text-sm text-amber-100">
             Chci dostávat novinky a speciální nabídky na e-mail (volitelné)
           </label>
         </div>

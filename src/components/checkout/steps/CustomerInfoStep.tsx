@@ -29,10 +29,10 @@ export function CustomerInfoStep({
   return (
     <div className="space-y-6">
       <div>
-        <h2 className="text-elegant text-2xl font-semibold text-primary-800 mb-2">
+        <h2 className="text-elegant text-2xl font-semibold text-amber-300 mb-2">
           {t("customerInfo")}
         </h2>
-        <p className="text-neutral-600">Zadejte své kontaktní údaje pro doručení objednávky.</p>
+        <p className="text-amber-100">Zadejte své kontaktní údaje pro doručení objednávky.</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -40,7 +40,7 @@ export function CustomerInfoStep({
         <div>
           <Input
             id="firstName"
-            label={`${t("firstName")} *`}
+            label={`${t("firstName")}`}
             type="text"
             value={customerInfo.firstName || ""}
             onChange={(e) => handleChange("firstName", e.target.value)}
@@ -54,7 +54,7 @@ export function CustomerInfoStep({
         <div>
           <Input
             id="lastName"
-            label={`${t("lastName")} *`}
+            label={`${t("lastName")}`}
             type="text"
             value={customerInfo.lastName || ""}
             onChange={(e) => handleChange("lastName", e.target.value)}
@@ -70,7 +70,7 @@ export function CustomerInfoStep({
         <div>
           <Input
             id="email"
-            label={`${t("email")} *`}
+            label={`${t("email")}`}
             type="email"
             value={customerInfo.email || ""}
             onChange={(e) => handleChange("email", e.target.value)}
@@ -78,7 +78,7 @@ export function CustomerInfoStep({
             placeholder="vas@email.cz"
             required
           />
-          <p className="mt-1 text-xs text-neutral-500">
+          <p className="mt-1 text-xs text-amber-100">
             Na tento e-mail vám pošleme potvrzení objednávky.
           </p>
         </div>
@@ -87,7 +87,7 @@ export function CustomerInfoStep({
         <div>
           <Input
             id="phone"
-            label={`${t("phone")} *`}
+            label={`${t("phone")}`}
             type="tel"
             value={customerInfo.phone || ""}
             onChange={(e) => handleChange("phone", e.target.value)}
@@ -95,7 +95,7 @@ export function CustomerInfoStep({
             placeholder="+420 123 456 789"
             required
           />
-          <p className="mt-1 text-xs text-neutral-500">Telefon pro případné dotazy k objednávce.</p>
+          <p className="mt-1 text-xs text-amber-100">Telefon pro případné dotazy k objednávce.</p>
         </div>
       </div>
 
@@ -114,7 +114,7 @@ export function CustomerInfoStep({
 
       {/* Note (Optional) */}
       <div>
-        <label htmlFor="note" className="block text-sm font-medium text-neutral-700 mb-2">
+        <label htmlFor="note" className="block text-sm font-medium text-amber-100 mb-2">
           Poznámka k objednávce (volitelné)
         </label>
         <textarea
@@ -126,11 +126,11 @@ export function CustomerInfoStep({
           className={`
             w-full px-4 py-3 border rounded-lg resize-none
             focus:ring-2 focus:ring-primary-500 focus:border-primary-500
-            ${errors.note ? "border-red-300 bg-red-50" : "border-neutral-300 bg-teal"}
+            ${errors.note ? "border-red-300 bg-red-50" : "border-teal-800 bg-amber-100"}
           `}
         />
         {errors.note && <p className="mt-1 text-sm text-red-600">{errors.note}</p>}
-        <p className="mt-1 text-xs text-neutral-500">Maximálně 500 znaků</p>
+        <p className="mt-1 text-xs text-amber-100">Maximálně 500 znaků</p>
       </div>
 
       {/* Info Box */}

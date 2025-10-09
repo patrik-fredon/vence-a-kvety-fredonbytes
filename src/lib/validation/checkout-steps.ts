@@ -27,7 +27,6 @@ export const STEP_FIELDS = {
   customer: ["email", "firstName", "lastName", "phone", "company", "note"] as const,
   delivery: [
     "address",
-    "urgency",
     "preferredDate",
     "preferredTimeSlot",
     "specialInstructions",
@@ -126,10 +125,8 @@ export function validateDeliveryStep(data: CheckoutFormData): CheckoutValidation
     }
   }
 
-  // Required: Urgency (delivery method)
-  if (!deliveryInfo.urgency) {
-    deliveryErrors.urgency = "Způsob doručení je povinný";
-  }
+  // Note: Delivery method (urgency) is validated at cart level, not here
+  // The delivery method is selected during product configuration in the cart
 
   // Optional: Preferred Date (validate only if provided)
   if (deliveryInfo.preferredDate) {

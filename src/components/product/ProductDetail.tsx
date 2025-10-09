@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import { validateWreathConfiguration, WREATH_VALIDATION_MESSAGES } from "@/lib/validation/wreath";
 import type { Customization, Product } from "@/types/product";
+import { ColorSelection } from "./ColorSelection";
 import { LazyDeliveryMethodSelector } from "./LazyDeliveryMethodSelector";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 import { PriceBreakdown } from "./PriceBreakdown";
@@ -37,6 +38,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [selectedColor, setSelectedColor] = useState<string | null>(null);
   const [deliveryMethod, setDeliveryMethod] = useState<"delivery" | "pickup" | null>(null);
 
   // Refs for animation
@@ -119,6 +121,14 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     // Price calculation is now automatic via usePriceCalculationWithSize hook
 
     // Clear validation errors and warnings when size changes
+    setValidationErrors([]);
+    setValidationWarnings([]);
+  }, []);
+
+  // Handle color selection changes
+  const handleColorChange = useCallback((colorId: string) => {
+    setSelectedColor(colorId);
+    // Clear validation errors when color changes
     setValidationErrors([]);
     setValidationWarnings([]);
   }, []);
@@ -214,6 +224,14 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
         allCustomizations.push({
           optionId: sizeOption.id,
           choiceIds: [selectedSize],
+        });
+      }
+
+      // Add color to customizations
+      if (selectedColor) {
+        allCustomizations.push({
+          optionId: "color",
+          choiceIds: [selectedColor],
         });
       }
 
@@ -341,9 +359,22 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
-          {/* Ribbon Selection */}
-          {ribbonOption && (
-            <Card>
+          {/* Color Selection - Progressive: appears after size selection */}
+          {selectedSize && (
+            <Card className="animate-in fade-in slide-in-from-top-4 duration-300">
+              <CardContent className="py-6">
+                <ColorSelection
+                  selectedColor={selectedColor}
+                  onColorChange={handleColorChange}
+                  locale={locale}
+                />
+              </CardContent>
+            </Card>
+          )}
+
+          {/* Ribbon Selection - Progressive: appears after color selection */}
+          {ribbonOption && selectedColor && (
+            <Card className="animate-in fade-in slide-in-from-top-4 duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("ribbon")}</span>
@@ -378,9 +409,9 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
-          {/* Other Customization Options */}
-          {generalCustomizationOptions.length > 0 && (
-            <Card>
+          {/* Other Customization Options - Progressive: appears after ribbon */}
+          {generalCustomizationOptions.length > 0 && selectedColor && (
+            <Card className="animate-in fade-in slide-in-from-top-4 duration-300">
               <CardHeader>
                 <CardTitle className="flex items-center gap-2">
                   <span>{t("customize")}</span>
@@ -400,16 +431,18 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
-          {/* Delivery Method Selection */}
-          <Card>
-            <CardContent className="py-6">
-              <LazyDeliveryMethodSelector
-                value={deliveryMethod || undefined}
-                onChange={handleDeliveryMethodChange}
-                locale={locale}
-              />
-            </CardContent>
-          </Card>
+          {/* Delivery Method Selection - Progressive: appears after all customizations */}
+          {selectedColor && (
+            <Card className="animate-in fade-in slide-in-from-top-4 duration-300">
+              <CardContent className="py-6">
+                <LazyDeliveryMethodSelector
+                  value={deliveryMethod || undefined}
+                  onChange={handleDeliveryMethodChange}
+                  locale={locale}
+                />
+              </CardContent>
+            </Card>
+          )}
 
           {/* Enhanced Validation Error Display */}
           {validationErrors.length > 0 && (
@@ -514,54 +547,61 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
-          {/* Price Breakdown */}
-          <Card>
-            <CardContent className="py-6">
-              <PriceBreakdown
-                basePrice={product.basePrice}
-                breakdown={priceCalculation.breakdown}
-                totalPrice={priceCalculation.totalPrice}
-                locale={locale}
-                showDetails={true}
-              />
-            </CardContent>
-          </Card>
+          {/* Price Breakdown - Progressive: appears after delivery method */}
+          {deliveryMethod && (
+            <Card className="animate-in fade-in slide-in-from-top-4 duration-300">
+              <CardContent className="py-6">
+                <PriceBreakdown
+                  basePrice={product.basePrice}
+                  breakdown={priceCalculation.breakdown}
+                  totalPrice={priceCalculation.totalPrice}
+                  locale={locale}
+                  showDetails={true}
+                />
+              </CardContent>
+            </Card>
+          )}
 
-          {/* Configuration Summary and Proceed Button */}
-          <Card className="bg-teal-800">
-            <CardContent className="py-6 space-y-4">
-              <div className="text-center">
-                <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
-                <div className="text-3xl font-bold text-amber-300">
-                  {formatPrice(priceCalculation.totalPrice)}
+          {/* Configuration Summary and Proceed Button - Progressive: appears when all required fields are filled */}
+          {selectedSize && selectedColor && deliveryMethod && (
+            <Card className="bg-teal-800 animate-in fade-in slide-in-from-top-4 duration-300">
+              <CardContent className="py-6 space-y-4">
+                <div className="text-center">
+                  <div className="text-sm text-amber-100 mb-2">{t("totalPrice")}</div>
+                  <div className="text-3xl font-bold text-amber-300">
+                    {formatPrice(priceCalculation.totalPrice)}
+                  </div>
                 </div>
-              </div>
 
-              <Button
-                ref={addToCartButtonRef}
-                onClick={handleAddToCart}
-                disabled={isAddingToCart || !selectedSize || !deliveryMethod}
-                className="w-full bg-funeral-gold text-teal-800"
-                size="lg"
-              >
-                {isAddingToCart ? (
-                  <>
-                    <LoadingSpinner size="sm" className="mr-2" />
-                    {t("addingToCart")}
-                  </>
-                ) : (
-                  "Confirm"
+                <Button
+                  ref={addToCartButtonRef}
+                  onClick={handleAddToCart}
+                  disabled={isAddingToCart || !selectedSize || !selectedColor || !deliveryMethod}
+                  className="w-full bg-funeral-gold text-teal-800"
+                  size="lg"
+                >
+                  {isAddingToCart ? (
+                    <>
+                      <LoadingSpinner size="sm" className="mr-2" />
+                      {t("addingToCart")}
+                    </>
+                  ) : (
+                    t("addToCart")
+                  )}
+                </Button>
+
+                {!selectedSize && (
+                  <p className="text-sm text-red-600 text-center">{t("selectSizeFirst")}</p>
                 )}
-              </Button>
-
-              {!selectedSize && (
-                <p className="text-sm text-red-600 text-center">{t("selectSizeFirst")}</p>
-              )}
-              {!deliveryMethod && selectedSize && (
-                <p className="text-sm text-red-600 text-center">{t("deliveryMethod.required")}</p>
-              )}
-            </CardContent>
-          </Card>
+                {!selectedColor && selectedSize && (
+                  <p className="text-sm text-red-600 text-center">{t("color.required")}</p>
+                )}
+                {!deliveryMethod && selectedSize && selectedColor && (
+                  <p className="text-sm text-red-600 text-center">{t("deliveryMethod.required")}</p>
+                )}
+              </CardContent>
+            </Card>
+          )}
         </div>
       </div>
     </div>

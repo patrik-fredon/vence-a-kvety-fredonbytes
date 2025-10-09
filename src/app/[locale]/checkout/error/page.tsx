@@ -66,7 +66,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
     description: "Došlo k neočekávané chybě při zpracování platby.",
     solution: "Zkuste to znovu nebo nás kontaktujte pro pomoc.",
   };
-  // TODO translation next-intl
+
   return (
     <div className="min-h-screen bg-teal-50 py-12">
       <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
