@@ -12,6 +12,10 @@
  */
 
 import { createClient } from '@supabase/supabase-js';
+import { config } from 'dotenv';
+
+// Load environment variables from .env file
+config();
 
 // Product interface for database queries
 // (defined inline where needed to avoid unused type warning)
@@ -99,8 +103,8 @@ async function verifyProductStripeIds(): Promise<VerificationResult> {
   try {
     const { data: products, error } = await supabase
       .from('products')
-      .select('id, name, stripe_product_id, stripe_price_id')
-      .order('name');
+      .select('id, name_cs, name_en, stripe_product_id, stripe_price_id')
+      .order('name_cs');
 
     if (error) {
       return {
@@ -127,7 +131,7 @@ async function verifyProductStripeIds(): Promise<VerificationResult> {
     if (productsWithoutStripeIds.length > 0) {
       console.log('\n⚠️  Products missing Stripe IDs:');
       for (const product of productsWithoutStripeIds) {
-        console.log(`   - ${product.name} (ID: ${product.id})`);
+        console.log(`   - ${product.name_cs} (ID: ${product.id})`);
         console.log(`     Missing: ${!product.stripe_product_id ? 'product_id ' : ''}${!product.stripe_price_id ? 'price_id' : ''}`);
       }
 
@@ -190,7 +194,7 @@ async function verifyStripeProducts(): Promise<VerificationResult> {
 
     const { data: products, error } = await supabase
       .from('products')
-      .select('id, name, stripe_product_id, stripe_price_id')
+      .select('id, name_cs, name_en, stripe_product_id, stripe_price_id')
       .not('stripe_product_id', 'is', null)
       .not('stripe_price_id', 'is', null);
 
@@ -218,20 +222,20 @@ async function verifyStripeProducts(): Promise<VerificationResult> {
         const stripeProduct = await stripe.products.retrieve(product.stripe_product_id!);
 
         if (!stripeProduct.active) {
-          issues.push(`Product "${product.name}" is inactive in Stripe`);
+          issues.push(`Product "${product.name_cs}" is inactive in Stripe`);
         }
 
         // Verify price exists
         const stripePrice = await stripe.prices.retrieve(product.stripe_price_id!);
 
         if (!stripePrice.active) {
-          issues.push(`Price for "${product.name}" is inactive in Stripe`);
+          issues.push(`Price for "${product.name_cs}" is inactive in Stripe`);
         }
 
-        console.log(`✅ ${product.name}: Product and price verified`);
+        console.log(`✅ ${product.name_cs}: Product and price verified`);
       } catch (error) {
         if (error instanceof Error) {
-          issues.push(`Product "${product.name}": ${error.message}`);
+          issues.push(`Product "${product.name_cs}": ${error.message}`);
         }
       }
     }
