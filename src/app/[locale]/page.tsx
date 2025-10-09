@@ -7,6 +7,7 @@ import {
   generateWebsiteStructuredData,
   StructuredData,
 } from "@/components/seo/StructuredData";
+import { Analytics } from "@vercel/analytics/next"
 
 interface HomeProps {
   params: Promise<{ locale: string }>;
@@ -78,6 +79,7 @@ export default async function Home({ params }: HomeProps) {
       <StructuredData data={websiteStructuredData} />
       <StructuredData data={localBusinessStructuredData} />
       <StructuredData data={faqStructuredData} />
+      <Analytics />
 
       {/* New RefactoredPageLayout with integrated hero and product sections */}
       <RefactoredPageLayout locale={locale} companyLogo={companyLogo} />

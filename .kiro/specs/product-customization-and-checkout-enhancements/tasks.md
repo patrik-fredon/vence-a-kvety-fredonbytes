@@ -80,7 +80,7 @@
     - Add DeliveryMethodOption interface
     - _Requirements: 5.2, 5.6_
 
-- [-] 6. Stripe Embedded Checkout Service
+- [x] 6. Stripe Embedded Checkout Service
   - [x] 6.1 Create embedded checkout service
     - Create `src/lib/stripe/embedded-checkout.ts`
     - Implement `createEmbeddedCheckoutSession` function
@@ -102,14 +102,14 @@
     - Add retry logic with exponential backoff
     - _Requirements: 3.11, 7.1, 7.2, 7.5, 7.6, 7.8_
 
-  - [-] 6.4 Add logging and monitoring
+  - [x] 6.4 Add logging and monitoring
     - Add structured logging for checkout events
     - Log session creation, cache hits/misses, errors
     - Include relevant metadata for debugging
     - _Requirements: 5.8, 7.8_
 
 - [ ] 7. Stripe Embedded Checkout Component
-  - [ ] 7.1 Create StripeEmbeddedCheckout component
+  - [x] 7.1 Create StripeEmbeddedCheckout component
     - Create `src/components/payments/StripeEmbeddedCheckout.tsx`
     - Implement EmbeddedCheckoutProvider integration
     - Add loading state with spinner
@@ -117,13 +117,13 @@
     - Configure Stripe with correct locale
     - _Requirements: 3.5, 3.6, 3.13, 3.14, 3.15, 8.7_
 
-  - [ ] 7.2 Add lazy loading for Stripe SDK
+  - [x] 7.2 Add lazy loading for Stripe SDK
     - Implement dynamic import for Stripe SDK
     - Show loading indicator during SDK initialization
     - Handle timeout scenarios
     - _Requirements: 6.6, 6.7, 6.8_
 
-  - [ ] 7.3 Add error handling to checkout component
+  - [-] 7.3 Add error handling to checkout component
     - Implement onError callback
     - Display user-friendly error messages
     - Add retry button for recoverable errors

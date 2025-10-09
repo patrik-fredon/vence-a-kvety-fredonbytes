@@ -33,6 +33,23 @@ export const LazyStripeElementsProvider = dynamic(
         <span className="ml-2 text-amber-100">Loading Payment Provider...</span>
       </div>
     ),
+
+// Lazy load Stripe Embedded Checkout component
+export const LazyStripeEmbeddedCheckout = dynamic(
+  () =>
+    import("./StripeEmbeddedCheckout").then((mod) => ({
+      default: mod.StripeEmbeddedCheckout,
+    })),
+  {
+    loading: () => (
+      <div className="flex flex-col items-center justify-center p-6 border border-stone-200 rounded-lg min-h-[600px]">
+        <LoadingSpinner size="lg" />
+        <span className="ml-2 text-stone-600">Loading Checkout...</span>
+      </div>
+    ),
+    ssr: false, // Embedded checkout is interactive and doesn't need SSR
+  }
+);
     ssr: false,
   }
 );

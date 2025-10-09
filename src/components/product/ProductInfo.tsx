@@ -59,7 +59,7 @@ export function ProductInfo({ product, locale, finalPrice, className }: ProductI
               <span className="text-sm text-amber-300">{t("basePrice")}</span>
             </div>
             {finalPrice !== product.basePrice && (
-              <div className="text-sm text-amber-700 bg-amber-50 px-3 py-2 rounded-lg">
+              <div className="text-sm text-amber-300 bg-amber-50 px-3 py-2 rounded-lg">
                 {t("priceWillUpdate")}
               </div>
             )}

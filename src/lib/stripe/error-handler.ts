@@ -47,7 +47,7 @@ export class CheckoutError extends Error {
  */
 export function handleStripeError(
   error: unknown,
-  locale: "cs" | "en" = "cs"
+  _locale: "cs" | "en" = "cs"
 ): CheckoutError {
   if (error instanceof Stripe.errors.StripeError) {
     switch (error.type) {

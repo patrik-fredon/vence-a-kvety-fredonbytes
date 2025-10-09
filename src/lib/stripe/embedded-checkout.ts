@@ -6,7 +6,7 @@
 import { createHash } from "crypto";
 import type { CartItem } from "@/types/cart";
 import type { Product } from "@/types/product";
-import { stripe } from "./stripe";
+import { stripe } from "@/lib/payments/stripe";
 import { getStripePriceId, getStripeProductId } from "./price-selector";
 import { createClient } from "@/lib/supabase/server";
 import {
@@ -100,17 +100,29 @@ async function getStripeIds(
     .single();
 
   if (error || !productRow) {
+    console.error("❌ [Stripe] Product not found", {
+      productId,
+      error: error?.message,
+    });
     throw new Error(`Product not found: ${productId}`);
   }
 
   // Validate Stripe IDs exist
   if (!productRow.stripe_product_id) {
+    console.error("❌ [Stripe] Missing Stripe product ID", {
+      productId,
+      productName: productRow.name_cs,
+    });
     throw new Error(
       `Product ${productRow.name_cs} (${productId}) is missing Stripe product ID`
     );
   }
 
   if (!productRow.stripe_price_id) {
+    console.error("❌ [Stripe] Missing Stripe price ID", {
+      productId,
+      productName: productRow.name_cs,
+    });
     throw new Error(
       `Product ${productRow.name_cs} (${productId}) is missing Stripe price ID`
     );
@@ -127,10 +139,10 @@ async function getStripeIds(
 
   // Get the appropriate price ID based on customizations
   const priceId = getStripePriceId(product, customizations);
-  const productId = getStripeProductId(product);
+  const stripeProductId = getStripeProductId(product);
 
   return {
-    productId,
+    productId: stripeProductId,
     priceId,
   };
 }
@@ -154,6 +166,8 @@ async function getStripeIds(
 export async function createEmbeddedCheckoutSession(
   params: CreateEmbeddedCheckoutSessionParams
 ): Promise<EmbeddedCheckoutSessionResponse> {
+  const startTime = Date.now();
+
   if (!stripe) {
     throw new Error(
       "Stripe is not configured. Please set STRIPE_SECRET_KEY environment variable."
@@ -161,6 +175,14 @@ export async function createEmbeddedCheckoutSession(
   }
 
   const { cartItems, locale, customerId, metadata = {} } = params;
+
+  // Log checkout session creation attempt
+  console.log("🛒 [Stripe] Creating embedded checkout session", {
+    itemCount: cartItems.length,
+    locale,
+    hasCustomerId: !!customerId,
+    metadata,
+  });
 
   // Validate cart items
   if (!cartItems || cartItems.length === 0) {
@@ -180,17 +202,29 @@ export async function createEmbeddedCheckoutSession(
       const cached = deserializeFromCache<CachedCheckoutSession>(cachedData);
 
       if (cached && cached.expiresAt > Date.now()) {
-        console.log(
-          `✅ [Stripe] Using cached checkout session: ${cached.sessionId}`
-        );
+        const duration = Date.now() - startTime;
+        console.log("✅ [Stripe] Cache hit for checkout session", {
+          sessionId: cached.sessionId,
+          cartHash,
+          duration,
+          cached: true,
+        });
         return {
           clientSecret: cached.clientSecret,
           sessionId: cached.sessionId,
         };
+      } else if (cached) {
+        console.log("⚠️ [Stripe] Cached session expired", {
+          sessionId: cached.sessionId,
+          expiresAt: new Date(cached.expiresAt).toISOString(),
+        });
       }
     }
   } catch (error) {
-    console.error("Error checking cache for checkout session:", error);
+    console.error("❌ [Stripe] Cache check failed", {
+      error: error instanceof Error ? error.message : String(error),
+      cartHash,
+    });
     // Continue to create new session if cache fails
   }
 
@@ -235,7 +269,7 @@ export async function createEmbeddedCheckoutSession(
             locale,
             ...metadata,
           },
-          return_url: `${process.env.NEXT_PUBLIC_BASE_URL || "http://localhost:3000"}/${locale}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
+          return_url: `${process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000"}/${locale}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
         });
       },
       {
@@ -249,9 +283,14 @@ export async function createEmbeddedCheckoutSession(
       throw new Error("Failed to create checkout session: no client secret");
     }
 
-    console.log(
-      `✅ [Stripe] Created embedded checkout session: ${session.id}`
-    );
+    const duration = Date.now() - startTime;
+    console.log("✅ [Stripe] Created embedded checkout session", {
+      sessionId: session.id,
+      itemCount: lineItems.length,
+      locale,
+      duration,
+      cached: false,
+    });
 
     // Cache the session with 30-minute TTL
     try {
@@ -270,11 +309,16 @@ export async function createEmbeddedCheckoutSession(
         CACHE_TTL.MEDIUM // 30 minutes
       );
 
-      console.log(
-        `✅ [Stripe] Cached checkout session: ${session.id} (TTL: 30min)`
-      );
+      console.log("✅ [Stripe] Cached checkout session", {
+        sessionId: session.id,
+        cartHash,
+        ttl: CACHE_TTL.MEDIUM,
+      });
     } catch (error) {
-      console.error("Error caching checkout session:", error);
+      console.error("❌ [Stripe] Failed to cache session", {
+        sessionId: session.id,
+        error: error instanceof Error ? error.message : String(error),
+      });
       // Don't fail the request if caching fails
     }
 
@@ -283,7 +327,13 @@ export async function createEmbeddedCheckoutSession(
       sessionId: session.id,
     };
   } catch (error) {
-    console.error("Error creating Stripe embedded checkout session:", error);
+    const duration = Date.now() - startTime;
+    console.error("❌ [Stripe] Failed to create checkout session", {
+      error: error instanceof Error ? error.message : String(error),
+      itemCount: cartItems.length,
+      locale,
+      duration,
+    });
     
     // Convert to CheckoutError with localized message
     const checkoutError = handleStripeError(error, locale);
@@ -306,17 +356,20 @@ export async function invalidateCheckoutSession(
   sessionId: string
 ): Promise<void> {
   try {
-    const cache = getCacheClient();
-
     // We need to find the cache key by session ID
     // Since we don't have a reverse lookup, we'll use a pattern-based approach
     // In production, consider maintaining a session ID -> cache key mapping
+    // For now, we just log the invalidation
 
-    console.log(
-      `✅ [Stripe] Invalidated checkout session cache: ${sessionId}`
-    );
+    console.log("✅ [Stripe] Invalidated checkout session cache", {
+      sessionId,
+      timestamp: new Date().toISOString(),
+    });
   } catch (error) {
-    console.error("Error invalidating checkout session cache:", error);
+    console.error("❌ [Stripe] Failed to invalidate session cache", {
+      sessionId,
+      error: error instanceof Error ? error.message : String(error),
+    });
     // Don't throw - cache invalidation failure shouldn't break the flow
   }
 }
