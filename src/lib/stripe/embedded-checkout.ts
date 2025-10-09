@@ -349,7 +349,7 @@ export async function createEmbeddedCheckoutSession(
             deliveryMethod: deliveryMethod || "delivery",
             ...metadata,
           },
-          return_url: `${process.env['NEXT_PUBLIC_BASE_URL'] || "http://localhost:3000"}/${locale}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
+          return_url: `${process.env["NEXT_PUBLIC_BASE_URL"] || "http://localhost:3000"}/${locale}/checkout/complete?session_id={CHECKOUT_SESSION_ID}`,
         });
       },
       {

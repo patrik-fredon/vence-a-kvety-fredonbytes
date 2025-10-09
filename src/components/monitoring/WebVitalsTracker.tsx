@@ -14,7 +14,7 @@ const performanceConfig = {
   },
   development: {
     debug: {
-      showWebVitalsOverlay: process.env['NODE_ENV'] === "development",
+      showWebVitalsOverlay: process.env["NODE_ENV"] === "development",
     },
   },
   monitoring: {

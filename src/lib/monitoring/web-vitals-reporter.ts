@@ -17,7 +17,7 @@ interface WebVitalMetric {
  */
 export function sendToAnalytics(metric: Metric) {
   // Only send in production to avoid noise in development
-  if (process.env['NODE_ENV'] !== "production") {
+  if (process.env["NODE_ENV"] !== "production") {
     console.log("[Web Vitals - Dev]", {
       name: metric.name,
       value: metric.value,

@@ -46,7 +46,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Log metric for monitoring (in production, this would go to a logging service)
-    if (process.env['NODE_ENV'] === "production") {
+    if (process.env["NODE_ENV"] === "production") {
       console.log("[Web Vitals]", {
         metric: metric.name,
         value: metric.value,

@@ -4,6 +4,7 @@
 
 import { headers } from "next/headers";
 import { type NextRequest, NextResponse } from "next/server";
+import type Stripe from "stripe";
 import { getRequiredEnvVar } from "@/lib/config/env-validation";
 import { createOrder } from "@/lib/services/order-service";
 // import { PaymentService } from "@/lib/payments";
@@ -55,7 +56,7 @@ export async function POST(request: NextRequest) {
     }
 
     // Verify webhook signature
-    let event: any;
+    let event: Stripe.Event;
     try {
       const stripe = (await import("@/lib/payments/stripe")).stripe;
       if (!stripe) {
@@ -78,7 +79,7 @@ export async function POST(request: NextRequest) {
     console.log(`[Webhook] Processing event ${event.type}:`, event.id);
 
     // Handle different event types
-    let result: any = null;
+    let result: { orderId?: string; status?: string; sessionId?: string } | null = null;
 
     switch (event.type) {
       case "checkout.session.completed":
@@ -127,7 +128,17 @@ export async function POST(request: NextRequest) {
 /**
  * Update order payment status in database
  */
-async function updateOrderPaymentStatus(orderId: string, paymentResult: any) {
+async function updateOrderPaymentStatus(
+  orderId: string,
+  paymentResult: {
+    status: string;
+    paymentMethod: string;
+    amount: number;
+    currency: string;
+    transactionId: string;
+    error?: string;
+  }
+) {
   try {
     const supabase = createServerClient();
 
@@ -196,7 +207,7 @@ async function sendOrderConfirmationEmail(orderId: string) {
  * Handle checkout session completed
  * Creates an order when Stripe checkout session is completed
  */
-async function handleCheckoutSessionCompleted(session: any) {
+async function handleCheckoutSessionCompleted(session: Stripe.Checkout.Session) {
   console.log(`[Webhook] Checkout session completed: ${session.id}`);
 
   try {
@@ -222,7 +233,7 @@ async function handleCheckoutSessionCompleted(session: any) {
         const product = item.price.product;
         const productMetadata =
           product && typeof product === "object" && !("deleted" in product) ? product.metadata : {};
-        const productId = productMetadata?.productId;
+        const productId = productMetadata?.["productId"];
 
         if (productId) {
           orderItems.push({
@@ -326,7 +337,7 @@ async function handleCheckoutSessionCompleted(session: any) {
   }
 }
 
-async function handlePaymentSuccess(paymentIntent: any) {
+async function handlePaymentSuccess(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata?.orderId;
 
   if (!orderId) {
@@ -357,7 +368,7 @@ async function handlePaymentSuccess(paymentIntent: any) {
 /**
  * Handle failed payment
  */
-async function handlePaymentFailure(paymentIntent: any) {
+async function handlePaymentFailure(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata?.orderId;
 
   if (!orderId) {
@@ -387,7 +398,7 @@ async function handlePaymentFailure(paymentIntent: any) {
 /**
  * Handle payment requiring action (e.g., 3D Secure)
  */
-async function handleRequiresAction(paymentIntent: any) {
+async function handleRequiresAction(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata?.orderId;
 
   if (!orderId) {
@@ -415,7 +426,7 @@ async function handleRequiresAction(paymentIntent: any) {
 /**
  * Handle canceled payment
  */
-async function handlePaymentCanceled(paymentIntent: any) {
+async function handlePaymentCanceled(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata?.orderId;
 
   if (!orderId) {
@@ -443,7 +454,7 @@ async function handlePaymentCanceled(paymentIntent: any) {
 /**
  * Handle payment processing
  */
-async function handlePaymentProcessing(paymentIntent: any) {
+async function handlePaymentProcessing(paymentIntent: Stripe.PaymentIntent) {
   const orderId = paymentIntent.metadata?.orderId;
 
   if (!orderId) {

@@ -152,9 +152,9 @@ export function createImageErrorHandler(
 ) {
   return (event: Event) => {
     const img = event.target as HTMLImageElement;
-    if (img && !img.dataset['fallbackApplied']) {
+    if (img && !img.dataset["fallbackApplied"]) {
       // Mark as fallback applied to prevent infinite loops
-      img.dataset['fallbackApplied'] = "true";
+      img.dataset["fallbackApplied"] = "true";
 
       // Try the fallback image first
       const fallback = getFallbackImage(type);
@@ -163,8 +163,8 @@ export function createImageErrorHandler(
 
       // If fallback image also fails, use SVG
       img.onerror = () => {
-        if (!img.dataset['svgFallbackApplied']) {
-          img.dataset['svgFallbackApplied'] = "true";
+        if (!img.dataset["svgFallbackApplied"]) {
+          img.dataset["svgFallbackApplied"] = "true";
           img.src = getFallbackSvg(type);
         }
       };
@@ -301,7 +301,7 @@ export function logErrorWithContext(
   console.error("Component Error:", errorLog);
 
   // In production, you might want to send this to an error reporting service
-  if (process.env['NODE_ENV'] === "production") {
+  if (process.env["NODE_ENV"] === "production") {
     // Example: Send to error reporting service
     // errorReportingService.log(errorLog);
   }

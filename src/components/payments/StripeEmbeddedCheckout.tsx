@@ -34,7 +34,7 @@ let stripePromise: Promise<Stripe | null> | null = null;
 const getStripe = () => {
   if (!stripePromise) {
     stripePromise = import("@stripe/stripe-js").then((mod) =>
-      mod.loadStripe(process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY']!)
+      mod.loadStripe(process.env["NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"]!)
     );
   }
   return stripePromise;
@@ -225,7 +225,7 @@ export function StripeEmbeddedCheckout({
           )}
 
           {/* Show technical error details in development */}
-          {process.env['NODE_ENV'] === "development" && checkoutError && (
+          {process.env["NODE_ENV"] === "development" && checkoutError && (
             <details className="mt-6 text-left">
               <summary className="text-xs text-stone-500 cursor-pointer hover:text-stone-700">
                 Technical Details

@@ -496,7 +496,7 @@ export function useValidationErrorHandler(locale: string = "cs") {
   const isErrorRecoverable = useCallback(
     (error: EnhancedValidationError) => {
       return (
-        error.recoverable && !error.context?.['recoveryFailed'] && recoveryInProgress !== error.code
+        error.recoverable && !error.context?.["recoveryFailed"] && recoveryInProgress !== error.code
       );
     },
     [recoveryInProgress]

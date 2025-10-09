@@ -110,14 +110,14 @@ export function validateEnvironmentVariables(): EnvValidationResult {
   }
 
   // Additional security checks
-  if (process.env['NODE_ENV'] === "production") {
+  if (process.env["NODE_ENV"] === "production") {
     // Ensure production uses live keys
-    const stripeKey = process.env['STRIPE_SECRET_KEY'];
+    const stripeKey = process.env["STRIPE_SECRET_KEY"];
     if (stripeKey?.startsWith("sk_test_")) {
       warnings.push("STRIPE_SECRET_KEY - Using test key in production environment");
     }
 
-    const stripePublishableKey = process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY'];
+    const stripePublishableKey = process.env["NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY"];
     if (stripePublishableKey?.startsWith("pk_test_")) {
       warnings.push(
         "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY - Using test key in production environment"
@@ -125,7 +125,7 @@ export function validateEnvironmentVariables(): EnvValidationResult {
     }
 
     // Ensure NEXTAUTH_SECRET is strong enough
-    const nextAuthSecret = process.env['NEXTAUTH_SECRET'];
+    const nextAuthSecret = process.env["NEXTAUTH_SECRET"];
     if (nextAuthSecret && nextAuthSecret.length < 32) {
       invalid.push("NEXTAUTH_SECRET - Must be at least 32 characters long");
     }
@@ -196,21 +196,21 @@ export function getOptionalEnvVar(key: string, defaultValue: string): string {
  * Check if running in production environment
  */
 export function isProduction(): boolean {
-  return process.env['NODE_ENV'] === "production";
+  return process.env["NODE_ENV"] === "production";
 }
 
 /**
  * Check if running in development environment
  */
 export function isDevelopment(): boolean {
-  return process.env['NODE_ENV'] === "development";
+  return process.env["NODE_ENV"] === "development";
 }
 
 /**
  * Check if running in test environment
  */
 export function isTest(): boolean {
-  return process.env['NODE_ENV'] === "test";
+  return process.env["NODE_ENV"] === "test";
 }
 
 /**
@@ -235,7 +235,7 @@ export function sanitizeEnvVarForLogging(key: string, value: string): string {
  */
 export function logEnvironmentConfig(): void {
   console.log("Environment Configuration:");
-  console.log(`  NODE_ENV: ${process.env['NODE_ENV']}`);
+  console.log(`  NODE_ENV: ${process.env["NODE_ENV"]}`);
   console.log(`  Production: ${isProduction()}`);
   console.log(`  Development: ${isDevelopment()}`);
 

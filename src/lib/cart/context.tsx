@@ -35,15 +35,15 @@ type CartAction =
   | { type: "SET_LAST_UPDATED"; payload: Date }
   | { type: "OPTIMISTIC_ADD_ITEM"; payload: { item: CartItem; tempId: string } }
   | {
-    type: "OPTIMISTIC_UPDATE_QUANTITY";
-    payload: { itemId: string; quantity: number };
-  }
+      type: "OPTIMISTIC_UPDATE_QUANTITY";
+      payload: { itemId: string; quantity: number };
+    }
   | { type: "OPTIMISTIC_REMOVE_ITEM"; payload: { itemId: string } }
   | { type: "REVERT_OPTIMISTIC"; payload: { tempId?: string; itemId?: string } }
   | {
-    type: "CONFIRM_OPTIMISTIC";
-    payload: { tempId?: string; actualItem?: CartItem };
-  }
+      type: "CONFIRM_OPTIMISTIC";
+      payload: { tempId?: string; actualItem?: CartItem };
+    }
   | { type: "SET_SYNCING"; payload: boolean };
 
 // Enhanced cart context type
@@ -121,10 +121,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
         items: state.items.map((item) =>
           item.id === action.payload.itemId
             ? {
-              ...item,
-              quantity: action.payload.quantity,
-              totalPrice: (item.unitPrice || 0) * action.payload.quantity,
-            }
+                ...item,
+                quantity: action.payload.quantity,
+                totalPrice: (item.unitPrice || 0) * action.payload.quantity,
+              }
             : item
         ),
         optimisticUpdates: newOptimisticUpdates,
@@ -169,10 +169,10 @@ function cartReducer(state: CartState, action: CartAction): CartState {
             items: state.items.map((item) =>
               item.id === action.payload.itemId
                 ? {
-                  ...item,
-                  quantity: update.originalQuantity || 0,
-                  totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
-                }
+                    ...item,
+                    quantity: update.originalQuantity || 0,
+                    totalPrice: (item.unitPrice || 0) * (update.originalQuantity || 0),
+                  }
                 : item
             ),
             optimisticUpdates: newOptimisticUpdates,

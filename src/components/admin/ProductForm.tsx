@@ -122,31 +122,31 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
     const newErrors: Record<string, string> = {};
 
     if (!(formData as any).name_cs.trim()) {
-      newErrors.name_cs = "Český název je povinný";
+      newErrors["name_cs"] = "Český název je povinný";
     }
 
     if (!(formData as any).name_en.trim()) {
-      newErrors.name_en = "Anglický název je povinný";
+      newErrors["name_en"] = "Anglický název je povinný";
     }
 
     if (!(formData as any).slug.trim()) {
-      newErrors.slug = "URL slug je povinný";
+      newErrors["slug"] = "URL slug je povinný";
     }
 
     if ((formData as any).base_price <= 0) {
-      newErrors.base_price = "Cena musí být větší než 0";
+      newErrors["base_price"] = "Cena musí být větší než 0";
     }
 
     if (!(formData as any).category_id) {
-      newErrors.category_id = "Kategorie je povinná";
+      newErrors["category_id"] = "Kategorie je povinná";
     }
 
     if ((formData as any).track_inventory && (formData as any).stock_quantity < 0) {
-      newErrors.stock_quantity = "Počet kusů nemůže být záporný";
+      newErrors["stock_quantity"] = "Počet kusů nemůže být záporný";
     }
 
     if ((formData as any).track_inventory && (formData as any).low_stock_threshold < 0) {
-      newErrors.low_stock_threshold = "Práh pro upozornění nemůže být záporný";
+      newErrors["low_stock_threshold"] = "Práh pro upozornění nemůže být záporný";
     }
 
     setErrors(newErrors);
@@ -351,11 +351,11 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                       handleInputChange("stock_quantity", Number.parseInt(e.target.value, 10) || 0)
                     }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.stock_quantity ? "border-red-300" : "border-gray-300"
+                      errors["stock_quantity"] ? "border-red-300" : "border-gray-300"
                     }`}
                   />
-                  {errors.stock_quantity && (
-                    <p className="mt-1 text-sm text-red-600">{errors.stock_quantity}</p>
+                  {errors["stock_quantity"] && (
+                    <p className="mt-1 text-sm text-red-600">{errors["stock_quantity"]}</p>
                   )}
                 </div>
 
@@ -374,11 +374,11 @@ export default function ProductForm({ product, categories, onSubmit, onCancel }:
                       )
                     }
                     className={`w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent ${
-                      errors.low_stock_threshold ? "border-red-300" : "border-gray-300"
+                      errors["low_stock_threshold"] ? "border-red-300" : "border-gray-300"
                     }`}
                   />
-                  {errors.low_stock_threshold && (
-                    <p className="mt-1 text-sm text-red-600">{errors.low_stock_threshold}</p>
+                  {errors["low_stock_threshold"] && (
+                    <p className="mt-1 text-sm text-red-600">{errors["low_stock_threshold"]}</p>
                   )}
                 </div>
               </div>

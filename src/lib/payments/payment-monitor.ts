@@ -51,7 +51,7 @@ export class PaymentMonitor {
       timestamp: new Date(data.timestamp).toISOString(),
     };
 
-    if (process.env['NODE_ENV'] === "production") {
+    if (process.env["NODE_ENV"] === "production") {
       console.log("[Payment Monitor]", logData);
     } else {
       console.log("[Payment Monitor - Dev]", logData);
@@ -68,7 +68,7 @@ export class PaymentMonitor {
       timestamp: new Date(data.timestamp).toISOString(),
     };
 
-    if (process.env['NODE_ENV'] === "production") {
+    if (process.env["NODE_ENV"] === "production") {
       console.log("[Payment Monitor] ✓", logData);
     } else {
       console.log("[Payment Monitor - Dev] ✓", logData);

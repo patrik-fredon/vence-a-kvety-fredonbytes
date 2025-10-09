@@ -27,7 +27,7 @@ export async function POST(request: NextRequest) {
   try {
     // Verify this is coming from CI/CD (check for auth token or IP)
     const authHeader = request.headers.get("authorization");
-    const expectedToken = process.env['MONITORING_API_TOKEN'];
+    const expectedToken = process.env["MONITORING_API_TOKEN"];
 
     if (expectedToken && authHeader !== `Bearer ${expectedToken}`) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

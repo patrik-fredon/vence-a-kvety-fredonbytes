@@ -201,8 +201,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
 
   // Type-safe handling of seo_metadata
   const seoMetadata = data.seo_metadata as Record<string, Record<string, string>> | null;
-  const seoTitle = seoMetadata?.title?.[locale] as string | undefined;
-  const seoDescription = seoMetadata?.description?.[locale] as string | undefined;
+  const seoTitle = seoMetadata?.["title"]?.[locale] as string | undefined;
+  const seoDescription = seoMetadata?.["description"]?.[locale] as string | undefined;
 
   // Get first product image
   const productImages = Array.isArray(data.images) ? data.images : [];
@@ -221,8 +221,8 @@ export async function generateMetadata({ params }: ProductDetailPageProps) {
           ? productImages.map((img) => {
               if (img && typeof img === "object" && "url" in img && "alt" in img) {
                 return {
-                  url: typeof img.url === "string" ? img.url : "",
-                  alt: (typeof img.alt === "string" ? img.alt : null) || name,
+                  url: typeof img[`url`] === "string" ? img[`url`] : "",
+                  alt: (typeof img[`alt`] === "string" ? img[`alt`] : null) || name,
                 };
               }
               return { url: "", alt: name };

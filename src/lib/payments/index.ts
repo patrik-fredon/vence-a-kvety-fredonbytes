@@ -229,7 +229,7 @@ export class PaymentService {
     }
 
     return {
-      orderId: paymentIntent.metadata['orderId'] || "",
+      orderId: paymentIntent.metadata["orderId"] || "",
       transactionId: paymentIntent.id,
       amount: paymentIntent.amount / 100,
       currency: paymentIntent.currency,
@@ -295,7 +295,7 @@ export class PaymentService {
   ): Promise<PaymentResult | null> {
     const { verifyWebhookSignature } = await import("./stripe");
 
-    const event = verifyWebhookSignature(payload, signature, process.env['STRIPE_WEBHOOK_SECRET']!);
+    const event = verifyWebhookSignature(payload, signature, process.env["STRIPE_WEBHOOK_SECRET"]!);
 
     if (event.type === "payment_intent.succeeded") {
       const paymentIntent = event.data.object;
