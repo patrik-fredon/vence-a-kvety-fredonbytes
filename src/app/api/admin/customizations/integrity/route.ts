@@ -64,7 +64,7 @@ export async function GET() {
 
     // Also run database-level integrity check
     const { data: dbIntegrityResult, error: dbError } = await (
-      supabase.rpc as (name: string) => Promise<{ data: unknown; error: unknown }>
+      supabase.rpc as unknown as (name: string) => Promise<{ data: unknown; error: unknown }>
     )("check_customization_integrity");
 
     if (dbError) {
@@ -76,7 +76,7 @@ export async function GET() {
       timestamp: new Date().toISOString(),
       applicationLevel: integrityResult,
       databaseLevel: dbIntegrityResult || null,
-      dbError: dbError?.message || null,
+      dbError: dbError && typeof dbError === "object" && "message" in dbError ? (dbError as { message: string }).message : null,
     });
   } catch (error) {
     console.error("Customization integrity check failed:", error);
@@ -168,13 +168,13 @@ export async function POST(request: NextRequest) {
     // Fix integrity issues if requested
     if (body.fixIntegrityIssues === true) {
       const { data: dbFixResult, error: dbFixError } = await (
-        supabase.rpc as (name: string) => Promise<{ data: unknown; error: unknown }>
+        supabase.rpc as unknown as (name: string) => Promise<{ data: unknown; error: unknown }>
       )("cleanup_invalid_customizations");
 
       results.operations.push({
         type: "fix_integrity_issues",
         result: dbFixResult || null,
-        error: dbFixError?.message || null,
+        error: dbFixError && typeof dbFixError === "object" && "message" in dbFixError ? (dbFixError as { message: string }).message : null,
       });
     }
 
