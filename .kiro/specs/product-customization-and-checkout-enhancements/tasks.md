@@ -108,7 +108,7 @@
     - Include relevant metadata for debugging
     - _Requirements: 5.8, 7.8_
 
-- [ ] 7. Stripe Embedded Checkout Component
+- [x] 7. Stripe Embedded Checkout Component
   - [x] 7.1 Create StripeEmbeddedCheckout component
     - Create `src/components/payments/StripeEmbeddedCheckout.tsx`
     - Implement EmbeddedCheckoutProvider integration
@@ -123,14 +123,14 @@
     - Handle timeout scenarios
     - _Requirements: 6.6, 6.7, 6.8_
 
-  - [-] 7.3 Add error handling to checkout component
+  - [x] 7.3 Add error handling to checkout component
     - Implement onError callback
     - Display user-friendly error messages
     - Add retry button for recoverable errors
     - _Requirements: 7.1, 7.2, 7.3, 7.7_
 
-- [ ] 8. Checkout Page Integration
-  - [ ] 8.1 Update checkout page with embedded checkout
+- [x] 8. Checkout Page Integration
+  - [x] 8.1 Update checkout page with embedded checkout
     - Update `src/app/[locale]/checkout/page.tsx`
     - Add delivery method validation before checkout
     - Integrate createEmbeddedCheckoutSession service

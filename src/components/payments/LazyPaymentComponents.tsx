@@ -33,6 +33,9 @@ export const LazyStripeElementsProvider = dynamic(
         <span className="ml-2 text-amber-100">Loading Payment Provider...</span>
       </div>
     ),
+    ssr: false,
+  }
+);
 
 // Lazy load Stripe Embedded Checkout component
 export const LazyStripeEmbeddedCheckout = dynamic(
@@ -48,8 +51,5 @@ export const LazyStripeEmbeddedCheckout = dynamic(
       </div>
     ),
     ssr: false, // Embedded checkout is interactive and doesn't need SSR
-  }
-);
-    ssr: false,
   }
 );

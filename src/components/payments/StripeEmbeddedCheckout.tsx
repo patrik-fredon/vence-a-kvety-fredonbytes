@@ -7,7 +7,7 @@ import { LoadingSpinner } from '@/components/ui/LoadingSpinner';
 import { useTranslations } from 'next-intl';
 
 // Initialize Stripe outside component to avoid recreating on each render
-const stripePromise = loadStripe(process.env.NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY!);
+const stripePromise = loadStripe(process.env['NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY']!);
 
 interface StripeEmbeddedCheckoutProps {
   clientSecret: string;
@@ -37,7 +37,11 @@ export function StripeEmbeddedCheckout({
   const t = useTranslations('checkout');
   const [isLoading, setIsLoading] = useState(true);
   const [loadTimeout, setLoadTimeout] = useState(false);
-  const [stripeLoadError, setStripeLoadError] = useState<Error | null>(null);
+  const [checkoutError, setCheckoutError] = useState<{
+    message: string;
+    retryable: boolean;
+    code: string;
+  } | null>(null);
 
   // Memoize the fetchClientSecret function to prevent unnecessary re-renders
   const fetchClientSecret = useCallback(async () => {
@@ -47,40 +51,93 @@ export function StripeEmbeddedCheckout({
   // Handle successful checkout completion
   const handleComplete = useCallback(() => {
     setIsLoading(false);
+    setCheckoutError(null);
     onComplete?.();
   }, [onComplete]);
 
-  // Handle checkout errors
-  const handleError = useCallback((error: Error) => {
+  // Handle checkout errors from Stripe Embedded Checkout
+  // Note: Stripe's EmbeddedCheckout component doesn't support onError prop directly
+  // Errors are handled through the EmbeddedCheckoutProvider and completion callbacks
+  // const handleEmbeddedCheckoutError = useCallback((error: { error?: { message?: string } }) => {
+  //   setIsLoading(false);
+  //   
+  //   const errorMessage = error?.error?.message || 'Unknown error occurred';
+  //   const isRetryable = 
+  //     errorMessage.includes('network') ||
+  //     errorMessage.includes('connection') ||
+  //     errorMessage.includes('timeout') ||
+  //     errorMessage.includes('rate limit');
+  //   
+  //   const checkoutErr = {
+  //     message: errorMessage,
+  //     retryable: isRetryable,
+  //     code: 'STRIPE_EMBEDDED_ERROR',
+  //   };
+  //   
+  //   setCheckoutError(checkoutErr);
+  //   
+  //   if (onError) {
+  //     const error = new Error(errorMessage);
+  //     onError(error);
+  //   }
+  // }, [onError]);
+
+  // Handle general errors (timeout, SDK loading failures)
+  const handleGeneralError = useCallback((error: Error, retryable: boolean = true) => {
     setIsLoading(false);
-    setStripeLoadError(error);
+    setCheckoutError({
+      message: error.message,
+      retryable,
+      code: 'GENERAL_ERROR',
+    });
     onError?.(error);
   }, [onError]);
 
   // Set up timeout for Stripe SDK loading (30 seconds)
   useEffect(() => {
     const timeoutId = setTimeout(() => {
-      if (isLoading) {
+      if (isLoading && !checkoutError) {
         setLoadTimeout(true);
         const timeoutError = new Error('Stripe SDK loading timeout');
-        handleError(timeoutError);
+        handleGeneralError(timeoutError, true);
       }
     }, 30000); // 30 second timeout
 
     return () => clearTimeout(timeoutId);
-  }, [isLoading, handleError]);
+  }, [isLoading, checkoutError, handleGeneralError]);
 
-  // Handle retry after timeout
+  // Handle retry after error
   const handleRetry = useCallback(() => {
     setLoadTimeout(false);
-    setStripeLoadError(null);
+    setCheckoutError(null);
     setIsLoading(true);
-    // Reload the page to retry Stripe SDK loading
+    // Reload the page to retry Stripe SDK loading and checkout
     window.location.reload();
   }, []);
 
-  // Show timeout error state
-  if (loadTimeout || stripeLoadError) {
+  // Get user-friendly error message based on error type
+  const getUserErrorMessage = useCallback(() => {
+    if (!checkoutError) return '';
+    
+    const errorMsg = checkoutError.message.toLowerCase();
+    
+    // Map error messages to translation keys
+    if (errorMsg.includes('card') || errorMsg.includes('declined')) {
+      return t('error.card');
+    }
+    if (errorMsg.includes('network') || errorMsg.includes('connection')) {
+      return t('error.network');
+    }
+    if (errorMsg.includes('expired') || errorMsg.includes('timeout')) {
+      return t('error.sessionExpired');
+    }
+    
+    // Default to generic error message
+    return t('error.generic');
+  }, [checkoutError, t]);
+
+  // Show error state
+  if (checkoutError || loadTimeout) {
     return (
       <div className="stripe-embedded-checkout-container relative min-h-[600px] flex flex-col items-center justify-center bg-stone-50 border border-stone-200 rounded-lg p-8">
         <div className="text-center max-w-md">
@@ -90,6 +147,7 @@ export function StripeEmbeddedCheckout({
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
+              aria-hidden="true"
             >
               <path
                 strokeLinecap="round"
@@ -100,19 +158,51 @@ export function StripeEmbeddedCheckout({
             </svg>
           </div>
           <h3 className="text-lg font-semibold text-stone-900 mb-2">
-            {t('error.generic')}
+            {locale === 'cs' ? 'Chyba při platbě' : 'Payment Error'}
           </h3>
           <p className="text-stone-600 mb-6">
-            {loadTimeout
-              ? t('error.sessionExpired')
-              : stripeLoadError?.message || t('error.network')}
+            {getUserErrorMessage()}
           </p>
-          <button
-            onClick={handleRetry}
-            className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors"
-          >
-            {locale === 'cs' ? 'Zkusit znovu' : 'Try Again'}
-          </button>
+          
+          {/* Show retry button only for retryable errors */}
+          {(checkoutError?.retryable || loadTimeout) && (
+            <button
+              onClick={handleRetry}
+              className="px-6 py-3 bg-teal-600 text-white rounded-lg hover:bg-teal-700 transition-colors focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2"
+              aria-label={locale === 'cs' ? 'Zkusit znovu' : 'Try again'}
+            >
+              {locale === 'cs' ? 'Zkusit znovu' : 'Try Again'}
+            </button>
+          )}
+          
+          {/* Show contact support message for non-retryable errors */}
+          {checkoutError && !checkoutError.retryable && (
+            <div className="mt-4">
+              <p className="text-sm text-stone-500">
+                {locale === 'cs' 
+                  ? 'Pokud problém přetrvává, kontaktujte prosím naši podporu.' 
+                  : 'If the problem persists, please contact our support.'}
+              </p>
+              <button
+                onClick={() => window.location.href = `/${locale}/contact`}
+                className="mt-3 px-6 py-3 bg-stone-600 text-white rounded-lg hover:bg-stone-700 transition-colors focus:outline-none focus:ring-2 focus:ring-stone-500 focus:ring-offset-2"
+              >
+                {locale === 'cs' ? 'Kontaktovat podporu' : 'Contact Support'}
+              </button>
+            </div>
+          )}
+          
+          {/* Show technical error details in development */}
+          {process.env.NODE_ENV === 'development' && checkoutError && (
+            <details className="mt-6 text-left">
+              <summary className="text-xs text-stone-500 cursor-pointer hover:text-stone-700">
+                Technical Details
+              </summary>
+              <pre className="mt-2 text-xs text-stone-600 bg-stone-100 p-3 rounded overflow-auto">
+                {JSON.stringify(checkoutError, null, 2)}
+              </pre>
+            </details>
+          )}
         </div>
       </div>
     );
@@ -133,18 +223,6 @@ export function StripeEmbeddedCheckout({
           </p>
         </div>
       )}
-      <EmbeddedCheckoutProvider
-        stripe={stripePromise}
-        options={{
-          fetchClientSecret,
-          onComplete: handleComplete,
-        }}
-      >
-        <EmbeddedCheckout />
-      </EmbeddedCheckoutProvider>
-    </div>
-  );
-}
       <EmbeddedCheckoutProvider
         stripe={stripePromise}
         options={{

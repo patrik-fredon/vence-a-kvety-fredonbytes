@@ -258,6 +258,7 @@
     "loading": "Loading payment gateway...",
     "processingPayment": "Processing payment...",
     "paymentSuccess": "Payment successful",
+    "retry": "Try Again",
     "error": {
       "generic": "An error occurred while processing payment",
       "network": "Connection problem. Please try again.",

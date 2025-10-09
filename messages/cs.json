@@ -251,6 +251,7 @@
     "loading": "Načítání platební brány...",
     "processingPayment": "Zpracování platby...",
     "paymentSuccess": "Platba byla úspěšná",
+    "retry": "Zkusit znovu",
     "error": {
       "generic": "Nastala chyba při zpracování platby",
       "network": "Problém s připojením. Zkuste to prosím znovu.",
