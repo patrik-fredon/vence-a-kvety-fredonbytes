@@ -12,6 +12,7 @@ import { cn } from "@/lib/utils";
 import { usePriceCalculationWithSize } from "@/lib/utils/usePriceCalculation";
 import { validateWreathConfiguration, WREATH_VALIDATION_MESSAGES } from "@/lib/validation/wreath";
 import type { Customization, Product } from "@/types/product";
+import { DeliveryMethodSelector } from "./DeliveryMethodSelector";
 import { LazyRibbonConfigurator } from "./LazyRibbonConfigurator";
 import { PriceBreakdown } from "./PriceBreakdown";
 import { ProductDetailImageGrid } from "./ProductDetailImageGrid";
@@ -36,6 +37,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
 
   const [selectedSize, setSelectedSize] = useState<string | null>(null);
+  const [deliveryMethod, setDeliveryMethod] = useState<'delivery' | 'pickup' | null>(null);
 
   // Refs for animation
   const productImageRef = useRef<HTMLDivElement>(null);
@@ -131,6 +133,14 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setValidationWarnings([]);
   }, []);
 
+  // Handle delivery method changes
+  const handleDeliveryMethodChange = useCallback((method: 'delivery' | 'pickup') => {
+    setDeliveryMethod(method);
+    // Clear validation errors when delivery method changes
+    setValidationErrors([]);
+    setValidationWarnings([]);
+  }, []);
+
   // Enhanced validation using wreath-specific validation system
   const validateCustomizations = useCallback(() => {
     const validationResult = validateWreathConfiguration(
@@ -182,6 +192,12 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
   // Handle add to cart
   const handleAddToCart = async () => {
+    // Validate delivery method selection
+    if (!deliveryMethod) {
+      setValidationErrors([t("deliveryMethod.required")]);
+      return;
+    }
+
     const validationResult = validateCustomizations();
 
     if (!validationResult.isValid) {
@@ -192,7 +208,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
     setIsAddingToCart(true);
 
     try {
-      // Combine size and other customizations
+      // Combine size, delivery method, and other customizations
       const allCustomizations = [...customizations];
       if (selectedSize && sizeOption) {
         allCustomizations.push({
@@ -200,6 +216,12 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
           choiceIds: [selectedSize],
         });
       }
+      
+      // Add delivery method to customizations
+      allCustomizations.push({
+        optionId: 'delivery_method',
+        choiceIds: [deliveryMethod === 'delivery' ? 'delivery_address' : 'personal_pickup'],
+      });
 
       const success = await addToCart({
         productId: product.id,
@@ -378,6 +400,17 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
             </Card>
           )}
 
+          {/* Delivery Method Selection */}
+          <Card>
+            <CardContent className="py-6">
+              <DeliveryMethodSelector
+                value={deliveryMethod || undefined}
+                onChange={handleDeliveryMethodChange}
+                locale={locale}
+              />
+            </CardContent>
+          </Card>
+
           {/* Enhanced Validation Error Display */}
           {validationErrors.length > 0 && (
             <Card className="bg-red-50 border-red-200">
@@ -507,7 +540,7 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
               <Button
                 ref={addToCartButtonRef}
                 onClick={handleAddToCart}
-                disabled={isAddingToCart || !selectedSize}
+                disabled={isAddingToCart || !selectedSize || !deliveryMethod}
                 className="w-full"
                 size="lg"
               >
@@ -523,6 +556,9 @@ export function ProductDetail({ product, locale, className }: ProductDetailProps
 
               {!selectedSize && (
                 <p className="text-sm text-red-600 text-center">{t("selectSizeFirst")}</p>
+              )}
+              {!deliveryMethod && selectedSize && (
+                <p className="text-sm text-red-600 text-center">{t("deliveryMethod.required")}</p>
               )}
             </CardContent>
           </Card>

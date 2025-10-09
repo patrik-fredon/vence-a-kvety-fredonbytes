@@ -1,5 +1,32 @@
 "use client";
 
+/**
+ * Checkout Page Client Component
+ * 
+ * Integration with Stripe Embedded Checkout (Task 8.2):
+ * When implementing Stripe Embedded Checkout, use the useCheckoutCompletion hook:
+ * 
+ * import { useCheckoutCompletion } from "@/lib/hooks/useCheckoutCompletion";
+ * 
+ * const { handleComplete, handleCancel, isProcessing, error } = useCheckoutCompletion({
+ *   locale,
+ *   onSuccess: (orderId) => {
+ *     // Optional: Additional success handling
+ *   },
+ *   onError: (error) => {
+ *     // Optional: Additional error handling
+ *   },
+ * });
+ * 
+ * Then pass handleComplete to the StripeEmbeddedCheckout component:
+ * <StripeEmbeddedCheckout
+ *   clientSecret={clientSecret}
+ *   onComplete={(sessionId, orderId) => handleComplete(sessionId, orderId)}
+ *   onCancel={(sessionId, orderId) => handleCancel(sessionId, orderId)}
+ *   locale={locale}
+ * />
+ */
+
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { useState } from "react";
@@ -9,6 +36,21 @@ import { CompactOrderSummary } from "@/components/checkout/OrderSummary";
 import { ArrowLeftIcon } from "@/lib/icons";
 import type { CartItem } from "@/types/cart";
 
+// Helper function to extract delivery method from cart items
+function getDeliveryMethodFromCart(items: CartItem[]): "delivery" | "pickup" | null {
+  for (const item of items) {
+    const deliveryCustomization = item.customizations?.find(
+      (c) => c.optionId === "delivery_method"
+    );
+    if (deliveryCustomization && deliveryCustomization.choiceIds.length > 0) {
+      const choiceId = deliveryCustomization.choiceIds[0];
+      if (choiceId === "delivery_address") return "delivery";
+      if (choiceId === "personal_pickup") return "pickup";
+    }
+  }
+  return null;
+}
+
 interface CheckoutPageClientProps {
   locale: string;
   initialCart: import("@/types/cart").CartSummary;
@@ -17,10 +59,14 @@ interface CheckoutPageClientProps {
 export function CheckoutPageClient({ locale, initialCart }: CheckoutPageClientProps) {
   const t = useTranslations("checkout");
   const tCart = useTranslations("cart");
+  const tProduct = useTranslations("product");
   const router = useRouter();
 
   // Use initialCart from server-side fetch
   const [items] = useState<CartItem[]>(initialCart.items);
+
+  // Extract delivery method from cart
+  const deliveryMethod = getDeliveryMethodFromCart(items);
 
   // Handle order completion
   const handleOrderComplete = (orderId: string) => {
@@ -78,6 +124,7 @@ export function CheckoutPageClient({ locale, initialCart }: CheckoutPageClientPr
                   deliveryCost={0} // Will be calculated in checkout form
                   totalAmount={subtotal}
                   locale={locale}
+                  deliveryMethod={deliveryMethod}
                 />
               </div>
 
@@ -114,6 +161,47 @@ export function CheckoutPageClient({ locale, initialCart }: CheckoutPageClientPr
                       );
                     })}
                   </div>
+
+                  {/* Delivery Method Section */}
+                  {deliveryMethod && (
+                    <div className="mt-6 pt-4 border-t border-teal-200">
+                      <h3 className="text-sm font-semibold text-teal-900 mb-3">
+                        {tProduct("deliveryMethod.title")}
+                      </h3>
+                      <div className="bg-teal-50 rounded-lg p-3">
+                        {deliveryMethod === "delivery" ? (
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium text-teal-900">
+                                {tProduct("deliveryMethod.delivery.label")}
+                              </span>
+                              <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                                {tProduct("deliveryMethod.delivery.badge")}
+                              </span>
+                            </div>
+                            <p className="text-xs text-teal-700">
+                              {tProduct("deliveryMethod.delivery.description")}
+                            </p>
+                          </div>
+                        ) : (
+                          <div>
+                            <div className="flex items-center justify-between mb-1">
+                              <span className="text-sm font-medium text-teal-900">
+                                {tProduct("deliveryMethod.pickup.label")}
+                              </span>
+                            </div>
+                            <p className="text-xs text-teal-700 mb-2">
+                              {tProduct("deliveryMethod.pickup.description")}
+                            </p>
+                            <div className="text-xs text-teal-800 space-y-1 bg-white rounded p-2">
+                              <p className="font-medium">{tProduct("deliveryMethod.pickup.address")}</p>
+                              <p>{tProduct("deliveryMethod.pickup.hours")}</p>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="mt-6 pt-4 border-t border-teal-200">
                     <div className="flex justify-between items-center text-lg font-semibold">

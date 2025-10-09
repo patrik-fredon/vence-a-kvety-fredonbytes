@@ -1,30 +1,30 @@
 # Implementation Plan
 
-- [ ] 1. Setup and Configuration
+- [x] 1. Setup and Configuration
   - Create translation keys for delivery method and checkout messages in both Czech and English
   - Add environment variable validation for Stripe Embedded Checkout
   - _Requirements: 2.10, 8.1, 8.6_
 
-- [ ] 2. DateSelector UI Improvements
-  - [ ] 2.1 Update DateSelector component interface
+- [x] 2. DateSelector UI Improvements
+  - [x] 2.1 Update DateSelector component interface
     - Add optional `header` prop to DateSelectorProps interface
     - Remove input message field from component rendering
     - Maintain all existing calendar functionality
     - _Requirements: 1.1, 1.2, 1.3, 1.4_
 
-  - [ ] 2.2 Update DateSelector usage in ProductDetail
+  - [x] 2.2 Update DateSelector usage in ProductDetail
     - Pass "Order date" as header prop to DateSelector
     - Verify calendar functionality remains intact
     - Test date selection and validation
     - _Requirements: 1.2, 1.5, 1.6_
 
-  - [ ] 2.3 Update DateSelector usage in ProductCustomizer
+  - [x] 2.3 Update DateSelector usage in ProductCustomizer
     - Pass "Order date" as header prop to DateSelector
     - Ensure consistent header styling
     - _Requirements: 1.3, 4.1, 4.4_
 
-- [ ] 3. Delivery Method Selection Component
-  - [ ] 3.1 Create DeliveryMethodSelector component
+- [x] 3. Delivery Method Selection Component
+  - [x] 3.1 Create DeliveryMethodSelector component
     - Create `src/components/product/DeliveryMethodSelector.tsx`
     - Implement radio button interface for delivery/pickup selection
     - Add "Free delivery" badge for delivery option
@@ -32,41 +32,41 @@
     - Implement responsive design for mobile and desktop
     - _Requirements: 2.1, 2.2, 2.5, 2.6, 2.10_
 
-  - [ ] 3.2 Add delivery method translations
+  - [x] 3.2 Add delivery method translations
     - Add translation keys to `messages/cs.json`
     - Add translation keys to `messages/en.json`
     - Include labels, descriptions, and validation messages
     - _Requirements: 2.10, 8.1, 8.6_
 
-  - [ ] 3.3 Integrate DeliveryMethodSelector into ProductDetail
+  - [x] 3.3 Integrate DeliveryMethodSelector into ProductDetail
     - Add delivery method state to ProductDetail component
     - Render DeliveryMethodSelector in customization flow
     - Add delivery method to customizations when adding to cart
     - Implement validation to require delivery method selection
     - _Requirements: 2.1, 2.7, 2.8, 5.1, 5.2_
 
-  - [ ] 3.4 Add accessibility features to DeliveryMethodSelector
+  - [x] 3.4 Add accessibility features to DeliveryMethodSelector
     - Implement ARIA labels and roles for radio group
     - Ensure keyboard navigation support
     - Add screen reader announcements
     - Verify color contrast meets WCAG 2.1 AA standards
     - _Requirements: 8.3, 8.4, 8.5_
 
-- [ ] 4. ProductCustomizer Header Consistency
-  - [ ] 4.1 Implement option-specific header logic
+- [x] 4. ProductCustomizer Header Consistency
+  - [x] 4.1 Implement option-specific header logic
     - Create `getOptionHeader` function in ProductCustomizer
     - Map option types to appropriate headers (Order date, Ribbon, Size)
     - Remove generic "Customize" header for date selection
     - _Requirements: 4.1, 4.2, 4.3_
 
-  - [ ] 4.2 Update header rendering in ProductCustomizer
+  - [x] 4.2 Update header rendering in ProductCustomizer
     - Apply new header logic to all customization sections
     - Ensure consistent typography and styling
     - Verify localization for all headers
     - _Requirements: 4.3, 4.4, 4.5_
 
-- [ ] 5. Database Schema Updates
-  - [ ] 5.1 Create delivery method migration
+- [x] 5. Database Schema Updates
+  - [x] 5.1 Create delivery method migration
     - Create `supabase/migrations/20250110000000_add_delivery_method_support.sql`
     - Add `delivery_method` column to orders table
     - Add `pickup_location` column to orders table
@@ -74,35 +74,35 @@
     - Update existing orders with default delivery method
     - _Requirements: 5.5, 9.1, 9.2_
 
-  - [ ] 5.2 Update TypeScript types for delivery method
+  - [x] 5.2 Update TypeScript types for delivery method
     - Add delivery method fields to Order type
     - Update CustomizationOption type to include delivery_method
     - Add DeliveryMethodOption interface
     - _Requirements: 5.2, 5.6_
 
-- [ ] 6. Stripe Embedded Checkout Service
-  - [ ] 6.1 Create embedded checkout service
+- [-] 6. Stripe Embedded Checkout Service
+  - [x] 6.1 Create embedded checkout service
     - Create `src/lib/stripe/embedded-checkout.ts`
     - Implement `createEmbeddedCheckoutSession` function
     - Implement `getStripeIds` function to retrieve product and price IDs from Supabase
     - Add validation for missing Stripe IDs
     - _Requirements: 3.1, 3.2, 3.3, 3.4, 5.3_
 
-  - [ ] 6.2 Implement Redis caching for checkout sessions
+  - [x] 6.2 Implement Redis caching for checkout sessions
     - Implement cart hash generation function
     - Add cache check before creating new session
     - Store session with 30-minute TTL
     - Implement `invalidateCheckoutSession` function
     - _Requirements: 3.8, 3.9, 3.10, 3.12, 6.1, 6.2, 6.3, 6.4_
 
-  - [ ] 6.3 Add error handling and retry logic
+  - [x] 6.3 Add error handling and retry logic
     - Create `src/lib/stripe/error-handler.ts`
     - Implement `CheckoutError` class with localized messages
     - Implement `handleStripeError` function
     - Add retry logic with exponential backoff
     - _Requirements: 3.11, 7.1, 7.2, 7.5, 7.6, 7.8_
 
-  - [ ] 6.4 Add logging and monitoring
+  - [-] 6.4 Add logging and monitoring
     - Add structured logging for checkout events
     - Log session creation, cache hits/misses, errors
     - Include relevant metadata for debugging
@@ -137,20 +137,20 @@
     - Render StripeEmbeddedCheckout component
     - _Requirements: 2.3, 2.4, 2.7, 3.5, 5.1_
 
-  - [ ] 8.2 Implement checkout completion handling
+  - [x] 8.2 Implement checkout completion handling
     - Create handleCheckoutComplete function
     - Invalidate cached session on completion
     - Update order status in database
     - Redirect to confirmation page
     - _Requirements: 3.6, 3.12, 9.4, 9.8_
 
-  - [ ] 8.3 Implement checkout cancellation handling
+  - [x] 8.3 Implement checkout cancellation handling
     - Handle cancel callback from Stripe
     - Allow user to retry payment
     - Maintain cart state
     - _Requirements: 3.7, 7.2_
 
-  - [ ] 8.4 Add checkout summary with delivery method
+  - [x] 8.4 Add checkout summary with delivery method
     - Display selected delivery method in summary
     - Show delivery address or pickup location
     - Update summary when delivery method changes

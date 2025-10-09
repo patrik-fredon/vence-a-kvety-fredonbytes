@@ -17,6 +17,7 @@ interface OrderSummaryProps {
   locale: string;
   isLoading?: boolean;
   className?: string;
+  deliveryMethod?: "delivery" | "pickup" | null;
 }
 
 export function OrderSummary({
@@ -28,10 +29,12 @@ export function OrderSummary({
   locale,
   isLoading = false,
   className = "",
+  deliveryMethod,
 }: OrderSummaryProps) {
   const t = useTranslations("checkout");
   const tCart = useTranslations("cart");
   const tDelivery = useTranslations("delivery");
+  const tProduct = useTranslations("product");
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -63,6 +66,47 @@ export function OrderSummary({
           ))}
         </div>
       </CardContent>
+
+      {/* Delivery Method Section */}
+      {deliveryMethod && (
+        <CardContent className="border-b border-stone-200">
+          <h3 className="text-sm font-semibold text-stone-900 mb-3">
+            {tProduct("deliveryMethod.title")}
+          </h3>
+          <div className="bg-teal-50 rounded-lg p-3">
+            {deliveryMethod === "delivery" ? (
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-stone-900">
+                    {tProduct("deliveryMethod.delivery.label")}
+                  </span>
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                    {tProduct("deliveryMethod.delivery.badge")}
+                  </span>
+                </div>
+                <p className="text-xs text-stone-700">
+                  {tProduct("deliveryMethod.delivery.description")}
+                </p>
+              </div>
+            ) : (
+              <div>
+                <div className="flex items-center justify-between mb-1">
+                  <span className="text-sm font-medium text-stone-900">
+                    {tProduct("deliveryMethod.pickup.label")}
+                  </span>
+                </div>
+                <p className="text-xs text-stone-700 mb-2">
+                  {tProduct("deliveryMethod.pickup.description")}
+                </p>
+                <div className="text-xs text-stone-800 space-y-1 bg-white rounded p-2">
+                  <p className="font-medium">{tProduct("deliveryMethod.pickup.address")}</p>
+                  <p>{tProduct("deliveryMethod.pickup.hours")}</p>
+                </div>
+              </div>
+            )}
+          </div>
+        </CardContent>
+      )}
 
       {/* Pricing Breakdown */}
       <CardFooter className="flex-col space-y-3">
@@ -186,10 +230,14 @@ export function CompactOrderSummary({
   deliveryCost,
   totalAmount,
   locale,
+  deliveryMethod,
   className = "",
-}: Omit<OrderSummaryProps, "estimatedDeliveryDate" | "isLoading">) {
+}: Omit<OrderSummaryProps, "estimatedDeliveryDate" | "isLoading"> & {
+  deliveryMethod?: "delivery" | "pickup" | null;
+}) {
   const t = useTranslations("checkout");
   const tCart = useTranslations("cart");
+  const tProduct = useTranslations("product");
 
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
 
@@ -204,6 +252,27 @@ export function CompactOrderSummary({
         </div>
 
         <div className="space-y-2 text-sm">
+          {/* Delivery Method */}
+          {deliveryMethod && (
+            <div className="pb-2 mb-2 border-b border-stone-200">
+              <div className="flex items-center justify-between">
+                <span className="text-stone-700 font-medium">
+                  {tProduct("deliveryMethod.title")}
+                </span>
+                {deliveryMethod === "delivery" && (
+                  <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-green-100 text-green-800">
+                    {tProduct("deliveryMethod.delivery.badge")}
+                  </span>
+                )}
+              </div>
+              <p className="text-xs text-stone-600 mt-1">
+                {deliveryMethod === "delivery"
+                  ? tProduct("deliveryMethod.delivery.label")
+                  : tProduct("deliveryMethod.pickup.label")}
+              </p>
+            </div>
+          )}
+
           <div className="flex justify-between">
             <span className="text-stone-600">{tCart("subtotal")}</span>
             <span>{formatPrice(subtotal, locale as "cs" | "en")}</span>

@@ -10,6 +10,7 @@ interface DateSelectorProps {
   minDaysFromNow?: number;
   maxDaysFromNow?: number;
   locale: string;
+  header?: string;
   className?: string;
 }
 
@@ -19,6 +20,7 @@ export function DateSelector({
   minDaysFromNow = 3,
   maxDaysFromNow = 30,
   locale,
+  header,
   className,
 }: DateSelectorProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -129,6 +131,13 @@ export function DateSelector({
 
   return (
     <div className={cn("space-y-2", className)}>
+      {/* Optional Header */}
+      {header && (
+        <h3 className="text-lg font-semibold text-teal-800 mb-2">
+          {header}
+        </h3>
+      )}
+
       {/* Date Picker Button */}
       <button
         type="button"
@@ -243,17 +252,6 @@ export function DateSelector({
         </div>
       )}
 
-      {/* Validation Message */}
-      {value && (
-        <div className="text-sm text-green-600 flex items-center space-x-1">
-          <CalendarIcon className="w-4 h-4" />
-          <span>
-            {locale === "cs"
-              ? `Dodání naplánováno na ${formatDateForDisplay(value as string)}`
-              : `Delivery scheduled for ${formatDateForDisplay(value as string)}`}
-          </span>
-        </div>
-      )}
     </div>
   );
 }

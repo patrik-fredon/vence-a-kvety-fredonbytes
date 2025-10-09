@@ -2,8 +2,7 @@
 
 import Image from "next/image";
 import { useTranslations } from "next-intl";
-import { cn } from "@/lib/utils";
-import { formatPrice } from "@/lib/utils";
+import { cn, formatPrice } from "@/lib/utils";
 import type {
   Customization,
   CustomizationChoice,
@@ -81,6 +80,30 @@ export function ProductCustomizer({
     return option.dependsOn.requiredChoiceIds.some((requiredId) =>
       dependentCustomization.choiceIds.includes(requiredId)
     );
+  };
+
+  // Get appropriate header for an option based on its type
+  const getOptionHeader = (option: CustomizationOption): string => {
+    // Check if any choice requires calendar (date selection)
+    const hasCalendar = option.choices.some((choice) => choice.requiresCalendar);
+    if (hasCalendar) {
+      return t("orderDate");
+    }
+
+    // Map option types to translation keys
+    switch (option.type) {
+      case "ribbon":
+      case "ribbon_color":
+      case "ribbon_text":
+        return t("ribbon");
+      case "size":
+        return t("size");
+      default:
+        // Fall back to option name
+        return typeof option.name === "object"
+          ? option.name[locale as keyof typeof option.name] || option.name.cs
+          : option.name;
+    }
   };
 
   // Render a choice button for selection options
@@ -208,12 +231,11 @@ export function ProductCustomizer({
           minDaysFromNow={choice.minDaysFromNow || 3}
           maxDaysFromNow={choice.maxDaysFromNow || 30}
           locale={locale}
+          header={t("orderDate")}
         />
       </div>
     );
   };
-
-
 
   // Filter visible options based on conditions
   const visibleOptions = (product.customizationOptions || []).filter(isOptionVisible);
@@ -243,6 +265,7 @@ export function ProductCustomizer({
           <div key={option.id} className="space-y-3">
             {/* Option Header */}
             <div className="flex items-center justify-between">
+              <h3 className="text-lg font-medium text-teal-800">{getOptionHeader(option)}</h3>
               {/* Selection Counter */}
               {option.maxSelections && option.maxSelections > 1 && (
                 <div className="text-sm text-teal-800">
@@ -250,7 +273,6 @@ export function ProductCustomizer({
                 </div>
               )}
             </div>
-
 
             <div className="space-y-2">
               <div className="grid grid-cols-1 gap-2">
@@ -263,7 +285,6 @@ export function ProductCustomizer({
                 ))}
               </div>
             </div>
-
 
             {/* Validation Messages */}
             {option.required && selectionCount === 0 && (
