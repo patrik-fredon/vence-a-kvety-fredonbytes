@@ -13,7 +13,6 @@ import {
   Heading,
   Hr,
   Link,
-  Img,
 } from '@react-email/components';
 import { Tailwind } from '@react-email/tailwind';
 
@@ -258,7 +257,7 @@ export function OrderItem({
   name: string;
   quantity: number;
   price: number;
-  customizations?: Array<{ optionName: string; value: string }>;
+  customizations?: Array<{ optionName: string; value: string }> | undefined;
   locale?: 'cs' | 'en';
 }) {
   const isCs = locale === 'cs';

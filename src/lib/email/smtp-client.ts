@@ -157,12 +157,12 @@ export class SMTPClient {
         // TLS options for security
         tls: {
           // Don't fail on invalid certs in development
-          rejectUnauthorized: process.env.NODE_ENV === 'production',
+          rejectUnauthorized: process.env['NODE_ENV'] === 'production',
         },
         // Enable debug logging in development
-        debug: process.env.NODE_ENV === 'development',
-        logger: process.env.NODE_ENV === 'development',
-      });
+        debug: process.env['NODE_ENV'] === 'development',
+        logger: process.env['NODE_ENV'] === 'development',
+      } as any);
 
       // Verify connection
       await this.verifyConnection();

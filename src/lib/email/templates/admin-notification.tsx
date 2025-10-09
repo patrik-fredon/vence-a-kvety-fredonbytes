@@ -202,7 +202,7 @@ export function AdminNotificationTemplate({
             name={item.productName}
             quantity={item.quantity}
             price={item.price}
-            customizations={item.customizations}
+            {...(item.customizations && { customizations: item.customizations })}
             locale="cs"
           />
         ))}

@@ -6,7 +6,7 @@
   - Test migration in development environment
   - _Requirements: 1.2, 1.6_
 
-- [-] 2. Email Infrastructure Setup
+- [x] 2. Email Infrastructure Setup
   - [ ] 2.1 Create SMTP client configuration
     - Implement `src/lib/email/smtp-client.ts` with nodemailer
     - Configure Supabase SMTP connection with TLS

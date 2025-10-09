@@ -137,7 +137,7 @@ export function CustomerConfirmationTemplate({
             name={item.productName}
             quantity={item.quantity}
             price={item.price}
-            customizations={item.customizations || undefined}
+            {...(item.customizations && { customizations: item.customizations })}
             locale={locale}
           />
         ))}
