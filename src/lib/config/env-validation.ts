@@ -293,6 +293,9 @@ export function logEnvironmentConfig(): void {
     "STRIPE_SECRET_KEY",
     "NEXT_PUBLIC_STRIPE_PUBLISHABLE_KEY",
     "UPSTASH_REDIS_REST_URL",
+    "SMTP_HOST",
+    "SMTP_FROM_EMAIL",
+    "ADMIN_EMAIL",
   ];
 
   importantVars.forEach((key) => {

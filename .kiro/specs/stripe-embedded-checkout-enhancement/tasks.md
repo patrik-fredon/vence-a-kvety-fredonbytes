@@ -14,14 +14,14 @@
     - Implement connection pooling and retry logic
     - _Requirements: 5.1, 5.2, 5.3, 9.5_
 
-  - [ ] 2.2 Create email template system
+  - [x] 2.2 Create email template system
     - Set up React Email for type-safe templates
     - Create base template with funeral-appropriate styling (teal/amber)
     - Implement responsive layout for mobile and desktop
     - Add localization support for Czech and English
     - _Requirements: 3.3, 3.5_
 
-  - [ ] 2.3 Implement customer confirmation email template
+  - [x] 2.3 Implement customer confirmation email template
     - Create `src/lib/email/templates/customer-confirmation.tsx`
     - Include order number, items list, and total amount
     - Add delivery information (address or pickup location)
@@ -29,7 +29,7 @@
     - Add company branding and contact information
     - _Requirements: 3.1, 3.2, 3.4_
 
-  - [ ] 2.4 Implement admin notification email template
+  - [x] 2.4 Implement admin notification email template
     - Create `src/lib/email/templates/admin-notification.tsx`
     - Include all order details and customer information
     - Add direct link to order in admin dashboard
@@ -135,8 +135,8 @@
     - Include contact support link
     - _Requirements: 10.4, 10.5, 10.6_
 
-- [-] 6. Environment Configuration and Documentation
-  - [ ] 6.1 Update environment variable validation
+- [x] 6. Environment Configuration and Documentation
+  - [x] 6.1 Update environment variable validation
     - Add validation for SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS
     - Add validation for SMTP_FROM_EMAIL, SMTP_FROM_NAME
     - Add validation for ADMIN_EMAIL
@@ -144,7 +144,7 @@
     - Provide clear error messages for missing variables
     - _Requirements: 9.1, 9.2, 9.3, 9.4, 9.5_
 
-  - [ ] 6.2 Create environment variable documentation
+  - [x] 6.2 Create environment variable documentation
     - Document all required Stripe variables
     - Document all required SMTP variables
     - Document ADMIN_EMAIL usage
