@@ -79,6 +79,7 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
           <h1 className="text-elegant text-3xl font-bold text-teal-800 mb-4">Chyba při platbě</h1>
 
           <p className="text-lg text-teal-600 mb-2">Bohužel se nepodařilo zpracovat vaši platbu.</p>
+          <p className="text-sm text-teal-500 mt-2">Vaše položky v košíku byly zachovány.</p>
 
           {orderId && <p className="text-sm text-teal-500">Objednávka #{orderId}</p>}
         </div>
@@ -169,21 +170,19 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
 
         {/* Action Buttons */}
         <div className="flex flex-col sm:flex-row gap-4 justify-center mb-8">
-          {orderId ? (
-            <a href={`/${locale}/checkout?orderId=${orderId}`}>
-              <Button className="flex items-center justify-center">
-                <ArrowPathIcon className="w-4 h-4 mr-2" />
-                Zkusit znovu
-              </Button>
-            </a>
-          ) : (
-            <a href={`/${locale}/cart`}>
-              <Button className="flex items-center justify-center">
-                <ShoppingCartIcon className="w-4 h-4 mr-2" />
-                Zobrazit košík
-              </Button>
-            </a>
-          )}
+          <a href={`/${locale}/cart`}>
+            <Button variant="outline" className="flex items-center justify-center">
+              <ShoppingCartIcon className="w-4 h-4 mr-2" />
+              Zobrazit košík
+            </Button>
+          </a>
+
+          <a href={`/${locale}/checkout`}>
+            <Button className="flex items-center justify-center">
+              <ArrowPathIcon className="w-4 h-4 mr-2" />
+              Zkusit znovu
+            </Button>
+          </a>
 
           <a href={`/${locale}/products`}>
             <Button variant="outline" className="flex items-center justify-center">
@@ -194,7 +193,8 @@ export default async function CheckoutErrorPage({ params, searchParams }: PagePr
 
         {/* Emergency Contact */}
         <div className="bg-orange-50 border border-orange-200 rounded-lg p-6 mb-8">
-          <h3 className="text-lg font-semibold text-orange-800 mb-4">
+          <h3 className="text-lg font-semibold text-orange-800 mb-4 flex items-center">
+            <PhoneIcon className="w-5 h-5 mr-2" />
             Potřebujete okamžitou pomoc?
           </h3>
 

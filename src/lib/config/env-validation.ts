@@ -78,6 +78,54 @@ const REQUIRED_ENV_VARS = {
     description: "Base URL for the application",
     validate: (value: string) => value.startsWith("http"),
   },
+
+  // SMTP Configuration (Supabase SMTP)
+  SMTP_HOST: {
+    required: true,
+    description: "SMTP server host (e.g., smtp.supabase.com)",
+    validate: (value: string) => value.length > 0,
+  },
+  SMTP_PORT: {
+    required: true,
+    description: "SMTP server port (typically 587 for TLS)",
+    validate: (value: string) => {
+      const port = Number.parseInt(value, 10);
+      return !Number.isNaN(port) && port > 0 && port <= 65535;
+    },
+  },
+  SMTP_USER: {
+    required: true,
+    description: "SMTP authentication username",
+    validate: (value: string) => value.length > 0,
+  },
+  SMTP_PASS: {
+    required: true,
+    description: "SMTP authentication password",
+    validate: (value: string) => value.length > 0,
+  },
+  SMTP_FROM_EMAIL: {
+    required: true,
+    description: "Email address to send from (e.g., orders@pohrebni-vence.cz)",
+    validate: (value: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value);
+    },
+  },
+  SMTP_FROM_NAME: {
+    required: true,
+    description: "Display name for sent emails (e.g., Pohřební věnce)",
+    validate: (value: string) => value.length > 0,
+  },
+
+  // Admin Configuration
+  ADMIN_EMAIL: {
+    required: true,
+    description: "Admin email address for order notifications",
+    validate: (value: string) => {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      return emailRegex.test(value);
+    },
+  },
 } as const;
 
 /**
@@ -218,7 +266,7 @@ export function isTest(): boolean {
  */
 export function sanitizeEnvVarForLogging(key: string, value: string): string {
   // Don't log sensitive keys at all
-  const sensitiveKeys = ["SECRET", "KEY", "TOKEN", "PASSWORD", "WEBHOOK", "SERVICE_ROLE"];
+  const sensitiveKeys = ["SECRET", "KEY", "TOKEN", "PASSWORD", "WEBHOOK", "SERVICE_ROLE", "SMTP_PASS", "SMTP_USER"];
 
   if (sensitiveKeys.some((sensitive) => key.includes(sensitive))) {
     if (value.length <= 8) {
